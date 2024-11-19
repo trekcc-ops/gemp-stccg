@@ -1,331 +1,358 @@
-// Set 1: Second Edition
-
 {
-    1_154: {
-        title: Beltane IX
-        subtitle: Cargo Rendezvous
-        uniqueness: unique
-        type: mission
-        mission-type: planet
-        quadrant: alpha
-        point-box: 30
-        mission-requirements: Transporters and (Engineer, Physics, and Integrity>29 or Acquisition, Treachery, and Cunning>31)
-        lore: Arrange a cargo transfer at this major commercial shipping center.
-        affiliation-icons: bajoran,federation,ferengi,klingon,romulan
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01154A.jpg
-    }
-    1_156: {
-        title: Edge of Denkiri Arm
-        subtitle: Chart Stellar Cluster
-        uniqueness: unique
-        type: mission
-        mission-type: space
-        quadrant: gamma
-        point-box: 35
-        mission-requirements: 2 Astrometrics, Programming, Science, and Cunning>34
-        lore: Conduct long-range scans to refine maps of this remote section of the galaxy.
-        affiliation-icons: borg,cardassian,federation,ferengi,romulan
-        span: 4
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01156a.jpg
-    }
-    1_157: {
-        title: Collect Sample
-        uniqueness: unique
-        type: mission
-        mission-type: space
-        quadrant: alpha
-        point-box: 35
-        mission-requirements: Physics, 2 Science, Transporters, and Cunning>34
-        lore: "Gaseous cloud: Beam a sample of this volatile gas aboard your ship and explore possible applications in weapon design."
-        affiliation-icons: cardassian,dominion,ferengi,klingon,romulan
-        span: 3
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01157.jpg
-    }
-    1_161: {
-        title: Earth
-        subtitle: Cradle of the Federation
-        uniqueness: unique
-        type: mission
-        mission-type: headquarters
-        quadrant: alpha
-        headquarters: Federation
-        playable: tng-icon,earth,non-aligned,equipment
-        region: Sector 001
-        lore: 'Earth: "Of course, we are always delighted when the Enterprise returns to the nest."'
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/STVP-EN006.jpg
-    }
-    1_162: {
-        title: Earth
-        subtitle: Home of Starfleet Command
-        uniqueness: unique
-        type: mission
-        mission-type: headquarters
-        quadrant: alpha
-        headquarters: Federation
-        playable: federation+ds9-icon,earth,non-aligned,equipment
-        region: Sector 001
-        lore: 'Earth: "Now there’s something I never get tired of looking at."'
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01162.jpg
-    }
-    1_166: {
-        title: Excavation
-        uniqueness: unique
-        type: mission
-        mission-type: planet
-        quadrant: alpha
-        affiliation-icons: federation,ferengi,romulan
-        lore: 'Kurl: "The Kurlan civilization died out thousands of years ago. It is extraordinarily rare to find a figurine intact… an incredible find."'
-        mission-requirements: Anthropology, 2 Archaeology, and Cunning>30
-        point-box: 30
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01166.jpg
-    }
-    1_182: {
-        title: Investigate Sighting
-        uniqueness: unique
-        type: mission
-        mission-type: space
-        quadrant: alpha
-        affiliation-icons: federation,romulan
-        lore: "Beta Stromgren: \"They call it ‘Tin Man.’ ... Its energy source is unknown. The people who’ve studied the transmissions think it’s a starship. And they’re sure it’s alive. ... No one knows where it came from, or why it’s here. But we’re going to meet it. We’re going to talk to it.\""
-        mission-requirements: Exobiology, 2 Treachery, and Cunning>28 or 2 Telepathy and Integrity>29
-        point-box: 30
-        span: 3
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01182.jpg
-    }
-    1_185: {
-        title: Medical Relief
-        uniqueness: unique
-        type: mission
-        mission-type: planet
-        quadrant: alpha
-        affiliation-icons: federation,klingon
-        lore: "Beta Lankal: Provide emergency aid at this planet in Klingon space."
-        mission-requirements: Biology, Exobiology, Medical, and Cunning>32
-        point-box: 30
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01185.jpg
-    }
-    1_186: {
-        title: Military Exercises
-        uniqueness: unique
-        type: mission
-        mission-type: space
-        quadrant: alpha
-        affiliation-icons: cardassian,dominion,federation,klingon,romulan
-        lore: Unclaimed sector of space: Conduct battle efficiency simulations in this remote region.
-        mission-requirements: Leadership, 2 Officer, Security, and Cunning>34
-        point-box: 35
-        span: 3
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01186.jpg
-    }
-    1_191: {
-        title: "Qo'noS"
-        subtitle: Heart of the Empire
-        uniqueness: unique
-        type: mission
-        mission-type: headquarters
-        quadrant: alpha
-        headquarters: Klingon
-        playable: klingon,non-aligned,equipment
-        region: "Qo'noS System"
-        lore: Homeworld of the Klingon Empire. Its sharply tilted axis causes extreme seasonal changes. With but one major land mass, there was constant war before the time of Kahless. It is a place as hard and turbulent as the Klingons themselves.
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01191a.jpg
-    }
-    1_193: {
-        title: Quest for the Sword of Kahless
-        uniqueness: unique
-        type: mission
-        mission-type: planet
-        quadrant: gamma
-        point-box: 40
-        mission-requirements: Archaeology, Leadership, 2 Science, Strength>38, and (Honor or Treachery)
-        lore: "Hur’q planet: \"The Hur’q invaded our homeworld over 1,000 years ago. Whatever they could not pillage, they destroyed. They took the Sword and my people have been searching for it ever since.\""
-        affiliation-icons: cardassian,ferengi,klingon,romulan
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01193.jpg
-    }
-    1_200: {
-        title: Sensitive Search
-        uniqueness: unique
-        type: mission
-        mission-type: planet
-        quadrant: alpha
-        affiliation-icons: federation,ferengi,klingon,romulan
-        lore: 'Nequencia system: Track the movements of an "information broker" who failed to arrive at a scheduled rendezvous.'
-        mission-requirements: Programming, Security, Cunning>30, and (Acquisition or Honor or Law or Treachery)
-        point-box: 30
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01200.jpg
-    }
-    1_201: {
-        title: Study Cometary Cloud
-        uniqueness: unique
-        type: mission
-        mission-type: space
-        quadrant: alpha
-        point-box: 35
-        mission-requirements: Astrometrics, Navigation, Programming, Cunning>34, and (Acquisition or Security)
-        lore: "Cruses system: Collect samples of the unusual particles in this system’s Oort cloud. Conduct research on their military or commercial potential."
-        affiliation-icons: dominion,ferengi,klingon,non-aligned,romulan
-        span: 3
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01201.jpg
-    }
-    1_203: {
-        title: Surgery Under Fire
-        uniqueness: unique
-        type: mission
-        mission-type: planet
-        quadrant: alpha
-        affiliation-icons: federation,klingon
-        lore: 'Ajilon Prime: "The sorting of the wounded... forces decisions that... Decisions that test what it means to be a doctor."'
-        mission-requirements: Biology, Leadership, Medical, Officer, and Strength>36
-        point-box: 35
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01203.jpg
-    }
-    1_206: {
-        title: Barzan Wormhole
-        uniqueness: unique
-        type: mission
-        mission-type: space
-        quadrant: alpha
-        lore: Investigate the discovery of a stable passage to the Gamma Quadrant. Negotiate for its long-term control.
-        mission-requirements: Astrometrics, Cunning>42, and (3 Diplomacy and 2 Honor or Telepathy and 3 Treachery)
-        affiliation-icons: federation,ferengi,klingon,non-aligned,romulan
-        point-box: 45
-        span: 2
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01206.jpg
-    }
-    1_251: {
-        title: Altman
-        type: personnel
-        affiliation: federation
-        cost: 1
-        species: Human
-        icons: staff, ds9-icon
-        skill-box: "[*] Biology [*] Engineer [*] Transporters"
-        lore: The engineering staff of Deep Space 9 is faced with the constant challenge of making Starfleet, Cardassian, and Bajoran technology work together.
-        integrity: 6
-        cunning: 5
-        strength: 5
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01251.jpg
-    }
-    1_254: {
-        title: Bandee
-        type: personnel
-        affiliation: federation
-        cost: 1
-        species: Human
-        icons: ds9-icon
-        skill-box: "[*] Biology [*] Medical [*] Programming"
-        lore: After the retaking of Deep Space 9 in 2374, the number of starfleet personnel aboard was increased in all departments. The medical staff was nearly doubled, in case of a surprise Dominion attack.
-        integrity: 6
-        cunning: 5
-        strength: 5
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01254.jpg
-    }
-    1_262: {
-        title: Elizabeth Shelby
-        type: personnel
-        affiliation: federation
-        uniqueness: unique
-        cost: 2
-        species: Human
-        icons: command, tng-icon
-        skill-box: "[*] Exobiology [*] Geology [*] Leadership [*] Officer [*] Security"
-        lore: "\"If you can't make the big decisions, Commander, I suggest you make room for someone who can.\""
-        integrity: 6
-        cunning: 6
-        strength: 5
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01262.jpg
-    }
-    1_265: {
-        title: Hoya
-        type: personnel
-        affiliation: federation
-        cost: 1
-        species: Benzite
-        icons: staff, ds9-icon
-        skill-box: "[*] Astrometrics [*] Navigation [*] Officer"
-        lore: Within a decade of the first Benzite joining Starfleet, many others enlisted. Advances in medical technology made it possible for Benzites to breathe in an oxygen-rich atmosphere without a respiration device.
-        integrity: 6
-        cunning: 5
-        strength: 4
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01265.jpg
-    }
-    1_274: {
-        title: Lopez
-        type: personnel
-        affiliation: federation
-        cost: 1
-        species: Human
-        icons: staff, tng-icon
-        skill-box: "[*] Biology [*] Honor [*] Security"
-        lore: Ensign in the U.S.S. Enterprise security division. In 2369, his good service record earned him an increase in responsibilities, and he was put in charge of preparing the duty roster for his department.
-        integrity: 6
-        cunning: 5
-        strength: 6
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01274.jpg
-    }
-    1_278: {
-        title: Mills
-        type: personnel
-        affiliation: federation
-        cost: 1
-        species: Human
-        icons: staff, ds9-icon
-        skill-box: "[*] Geology [*] Physics [*] Security"
-        lore: Although there was some initial friction, Starfleet and Bajoran security forces aboard Deep Space 9 were soon working together smoothly.
-        integrity: 6
-        cunning: 5
-        strength: 6
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01278.jpg
-    }
-    1_307: {
-        title: Kroval
-        type: personnel
-        affiliation: klingon
-        cost: 1
-        species: Klingon
-        icons: staff
-        skill-box: "[*] Archaeology [*] Geology [*] Science"
-        lore: For a Klingon seeking glory in relics of the past, the greatest hope is to find the long-lost Sword of Kahless.
-        integrity: 5
-        cunning: 5
-        strength: 6
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01307.jpg
-    }
-    1_393: {
-        title: U.S.S. Excelsior
-        type: ship
-        affiliation: federation
-        cost: 4
-        staffing: staff,staff,staff
-        ship-class: Excelsior Class
-        icons: earth
-        lore: "Although the transwarp drive experiment of the late 23rd century was a failure, the design of the ship itself was one of Starfleet’s greatest successes. New Excelsior-class ships were still being constructed over 75 years later."
-        range: 8
-        weapons: 7
-        shields: 7
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01393.jpg
-    }
-    1_394: {
-        title: U.S.S. Galaxy
-        type: ship
-        affiliation: federation
-        cost: 5
-        staffing: command,staff,staff,staff
-        ship-class: Galaxy Class
-        icons: earth
-        lore: The Galaxy-class starship represented a major departure in Starfleet design. For the first time, extensive living space was provided so that families of crewmembers could live with them during long tours of duty.
-        range: 8
-        weapons: 8
-        shields: 9
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01394.jpg
-    }
+    setId: "1"
+    setName: Second Edition
+    gameType: Second Edition
+    cards: [
+        {
+            blueprintId: 1_154
+            title: Beltane IX
+            subtitle: Cargo Rendezvous
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: alpha
+            point-box: 30
+            mission-requirements: Transporters and (Engineer, Physics, and Integrity>29 or Acquisition, Treachery, and Cunning>31)
+            lore: Arrange a cargo transfer at this major commercial shipping center.
+            affiliation-icons: bajoran,federation,ferengi,klingon,romulan
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01154A.jpg
+        }
+        {
+            blueprintId: 1_156
+            title: Edge of Denkiri Arm
+            subtitle: Chart Stellar Cluster
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: gamma
+            point-box: 35
+            mission-requirements: 2 Astrometrics, Programming, Science, and Cunning>34
+            lore: Conduct long-range scans to refine maps of this remote section of the galaxy.
+            affiliation-icons: borg,cardassian,federation,ferengi,romulan
+            span: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01156a.jpg
+        }
+        {
+            blueprintId: 1_157
+            title: Collect Sample
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            point-box: 35
+            mission-requirements: Physics, 2 Science, Transporters, and Cunning>34
+            lore: "Gaseous cloud: Beam a sample of this volatile gas aboard your ship and explore possible applications in weapon design."
+            affiliation-icons: cardassian,dominion,ferengi,klingon,romulan
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01157.jpg
+        }
+        {
+            blueprintId: 1_161
+            title: Earth
+            subtitle: Cradle of the Federation
+            uniqueness: unique
+            type: mission
+            mission-type: headquarters
+            quadrant: alpha
+            headquarters: Federation
+            playable: tng-icon,earth,non-aligned,equipment
+            region: Sector 001
+            lore: 'Earth: "Of course, we are always delighted when the Enterprise returns to the nest."'
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/STVP-EN006.jpg
+        }
+        {
+            blueprintId: 1_162
+            title: Earth
+            subtitle: Home of Starfleet Command
+            uniqueness: unique
+            type: mission
+            mission-type: headquarters
+            quadrant: alpha
+            headquarters: Federation
+            playable: federation+ds9-icon,earth,non-aligned,equipment
+            region: Sector 001
+            lore: 'Earth: "Now there’s something I never get tired of looking at."'
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01162.jpg
+        }
+        {
+            blueprintId: 1_166
+            title: Excavation
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: alpha
+            affiliation-icons: federation,ferengi,romulan
+            lore: 'Kurl: "The Kurlan civilization died out thousands of years ago. It is extraordinarily rare to find a figurine intact… an incredible find."'
+            mission-requirements: Anthropology, 2 Archaeology, and Cunning>30
+            point-box: 30
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01166.jpg
+        }
+        {
+            blueprintId: 1_182
+            title: Investigate Sighting
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: federation,romulan
+            lore: "Beta Stromgren: \"They call it ‘Tin Man.’ ... Its energy source is unknown. The people who’ve studied the transmissions think it’s a starship. And they’re sure it’s alive. ... No one knows where it came from, or why it’s here. But we’re going to meet it. We’re going to talk to it.\""
+            mission-requirements: Exobiology, 2 Treachery, and Cunning>28 or 2 Telepathy and Integrity>29
+            point-box: 30
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01182.jpg
+        }
+        {
+            blueprintId: 1_185
+            title: Medical Relief
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: alpha
+            affiliation-icons: federation,klingon
+            lore: "Beta Lankal: Provide emergency aid at this planet in Klingon space."
+            mission-requirements: Biology, Exobiology, Medical, and Cunning>32
+            point-box: 30
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01185.jpg
+        }
+        {
+            blueprintId: 1_186
+            title: Military Exercises
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: cardassian,dominion,federation,klingon,romulan
+            lore: Unclaimed sector of space: Conduct battle efficiency simulations in this remote region.
+            mission-requirements: Leadership, 2 Officer, Security, and Cunning>34
+            point-box: 35
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01186.jpg
+        }
+        {
+            blueprintId: 1_191
+            title: "Qo'noS"
+            subtitle: Heart of the Empire
+            uniqueness: unique
+            type: mission
+            mission-type: headquarters
+            quadrant: alpha
+            headquarters: Klingon
+            playable: klingon,non-aligned,equipment
+            region: "Qo'noS System"
+            lore: Homeworld of the Klingon Empire. Its sharply tilted axis causes extreme seasonal changes. With but one major land mass, there was constant war before the time of Kahless. It is a place as hard and turbulent as the Klingons themselves.
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01191a.jpg
+        }
+        {
+            blueprintId: 1_193
+            title: Quest for the Sword of Kahless
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: gamma
+            point-box: 40
+            mission-requirements: Archaeology, Leadership, 2 Science, Strength>38, and (Honor or Treachery)
+            lore: "Hur’q planet: \"The Hur’q invaded our homeworld over 1,000 years ago. Whatever they could not pillage, they destroyed. They took the Sword and my people have been searching for it ever since.\""
+            affiliation-icons: cardassian,ferengi,klingon,romulan
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01193.jpg
+        }
+        {
+            blueprintId: 1_200
+            title: Sensitive Search
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: alpha
+            affiliation-icons: federation,ferengi,klingon,romulan
+            lore: 'Nequencia system: Track the movements of an "information broker" who failed to arrive at a scheduled rendezvous.'
+            mission-requirements: Programming, Security, Cunning>30, and (Acquisition or Honor or Law or Treachery)
+            point-box: 30
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01200.jpg
+        }
+        {
+            blueprintId: 1_201
+            title: Study Cometary Cloud
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            point-box: 35
+            mission-requirements: Astrometrics, Navigation, Programming, Cunning>34, and (Acquisition or Security)
+            lore: "Cruses system: Collect samples of the unusual particles in this system’s Oort cloud. Conduct research on their military or commercial potential."
+            affiliation-icons: dominion,ferengi,klingon,non-aligned,romulan
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01201.jpg
+        }
+        {
+            blueprintId: 1_203
+            title: Surgery Under Fire
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: alpha
+            affiliation-icons: federation,klingon
+            lore: 'Ajilon Prime: "The sorting of the wounded... forces decisions that... Decisions that test what it means to be a doctor."'
+            mission-requirements: Biology, Leadership, Medical, Officer, and Strength>36
+            point-box: 35
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01203.jpg
+        }
+        {
+            blueprintId: 1_206
+            title: Barzan Wormhole
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            lore: Investigate the discovery of a stable passage to the Gamma Quadrant. Negotiate for its long-term control.
+            mission-requirements: Astrometrics, Cunning>42, and (3 Diplomacy and 2 Honor or Telepathy and 3 Treachery)
+            affiliation-icons: federation,ferengi,klingon,non-aligned,romulan
+            point-box: 45
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01206.jpg
+        }
+        {
+            blueprintId: 1_251
+            title: Altman
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: Human
+            icons: staff, ds9-icon
+            skill-box: "[*] Biology [*] Engineer [*] Transporters"
+            lore: The engineering staff of Deep Space 9 is faced with the constant challenge of making Starfleet, Cardassian, and Bajoran technology work together.
+            integrity: 6
+            cunning: 5
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01251.jpg
+        }
+        {
+            blueprintId: 1_254
+            title: Bandee
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: Human
+            icons: ds9-icon
+            skill-box: "[*] Biology [*] Medical [*] Programming"
+            lore: After the retaking of Deep Space 9 in 2374, the number of starfleet personnel aboard was increased in all departments. The medical staff was nearly doubled, in case of a surprise Dominion attack.
+            integrity: 6
+            cunning: 5
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01254.jpg
+        }
+        {
+            blueprintId: 1_262
+            title: Elizabeth Shelby
+            type: personnel
+            affiliation: federation
+            uniqueness: unique
+            cost: 2
+            species: Human
+            icons: command, tng-icon
+            skill-box: "[*] Exobiology [*] Geology [*] Leadership [*] Officer [*] Security"
+            lore: "\"If you can't make the big decisions, Commander, I suggest you make room for someone who can.\""
+            integrity: 6
+            cunning: 6
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01262.jpg
+        }
+        {
+            blueprintId: 1_265
+            title: Hoya
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: Benzite
+            icons: staff, ds9-icon
+            skill-box: "[*] Astrometrics [*] Navigation [*] Officer"
+            lore: Within a decade of the first Benzite joining Starfleet, many others enlisted. Advances in medical technology made it possible for Benzites to breathe in an oxygen-rich atmosphere without a respiration device.
+            integrity: 6
+            cunning: 5
+            strength: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01265.jpg
+        }
+        {
+            blueprintId: 1_274
+            title: Lopez
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: Human
+            icons: staff, tng-icon
+            skill-box: "[*] Biology [*] Honor [*] Security"
+            lore: Ensign in the U.S.S. Enterprise security division. In 2369, his good service record earned him an increase in responsibilities, and he was put in charge of preparing the duty roster for his department.
+            integrity: 6
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01274.jpg
+        }
+        {
+            blueprintId: 1_278
+            title: Mills
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: Human
+            icons: staff, ds9-icon
+            skill-box: "[*] Geology [*] Physics [*] Security"
+            lore: Although there was some initial friction, Starfleet and Bajoran security forces aboard Deep Space 9 were soon working together smoothly.
+            integrity: 6
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01278.jpg
+        }
+        {
+            blueprintId: 1_307
+            title: Kroval
+            type: personnel
+            affiliation: klingon
+            cost: 1
+            species: Klingon
+            icons: staff
+            skill-box: "[*] Archaeology [*] Geology [*] Science"
+            lore: For a Klingon seeking glory in relics of the past, the greatest hope is to find the long-lost Sword of Kahless.
+            integrity: 5
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01307.jpg
+        }
+        {
+            blueprintId: 1_393
+            title: U.S.S. Excelsior
+            type: ship
+            affiliation: federation
+            cost: 4
+            staffing: staff,staff,staff
+            ship-class: Excelsior Class
+            icons: earth
+            lore: "Although the transwarp drive experiment of the late 23rd century was a failure, the design of the ship itself was one of Starfleet’s greatest successes. New Excelsior-class ships were still being constructed over 75 years later."
+            range: 8
+            weapons: 7
+            shields: 7
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01393.jpg
+        }
+        {
+            blueprintId: 1_394
+            title: U.S.S. Galaxy
+            type: ship
+            affiliation: federation
+            cost: 5
+            staffing: command,staff,staff,staff
+            ship-class: Galaxy Class
+            icons: earth
+            lore: The Galaxy-class starship represented a major departure in Starfleet design. For the first time, extensive living space was provided so that families of crewmembers could live with them during long tours of duty.
+            range: 8
+            weapons: 8
+            shields: 9
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01394.jpg
+        }
+    ]
 }
