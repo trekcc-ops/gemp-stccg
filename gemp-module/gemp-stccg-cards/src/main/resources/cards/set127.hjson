@@ -4,6 +4,22 @@
     gameType: First Edition
     cards: [
         {
+            blueprintId: 127_023
+            title: Robert DeSoto
+            java-blueprint: true
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Captain of the <i>U.S.S. Hood</i> and former commanding officer of William T. Riker. Years ago, he and Jean-Luc Picard served together as lieutenants on the same ship."
+            integrity: 8
+            cunning: 7
+            strength: 5
+            image-url: https://www.trekcc.org/1e/cardimages/tngsup/20V.jpg
+            rarity: P
+        }
+        {
             blueprintId: 127_026
             title: "K'Temoc"
             type: personnel
