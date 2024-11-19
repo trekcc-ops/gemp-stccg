@@ -183,7 +183,7 @@ public class HallCommunicationChannel implements LongPollableResource {
             props.put("watchable", String.valueOf(watchable));
             props.put("status", String.valueOf(status));
             props.put("statusDescription", statusDescription);
-            props.put("gameType", table.getGameSettings().getGameFormat().getGameType());
+            props.put("gameType", table.getGameSettings().getGameFormat().getOldGameType());
             props.put("format", table.getGameSettings().getGameFormat().getName());
             props.put("userDescription", table.getGameSettings().getUserDescription());
             props.put("isPrivate", String.valueOf(table.getGameSettings().isPrivateGame()));

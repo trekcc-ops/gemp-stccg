@@ -2,6 +2,7 @@ package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;
+import com.gempukku.stccg.common.filterable.GameType;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ public interface GameFormat {
     boolean isPlaytest();
 
     String getName();
-    String getGameType();
+    String getOldGameType();
 
     String getCode();
     int getOrder();
@@ -45,4 +46,5 @@ public interface GameFormat {
     boolean hasFixedPlayerOrder();
 
     boolean isNoShuffle();
+    GameType getGameType();
 }

@@ -114,7 +114,7 @@ public class DefaultGameFormat implements GameFormat {
     public String getName() {
         return _name;
     }
-    public String getGameType() { return _game; }
+    public String getOldGameType() { return _game; }
     @Override
     public String getCode() {
         return _code;
@@ -461,6 +461,8 @@ public class DefaultGameFormat implements GameFormat {
         increaseCount(cardCountByName, _library.getCardBlueprint(blueprintId).getTitle());
         increaseCount(cardCountByBaseBlueprintId, _library.getBaseBlueprintId(blueprintId));
     }
+
+    public GameType getGameType() { return _gameType; }
 
     private void increaseCount(Map<String, Integer> counts, String name) {
         counts.merge(name, 1, Integer::sum);

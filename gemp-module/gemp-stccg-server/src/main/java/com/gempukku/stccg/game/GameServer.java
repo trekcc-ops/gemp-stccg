@@ -176,22 +176,14 @@ public class GameServer extends AbstractServer {
         boolean spectate = (gameSettings.getLeague() != null) ||
                 (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
 
-        CardGameMediator cardGameMediator;
-
-        if (Objects.equals(gameSettings.getGameFormat().getGameType(), "tribbles")) {
-            cardGameMediator = new TribblesGameMediator(gameId, gameSettings.getGameFormat(), participants,
+        return switch (gameSettings.getGameFormat().getGameType()) {
+            case FIRST_EDITION -> new ST1EGameMediator(gameId, gameSettings.getGameFormat(), participants,
                     _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st1e")){
-            cardGameMediator = new ST1EGameMediator(gameId, gameSettings.getGameFormat(), participants,
+            case SECOND_EDITION -> new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
                     _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st2e")){
-            cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
+            case TRIBBLES -> new TribblesGameMediator(gameId, gameSettings.getGameFormat(), participants,
                     _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else {
-            throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() +
-                    "' does not belong to 1E, 2E, or Tribbles");
-        }
-        return cardGameMediator;
+        };
     }
 
     public final CardDeck getParticipantDeck(User player, String deckName) {

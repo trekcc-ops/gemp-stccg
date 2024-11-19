@@ -210,7 +210,7 @@ class TableHolder {
                         visitor.visitTable(runningGame.getKey(), cardGameMediator.getGameId(),
                                 isAdmin || cardGameMediator.isAllowSpectators(),
                                 HallInfoVisitor.TableStatus.PLAYING, cardGameMediator.getGameStatus(),
-                                runningTable.getGameSettings().getGameFormat().getGameType(),
+                                runningTable.getGameSettings().getGameFormat().getOldGameType(),
                                 runningTable.getGameSettings().getGameFormat().getName(),
                                 getTournamentName(runningTable), runningTable.getGameSettings().getUserDescription(),
                                 cardGameMediator.getPlayersPlaying(),
@@ -234,7 +234,7 @@ class TableHolder {
                 if (isAdmin || isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))
                     visitor.visitTable(nonPlayingGame.getKey(), cardGameMediator.getGameId(), false,
                             HallInfoVisitor.TableStatus.FINISHED, cardGameMediator.getGameStatus(),
-                            runningTable.getGameSettings().getGameFormat().getGameType(),
+                            runningTable.getGameSettings().getGameFormat().getOldGameType(),
                             runningTable.getGameSettings().getGameFormat().getName(), getTournamentName(runningTable),
                             runningTable.getGameSettings().getUserDescription(), cardGameMediator.getPlayersPlaying(),
                             cardGameMediator.getPlayersPlaying().contains(player.getName()),
