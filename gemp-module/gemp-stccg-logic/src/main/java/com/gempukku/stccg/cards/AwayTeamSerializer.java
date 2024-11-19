@@ -21,7 +21,7 @@ public class AwayTeamSerializer extends StdSerializer<AwayTeam> {
     public void serialize(AwayTeam awayTeam, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeNumberField("parentCard", awayTeam.getParentCard().getCardId());
+        jsonGenerator.writeNumberField("locationZoneIndex", awayTeam.getLocationZoneIndex());
         jsonGenerator.writeStringField("playerId", awayTeam.getPlayerId());
         writeCardIdArray("cardsInAwayTeam", awayTeam.getCards(), jsonGenerator);
         jsonGenerator.writeEndObject();

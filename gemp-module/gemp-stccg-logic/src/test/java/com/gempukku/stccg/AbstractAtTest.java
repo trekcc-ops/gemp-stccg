@@ -23,7 +23,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
@@ -474,7 +474,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
-    protected void seedFacility(String playerId, PhysicalCard cardToSeed, ST1ELocation destination)
+    protected void seedFacility(String playerId, PhysicalCard cardToSeed, MissionLocation destination)
             throws DecisionResultInvalidException {
         SeedOutpostAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
@@ -604,7 +604,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getMission() == mission)
+                        attemptAction.getMission() == mission.getLocation())
                     choice = attemptAction;
             }
             choice.setAttemptingUnit(attemptingUnit);

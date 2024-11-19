@@ -132,7 +132,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
                 if (_origin instanceof MissionCard)
                     ((PhysicalReportableCard1E) card).leaveAwayTeam();
                 if (_destination instanceof MissionCard mission)
-                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission);
+                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission.getLocation());
             }
             if (!_cardsToMove.isEmpty()) {
                 cardGame.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +

@@ -10,7 +10,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class ShipBattleAction extends ActionyAction {
     private boolean _returningFire;
     private boolean _virtualCardAction;
     protected Effect _finalEffect;
-    private final ST1ELocation _location;
+    private final MissionLocation _location;
     private boolean _returnFireDecisionMade;
     private boolean _damageApplied;
     private final Player _attackingPlayer;
@@ -48,7 +48,7 @@ public class ShipBattleAction extends ActionyAction {
      * Creates an action for playing the specified card.
      * @param actionSource the card to initiate the deployment
      */
-    public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, ST1ELocation location)
+    public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, MissionLocation location)
             throws InvalidGameLogicException {
         super(performingPlayer, "Initiate battle", ActionType.BATTLE);
         DefaultGame game = actionSource.getGame();

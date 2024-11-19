@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
@@ -15,6 +14,7 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Blueprint103_014 extends CardBlueprint {
 
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            MissionCard mission, EncounterSeedCardAction action) {
+                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> result = new LinkedList<>();
         int totalCunning = 0;
         int totalStrength = 0;
@@ -49,7 +49,7 @@ public class Blueprint103_014 extends CardBlueprint {
             result.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction));
         }
 
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, mission));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
         return result;
     }
 

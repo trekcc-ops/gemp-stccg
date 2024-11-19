@@ -6,7 +6,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
 
@@ -190,7 +190,7 @@ public class Filters {
                     physicalCard.getTitle().equals("Deep Space 9");
     public static final Filter equipment = Filters.or(CardType.EQUIPMENT);
     public static final Filter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
-    public static Filter atLocation(final ST1ELocation location) {
+    public static Filter atLocation(final MissionLocation location) {
         return (game, physicalCard) -> physicalCard.getLocation() == location;
     }
 
