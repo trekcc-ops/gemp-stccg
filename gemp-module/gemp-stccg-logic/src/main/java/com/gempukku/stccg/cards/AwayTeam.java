@@ -53,8 +53,12 @@ public class AwayTeam implements AttemptingUnit {
     public String getPlayerId() { return _player.getPlayerId(); }
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
     public boolean canAttemptMission(MissionLocation mission) {
+        if (!isOnSurface(mission))
+            return false;
         try {
-            return isOnSurface(mission) && hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_player));
+            if (mission.getMissionForPlayer(_player.getPlayerId()).getBlueprint().canAnyAttempt())
+                return true;
+            return hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_player));
         } catch(InvalidGameLogicException exp) {
             _game.sendErrorMessage(exp);
             return false;

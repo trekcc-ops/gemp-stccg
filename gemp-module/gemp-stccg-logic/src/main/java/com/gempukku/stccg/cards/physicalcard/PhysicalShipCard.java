@@ -146,6 +146,10 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
             if (mission.getMissionType() != MissionType.SPACE)
                 return false;
             // TODO - Does not include a check for infiltrators
+
+            // Check for affiliation requirements
+            if (_blueprint.canAnyAttempt())
+                return true;
             boolean matchesShip = false;
             boolean matchesMission = false;
             for (PersonnelCard card : getAttemptingPersonnel()) {

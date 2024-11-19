@@ -26,6 +26,7 @@ public class CardBlueprint {
     private String title;
     private String subtitle;
     private ShipClass _shipClass;
+    private boolean _anyCanAttempt;
     protected CardType _cardType;
     private String imageUrl;
     private String _rarity;
@@ -207,7 +208,8 @@ public class CardBlueprint {
 
 
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
-    public void setAnyCrewOrAwayTeamCanAttempt() { }
+    public boolean canAnyAttempt() { return _anyCanAttempt; }
+    public void setAnyCrewOrAwayTeamCanAttempt() { _anyCanAttempt = true; }
     public Affiliation homeworldAffiliation() {
         if (this._cardType != CardType.MISSION)
             return null;
