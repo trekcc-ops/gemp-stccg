@@ -1744,6 +1744,7 @@
             affiliation: federation
             property-logo: tng-logo
             ship-class: GALAXY CLASS
+            persona: U.S.S. Enterprise
             lore: The fifth Starfleet ship named Enterprise, launched in 2363. Built at the Utopia Planetia shipyards orbiting Mars.
             staffing: command,staff,staff
             gametext: Holodeck, Tractor Beam

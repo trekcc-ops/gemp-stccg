@@ -18,5 +18,21 @@
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/jeanlucpicard.jpg
         }
+        {
+            blueprintId: 135_011
+            title: U.S.S. Enterprise
+            type: ship
+            affiliation: federation
+            property-logo: tng-logo
+            ship-class: GALAXY CLASS
+            lore: Encountered the <i>U.S.S. Enterprise-C</i> in an alternate reality. Became the <i>Future Enterprise</i> in an alternate future. Visited by crew from the <i>Starship Enterprise</i>.
+            persona: U.S.S. Enterprise
+            gametext: Holodeck, Tractor Beam
+            staffing: command,staff,staff
+            range: 8
+            weapons: 7
+            shields: 9
+            image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/ussenterprise.jpg
+        }
     ]
 }
