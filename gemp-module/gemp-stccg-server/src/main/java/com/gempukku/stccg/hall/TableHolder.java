@@ -210,14 +210,13 @@ class TableHolder {
                         visitor.visitTable(runningGame.getKey(), cardGameMediator.getGameId(),
                                 isAdmin || cardGameMediator.isAllowSpectators(),
                                 HallInfoVisitor.TableStatus.PLAYING, cardGameMediator.getGameStatus(),
-                                runningTable.getGameSettings().getGameFormat().getOldGameType(),
                                 runningTable.getGameSettings().getGameFormat().getName(),
                                 getTournamentName(runningTable), runningTable.getGameSettings().getUserDescription(),
                                 cardGameMediator.getPlayersPlaying(),
                                 cardGameMediator.getPlayersPlaying().contains(player.getName()),
                                 runningTable.getGameSettings().isPrivateGame(),
                                 runningTable.getGameSettings().isUserInviteOnly(),
-                                cardGameMediator.getWinner()
+                                cardGameMediator.getWinner(), cardGameMediator.getGame().getFormat()
                         );
                     if (!cardGameMediator.isFinished() &&
                             cardGameMediator.getPlayersPlaying().contains(player.getName()))
@@ -234,12 +233,12 @@ class TableHolder {
                 if (isAdmin || isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))
                     visitor.visitTable(nonPlayingGame.getKey(), cardGameMediator.getGameId(), false,
                             HallInfoVisitor.TableStatus.FINISHED, cardGameMediator.getGameStatus(),
-                            runningTable.getGameSettings().getGameFormat().getOldGameType(),
                             runningTable.getGameSettings().getGameFormat().getName(), getTournamentName(runningTable),
                             runningTable.getGameSettings().getUserDescription(), cardGameMediator.getPlayersPlaying(),
                             cardGameMediator.getPlayersPlaying().contains(player.getName()),
                             runningTable.getGameSettings().isPrivateGame(),
-                            runningTable.getGameSettings().isUserInviteOnly(), cardGameMediator.getWinner()
+                            runningTable.getGameSettings().isUserInviteOnly(), cardGameMediator.getWinner(),
+                            cardGameMediator.getGame().getFormat()
                     );
             }
         }

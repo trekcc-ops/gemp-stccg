@@ -3,6 +3,7 @@ package com.gempukku.stccg.hall;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.formats.GameFormat;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableObject;
 
@@ -183,7 +184,7 @@ public class HallCommunicationChannel implements LongPollableResource {
             props.put("watchable", String.valueOf(watchable));
             props.put("status", String.valueOf(status));
             props.put("statusDescription", statusDescription);
-            props.put("gameType", table.getGameSettings().getGameFormat().getOldGameType());
+            props.put("gameType", table.getGameSettings().getGameFormat().getGameType().name());
             props.put("format", table.getGameSettings().getGameFormat().getName());
             props.put("userDescription", table.getGameSettings().getUserDescription());
             props.put("isPrivate", String.valueOf(table.getGameSettings().isPrivateGame()));
@@ -197,15 +198,16 @@ public class HallCommunicationChannel implements LongPollableResource {
 
         @Override
         public void visitTable(String tableId, String gameId, boolean watchable, TableStatus status,
-                               String statusDescription, String gameType, String formatName,
+                               String statusDescription, String formatName,
                                String tournamentName, String userDesc, List<String> playerIds,
-                               boolean playing, boolean isPrivate, boolean isInviteOnly, String winner) {
+                               boolean playing, boolean isPrivate, boolean isInviteOnly, String winner,
+                               GameFormat gameFormat) {
             Map<String, String> props = new HashMap<>();
             props.put("gameId", gameId);
             props.put("watchable", String.valueOf(watchable));
             props.put("status", String.valueOf(status));
             props.put("statusDescription", statusDescription);
-            props.put("gameType", gameType);
+            props.put("gameType", gameFormat.getGameType().name());
             props.put("format", formatName);
             props.put("userDescription", userDesc);
             props.put("isPrivate", String.valueOf(isPrivate));

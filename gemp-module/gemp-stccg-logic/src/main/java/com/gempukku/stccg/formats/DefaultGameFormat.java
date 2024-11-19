@@ -19,7 +19,6 @@ public class DefaultGameFormat implements GameFormat {
 
     private final CardBlueprintLibrary _library;
     private final String _name;
-    private final String _game;
     private final String _code;
     private final int _order;
     private final boolean _hallVisible;
@@ -52,7 +51,7 @@ public class DefaultGameFormat implements GameFormat {
 
     public DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def)
             throws InvalidPropertiesFormatException, JsonParseException {
-        this(library, def.name, def.game, def.code, def.order, def.surveyUrl,
+        this(library, def.name, def.code, def.order, def.surveyUrl,
                 def.validateShadowFPCount, def.minimumDrawDeckSize, def.maximumSeedDeckSize, def.missions, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
                 def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall,
                 def.noShuffle, def.firstPlayerFixed, def.gameType);
@@ -81,14 +80,13 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     public DefaultGameFormat(CardBlueprintLibrary library,
-                             String name, String game, String code, int order, String surveyUrl,
+                             String name, String code, int order, String surveyUrl,
                              boolean validateShadowFPCount, int minimumDrawDeckSize, int maximumSeedDeckSize, int missions, int maximumSameName, boolean mulliganRule,
                              boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
                              boolean winOnControlling5Sites, boolean isPlayTest, boolean hallVisible, boolean noShuffle,
                              boolean firstPlayerFixed, String gameType) throws JsonParseException {
         _library = library;
         _name = name;
-        _game = game;
         _code = code;
         _order = order;
         _surveyUrl = surveyUrl;
@@ -114,7 +112,7 @@ public class DefaultGameFormat implements GameFormat {
     public String getName() {
         return _name;
     }
-    public String getOldGameType() { return _game; }
+
     @Override
     public String getCode() {
         return _code;
@@ -416,7 +414,7 @@ public class DefaultGameFormat implements GameFormat {
             result.append("Draw deck contains below minimum number of cards: ")
                     .append(drawDeckSize).append("<").append(_minimumDrawDeckSize).append(".\n");
         }
-        if (Objects.equals(_game, "st1e")) {
+        if (_gameType == GameType.FIRST_EDITION) {
             int seedDeckSize = deck.getSubDeck(SubDeck.SEED_DECK).size();
             if (seedDeckSize > _maximumSeedDeckSize) {
                 result.append("Seed deck contains more than maximum number of cards: ")
@@ -472,7 +470,6 @@ public class DefaultGameFormat implements GameFormat {
     public JSONData.Format Serialize() {
         return new JSONData.Format() {{
             code = _code;
-            game = _game;
             name = _name;
             order = _order;
             surveyUrl = _surveyUrl;
@@ -498,6 +495,7 @@ public class DefaultGameFormat implements GameFormat {
             hall = _hallVisible;
             noShuffle = _noShuffle;
             firstPlayerFixed = _firstPlayerFixed;
+            gameType = _gameType.getHumanReadable();
         }};
     }
 
