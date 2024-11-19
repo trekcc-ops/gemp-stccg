@@ -195,7 +195,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     public Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName) {
         int level = 0;
-        for (Skill skill : physicalCard.getBlueprint().getSkills()) {
+        for (Skill skill : physicalCard.getBlueprint().getSkills(_game, physicalCard)) {
             if (skill instanceof RegularSkill regularSkill) {
                 if (regularSkill.getRegularSkill() == skillName) {
                     level += regularSkill.getLevel();

@@ -40,7 +40,7 @@ public class CardBlueprint {
     private Quadrant quadrant;
     private String location;
     private int _pointsShown;
-    private int _skillDots;
+    int _skillDots;
     private boolean _hasPointBox;
     private MissionRequirement _missionRequirements;
     final List<Skill> _skills = new LinkedList<>();
@@ -411,7 +411,9 @@ public class CardBlueprint {
         return result;
     }
 
-    public List<Skill> getSkills() { return _skills; }
+    public List<Skill> getSkills(DefaultGame game, PhysicalCard thisCard) {
+        return _skills;
+    }
 
     public void setPersona(String persona) { _persona = persona; }
 
