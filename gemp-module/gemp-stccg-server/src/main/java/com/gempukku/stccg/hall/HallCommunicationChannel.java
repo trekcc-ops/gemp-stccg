@@ -3,8 +3,7 @@ package com.gempukku.stccg.hall;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.formats.GameFormat;
-import org.apache.commons.lang.StringUtils;
+import com.gempukku.stccg.tournament.TournamentQueue;
 import org.apache.commons.lang.mutable.MutableObject;
 
 import java.util.*;
@@ -176,67 +175,27 @@ public class HallCommunicationChannel implements LongPollableResource {
             newDailyMessage.setValue(message);
         }
 
-        public void visitTable(String tableId, String gameId, boolean watchable, TableStatus status,
-                               String statusDescription, GameTable table, String tournamentName,
-                               List<String> playerIds, boolean playing) {
-            Map<String, String> props = new HashMap<>();
-            props.put("gameId", gameId);
-            props.put("watchable", String.valueOf(watchable));
-            props.put("status", String.valueOf(status));
-            props.put("statusDescription", statusDescription);
-            props.put("gameType", table.getGameSettings().getGameFormat().getGameType().name());
-            props.put("format", table.getGameSettings().getGameFormat().getName());
-            props.put("userDescription", table.getGameSettings().getUserDescription());
-            props.put("isPrivate", String.valueOf(table.getGameSettings().isPrivateGame()));
-            props.put("isInviteOnly", String.valueOf(table.getGameSettings().isUserInviteOnly()));
-            props.put("tournament", tournamentName);
-            props.put("players", StringUtils.join(playerIds, ","));
-            props.put("playing", String.valueOf(playing));
-            tablesOnServer.put(tableId, props);
-        }
 
-
-        @Override
-        public void visitTable(String tableId, String gameId, boolean watchable, TableStatus status,
-                               String statusDescription, String formatName,
-                               String tournamentName, String userDesc, List<String> playerIds,
-                               boolean playing, boolean isPrivate, boolean isInviteOnly, String winner,
-                               GameFormat gameFormat) {
-            Map<String, String> props = new HashMap<>();
-            props.put("gameId", gameId);
-            props.put("watchable", String.valueOf(watchable));
-            props.put("status", String.valueOf(status));
-            props.put("statusDescription", statusDescription);
-            props.put("gameType", gameFormat.getGameType().name());
-            props.put("format", formatName);
-            props.put("userDescription", userDesc);
-            props.put("isPrivate", String.valueOf(isPrivate));
-            props.put("isInviteOnly", String.valueOf(isInviteOnly));
-            props.put("tournament", tournamentName);
-            props.put("players", StringUtils.join(playerIds, ","));
-            props.put("playing", String.valueOf(playing));
-            if (winner != null)
-                props.put("winner", winner);
-
-            tablesOnServer.put(tableId, props);
+        public void visitTable(GameTable table, String tableId, User user) {
+            Map<String, String> serializedTable = table.serializeForUser(user);
+            tablesOnServer.put(tableId, serializedTable);
         }
 
         @Override
-        public void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName,
-                                         String tournamentQueueName, String tournamentPrizes, String pairingDescription,
-                                         String startCondition, int playerCount, boolean playerSignedUp,
-                                         boolean joinable) {
+        public void visitTournamentQueue(TournamentQueue queue, String tournamentQueueKey, String formatName,
+                                         User user) {
+
             Map<String, String> props = new HashMap<>();
-            props.put("cost", String.valueOf(cost));
-            props.put("collection", collectionName);
+            props.put("cost", String.valueOf(queue.getCost()));
+            props.put("collection", queue.getCollectionType().getFullName());
             props.put("format", formatName);
-            props.put("queue", tournamentQueueName);
-            props.put("playerCount", String.valueOf(playerCount));
-            props.put("prizes", tournamentPrizes);
-            props.put("system", pairingDescription);
-            props.put("start", startCondition);
-            props.put("signedUp", String.valueOf(playerSignedUp));
-            props.put("joinable", String.valueOf(joinable));
+            props.put("queue", queue.getTournamentQueueName());
+            props.put("playerCount", String.valueOf(queue.getPlayerCount()));
+            props.put("prizes", queue.getPrizesDescription());
+            props.put("system", queue.getPairingDescription());
+            props.put("start", queue.getStartCondition());
+            props.put("signedUp", String.valueOf(queue.isPlayerSignedUp(user.getName())));
+            props.put("joinable", String.valueOf(queue.isJoinable()));
 
             tournamentQueuesOnServer.put(tournamentQueueKey, props);
         }

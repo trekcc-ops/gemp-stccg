@@ -29,11 +29,6 @@ class TableHolder {
         this.ignoreDAO = objects.getIgnoreDAO();
     }
 
-    public TableHolder(LeagueService leagueService, IgnoreDAO ignoreDAO) {
-        this.leagueService = leagueService;
-        this.ignoreDAO = ignoreDAO;
-    }
-
     public final int getTableCount() {
         return runningTables.size();
     }
@@ -61,7 +56,7 @@ class TableHolder {
 
         boolean tableFull = table.addPlayer(new GameParticipant(player, deck));
         if (tableFull) {
-            runningTables.put(tableId, table);
+            addTableToRunningTables(table, tableId);
             return table;
         }
 
@@ -98,7 +93,7 @@ class TableHolder {
         final boolean tableFull = awaitingTable.addPlayer(new GameParticipant(player.getName(), deck));
         if (tableFull) {
             awaitingTables.remove(tableId);
-            runningTables.put(tableId, awaitingTable);
+            addTableToRunningTables(awaitingTable, tableId);
 
             // Leave all other tables this player is waiting on
             for (GameParticipant awaitingTablePlayer : awaitingTable.getPlayers())
@@ -116,9 +111,14 @@ class TableHolder {
         for (GameParticipant participant : participants) {
             table.addPlayer(participant);
         }
-        runningTables.put(tableId, table);
+        addTableToRunningTables(table, tableId);
 
         return table;
+    }
+
+    private void addTableToRunningTables(GameTable table, String tableId) {
+        runningTables.put(tableId, table);
+        table.setAsPlaying();
     }
 
     public final GameSettings getGameSettings(String tableId) throws HallException {
@@ -183,16 +183,13 @@ class TableHolder {
         // First waiting
         for (Map.Entry<String, GameTable> tableInformation : awaitingTables.entrySet()) {
             final GameTable table = tableInformation.getValue();
+            String tableId = tableInformation.getKey();
 
             List<String> players = (table.getGameSettings().getLeague() != null) ?
                     Collections.emptyList() : table.getPlayerNames();
 
             if (isAdmin || isNoIgnores(players, player.getName()))
-                visitor.visitTable(
-                        tableInformation.getKey(), null, false, HallInfoVisitor.TableStatus.WAITING,
-                        "Waiting", table, getTournamentName(table), players,
-                        table.getPlayerNames().contains(player.getName())
-                );
+                visitor.visitTable(table, tableId, player);
         }
 
         // Then non-finished
@@ -204,23 +201,14 @@ class TableHolder {
             if (cardGameMediator != null) {
                 if (isAdmin || (cardGameMediator.isVisibleToUser(player.getName()) &&
                         isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))) {
-                    if (cardGameMediator.isFinished())
+                    if (cardGameMediator.isFinished()) {
+                        runningTable.setAsFinished();
                         finishedTables.put(runningGame.getKey(), runningTable);
-                    else
-                        visitor.visitTable(runningGame.getKey(), cardGameMediator.getGameId(),
-                                isAdmin || cardGameMediator.isAllowSpectators(),
-                                HallInfoVisitor.TableStatus.PLAYING, cardGameMediator.getGameStatus(),
-                                runningTable.getGameSettings().getGameFormat().getName(),
-                                getTournamentName(runningTable), runningTable.getGameSettings().getUserDescription(),
-                                cardGameMediator.getPlayersPlaying(),
-                                cardGameMediator.getPlayersPlaying().contains(player.getName()),
-                                runningTable.getGameSettings().isPrivateGame(),
-                                runningTable.getGameSettings().isUserInviteOnly(),
-                                cardGameMediator.getWinner(), cardGameMediator.getGame().getFormat()
-                        );
-                    if (!cardGameMediator.isFinished() &&
-                            cardGameMediator.getPlayersPlaying().contains(player.getName()))
-                        visitor.runningPlayerGame(cardGameMediator.getGameId());
+                    } else {
+                        visitor.visitTable(runningTable, runningGame.getKey(), player);
+                        if (cardGameMediator.getPlayersPlaying().contains(player.getName()))
+                            visitor.runningPlayerGame(cardGameMediator.getGameId());
+                    }
                 }
             }
         }
@@ -231,15 +219,7 @@ class TableHolder {
             CardGameMediator cardGameMediator = runningTable.getMediator();
             if (cardGameMediator != null) {
                 if (isAdmin || isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))
-                    visitor.visitTable(nonPlayingGame.getKey(), cardGameMediator.getGameId(), false,
-                            HallInfoVisitor.TableStatus.FINISHED, cardGameMediator.getGameStatus(),
-                            runningTable.getGameSettings().getGameFormat().getName(), getTournamentName(runningTable),
-                            runningTable.getGameSettings().getUserDescription(), cardGameMediator.getPlayersPlaying(),
-                            cardGameMediator.getPlayersPlaying().contains(player.getName()),
-                            runningTable.getGameSettings().isPrivateGame(),
-                            runningTable.getGameSettings().isUserInviteOnly(), cardGameMediator.getWinner(),
-                            cardGameMediator.getGame().getFormat()
-                    );
+                    visitor.visitTable(runningTable, nonPlayingGame.getKey(), player);
             }
         }
     }
