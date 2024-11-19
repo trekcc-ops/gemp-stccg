@@ -58,7 +58,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         assertEquals("101_217", _cardLibrary.getBaseBlueprintId("101_218"));
         assertEquals("101_217", _cardLibrary.getBaseBlueprintId("113_003"));
 
-        assertTrue(_cardLibrary.hasAlternateInSet("101_218", 113));
+        assertTrue(_cardLibrary.hasAlternateInSet("101_218", "113"));
         assertEquals(2, _cardLibrary.getAllAlternates("113_003").size());
     }
 }

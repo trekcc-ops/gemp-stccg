@@ -280,7 +280,7 @@ public class CardBlueprintLibrary {
         }
     }
 
-    public boolean hasAlternateInSet(String blueprintId, int setNo) {
+    public boolean hasAlternateInSet(String blueprintId, String setId) {
         try {
             collectionReady.acquire();
             var alternatives = _alternateBlueprintMapping.get(blueprintId);
@@ -288,7 +288,7 @@ public class CardBlueprintLibrary {
 
             if (alternatives != null)
                 for (String alternative : alternatives)
-                    if (alternative.startsWith(setNo + "_"))
+                    if (alternative.startsWith(setId + "_"))
                         return true;
 
             return false;
@@ -296,6 +296,7 @@ public class CardBlueprintLibrary {
             throw new RuntimeException("CardBlueprintLibrary.hasAlternateInSet() interrupted: ", exp);
         }
     }
+
 
     public String getCardFullName(String blueprintId) throws CardNotFoundException {
         return getCardBlueprint(blueprintId).getFullName();

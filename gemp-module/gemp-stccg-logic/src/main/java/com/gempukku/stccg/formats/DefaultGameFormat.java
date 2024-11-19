@@ -22,42 +22,58 @@ public class DefaultGameFormat implements GameFormat {
     private final String _code;
     private final int _order;
     private final boolean _hallVisible;
-    private final boolean _validateShadowFPCount;
     private final int _maximumSameName;
     private final boolean _mulliganRule;
-    private final boolean _canCancelRingBearerSkirmish;
     private final boolean _hasRuleOfFour;
-    private final boolean _winAtEndOfRegroup;
     private final boolean _discardPileIsPublic;
-    private final boolean _winOnControlling5Sites;
     private final int _minimumDrawDeckSize;
     private final int _maximumSeedDeckSize;
     private final int _missions; // If missions is -1, there is no restriction on the number of missions
     private final List<String> _bannedCards = new ArrayList<>();
     private final List<String> _restrictedCards = new ArrayList<>();
     private final List<String> _validCards = new ArrayList<>();
-    private final List<Integer> _validSets = new ArrayList<>();
+    private final List<String> _validSets = new ArrayList<>();
     private final List<String> _restrictedCardNames = new ArrayList<>();
     private final String _surveyUrl;
     private final boolean _isPlaytest;
     private final boolean _noShuffle;
-
-    //Additional Hobbit Draft parameters
     private final List<String> _limit2Cards = new ArrayList<>();
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
     private final boolean _firstPlayerFixed;
     private final GameType _gameType;
 
-    public DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def)
+    DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def)
             throws InvalidPropertiesFormatException, JsonParseException {
-        this(library, def.name, def.code, def.order, def.surveyUrl,
-                def.validateShadowFPCount, def.minimumDrawDeckSize, def.maximumSeedDeckSize, def.missions, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
-                def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall,
-                def.noShuffle, def.firstPlayerFixed, def.gameType);
+        _library = library;
+        _name = def.name;
+        _code = def.code;
+        _order = def.order;
+        _surveyUrl = def.surveyUrl;
+        _minimumDrawDeckSize = def.minimumDrawDeckSize;
+        _maximumSameName = def.maximumSameName;
+        _mulliganRule = def.mulliganRule;
+        _hasRuleOfFour = def.ruleOfFour;
+        _discardPileIsPublic = def.discardPileIsPublic;
+        _isPlaytest = def.playtest;
+        _hallVisible = def.hall;
+        _missions = def.missions;
+        _maximumSeedDeckSize = def.maximumSeedDeckSize;
+        _noShuffle = def.noShuffle;
+        _firstPlayerFixed = def.firstPlayerFixed;
+        _gameType = JsonUtils.getEnum(GameType.class, def.gameType);
 
-        if(def.set != null)
+
+        if (def.set == null) {
+            for (SetDefinition set : library.getSetDefinitions().values()) {
+                if (set.getGameType() == _gameType) {
+                    addValidSet(Integer.parseInt(set.getSetId()));
+                }
+            }
+        } else {
             def.set.forEach(this::addValidSet);
+        }
+
         if(def.banned != null)
             def.banned.forEach(this::addBannedCard);
         if(def.restricted != null)
@@ -77,35 +93,6 @@ public class DefaultGameFormat implements GameFormat {
         }
         if(def.errata != null)
             def.errata.forEach(this::addCardErrata);
-    }
-
-    public DefaultGameFormat(CardBlueprintLibrary library,
-                             String name, String code, int order, String surveyUrl,
-                             boolean validateShadowFPCount, int minimumDrawDeckSize, int maximumSeedDeckSize, int missions, int maximumSameName, boolean mulliganRule,
-                             boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
-                             boolean winOnControlling5Sites, boolean isPlayTest, boolean hallVisible, boolean noShuffle,
-                             boolean firstPlayerFixed, String gameType) throws JsonParseException {
-        _library = library;
-        _name = name;
-        _code = code;
-        _order = order;
-        _surveyUrl = surveyUrl;
-        _validateShadowFPCount = validateShadowFPCount;
-        _minimumDrawDeckSize = minimumDrawDeckSize;
-        _maximumSameName = maximumSameName;
-        _mulliganRule = mulliganRule;
-        _canCancelRingBearerSkirmish = canCancelRingBearerSkirmish;
-        _hasRuleOfFour = hasRuleOfFour;
-        _winAtEndOfRegroup = winAtEndOfRegroup;
-        _discardPileIsPublic = discardPileIsPublic;
-        _winOnControlling5Sites = winOnControlling5Sites;
-        _isPlaytest = isPlayTest;
-        _hallVisible = hallVisible;
-        _missions = missions;
-        _maximumSeedDeckSize = maximumSeedDeckSize;
-        _noShuffle = noShuffle;
-        _firstPlayerFixed = firstPlayerFixed;
-        _gameType = JsonUtils.getEnum(GameType.class, gameType);
     }
 
     @Override
@@ -133,21 +120,24 @@ public class DefaultGameFormat implements GameFormat {
         return _isPlaytest;
     }
 
-    @Override
-    public List<Integer> getValidSetIds() {
-        return Collections.unmodifiableList(_validSets);
+    public List<String> getValidSetIdsAsStrings() {
+        return new LinkedList<>(_validSets);
     }
 
     @Override
-    public Map<String, String> getValidSets() {
+    public Map<String, String> getValidSetsAndTheirCards(CardBlueprintLibrary library) {
             // For sending to CardFilter
         Map<String, String> sets = new LinkedHashMap<>();
-        String allSetsString = _validSets.stream().map(String::valueOf).collect(Collectors.joining(","));
+        StringJoiner joiner = new StringJoiner(",");
+        for (String validSet : _validSets) {
+            joiner.add(validSet);
+        }
+        String allSetsString = joiner.toString();
         sets.put(allSetsString, "All " + _name + " sets");
         sets.put("disabled", "disabled");
-        Map<String, SetDefinition> librarySets = _library.getSetDefinitions();
-        for (Integer setNum : _validSets) {
-            sets.put(setNum.toString(), librarySets.get(setNum.toString()).getSetName());
+        Map<String, SetDefinition> librarySets = library.getSetDefinitions();
+        for (String setId : _validSets) {
+            sets.put(setId, librarySets.get(setId).getSetName());
         }
         return sets;
     }
@@ -213,8 +203,8 @@ public class DefaultGameFormat implements GameFormat {
             _validCards.add(baseBlueprintId);
     }
 
-    public void addValidSet(int setNo) {
-        _validSets.add(setNo);
+    private void addValidSet(int setNo) {
+        _validSets.add(String.valueOf(setNo));
     }
 
     //Additional Hobbit Draft card lists
@@ -230,7 +220,7 @@ public class DefaultGameFormat implements GameFormat {
         _restrictedCardNames.add(cardName);
     }
 
-    public void addErrataSet(int setID) throws InvalidPropertiesFormatException {
+    private void addErrataSet(int setID) throws InvalidPropertiesFormatException {
         //Valid errata sets:
         // 50-69 are live errata versions of sets 0-19
         // 70-89 are playtest errata versions of sets 0-19
@@ -291,9 +281,9 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     private boolean isValidInSets(String blueprintId)  {
-        for (int validSet : _validSets)
-            if (blueprintId.startsWith(validSet + "_")
-                    || _library.hasAlternateInSet(blueprintId, validSet))
+        for (String setId : _validSets)
+            if (blueprintId.startsWith(setId + "_")
+                    || _library.hasAlternateInSet(blueprintId, setId))
                 return true;
         return false;
     }
@@ -473,13 +463,9 @@ public class DefaultGameFormat implements GameFormat {
             name = _name;
             order = _order;
             surveyUrl = _surveyUrl;
-            cancelRingBearerSkirmish = _canCancelRingBearerSkirmish;
             ruleOfFour = _hasRuleOfFour;
-            winAtEndOfRegroup = _winAtEndOfRegroup;
             discardPileIsPublic = _discardPileIsPublic;
-            winOnControlling5Sites = _winOnControlling5Sites;
             playtest = _isPlaytest;
-            validateShadowFPCount = _validateShadowFPCount;
             minimumDrawDeckSize = _minimumDrawDeckSize;
             maximumSameName = _maximumSameName;
             mulliganRule = _mulliganRule;

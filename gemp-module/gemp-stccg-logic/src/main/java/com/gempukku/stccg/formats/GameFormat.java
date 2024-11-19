@@ -1,5 +1,6 @@
 package com.gempukku.stccg.formats;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.filterable.GameType;
@@ -24,8 +25,8 @@ public interface GameFormat {
 
     CardDeck applyErrata(CardDeck deck);
 
-    List<Integer> getValidSetIds();
-    Map<String, String> getValidSets();
+    List<String> getValidSetIdsAsStrings();
+    Map<String, String> getValidSetsAndTheirCards(CardBlueprintLibrary library);
 
     List<String> getBannedCards();
 

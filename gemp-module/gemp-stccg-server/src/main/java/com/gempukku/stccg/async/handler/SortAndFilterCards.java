@@ -115,26 +115,15 @@ public class SortAndFilterCards {
 
     private static boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library,
                                     FormatLibrary formatLibrary) {
-        for (String set : sets) {
-            GameFormat format = formatLibrary.getFormat(set);
+        for (String setId : sets) {
+            GameFormat format = formatLibrary.getFormat(setId);
 
             if (format != null) {
                 String valid = format.validateCard(blueprintId);
                 return valid == null || valid.isEmpty();
             } else {
-                if (set.contains("-")) {
-                    final String[] split = set.split("-", 2);
-                    int min = Integer.parseInt(split[0]);
-                    int max = Integer.parseInt(split[1]);
-                    for (int setNo = min; setNo <= max; setNo++) {
-                        if (blueprintId.startsWith(setNo + "_") || library.hasAlternateInSet(blueprintId, setNo))
-                            return true;
-                    }
-                } else {
-                    if (blueprintId.startsWith(set + "_") ||
-                            library.hasAlternateInSet(blueprintId, Integer.parseInt(set)))
-                        return true;
-                }
+                if (blueprintId.startsWith(setId + "_") || library.hasAlternateInSet(blueprintId, setId))
+                    return true;
             }
         }
 

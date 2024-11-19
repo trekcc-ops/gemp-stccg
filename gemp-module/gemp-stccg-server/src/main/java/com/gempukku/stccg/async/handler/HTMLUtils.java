@@ -239,8 +239,8 @@ public class HTMLUtils {
         result.append(makeBold(format.getName()));
         result.append("<ul>");
         result.append("<li>valid sets: ");
-        for (Integer integer : format.getValidSetIds())
-            result.append(integer).append(", ");
+        for (String setId : format.getValidSetIdsAsStrings())
+            result.append(setId).append(", ");
         result.append("</li>");
         if (!format.getBannedCards().isEmpty()) {
             result.append("<li>Banned cards (can't be played): ");
