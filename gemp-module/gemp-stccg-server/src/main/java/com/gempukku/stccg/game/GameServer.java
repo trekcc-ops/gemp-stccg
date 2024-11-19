@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.chat.ChatStrings;
 import com.gempukku.stccg.chat.ChatServer;
@@ -173,16 +174,13 @@ public class GameServer extends AbstractServer {
 
     private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings,
                                                  String gameId) {
-        boolean spectate = (gameSettings.getLeague() != null) ||
-                (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
 
-        return switch (gameSettings.getGameFormat().getGameType()) {
-            case FIRST_EDITION -> new ST1EGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-            case SECOND_EDITION -> new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-            case TRIBBLES -> new TribblesGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
+        GameFormat gameFormat = gameSettings.getGameFormat();
+
+        return switch (gameFormat.getGameType()) {
+            case FIRST_EDITION -> new ST1EGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
+            case SECOND_EDITION -> new ST2EGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
+            case TRIBBLES -> new TribblesGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
         };
     }
 
