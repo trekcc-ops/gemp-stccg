@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
+import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
@@ -22,7 +23,10 @@ import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractPhysicalCard implements PhysicalCard {
 
@@ -264,7 +268,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public List<Action> getOptionalAfterTriggerActions(Player player, EffectResult effectResult) {
         if (_blueprint instanceof Blueprint212_019 riskBlueprint) {
             return riskBlueprint.getValidResponses(this, player, effectResult);
-        } else {
+        }
+        else if (_blueprint instanceof Blueprint156_010 surpriseBlueprint) {
+            return surpriseBlueprint.getValidResponses(this, player, effectResult);
+        }
+        else {
             return getActionsFromActionSources(player.getPlayerId(), null, effectResult,
                     _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
         }
