@@ -258,7 +258,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
         CardDeck fedDeck = new CardDeck("Federation");
         fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
-        fedDeck.addCard(SubDeck.MISSIONS, "101_170"); // Investigate Rogue Comet
+        fedDeck.addCard(SubDeck.MISSIONS, "101_171"); // Investigate Rogue Comet
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
         for (int i = 0; i < 35; i++)

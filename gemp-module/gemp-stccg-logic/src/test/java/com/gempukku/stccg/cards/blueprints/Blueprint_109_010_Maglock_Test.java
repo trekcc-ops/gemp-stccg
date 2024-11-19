@@ -23,6 +23,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
     @Test
     public void maglockFailedTest() throws DecisionResultInvalidException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
+        assertNotNull(_mission);
 
         ST1EPhysicalCard maglock = new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("109_010"));
         maglock.setZone(Zone.VOID);
