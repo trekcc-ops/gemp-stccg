@@ -56,7 +56,7 @@ export default class CardFilter {
         $("#type").val(typeValue);
     }
 
-    updateSetOptions() {
+    async updateSetOptions() {
         let promise = this.comm.getSets(this.format);
         return promise.then((json) => {
             this.setSelect.empty();
