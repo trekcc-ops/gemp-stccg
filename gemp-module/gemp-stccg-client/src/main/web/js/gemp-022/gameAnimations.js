@@ -239,11 +239,8 @@ export default class GameAnimations {
                     "TABLE",
                     "SPACELINE",
                     "AT_LOCATION",
-                    "SUPPORT",
                     "ATTACHED",
-                    "STACKED",
-                    "REMOVED",
-                    "PLAY_PILE"
+                    "STACKED"
                 ];
 
                 if (visible_opponent_zones.includes(zone) &&
