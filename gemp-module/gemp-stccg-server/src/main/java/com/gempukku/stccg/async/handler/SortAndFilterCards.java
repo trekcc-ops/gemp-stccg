@@ -268,7 +268,7 @@ public class SortAndFilterCards {
 
         private static int getStrengthSafely(CardBlueprint blueprint) {
             try {
-                return blueprint.getAttribute(CardAttribute.STRENGTH);
+                return blueprint.getStrength();
             } catch (UnsupportedOperationException exp) {
                 return Integer.MAX_VALUE;
             }

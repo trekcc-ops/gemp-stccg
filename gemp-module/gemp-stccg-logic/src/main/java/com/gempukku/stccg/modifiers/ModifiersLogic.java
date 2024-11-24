@@ -17,10 +17,7 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.SnapshotData;
-import com.gempukku.stccg.game.Snapshotable;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
@@ -313,7 +310,15 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public int getAttribute(PhysicalCard card, CardAttribute attribute) {
-        int result = card.getBlueprint().getAttribute(attribute);
+        int result = switch(attribute) {
+            case INTEGRITY -> card.getBlueprint().getIntegrity();
+            case CUNNING -> card.getBlueprint().getCunning();
+            case STRENGTH -> card.getBlueprint().getStrength();
+            case RANGE -> card.getBlueprint().getRange();
+            case WEAPONS -> card.getBlueprint().getWeapons();
+            case SHIELDS -> card.getBlueprint().getShields();
+        };
+
         ModifierEffect effectType = null;
         if (attribute == CardAttribute.STRENGTH)
             effectType = ModifierEffect.STRENGTH_MODIFIER;
@@ -525,7 +530,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             modifiers.add(modifierSource.getModifier(context));
         }
 
-        modifiers.addAll(blueprint.getWhileInPlayModifiersNew(card.getOwner(), card));
+        try {
+            modifiers.addAll(blueprint.getWhileInPlayModifiersNew(card.getOwner(), card));
+        } catch(InvalidGameLogicException exp) {
+            _game.sendErrorMessage(exp);
+        }
         _modifierHooks.computeIfAbsent(card, k -> new LinkedList<>());
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));

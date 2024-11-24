@@ -1,11 +1,16 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.SnapshotData;
+
+import java.util.Stack;
 
 public class PersonnelCard extends PhysicalReportableCard1E implements AffiliatedCard {
 
@@ -50,5 +55,18 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
     public int getTotalAttributes() {
         return getAttribute(CardAttribute.INTEGRITY) + getAttribute(CardAttribute.CUNNING) +
                 getAttribute(CardAttribute.STRENGTH);
+    }
+
+    public boolean isFacingADilemma() {
+        boolean result = false;
+        Stack<Action> actionStack = _game.getActionsEnvironment().getActionStack();
+        for (Action action : actionStack) {
+            if (action instanceof EncounterSeedCardAction encounterAction &&
+                    encounterAction.getEncounteredCard().getCardType() == CardType.DILEMMA &&
+                    encounterAction.getAttemptingUnit().getAttemptingPersonnel().contains(this)) {
+                result = true;
+            }
+        }
+        return result;
     }
 }

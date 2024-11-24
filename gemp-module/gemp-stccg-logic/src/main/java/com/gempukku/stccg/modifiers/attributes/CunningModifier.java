@@ -10,6 +10,10 @@ import com.gempukku.stccg.modifiers.ModifierEffect;
 
 public class CunningModifier extends AttributeModifier {
 
+    public CunningModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, int modifier) {
+        this(modifierSource, affectFilter, condition, modifier, false);
+    }
+
     public CunningModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, int modifier,
                            boolean cumulative) {
         super(modifierSource, affectFilter, condition, new ConstantEvaluator(modifierSource.getGame(), modifier),

@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -169,7 +170,13 @@ public class CardBlueprint {
     public void setAttribute(CardAttribute attribute, int attributeValue) {
         _cardAttributes.put(attribute, attributeValue);
     }
-    public int getAttribute(CardAttribute attribute) { return _cardAttributes.get(attribute); }
+
+    public int getIntegrity() { return _cardAttributes.get(CardAttribute.INTEGRITY);
+    }
+
+    public int getCunning() { return _cardAttributes.get(CardAttribute.CUNNING); }
+
+    public int getStrength() { return _cardAttributes.get(CardAttribute.STRENGTH); }
     public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
     public void setStaffing(List<CardIcon> staffing) { _staffing = staffing; }
     public List<CardIcon> getStaffing() { return _staffing; }
@@ -384,11 +391,11 @@ public class CardBlueprint {
     }
 
     // Modifiers from game text
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) throws InvalidGameLogicException {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) {
+    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) throws InvalidGameLogicException {
         return new LinkedList<>(getGameTextWhileActiveInPlayModifiers(player, card));
     }
 
@@ -442,5 +449,13 @@ public class CardBlueprint {
 
     public void addSpecialEquipment(Collection<ShipSpecialEquipment> specialEquipment) {
         _specialEquipment.addAll(specialEquipment);
+    }
+
+    public int getWeapons() {
+        return _cardAttributes.get(CardAttribute.WEAPONS);
+    }
+
+    public int getShields() {
+        return _cardAttributes.get(CardAttribute.SHIELDS);
     }
 }

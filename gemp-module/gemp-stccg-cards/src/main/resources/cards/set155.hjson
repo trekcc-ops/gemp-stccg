@@ -314,6 +314,22 @@
             image-url: https://www.trekcc.org/1e/cardimages/tng/60V.jpg
         }
         {
+            blueprintId: 155_061
+            title: Kosinski
+            java-blueprint: true
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: ENGINEER
+            icons: command
+            integrity: 5
+            cunning: 9
+            strength: 5
+            lore: Arrogant engineer believed to have improved engine performance on several ships in 2364. Finds problem solving highly therapeutic.
+            image-url: https://www.trekcc.org/1e/cardimages/tng/61V.jpg
+            rarity: V
+        }
+        {
             blueprintId: 155_062
             title: "Lian T'su"
             type: personnel

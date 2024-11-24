@@ -58,4 +58,7 @@ public class EncounterSeedCardAction extends ActionyAction {
     }
 
     public AttemptMissionAction getMissionAttempt() { return _missionAttempt; }
+
+    public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
+    public PhysicalCard getEncounteredCard() { return _encounteredCard; }
 }

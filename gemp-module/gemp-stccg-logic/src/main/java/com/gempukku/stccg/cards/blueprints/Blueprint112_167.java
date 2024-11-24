@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
@@ -26,7 +27,8 @@ public class Blueprint112_167 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard)
+            throws InvalidGameLogicException {
             // TODO - Need some additional work here to be check skill for usability
         List<Modifier> modifiers = new LinkedList<>();
         for (Skill skill : _skills)
