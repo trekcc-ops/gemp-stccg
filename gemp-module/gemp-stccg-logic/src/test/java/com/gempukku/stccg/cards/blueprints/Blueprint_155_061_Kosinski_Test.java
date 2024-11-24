@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -20,8 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
@@ -31,7 +31,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         during the dilemma encounter, causing the encounter to fail. */
         initializeQuickMissionAttempt("Excavation");
 
-        ST1EPhysicalCard climb = new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("152_002"));
+        PhysicalCard climb = new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("152_002"));
         climb.setZone(Zone.VOID);
 
         // Seed Maglock
@@ -68,9 +68,14 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
                 new RegularSkillMissionRequirement(SkillName.GEOLOGY, 2),
                 new AttributeMissionRequirement(CardAttribute.CUNNING, 20)
         );
+
+        // Verify that, in a vacuum, the Away Team *could* meet the dilemma requirements
         assertTrue(dilemmaRequirement.canBeMetBy(team));
+
+        // Verify that, in practice, the Away Team failed to resolve the dilemma
         attemptMission(P1, team, _mission);
         assertTrue(_mission.getLocation().getCardsSeededUnderneath().contains(climb));
+        assertFalse(_mission.getLocation().isCompleted());
     }
 
 }
