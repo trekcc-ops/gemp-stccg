@@ -10,20 +10,17 @@ import java.util.List;
 public abstract class CardActionSelectionDecision extends ActionDecision {
 
     public CardActionSelectionDecision(Player player, String text, List<Action> actions) {
-        this(player, text, actions, false, true);
+        this(player, text, actions, false);
     }
 
 
-    public CardActionSelectionDecision(Player player, String text, List<Action> actions, boolean noPass,
-                                       boolean revertEligible) {
+    public CardActionSelectionDecision(Player player, String text, List<Action> actions, boolean noPass) {
         super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE);
         setParam("cardId", getCardIds());
         setParam("blueprintId", getBlueprintIds()); // done in super
         setParam("imageUrl", getImageUrls()); // done in super
         setParam("actionType", getActionTypes());
         setParam("noPass", String.valueOf(noPass));
-        // TODO SNAPSHOT - no methods for "revertEligible" in client
-        setParam("revertEligible", String.valueOf(revertEligible));
     }
 
 
