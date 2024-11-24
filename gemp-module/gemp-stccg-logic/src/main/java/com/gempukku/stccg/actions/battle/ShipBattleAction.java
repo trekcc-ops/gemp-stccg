@@ -82,9 +82,9 @@ public class ShipBattleAction extends ActionyAction {
         String playerId = player.getPlayerId();
         int attackTotal = 0;
         for (PhysicalCard ship : _forces.get(player)) {
-            attackTotal += ship.getBlueprint().getAttribute(CardAttribute.WEAPONS);
+            attackTotal += ship.getBlueprint().getWeapons();
         }
-        int defenseTotal = _targets.get(player).getBlueprint().getAttribute(CardAttribute.SHIELDS);
+        int defenseTotal = _targets.get(player).getBlueprint().getShields();
         player.getGame().sendMessage(playerId + " opens fire");
         player.getGame().sendMessage("ATTACK: " + attackTotal + ", DEFENSE: " + defenseTotal);
         if (attackTotal > defenseTotal * 2)

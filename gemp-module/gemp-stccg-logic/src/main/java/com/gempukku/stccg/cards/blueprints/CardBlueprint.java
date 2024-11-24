@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -26,6 +27,7 @@ public class CardBlueprint {
     private String title;
     private String subtitle;
     private ShipClass _shipClass;
+    private boolean _anyCanAttempt;
     protected CardType _cardType;
     private String imageUrl;
     private String _rarity;
@@ -39,7 +41,7 @@ public class CardBlueprint {
     private Quadrant quadrant;
     private String location;
     private int _pointsShown;
-    private int _skillDots;
+    int _skillDots;
     private boolean _hasPointBox;
     private MissionRequirement _missionRequirements;
     final List<Skill> _skills = new LinkedList<>();
@@ -168,7 +170,13 @@ public class CardBlueprint {
     public void setAttribute(CardAttribute attribute, int attributeValue) {
         _cardAttributes.put(attribute, attributeValue);
     }
-    public int getAttribute(CardAttribute attribute) { return _cardAttributes.get(attribute); }
+
+    public int getIntegrity() { return _cardAttributes.get(CardAttribute.INTEGRITY);
+    }
+
+    public int getCunning() { return _cardAttributes.get(CardAttribute.CUNNING); }
+
+    public int getStrength() { return _cardAttributes.get(CardAttribute.STRENGTH); }
     public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
     public void setStaffing(List<CardIcon> staffing) { _staffing = staffing; }
     public List<CardIcon> getStaffing() { return _staffing; }
@@ -207,7 +215,8 @@ public class CardBlueprint {
 
 
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
-    public void setAnyCrewOrAwayTeamCanAttempt() { }
+    public boolean canAnyAttempt() { return _anyCanAttempt; }
+    public void setAnyCrewOrAwayTeamCanAttempt() { _anyCanAttempt = true; }
     public Affiliation homeworldAffiliation() {
         if (this._cardType != CardType.MISSION)
             return null;
@@ -382,11 +391,11 @@ public class CardBlueprint {
     }
 
     // Modifiers from game text
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) throws InvalidGameLogicException {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) {
+    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) throws InvalidGameLogicException {
         return new LinkedList<>(getGameTextWhileActiveInPlayModifiers(player, card));
     }
 
@@ -409,7 +418,9 @@ public class CardBlueprint {
         return result;
     }
 
-    public List<Skill> getSkills() { return _skills; }
+    public List<Skill> getSkills(DefaultGame game, PhysicalCard thisCard) {
+        return _skills;
+    }
 
     public void setPersona(String persona) { _persona = persona; }
 
@@ -438,5 +449,13 @@ public class CardBlueprint {
 
     public void addSpecialEquipment(Collection<ShipSpecialEquipment> specialEquipment) {
         _specialEquipment.addAll(specialEquipment);
+    }
+
+    public int getWeapons() {
+        return _cardAttributes.get(CardAttribute.WEAPONS);
+    }
+
+    public int getShields() {
+        return _cardAttributes.get(CardAttribute.SHIELDS);
     }
 }

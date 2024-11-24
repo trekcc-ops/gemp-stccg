@@ -5,11 +5,13 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.*;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.FilterFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.*;
@@ -239,7 +241,7 @@ public class ValueResolver {
                         int result = 0;
                         for (PhysicalCard physicalCard :
                                 actionContext.getCardsFromMemory(object.get("memory").textValue())) {
-                            result += physicalCard.getBlueprint().getAttribute(CardAttribute.STRENGTH);
+                            result += physicalCard.getBlueprint().getStrength();
                         }
                         return result;
                     }

@@ -10,9 +10,9 @@ $(document).ready(
         var replay = getUrlParam("replayId");
         var gameType = getUrlParam("gameType");
 
-        if (gameType == "tribbles") {
+        if (gameType == "TRIBBLES") {
             ui = new TribblesGameTableUI("/gemp-stccg-server", replay != null);
-        } else if (gameType == "st1e") {
+        } else if (gameType == "FIRST_EDITION") {
             ui = new ST1EGameTableUI("/gemp-stccg-server", replay != null);
         } else {
             ui = new GameTableUI("/gemp-stccg-server", replay != null);

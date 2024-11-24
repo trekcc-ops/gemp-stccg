@@ -125,7 +125,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             String format = getFormParameterSafely(postDecoder, FormParameter.format);
             GameFormat currentFormat = _formatLibrary.getFormat(format);
 
-            Map<String, String> sets = currentFormat.getValidSets();
+            Map<String, String> sets = currentFormat.getValidSetsAndTheirCards(_cardBlueprintLibrary);
             Object[] output = sets.entrySet().stream()
                     .map(x -> new JSONData.ItemStub(x.getKey(), x.getValue()))
                     .toArray();

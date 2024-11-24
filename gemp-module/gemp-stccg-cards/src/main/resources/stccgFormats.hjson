@@ -1,11 +1,11 @@
 [
     {
         name: "1E - Debug"
-        game: st1e
+        gameType: First Edition
         code: debug1e
-        set:[101, 103, 105, 106, 109, 112, 115, 116, 123, 124, 125, 127, 128, 139, 152, 155, 159, 161, 163, 172, 178, 202, 204, 212, 244, 245]
         minimumDrawDeckSize: 0
         maximumSeedDeckSize: 999
+        // set: [101,102] <- Use syntax like this to specify valid sets for a format
         missions: -1 // Negative missions means there is no fixed number required
         noShuffle: true
         firstPlayerFixed: true
@@ -13,26 +13,23 @@
     }
     {
         name: "1E Modern Complete"
-        game: st1e
+        gameType: First Edition
         code: st1emoderncomplete
-        set:[101, 103, 105, 106, 109, 112, 115, 116, 123, 124, 125, 127, 128, 139, 152, 155, 159, 161, 163, 172, 178, 202, 204, 212, 244, 245]
         minimumDrawDeckSize: 30
         maximumSeedDeckSize: 30
         missions: 6
     }
     {
         name: "2E All"
-        game: st2e
+        gameType: Second Edition
         code: st2e
-        set:[1]
         minimumDrawDeckSize: 30
         missions: 5
     }
     {
         name: Tribbles
-        game: tribbles
+        gameType: Tribbles
         code: tribbles
-        set:[144, 145, 147, 150, 157, 164, 180, 190, 221]
         minimumDrawDeckSize: 35
     }
 ]

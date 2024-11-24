@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.common.filterable.GameType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,8 +20,15 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         int totalCardCount = 0;
 
         for (SetDefinition set : _cardLibrary.getSetDefinitions().values()) {
-            System.out.println("Set " + set.getSetId() + " '" + set.getSetName() + "' - " +
-                            TextUtils.plural(set.getAllCards().size(), "card"));
+            StringBuilder sb = new StringBuilder();
+            sb.append("Set ").append(set.getSetId()).append(" '").append(set.getSetName());
+            sb.append("' - ").append(TextUtils.plural(set.getAllCards().size(), "card"));
+
+            GameType gameType = set.getGameType();
+            String gameTypeName = (gameType == null) ? "null" : gameType.name();
+
+            sb.append(" [").append(gameTypeName).append("]");
+            System.out.println(sb);
             totalCardCount += set.getAllCards().size();
         }
 
@@ -50,7 +58,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         assertEquals("101_217", _cardLibrary.getBaseBlueprintId("101_218"));
         assertEquals("101_217", _cardLibrary.getBaseBlueprintId("113_003"));
 
-        assertTrue(_cardLibrary.hasAlternateInSet("101_218", 113));
+        assertTrue(_cardLibrary.hasAlternateInSet("101_218", "113"));
         assertEquals(2, _cardLibrary.getAllAlternates("113_003").size());
     }
 }

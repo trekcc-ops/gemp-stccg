@@ -39,6 +39,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     private FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
     protected FacilityCard _outpost;
     protected MissionCard _mission;
+    protected MissionCard _rogueComet;
 
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
@@ -250,6 +251,9 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                 _outpost = facility;
             if (Objects.equals(card.getTitle(), missionTitle) && card instanceof MissionCard mission)
                 _mission = mission;
+            if (Objects.equals(card.getTitle(), "Investigate Rogue Comet") && card instanceof MissionCard mission) {
+                _rogueComet = mission;
+            }
         }
     }
 
@@ -258,7 +262,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
         CardDeck fedDeck = new CardDeck("Federation");
         fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
-        fedDeck.addCard(SubDeck.MISSIONS, "101_170"); // Investigate Rogue Comet
+        fedDeck.addCard(SubDeck.MISSIONS, "101_171"); // Investigate Rogue Comet
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
         for (int i = 0; i < 35; i++)

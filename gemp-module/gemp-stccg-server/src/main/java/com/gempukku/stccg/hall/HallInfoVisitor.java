@@ -1,26 +1,17 @@
 package com.gempukku.stccg.hall;
 
-import java.util.List;
+import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.tournament.TournamentQueue;
 
 public interface HallInfoVisitor {
-    enum TableStatus {
-        WAITING, PLAYING, FINISHED
-    }
 
     void serverTime(String time);
 
     void setDailyMessage(String message);
 
-    void visitTable(String tableId, String gameId, boolean watchable, TableStatus status, String statusDescription,
-                    GameTable table, String tournamentName, List<String> playerIds, boolean playing);
+    void visitTable(GameTable table, String tableId, User user);
 
-    void visitTable(String tableId, String gameId, boolean watchable, TableStatus status, String statusDescription,
-                    String gameType, String formatName, String tournamentName, String userDesc, List<String> playerIds,
-                    boolean playing, boolean isPrivate, boolean isInviteOnly, String winner);
-
-    void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName,
-                              String tournamentQueueName, String tournamentPrizes, String pairingDescription,
-                              String startCondition, int playerCount, boolean playerSignedUp, boolean joinable);
+    void visitTournamentQueue(TournamentQueue queue, String tournamentQueueKey, String formatName, User user);
 
     void visitTournament(String tournamentKey, String collectionName, String formatName, String tournamentName,
                          String pairingDescription, String tournamentStage, int round, int playerCount,

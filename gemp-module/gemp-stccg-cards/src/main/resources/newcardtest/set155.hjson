@@ -1,0 +1,94 @@
+{
+    setId: "161"
+    setName: Engage
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 161_012
+            title: Venus Drug
+            type: event
+            property-logo: tos-logo
+            icons: countdown(2)
+            lore: "Illegal compound believed mythical by some. Used by Harcourt Fenton Mudd to improve the attractiveness of his \"cargo.\" Its true power lay in the user's self-confidence."
+            gametext: "Plays on any location. Your female personnel here gain Youth and are attributes all +2."
+            image-url: https://www.trekcc.org/1e/cardimages/engage/12.jpg
+            playAction: {
+                onTarget: "any location"
+            }
+            whileInPlayModifiers: [
+                {
+                    type: gainSkill
+                    cardsAffected: all("your female personnel here")
+                    skill: Youth
+                }
+                {
+                    type: increaseAttribute
+                    cardsAffected: all("your female personnel here")
+                    attribute: all
+                    amount: +2
+                }
+            ]
+        }
+        {
+            blueprintId: 161_013
+            title: Always a Chess Game
+            type: incident
+            property-logo: tng-logo
+            icons: warp-core
+            gametext: "Plays on table. Once each turn, your [TNG][Rom] personnel (except Tal Shiar, CIVILIAN, or V.I.P.) may report for free to your [Rom] outpost OR you may report (for free) to your ship its [TNG][Rom] matching commander. Once per game, score 5 points when your [TNG][Rom] personnel helps solve a non-[Univ] Neutral Zone mission."
+            image-url: https://www.trekcc.org/1e/cardimages/engage/13.jpg
+            playAction: {
+                onTarget: "table"
+            }
+            whileInPlayOptionalActions: [
+                {
+                    type: reportForFree
+                    usageLimit: onceEachTurn
+                    condition: "your [TNG][Rom] personnel; not Tal Shiar, CIVILIAN, or V.I.P. (unless matching commander)"
+                    reportTo: "your [Rom] outpost (if not Tal Shiar, CIVILIAN or V.I.P.) or your ship (if matching commander)"
+                }
+            ]
+            whileInPlayRequiredActions: [
+                {
+                    type: scorePoints
+                    responseToType: helpSolveMission
+                    responseToCondition: "your [Rom][TNG] personnel helps solve a non-universal Neutral Zone mission"
+                    usageLimit: oncePerGame
+                    amount: 5
+                }
+            ]
+        }
+        {
+            blueprintId: 161_014
+            title: "Federation Flagship: Recovered"
+            type: incident
+            property-logo: tng-logo
+            icons: hidden-agenda
+            image-url: https://www.trekcc.org/1e/cardimages/engage/14.jpg
+            seedAction: {
+                onTarget: "table"
+            }
+            playAction: {
+                onTarget: "table"
+            }
+            whileInPlayOptionalActions: [
+                {
+                    type: reportForFree
+                    usageLimit: onceEachTurn
+                    condition: "your [TNG][Rom] personnel; not Tal Shiar, CIVILIAN, or V.I.P. (unless matching commander)"
+                    reportTo: "your [Rom] outpost (if not Tal Shiar, CIVILIAN or V.I.P.) or your ship (if matching commander)"
+                }
+            ]
+            whileInPlayRequiredActions: [
+                {
+                    responseToType: destroyShip
+                    responseToCondition: "opponent's card just destroyed your only ship in play"
+
+
+                    usageLimit: oncePerGame
+                    amount: 5
+                }
+            ]
+        }
+    ]
+}

@@ -363,7 +363,7 @@ public class HallServer extends AbstractServer {
     }
 
     final void processHall(User player, HallInfoVisitor visitor) {
-        final boolean isAdmin = player.getType().contains("a");
+        final boolean isAdmin = player.isAdmin();
         _hallDataAccessLock.readLock().lock();
         try {
             visitor.serverTime(DateUtils.getCurrentDateAsString());
@@ -375,13 +375,8 @@ public class HallServer extends AbstractServer {
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
-                visitor.visitTournamentQueue(tournamentQueueKey, tournamentQueue.getCost(),
-                        tournamentQueue.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournamentQueue.getFormat()).getName(),
-                        tournamentQueue.getTournamentQueueName(), tournamentQueue.getPrizesDescription(),
-                        tournamentQueue.getPairingDescription(), tournamentQueue.getStartCondition(),
-                        tournamentQueue.getPlayerCount(), tournamentQueue.isPlayerSignedUp(player.getName()),
-                        tournamentQueue.isJoinable());
+                GameFormat gameFormat = _formatLibrary.getFormat(tournamentQueue.getFormat());
+                visitor.visitTournamentQueue(tournamentQueue, tournamentQueueKey, gameFormat.getName(), player);
             }
 
             for (Map.Entry<String, Tournament> tournamentEntry : _runningTournaments.entrySet()) {
