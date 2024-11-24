@@ -4,6 +4,16 @@
     gameType: First Edition
     cards: [
         {
+            blueprintId: 155_009
+            title: Microbrain
+            java-blueprint: true
+            type: dilemma
+            mission-type: dual
+            lore: Small, solar-powered, inorganic collective life-form native to Velara III. Sabotaged Federation terraforming operations to protest the destruction of their home.
+            property-logo: tng-logo
+            image-url: https://www.trekcc.org/1e/cardimages/tng/9V.jpg
+        }
+        {
             blueprintId: 155_010
             title: Pinned Down
             java-blueprint: true
