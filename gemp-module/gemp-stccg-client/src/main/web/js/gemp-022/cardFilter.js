@@ -83,6 +83,40 @@ export default class CardFilter {
         });
     }
 
+    async setFilterChanged() {
+        this.filter = this.calculateNormalFilter();
+        this.start = 0
+        await this.getCollection();
+        return true;
+    };
+
+    async fullFilterChanged() {
+        this.start = 0;
+        await this.getCollection();
+        return true;
+    };
+
+    async filterOut() {
+        this.filter = this.calculateNormalFilter();
+        this.start = 0;
+        await this.getCollection();
+        return true;
+    };
+
+    async changeDynamicFilters() {
+        var cardType = $("#cardType option:selected").prop("value");
+        if (cardType.includes("EVENT")) {
+            $("#phase").show();
+        } else {
+            $("#phase").hide();
+            $("#phase").val("")
+        }
+        this.filter = this.calculateNormalFilter();
+        this.start = 0;
+        await this.getCollection();
+        return true;
+    };
+
     buildUi(pageElem) {
         var that = this;
 
@@ -93,10 +127,10 @@ export default class CardFilter {
             },
             disabled: true
         }).click(
-            function () {
+            async function () {
                 that.disableNavigation();
                 that.start -= that.count;
-                that.getCollection();
+                await that.getCollection();
             });
 
         this.nextPageBut = $("#nextPage").button({
@@ -106,10 +140,10 @@ export default class CardFilter {
             },
             disabled: true
         }).click(
-            function () {
+            async function () {
                 that.disableNavigation();
                 that.start += that.count;
-                that.getCollection();
+                await that.getCollection();
             });
 
         this.countSlider = $("#countSlider").slider({
@@ -118,10 +152,10 @@ export default class CardFilter {
             max: 40,
             step: 1,
             disabled: true,
-            slide: function (event, ui) {
+            slide: async function (event, ui) {
                 that.start = 0;
                 that.count = ui.value;
-                that.getCollection();
+                await that.getCollection();
             }
         });
 
@@ -140,55 +174,21 @@ export default class CardFilter {
             + "<option value='V'>Virtual</option>"
             + "</select>"); */
 
+        this.setSelect.on("change", async () => {await this.setFilterChanged()});
+        this.nameInput.on("change", async () => {await this.fullFilterChanged()});
+        this.sortSelect.on("change", async () => {await this.fullFilterChanged()});
+//        this.raritySelect.on("change", async () => {await this.fullFilterChanged()});
 
-        var setFilterChanged = function () {
-            that.filter = that.calculateNormalFilter();
-            that.start = 0
-            that.getCollection();
-            return true;
-        };
-
-        var fullFilterChanged = function () {
-            that.start = 0;
-            that.getCollection();
-            return true;
-        };
-
-        this.setSelect.change(setFilterChanged);
-        this.nameInput.change(fullFilterChanged);
-        this.sortSelect.change(fullFilterChanged);
-//        this.raritySelect.change(fullFilterChanged);
-
-        var filterOut = function () {
-            that.filter = that.calculateNormalFilter();
-            that.start = 0;
-            that.getCollection();
-            return true;
-        };
+        
         
         //Hide dynamic filters by default
         $("#phase").hide();
-        
-        var changeDynamicFilters = function () {
-            var cardType = $("#cardType option:selected").prop("value");
-            if (cardType.includes("EVENT")) {
-                $("#phase").show();
-            } else {
-                $("#phase").hide();
-                $("#phase").val("")
-            }
-            that.filter = that.calculateNormalFilter();
-            that.start = 0;
-            that.getCollection();
-            return true;
-            
-        };
 
-        $("#cardType").change(changeDynamicFilters);
-        $("#keyword").change(filterOut);
-        $("#type").change(filterOut);
-        $("#phase").change(filterOut);
-        $(".affiliationFilter").click(filterOut);
+        $("#cardType").on("change", async () => {await this.changeDynamicFilters()});
+        $("#keyword").on("change", async () => {await this.filterOut()});
+        $("#type").on("change", async () => {await this.filterOut()});
+        $("#phase").on("change", async () => {await this.filterOut()});
+        $(".affiliationFilter").on("click", async () => {await this.filterOut()});
         this.collectionDiv = $("#collection-display");
         //collection-display
         pageElem.append(this.collectionDiv);
@@ -275,7 +275,7 @@ export default class CardFilter {
         return filterString;
     }
 
-    getCollection() {
+    async getCollection() {
         let promise = this.comm.getCollection(
             this.collectionType,
             getUrlParam("participantId"),

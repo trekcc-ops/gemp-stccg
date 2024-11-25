@@ -51,10 +51,11 @@ export default class GempLotrDeckBuildingUI {
                 that.formatSelect.val());
 
         $("#formatSelect").change(
-                function () {
+                async function () {
                     that.deckModified(true);
                     that.cardFilter.setFormat(that.formatSelect.val());
-                    that.cardFilter.updateSetOptions();
+                    await that.cardFilter.updateSetOptions();
+                    await that.cardFilter.setFilterChanged();
                 });
 
         var collectionSelect = $("#collectionSelect");
