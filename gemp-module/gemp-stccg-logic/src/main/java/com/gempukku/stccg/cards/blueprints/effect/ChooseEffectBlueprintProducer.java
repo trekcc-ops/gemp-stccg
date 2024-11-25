@@ -1,9 +1,8 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -11,13 +10,11 @@ import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
-import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 
 public class ChooseEffectBlueprintProducer {
 
     private enum EffectType {
-        CHOOSEANUMBER, CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT,
-        CHOOSEPLAYERWITHCARDSINDECK, CHOOSETRIBBLEPOWER
+        CHOOSEANUMBER, CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT, CHOOSETRIBBLEPOWER
     }
     public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
@@ -30,7 +27,7 @@ public class ChooseEffectBlueprintProducer {
             case CHOOSEPLAYEREXCEPT:
                 BlueprintUtils.validateAllowedFields(effectObject, "memorize", "text", "exclude");
                 break;
-            case CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYERWITHCARDSINDECK, CHOOSETRIBBLEPOWER:
+            case CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSETRIBBLEPOWER:
                 BlueprintUtils.validateAllowedFields(effectObject, "memorize", "text");
                 break;
         }
@@ -49,17 +46,13 @@ public class ChooseEffectBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(Action action, ActionContext context) {
                 return switch (effectType) {
-                    case CHOOSEANUMBER -> new PlayOutDecisionEffect(
-                            new IntegerAwaitingDecision(context,1, context.substituteText(choiceText),
-                                    valueSource.getMinimum(context),
-                                    valueSource.getMaximum(context), null, memorize));
+                    case CHOOSEANUMBER -> new ChooseNumberEffect(context, choiceText, valueSource, memorize);
                     case CHOOSEOPPONENT -> new ChooseOpponentEffect(context, memorize);
                     case CHOOSEPLAYER -> new ChoosePlayerEffect(context, memorize);
                     case CHOOSEPLAYEREXCEPT ->
                             new ChoosePlayerExceptEffect(context, excludePlayerSource.getPlayerId(context), memorize);
-                    case CHOOSEPLAYERWITHCARDSINDECK -> new ChoosePlayerWithCardsInDeckEffect(context, memorize);
                     case CHOOSETRIBBLEPOWER -> new ChooseTribblePowerEffect(context, memorize);
                 };
             }
@@ -69,7 +62,7 @@ public class ChooseEffectBlueprintProducer {
     private static String getDefaultText(EffectType effectType) {
         return switch (effectType) {
             case CHOOSEANUMBER -> "Choose a number";
-            case CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT, CHOOSEPLAYERWITHCARDSINDECK -> "Choose a player";
+            case CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT -> "Choose a player";
             case CHOOSETRIBBLEPOWER -> "Choose a tribble power";
         };
 

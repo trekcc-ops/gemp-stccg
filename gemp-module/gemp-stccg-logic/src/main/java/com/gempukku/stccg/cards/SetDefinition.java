@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.common.filterable.GameType;
+
 import java.util.*;
 
 public class SetDefinition {
@@ -8,11 +10,13 @@ public class SetDefinition {
     private final String _setId;
     private final Set<String> _flags;
     private final String _setName;
+    private final GameType _gameType;
 
-    public SetDefinition(String setId, String setName, Set<String> flags) {
+    public SetDefinition(String setId, String setName, GameType gameType, Set<String> flags) {
         _setId = setId;
         _flags = flags;
         _setName = setName;
+        _gameType = gameType;
     }
 
     public void addCard(String blueprintId, String rarity) {
@@ -45,4 +49,6 @@ public class SetDefinition {
     public Set<String> getAllCards() {
         return Collections.unmodifiableSet(_cardsRarity.keySet());
     }
+
+    public GameType getGameType() { return _gameType; }
 }

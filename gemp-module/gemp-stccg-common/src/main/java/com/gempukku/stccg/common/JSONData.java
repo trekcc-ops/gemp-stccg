@@ -34,18 +34,14 @@ public class JSONData {
     }
 
     public static class Format {
-        public String game;
+        public String gameType;
         public String code;
         public String name;
         public int order = 1000;
         public String surveyUrl;
-        public boolean cancelRingBearerSkirmish = false;
         public boolean ruleOfFour = false;
-        public boolean winAtEndOfRegroup = false;
         public boolean discardPileIsPublic = false;
-        public boolean winOnControlling5Sites = false;
         public boolean playtest = false;
-        public boolean validateShadowFPCount = true;
         public int minimumDrawDeckSize = 60;
         public int maximumSeedDeckSize = 30;
         public int missions = 6;

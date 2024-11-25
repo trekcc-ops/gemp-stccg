@@ -35,15 +35,17 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (_actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_playerHand, _actingPlayer)) {
-            List<PhysicalCard> randomCards = TextUtils.getRandomFromList(_game.getGameState().getHand(_playerHand), _count);
+            List<PhysicalCard> randomCards = TextUtils.getRandomItemsFromList(_game.getGameState().getHand(_playerHand), _count);
 
             if (!randomCards.isEmpty()) {
                 final ActionOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwnerName(), false);
 
                 String nextPlayer;
                 while ((nextPlayer = playerOrder.getNextPlayer()) != null) {
-                    _game.getUserFeedback().sendAwaitingDecision(nextPlayer,
-                            new ArbitraryCardsSelectionDecision(1, _playerHand+" revealed card(s) from hand at random", randomCards, Collections.emptySet(), 0, 0) {
+                    _game.getUserFeedback().sendAwaitingDecision(
+                            new ArbitraryCardsSelectionDecision(_game.getPlayer(nextPlayer),
+                                    _playerHand + " revealed card(s) from hand at random", randomCards,
+                                    Collections.emptySet(), 0, 0) {
                                 @Override
                                 public void decisionMade(String result) {
                                 }

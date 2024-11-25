@@ -1,33 +1,39 @@
-// Set 159: Homefront III
-
 {
-    159_020: {
-        title: "T'Lara"
-        type: personnel
-        affiliation: federation
-        uniqueness: universal
-        property-logo: ds9-logo
-        classification: V.I.P.
-        icons: command
-        lore: "Typical Vulcan admiral. She presided over Worf's extradition hearing in 2372. Threatened to hold both Worf and Ch'Pok in contempt of court."
-        skill-box: "[*] Leadership [*] Law [*] Exobiology [*] Mindmeld"
-        integrity: 7
-        cunning: 8
-        strength: 5
-        image-url: https://www.trekcc.org/1e/cardimages/homefront3/20V.jpg
-    }
-    159_029: {
-        title: Sabrun
-        type: personnel
-        affiliation: romulan
-        uniqueness: universal
-        property-logo: nemesis-logo
-        classification: V.I.P.
-        lore: Representative of the many senators navigating the perilous and delicate political landscape on Romulus. Seeks to better the Star Empire for his two sons.
-        skill-box: "[*] Law [*] Diplomacy [*] Exobiology"
-        integrity: 5
-        cunning: 7
-        strength: 6
-        image-url: https://www.trekcc.org/1e/cardimages/homefront3/29.jpg
-    }
+    setId: "159"
+    setName: Homefront III
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 159_020
+            title: "T'Lara"
+            type: personnel
+            affiliation: federation
+            uniqueness: universal
+            property-logo: ds9-logo
+            classification: V.I.P.
+            icons: command
+            characteristic: admiral
+            lore: "Typical Vulcan admiral. She presided over Worf's extradition hearing in 2372. Threatened to hold both Worf and Ch'Pok in contempt of court."
+            skill-box: "[*] Leadership [*] Law [*] Exobiology [*] Mindmeld"
+            integrity: 7
+            cunning: 8
+            strength: 5
+            image-url: https://www.trekcc.org/1e/cardimages/homefront3/20V.jpg
+        }
+        {
+            blueprintId: 159_029
+            title: Sabrun
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: nemesis-logo
+            classification: V.I.P.
+            lore: Representative of the many senators navigating the perilous and delicate political landscape on Romulus. Seeks to better the Star Empire for his two sons.
+            skill-box: "[*] Law [*] Diplomacy [*] Exobiology"
+            integrity: 5
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/homefront3/29.jpg
+        }
+    ]
 }

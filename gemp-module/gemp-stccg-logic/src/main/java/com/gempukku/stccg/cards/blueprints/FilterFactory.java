@@ -34,18 +34,6 @@ public class FilterFactory {
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
-        simpleFilters.put("idinstored",
-                (actionContext -> (Filter) (game, physicalCard) -> {
-                    final String whileInZoneData = (String) actionContext.getSource().getWhileInZoneData();
-                    if (whileInZoneData == null)
-                        return false;
-                    for (String cardId : whileInZoneData.split(",")) {
-                        if (cardId.equals(String.valueOf(physicalCard.getCardId())))
-                            return true;
-                    }
-
-                    return false;
-                }));
         simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
         simpleFilters.put("nor", (actionContext) -> Filters.Nor);
         simpleFilters.put("self", ActionContext::getSource);
@@ -137,7 +125,7 @@ public class FilterFactory {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return (Filter) (game, physicalCard) -> {
                             for (PhysicalCard cardWithStack : Filters.filterActive(game, sourceFilterable)) {
-                                for (PhysicalCard stackedCard : cardWithStack.getStackedCards()) {
+                                for (PhysicalCard stackedCard : cardWithStack.getStackedCards(game)) {
                                     if (stackedCard.getBlueprint().getTitle().equals(physicalCard.getBlueprint().getTitle()))
                                         return true;
                                 }

@@ -326,13 +326,13 @@ public class DraftChoiceBuilder {
             @Override
             public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
                                                                   DefaultCardCollection draftPool) {
-                return TextUtils.getRandomFromList(draftChoiceDefinitionList, getRandom(seed, stage))
+                return TextUtils.getRandomItemsFromList(draftChoiceDefinitionList, getRandom(seed, stage))
                         .getDraftChoice(seed, stage, draftPool);
             }
 
             @Override
             public CardCollection getCardsForChoiceId(String choiceId, long seed, int stage) {
-                return TextUtils.getRandomFromList(draftChoiceDefinitionList, getRandom(seed, stage))
+                return TextUtils.getRandomItemsFromList(draftChoiceDefinitionList, getRandom(seed, stage))
                         .getCardsForChoiceId(choiceId, seed, stage);
             }
         };

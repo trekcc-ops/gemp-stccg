@@ -1,88 +1,97 @@
-// Set 161: Engage
-
 {
-    161_040: {
-        title: "D'Lors"
-        type: personnel
-        uniqueness: universal
-        affiliation: romulan
-        property-logo: tng-logo
-        classification: V.I.P.
-        lore: "Typical political aide. Dissident who defected to the Federation in stasis with Vice-Proconsul M'ret in 2369. Former senator in the youth diplomatic corps."
-        skill-box: "[*] Diplomacy"
-        integrity: 5
-        cunning: 7
-        strength: 4
-        image-url: https://www.trekcc.org/1e/cardimages/engage/40.jpg
-    }
-    161_043: {
-        title: Kharic
-        type: personnel
-        uniqueness: universal
-        affiliation: romulan
-        property-logo: tng-logo
-        classification: CIVILIAN
-        lore: "Typical member of the Romulan underground. Female colleague of Tamarith. Pleased by Spock's decision to stay on Romulus after Pardek's betrayal."
-        skill-box: "[*] MEDICAL [*] Exobiology [*] Anthropology [*] Honor"
-        integrity: 7
-        cunning: 5
-        strength: 2
-        image-url: https://www.trekcc.org/1e/cardimages/engage/43.jpg
-    }
-    161_044: {
-        title: Khev
-        type: personnel
-        uniqueness: universal
-        affiliation: romulan
-        property-logo: tng-logo
-        classification: CIVILIAN
-        lore: "Representative of non-military personnel guarding the Carraya system prison camp for Khitomer survivors. Sometimes serves as Tokath's bodyguard."
-        skill-box: "[*] SECURITY [*] Biology [*] Youth"
-        integrity: 5
-        cunning: 5
-        strength: 6
-        image-url: https://www.trekcc.org/1e/cardimages/engage/44.jpg
-    }
-    161_045: {
-        title: Mareth
-        type: personnel
-        uniqueness: universal
-        affiliation: romulan
-        property-logo: tng-logo
-        classification: ENGINEER
-        lore: Typical Romulan engineer who became trapped in a temporal fragment in 2369. Did not realize the cause was life-form incubation in the engine core.
-        skill-box: "[*] Computer Skill [*] Transporter Skill [*] Youth"
-        integrity: 4
-        cunning: 7
-        strength: 5
-        image-url: https://www.trekcc.org/1e/cardimages/engage/45.jpg
-    }
-    161_048: {
-        title: "T'Jev"
-        type: personnel
-        uniqueness: universal
-        affiliation: romulan
-        property-logo: tng-logo
-        classification: MEDICAL
-        lore: Typical field nurse assigned to a damage control team on the Haakona in 2365. Was tending injured crew members when Jean-Luc Picard appeared.
-        skill-box: "[*] Biology [*] Greed [*] Anthropology"
-        integrity: 5
-        cunning: 8
-        strength: 7
-        image-url: https://www.trekcc.org/1e/cardimages/engage/48.jpg
-    }
-    161_051: {
-        title: U.S.S. Excalibur
-        type: ship
-        affiliation: federation
-        property-logo: tng-logo
-        ship-class: AMBASSADOR CLASS
-        lore: "Refitted vessel captained by William T. Riker during Starfleet's blockade of the Klingon-Romulan border in 2368. Underwent further refit in 2373."
-        staffing: command,staff,staff
-        gametext: Tractor Beam
-        range: 8
-        weapons: 7
-        shields: 9
-        image-url: https://www.trekcc.org/1e/cardimages/engage/51.jpg
-    }
+    setId: "161"
+    setName: Engage
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 161_040
+            title: "D'Lors"
+            type: personnel
+            uniqueness: universal
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: V.I.P.
+            lore: "Typical political aide. Dissident who defected to the Federation in stasis with Vice-Proconsul M'ret in 2369. Former senator in the youth diplomatic corps."
+            skill-box: "[*] Diplomacy"
+            integrity: 5
+            cunning: 7
+            strength: 4
+            image-url: https://www.trekcc.org/1e/cardimages/engage/40.jpg
+        }
+        {
+            blueprintId: 161_043
+            title: Kharic
+            type: personnel
+            uniqueness: universal
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: CIVILIAN
+            lore: "Typical member of the Romulan underground. Female colleague of Tamarith. Pleased by Spock's decision to stay on Romulus after Pardek's betrayal."
+            skill-box: "[*] MEDICAL [*] Exobiology [*] Anthropology [*] Honor"
+            integrity: 7
+            cunning: 5
+            strength: 2
+            image-url: https://www.trekcc.org/1e/cardimages/engage/43.jpg
+        }
+        {
+            blueprintId: 161_044
+            title: Khev
+            type: personnel
+            uniqueness: universal
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: CIVILIAN
+            lore: "Representative of non-military personnel guarding the Carraya system prison camp for Khitomer survivors. Sometimes serves as Tokath's bodyguard."
+            skill-box: "[*] SECURITY [*] Biology [*] Youth"
+            integrity: 5
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/engage/44.jpg
+        }
+        {
+            blueprintId: 161_045
+            title: Mareth
+            type: personnel
+            uniqueness: universal
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: ENGINEER
+            lore: Typical Romulan engineer who became trapped in a temporal fragment in 2369. Did not realize the cause was life-form incubation in the engine core.
+            skill-box: "[*] Computer Skill [*] Transporter Skill [*] Youth"
+            integrity: 4
+            cunning: 7
+            strength: 5
+            image-url: https://www.trekcc.org/1e/cardimages/engage/45.jpg
+        }
+        {
+            blueprintId: 161_048
+            title: "T'Jev"
+            type: personnel
+            uniqueness: universal
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: MEDICAL
+            lore: Typical field nurse assigned to a damage control team on the Haakona in 2365. Was tending injured crew members when Jean-Luc Picard appeared.
+            skill-box: "[*] Biology [*] Greed [*] Anthropology"
+            integrity: 5
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/engage/48.jpg
+        }
+        {
+            blueprintId: 161_051
+            title: U.S.S. Excalibur
+            type: ship
+            affiliation: federation
+            property-logo: tng-logo
+            ship-class: AMBASSADOR CLASS
+            lore: "Refitted vessel captained by William T. Riker during Starfleet's blockade of the Klingon-Romulan border in 2368. Underwent further refit in 2373."
+            staffing: command,staff,staff
+            gametext: Tractor Beam
+            range: 8
+            weapons: 7
+            shields: 9
+            image-url: https://www.trekcc.org/1e/cardimages/engage/51.jpg
+        }
+    ]
 }

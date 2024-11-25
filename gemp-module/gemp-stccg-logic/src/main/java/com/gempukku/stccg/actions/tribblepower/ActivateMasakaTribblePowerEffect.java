@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.PutCardsFromZoneOnEndOfPileEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
@@ -12,7 +12,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 
 
 public class ActivateMasakaTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateMasakaTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateMasakaTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 
@@ -22,7 +22,7 @@ public class ActivateMasakaTribblePowerEffect extends ActivateTribblePowerEffect
     }
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         for (String player : getGame().getPlayerIds()) {
             for (PhysicalCard card : getGame().getGameState().getHand(player)) {
                 subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(

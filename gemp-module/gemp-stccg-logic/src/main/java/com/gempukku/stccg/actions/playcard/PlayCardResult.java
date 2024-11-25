@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,6 +16,16 @@ public class PlayCardResult extends EffectResult {
     public PlayCardResult(Effect effect, Zone playedFrom, PhysicalCard playedCard) {
         this(effect, playedFrom, playedCard, null, null);
     }
+
+    public PlayCardResult(Action action, Zone playedFrom, PhysicalCard playedCard) {
+        super(EffectResult.Type.PLAY_CARD, action, playedCard);
+        _performingPlayerId = action.getPerformingPlayerId();
+        _playedFrom = playedFrom;
+        _playedCard = playedCard;
+        _attachedTo = null;
+        _attachedOrStackedPlayedFrom = null;
+    }
+
 
     public PlayCardResult(Effect effect, Zone playedFrom, PhysicalCard playedCard,
                           PhysicalCard attachedTo, PhysicalCard attachedOrStackedPlayedFrom) {

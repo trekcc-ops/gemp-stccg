@@ -1,0 +1,113 @@
+/* Gamestate data is saved as JSON (never HJSON). HJSON used in this file so that comments can be included without
+    triggering syntax errors/warnings in the IDE. */
+
+{
+    "currentPhase": "SEED_FACILITY", // name of the current phase, see stccg.common.filterable.Phase for options
+    "currentProcess:" {
+        // Class members for the value in TurnProcedure._currentGameProcess
+        "className": "ST1EFacilitySeedPhaseProcess",
+        "consecutivePasses": 0,
+            /* consecutivePasses is stored for processes where players can pass but still participate later.
+                For example, in the facility seed phase of 1E, player1 can pass to player2 without seeding a card.
+                But unless player2 ALSO passes, player1 will get another option to seed more cards.
+            */
+        "isFinished": true,
+        "playersParticipating": ["player2","player1"]
+            /* Players still participating. This is stored if the current process allows both players to perform
+                actions simultaneously. For example, when seeding dilemmas, both players can stack (pre-seed) dilemmas
+                at the same time. If player2 has signaled they are finished, playersParticipating will only have
+                player1. */
+    },
+    "modifiers": [], // Active modifiers (as of 11/16/24, this is never populated)
+    "playerOrder": {
+        // Class members for the value in GameState._playerOrder
+        "firstPlayer": "player2", // Player ID for player with first turn of the game
+        "isReversed": false, // Flag for play order being reversed (only used in Tribbles)
+        "turnOrder": ["player2", "player1"], // Player order (only used in Tribbles)
+        "currentPlayer": "player2" // Player ID for the player whose current turn it is
+    },
+    "players": [
+        /* Information from a couple different classes, all specific to a player. This array will have a similar
+            JSON object for each player in the game. */
+        {
+            "playerId": "player1",
+            "score": 0, // Player score. As of 11/16/24, no distinction between bonus and non-bonus points.
+            "turnNumber": 0, // Turn number for this player. Will be 0 if they have not had their first turn yet.
+            "decked": true, // Tribbles only
+
+                /* List of cardIds the cards in each zone. As of 11/16/24, there are expected changes to this format.
+                    The information is not always reliable or intuitive. */
+            "DRAW_DECK": [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38],
+            "MISSIONS_PILE": [],
+            "TABLE": [],
+            "REMOVED": [],
+            "HAND": [1,2],
+            "DISCARD": [],
+            "VOID": [45,6,41,8,43,4,44,3,42,7,46,5],
+            "VOID_FROM_HAND": [45,6,41,8,43,4,44,3,42,7,46,5],
+            "SEED_DECK": []
+            // There may be additional zones specified here, like STACKED or PLAY_PILE
+        },
+        // etc.
+    ],
+    "spacelineLocations": [
+        // List of spacleine locations in order for 1E game.
+        {
+            "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
+            "locationName": "Gravesworld",
+            "cardsSeededUnderneath": [6,7], // list of cardIds for cards seeded underneath a mission
+            "isCompleted": false
+        },
+        {
+            "quadrant": "ALPHA",
+            "region": "Romulus System", // There will not be a region item if the location is not in one
+            "locationName": "Romulus"
+        },
+        // etc.
+    ],
+    "awayTeams": [
+        /* List of away teams in the game. As of 11/16/24, the format of this information is expected to change
+            significantly. */
+        {
+            "locationZoneIndex": 3,
+            "playerId": "player1",
+            "cardsInAwayTeam": [10,17] // cardIds
+        },
+        // etc.
+    ],
+    "cardsInGame": [
+        /* Full information for every card in GameState._allCards
+            This includes cards that were in the game, but have been placed out-of-play.
+            (The cards in this file are examples and not expected to align with the cardId numbers above.)
+        {
+            "title": "Federation Outpost",
+            "blueprintId": "101_104",
+            "cardId": 1,
+            "owner": "player1",
+            "zone": "AT_LOCATION",
+            "affiliation": "FEDERATION", // only included for affiliated cards
+            "locationZoneIndex": 3 // only included if the card is on the spaceline
+        },
+        {
+            "title": "U.S.S. Galaxy",
+            "blueprintId": "101_336",
+            "cardId": 2,
+            "owner": "player1",
+            "zone": "ATTACHED",
+            "affiliation": "FEDERATION", // only included for affiliated cards
+            "locationZoneIndex": 3 // only included if the card is on the spaceline
+            "attachedToCardId": 1, // only included if the card is attached to another
+            "dockedAtCardId": 1, // only included for a docked ship
+            "rangeAvailable": 3 // only included for a ship
+        },
+        {
+            "title": "Excavation",
+            "blueprintId": "101_154",
+            "cardId": 3,
+            "owner": "player1",
+            "zone": "SPACELINE",
+            "locationZoneIndex": 3, // only included if the card is on the spaceline
+            "stackedOnCardId": 4, // only included if the card is stacked on another
+        },
+        // etc.
+    ]

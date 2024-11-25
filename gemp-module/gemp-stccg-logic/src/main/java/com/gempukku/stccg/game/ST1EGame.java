@@ -4,11 +4,9 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
-import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
+import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 
@@ -16,27 +14,18 @@ import java.util.Map;
 
 public class ST1EGame extends DefaultGame {
     private ST1EGameState _gameState;
-    private TurnProcedure _turnProcedure;
-    private final ST1EGame _thisGame;
-    private AffiliationAttackRestrictions _affiliationAttackRestrictions;
     private final ST1ERuleSet _rules;
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         super(format, decks, library);
-        _thisGame = this;
 
-        _gameState = new ST1EGameState(_allPlayerIds, decks, library, _format, this);
+        _gameState = new ST1EGameState(decks.keySet(), this);
         _rules = new ST1ERuleSet(this);
         _rules.applyRuleSet();
 
-        _gameState.createPhysicalCards();
-        _turnProcedure = new TurnProcedure(this, _userFeedback
-        ) {
-            @Override
-            protected ST1EGameProcess setFirstGameProcess() {
-                return new ST1EPlayerOrderProcess(_allPlayerIds, _gameState::init, _thisGame);
-            }
-        };
+        _gameState.createPhysicalCards(library, decks);
+        _turnProcedure =
+                new TurnProcedure(this, new ST1EPlayerOrderProcess(this));
     }
 
     @Override
@@ -50,23 +39,17 @@ public class ST1EGame extends DefaultGame {
         if (_snapshotToRestore != null) {
             if (_snapshotToRestore.getGameState() instanceof ST1EGameState st1estate) {
                 _gameState = st1estate;
-                _modifiersLogic = _snapshotToRestore.getModifiersLogic();
-                _actionsEnvironment = _snapshotToRestore.getActionsEnvironment();
+                _gameState.setModifiersLogic(_snapshotToRestore.getModifiersLogic());
+                _gameState.setActionsEnvironment(_snapshotToRestore.getActionsEnvironment());
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
                 sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
-                st1estate.sendStateToAllListeners();
+                sendStateToAllListeners();
             } else throw new RuntimeException("Tried to restore a snapshot with an invalid game state");
         }
     }
 
-    @Override
-    public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
-        getGameState().addGameStateListener(playerId, gameStateListener);
-    }
-
     public void setAffiliationAttackRestrictions(AffiliationAttackRestrictions restrictions) {
-        _affiliationAttackRestrictions = restrictions;
     }
 
     @Override

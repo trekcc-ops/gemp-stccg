@@ -15,7 +15,6 @@ public class RuleSet {
                 new RequiredTriggersRule(game),
                 new DiscardedCardRule(game),
                 new OptionalTriggersRule(game),
-                new ActivatePhaseActionsFromHandRule(game),
                 new ActivatePhaseActionsRule(game),
                 new ActivateResponseAbilitiesRule(game) // Less sure about this one
         );

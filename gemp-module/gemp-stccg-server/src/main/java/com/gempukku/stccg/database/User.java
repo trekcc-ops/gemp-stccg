@@ -154,6 +154,10 @@ public class User {
         }
     }
 
+    public boolean isAdmin() {
+        return _type.contains("a");
+    }
+
     public final void banIpPrefix(IpBanDAO ipBanDAO) {
         final String lastIp = _lastIp;
         int finalPeriodIndex = lastIp.lastIndexOf('.');

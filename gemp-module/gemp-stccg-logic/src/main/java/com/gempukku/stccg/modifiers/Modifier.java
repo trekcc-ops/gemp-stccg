@@ -1,14 +1,17 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;
 
+@JsonSerialize(using = ModifierSerializer.class)
 public interface Modifier {
     PhysicalCard getSource();
 
@@ -32,7 +35,7 @@ public interface Modifier {
 
     boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType);
 
-    boolean canPlayAction(DefaultGame game, String performingPlayer, Action action);
+    boolean canPerformAction(DefaultGame game, String performingPlayer, Action action);
 
     boolean cantPlayCard(DefaultGame game, String performingPlayer, PhysicalCard card);
 
@@ -42,7 +45,7 @@ public interface Modifier {
 
     boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card);
 
-    void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card);
+    void appendExtraCosts(DefaultGame game, Action action, PhysicalCard card);
 
     boolean canHavePlayedOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
 
@@ -64,4 +67,5 @@ public interface Modifier {
     boolean hasIcon(PhysicalCard card, CardIcon icon);
 
     String getForPlayer();
+    String getText();
 }

@@ -19,8 +19,8 @@ public class CountStackedEvaluator extends Evaluator {
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         int count = 0;
-        for (PhysicalCard card : Filters.filterActive(_game, _stackedOn)) {
-            count += Filters.filter(card.getStackedCards(), _game, _stackedCard).size();
+        for (PhysicalCard card : Filters.filterActive(game, _stackedOn)) {
+            count += Filters.filter(card.getStackedCards(game), game, _stackedCard).size();
         }
         return count;
     }

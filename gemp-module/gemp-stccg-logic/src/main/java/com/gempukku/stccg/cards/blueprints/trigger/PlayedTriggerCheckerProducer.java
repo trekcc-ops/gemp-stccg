@@ -35,9 +35,10 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
 
                 if (onFilter != null) {
                     final Filterable onFilterable = onFilter.getFilterable(actionContext);
-                    played = TriggerConditions.playedOn(effectResult, onFilterable, filterable);
+                    played = TriggerConditions.playedOn(actionContext.getGame(), effectResult, onFilterable, filterable);
                 } else {
-                    played = TriggerConditions.played(playingPlayerId, effectResult, filterable);
+                    played = TriggerConditions.played(actionContext.getGame().getPlayer(playingPlayerId),
+                            effectResult, filterable);
                 }
 
                 if (played && memorize != null)

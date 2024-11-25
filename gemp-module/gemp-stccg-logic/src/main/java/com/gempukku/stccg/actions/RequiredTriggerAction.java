@@ -3,23 +3,17 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class RequiredTriggerAction extends AbstractCostToEffectAction {
+public class RequiredTriggerAction extends ActionyAction {
     private final PhysicalCard _physicalCard;
 
     private boolean _sentMessage;
     private String _message;
-    private final DefaultGame _game;
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), ActionType.TRIGGER);
-        _game = physicalCard.getGame();
+        super(physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(), ActionType.OTHER);
         _physicalCard = physicalCard;
-        setText("Required trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " required triggered effect is used";
     }
-
-    @Override
-    public DefaultGame getGame() { return _game; }
 
     @Override
     public PhysicalCard getActionSource() {
@@ -36,23 +30,25 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
-                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
+                cardGame.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
             if (_message != null)
-                _game.sendMessage(_message);
+                cardGame.sendMessage(_message);
         }
 
         if (isCostFailed()) {
             return null;
         } else {
-            Effect cost = getNextCost();
+            Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
-            return getNextEffect();
+            return getNextAction();
         }
     }
+
+    public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 }

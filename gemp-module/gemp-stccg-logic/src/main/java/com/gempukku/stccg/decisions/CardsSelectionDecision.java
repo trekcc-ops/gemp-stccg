@@ -3,6 +3,7 @@ package com.gempukku.stccg.decisions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.Player;
 
 import java.util.*;
 
@@ -11,13 +12,13 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
     private final int _minimum;
     private final int _maximum;
 
-    public CardsSelectionDecision(String text, Collection<? extends PhysicalCard> physicalCards) {
-        this(1, text, physicalCards, 0, physicalCards.size());
+    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards) {
+        this(player, text, physicalCards, 0, physicalCards.size());
     }
 
-    public CardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards,
+    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
                                   int minimum, int maximum) {
-        super(id, text, AwaitingDecisionType.CARD_SELECTION);
+        super(player, text, AwaitingDecisionType.CARD_SELECTION);
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;
@@ -31,6 +32,18 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         for (int i = 0; i < physicalCards.size(); i++)
             result[i] = String.valueOf(physicalCards.get(i).getCardId());
         return result;
+    }
+
+    protected PhysicalCard getSelectedCardByResponse(String response) throws DecisionResultInvalidException {
+        if (_minimum != 1 || _maximum != 1 || response.isEmpty())
+            throw new DecisionResultInvalidException();
+        try {
+            String cardId = response;
+            PhysicalCard result = getSelectedCardById(Integer.parseInt(cardId));
+            return result;
+        } catch (NumberFormatException exp) {
+            throw new DecisionResultInvalidException("Invalid decision response");
+        }
     }
 
     protected Set<PhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
@@ -65,5 +78,11 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
                 return physicalCard;
 
         throw new DecisionResultInvalidException();
+    }
+
+    public List<? extends PhysicalCard> getCardOptions() { return _physicalCards; }
+
+    public void decisionMade(PhysicalCard card) throws DecisionResultInvalidException {
+        decisionMade(String.valueOf(card.getCardId()));
     }
 }

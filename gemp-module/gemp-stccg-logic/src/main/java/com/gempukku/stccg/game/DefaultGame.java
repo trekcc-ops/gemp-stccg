@@ -1,29 +1,35 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.ActionsEnvironment;
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
-import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
+import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
 
 import java.util.*;
 
 public abstract class DefaultGame {
+    private static final int LAST_MESSAGE_STORED_COUNT = 15;
+
     // Game parameters
     protected final GameFormat _format;
     protected final CardBlueprintLibrary _library;
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
+    protected TurnProcedure _turnProcedure;
+    final List<String> _lastMessages = new LinkedList<>();
+
     // Endgame operations
     protected final Set<String> _requestedCancel = new HashSet<>();
     protected boolean _cancelled;
@@ -33,23 +39,18 @@ public abstract class DefaultGame {
     // Game code infrastructure
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
-    protected ModifiersLogic _modifiersLogic = new ModifiersLogic(this);
-    protected ActionsEnvironment _actionsEnvironment;
     protected final UserFeedback _userFeedback;
     private final List<GameSnapshot> _snapshots = new LinkedList<>();
     protected GameSnapshot _snapshotToRestore;
+    protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     private int _nextSnapshotId;
     private final static int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
 
-    public DefaultGame(GameFormat format, Map<String, CardDeck> decks,
-                       final CardBlueprintLibrary library) {
+    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         _format = format;
         _userFeedback = new DefaultUserFeedback(this);
         _library = library;
-
         _allPlayerIds = decks.keySet();
-
-        _actionsEnvironment = new DefaultActionsEnvironment(this, new Stack<>());
     }
 
     public abstract GameState getGameState();
@@ -62,6 +63,7 @@ public abstract class DefaultGame {
     }
 
     public Set<String> getPlayerIds() { return _allPlayerIds; }
+
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
     public boolean isCancelled() { return _cancelled; }
 
@@ -69,7 +71,17 @@ public abstract class DefaultGame {
         _gameResultListeners.add(listener);
     }
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
-        getGameState().addGameStateListener(playerId, gameStateListener);
+        _gameStateListeners.add(gameStateListener);
+        getGameState().sendGameStateToClient(playerId, gameStateListener, false);
+    }
+
+    public Collection<GameStateListener> getAllGameStateListeners() {
+        return Collections.unmodifiableSet(_gameStateListeners);
+    }
+
+    public void sendStateToAllListeners() {
+        for (GameStateListener gameStateListener : _gameStateListeners)
+            getGameState().sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
     }
 
     public void requestCancel(String playerId) {
@@ -166,7 +178,7 @@ public abstract class DefaultGame {
     }
 
     public void removeGameStateListener(GameStateListener gameStateListener) {
-        getGameState().removeGameStateListener(gameStateListener);
+        _gameStateListeners.remove(gameStateListener);
     }
 
     public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
@@ -177,15 +189,15 @@ public abstract class DefaultGame {
     }
 
     public ActionsEnvironment getActionsEnvironment() {
-        return _actionsEnvironment;
+        return getGameState().getActionsEnvironment();
     }
 
     public ModifiersEnvironment getModifiersEnvironment() {
-        return _modifiersLogic;
+        return getGameState().getModifiersLogic();
     }
 
     public ModifiersQuerying getModifiersQuerying() {
-        return _modifiersLogic;
+        return getGameState().getModifiersLogic();
     }
 
     public abstract TurnProcedure getTurnProcedure();
@@ -207,12 +219,16 @@ public abstract class DefaultGame {
     }
 
     public Player getPlayer(int index) { return getGameState().getPlayer(getAllPlayerIds()[index-1]); }
+    public Player getPlayer(String playerId) { return getGameState().getPlayer(playerId); }
 
     public String[] getAllPlayerIds() {
         return _allPlayerIds.toArray(new String[0]);
     }
 
-    public Player getCurrentPlayer() { return getGameState().getCurrentPlayer(); }
+    public Player getCurrentPlayer() {
+        GameState gameState = getGameState();
+        return gameState.getCurrentPlayer();
+    }
 
     public List<GameSnapshot> getSnapshots() {
         return Collections.unmodifiableList(_snapshots);
@@ -220,12 +236,8 @@ public abstract class DefaultGame {
 
     public String getOpponent(String playerId) {
             // TODO - Only works for 2-player games
-        if (getAllPlayerIds().length != 2)
-            throw new RuntimeException("Tried to call getOpponent function with more than 2 players");
-        else {
             return getAllPlayerIds()[0].equals(playerId) ?
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
-        }
     }
 
     public void requestRestoreSnapshot(int snapshotId) {
@@ -262,11 +274,12 @@ public abstract class DefaultGame {
      * @param description the description
      */
     public void takeSnapshot(String description) {
+        // TODO - Star Wars code used PlayCardStates here
         pruneSnapshots();
         // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
-        if (getGameState().getPlayCardStates().isEmpty())
-            _snapshots.add(GameSnapshot.createGameSnapshot(++_nextSnapshotId, description, getGameState(),
-                    _modifiersLogic, _actionsEnvironment, getTurnProcedure()));
+        ++_nextSnapshotId;
+        _snapshots.add(GameSnapshot.createGameSnapshot(_nextSnapshotId, description, getGameState(),
+                getGameState().getModifiersLogic(), getTurnProcedure()));
     }
 
     /**
@@ -294,7 +307,7 @@ public abstract class DefaultGame {
     
     public void sendMessage(String message) { getGameState().sendMessage(message); }
     public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
-    public String getCurrentPhaseString() { return getGameState().getCurrentPhase().getHumanReadable(); }
+
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 
     public AwaitingDecision getAwaitingDecision(String playerName) {
@@ -305,8 +318,8 @@ public abstract class DefaultGame {
         return _userFeedback.getUsersPendingDecision();
     }
 
-    public void sendAwaitingDecision(String playerName, AwaitingDecision awaitingDecision) {
-        _userFeedback.sendAwaitingDecision(playerName, awaitingDecision);
+    public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
+        _userFeedback.sendAwaitingDecision(awaitingDecision);
     }
 
     public String getStatus() {
@@ -322,4 +335,32 @@ public abstract class DefaultGame {
         return gameStatus;
     }
 
+    public boolean isDiscardPilePublic() {
+        return _format.discardPileIsPublic();
+    }
+
+    public boolean isCarryingOutEffects() {
+        return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null && !isRestoreSnapshotPending();
+    }
+
+    public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
+        return getGameState().getCardFromCardId(cardId);
+    }
+
+    public List<String> getMessages() { return _lastMessages; }
+
+    public void addMessage(String message) {
+        _lastMessages.add(message);
+        if (_lastMessages.size() > LAST_MESSAGE_STORED_COUNT)
+            _lastMessages.removeFirst();
+    }
+
+    public void setCurrentProcess(GameProcess process) {
+        getTurnProcedure().setCurrentProcess(process);
+    }
+
+    public void sendErrorMessage(Exception exp) {
+        String message = "ERROR: " + exp.getMessage();
+        sendMessage(message);
+    }
 }

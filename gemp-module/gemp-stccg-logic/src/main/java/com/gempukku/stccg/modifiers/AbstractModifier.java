@@ -1,13 +1,15 @@
 package com.gempukku.stccg.modifiers;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.Action;
 
 import java.util.List;
 
@@ -19,6 +21,15 @@ public abstract class AbstractModifier implements Modifier {
     protected final Condition _condition;
     private final ModifierEffect _effect;
     protected final DefaultGame _game;
+
+    protected AbstractModifier(DefaultGame game, ModifierEffect effect) {
+        _cardSource = null;
+        _text = null;
+        _affectFilter = null;
+        _condition = null;
+        _effect = effect;
+        _game = game;
+    }
 
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
         this(source, text, affectFilter, null, effect);
@@ -96,7 +107,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
+    public boolean canPerformAction(DefaultGame game, String performingPlayer, Action action) {
         return true;
     }
 
@@ -121,7 +132,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
+    public void appendExtraCosts(DefaultGame game, Action action, PhysicalCard card) {
 
     }
 
@@ -174,5 +185,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     public String getForPlayer() { return _playerId; }
+    public String getText() { return _text; }
 
 }

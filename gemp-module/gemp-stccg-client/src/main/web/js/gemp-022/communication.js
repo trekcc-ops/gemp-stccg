@@ -254,7 +254,7 @@ export default class GempClientCommunication {
             dataType:"xml"
         });
     }
-    
+
     concede(errorMap) {
         $.ajax({
             type:"POST",
@@ -851,7 +851,7 @@ export default class GempClientCommunication {
             dataType:"json"
         });
     }
-    
+
     setDailyMessage(motd, callback, errorMap) {
         $.ajax({
             type:"POST",

@@ -28,37 +28,21 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
     private final String _choiceText;
     private final Action _action;
 
-    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, Collection<? extends PhysicalCard> cards) {
-        this(action, playerId, choiceText, 1,1,cards,Filters.any);
-    }
-
     public ChooseCardsOnTableEffect(Action action, Player player, String choiceText,
-                                    int minimum, int maximum, Collection<PhysicalCard> cards) {
-        this(action, player.getPlayerId(), choiceText, minimum, maximum, cards, Filters.any);
+                                    Collection<? extends PhysicalCard> cards) {
+        this(action, player, choiceText, 1,1,cards,Filters.any);
     }
 
-    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText,
-                                    int minimum, int maximum, Collection<PhysicalCard> cards) {
-        this(action, playerId, choiceText, minimum, maximum, cards, Filters.any);
+    public ChooseCardsOnTableEffect(Action action, Player player, String choiceText, int minimum, int maximum,
+                                    Collection<? extends PhysicalCard> cards) {
+        this(action, player, choiceText, minimum, maximum, cards, Filters.any);
     }
 
-    /**
-     * Creates an effect that causes the player to choose cards from the specified collection of cards on the table accepted
-     * by the specified filter.
-     *
-     * @param minimum               the minimum number of cards to choose
-     * @param maximum               the maximum number of cards to choose
-     * @param filters               the filter
-     * @param action                the action performing this effect
-     * @param playerId              the player
-     * @param choiceText            the text shown to the player choosing the cards
-     * @param cards                 the cards to choose from
-     */
-    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, int minimum, int maximum,
+    public ChooseCardsOnTableEffect(Action action, Player player, String choiceText, int minimum, int maximum,
                                     Collection<? extends PhysicalCard> cards, Filterable filters) {
-        super(action.getGame(), playerId);
+        super(player);
         _action = action;
-        _playerId = playerId;
+        _playerId = player.getPlayerId();
         _choiceText = choiceText;
         _minimum = minimum;
         _maximum = maximum;
@@ -101,8 +85,8 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
             cardsSelected(selectableCards);
         }
         else {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1, _choiceText, selectableCards, minimum, maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardsSelectionDecision(_game.getPlayer(_playerId), _choiceText, selectableCards, minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);

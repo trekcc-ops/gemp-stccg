@@ -4,10 +4,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class StackActionEffect implements Effect {
-    private final CostToEffectAction _action;
+    private final Action _action;
     private final DefaultGame _game;
 
-    public StackActionEffect(DefaultGame game, CostToEffectAction action) {
+    public StackActionEffect(DefaultGame game, Action action) {
         _game = game;
         _action = action;
     }

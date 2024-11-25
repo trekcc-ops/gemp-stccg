@@ -1,52 +1,64 @@
 package com.gempukku.stccg.actions.missionattempt;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
 
-public class EncounterSeedCardAction extends AbstractCostToEffectAction {
-    private final ST1EGame _game;
-    private boolean _seedCardWasRevealed;
-    private final List<String> _seedCards;
+public class EncounterSeedCardAction extends ActionyAction {
+    private final PhysicalCard _encounteredCard;
+    private final MissionLocation _location;
+    private final AttemptingUnit _attemptingUnit;
+    private boolean _effectsAdded;
+    private final AttemptMissionAction _missionAttempt;
 
-    public EncounterSeedCardAction(AttemptMissionAction action, List<String> seedCards) {
-        super(action.getPlayer(), ActionType.OTHER);
-        _game = action.getGame();
-            // TODO - can get attemptingUnit from action.getAttemptingEntity
-        _seedCards = seedCards;
+    public EncounterSeedCardAction(AttemptMissionAction missionAttempt, Player encounteringPlayer,
+                                   PhysicalCard encounteredCard, MissionLocation mission,
+                                   AttemptingUnit attemptingUnit) throws InvalidGameLogicException {
+        super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD);
+        _encounteredCard = encounteredCard;
+        _location = mission;
+        _attemptingUnit = attemptingUnit;
+        _missionAttempt = missionAttempt;
     }
+
+
 
     @Override
     public PhysicalCard getActionSource() {
-        return null;
+        return _encounteredCard;
     }
 
     @Override
     public PhysicalCard getCardForActionSelection() {
-        return null;
+        return _encounteredCard;
     }
 
     @Override
-    public Effect nextEffect() {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return true;
+    }
 
-        Effect cost = getNextCost();
-        if (cost != null)
-            return cost;
-
-        if (!_seedCardWasRevealed) {
-            String cardEncountered = _seedCards.getFirst();
-            _game.sendMessage("Seed card encountered: " + cardEncountered);
-            _seedCardWasRevealed = true;
-            _seedCards.removeFirst();
+    @Override
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        if (!_effectsAdded) {
+            List<Action> encounterActions = _encounteredCard.getEncounterActions(
+                    cardGame, _attemptingUnit, this, _location);
+            for (Action action : encounterActions)
+                appendAction(action);
+            _effectsAdded = true;
         }
-
-        return getNextEffect();
+        return getNextAction();
     }
 
-    @Override
-    public ST1EGame getGame() { return _game; }
+    public AttemptMissionAction getMissionAttempt() { return _missionAttempt; }
 
+    public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
+    public PhysicalCard getEncounteredCard() { return _encounteredCard; }
 }

@@ -5,7 +5,14 @@ import com.gempukku.stccg.processes.GameProcess;
 
 public abstract class ST1EGameProcess extends GameProcess {
     protected final ST1EGame _game;
+
+    public ST1EGameProcess(int consecutivePasses, ST1EGame game) {
+        super(consecutivePasses);
+        _game = game;
+    }
+
     public ST1EGameProcess(ST1EGame game) {
         _game = game;
     }
+
 }

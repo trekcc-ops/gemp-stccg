@@ -1,16 +1,18 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
-public class TribblesPhysicalCard extends PhysicalCard {
+import java.util.List;
+import java.util.Map;
+
+public class TribblesPhysicalCard extends AbstractPhysicalCard {
     private final TribblesGame _game;
     public TribblesPhysicalCard(TribblesGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
@@ -19,18 +21,17 @@ public class TribblesPhysicalCard extends PhysicalCard {
     @Override
     public TribblesGame getGame() { return _game; }
 
-    @Override
-    public CostToEffectAction getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
+    public boolean isMisSeed(DefaultGame game, MissionLocation mission) {
+        return false;
+    }
 
     @Override
-    public ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult) {
-        return new TribblesActionContext(playerId, getGame(), this, effect, effectResult);
-    }
+    public Action getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
 
     public boolean canPlayOutOfSequence() {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;
         return _blueprint.getPlayOutOfSequenceConditions().stream().anyMatch(
-                requirement -> requirement.accepts(createActionContext()));
+                requirement -> requirement.accepts(createActionContext(getGame())));
     }
 
     public boolean isNextInSequence() {
@@ -39,6 +40,20 @@ public class TribblesPhysicalCard extends PhysicalCard {
             return true;
         }
         return (cardValue == _game.getGameState().getNextTribbleInSequence());
+    }
+
+    @Override
+    public TribblesPhysicalCard generateSnapshot(SnapshotData snapshotData) {
+
+        // TODO - A lot of repetition here between the various PhysicalCard classes
+
+        TribblesPhysicalCard newCard = new TribblesPhysicalCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
+        newCard.setZone(_zone);
+        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
+        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
+        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
+
+        return newCard;
     }
 
 }

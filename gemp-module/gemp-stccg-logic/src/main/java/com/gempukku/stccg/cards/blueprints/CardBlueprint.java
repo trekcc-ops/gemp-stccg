@@ -2,20 +2,22 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
-import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 
 import java.util.*;
 
@@ -24,6 +26,8 @@ public class CardBlueprint {
     private String _baseBlueprintId;
     private String title;
     private String subtitle;
+    private ShipClass _shipClass;
+    private boolean _anyCanAttempt;
     protected CardType _cardType;
     private String imageUrl;
     private String _rarity;
@@ -37,7 +41,7 @@ public class CardBlueprint {
     private Quadrant quadrant;
     private String location;
     private int _pointsShown;
-    private int _skillDots;
+    int _skillDots;
     private boolean _hasPointBox;
     private MissionRequirement _missionRequirements;
     final List<Skill> _skills = new LinkedList<>();
@@ -45,6 +49,7 @@ public class CardBlueprint {
     private Region region;
     private SkillName _classification;
     private boolean _canInsertIntoSpaceline;
+    private final Set<ShipSpecialEquipment> _specialEquipment = new HashSet<>();
     private final Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
     private final Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
     private int _span;
@@ -71,7 +76,7 @@ public class CardBlueprint {
     private List<ActionSource> inPlayPhaseActions;
     private List<ActionSource> inDiscardPhaseActions;
 
-    private List<ModifierSource> inPlayModifiers;
+    private final List<ModifierSource> inPlayModifiers = new LinkedList<>();
 
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
@@ -165,7 +170,13 @@ public class CardBlueprint {
     public void setAttribute(CardAttribute attribute, int attributeValue) {
         _cardAttributes.put(attribute, attributeValue);
     }
-    public int getAttribute(CardAttribute attribute) { return _cardAttributes.get(attribute); }
+
+    public int getIntegrity() { return _cardAttributes.get(CardAttribute.INTEGRITY);
+    }
+
+    public int getCunning() { return _cardAttributes.get(CardAttribute.CUNNING); }
+
+    public int getStrength() { return _cardAttributes.get(CardAttribute.STRENGTH); }
     public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
     public void setStaffing(List<CardIcon> staffing) { _staffing = staffing; }
     public List<CardIcon> getStaffing() { return _staffing; }
@@ -204,7 +215,8 @@ public class CardBlueprint {
 
 
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
-    public void setAnyCrewOrAwayTeamCanAttempt() { }
+    public boolean canAnyAttempt() { return _anyCanAttempt; }
+    public void setAnyCrewOrAwayTeamCanAttempt() { _anyCanAttempt = true; }
     public Affiliation homeworldAffiliation() {
         if (this._cardType != CardType.MISSION)
             return null;
@@ -278,8 +290,6 @@ public class CardBlueprint {
     }
 
     public void appendInPlayModifier(ModifierSource modifierSource) {
-        if (inPlayModifiers == null)
-            inPlayModifiers = new LinkedList<>();
         inPlayModifiers.add(modifierSource);
     }
 
@@ -369,30 +379,23 @@ public class CardBlueprint {
     public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
     public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 
-    public PhysicalCard createPhysicalCard(DefaultGame game, int cardId, Player player) {
-        if (game instanceof ST1EGame st1egame) {
-            if (_cardType == CardType.MISSION)
-                return new MissionCard(st1egame, cardId, player, this);
-            else if (_cardType == CardType.FACILITY)
-                return new FacilityCard(st1egame, cardId, player, this);
-            else if (_cardType == CardType.PERSONNEL)
-                return new PersonnelCard(st1egame, cardId, player, this);
-            else if (_cardType == CardType.EQUIPMENT)
-                return new PhysicalReportableCard1E(st1egame, cardId, player, this);
-            else if (_cardType == CardType.SHIP)
-                return new PhysicalShipCard(st1egame, cardId, player, this);
-            else return new ST1EPhysicalCard(st1egame, cardId, player, this);
-        } else if (game instanceof TribblesGame) {
-            return new TribblesPhysicalCard((TribblesGame) game, cardId, player, this);
-        } else return new PhysicalCardGeneric(game, cardId, player, this);
+    public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
+        return switch(_cardType) {
+            case EQUIPMENT -> new PhysicalReportableCard1E(st1egame, cardId, player, this);
+            case FACILITY -> new FacilityCard(st1egame, cardId, player, this);
+            case MISSION -> new MissionCard(st1egame, cardId, player, this);
+            case PERSONNEL -> new PersonnelCard(st1egame, cardId, player, this);
+            case SHIP -> new PhysicalShipCard(st1egame, cardId, player, this);
+            default -> new ST1EPhysicalCard(st1egame, cardId, player, this);
+        };
     }
 
     // Modifiers from game text
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) throws InvalidGameLogicException {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) {
+    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) throws InvalidGameLogicException {
         return new LinkedList<>(getGameTextWhileActiveInPlayModifiers(player, card));
     }
 
@@ -415,7 +418,9 @@ public class CardBlueprint {
         return result;
     }
 
-    public List<Skill> getSkills() { return _skills; }
+    public List<Skill> getSkills(DefaultGame game, PhysicalCard thisCard) {
+        return _skills;
+    }
 
     public void setPersona(String persona) { _persona = persona; }
 
@@ -431,4 +436,26 @@ public class CardBlueprint {
 
     public String getBaseBlueprintId() { return _baseBlueprintId; }
     public void setBaseBlueprintId(String baseBlueprintId) { _baseBlueprintId = baseBlueprintId; }
+
+    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                            EncounterSeedCardAction action,
+                                            MissionLocation missionLocation) {
+        return new LinkedList<>();
+    }
+
+    public void setShipClass(ShipClass shipClass) {
+        _shipClass = shipClass;
+    }
+
+    public void addSpecialEquipment(Collection<ShipSpecialEquipment> specialEquipment) {
+        _specialEquipment.addAll(specialEquipment);
+    }
+
+    public int getWeapons() {
+        return _cardAttributes.get(CardAttribute.WEAPONS);
+    }
+
+    public int getShields() {
+        return _cardAttributes.get(CardAttribute.SHIELDS);
+    }
 }

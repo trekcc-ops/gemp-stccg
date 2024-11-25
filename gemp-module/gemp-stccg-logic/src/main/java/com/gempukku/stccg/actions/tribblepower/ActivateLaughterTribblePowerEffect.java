@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ScorePointsEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
@@ -20,7 +20,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
 
     private final static int BONUS_POINTS = 25000;
     private String _discardingPlayer;
-    public ActivateLaughterTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateLaughterTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 
@@ -42,11 +42,11 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
         else {
             List<String> players = Arrays.asList(getGame().getAllPlayerIds());
             players.removeIf(player -> getGame().getGameState().getHand(player).isEmpty());
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player to discard a card", players) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player to discard a card", players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            firstPlayerChosen(players, result, getGame());
+                            firstPlayerChosen(players, result, _tribblesGame);
                         }
                     });
             getGame().getActionsEnvironment().emitEffectResult(_result);
@@ -61,8 +61,8 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
         if (newSelectablePlayers.size() == 1)
             secondPlayerChosen(Iterables.getOnlyElement(newSelectablePlayers), game);
         else {
-            game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision(
+            game.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer),
                             "Choose a player to place a card from hand on the bottom of their deck", newSelectablePlayers) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
@@ -73,7 +73,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
     }
 
     private void secondPlayerChosen(String secondPlayerChosen, TribblesGame game) {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(getGame(), _action, _discardingPlayer,false,1));
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
                 game, _action, secondPlayerChosen, 1, false, Filters.any));

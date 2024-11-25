@@ -1,23 +1,21 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.cards.Skill;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.SnapshotData;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Stack;
 
 public class PersonnelCard extends PhysicalReportableCard1E implements AffiliatedCard {
 
-    private final List<Skill> _skills;
-
     public PersonnelCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _skills = new LinkedList<>(blueprint.getSkills());
     }
 
     public Integer getAttribute(CardAttribute attribute) {
@@ -28,8 +26,6 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         return _game.getModifiersQuerying().getSkillLevel(this, skillName);
     }
 
-    public boolean isStopped() {
-        return false; }
     public boolean isDisabled() {
         return false; }
     public boolean isInStasis() { // TODO - Eventually will need setter functions for these
@@ -38,6 +34,39 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
     @Override
     public boolean hasSkill(SkillName skillName) { return getSkillLevel(skillName) >= 1; }
 
-    public void addSkill(SkillName skill) { _skills.add(new RegularSkill(skill)); }
+    @Override
+    public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
 
+        // TODO - A lot of repetition here between the various PhysicalCard classes
+
+        PersonnelCard newCard = new PersonnelCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
+        newCard.setZone(_zone);
+        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
+        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
+        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
+
+        newCard._currentAffiliation = _currentAffiliation;
+
+        return newCard;
+
+    }
+
+
+    public int getTotalAttributes() {
+        return getAttribute(CardAttribute.INTEGRITY) + getAttribute(CardAttribute.CUNNING) +
+                getAttribute(CardAttribute.STRENGTH);
+    }
+
+    public boolean isFacingADilemma() {
+        boolean result = false;
+        Stack<Action> actionStack = _game.getActionsEnvironment().getActionStack();
+        for (Action action : actionStack) {
+            if (action instanceof EncounterSeedCardAction encounterAction &&
+                    encounterAction.getEncounteredCard().getCardType() == CardType.DILEMMA &&
+                    encounterAction.getAttemptingUnit().getAttemptingPersonnel().contains(this)) {
+                result = true;
+            }
+        }
+        return result;
+    }
 }

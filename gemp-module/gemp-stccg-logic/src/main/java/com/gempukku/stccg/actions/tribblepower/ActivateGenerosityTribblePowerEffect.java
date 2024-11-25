@@ -1,10 +1,9 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Objects;
 public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEffect {
 
     private final static int BONUS_POINTS = 25000;
-    public ActivateGenerosityTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateGenerosityTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 
@@ -30,11 +29,12 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
         if (opponentsArray.length == 1)
             playerChosen(opponentsArray[0], getGame());
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player to score 25,000 points", opponentsArray) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer),
+                            "Choose a player to score 25,000 points", opponentsArray) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, getGame());
+                            playerChosen(result, _tribblesGame);
                         }
                     });
         getGame().getActionsEnvironment().emitEffectResult(_result);

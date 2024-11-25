@@ -1,47 +1,42 @@
 package com.gempukku.stccg.actions.movecard;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
 
-public class UndockAction extends AbstractCostToEffectAction {
-    private final PhysicalShipCard _cardToUndock;
-    private boolean _cardUndocked = false;
+public class UndockAction extends ActionyAction {
+    private final PhysicalShipCard _cardToMove;
 
     public UndockAction(Player player, PhysicalShipCard cardUndocking) {
-        super(player, ActionType.MOVE_CARDS);
-        _cardToUndock = cardUndocking;
-        this.text = "Undock";
+        super(player, "Undock", ActionType.MOVE_CARDS);
+        _cardToMove = cardUndocking;
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _cardToUndock; }
+    public PhysicalCard getCardForActionSelection() { return _cardToMove; }
     @Override
-    public PhysicalCard getActionSource() { return _cardToUndock; }
+    public PhysicalCard getActionSource() { return _cardToMove; }
 
     @Override
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) {
 //        if (!isAnyCostFailed()) {
 
-        Effect cost = getNextCost();
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
-        if (!_cardUndocked) {
-            _cardUndocked = true;
-            _cardToUndock.undockFromFacility();
+        if (!_wasCarriedOut) {
+            _cardToMove.undockFromFacility();
+            _wasCarriedOut = true;
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
-    @Override
-    public boolean canBeInitiated() { return _cardToUndock.isDocked(); }
-
-    @Override
-    public ST1EGame getGame() { return _cardToUndock.getGame(); }
+    public boolean requirementsAreMet(DefaultGame cardGame) { return _cardToMove.isDocked(); }
+    public PhysicalShipCard getCardToMove() { return _cardToMove; }
 
 }

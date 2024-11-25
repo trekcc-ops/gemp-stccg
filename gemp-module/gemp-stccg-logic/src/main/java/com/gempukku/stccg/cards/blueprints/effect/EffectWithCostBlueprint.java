@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.SubAction;
@@ -25,13 +25,15 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
         _requirements = RequirementFactory.getRequirements(node);
     }
     @Override
-    protected Effect createEffect(CostToEffectAction action, ActionContext context) {
+    protected Effect createEffect(Action action, ActionContext context) {
 
         if(requirementsNotMet(context))
             return null;
-        SubAction subAction = action.createSubAction();
-        for (EffectBlueprint costAppender : _costAppenders)
+        SubAction subAction = new SubAction(action);
+
+        for (EffectBlueprint costAppender : _costAppenders) {
             costAppender.addEffectToAction(true, subAction, context);
+        }
         for (EffectBlueprint effectBlueprint : _effectBlueprints)
             effectBlueprint.addEffectToAction(false, subAction, context);
 

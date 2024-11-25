@@ -3,6 +3,8 @@ package com.gempukku.stccg.hall;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
+import com.gempukku.stccg.league.League;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,10 +18,16 @@ public class GameTable {
 
     private CardGameMediator cardGameMediator;
     private final int capacity;
+    private TableStatus _tableStatus;
+
+    private enum TableStatus {
+        WAITING, PLAYING, FINISHED
+    }
 
     public GameTable(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.capacity = 2; // manually change Tribbles player limit
+        _tableStatus = TableStatus.WAITING;
         LOGGER.debug("Capacity of game: {}", this.capacity);
     }
 
@@ -62,4 +70,59 @@ public class GameTable {
     public final GameSettings getGameSettings() {
         return gameSettings;
     }
+
+    Map<String, String> serializeForUser(User user) {
+
+        String gameId = (_tableStatus == TableStatus.WAITING) ? null : cardGameMediator.getGameId();
+        String statusDescription = (_tableStatus == TableStatus.WAITING) ?
+                "Waiting" : cardGameMediator.getGameStatus();
+
+        League league = gameSettings.getLeague();
+        String tournamentName = (league != null) ?
+                league.getName() + " - " + gameSettings.getSeriesData().getName() :
+                "Casual - " + gameSettings.getTimeSettings().name();
+
+        List<String> playerIds;
+        boolean isPlaying;
+
+        if (_tableStatus == TableStatus.WAITING) {
+            playerIds = (gameSettings.getLeague() == null) ? getPlayerNames() : Collections.emptyList();
+            isPlaying = getPlayerNames().contains(user.getName());
+        } else {
+            playerIds = cardGameMediator.getPlayersPlaying();
+            isPlaying = playerIds.contains(user.getName());
+        }
+
+        Map<String, String> props = new HashMap<>();
+
+        props.put("gameId", gameId);
+        props.put("watchable", String.valueOf(isWatchableToUser(user)));
+        props.put("status", String.valueOf(_tableStatus));
+        props.put("statusDescription", statusDescription);
+        props.put("gameType", gameSettings.getGameFormat().getGameType().name());
+        props.put("format", gameSettings.getGameFormat().getName());
+        props.put("userDescription", gameSettings.getUserDescription());
+        props.put("isPrivate", String.valueOf(gameSettings.isPrivateGame()));
+        props.put("isInviteOnly", String.valueOf(gameSettings.isUserInviteOnly()));
+        props.put("tournament", tournamentName);
+        props.put("players", StringUtils.join(playerIds, ","));
+        props.put("playing", String.valueOf(isPlaying));
+        if (_tableStatus != TableStatus.WAITING) {
+            String winner = cardGameMediator.getWinner();
+            if (winner != null)
+                props.put("winner", winner);
+        }
+
+        return props;
+    }
+
+    private boolean isWatchableToUser(User user) {
+        return switch(_tableStatus) {
+            case WAITING, FINISHED -> false;
+            case PLAYING -> user.isAdmin() || cardGameMediator.isAllowSpectators();
+        };
+    }
+
+    public void setAsPlaying() { _tableStatus = TableStatus.PLAYING; }
+    public void setAsFinished() { _tableStatus = TableStatus.FINISHED; }
 }

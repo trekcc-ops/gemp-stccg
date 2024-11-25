@@ -1,76 +1,70 @@
 package com.gempukku.stccg.actions.movecard;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
-import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 
-public class DockAction extends AbstractCostToEffectAction {
+public class DockAction extends ActionyAction {
     private final PhysicalShipCard _cardToDock;
-    private boolean _targetChosen = false;
-    private boolean _cardDocked = false;
+    private boolean _targetChosen;
+    private boolean _cardDocked;
     private FacilityCard _dockingTarget;
     private final Collection<FacilityCard> _dockingTargetOptions;
+    private final SelectCardInPlayAction _selectAction;
 
     public DockAction(Player player, PhysicalShipCard cardToDock) {
-        super(player, ActionType.MOVE_CARDS);
+        super(player, "Dock", ActionType.MOVE_CARDS);
         _cardToDock = cardToDock;
-        this.text = "Dock";
 
         _dockingTargetOptions = Filters.yourActiveFacilities(player).stream()
                 .filter(card -> card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation())
                 .toList();
+        _selectAction = new SelectCardInPlayAction(this, player,
+                "Choose facility to dock at", _dockingTargetOptions);
     }
 
-    private Effect chooseDockingTargetEffect() {
-        return new ChooseCardsOnTableEffect(_thisAction, _performingPlayerId,
-                "Choose facility to dock at", _dockingTargetOptions) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> cards) {
-                _targetChosen = true;
-                _dockingTarget = (FacilityCard) Iterables.getOnlyElement(cards);
-            }
-        };
-
-    }
     @Override
     public PhysicalCard getCardForActionSelection() { return _cardToDock; }
     @Override
     public PhysicalCard getActionSource() { return _cardToDock; }
 
     @Override
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) {
 //        if (!isAnyCostFailed()) {
 
-        Effect cost = getNextCost();
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
         if (!_targetChosen) {
-            appendTargeting(chooseDockingTargetEffect());
-            return getNextCost();
+            if (!_selectAction.wasCarriedOut()) {
+                appendTargeting(_selectAction);
+                return getNextCost();
+            } else {
+                _targetChosen = true;
+                _dockingTarget = (FacilityCard) _selectAction.getSelectedCard();
+            }
         }
 
         if (!_cardDocked) {
             _cardDocked = true;
             _cardToDock.dockAtFacility(_dockingTarget);
+            _cardToDock.getGame().getGameState().transferCard(_cardToDock, _dockingTarget);
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
-    @Override
-    public boolean canBeInitiated() { return !_cardToDock.isDocked() && !_dockingTargetOptions.isEmpty(); }
-
-    @Override
-    public ST1EGame getGame() { return _cardToDock.getGame(); }
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return !_cardToDock.isDocked() && !_dockingTargetOptions.isEmpty();
+    }
 
 }

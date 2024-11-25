@@ -18,9 +18,9 @@ public class TribblesPlayCardRule extends TribblesRule {
         if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
             List<Action> result = new LinkedList<>();
             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-                if (card.canBePlayed()) {
+                if (card.canBePlayed(_game)) {
                     Action action = card.getPlayCardAction();
-                    if (action.canBeInitiated())
+                    if (action.canBeInitiated(_game))
                         result.add(action);
                 }
             }

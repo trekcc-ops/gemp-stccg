@@ -20,10 +20,7 @@ public class ActivatePhaseActionsRule extends GenericRule {
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(), _game,
                     Filters.and(Filters.owner(playerId), Filters.active))) {
-                if (!activatableCard.hasTextRemoved()) {
-                    final List<? extends Action> actions = activatableCard.getPhaseActionsInPlay(playerId);
-                    if (actions != null)
-                        result.addAll(actions);
+                if (!activatableCard.hasTextRemoved(_game)) {
 
                     final List<? extends Action> extraActions = _game.getModifiersQuerying().getExtraPhaseActions(_game, activatableCard);
                     if (extraActions != null) {

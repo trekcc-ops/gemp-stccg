@@ -233,7 +233,19 @@ export default class GameAnimations {
                 if (controllerId != null)
                     participantId = controllerId;
 
-                if (zone == "SPACELINE" && participantId != that.game.bottomPlayerId) {
+                // If card is listed as public knowledge in server -> common/filterable/Zone.java
+                // and the card belongs to the opponent, inform UI to invert it.
+                let visible_opponent_zones = [
+                    "TABLE",
+                    "SPACELINE",
+                    "AT_LOCATION",
+                    "ATTACHED",
+                    "STACKED"
+                ];
+
+                if (visible_opponent_zones.includes(zone) &&
+                    (participantId != that.game.bottomPlayerId)
+                ) {
                     var upsideDown = true;
                 } else {
                     var upsideDown = false;
@@ -277,12 +289,20 @@ export default class GameAnimations {
                     var cardDiv = getCardDivFromId(cardId);
                     var card = cardDiv.data("card");
                     var pos = cardDiv.position();
+                    let card_img = $(cardDiv).children(".card_img").first();
 
                     final_position["left"] = pos.left;
                     final_position["top"] = pos.top;
                     final_position["width"] = cardDiv.width();
                     final_position["height"] = cardDiv.height();
                     final_position["z-index"] = cardDiv.css("z-index");
+                    final_position["upside-down"] = card.upsideDown;
+
+                    if (final_position["upside-down"]) {
+                        // Don't animate a card upside down even if that's set. Class is restored in final step.
+                        $(card_img).removeClass("upside-down");
+                    }
+                    
 
                     // Now we begin the animation
                     var gameWidth = $("#main").width();
@@ -340,18 +360,23 @@ export default class GameAnimations {
                         );
                 }).queue(
                 function (next) {
-                    // Set final resting values for the card.
+                    // Set final resting values for the card, including upside-down status.
                     // TODO: This is required in order to ensure the border overlay and
                     //       token overlay display correctly after the animation.
                     //       This may not be necessary if the overlays are contained inside the
                     //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
                     var cardDiv = getCardDivFromId(cardId);
+                    let card_img = $(cardDiv).children(".card_img").first();
                     layoutCardElem(cardDiv,
                         final_position["left"],
                         final_position["top"],
                         final_position["width"],
                         final_position["height"],
                         final_position["z-index"]);
+                    
+                    if (final_position["upside-down"]) {
+                        $(card_img).addClass("upside-down");
+                    }
                     next();
                 });
         }

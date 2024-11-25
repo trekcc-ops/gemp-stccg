@@ -2,10 +2,9 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.ActionProxy;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
-import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;
@@ -13,10 +12,10 @@ import java.util.*;
 public class GenericCardTestHelper extends AbstractAtTest {
 
     // Player key, then name/card
-    public final Map<String, Map<String, PhysicalCardGeneric>> Cards = new HashMap<>();
+    public final Map<String, Map<String, PhysicalCard>> Cards = new HashMap<>();
 
 
-    public PhysicalCardGeneric GetCard(String player, String cardName) { return Cards.get(player).get(cardName); }
+    public PhysicalCard GetCard(String player, String cardName) { return Cards.get(player).get(cardName); }
 
     public List<String> GetAvailableActions(String playerID) {
         AwaitingDecision decision = GetAwaitingDecision(playerID);
@@ -84,22 +83,22 @@ public class GenericCardTestHelper extends AbstractAtTest {
         return _game.getGameState().getDrawDeck(player).size();
     }
 
-    public PhysicalCardGeneric GetPlayerBottomOfDeck(String player) { return GetFromBottomOfPlayerDeck(player, 1); }
-    public PhysicalCardGeneric GetFromBottomOfPlayerDeck(String player, int index)
+    public PhysicalCard GetPlayerBottomOfDeck(String player) { return GetFromBottomOfPlayerDeck(player, 1); }
+    public PhysicalCard GetFromBottomOfPlayerDeck(String player, int index)
     {
         var deck = _game.getGameState().getDrawDeck(player);
-        return (PhysicalCardGeneric) deck.get(deck.size() - index);
+        return deck.get(deck.size() - index);
     }
 
-    public PhysicalCardGeneric GetPlayerTopOfDeck(String player) { return GetFromTopOfPlayerDeck(player, 1); }
+    public PhysicalCard GetPlayerTopOfDeck(String player) { return GetFromTopOfPlayerDeck(player, 1); }
 
     /**
      * Index is 1-based (1 is first, 2 is second, etc.)
      */
-    public PhysicalCardGeneric GetFromTopOfPlayerDeck(String player, int index)
+    public PhysicalCard GetFromTopOfPlayerDeck(String player, int index)
     {
         var deck = _game.getGameState().getDrawDeck(player);
-        return (PhysicalCardGeneric) deck.get(index - 1);
+        return deck.get(index - 1);
     }
 
     public Phase GetCurrentPhase() { return _game.getGameState().getCurrentPhase(); }
@@ -152,7 +151,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
     }
 
-    public void ChooseCards(String player, PhysicalCardGeneric...cards) throws DecisionResultInvalidException {
+    public void ChooseCards(String player, PhysicalCard...cards) throws DecisionResultInvalidException {
         String[] ids = new String[cards.length];
 
         for(int i = 0; i < cards.length; i++)
@@ -165,14 +164,14 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
 
 
-    public void ChooseCardBPFromSelection(String player, PhysicalCardGeneric...cards) throws DecisionResultInvalidException {
+    public void ChooseCardBPFromSelection(String player, PhysicalCard...cards) throws DecisionResultInvalidException {
         String[] choices = GetAwaitingDecisionParam(player,"blueprintId");
-        ArrayList<String> bps = new ArrayList<>();
-        ArrayList<PhysicalCardGeneric> found = new ArrayList<>();
+        Collection<String> bps = new ArrayList<>();
+        Collection<PhysicalCard> found = new ArrayList<>();
 
         for(int i = 0; i < choices.length; i++)
         {
-            for(PhysicalCardGeneric card : cards)
+            for(PhysicalCard card : cards)
             {
                 if(found.contains(card))
                     continue;
@@ -190,16 +189,16 @@ public class GenericCardTestHelper extends AbstractAtTest {
         playerDecided(player, String.join(",", bps));
     }
 
-    public void ChooseCardIDFromSelection(String player, PhysicalCardGeneric...cards) throws DecisionResultInvalidException {
+    public void ChooseCardIDFromSelection(String player, PhysicalCard...cards) throws DecisionResultInvalidException {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(player);
         //playerDecided(player, "" + card.getCardId());
 
         String[] choices = GetAwaitingDecisionParam(player,"cardId");
-        ArrayList<String> ids = new ArrayList<>();
-        ArrayList<PhysicalCardGeneric> found = new ArrayList<>();
+        Collection<String> ids = new ArrayList<>();
+        Collection<PhysicalCard> found = new ArrayList<>();
 
         for (String choice : choices) {
-            for (PhysicalCardGeneric card : cards) {
+            for (PhysicalCard card : cards) {
                 if (found.contains(card))
                     continue;
 
@@ -215,7 +214,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
 
-    public int GetStrength(PhysicalCardGeneric card)
+    public int GetStrength(PhysicalCard card)
     {
         return _game.getModifiersQuerying().getStrength(card);
     }

@@ -1,11 +1,10 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlacePlayedCardBeneathDrawDeckEffect;
 import com.gempukku.stccg.actions.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
-import com.gempukku.stccg.actions.choose.ReorderTopCardsOfDeckEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardAtRandomFromHandEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
@@ -30,7 +29,7 @@ public class CardEffectBlueprintProducer {
     private enum EffectType {
         DISCARDBOTTOMCARDFROMDECK, DISCARDCARDATRANDOMFROMHAND, DISCARDTOPCARDSFROMDECK, DISCARDTOPCARDFROMPLAYPILE,
         DRAWCARDS, LOOKATHAND, LOOKATRANDOMCARDSFROMHAND, LOOKATTOPCARDSOFDRAWDECK,
-        PLACEPLAYEDCARDBENEATHDRAWDECK, PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE, REORDERTOPCARDSOFDRAWDECK,
+        PLACEPLAYEDCARDBENEATHDRAWDECK, PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE,
         REVEALBOTTOMCARDSOFDRAWDECK, REVEALHAND
     }
     
@@ -42,7 +41,7 @@ public class CardEffectBlueprintProducer {
         String[] allowedFields = switch (effectType) {
             case DISCARDBOTTOMCARDFROMDECK, DISCARDCARDATRANDOMFROMHAND, DISCARDTOPCARDSFROMDECK ->
                     new String[]{"forced", "count", "memorize"};
-            case DRAWCARDS, PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE, REORDERTOPCARDSOFDRAWDECK -> new String[]{"count"};
+            case DRAWCARDS, PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE-> new String[]{"count"};
             case LOOKATHAND, PLACEPLAYEDCARDBENEATHDRAWDECK -> new String[]{};
             case DISCARDTOPCARDFROMPLAYPILE, LOOKATRANDOMCARDSFROMHAND, LOOKATTOPCARDSOFDRAWDECK,
                     REVEALBOTTOMCARDSOFDRAWDECK ->
@@ -64,7 +63,7 @@ public class CardEffectBlueprintProducer {
         
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext context) {
+            protected List<Effect> createEffects(boolean cost, Action action, ActionContext context) {
                 final String selectingPlayerId = selectingPlayer.getPlayerId(context);
                 final String targetPlayerId = targetPlayer.getPlayerId(context);
                 final int count = countSource.evaluateExpression(context, null);
@@ -92,9 +91,6 @@ public class CardEffectBlueprintProducer {
                         case PLACEPLAYEDCARDBENEATHDRAWDECK -> new PlacePlayedCardBeneathDrawDeckEffect(context);
                         case PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE ->
                                 new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(context, targetPlayerId, count);
-                        case REORDERTOPCARDSOFDRAWDECK ->
-                                new ReorderTopCardsOfDeckEffect(context.getGame(), action, selectingPlayerId,
-                                        targetPlayerId, count);
                         case REVEALBOTTOMCARDSOFDRAWDECK ->
                                 new RevealBottomCardsOfDrawDeckEffect(context, targetPlayerId, count, memory);
                         case REVEALHAND -> new RevealHandEffect(context, targetPlayerId, memory);
@@ -113,8 +109,7 @@ public class CardEffectBlueprintProducer {
                 final ModifiersQuerying modifiersQuerying = game.getModifiersQuerying();
                 return switch (effectType) {
                     case DISCARDBOTTOMCARDFROMDECK, DRAWCARDS, LOOKATTOPCARDSOFDRAWDECK,
-                            PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE, REORDERTOPCARDSOFDRAWDECK,
-                            REVEALBOTTOMCARDSOFDRAWDECK ->
+                            PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE, REVEALBOTTOMCARDSOFDRAWDECK ->
                             context.getGameState().getDrawDeck(targetPlayerId).size() >= count;
                     case DISCARDCARDATRANDOMFROMHAND ->
                             context.getGameState().getHand(targetPlayerId).size() >= count &&

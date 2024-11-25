@@ -28,16 +28,12 @@ public enum Phase {
         this.humanReadable = humanReadable;
     }
 
-    public String getHumanReadable() {
-        return humanReadable;
-    }
-
     public static Phase findPhase(String name) {
         String nameCaps = name.toUpperCase(Locale.ROOT).strip().replace(' ', '_').replace('-', '_');
         String nameLower = name.toLowerCase(Locale.ROOT);
 
         for (Phase phase : values()) {
-            String phaseStringLower = phase.getHumanReadable().toLowerCase(Locale.ROOT);
+            String phaseStringLower = phase.toString().toLowerCase(Locale.ROOT);
             String phaseStringUpper = phase.toString();
             if (phaseStringLower.equals(nameLower) || phaseStringUpper.equals(nameCaps))
                 return phase;
@@ -48,5 +44,7 @@ public enum Phase {
     public boolean isSeedPhase() {
         return name().startsWith("SEED");
     }
+
+    public String toString() { return humanReadable; }
 
 }

@@ -12,32 +12,31 @@ import com.gempukku.stccg.processes.GameProcess;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
-    private final String _playerId;
-    private final TribblesGame _game;
-    public TribblesPlayerDrawsAndCanPlayProcess(String playerId, TribblesGame game) {
-        _playerId = playerId;
-        _game = game;
+public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
+    public TribblesPlayerDrawsAndCanPlayProcess(TribblesGame game) {
+        super(game);
     }
 
     @Override
     public void process() {
-        if (_game.getGameState().getDrawDeck(_playerId).isEmpty()) {
-            _game.sendMessage(_playerId + " can't draw a card");
-            _game.getGameState().setPlayerDecked(_playerId, true);
+        String playerId = _game.getCurrentPlayerId();
+        if (_game.getGameState().getDrawDeck(playerId).isEmpty()) {
+            _game.sendMessage(playerId + " can't draw a card");
+            _game.getGameState().setPlayerDecked(playerId, true);
         } else {
-            _game.getGameState().playerDrawsCard(_playerId);
-            _game.sendMessage(_playerId + " drew a card");
-            List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(_playerId);
+            TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
+            _game.getGameState().playerDrawsCard(playerId);
+            _game.sendMessage(playerId + " drew a card");
+            List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(playerId);
             PhysicalCard cardDrawn = playerHand.getLast();
             final List<Action> playableActions = new LinkedList<>();
-            if (cardDrawn.canBePlayed()) {
+            if (cardDrawn.canBePlayed(_game)) {
                 TribblesPlayCardAction action = new TribblesPlayCardAction((TribblesPhysicalCard) cardDrawn);
                 playableActions.add(action);
             }
 
             if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
-                playerPassed(_game);
+                playerPassed();
             } else {
                 String userMessage;
                 if (playableActions.isEmpty()) {
@@ -45,23 +44,23 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
                 } else {
                     userMessage = "Play card that was just drawn or click 'Pass' to end your turn.";
                 }
-                _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                        new CardActionSelectionDecision(1, userMessage, playableActions) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new CardActionSelectionDecision(_game.getPlayer(playerId), userMessage, playableActions) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
-                                    _game.getActionsEnvironment().addActionToStack(action);
+                                    thisGame.getActionsEnvironment().addActionToStack(action);
                                 } else
-                                    playerPassed(_game);
+                                    playerPassed();
                             }
                         });
             }
         }
     }
 
-    private void playerPassed(TribblesGame game) {
-        game.getGameState().breakChain();
+    private void playerPassed() {
+        _game.getGameState().breakChain();
     }
 
     @Override

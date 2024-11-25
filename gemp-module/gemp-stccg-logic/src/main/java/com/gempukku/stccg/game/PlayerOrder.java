@@ -1,19 +1,29 @@
 package com.gempukku.stccg.game;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.util.*;
+
+@JsonSerialize(using = PlayerOrderSerializer.class)
 public class PlayerOrder {
     private boolean _isReversed;
-    private final List<String> _turnOrder;
+    private final List<String> _turnOrder = new LinkedList<>();
     private final String _firstPlayer;
     private String _currentPlayer;
     public PlayerOrder(List<String> turnOrder) {
-        _turnOrder = turnOrder;
+        _turnOrder.addAll(turnOrder);
         _isReversed = false;
         _firstPlayer = turnOrder.getFirst();
         _currentPlayer = turnOrder.getFirst();
+    }
+
+    public PlayerOrder(JsonNode node) {
+        _isReversed = node.get("isReversed").booleanValue();
+        _firstPlayer = node.get("firstPlayer").textValue();
+        _currentPlayer = node.get("currentPlayer").textValue();
+        for (JsonNode playerNode : node.get("turnOrder"))
+            _turnOrder.add(playerNode.textValue());
     }
 
     public String getFirstPlayer() {
@@ -78,4 +88,6 @@ public class PlayerOrder {
     public void reversePlayerOrder() {
         _isReversed = !_isReversed;
     }
+    public boolean isReversed() { return _isReversed; }
+
 }

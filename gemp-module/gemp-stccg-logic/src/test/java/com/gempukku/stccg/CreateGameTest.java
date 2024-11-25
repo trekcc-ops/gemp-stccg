@@ -2,13 +2,14 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateGameTest extends AbstractAtTest {
 
     @Test
-    public void introTwoPlayerGameTest() throws DecisionResultInvalidException {
+    public void introTwoPlayerGameTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeIntroductoryTwoPlayerGame();
 
         // Figure out which player is going first

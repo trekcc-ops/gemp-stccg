@@ -1,18 +1,38 @@
-// Set 135: Chain of Command
-
 {
-    135_004: {
-        title: Jean-Luc Picard
-        type: personnel
-        affiliation: federation
-        property-logo: tng-logo
-        classification: OFFICER
-        icons: command,communications-subcommand,navigation-subcommand,defense-subcommand
-        lore: Rescued Borg counterpart. After returning to his command of the <i>U.S.S. Enterprise</i>, Picard developed a violent vendetta against the Borg.
-        skill-box: "[*] Leadership x2 [*] Archaeology [*] Navigation"
-        integrity: 8
-        cunning: 8
-        strength: 7
-        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/jeanlucpicard.jpg
-    }
+    setId: "135"
+    setName: Chain of Command
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 135_004
+            title: Jean-Luc Picard
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command,communications-subcommand,navigation-subcommand,defense-subcommand
+            lore: Rescued Borg counterpart. After returning to his command of the <i>U.S.S. Enterprise</i>, Picard developed a violent vendetta against the Borg.
+            skill-box: "[*] Leadership x2 [*] Archaeology [*] Navigation"
+            integrity: 8
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/jeanlucpicard.jpg
+        }
+        {
+            blueprintId: 135_011
+            title: U.S.S. Enterprise
+            type: ship
+            affiliation: federation
+            property-logo: tng-logo
+            ship-class: GALAXY CLASS
+            lore: Encountered the <i>U.S.S. Enterprise-C</i> in an alternate reality. Became the <i>Future Enterprise</i> in an alternate future. Visited by crew from the <i>Starship Enterprise</i>.
+            persona: U.S.S. Enterprise
+            gametext: Holodeck, Tractor Beam
+            staffing: command,staff,staff
+            range: 8
+            weapons: 7
+            shields: 9
+            image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/ussenterprise.jpg
+        }
+    ]
 }

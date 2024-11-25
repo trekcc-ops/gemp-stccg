@@ -35,10 +35,12 @@ public abstract class DefaultEffect implements Effect {
         _performingPlayerId = card.getOwnerName();
         _game = card.getGame();
     }
-    protected DefaultEffect(Action action) {
+
+    protected DefaultEffect(DefaultGame game, Action action) {
         _performingPlayerId = action.getPerformingPlayerId();
-        _game = action.getGame();
+        _game = game;
     }
+
 
     protected abstract FullEffectResult playEffectReturningResult();
 

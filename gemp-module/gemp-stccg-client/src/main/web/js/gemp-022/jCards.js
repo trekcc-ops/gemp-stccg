@@ -261,11 +261,7 @@ export default class Card {
 }
 
 
-export function createCardDiv(image, text, foil, tokens, noBorder, errata) {
-    return createCardDiv2(image, text, foil, tokens, noBorder, errata, false);
-}
-
-export function createCardDiv2(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
+export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
     if (cardId == null) {
         if (upsideDown)
             var imgClass = "card_img upside-down";

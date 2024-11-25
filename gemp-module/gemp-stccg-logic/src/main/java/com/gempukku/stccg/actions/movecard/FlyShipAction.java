@@ -1,99 +1,97 @@
 package com.gempukku.stccg.actions.movecard;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.google.common.collect.Iterables;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
-public class FlyShipAction extends AbstractCostToEffectAction {
+public class FlyShipAction extends ActionyAction {
     private final PhysicalShipCard _flyingCard;
-    private boolean _destinationChosen = false;
-    private boolean _cardMoved = false;
+    private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
-    private final Map<PhysicalCard, Integer> _destinationRangeMap = new HashMap<>();
+    private final SelectCardInPlayAction _selectAction;
 
-    public FlyShipAction(Player player, PhysicalShipCard cardToDock) {
-        super(player, ActionType.MOVE_CARDS);
-        _flyingCard = cardToDock;
+    public FlyShipAction(Player player, PhysicalShipCard flyingCard) {
+        super(player, "Fly", ActionType.MOVE_CARDS);
+        _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
-        this.text = "Fly";
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
-        List<ST1ELocation> allLocations = _flyingCard.getGame().getGameState().getSpacelineLocations();
-        ST1ELocation _currentLocation = _flyingCard.getLocation();
+        List<MissionLocation> allLocations = _flyingCard.getGame().getGameState().getSpacelineLocations();
+        MissionLocation _currentLocation = _flyingCard.getLocation();
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
-        for (ST1ELocation location : allLocations) {
+        for (MissionLocation location : allLocations) {
             if (location.getQuadrant() == _currentLocation.getQuadrant() && location != _currentLocation) {
                 try {
                     int rangeNeeded = _currentLocation.getDistanceToLocation(location, player);
                     if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
                         PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
                         _destinationOptions.add(destination);
-                        _destinationRangeMap.put(destination, rangeNeeded);
                         _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
                     }
                 } catch(InvalidGameLogicException exp) {
-                    getGame().sendMessage(exp.getMessage());
+                    player.getGame().sendMessage(exp.getMessage());
                 }
             }
         }
+        _selectAction =
+                new SelectCardInPlayAction(this, player, "Choose destination", _destinationOptions);
     }
 
-    private Effect chooseDestinationEffect() {
-        return new ChooseCardsOnTableEffect(_thisAction, _performingPlayerId,
-                "Choose destination", _destinationOptions) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> cards) {
-                _destinationChosen = true;
-                _destination = Iterables.getOnlyElement(cards);
-            }
-        };
-
-    }
     @Override
     public PhysicalCard getCardForActionSelection() { return _flyingCard; }
+
     @Override
     public PhysicalCard getActionSource() { return _flyingCard; }
 
     @Override
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
-        Effect cost = getNextCost();
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
         if (!_destinationChosen) {
-            appendTargeting(chooseDestinationEffect());
-            return getNextCost();
+            if (_selectAction.wasCarriedOut()) {
+                _destinationChosen = true;
+                _destination = _selectAction.getSelectedCard();
+            } else {
+                appendTargeting(_selectAction);
+                return getNextCost();
+            }
         }
 
         if (!_cardMoved) {
+            DefaultGame game = _flyingCard.getGame();
+            int rangeNeeded =
+                    _flyingCard.getLocation().getDistanceToLocation(_destination.getLocation(),
+                            game.getPlayer(_performingPlayerId));
             _cardMoved = true;
-            _flyingCard.useRange(_destinationRangeMap.get(_destination));
+            _flyingCard.useRange(rangeNeeded);
             _flyingCard.setLocation(_destination.getLocation());
             _flyingCard.getGame().getGameState().moveCard(_flyingCard);
             _flyingCard.getGame().sendMessage(
                     _flyingCard.getCardLink() + " flew to " + _destination.getLocation().getLocationName() +
-                            " (using " + _destinationRangeMap.get(_destination) + " RANGE)"
+                            " (using " + rangeNeeded + " RANGE)"
             );
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
     @Override
-    public boolean canBeInitiated() { return !_flyingCard.isDocked() && !_destinationOptions.isEmpty(); }
-
-    @Override
-    public ST1EGame getGame() { return _flyingCard.getGame(); }
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return !_flyingCard.isDocked() && !_destinationOptions.isEmpty();
+    }
 
 }

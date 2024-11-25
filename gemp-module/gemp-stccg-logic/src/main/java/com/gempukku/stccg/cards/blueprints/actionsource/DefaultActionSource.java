@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.blueprints.actionsource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
@@ -50,7 +49,7 @@ public abstract class DefaultActionSource implements ActionSource {
     }
 
     @Override
-    public void appendActionToContext(CostToEffectAction action, ActionContext actionContext) {
+    public void appendActionToContext(Action action, ActionContext actionContext) {
         if (_text != null)
             action.setText(actionContext.substituteText(_text));
 
@@ -92,11 +91,12 @@ public abstract class DefaultActionSource implements ActionSource {
     protected abstract Action createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 
     public void setTurnLimit(int limitPerTurn) {
-        addRequirement((actionContext) -> actionContext.getSource().checkTurnLimit(limitPerTurn));
+        addRequirement((actionContext) ->
+                actionContext.getSource().checkTurnLimit(actionContext.getGame(), limitPerTurn));
         addCost(
             new DelayedEffectBlueprint() {
                 @Override
-                protected Effect createEffect(CostToEffectAction action, ActionContext actionContext) {
+                protected Effect createEffect(Action action, ActionContext actionContext) {
                     return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
                 }
             });

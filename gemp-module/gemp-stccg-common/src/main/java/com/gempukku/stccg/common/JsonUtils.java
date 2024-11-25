@@ -1,5 +1,7 @@
 package com.gempukku.stccg.common;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +33,7 @@ public class JsonUtils {
     }
 
     public static JsonNode readJsonFromReader(Reader reader) throws IOException {
-        return _mapper.readTree(JsonUtils.readJson(reader));
+        return _mapper.readTree(readJson(reader));
     }
 
     public static <T> List<T> readListOfClassFromReader(Reader reader, Class<T> clazz) throws IOException {
@@ -75,4 +77,22 @@ public class JsonUtils {
     public static String toJsonString(Object object) throws JsonProcessingException {
         return _mapper.writeValueAsString(object);
     }
+
+    public static void writeArray(String fieldName, List<?> array, JsonGenerator jsonGenerator)
+            throws IOException {
+        jsonGenerator.writeArrayFieldStart(fieldName);
+        for (Object object : array)
+            jsonGenerator.writeObject(object);
+        jsonGenerator.writeEndArray();
+    }
+
+    public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String value) throws JsonParseException {
+        try {
+            return Enum.valueOf(enumClass, value.toUpperCase().replaceAll("[ '\\-.]", "_"));
+        } catch(Exception exp) {
+            throw new JsonParseException("Unable to process enum value " + value);
+        }
+    }
+
+
 }

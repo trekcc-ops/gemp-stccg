@@ -10,6 +10,7 @@ public interface AffiliatedCard {
     boolean isMultiAffiliation();
     Affiliation getAffiliation();
     void setCurrentAffiliation(Affiliation affiliation);
+    void changeAffiliation(Affiliation affiliation);
     Set<Affiliation> getAffiliationOptions();
     String getCardLink();
 }

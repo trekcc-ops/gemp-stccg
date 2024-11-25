@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.chat.ChatStrings;
 import com.gempukku.stccg.chat.ChatServer;
@@ -173,25 +174,14 @@ public class GameServer extends AbstractServer {
 
     private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings,
                                                  String gameId) {
-        boolean spectate = (gameSettings.getLeague() != null) ||
-                (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
 
-        CardGameMediator cardGameMediator;
+        GameFormat gameFormat = gameSettings.getGameFormat();
 
-        if (Objects.equals(gameSettings.getGameFormat().getGameType(), "tribbles")) {
-            cardGameMediator = new TribblesGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st1e")){
-            cardGameMediator = new ST1EGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st2e")){
-            cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else {
-            throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() +
-                    "' does not belong to 1E, 2E, or Tribbles");
-        }
-        return cardGameMediator;
+        return switch (gameFormat.getGameType()) {
+            case FIRST_EDITION -> new ST1EGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
+            case SECOND_EDITION -> new ST2EGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
+            case TRIBBLES -> new TribblesGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
+        };
     }
 
     public final CardDeck getParticipantDeck(User player, String deckName) {

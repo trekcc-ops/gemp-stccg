@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.playcard.ChooseAndPlayCardFromZoneEffect;
@@ -10,6 +11,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -33,10 +36,12 @@ public class Blueprint155_021 extends CardBlueprint {
         return Filters.filterYourActive(card.getOwner(), Filters.yourMatchingOutposts(card.getOwner(), card));
     }
 
-    public List<? extends ActivateCardAction> getInPlayActionsNew(Phase phase, PhysicalCard card) {
+    public List<? extends ActivateCardAction> getInPlayActionsNew(Player player, PhysicalCard card) {
+        DefaultGame game = player.getGame();
+        Phase currentPhase = game.getCurrentPhase();
         List<ActivateCardAction> actions = new LinkedList<>();
 
-        if (phase == Phase.CARD_PLAY) {
+        if (currentPhase == Phase.CARD_PLAY) {
 
             ActivateCardAction action1 = new ActivateCardAction(card);
                 // TODO - This should not be where the Filters.playable filter is included
@@ -45,25 +50,24 @@ public class Blueprint155_021 extends CardBlueprint {
                     Filters.youHaveNoCopiesInPlay(card.getOwner()), Filters.playable,
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON));
             action1.setCardActionPrefix("1");
-            action1.appendUsage(new OnceEachTurnEffect(action1));
+            action1.appendUsage(new OnceEachTurnEffect(game, action1));
             action1.appendEffect(
                     new ChooseAndPlayCardFromZoneEffect(Zone.HAND, card.getOwner(), playableCardFilter) {
                         @Override
                         protected Collection<PhysicalCard> getPlayableCards() {
                             Collection<PhysicalCard> playableCards = Filters.filter(
-                                    card.getGame().getGameState().getHand(card.getOwnerName()), playableCardFilter);
+                                    game.getGameState().getHand(card.getOwnerName()), playableCardFilter);
                             playableCards.removeIf(card -> getDestinationOptionsForCard(card).isEmpty());
                             return playableCards;
                         }
 
                         @Override
                         protected void playCard(final PhysicalCard selectedCard) {
-                            setPlayCardAction(new ReportCardAction((PhysicalReportableCard1E) selectedCard, true) {
-                                @Override
-                                protected Collection<PhysicalCard> getDestinationOptions() {
-                                    return getDestinationOptionsForCard(selectedCard);
-                                }
-                                              });
+
+                            Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
+                                    true, Filters.filterYourActive(card.getOwner(),
+                                    Filters.yourMatchingOutposts(card.getOwner(), card)));
+                            setPlayCardAction(action);
                             getPlayCardAction().appendEffect(
                                     new UnrespondableEffect(card.getGame()) {
                                         @Override
@@ -75,7 +79,7 @@ public class Blueprint155_021 extends CardBlueprint {
                         }
                     });
             action1.setText("Report a personnel for free");
-            if (action1.canBeInitiated())
+            if (action1.canBeInitiated(game))
                 actions.add(action1);
 
 /*            ActivateCardAction action2 = new ActivateCardAction(card);

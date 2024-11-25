@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ShuffleCardsIntoDrawDeckEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateRecycleTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateRecycleTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 
@@ -23,15 +23,15 @@ public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffec
             if (!getGame().getGameState().getDiscard(player).isEmpty())
                 playersWithCards.add(player);
         }
-        String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);
-        if (playersWithCardsArr.length == 1)
-            playerChosen(playersWithCardsArr[0], getGame());
+        if (playersWithCards.size() == 1)
+            playerChosen(playersWithCards.getFirst(), getGame());
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player", playersWithCardsArr) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player",
+                            playersWithCards) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, getGame());
+                            playerChosen(result, _tribblesGame);
                         }
                     });
         getGame().getActionsEnvironment().emitEffectResult(_result);

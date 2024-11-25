@@ -7,6 +7,7 @@ public enum PersonnelName implements Filterable {
     JAMES_T_KIRK("James T. Kirk"),
     JEAN_LUC_PICARD ("Jean-Luc Picard"),
     MAROUK("Marouk"),
+    MORN("Morn"),
     TEBOK("Tebok");
 
     private final String _humanReadable;

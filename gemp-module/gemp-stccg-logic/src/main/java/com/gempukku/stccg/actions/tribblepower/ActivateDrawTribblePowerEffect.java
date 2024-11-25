@@ -1,15 +1,14 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-
 import com.gempukku.stccg.game.TribblesGame;
 
 public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
 
-    public ActivateDrawTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateDrawTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 
@@ -19,11 +18,12 @@ public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
         if (players.length == 1)
             playerChosen(players[0], getGame());
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player", players) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player",
+                            players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, getGame());
+                            playerChosen(result, _tribblesGame);
                         }
                     });
         getGame().getActionsEnvironment().emitEffectResult(_result);

@@ -34,8 +34,8 @@ public class LookAtOpponentsHandEffect extends DefaultEffect {
             if (!opponentHand.isEmpty()) {
                 _game.sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");
 
-                _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new ArbitraryCardsSelectionDecision(1, "Opponent's hand", opponentHand,
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(_playerId), "Opponent's hand", opponentHand,
                             Collections.emptyList(), 0, 0) {
                         @Override
                         public void decisionMade(String result) {

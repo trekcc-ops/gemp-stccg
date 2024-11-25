@@ -21,7 +21,7 @@ public class OptionalTriggersRule extends GenericRule {
         Player player = _game.getGameState().getPlayer(playerId);
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterYourActive(player)) {
-            if (!card.hasTextRemoved())
+            if (!card.hasTextRemoved(_game))
                 result.addAll(card.getBeforeTriggerActions(playerId, effect, RequiredType.OPTIONAL));
         }
         return result;

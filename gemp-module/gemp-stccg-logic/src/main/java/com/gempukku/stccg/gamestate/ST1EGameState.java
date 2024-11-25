@@ -8,32 +8,30 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 
 import java.util.*;
 
-public class ST1EGameState extends GameState {
-    private final Map<String, List<PhysicalCard>> _seedDecks;
-    private final Map<String, List<PhysicalCard>> _missionPiles;
-    private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
+public class ST1EGameState extends GameState implements Snapshotable<ST1EGameState> {
+    final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
+    final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     private final ST1EGame _game;
-    private final Set<AwayTeam> _awayTeams = new HashSet<>();
+    final List<AwayTeam> _awayTeams = new ArrayList<>();
 
-    public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
-                         GameFormat format, ST1EGame game) {
-        super(players, decks, library, format, game);
+    public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
+        super(game, playerIds);
         _game = game;
-        _cardGroups.put(Zone.TABLE, new HashMap<>());
-        for (String playerId : players) {
-            _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
-        }
-
-        _seedDecks = new HashMap<>();
-        _missionPiles = new HashMap<>();
         _currentPhase = Phase.SEED_DOORWAY;
+        _cardGroups.put(Zone.TABLE, new HashMap<>());
+        _cardGroups.put(Zone.MISSIONS_PILE, new HashMap<>());
+        for (String playerId : playerIds) {
+            _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
+            _cardGroups.get(Zone.MISSIONS_PILE).put(playerId, new LinkedList<>());
+        }
+    }
+
+    public ST1EGameState(ST1EGame game) {
+        this(game.getPlayerIds(), game);
     }
 
     @Override
@@ -42,26 +40,24 @@ public class ST1EGameState extends GameState {
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                zone == Zone.DISCARD || zone == Zone.TABLE)
+                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE)
             return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.STACKED)
             return _stacked.get(playerId);
-        else if (zone == Zone.MISSIONS_PILE)
-            return _missionPiles.get(playerId);
         else if (zone == Zone.SEED_DECK)
             return _seedDecks.get(playerId);
         else // This should never be accessed
             return _inPlay; // TODO - Should this just be an exception?
     }
 
-    public void createPhysicalCards() {
-        for (Player player : _players.values()) {
+    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
+        for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
-            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
+            for (Map.Entry<SubDeck,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        PhysicalCard card = _library.createPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+                        PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
                         subDeck.add(card);
                         _allCards.put(_nextCardId, card);
                         _nextCardId++;
@@ -71,43 +67,54 @@ public class ST1EGameState extends GameState {
                 }
                 if (entry.getKey() == SubDeck.DRAW_DECK) {
                     _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
+                    for (PhysicalCard card : subDeck)
+                        card.setZone(Zone.DRAW_DECK);
                 } else if (entry.getKey() == SubDeck.SEED_DECK) {
                     _seedDecks.put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.SEED_DECK));
+                    for (PhysicalCard card : subDeck)
+                        card.setZone(Zone.SEED_DECK);
                 } else if (entry.getKey() == SubDeck.MISSIONS) {
-                    _missionPiles.put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.MISSIONS_PILE));
+                    _cardGroups.get(Zone.MISSIONS_PILE).put(playerId, subDeck);
+                    for (PhysicalCard card : subDeck)
+                        card.setZone(Zone.MISSIONS_PILE);
                 }
             }
             _seedDecks.computeIfAbsent(playerId, k -> new LinkedList<>());
-            _missionPiles.computeIfAbsent(playerId, k -> new LinkedList<>());
         }
-    }
-
-    public List<PhysicalCard> getMissionPile(String playerId) {
-        return Collections.unmodifiableList(_missionPiles.get(playerId));
     }
 
     public List<PhysicalCard> getSeedDeck(String playerId) {
         return Collections.unmodifiableList(_seedDecks.get(playerId));
     }
 
+    public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) {
+        AwayTeam result = new AwayTeam(_game, player, mission.getLocation());
+        _awayTeams.add(result);
+        return result;
+    }
+
+    public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
+        AwayTeam result = new AwayTeam(_game, player, location);
+        _awayTeams.add(result);
+        return result;
+    }
+
+
     public boolean hasLocationsInQuadrant(Quadrant quadrant) {
-        for (ST1ELocation location : _spacelineLocations) {
+        for (MissionLocation location : _spacelineLocations) {
             if (location.getQuadrant() == quadrant) return true;
         }
         return false;
     }
 
     public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
-        _spacelineLocations.add(indexNumber, new ST1ELocation(newMission));
+        _spacelineLocations.add(indexNumber, new MissionLocation(newMission));
         addCardToZone(newMission, Zone.SPACELINE, true, false);
     }
 
     public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
             throws InvalidGameLogicException {
-        ST1ELocation location = _spacelineLocations.get(indexNumber);
+        MissionLocation location = _spacelineLocations.get(indexNumber);
         List<MissionCard> missionsAtLocation = location.getMissions();
         if (missionsAtLocation.size() != 1 ||
                 Objects.equals(missionsAtLocation.getFirst().getOwnerName(), newMission.getOwnerName()))
@@ -115,12 +122,11 @@ public class ST1EGameState extends GameState {
                     newMission.getOwnerName() + " already has a mission at " +
                     newMission.getBlueprint().getLocation());
         newMission.stackOn(location.getMissions().getFirst());
-        location.addMission(newMission);
+        newMission.setLocation(location);
         addCardToZone(newMission, Zone.SPACELINE, true, true);
     }
 
     public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
-        _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(card, Zone.AT_LOCATION, true);
     }
@@ -171,18 +177,18 @@ public class ST1EGameState extends GameState {
     public int getSpacelineLocationsSize() { return _spacelineLocations.size(); }
     public int getQuadrantLocationsSize(Quadrant quadrant) {
         int x = 0;
-        for (ST1ELocation location : _spacelineLocations) {
+        for (MissionLocation location : _spacelineLocations) {
             if (location.getQuadrant() == quadrant) x++;
         }
         return x;
     }
-    public List<ST1ELocation> getSpacelineLocations() { return _spacelineLocations; }
+    public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
     public Set<PhysicalCard> getQuadrantLocationCards(Quadrant quadrant) {
         Set<PhysicalCard> newCollection = new HashSet<>();
-        for (ST1ELocation location : _spacelineLocations)
+        for (MissionLocation location : _spacelineLocations)
             for (PhysicalCard mission : location.getMissions())
-                if (mission.getQuadrant() == quadrant)
+                if (location.getQuadrant() == quadrant)
                     newCollection.add(mission);
         return newCollection;
     }
@@ -194,7 +200,7 @@ public class ST1EGameState extends GameState {
         Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
 
         // Send missions in order
-        for (ST1ELocation location : _spacelineLocations) {
+        for (MissionLocation location : _spacelineLocations) {
             for (int i = 0; i < location.getMissions().size(); i++) {
                 sharedMission = i != 0;
                 // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
@@ -225,7 +231,7 @@ public class ST1EGameState extends GameState {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        List<PhysicalCard> missionPile = _missionPiles.get(playerId);
+        List<PhysicalCard> missionPile = _cardGroups.get(Zone.MISSIONS_PILE).get(playerId);
         if (missionPile != null) {
             for (PhysicalCard physicalCard : missionPile) {
                 sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
@@ -237,14 +243,15 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public Set<AwayTeam> getAwayTeams() { return _awayTeams; }
-    public void addAwayTeamToGame(AwayTeam awayTeam) { _awayTeams.add(awayTeam); }
+    public List<AwayTeam> getAwayTeams() { return _awayTeams; }
 
     public void checkVictoryConditions() {
             // TODO - VERY simplistic. Just a straight race to 100.
+            // TODO - Does not account for possible scenario where both players go over 100 simultaneously
         for (Player player : getPlayers()) {
-            if (player.getScore() >= 100)
-                _game.playerWon(player.getPlayerId(), player.getScore() + " points");
+            int score = _playerScores.get(player.getPlayerId());
+            if (score >= 100)
+                _game.playerWon(player.getPlayerId(), score + " points");
         }
     }
 
@@ -262,7 +269,7 @@ public class ST1EGameState extends GameState {
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
-            topCard.addCardToSeededUnder(card);
+            topCard.getLocation().addCardToSeededUnder(card);
         }
     }
 
@@ -271,7 +278,53 @@ public class ST1EGameState extends GameState {
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
-            topCard.addCardToPreSeeds(card, player);
+            topCard.getLocation().addCardToPreSeeds(card, player);
+        }
+    }
+
+    @Override
+    public ST1EGameState generateSnapshot(SnapshotData snapshotData) {
+        ST1EGameState snapshot = new ST1EGameState(_game);
+
+        snapshot._playerOrder = _playerOrder;
+        snapshot.setCurrentPhase(_currentPhase);
+        snapshot._playerDecisions.putAll(_playerDecisions);
+        snapshot._nextCardId = _nextCardId;
+        snapshot._turnNumbers.putAll(_turnNumbers);
+        snapshot._playerScores.putAll(_playerScores);
+
+        for (String playerId : _players.keySet()) {
+            snapshot._players.put(playerId, snapshotData.getDataForSnapshot(_players.get(playerId)));
+        }
+
+        for (Zone zone : _cardGroups.keySet())
+            copyCardGroup(_cardGroups.get(zone), snapshot._cardGroups.get(zone), snapshotData);
+
+        for (MissionLocation location : _spacelineLocations)
+            snapshot._spacelineLocations.add(snapshotData.getDataForSnapshot(location));
+
+        // TODO SNAPSHOT: _awayTeams
+        copyCardGroup(_stacked, snapshot._stacked, snapshotData);
+        copyCardGroup(_seedDecks, snapshot._seedDecks, snapshotData);
+        for (PhysicalCard card : _inPlay) {
+            snapshot._inPlay.add(snapshotData.getDataForSnapshot(card));
+        }
+        for (Integer cardId : _allCards.keySet()) {
+            PhysicalCard card = _allCards.get(cardId);
+            snapshot._allCards.put(cardId, snapshotData.getDataForSnapshot(card));
+        }
+        return snapshot;
+    }
+
+    private static void copyCardGroup(Map<String, List<PhysicalCard>> copyFrom,
+                                      Map<? super String, ? super List<PhysicalCard>> copyTo,
+                                      SnapshotData snapshotData) {
+        for (Map.Entry<String, List<PhysicalCard>> entry : copyFrom.entrySet()) {
+            List<PhysicalCard> snapshotList = new LinkedList<>();
+            copyTo.put(entry.getKey(), snapshotList);
+            for (PhysicalCard card : entry.getValue()) {
+                snapshotList.add(snapshotData.getDataForSnapshot(card));
+            }
         }
     }
 }

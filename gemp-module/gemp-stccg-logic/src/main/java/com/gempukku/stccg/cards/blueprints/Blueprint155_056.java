@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.choose.SelectSkillEffect;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionSkill;
 import com.gempukku.stccg.cards.Skill;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
 
@@ -51,7 +50,7 @@ public class Blueprint155_056 extends CardBlueprint {
 
                             @Override
                             protected void skillChosen(SkillName skill) {
-                                ((PersonnelCard) thisCard).addSkill(skill);
+//                                ((PersonnelCard) thisCard).addSkill(skill);
                             }
                         }
                 );

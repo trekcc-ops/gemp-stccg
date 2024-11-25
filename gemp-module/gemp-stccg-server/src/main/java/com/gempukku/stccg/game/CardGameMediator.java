@@ -5,13 +5,14 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.handler.CardInfoUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
-import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.hall.GameTimer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,12 +40,13 @@ public abstract class CardGameMediator {
     private int _channelNextIndex;
     private volatile boolean _destroyed;
 
-    CardGameMediator(String gameId, GameParticipant[] participants,
-                     GameTimer gameTimer, boolean allowSpectators, boolean showInGameHall) {
+
+    CardGameMediator(String gameId, GameParticipant[] participants, GameSettings gameSettings) {
+        _allowSpectators = (gameSettings.getLeague() != null) ||
+                (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
         _gameId = gameId;
-        _timeSettings = gameTimer;
-        _allowSpectators = allowSpectators;
-        _showInGameHall = showInGameHall;
+        _timeSettings = gameSettings.getTimeSettings();
+        _showInGameHall = gameSettings.isHiddenGame();
         if (participants.length < 1)
             throw new IllegalArgumentException("Game can't have less than one participant");
 
@@ -123,7 +125,7 @@ public abstract class CardGameMediator {
             if (card == null || card.getZone() == null)
                 return null;
             else
-                return CardInfoUtils.getCardInfoHTML(card);
+                return CardInfoUtils.getCardInfoHTML(getGame(), card);
         } finally {
             _readLock.unlock();
         }
@@ -196,7 +198,6 @@ public abstract class CardGameMediator {
     }
 
     public final void cancel(User player) {
-//        getGame().getGameState().sendWarning(player.getName(), "You can't cancel this game");
 
         String playerId = player.getName();
         _writeLock.lock();
@@ -239,7 +240,7 @@ public abstract class CardGameMediator {
                         and ask again for the same decision */
                         String warningMessage = exp.getWarningMessage();
                         gameState.sendWarning(playerName, warningMessage);
-                        game.sendAwaitingDecision(playerName, awaitingDecision);
+                        game.sendAwaitingDecision(awaitingDecision);
                     } catch (RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
                         game.cancelGame();

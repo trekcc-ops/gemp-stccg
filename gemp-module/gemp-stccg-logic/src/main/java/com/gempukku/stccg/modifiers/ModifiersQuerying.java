@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -10,6 +9,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +22,8 @@ public interface ModifiersQuerying {
 
     boolean hasIcon(PhysicalCard physicalCard, CardIcon icon);
 
+    boolean canPlayerSolveMission(String playerId, MissionLocation mission);
+
     boolean hasTextRemoved(PhysicalCard card);
 
     Collection<Modifier> getModifiersAffecting(PhysicalCard card);
@@ -32,7 +34,7 @@ public interface ModifiersQuerying {
     int getStrength(PhysicalCard physicalCard);
 
     // Playing actions
-    boolean canPlayAction(String performingPlayer, Action action);
+    boolean canPerformAction(String performingPlayer, Action action);
 
     boolean canNotPlayCard(String performingPlayer, PhysicalCard card);
 
@@ -42,7 +44,7 @@ public interface ModifiersQuerying {
 
     List<? extends Action> getExtraPhaseActions(DefaultGame game, PhysicalCard target);
 
-    void appendExtraCosts(CostToEffectAction action, PhysicalCard target);
+    void appendExtraCosts(Action action, PhysicalCard target);
 
     // Others
     boolean canBeDiscardedFromPlay(String performingPlayer, PhysicalCard card, PhysicalCard source);

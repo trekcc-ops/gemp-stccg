@@ -1,41 +1,26 @@
 package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.List;
-import java.util.Objects;
 
-public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
-    private final DefaultGame _game;
-    private final List<? extends Action> _actions;
+public abstract class ActionSelectionDecision extends ActionDecision {
 
-    public ActionSelectionDecision(DefaultGame game, int decisionId, String text, List<? extends Action> actions) {
-        super(decisionId, text, AwaitingDecisionType.ACTION_CHOICE);
-        _game = game;
-        _actions = actions;
-
-        setParam("actionId", getActionIds(actions));
-        setParam("blueprintId", getBlueprintIds(actions));
-        setParam("imageUrl", getImageUrls(actions));
-        setParam("actionText", getActionTexts(actions));
+    public ActionSelectionDecision(Player player, String text, List<Action> actions) {
+        super(player, text, actions, AwaitingDecisionType.ACTION_CHOICE);
+        setParam("blueprintId", getBlueprintIds());
+        setParam("imageUrl", getImageUrls());
     }
 
-    private String[] getActionIds(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
-        for (int i = 0; i < result.length; i++)
-            result[i] = String.valueOf(i);
-        return result;
-    }
 
-    private String[] getBlueprintIds(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
+    private String[] getBlueprintIds() {
+        String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++) {
-            PhysicalCard physicalCard = actions.get(i).getCardForActionSelection();
+            PhysicalCard physicalCard = _actions.get(i).getCardForActionSelection();
             if (physicalCard != null)
                 result[i] = String.valueOf(physicalCard.getBlueprintId());
             else
@@ -44,29 +29,13 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
         return result;
     }
 
-    private String[] getImageUrls(List<? extends Action> actions) {
-        String[] blueprints = getBlueprintIds(actions);
-        String[] images = new String[blueprints.length];
-        for (int i = 0; i < blueprints.length; i++) {
-            if (Objects.equals(blueprints[i], "rules")) {
-                images[i] = "rules";
-            } else {
-                try {
-                    images[i] = _game.getBlueprintLibrary().getCardBlueprint(blueprints[i]).getImageUrl();
-                } catch (CardNotFoundException exp) {
-                    throw new RuntimeException(
-                            "ActionSelectionDecision unable to find image URLs for all card blueprints", exp);
-                }
-            }
+    private String[] getImageUrls() {
+        String[] images = new String[_actions.size()];
+        for (int i = 0; i < images.length; i++) {
+            PhysicalCard physicalCard = _actions.get(i).getCardForActionSelection();
+            images[i] = (physicalCard == null) ? "rules" : physicalCard.getImageUrl();
         }
         return images;
-    }
-
-    private String[] getActionTexts(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
-        for (int i = 0; i < result.length; i++)
-            result[i] = actions.get(i).getText();
-        return result;
     }
 
     protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
@@ -83,6 +52,4 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
             throw new DecisionResultInvalidException();
         }
     }
-
-    public List<? extends Action> getActions() { return _actions; }
 }

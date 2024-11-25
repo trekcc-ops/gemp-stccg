@@ -2,13 +2,13 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.turn.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
 import java.util.LinkedList;
 
 public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private String _cardActionPrefix;
+    int _actionId;
     private final LinkedList<Effect> _costs = new LinkedList<>();
     private final LinkedList<Effect> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Effect> _targeting = new LinkedList<>();
@@ -19,24 +19,21 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     protected String text;
 
     protected final String _performingPlayerId;
-    protected final Action _thisAction = this;
-    private boolean _virtualCardAction = false;
+    private boolean _virtualCardAction;
     protected final ActionType _actionType;
     public ActionType getActionType() { return _actionType; }
 
-    protected AbstractCostToEffectAction(String performingPlayerId, ActionType actionType) {
-        _performingPlayerId = performingPlayerId;
-        _actionType = actionType;
+    protected AbstractCostToEffectAction(DefaultGame game, Action action) {
+        _performingPlayerId = action.getPerformingPlayerId();
+        _actionType = action.getActionType();
+        _actionId = game.getActionsEnvironment().getNextActionId();
+        game.getActionsEnvironment().incrementActionId();
     }
-    protected AbstractCostToEffectAction(Player player, ActionType actionType) {
-        this(player.getPlayerId(), actionType);
-    }
+
+
     protected AbstractCostToEffectAction(Action action) {
-        this(action.getPerformingPlayerId(), action.getActionType());
-    }
-    protected AbstractCostToEffectAction() {
-        _performingPlayerId = null;
-        _actionType = ActionType.OTHER;
+        _performingPlayerId = action.getPerformingPlayerId();
+        _actionType = action.getActionType();
     }
 
 
@@ -85,7 +82,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     @Override
-    public String getText() { return text; }
+    public String getActionSelectionText(DefaultGame game) { return text; }
 
     protected boolean isCostFailed() {
         for (Effect processedCost : _processedCosts) {
@@ -137,13 +134,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return true;
     }
 
-    public abstract DefaultGame getGame();
-
-    public SubAction createSubAction() {
-        return new SubAction(_thisAction);
-    }
-
-    public boolean canBeInitiated() {
+    public boolean canBeInitiated(DefaultGame cardGame) {
         return costsCanBePaid();
     }
 

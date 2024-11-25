@@ -6,11 +6,9 @@ import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.processes.GameProcess;
 
-public class TribblesBetweenTurnsProcess extends GameProcess {
-
-    private final TribblesGame _game;
+public class TribblesBetweenTurnsProcess extends TribblesGameProcess {
     public TribblesBetweenTurnsProcess(TribblesGame game) {
-        _game = game;
+        super(game);
     }
     @Override
     public void process() {

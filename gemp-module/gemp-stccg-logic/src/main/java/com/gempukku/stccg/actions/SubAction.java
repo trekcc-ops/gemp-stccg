@@ -5,20 +5,34 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class SubAction extends AbstractCostToEffectAction {
     private final Action _action;
-    protected final DefaultGame _game;
+    private Effect _effect;
 
     public SubAction(Action action) {
         super(action);
         _action = action;
-        _game = action.getGame();
     }
 
-    @Override
-    public DefaultGame getGame() { return _game; }
+    public SubAction(Action action, DefaultGame game) {
+        super(game, action);
+        _action = action;
+    }
+
+
+    public SubAction(Action action, Effect effect) {
+        super(effect.getGame(), action);
+        _action = action;
+        _effect = effect;
+        appendEffect(effect);
+    }
 
     @Override
     public PhysicalCard getCardForActionSelection() {
         return _action.getCardForActionSelection();
+    }
+
+    @Override
+    public int getActionId() {
+        return _actionId;
     }
 
     @Override
@@ -32,12 +46,12 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public String getText() {
-        return _action.getText();
+    public String getActionSelectionText(DefaultGame game) {
+        return _action.getActionSelectionText(game);
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (isCostFailed()) {
             return null;
         } else {
@@ -48,4 +62,6 @@ public class SubAction extends AbstractCostToEffectAction {
             return getNextEffect();
         }
     }
+
+    public Effect getEffect() { return _effect; }
 }

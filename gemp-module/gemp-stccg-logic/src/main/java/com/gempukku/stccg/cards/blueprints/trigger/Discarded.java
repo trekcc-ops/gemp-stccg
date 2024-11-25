@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
@@ -36,12 +36,12 @@ public class Discarded implements TriggerCheckerProducer {
                 boolean result = TriggerConditions.forEachDiscardedFromPlay(actionContext.getGame(), actionContext.getEffectResult(), filterable);
                 if (result && playerSource != null) {
                     // Need to check if it was that player discarding the card
-                    final String performingPlayer = ((DiscardCardsFromPlayResult) actionContext.getEffectResult()).getPerformingPlayer();
+                    final String performingPlayer = ((DiscardCardFromPlayResult) actionContext.getEffectResult()).getPerformingPlayer();
                     if (performingPlayer == null || !performingPlayer.equals(playerSource.getPlayerId(actionContext)))
                         result = false;
                 }
                 if (result && memorize != null) {
-                    final PhysicalCard discardedCard = ((DiscardCardsFromPlayResult) actionContext.getEffectResult()).getDiscardedCard();
+                    final PhysicalCard discardedCard = ((DiscardCardFromPlayResult) actionContext.getEffectResult()).getDiscardedCard();
                     actionContext.setCardMemory(memorize, discardedCard);
                 }
                 return result;

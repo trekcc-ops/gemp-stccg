@@ -3,20 +3,23 @@ package com.gempukku.stccg.actions.choose;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class ChooseAffiliationEffect extends DefaultEffect {
     private final String _playerId;
     private final List<Affiliation> _affiliationOptions;
 
-    public ChooseAffiliationEffect(DefaultGame game, String playerId,
-                                   List<Affiliation> affiliationOptions) {
-        super(game, playerId);
-        _playerId = playerId;
+    public ChooseAffiliationEffect(Player player, List<Affiliation> affiliationOptions) {
+        super(player);
+        _playerId = player.getPlayerId();
         _affiliationOptions = affiliationOptions;
     }
+
 
     @Override
     public boolean isPlayableInFull() {
@@ -34,8 +37,9 @@ public abstract class ChooseAffiliationEffect extends DefaultEffect {
                 affiliationStringMap.put(affiliation.getHumanReadable(), affiliation);
                 affiliationStrings.add(affiliation.getHumanReadable());
             }
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new MultipleChoiceAwaitingDecision("Choose an affiliation", affiliationStrings) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_playerId), "Choose an affiliation",
+                            affiliationStrings) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             affiliationChosen(affiliationStringMap.get(result));

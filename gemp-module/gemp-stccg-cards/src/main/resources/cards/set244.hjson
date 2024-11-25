@@ -1,19 +1,23 @@
-// Set 244: Ships of the Line
-
 {
-    244_014: {
-        title: U.S.S. Ambassador
-        type: ship
-        affiliation: federation
-        uniqueness: universal
-        property-logo: tng-logo
-        ship-class: AMBASSADOR CLASS
-        lore: Mainstay Federation vessel of the mid-24th century. NCC-10521. The design had more maneuverability than many of its counterparts of that era.
-        staffing: command,staff,staff
-        gametext: Tractor Beam
-        range: 7
-        weapons: 7
-        shields: 8
-        image-url: https://www.trekcc.org/1e/cardimages/stol/14.jpg
-    }
+    setId: "244"
+    setName: Ships of the Line
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 244_014
+            title: U.S.S. Ambassador
+            type: ship
+            affiliation: federation
+            uniqueness: universal
+            property-logo: tng-logo
+            ship-class: AMBASSADOR CLASS
+            lore: Mainstay Federation vessel of the mid-24th century. NCC-10521. The design had more maneuverability than many of its counterparts of that era.
+            staffing: command,staff,staff
+            gametext: Tractor Beam
+            range: 7
+            weapons: 7
+            shields: 8
+            image-url: https://www.trekcc.org/1e/cardimages/stol/14.jpg
+        }
+    ]
 }

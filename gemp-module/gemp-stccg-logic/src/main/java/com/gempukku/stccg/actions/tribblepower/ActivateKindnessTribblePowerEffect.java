@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
@@ -15,7 +15,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.Collection;
 
 public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateKindnessTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateKindnessTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 
@@ -25,7 +25,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
     }
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new DrawCardsEffect(getGame(), _action, _activatingPlayer, 1));
             // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (String player : getGame().getPlayerIds()) {
@@ -44,7 +44,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
                 });
             }
         }
-        Effect effect = new PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(
+        Effect effect = new PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(_game,
                 _action, _activatingPlayer, false, Filters.any);
         subAction.appendEffect(effect);
         return addActionAndReturnResult(getGame(), subAction);

@@ -1,39 +1,29 @@
 package com.gempukku.stccg.processes.tribbles;
 
-import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.PlayerOrderFeedback;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class TribblesPlayerOrderProcess extends GameProcess {
-    private final Map<String, Integer> _startingTribbles = new LinkedHashMap<>();
-    private final PlayerOrderFeedback _playerOrderFeedback;
-    private final LinkedList<String> _players = new LinkedList<>();
-    private final Map<String, CardDeck> _decks;
-    private final CardBlueprintLibrary _library;
-    private String _firstPlayer;
-    private final TribblesGame _game;
+public class TribblesPlayerOrderProcess extends TribblesGameProcess {
 
-    public TribblesPlayerOrderProcess(Map<String, CardDeck> decks, CardBlueprintLibrary library,
-                                      PlayerOrderFeedback playerOrderFeedback, TribblesGame game) {
-        _players.addAll(decks.keySet());
-        Collections.shuffle(_players, ThreadLocalRandom.current());
-        _decks = decks;
-        _playerOrderFeedback = playerOrderFeedback;
-        _library = library;
-        _game = game;
+    public TribblesPlayerOrderProcess(TribblesGame game) {
+        super(game);
     }
 
     @Override
     public void process() {
-        LinkedList<String> playersSelecting = new LinkedList<>(_players);
+
+        LinkedList<String> playersInOrder = new LinkedList<>(_game.getPlayerIds());
+        Collections.shuffle(playersInOrder, ThreadLocalRandom.current());
+
+        Map<String, Integer> startingTribbles = new LinkedHashMap<>();
+        LinkedList<String> playersSelecting = new LinkedList<>(playersInOrder);
         Map<String, Integer> playersWithOneValue = new LinkedHashMap<>();
 
         for (String player: playersSelecting) {
@@ -41,22 +31,18 @@ public class TribblesPlayerOrderProcess extends GameProcess {
         }
 
         while (playersSelecting.size() > 1) {
-            _startingTribbles.clear();
+            startingTribbles.clear();
 
             for (String player : playersSelecting) {
-                List<String> playerDeckCards = _decks.get(player).getDrawDeckCards();
-                String randomCard = playerDeckCards.get(new Random().nextInt(playerDeckCards.size()));
-                try {
-                    CardBlueprint randomBlueprint = _library.getCardBlueprint(randomCard);
-                    _game.sendMessage(player + " drew " + randomBlueprint.getTitle());
-                    int randomTribbleCount = randomBlueprint.getTribbleValue();
-                    _startingTribbles.put(player, randomTribbleCount);
-                } catch (CardNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+                List<PhysicalCard> deckCards = _game.getGameState().getZoneCards(player, Zone.DRAW_DECK);
+                PhysicalCard randomCard = deckCards.get(new Random().nextInt(deckCards.size()));
+                CardBlueprint randomBlueprint = randomCard.getBlueprint();
+                _game.sendMessage(player + " drew " + randomBlueprint.getTitle());
+                int randomTribbleCount = randomBlueprint.getTribbleValue();
+                startingTribbles.put(player, randomTribbleCount);
             }
 
-            int highestTribble = Collections.max(_startingTribbles.values());
+            int highestTribble = Collections.max(startingTribbles.values());
 
             boolean infiniteLoopPossible = true;
 
@@ -68,7 +54,7 @@ public class TribblesPlayerOrderProcess extends GameProcess {
             }
 
             for (String player : playersSelecting) {
-                if (_startingTribbles.get(player) < highestTribble) {
+                if (startingTribbles.get(player) < highestTribble) {
                     playersSelecting.remove(player);
                     playersWithOneValue.remove(player);
                 }
@@ -82,29 +68,25 @@ public class TribblesPlayerOrderProcess extends GameProcess {
             }
         }
 
-        _firstPlayer = playersSelecting.getFirst();
+        String _firstPlayer = playersSelecting.getFirst();
 
-        _playerOrderFeedback.setPlayerOrder(new PlayerOrder(_players), _firstPlayer);
+        _game.getGameState().initializePlayerOrder(new PlayerOrder(playersInOrder));
     }
-
+    
     private Integer playerOnlyHasOneTribbleValue(String playerId) {
         ArrayList<Integer> uniqueValues = new ArrayList<>();
-        for (String card : _decks.get(playerId).getDrawDeckCards()) {
-            try {
-                Integer value = _library.getCardBlueprint(card).getTribbleValue();
-                if (!uniqueValues.contains(value))
-                    uniqueValues.add(value);
-            } catch (CardNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+        for (PhysicalCard card : _game.getGameState().getDrawDeck(playerId)) {
+            int value = card.getBlueprint().getTribbleValue();
+            if (!uniqueValues.contains(value))
+                uniqueValues.add(value);
         }
         if (uniqueValues.size() == 1)
             return uniqueValues.getFirst();
         else return 0;
     }
-
+    
     @Override
     public GameProcess getNextProcess() {
-        return new TribblesStartOfRoundGameProcess(_firstPlayer, _game);
+        return new TribblesStartOfRoundGameProcess(_game);
     }
 }

@@ -8,7 +8,7 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
@@ -68,7 +68,7 @@ public class ReturnCardsToHandEffect extends DefaultEffect {
             gameState.sendMessage(_source.getCardLink() + " returns " + TextUtils.getConcatenatedCardLinks(cardsToReturnToHand) + " to hand");
 
         for (PhysicalCard discardedCard : discardedFromPlay)
-            _game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));
+            _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromPlayResult(null, discardedCard));
         for (PhysicalCard cardReturned : cardsToReturnToHand)
             _game.getActionsEnvironment().emitEffectResult(new ReturnCardsToHandResult(cardReturned));
 
