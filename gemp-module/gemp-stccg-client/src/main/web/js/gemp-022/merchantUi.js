@@ -1,24 +1,24 @@
-var GempLotrMerchantUI = Class.extend({
-    comm:null,
+export default class GempLotrMerchantUI {
+    comm;
 
-    cardsDiv:null,
-    cardsGroup:null,
+    cardsDiv;
+    cardsGroup;
 
-    filterDiv:null,
-    cardFilter:null,
+    filterDiv;
+    cardFilter;
 
-    pocketDiv:null,
-    hideMerchantDiv:null,
-    countDiv:null,
+    pocketDiv;
+    hideMerchantDiv;
+    countDiv;
 
-    infoDialog:null,
-    questionDialog:null,
+    infoDialog;
+    questionDialog;
 
-    currencyCount:null,
-    ownedMin:0,
-    hideMerchant:false,
+    currencyCount;
+    ownedMin = 0;
+    hideMerchant = false;
 
-    init:function (cardListElem, cardFilterElem) {
+    constructor(cardListElem, cardFilterElem) {
         var that = this;
 
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
@@ -117,14 +117,14 @@ var GempLotrMerchantUI = Class.extend({
                 });
 
         this.cardFilter.getCollection();
-    },
+    }
 
-    dragCardData:null,
-    dragStartX:null,
-    dragStartY:null,
-    successfulDrag:null,
+    dragCardData;
+    dragStartX;
+    dragStartY;
+    successfulDrag;
 
-    dragStartCardFunction:function (event) {
+    dragStartCardFunction(event) {
         this.successfulDrag = false;
         var tar = $(event.target);
         if (tar.hasClass("actionArea")) {
@@ -137,9 +137,9 @@ var GempLotrMerchantUI = Class.extend({
             }
         }
         return true;
-    },
+    }
 
-    dragStopCardFunction:function (event) {
+    dragStopCardFunction(event) {
         that = this;
         if (this.dragCardData != null) {
             if (this.dragStartY - event.clientY >= 20) {
@@ -152,9 +152,9 @@ var GempLotrMerchantUI = Class.extend({
             return false;
         }
         return true;
-    },
+    }
 
-    clickCardFunction:function (event) {
+    clickCardFunction(event) {
         var that = this;
 
         var tar = $(event.target);
@@ -180,15 +180,15 @@ var GempLotrMerchantUI = Class.extend({
             return false;
         }
         return true;
-    },
+    }
 
-    clearList:function (rootElem) {
+    clearList(rootElem) {
         $(".card", this.cardsDiv).remove();
         this.currencyCount = rootElem.getAttribute("currency");
         this.pocketDiv.html(formatPrice(this.currencyCount));
-    },
+    }
 
-    addCardToList:function (elem, type, blueprintId, count) {
+    addCardToList(elem, type, blueprintId, count) {
         var buyPrice = elem.getAttribute("buyPrice");
         var sellPrice = elem.getAttribute("sellPrice");
         var tradeFoil = elem.getAttribute("tradeFoil");
@@ -271,9 +271,9 @@ var GempLotrMerchantUI = Class.extend({
                 }
             }
         }
-    },
+    }
 
-    displayMerchantAction:function (card, text, yesFunc) {
+    displayMerchantAction(card, text, yesFunc) {
         var that = this;
         this.questionDialog.html("");
         this.questionDialog.html("<div style='scroll: auto'></div>");
@@ -309,13 +309,13 @@ var GempLotrMerchantUI = Class.extend({
             this.questionDialog.dialog({width:Math.min(360 + horSpace, windowWidth), height:Math.min(520 + vertSpace, windowHeight)});
         }
         this.questionDialog.dialog("open");
-    },
+    }
 
-    finishList:function () {
+    finishList() {
         this.cardsGroup.layoutCards();
-    },
+    }
 
-    layoutUI:function () {
+    layoutUI() {
         var cardsGroupWidth = $(this.cardsDiv).width();
         var cardsGroupHeight = $(this.cardsDiv).height();
         this.cardsGroup.setBounds(0, 0, cardsGroupWidth, cardsGroupHeight);
@@ -327,10 +327,10 @@ var GempLotrMerchantUI = Class.extend({
         this.pocketDiv.css({position:"absolute", left:filterWidth - 60, top:35, width:60, height:18});
         this.hideMerchantDiv.css({position:"absolute", left:filterWidth - 100, top:filterHeight - 38, width:100, height:18});
         this.countDiv.css({position:"absolute", left:filterWidth - 100, top:filterHeight - 20, width:100, height:20});
-    },
+    }
 
-    processError:function (xhr, ajaxOptions, thrownError) {
+    processError(xhr, ajaxOptions, thrownError) {
         if (thrownError != "abort")
             alert("There was a problem during communication with server");
     }
-});
+}
