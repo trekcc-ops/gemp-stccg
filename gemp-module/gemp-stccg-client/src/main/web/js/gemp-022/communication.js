@@ -421,20 +421,40 @@ export default class GempClientCommunication {
         });
     }
 
-    getCollection(collectionType, filter, start, count, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/collection/" + collectionType,
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                filter:filter,
-                start:start,
-                count:count},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
+    async getCollection(collectionType, participantId, filter, start, count) {
+        const url = this.url + "/collection/" + collectionType + "?";
+        const parameters = new URLSearchParams({
+            "participantId": participantId,
+            "filter": filter,
+            "start": start,
+            "count": count
+        }).toString();
+
+        const fullurl = url + parameters;
+
+        try {
+            let response = await fetch(fullurl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/xml"
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status == 404) {
+                    alert("You don't have collection of that type.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                return response.text();
+            }
+        }
+        catch(error) {
+            console.error({"getCollection fetch error": error.message});
+        }
     }
 
     importCollection(decklist, callback, errorMap) {
@@ -541,19 +561,34 @@ export default class GempClientCommunication {
             dataType:"html"
         });
     }
-
-    getSets(format, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/deck/sets",
-            cache:true,
-            data:{ 
-                format:format
-            },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
+    
+    async getSets(format) {
+        const url = this.url + "/deck/sets";
+        try {
+            let response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: `format=${format}`
+            });
+            
+            if (!response.ok) {
+                if (response.status == 400) {
+                    alert("Could not retrieve sets.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                let retval = await response.json();
+                return retval;
+            }
+        }
+        catch(error) {
+            console.error({"getSets fetch error": error.message});
+        }
     }
 
     getFormats(includeEvents, callback, errorMap) {

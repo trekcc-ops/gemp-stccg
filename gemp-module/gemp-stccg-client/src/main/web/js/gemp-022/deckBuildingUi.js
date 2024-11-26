@@ -37,15 +37,7 @@ export default class GempLotrDeckBuildingUI {
 
 
         this.cardFilter = new CardFilter($("#collectionDiv"),
-                function (filter, start, count, callback) {
-                    that.comm.getCollection(that.collectionType, filter, start, count, function (xml) {
-                        callback(xml);
-                    }, {
-                        "404":function () {
-                            alert("You don't have collection of that type.");
-                        }
-                    });
-                },
+                this.collectionType,
                 function () {
                     that.clearCollection();
                 },
@@ -59,10 +51,11 @@ export default class GempLotrDeckBuildingUI {
                 that.formatSelect.val());
 
         $("#formatSelect").change(
-                function () {
+                async function () {
                     that.deckModified(true);
                     that.cardFilter.setFormat(that.formatSelect.val());
-                    that.cardFilter.updateSetOptions();
+                    await that.cardFilter.updateSetOptions();
+                    await that.cardFilter.setFilterChanged();
                 });
 
         var collectionSelect = $("#collectionSelect");
@@ -128,6 +121,7 @@ export default class GempLotrDeckBuildingUI {
         $("#collectionSelect").change(
                 function () {
                     that.collectionType = that.getCollectionType();
+                    that.cardFilter.setCollectionType(that.collectionType);
                     that.cardFilter.getCollection();
                 });
         this.collectionDiv.droppable({
