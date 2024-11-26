@@ -1594,9 +1594,7 @@ export default class GameTableUI {
                         $(this).remove();
                 });
             that.hand.layoutCards();
-            else {
-                that.decisionFunction(id, "" + selectedCardIds);
-            }
+            that.decisionFunction(id, "" + selectedCardIds);
         };
 
         var resetChoice = function () {
