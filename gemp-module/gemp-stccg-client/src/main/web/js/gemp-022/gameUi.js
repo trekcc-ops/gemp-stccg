@@ -2396,15 +2396,19 @@ export class ST1EGameTableUI extends GameTableUI {
 
             if (currQuadrant == "ALPHA" ) {
                 this.locationDivs[locationIndex].addClass("alpha-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Alpha Quadrant");
             }
             if (currQuadrant == "GAMMA" ) {
                 this.locationDivs[locationIndex].addClass("gamma-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Gamma Quadrant");
             }
             if (currQuadrant == "DELTA" ) {
                 this.locationDivs[locationIndex].addClass("delta-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Delta Quadrant");
             }
             if (currQuadrant == "MIRROR" ) {
                 this.locationDivs[locationIndex].addClass("mirror-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Mirror Quadrant");
             }
 
             this.missionCardGroups[locationIndex].setBounds(x, y + locationDivHeight/3, locationDivWidth, locationDivHeight/3);
