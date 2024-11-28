@@ -62,7 +62,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
                         _allCards.put(_nextCardId, card);
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
-                        throw new RuntimeException("Card blueprint not found");
+                        _game.sendErrorMessage(e);
                     }
                 }
                 if (entry.getKey() == SubDeck.DRAW_DECK) {

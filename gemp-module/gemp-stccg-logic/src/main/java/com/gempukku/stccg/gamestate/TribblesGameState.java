@@ -61,7 +61,7 @@ public final class TribblesGameState extends GameState {
                         subDeck.add(card);
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
-                        throw new RuntimeException("Card blueprint not found");
+                        _game.sendErrorMessage(e);
                     }
                 }
                 if (Objects.equals(entry.getKey().name(), "DRAW_DECK")) {
