@@ -404,13 +404,20 @@ public class HallServer extends AbstractServer {
         List<String> validations = format.validateDeck(deck);
         if(!validations.isEmpty()) {
             String firstValidation = validations.stream().findFirst().orElse(null);
-            long count = firstValidation.chars().filter(x -> x == '\n').count();
+            long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();
             if (firstValidation.contains("\n"))
                 firstValidation = firstValidation.substring(0, firstValidation.indexOf("\n"));
-            String validation = "Deck targets '" + deck.getTargetFormat() + "' format and is incompatible with '" +
-                    format.getName() + "'.  Issues include: `" + firstValidation + "` and " +
-                    (validations.size() - 1 + count - 1) + " other issues.";
-            throw new HallException("Your selected deck is not valid for this format: " + validation);
+            long issueCount = validations.size() + newLineCount;
+            StringBuilder validationMessage = new StringBuilder();
+            validationMessage.append("Your selected deck is not valid for this format: ");
+            validationMessage.append("Deck is incompatible with '").append(format.getName()).append("'. ");
+            if (issueCount <= 1) {
+                validationMessage.append(firstValidation);
+            } else {
+                validationMessage.append("Issues include: '").append(firstValidation).append("' and ");
+                validationMessage.append(issueCount - 1).append(" other issues.");
+            }
+            throw new HallException(validationMessage.toString());
         }
         return cardDeck;
     }
