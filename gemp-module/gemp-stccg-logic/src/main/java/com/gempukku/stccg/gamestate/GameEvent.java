@@ -51,7 +51,7 @@ public class GameEvent {
     public enum Attribute {
         /* Don't change these names without editing the client code, as it relies on the .name() method */
         allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
-        locationIndex, message, otherCardIds, quadrant, participantId, phase, serializedGameState,
+        locationIndex, message, otherCardIds, quadrant, participantId, phase, region, serializedGameState,
         targetCardId, text, timestamp,
         type, zone
     }
@@ -149,13 +149,24 @@ public class GameEvent {
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
         _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
 
-        if (card.getCardType() == CardType.MISSION && card.isInPlay())
+        if (card.getCardType() == CardType.MISSION && card.isInPlay()) {
             _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
+            if (card.getLocation().getRegion() != null)
+                _eventAttributes.put(Attribute.region, card.getLocation().getRegion().name());
+        }
 
         if (card.getStackedOn() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
         else if (card.getAttachedTo() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            _eventAttributes.put(
+                    Attribute.serializedGameState, mapper.writeValueAsString(card.getGame().getGameState()));
+        } catch(JsonProcessingException exp) {
+            card.getGame().sendMessage("Unable to create serialized game state");
+        }
     }
 
     public Type getType() { return _type; }
