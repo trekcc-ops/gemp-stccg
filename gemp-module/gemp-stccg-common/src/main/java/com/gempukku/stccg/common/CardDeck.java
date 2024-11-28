@@ -57,6 +57,13 @@ public class CardDeck {
         _subDecks.get(subDeck).add(blueprintId);
     }
     public List<String> getDrawDeckCards() { return _subDecks.get(SubDeck.DRAW_DECK); }
+    public List<String> getAllCards() {
+        List<String> result = new LinkedList<>();
+        for (List<String> subDeckCards : _subDecks.values()) {
+            result.addAll(subDeckCards);
+        }
+        return result;
+    }
 
     public Map<SubDeck, List<String>> getSubDecks() { return _subDecks; }
     public List<String> getSubDeck(SubDeck subDeck) { return _subDecks.get(subDeck); }
