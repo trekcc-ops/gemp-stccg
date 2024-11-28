@@ -407,6 +407,26 @@ ul {
     border-right-color: white;
 }
 
+.alpha-quadrant {
+    background: linear-gradient(to right, rgba(21, 24, 119, 0.2), rgba(21, 24, 119, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+}
+
+.gamma-quadrant {
+    background: linear-gradient(to right, rgba(21, 119, 21, 0.2), rgba(21, 119, 21, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+}
+
+.delta-quadrant {
+    background: linear-gradient(to right, rgba(118, 119, 21, 0.2), rgba(118, 119, 21, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+}
+
+.mirror-quadrant {
+    background: linear-gradient(to right, rgba(142, 29, 29, 0.2), rgba(142, 29, 29, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+}
+
+.st1e-card-group {
+    background: none;
+}
+
 .upside-down {
     transform: rotateX(180deg) rotateY(180deg);
 }
