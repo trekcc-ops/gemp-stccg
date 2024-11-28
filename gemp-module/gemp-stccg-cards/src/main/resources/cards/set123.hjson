@@ -6,6 +6,20 @@
     gameType: First Edition
     cards: [
         {
+            blueprintId: 123_79
+            title: Aftermath
+            type: mission
+            mission-type: planet
+            location: Lifeless world
+            lore: Determine cause of a disaster that obliterated all life on this once-thriving planet.
+            mission-requirements: ENGINEER + Physics x2 + (Honor OR Treachery)
+            affiliation-icons: federation,romulan,non-aligned
+            point-box: 35
+            span: 4
+            quadrant: delta
+            image-url: https://www.trekcc.org/1e/cardimages/voy/aftermath.jpg
+        }
+        {
             blueprintId: 123_193
             title: U.S.S. Intrepid
             type: ship

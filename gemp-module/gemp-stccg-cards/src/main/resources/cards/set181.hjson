@@ -1,0 +1,24 @@
+// Set 181: Crossover
+
+{
+    setId: "181"
+    setName: Crossover
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 181_37
+            title: Investigate Intrusion
+            type: mission
+            mission-type: space
+            region: Bajor
+            location: Denorios Belt
+            lore: Evaluate threat posed by ship after sudden appearance.
+            mission-requirements: Leadership + SECURITY + OFFICER + STRENGTH>30
+            affiliation-icons: klingon,cardassian
+            point-box: 30
+            span: 3
+            quadrant: mirror
+            image-url: https://www.trekcc.org/1e/cardimages/crossover/37.jpg
+        }
+    ]
+}
