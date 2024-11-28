@@ -1,12 +1,10 @@
-// Set 123: Voyager
-
 {
     setId: "123"
     setName: Voyager
     gameType: First Edition
     cards: [
         {
-            blueprintId: 123_79
+            blueprintId: 123_079
             title: Aftermath
             type: mission
             mission-type: planet

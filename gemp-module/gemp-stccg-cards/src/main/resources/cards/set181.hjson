@@ -1,12 +1,10 @@
-// Set 181: Crossover
-
 {
     setId: "181"
     setName: Crossover
     gameType: First Edition
     cards: [
         {
-            blueprintId: 181_37
+            blueprintId: 181_037
             title: Investigate Intrusion
             type: mission
             mission-type: space
