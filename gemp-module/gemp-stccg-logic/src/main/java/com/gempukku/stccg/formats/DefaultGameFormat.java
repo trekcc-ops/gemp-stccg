@@ -301,7 +301,7 @@ public class DefaultGameFormat implements GameFormat {
         }
 
         String newLine;
-        for (String card : deck.getDrawDeckCards()){
+        for (String card : deck.getAllCards()){
             newLine = validateCard(card);
             if(newLine == null || newLine.isEmpty())
                 continue;
@@ -317,7 +317,7 @@ public class DefaultGameFormat implements GameFormat {
         Map<String, Integer> cardCountByName = new HashMap<>();
         Map<String, Integer> cardCountByBaseBlueprintId = new HashMap<>();
 
-        for (String blueprintId : deck.getDrawDeckCards())
+        for (String blueprintId : deck.getAllCards())
             try {
                 processCardCounts(blueprintId, cardCountByName, cardCountByBaseBlueprintId);
             } catch(CardNotFoundException exp) {
