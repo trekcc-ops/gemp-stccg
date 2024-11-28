@@ -408,23 +408,27 @@ ul {
 }
 
 .alpha-quadrant {
-    background: linear-gradient(to right, rgba(21, 24, 119, 0.2), rgba(21, 24, 119, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+    background: rgba(21, 24, 119, 0.2);
+    z-index: 10;
 }
 
 .gamma-quadrant {
-    background: linear-gradient(to right, rgba(21, 119, 21, 0.2), rgba(21, 119, 21, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+    background: rgba(21, 119, 21, 0.2);
+    z-index: 10;
 }
 
 .delta-quadrant {
-    background: linear-gradient(to right, rgba(118, 119, 21, 0.2), rgba(118, 119, 21, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+    background: rgba(118, 119, 21, 0.2);
+    z-index: 10;
 }
 
 .mirror-quadrant {
-    background: linear-gradient(to right, rgba(142, 29, 29, 0.2), rgba(142, 29, 29, 0.2)), url('../dark-hive/images/ui-bg_loop_25_000000_21x21.png');
+    background: rgba(142, 29, 29, 0.2);
+    z-index: 10;
 }
 
 .st1e-card-group {
-    background: none;
+    z-index: 9;
 }
 
 .upside-down {
