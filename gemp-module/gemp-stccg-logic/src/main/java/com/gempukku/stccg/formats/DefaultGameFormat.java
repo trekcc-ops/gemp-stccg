@@ -321,7 +321,7 @@ public class DefaultGameFormat implements GameFormat {
             try {
                 processCardCounts(blueprintId, cardCountByName, cardCountByBaseBlueprintId);
             } catch(CardNotFoundException exp) {
-                result.add("Draw deck contains card of invalid blueprintId '" + blueprintId + "'");
+                result.add("Deck contains card of invalid blueprintId '" + blueprintId + "'");
             }
 
         for (Map.Entry<String, Integer> count : cardCountByName.entrySet()) {

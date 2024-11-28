@@ -409,8 +409,8 @@ public class HallServer extends AbstractServer {
                 firstValidation = firstValidation.substring(0, firstValidation.indexOf("\n"));
             long issueCount = validations.size() + newLineCount;
             StringBuilder validationMessage = new StringBuilder();
-            validationMessage.append("Your selected deck is not valid for this format: ");
-            validationMessage.append("Deck is incompatible with '").append(format.getName()).append("'. ");
+            validationMessage.append("Your selected deck is incompatible with the '");
+            validationMessage.append(format.getName()).append("' format. ");
             if (issueCount <= 1) {
                 validationMessage.append(firstValidation);
             } else {
