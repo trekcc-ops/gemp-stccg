@@ -76,4 +76,8 @@ public class SelectAttemptingUnitAction extends ActionyAction {
 
     public AttemptingUnit getSelection() { return _selectedResponse; }
 
+    public boolean wasCarriedOut() {
+        return _wasCarriedOut;
+    }
+
 }
