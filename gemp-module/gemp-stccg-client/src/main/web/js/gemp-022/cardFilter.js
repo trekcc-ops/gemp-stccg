@@ -174,7 +174,6 @@ export default class CardFilter {
 //        this.raritySelect.on("change", async () => {await this.fullFilterChanged()});
 
         $("#cardType").on("change", async () => {await this.changeDynamicFilters()});
-        $("#keyword").on("change", async () => {await this.filterOut()});
         $("#type").on("change", async () => {await this.filterOut()});
         $(".affiliationFilter").on("click", async () => {await this.filterOut()});
         this.collectionDiv = $("#collection-display");
@@ -200,7 +199,7 @@ export default class CardFilter {
     }
 
     calculateNormalFilter() {
-        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type");
+        var normalFilterArray = new Array("cardType", "affiliation", "type");
         var filterString = "";
 
         for (var i = 0; i < normalFilterArray.length; i++) {

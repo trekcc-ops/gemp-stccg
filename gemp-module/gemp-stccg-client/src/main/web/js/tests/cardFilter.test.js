@@ -327,7 +327,7 @@ test('calculateNormalFilter none checked', async () => {
     
     let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
-    let expectedResult = "|cardType:undefined|keyword:undefined|type:200";
+    let expectedResult = "|cardType:undefined|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);
@@ -383,7 +383,7 @@ test('calculateNormalFilter Federation checked', async () => {
     expect(fedLabel.prop("classList").contains("ui-checkboxradio-checked")).toBe(true);
     
     // run the full filter and verify it returns what we want
-    let expectedResult = "|cardType:undefined|affiliation:FEDERATION|keyword:undefined|type:200";
+    let expectedResult = "|cardType:undefined|affiliation:FEDERATION|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);
@@ -448,7 +448,7 @@ test('calculateNormalFilter Federation + Kazon checked', async () => {
     expect(kazLabel.prop("classList").contains("ui-checkboxradio-checked")).toBe(true);
     
     // run the full filter and verify it returns what we want
-    let expectedResult = "|cardType:undefined|affiliation:FEDERATION,KAZON|keyword:undefined|type:200";
+    let expectedResult = "|cardType:undefined|affiliation:FEDERATION,KAZON|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);
