@@ -407,6 +407,30 @@ ul {
     border-right-color: white;
 }
 
+.alpha-quadrant {
+    background: rgba(21, 24, 119, 0.2);
+    z-index: 10;
+}
+
+.gamma-quadrant {
+    background: rgba(21, 119, 21, 0.2);
+    z-index: 10;
+}
+
+.delta-quadrant {
+    background: rgba(255, 255, 0, 0.2);
+    z-index: 10;
+}
+
+.mirror-quadrant {
+    background: rgba(142, 29, 29, 0.2);
+    z-index: 10;
+}
+
+.st1e-card-group {
+    z-index: 9;
+}
+
 .upside-down {
     transform: rotateX(180deg) rotateY(180deg);
 }
