@@ -247,6 +247,63 @@ test('setFormat hides the Tribble Power selector', async () => {
     expect(cf.tribblePowerSelect.classList.contains("hidden"));
 });
 
+test('setFormat changes the TrekCC search URL', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <div id='advanced-filter'>
+				<a id='card-search-url' target='_blank' href='https://www.trekcc.org/'>
+					More filters available in the TrekCC.org card search engine.
+				</a>
+			</div>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "st1emoderncomplete";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    
+    // default case is 1e
+    let anchor_under_test = document.getElementById("card-search-url");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+
+    // 1e to tribbles changes to default case
+    cf.setFormat("tribbles");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/");
+
+    // tribbles back to 1e
+    cf.setFormat("st1emoderncomplete");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+
+    // 1e to 2e changes to 2e link
+    cf.setFormat("st2e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/2e/?mode=search");
+
+    // 2e back to tribbles
+    cf.setFormat("tribbles");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/");
+
+    // tribbles back to 2e hides it
+    cf.setFormat("st2e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/2e/?mode=search");
+
+    // 2e to 1e debug
+    cf.setFormat("debug1e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+});
+
 test('setType can set the type', async () => {
     document.body.innerHTML = 
         '<select id="type" class="cardFilterSelect">' +

@@ -51,6 +51,30 @@ export default class CardFilter {
 
     setFormat(format) {
         this.format = format;
+
+        // Change search URL
+        if ((this.format === "debug1e") ||
+            (this.format === "st1emoderncomplete")) {
+            
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/1e/?mode=search");
+            }
+        }
+        else if (this.format === "st2e") {
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/2e/?mode=search");
+            }
+        }
+        else {
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/");
+            }
+        }
+
+        // show/hide Tribble Power selector
         if (this.format === "tribbles") {
             if (this.tribblePowerSelect) {
                 this.tribblePowerSelect.classList.remove("hidden");
