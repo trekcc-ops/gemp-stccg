@@ -64,7 +64,7 @@ test('setCollectionType resets the start point', async () => {
 });
 
 test('setFilter sets the filter', async () => {
-    // I don't know what part of the UI uses this except for merchantUI - unneeded?
+    // I don't know what part of the UI uses this except for the now-dead merchantUI - unneeded?
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
                 <option value="default">All cards</option>
@@ -93,7 +93,7 @@ test('setFilter sets the filter', async () => {
 });
 
 test('setFilter resets the start point', async () => {
-    // I don't know what part of the UI uses this except for merchantUI - unneeded?
+    // I don't know what part of the UI uses this except for now-dead merchantUI - unneeded?
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
                 <option value="default">All cards</option>

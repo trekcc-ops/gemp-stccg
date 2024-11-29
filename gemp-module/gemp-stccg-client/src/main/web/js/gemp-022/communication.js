@@ -359,67 +359,6 @@ export default class GempClientCommunication {
             dataType:"xml"
         });
     }
-    
-    getMerchant(filter, ownedMin, start, count, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/merchant",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                filter:filter,
-                ownedMin:ownedMin,
-                start:start,
-                count:count},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
-    buyItem(blueprintId, price, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/merchant/buy",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                blueprintId:blueprintId,
-                price:price},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-
-    sellItem(blueprintId, price, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/merchant/sell",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                blueprintId:blueprintId,
-                price:price},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-
-    tradeInFoil(blueprintId, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/merchant/tradeFoil",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                blueprintId:blueprintId},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
 
     async getCollection(collectionType, participantId, filter, start, count) {
         const url = this.url + "/collection/" + collectionType + "?";
