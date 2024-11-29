@@ -321,7 +321,7 @@ public class CardBlueprintLibrary {
         }
 
         // Throw exception if card not found in blueprints
-        throw new CardNotFoundException(blueprintId1);
+        throw new CardNotFoundException("Unable to find card blueprint for id '" + blueprintId1 + "'");
     }
 
     public String stripBlueprintModifiers(String blueprintId) {
