@@ -2365,7 +2365,6 @@ export class ST1EGameTableUI extends GameTableUI {
             this.hand.layoutCards();
         }
 
-            // LOCATION CODE FROM SWCCG GEMP
         var locationsCount = this.locationDivs.length;
 
         var zoomedInLocationDivWidth = (width / Math.min(3.25, locationsCount)) - (LOCATION_BORDER_PADDING / 2);
@@ -2395,6 +2394,23 @@ export class ST1EGameTableUI extends GameTableUI {
                 this.locationDivs[locationIndex].removeClass("last-in-quadrant");
             }
 
+            if (currQuadrant == "ALPHA" ) {
+                this.locationDivs[locationIndex].addClass("alpha-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Alpha Quadrant");
+            }
+            if (currQuadrant == "GAMMA" ) {
+                this.locationDivs[locationIndex].addClass("gamma-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Gamma Quadrant");
+            }
+            if (currQuadrant == "DELTA" ) {
+                this.locationDivs[locationIndex].addClass("delta-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Delta Quadrant");
+            }
+            if (currQuadrant == "MIRROR" ) {
+                this.locationDivs[locationIndex].addClass("mirror-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Mirror Quadrant");
+            }
+
             this.missionCardGroups[locationIndex].setBounds(x, y + locationDivHeight/3, locationDivWidth, locationDivHeight/3);
             this.missionCardGroups[locationIndex].layoutCards();
             this.opponentAtLocationCardGroups[locationIndex].setBounds(x, y, locationDivWidth, locationDivHeight / 3);
@@ -2404,7 +2420,6 @@ export class ST1EGameTableUI extends GameTableUI {
 
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
         }
-                // END OF SWCCG GEMP LOCATION CODE
 
         for (var playerId in this.discardPileGroups)
             if (this.discardPileGroups.hasOwnProperty(playerId))
