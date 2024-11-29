@@ -50,36 +50,39 @@ public class AttemptMissionAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
+
+        Action cost = getNextCost();
+        if (cost != null)
+            return cost;
+
+        if (!getProgress(Progress.choseAttemptingUnit)) {
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+            if (_selectAttemptingUnitAction == null) {
+
+                List<AttemptingUnit> eligibleUnits = new ArrayList<>();
+                _missionCard.getYourAwayTeamsOnSurface(performingPlayer)
+                        .filter(awayTeam -> awayTeam.canAttemptMission(_missionCard))
+                        .forEach(eligibleUnits::add);
+
+                // Get ships that can attempt mission
+                for (PhysicalCard card : Filters.filterYourActive(performingPlayer,
+                        Filters.ship, Filters.atLocation(_missionCard.getLocation()))) {
+                    if (card instanceof PhysicalShipCard ship)
+                        if (ship.canAttemptMission(_missionCard))
+                            eligibleUnits.add(ship);
+                }
+                _selectAttemptingUnitAction = new SelectAttemptingUnitAction(performingPlayer, eligibleUnits);
+                return _selectAttemptingUnitAction;
+            } else if (_selectAttemptingUnitAction.wasCarriedOut()) {
+                setAttemptingUnit(_selectAttemptingUnitAction.getSelection());
+            }
+        }
+
+        if (_attemptingUnit == null) {
+            throw new InvalidGameLogicException("AttemptMissionAction unable to select attempting unit");
+        } else if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
             failMission(cardGame);
         } else {
-            Player player = cardGame.getPlayer(_performingPlayerId);
-
-            Action cost = getNextCost();
-            if (cost != null)
-                return cost;
-
-            if (!getProgress(Progress.choseAttemptingUnit)) {
-                if (_selectAttemptingUnitAction == null) {
-
-                    List<AttemptingUnit> eligibleUnits = new ArrayList<>();
-                    _missionCard.getYourAwayTeamsOnSurface(player)
-                            .filter(awayTeam -> awayTeam.canAttemptMission(_missionCard))
-                            .forEach(eligibleUnits::add);
-
-                    // Get ships that can attempt mission
-                    for (PhysicalCard card : Filters.filterYourActive(player,
-                            Filters.ship, Filters.atLocation(_missionCard.getLocation()))) {
-                        if (card instanceof PhysicalShipCard ship)
-                            if (ship.canAttemptMission(_missionCard))
-                                eligibleUnits.add(ship);
-                    }
-                    _selectAttemptingUnitAction = new SelectAttemptingUnitAction(player, eligibleUnits);
-                    return _selectAttemptingUnitAction;
-                } else if (_selectAttemptingUnitAction.wasCarriedOut()) {
-                    setAttemptingUnit(_selectAttemptingUnitAction.getSelection());
-                }
-            }
 
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt, true);
