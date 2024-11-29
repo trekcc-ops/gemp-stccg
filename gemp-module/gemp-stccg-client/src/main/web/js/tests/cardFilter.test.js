@@ -130,6 +130,11 @@ test('setFormat sets the format', async () => {
                 <option value="st2e">2E All</option>
                 <option value="tribbles">Tribbles</option>
 			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
             `;
 
     const mockCollection = "default";
@@ -158,6 +163,11 @@ test('setFormat does not reset the start point', async () => {
                 <option value="st2e">2E All</option>
                 <option value="tribbles">Tribbles</option>
 			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
             `;
 
     const mockCollection = "default";
@@ -179,6 +189,62 @@ test('setFormat does not reset the start point', async () => {
     expect(cf.start).toBe(18);
     cf.setFormat("tribbles");
     expect(cf.start).toBe(18);
+});
+
+test('setFormat hides the Tribble Power selector', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "st1emoderncomplete";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    // 1e to tribbles shows it
+    expect(cf.format).toBe("st1emoderncomplete");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+    expect(!cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // tribbles back to 1e hides it
+    cf.setFormat("st1emoderncomplete");
+    expect(cf.format).toBe("st1emoderncomplete");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // 1e to 2e keeps it hidden
+    cf.setFormat("st2e");
+    expect(cf.format).toBe("st2e");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // 2e to tribbles shows it
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+    expect(!cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // tribbles back to 2e hides it
+    cf.setFormat("st2e");
+    expect(cf.format).toBe("st2e");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
 });
 
 test('setType can set the type', async () => {

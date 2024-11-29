@@ -20,6 +20,7 @@ export default class CardFilter {
     setSelect = $("#setSelect");
     nameInput = $("#nameInput");
     sortSelect = $("#sortSelect");
+    tribblePowerSelect = document.getElementById("tribblePower");
     raritySelect;
     format;
     comm;
@@ -50,6 +51,16 @@ export default class CardFilter {
 
     setFormat(format) {
         this.format = format;
+        if (this.format === "tribbles") {
+            if (this.tribblePowerSelect) {
+                this.tribblePowerSelect.classList.remove("hidden");
+            }
+        }
+        else {
+            if (this.tribblePowerSelect) {
+                this.tribblePowerSelect.classList.add("hidden");
+            }
+        }
     }
 
     setType(typeValue) {
@@ -167,6 +178,10 @@ export default class CardFilter {
             + "<option value='C,U,P,S'>Poorman's</option>"
             + "<option value='V'>Virtual</option>"
             + "</select>"); */
+        
+        if (this.tribblePowerSelect) {
+            this.tribblePowerSelect.classList.add("hidden");
+        }
 
         this.setSelect.on("change", async () => {await this.setFilterChanged()});
         this.nameInput.on("change", async () => {await this.fullFilterChanged()});

@@ -209,3 +209,7 @@ button.navigation-butt {
     padding-left: 10px;
     color: white;
 }
+
+.hidden {
+    display: none;
+}
