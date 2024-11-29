@@ -105,12 +105,6 @@ export default class CardFilter {
 
     async changeDynamicFilters() {
         var cardType = $("#cardType option:selected").prop("value");
-        if (cardType.includes("EVENT")) {
-            $("#phase").show();
-        } else {
-            $("#phase").hide();
-            $("#phase").val("")
-        }
         this.filter = this.calculateNormalFilter();
         this.start = 0;
         await this.getCollection();
@@ -179,15 +173,9 @@ export default class CardFilter {
         this.sortSelect.on("change", async () => {await this.fullFilterChanged()});
 //        this.raritySelect.on("change", async () => {await this.fullFilterChanged()});
 
-        
-        
-        //Hide dynamic filters by default
-        $("#phase").hide();
-
         $("#cardType").on("change", async () => {await this.changeDynamicFilters()});
         $("#keyword").on("change", async () => {await this.filterOut()});
         $("#type").on("change", async () => {await this.filterOut()});
-        $("#phase").on("change", async () => {await this.filterOut()});
         $(".affiliationFilter").on("click", async () => {await this.filterOut()});
         this.collectionDiv = $("#collection-display");
         //collection-display
@@ -212,7 +200,7 @@ export default class CardFilter {
     }
 
     calculateNormalFilter() {
-        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "phase");
+        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type");
         var filterString = "";
 
         for (var i = 0; i < normalFilterArray.length; i++) {
