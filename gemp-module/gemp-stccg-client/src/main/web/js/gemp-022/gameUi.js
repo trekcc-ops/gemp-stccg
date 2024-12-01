@@ -268,7 +268,7 @@ export default class GameTableUI {
             }
         }
 
-        this.statsDiv.append("<div class='tribbleSequence'>1</div>");
+        this.statsDiv.append("<div class='tribbleSequence'></div>");
 
         this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
             return (card.zone == "SPECIAL");
@@ -2329,10 +2329,7 @@ export class ST1EGameTableUI extends GameTableUI {
             left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
             top: $("#bottomLeftTabs").offset().top,
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
-            //left: padding + "px",
-            //top: height - (padding * 2) - chatHeight - 50 + "px",
-            //width: advPathWidth - 4,
-            height: 30
+            height: 40
         });
         this.gameStateElem.css({
             position: "absolute",

@@ -171,14 +171,6 @@ ul {
 }
 
 .tribbleSequence {
-    float: left;
-    font-size: 15px;
-    width: 100px;
-    /*
-    border-radius: 7px;
-    border: 1px solid white;
-    background-color: #000000;
-    */
     color: white;
     padding: 2px;
     text-align: left;
