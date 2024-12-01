@@ -1571,7 +1571,7 @@ export default class GameTableUI {
             }
             if (selectedCardIds.length > 0) {
                 that.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
-                that.alertButtons.append("<button id='Done' style='float: right'>Done</button>");
+                that.alertButtons.append("<button id='Done'>Done</button>");
                 $("#Done").button().click(function () {
                     finishChoice();
                 });
@@ -1868,7 +1868,7 @@ export default class GameTableUI {
                 });
             }
             if (selectedCardIds.length >= min) {
-                that.alertButtons.append("<button id='Done' style='float: right'>Done</button>");
+                that.alertButtons.append("<button id='Done'>Done</button>");
                 $("#Done").button().click(function () {
                     finishChoice();
                 });
@@ -2312,7 +2312,6 @@ export class ST1EGameTableUI extends GameTableUI {
 
         var advPathWidth = Math.min(150, width * 0.1);
         var specialUiWidth = 150;
-        var alertHeight = 80;
         var chatHeight = 200;
         var assignmentsCount = 0;
 
@@ -2342,9 +2341,9 @@ export class ST1EGameTableUI extends GameTableUI {
         this.alertBox.css({
             position: "absolute",
             left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
-            top: PLAYER_ACTION_AREA_AND_HAND_TOP,
+            top: $("#bottomLeftTabs").offset().top,
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
-            height: alertHeight
+            height: $("#bottomLeftTabs").height()
         });
 
         for (var i = 0; i < 2; i++) {
