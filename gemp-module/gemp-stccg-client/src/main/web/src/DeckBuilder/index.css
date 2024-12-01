@@ -30,11 +30,6 @@
     height: 23px;
 }
 
-#collectionSelect {
-    float: right;
-    width: 100px;
-}
-
 #ringBearerDiv {
     position: absolute;
     left: 5px;

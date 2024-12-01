@@ -30,7 +30,8 @@ export default class GempLotrDeckBuildingUI {
 
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
-        this.collectionType = "default";
+        this.collectionType = this.getCollectionType();
+
         this.deckDiv = $("#deckDiv");
         this.manageDecksDiv = $("#manageDecks");
         this.formatSelect = $("#formatSelect");
@@ -58,7 +59,6 @@ export default class GempLotrDeckBuildingUI {
                     await that.cardFilter.setFilterChanged();
                 });
 
-        var collectionSelect = $("#collectionSelect");
         var newDeckBut = $("#newDeckBut").button();
         var saveDeckBut = $("#saveDeckBut").button();
         var renameDeckBut = $("#renameDeckBut").button();
@@ -118,12 +118,6 @@ export default class GempLotrDeckBuildingUI {
 
         this.collectionDiv = $("#collectionDiv");
 
-        $("#collectionSelect").change(
-                function () {
-                    that.collectionType = that.getCollectionType();
-                    that.cardFilter.setCollectionType(that.collectionType);
-                    that.cardFilter.getCollection();
-                });
         this.collectionDiv.droppable({
             accept: function(d) {
                 return (d.hasClass("cardInDeck"));
@@ -180,8 +174,6 @@ export default class GempLotrDeckBuildingUI {
         };
         this.infoDialog.swipe(swipeOptions);
 
-        this.getCollectionTypes();
-
         this.cardFilter.setFilter("");
         this.cardFilter.getCollection();
 
@@ -225,25 +217,10 @@ export default class GempLotrDeckBuildingUI {
     }
 
     getCollectionType() {
-        return $("#collectionSelect option:selected").prop("value");
-    }
-
-    getCollectionTypes() {
-        var that = this;
-        this.comm.getCollectionTypes(
-                function (xml) {
-                    var root = xml.documentElement;
-                    if (root.tagName == "collections") {
-                        var collections = root.getElementsByTagName("collection");
-                        for (var i = 0; i < collections.length; i++) {
-                            var collection = collections[i];
-                            $("#collectionSelect").append(
-                                "<option value='" + collection.getAttribute("type") + "'>" +
-                                    collection.getAttribute("name") + "</option>"
-                            );
-                        }
-                    }
-                });
+        // This was previously the value of the "collection select" drop-down, which was removed since we
+        //   do not plan to implement a card pack unlock/purchase mechanism.
+        // Other options were "permanent" and "trophy", in case we decide to bring it back or need to test.
+        return "default";
     }
     
     importDecklist() {
