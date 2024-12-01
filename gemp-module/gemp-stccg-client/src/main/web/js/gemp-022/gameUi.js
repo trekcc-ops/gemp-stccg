@@ -2326,9 +2326,12 @@ export class ST1EGameTableUI extends GameTableUI {
 
         this.statsDiv.css({
             position: "absolute",
-            left: padding + "px",
-            top: height - (padding * 2) - chatHeight - 50 + "px",
-            width: advPathWidth - 4,
+            left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
+            top: $("#bottomLeftTabs").offset().top,
+            width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
+            //left: padding + "px",
+            //top: height - (padding * 2) - chatHeight - 50 + "px",
+            //width: advPathWidth - 4,
             height: 30
         });
         this.gameStateElem.css({
@@ -2341,9 +2344,9 @@ export class ST1EGameTableUI extends GameTableUI {
         this.alertBox.css({
             position: "absolute",
             left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
-            top: $("#bottomLeftTabs").offset().top,
+            top: $("#bottomLeftTabs").offset().top + $("#statsDiv").height() + BORDER_PADDING * 5,
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
-            height: $("#bottomLeftTabs").height()
+            height: $("#bottomLeftTabs").height() - $("#statsDiv").height() - (BORDER_PADDING * 5)
         });
 
         for (var i = 0; i < 2; i++) {
