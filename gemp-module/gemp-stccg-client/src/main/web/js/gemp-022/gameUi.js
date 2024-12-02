@@ -268,8 +268,6 @@ export default class GameTableUI {
             }
         }
 
-        this.statsDiv.append("<div class='tribbleSequence'></div>");
-
         this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
             return (card.zone == "SPECIAL");
         }, false);
@@ -337,6 +335,7 @@ export default class GameTableUI {
     }
 
     processGameEnd() {
+        $("#currentPhase").text("Game over");
         var that = this;
         if(this.allPlayerIds == null)
             return;
@@ -1949,6 +1948,7 @@ export default class GameTableUI {
 export class TribblesGameTableUI extends GameTableUI {
     constructor(url, replayMode) {
         super(url, replayMode);
+        this.statsDiv.append("<div id='tribbleSequence'></div>");
     }
 
     layoutUI(sizeChanged) {

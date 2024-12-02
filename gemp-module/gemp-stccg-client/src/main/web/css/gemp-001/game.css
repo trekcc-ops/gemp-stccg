@@ -165,11 +165,11 @@ ul {
     cursor: pointer;
 }
 
-.phase {
+#currentPhase {
     color: white;
 }
 
-.tribbleSequence {
+#tribbleSequence {
     color: white;
     padding: 2px;
     text-align: left;
