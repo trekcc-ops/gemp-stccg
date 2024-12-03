@@ -7,49 +7,131 @@ ul {
     margin-top: 0px;
 }
 
-.deckSize {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
+.playerStats {
+    color: white;
+    display: grid;
+    grid-template-columns: 42px 42px 42px auto;
+}
+
+.playerStats .clickable {
+    cursor: pointer;
+}
+
+.player.current {
+    background-color: #191970;
+}
+
+#player0 {
+    grid-column: 1 / span 3;
+    grid-row: 1 / 1;
+}
+
+#clock0 {
+    grid-column: 4 / 4;
+    grid-row: 1 / 1;
+}
+
+#deck0 {
+    grid-column: 1 / 1;
+    grid-row: 2 / 2;
+}
+
+#hand0 {
+    grid-column: 2 / 2;
+    grid-row: 2 / 2;
+}
+
+#discard0 {
+    grid-column: 3 / 3;
+    grid-row: 2 / 2;
+}
+
+#score0 {
+    grid-column: 4 / 4;
+    grid-row: 2 / 2;
+}
+
+#player1 {
+    grid-column: 1 / span 3;
+    grid-row: 3 / 3;
+}
+
+#clock1 {
+    grid-column: 4 / 4;
+    grid-row: 3 / 3;
+}
+
+#deck1 {
+    grid-column: 1 / 1;
+    grid-row: 4 / 4;
+}
+
+#hand1 {
+    grid-column: 2 / 2;
+    grid-row: 4 / 4;
+}
+
+#discard1 {
+    grid-column: 3 / 3;
+    grid-row: 4 / 4;
+}
+
+#score1 {
+    grid-column: 4 / 4;
+    grid-row: 4 / 4;
+}
+
+.clock {
+    text-align: right;
+    color: white;
     font-weight: bolder;
-    width: 42px;
+    font-size: 150%;
+}
+
+.deckSize {
+    text-align: center;
+    color: white;
+    font-weight: bolder;
+    font-size: 150%;
+    -webkit-text-stroke: 1px black;
+    text-stroke: 1px black;
+    align-content: start;
+    background-image: url('/gemp-module/images/decipher_card_deck.svg');
+    background-size: 42px 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/deck-42.png');
 }
 
 .handSize {
-    display: table-cell;
     text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
+    color: white;
     font-weight: bolder;
-    width: 42px;
+    font-size: 150%;
+    -webkit-text-stroke: 1px black;
+    text-stroke: 1px black;
+    align-content: start;
+    background-image: url('/gemp-module/images/decipher_card_hand.svg');
+    background-size: 42px 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/hand-42.png');
 }
 
 .discardSize {
-    display: table-cell;
     text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
+    color: white;
     font-weight: bolder;
-    width: 42px;
+    font-size: 150%;
+    -webkit-text-stroke: 1px black;
+    text-stroke: 1px black;
+    align-content: start;
+    background-image: url('/gemp-module/images/decipher_card_discard.svg');
+    background-size: 42px 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/discard-42.png');
 }
 
 .playerScore {
-    display: table-cell;
     text-align: center;
-    vertical-align: middle;
     color: white;
-    font-family: "Verdana", Verdana, sans-serif;
-    font-size: 150%;
     font-weight: bolder;
-    width: 42px;
-    height: 42px;
+    font-size: 125%;
 }
 
 .adventureDeckSize {
@@ -144,25 +226,6 @@ ul {
 .stats {
     text-align: center;
     padding: 2px;
-}
-
-.player {
-    color: white;
-    position: relative;
-    z-index: 50;
-}
-
-.player.current {
-    background-color: #191970;
-}
-
-.playerStats {
-    color: white;
-}
-
-.playerStats .clickable {
-    color: #9f9fff;
-    cursor: pointer;
 }
 
 .phase {
