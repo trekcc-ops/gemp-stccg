@@ -87,11 +87,6 @@
 	<div id="collectionDiv" class="ui-layout-east ui-layout-pane ui-layout-pane-east">
 		<div id="cardCollectionDiv"></div>
 		<div id='filter-main'>
-			<div id='card-navigation'>
-				<button id='previousPage' class='navigation-butt'></button>
-				<div id='countSlider'></div>
-				<button id='nextPage' class='navigation-butt'></button>
-			</div>
 			<div id='advanced-filter'>
 				<a id='card-search-url' target='_blank' href='https://www.trekcc.org/1e/?mode=search'>
 					More filters available in the TrekCC.org card search engine.
@@ -131,21 +126,21 @@
 					<input type='checkbox' class='affiliationFilter' id='VIDIIAN'/><label for='VIDIIAN' id='labelVIDIIAN'><img src='images/icons/affiliations/1E-VID.gif' alt="Vidiian"/></label>
 					<input type='checkbox' class='affiliationFilter' id='VULCAN'/><label for='VULCAN' id='labelVULCAN'><img src='images/icons/affiliations/1E-VUL.gif' alt="Vulcan"/></label>
 				</div>
-		</div>
-		<div id='collection-display' style='display:flex;flex-direction:column;position:relative;'></div>
-	</div>
-
-	<div id="cardInfoDiv" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable" tabindex="-1"
-		role="dialog" aria-labelledby="ui-dialog-title-1">
-		<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-			<span class="ui-dialog-title" id="ui-dialog-title-1">Card information</span>
-			<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">
-				<span class="ui-icon ui-icon-closethick">close</span>
-			</a>
+			</div>
+			<div id='collection-display' style='display:flex;flex-direction:column;position:relative;'></div>
 		</div>
 
-		<div class="ui-dialog-content ui-widget-content"></div>
-	</div>
+		<div id="cardInfoDiv" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable" tabindex="-1"
+			role="dialog" aria-labelledby="ui-dialog-title-1">
+			<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+				<span class="ui-dialog-title" id="ui-dialog-title-1">Card information</span>
+				<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">
+					<span class="ui-icon ui-icon-closethick">close</span>
+				</a>
+			</div>
+
+			<div class="ui-dialog-content ui-widget-content"></div>
+		</div>
 
 		<div id="combos">
 			<select id='cardType' class='cardFilterSelect'>
@@ -180,6 +175,12 @@
 				<option value='cheat'>Cheat</option>
 				<option value='convert'>Convert</option>
 			</select>
+		</div>
+		<div id='card-navigation'>
+			<button id='previousPage' class='navigation-butt'></button>
+			<div>Zoom:</div>
+			<div id='countSlider'></div>
+			<button id='nextPage' class='navigation-butt'></button>
 		</div>
 	</div>
 </body>

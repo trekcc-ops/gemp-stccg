@@ -150,10 +150,8 @@ export default class CardFilter {
         var that = this;
 
         this.previousPageBut = $("#previousPage").button({
-            text: false,
-            icons: {
-                primary: "ui-icon-circle-triangle-w"
-            },
+            label: "Previous",
+            icon: "ui-icon-circle-triangle-w",
             disabled: true
         }).click(
             async function () {
@@ -163,10 +161,8 @@ export default class CardFilter {
             });
 
         this.nextPageBut = $("#nextPage").button({
-            text: false,
-            icons: {
-                primary: "ui-icon-circle-triangle-e"
-            },
+            label: "Next",
+            icon: "ui-icon-circle-triangle-e",
             disabled: true
         }).click(
             async function () {

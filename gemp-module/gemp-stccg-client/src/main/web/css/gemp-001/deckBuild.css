@@ -53,6 +53,9 @@ body {
     flex-direction: row;
     gap: 2px;
     align-items: center;
+    color: white;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 #advanced-filter {
