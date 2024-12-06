@@ -99,11 +99,11 @@ export default class GameTableUI {
 
         if (this.replayMode) {
             var slowerBut = $("#slowerButton").button({
-                icons: {primary: 'ui-icon-triangle-1-w'},
+                icon: "ui-icon-triangle-1-w",
                 text: false
             });
             var fasterBut = $("#fasterButton").button({
-                icons: {primary: 'ui-icon-triangle-1-e'},
+                icon: "ui-icon-triangle-1-e",
                 text: false
             });
             slowerBut.click(

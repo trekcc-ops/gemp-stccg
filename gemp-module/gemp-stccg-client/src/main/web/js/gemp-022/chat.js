@@ -80,9 +80,10 @@ export default class ChatBoxUI {
     
                     this.hideSystemButton = $("#showSystemButton");
                     if (showHideSystemButton) {
-                        hideSystemButton.button({icons:{
-                             primary:"ui-icon-zoomin"
-                         }, text:false});
+                        hideSystemButton.button({
+                            icon: "ui-icon-zoomin",
+                            text:false
+                        });
     
                         this.hideSystemButton.click(
                                 function () {
@@ -140,10 +141,10 @@ export default class ChatBoxUI {
                     this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
     
                     if (showHideSystemButton) {
-                        this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button(
-                        {icons:{
-                            primary:"ui-icon-zoomin"
-                        }, text:false});
+                        this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button({
+                            icon: "ui-icon-zoomin",
+                            text:false
+                        });
                         this.hideSystemButton.click(
                                 function () {
                                     if (that.isShowingMessageClass("systemMessage")) {
