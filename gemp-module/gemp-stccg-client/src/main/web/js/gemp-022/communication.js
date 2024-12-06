@@ -263,7 +263,7 @@ export default class GempClientCommunication {
             data:{
                 participantId:getUrlParam("participantId")},
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"text"
         });
     }
 
