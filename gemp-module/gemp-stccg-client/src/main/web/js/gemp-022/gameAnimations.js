@@ -211,6 +211,7 @@ export default class GameAnimations {
         var cardId = element.getAttribute("cardId");
         var zone = element.getAttribute("zone");
         var imageUrl = element.getAttribute("imageUrl");
+        let region = element.getAttribute("region");
         var quadrant = element.getAttribute("quadrant");
         var locationIndex = element.getAttribute("locationIndex");
 
@@ -224,9 +225,9 @@ export default class GameAnimations {
 
                 if (zone == "SPACELINE") {
                     if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
-                        that.game.addSharedMission(locationIndex, quadrant);
+                        that.game.addSharedMission(locationIndex, quadrant, region);
                     } else {
-                        that.game.addLocationDiv(locationIndex, quadrant);
+                        that.game.addLocationDiv(locationIndex, quadrant, region);
                     }
                 }
 
