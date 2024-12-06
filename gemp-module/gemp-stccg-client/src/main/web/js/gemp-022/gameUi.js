@@ -2398,6 +2398,23 @@ export class ST1EGameTableUI extends GameTableUI {
 
             let currentRegion = this.locationDivs[locationIndex].data("region");
             let friendly_region_name = this._friendly_region_name(currentRegion);
+            if (friendly_region_name !== "") {
+                if (locationIndex === 0) {
+                    this.locationDivs[locationIndex].addClass("first-in-region");
+                } else if (currentRegion != this.locationDivs[locationIndex - 1].data("region")) {
+                    this.locationDivs[locationIndex].addClass("first-in-region");
+                } else if (this.locationDivs[locationIndex].hasClass("first-in-region")) {
+                    this.locationDivs[locationIndex].removeClass("first-in-region");
+                }
+    
+                if (locationIndex === locationsCount - 1) {
+                    this.locationDivs[locationIndex].addClass("last-in-region");
+                } else if (currentRegion != this.locationDivs[locationIndex + 1].data("region")) {
+                    this.locationDivs[locationIndex].addClass("last-in-region");
+                } else if (this.locationDivs[locationIndex].hasClass("last-in-region")) {
+                    this.locationDivs[locationIndex].removeClass("last-in-region");
+                }
+            }
 
             if (currQuadrant === "ALPHA" ) {
                 this.locationDivs[locationIndex].addClass("alpha-quadrant");

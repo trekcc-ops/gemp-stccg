@@ -474,6 +474,18 @@ ul {
     z-index: 10;
 }
 
+.first-in-region {
+    border-left-style: dashed;
+    border-left-width: 3px;
+    border-left-color: white;
+}
+
+.last-in-region {
+    border-right-style: dashed;
+    border-right-width: 3px;
+    border-right-color: white;
+}
+
 .st1e-card-group {
     z-index: 9;
 }
