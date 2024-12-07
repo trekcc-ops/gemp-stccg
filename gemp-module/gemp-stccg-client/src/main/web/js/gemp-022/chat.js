@@ -80,9 +80,10 @@ export default class ChatBoxUI {
     
                     this.hideSystemButton = $("#showSystemButton");
                     if (showHideSystemButton) {
-                        hideSystemButton.button({icons:{
-                             primary:"ui-icon-zoomin"
-                         }, text:false});
+                        hideSystemButton.button({
+                            icon: "ui-icon-zoomin",
+                            text:false
+                        });
     
                         this.hideSystemButton.click(
                                 function () {
@@ -140,10 +141,10 @@ export default class ChatBoxUI {
                     this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
     
                     if (showHideSystemButton) {
-                        this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button(
-                        {icons:{
-                            primary:"ui-icon-zoomin"
-                        }, text:false});
+                        this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button({
+                            icon: "ui-icon-zoomin",
+                            text:false
+                        });
                         this.hideSystemButton.click(
                                 function () {
                                     if (that.isShowingMessageClass("systemMessage")) {
@@ -351,10 +352,12 @@ export default class ChatBoxUI {
         
         if(msgClass == "gameMessage")
         {
-            message = "<div class='msg-content'>" + message + "</div>";
+            var msg_content_div = "<div class='msg-content'>" + message + "</div>";
+            var messageDiv = $("<div class='message " + msgClass + "'>" + msg_content_div + "</div>");
         }
-        
-        var messageDiv = $("<div class='message " + msgClass + "'>" + message + "</div>");
+        else {
+            var messageDiv = $("<div class='message " + msgClass + "'>" + message + "</div>");
+        }
 
         this.chatMessagesDiv.append(messageDiv);
         var index = $.inArray(msgClass, this.hiddenClasses);
@@ -373,16 +376,15 @@ export default class ChatBoxUI {
     }
 
     appendNotLoggedIntoGameMessage() {
-        message = "Game problem - You're not logged in. Go to the <a href='index.html'>main page</a> to log in.";
+        let message = "Game problem - You're not logged in. Go to the <a href='index.html'>main page</a> to log in.";
         msgClass = "warningMessage";
         this.appendMessage(message, msgClass);
     }
 
     appendServerCommunicationProblemMessage(xhr_status) {
-        message = "There was a problem communicating with the server" + xhr_status + ". " +
-            "If the game is finished, it has been removed. Otherwise, you have lost connection to the server.";
-        this.appendMessage(message, "warningMessage");
-        message = "Refresh the page (press F5) to resume the game, " +
+        let message = "There was a problem communicating with the server" + xhr_status + ". " +
+            "If the game is finished, it has been removed. Otherwise, you have lost connection to the server. " +
+            "Refresh the page (press F5) to resume the game " +
             "or press back on your browser to get back to the Game Hall.";
         this.appendMessage(message, "warningMessage");
     }

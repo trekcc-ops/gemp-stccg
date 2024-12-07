@@ -497,7 +497,7 @@ export default class GameAnimations {
         $("#main").queue(
             function (next) {
                 var phase = element.getAttribute("phase");
-                $(".phase").text(phase);
+                $("#currentPhase").text(phase);
                 next();
             });
     }
@@ -507,7 +507,10 @@ export default class GameAnimations {
         $("#main").queue(
             function (next) {
                 var message = element.getAttribute("message");
-                $(".tribbleSequence").html("Next Tribble in sequence:<b>" + message + "</b>");
+                // if the TribbleSequence object exists, checked via length (lol jQuery), fill it with the phase.
+                if ($("#tribbleSequence").length ) {
+                    $("#tribbleSequence").html("Next Tribble in sequence:<b>" + message + "</b>");
+                }
                 next();
             });
     }

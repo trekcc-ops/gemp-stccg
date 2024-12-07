@@ -64,7 +64,7 @@ test('setCollectionType resets the start point', async () => {
 });
 
 test('setFilter sets the filter', async () => {
-    // I don't know what part of the UI uses this except for merchantUI - unneeded?
+    // I don't know what part of the UI uses this except for the now-dead merchantUI - unneeded?
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
                 <option value="default">All cards</option>
@@ -93,7 +93,7 @@ test('setFilter sets the filter', async () => {
 });
 
 test('setFilter resets the start point', async () => {
-    // I don't know what part of the UI uses this except for merchantUI - unneeded?
+    // I don't know what part of the UI uses this except for now-dead merchantUI - unneeded?
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
                 <option value="default">All cards</option>
@@ -130,6 +130,11 @@ test('setFormat sets the format', async () => {
                 <option value="st2e">2E All</option>
                 <option value="tribbles">Tribbles</option>
 			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
             `;
 
     const mockCollection = "default";
@@ -158,6 +163,11 @@ test('setFormat does not reset the start point', async () => {
                 <option value="st2e">2E All</option>
                 <option value="tribbles">Tribbles</option>
 			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
             `;
 
     const mockCollection = "default";
@@ -179,6 +189,119 @@ test('setFormat does not reset the start point', async () => {
     expect(cf.start).toBe(18);
     cf.setFormat("tribbles");
     expect(cf.start).toBe(18);
+});
+
+test('setFormat hides the Tribble Power selector', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "st1emoderncomplete";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    // 1e to tribbles shows it
+    expect(cf.format).toBe("st1emoderncomplete");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+    expect(!cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // tribbles back to 1e hides it
+    cf.setFormat("st1emoderncomplete");
+    expect(cf.format).toBe("st1emoderncomplete");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // 1e to 2e keeps it hidden
+    cf.setFormat("st2e");
+    expect(cf.format).toBe("st2e");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // 2e to tribbles shows it
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+    expect(!cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // tribbles back to 2e hides it
+    cf.setFormat("st2e");
+    expect(cf.format).toBe("st2e");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+});
+
+test('setFormat changes the TrekCC search URL', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <div id='advanced-filter'>
+				<a id='card-search-url' target='_blank' href='https://www.trekcc.org/'>
+					More filters available in the TrekCC.org card search engine.
+				</a>
+			</div>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "st1emoderncomplete";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    
+    // default case is 1e
+    let anchor_under_test = document.getElementById("card-search-url");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+
+    // 1e to tribbles changes to default case
+    cf.setFormat("tribbles");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/");
+
+    // tribbles back to 1e
+    cf.setFormat("st1emoderncomplete");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+
+    // 1e to 2e changes to 2e link
+    cf.setFormat("st2e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/2e/?mode=search");
+
+    // 2e back to tribbles
+    cf.setFormat("tribbles");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/");
+
+    // tribbles back to 2e hides it
+    cf.setFormat("st2e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/2e/?mode=search");
+
+    // 2e to 1e debug
+    cf.setFormat("debug1e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
 });
 
 test('setType can set the type', async () => {
@@ -327,7 +450,7 @@ test('calculateNormalFilter none checked', async () => {
     
     let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
-    let expectedResult = "|cardType:undefined|keyword:undefined|type:200|phase:undefined";
+    let expectedResult = "|cardType:undefined|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);
@@ -383,7 +506,7 @@ test('calculateNormalFilter Federation checked', async () => {
     expect(fedLabel.prop("classList").contains("ui-checkboxradio-checked")).toBe(true);
     
     // run the full filter and verify it returns what we want
-    let expectedResult = "|cardType:undefined|affiliation:FEDERATION|keyword:undefined|type:200|phase:undefined";
+    let expectedResult = "|cardType:undefined|affiliation:FEDERATION|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);
@@ -448,7 +571,7 @@ test('calculateNormalFilter Federation + Kazon checked', async () => {
     expect(kazLabel.prop("classList").contains("ui-checkboxradio-checked")).toBe(true);
     
     // run the full filter and verify it returns what we want
-    let expectedResult = "|cardType:undefined|affiliation:FEDERATION,KAZON|keyword:undefined|type:200|phase:undefined";
+    let expectedResult = "|cardType:undefined|affiliation:FEDERATION,KAZON|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);

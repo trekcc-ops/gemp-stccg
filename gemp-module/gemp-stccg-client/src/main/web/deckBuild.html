@@ -18,7 +18,7 @@
 
 	<!-- JQuery JavaScript -->
 	<script type="text/javascript" src="js/jquery/jquery-3.7.1.js"></script>
-	<script type="text/javascript" src="js/jquery/jquery-ui-1.14.0/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-ui-1.14.1/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.spinnerControl.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.layout.js"></script>
@@ -35,49 +35,28 @@
 
 		<div id="manageDecks">
 
-			<button id="newDeckBut" title="New deck" class="menu-button">
-				<span class="ui-icon ui-icon-document"></span>
-			</button>
+			<button id="newDeckBut" title="New deck" class="menu-button"></button>
 
-			<button id="saveDeckBut" title="Save deck" class="menu-button">
-				<span class="ui-icon ui-icon-disk"></span>
-			</button>
+			<button id="saveDeckBut" title="Save deck" class="menu-button"></button>
 
-			<button id="renameDeckBut" title="Rename deck" class="menu-button">
-				<span class="ui-icon ui-icon-pencil"></span>
-			</button>
+			<button id="renameDeckBut" title="Rename deck" class="menu-button"></button>
 
-			<button id="copyDeckBut" title="Copy deck to new" class="menu-button">
-				<span class="ui-icon ui-icon-copy"></span>
-			</button>
+			<button id="copyDeckBut" title="Copy deck to new" class="menu-button"></button>
 
-			<button id="importDeckBut" title="Import Deck" class="menu-button">
-				<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>
-			</button>
+			<button id="importDeckBut" title="Import deck" class="menu-button"></button>
 
-			<button id="libraryListBut" title="Open Library" class="menu-button">
-				<span class="ui-icon ui-icon-bookmark"></span>
-			</button>
+			<button id="libraryListBut" title="Open library" class="menu-button"></button>
 
-			<button id="deckListBut" title="Deck list" class="menu-button">
-				<span class="ui-icon ui-icon-suitcase"></span>
-			</button>
+			<button id="deckListBut" title="My decks" class="menu-button"></button>
 
-			<label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+			<label for="formatSelect"></label>
+			<select id="formatSelect">
 				<option value="st1emoderncomplete">ST1E Modern Complete</option>
 			</select>
 
-			<button id="notesBut" title="Add/Edit Notes" class="menu-button">
-				<span class="ui-icon ui-icon-plus"></span>
-			</button>
+			<button id="notesBut" title="Add/Edit Notes" class="menu-button"></button>
 
 			<span id="editingDeck">New deck</span>
-
-			<label for="collectionSelect"></label><select id="collectionSelect">
-				<option value="default">All cards</option>
-				<option value="permanent">My cards</option>
-				<option value="trophy">Trophies</option>
-			</select>
 		</div>
 
 		<div id="missionsDiv"><div id="missionsLabel">Missions</div></div>
@@ -93,14 +72,9 @@
 	<div id="collectionDiv" class="ui-layout-east ui-layout-pane ui-layout-pane-east">
 		<div id="cardCollectionDiv"></div>
 		<div id='filter-main'>
-			<div id='card-navigation'>
-				<button id='previousPage' class='navigation-butt'></button>
-				<div id='countSlider'></div>
-				<button id='nextPage' class='navigation-butt'></button>
-			</div>
 			<div id='advanced-filter'>
-				<a target='_blank' href='https://wiki.lotrtcgpc.net/wiki/Special:RunQuery/CardSearch'>
-					Looking for more?<br>Try the Wiki's Advanced Card Search.
+				<a id='card-search-url' target='_blank' href='https://www.trekcc.org/1e/?mode=search'>
+					More filters available in the TrekCC.org card search engine.
 				</a>
 			</div>
 			<div id='filter-inputs'>
@@ -137,21 +111,21 @@
 					<input type='checkbox' class='affiliationFilter' id='VIDIIAN'/><label for='VIDIIAN' id='labelVIDIIAN'><img src='images/icons/affiliations/1E-VID.gif' alt="Vidiian"/></label>
 					<input type='checkbox' class='affiliationFilter' id='VULCAN'/><label for='VULCAN' id='labelVULCAN'><img src='images/icons/affiliations/1E-VUL.gif' alt="Vulcan"/></label>
 				</div>
-		</div>
-		<div id='collection-display' style='display:flex;flex-direction:column;position:relative;'></div>
-	</div>
-
-	<div id="cardInfoDiv" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable" tabindex="-1"
-		role="dialog" aria-labelledby="ui-dialog-title-1">
-		<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-			<span class="ui-dialog-title" id="ui-dialog-title-1">Card information</span>
-			<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">
-				<span class="ui-icon ui-icon-closethick">close</span>
-			</a>
+			</div>
+			<div id='collection-display' style='display:flex;flex-direction:column;position:relative;'></div>
 		</div>
 
-		<div class="ui-dialog-content ui-widget-content"></div>
-	</div>
+		<div id="cardInfoDiv" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable" tabindex="-1"
+			role="dialog" aria-labelledby="ui-dialog-title-1">
+			<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+				<span class="ui-dialog-title" id="ui-dialog-title-1">Card information</span>
+				<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">
+					<span class="ui-icon ui-icon-closethick">close</span>
+				</a>
+			</div>
+
+			<div class="ui-dialog-content ui-widget-content"></div>
+		</div>
 
 		<div id="combos">
 			<select id='cardType' class='cardFilterSelect'>
@@ -171,10 +145,7 @@
 				<option value='TRIBBLE'>Tribbles</option>
 				<option value='TROUBLE'>Troubles</option>
 			</select>
-<!--			<select id='keyword' class="cardFilterSelect">
-				<option value=''>No keyword filtering</option>
-				<option value='ADMIRAL'>Admiral</option>
-			</select>
+			<!--
 			<select id='type' class="cardFilterSelect">
 				<option value=''>All physical card types</option>
 				<option value='pack'>Packs</option>
@@ -182,15 +153,19 @@
 				<option value='foil'>Foils</option>
 				<option value='nonFoil'>Non-foils</option>
 				<option value='tengwar'>Tengwar</option>
-			</select> -->
+			</select>
+			-->
 			<select id='tribblePower' class="cardFilterSelect">
 				<option value=''>All tribble powers</option>
 				<option value='cheat'>Cheat</option>
 				<option value='convert'>Convert</option>
 			</select>
-			<select id='phase' class="cardFilterSelect">
-				<option value=''>All Phases</option>
-			</select>
+		</div>
+		<div id='card-navigation'>
+			<button id='previousPage' class='navigation-butt'></button>
+			<div>Zoom:</div>
+			<div id='countSlider'></div>
+			<button id='nextPage' class='navigation-butt'></button>
 		</div>
 	</div>
 </body>

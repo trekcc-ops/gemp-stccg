@@ -190,6 +190,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         }
     }
 
+    // This appears to be tied to "my cards", and "my trophies" selections in the Deck Builder,
+    // which are now removed from the UI. Remove? If so, also remove getCollectionTypes() from comms.js.
     private void getCollectionTypes(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         User resourceOwner = getResourceOwner(request);
         Document doc = createNewDoc();

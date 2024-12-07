@@ -20,6 +20,7 @@ export default class CardFilter {
     setSelect = $("#setSelect");
     nameInput = $("#nameInput");
     sortSelect = $("#sortSelect");
+    tribblePowerSelect = document.getElementById("tribblePower");
     raritySelect;
     format;
     comm;
@@ -50,6 +51,40 @@ export default class CardFilter {
 
     setFormat(format) {
         this.format = format;
+
+        // Change search URL
+        if ((this.format === "debug1e") ||
+            (this.format === "st1emoderncomplete")) {
+            
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/1e/?mode=search");
+            }
+        }
+        else if (this.format === "st2e") {
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/2e/?mode=search");
+            }
+        }
+        else {
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/");
+            }
+        }
+
+        // show/hide Tribble Power selector
+        if (this.format === "tribbles") {
+            if (this.tribblePowerSelect) {
+                this.tribblePowerSelect.classList.remove("hidden");
+            }
+        }
+        else {
+            if (this.tribblePowerSelect) {
+                this.tribblePowerSelect.classList.add("hidden");
+            }
+        }
     }
 
     setType(typeValue) {
@@ -105,12 +140,6 @@ export default class CardFilter {
 
     async changeDynamicFilters() {
         var cardType = $("#cardType option:selected").prop("value");
-        if (cardType.includes("EVENT")) {
-            $("#phase").show();
-        } else {
-            $("#phase").hide();
-            $("#phase").val("")
-        }
         this.filter = this.calculateNormalFilter();
         this.start = 0;
         await this.getCollection();
@@ -121,10 +150,8 @@ export default class CardFilter {
         var that = this;
 
         this.previousPageBut = $("#previousPage").button({
-            text: false,
-            icons: {
-                primary: "ui-icon-circle-triangle-w"
-            },
+            label: "Previous",
+            icon: "ui-icon-circle-triangle-w",
             disabled: true
         }).click(
             async function () {
@@ -134,10 +161,8 @@ export default class CardFilter {
             });
 
         this.nextPageBut = $("#nextPage").button({
-            text: false,
-            icons: {
-                primary: "ui-icon-circle-triangle-e"
-            },
+            label: "Next",
+            icon: "ui-icon-circle-triangle-e",
             disabled: true
         }).click(
             async function () {
@@ -173,21 +198,18 @@ export default class CardFilter {
             + "<option value='C,U,P,S'>Poorman's</option>"
             + "<option value='V'>Virtual</option>"
             + "</select>"); */
+        
+        if (this.tribblePowerSelect) {
+            this.tribblePowerSelect.classList.add("hidden");
+        }
 
         this.setSelect.on("change", async () => {await this.setFilterChanged()});
         this.nameInput.on("change", async () => {await this.fullFilterChanged()});
         this.sortSelect.on("change", async () => {await this.fullFilterChanged()});
 //        this.raritySelect.on("change", async () => {await this.fullFilterChanged()});
 
-        
-        
-        //Hide dynamic filters by default
-        $("#phase").hide();
-
         $("#cardType").on("change", async () => {await this.changeDynamicFilters()});
-        $("#keyword").on("change", async () => {await this.filterOut()});
         $("#type").on("change", async () => {await this.filterOut()});
-        $("#phase").on("change", async () => {await this.filterOut()});
         $(".affiliationFilter").on("click", async () => {await this.filterOut()});
         this.collectionDiv = $("#collection-display");
         //collection-display
@@ -212,7 +234,7 @@ export default class CardFilter {
     }
 
     calculateNormalFilter() {
-        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "phase");
+        var normalFilterArray = new Array("cardType", "affiliation", "type");
         var filterString = "";
 
         for (var i = 0; i < normalFilterArray.length; i++) {
