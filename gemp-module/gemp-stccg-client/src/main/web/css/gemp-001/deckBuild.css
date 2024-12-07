@@ -97,6 +97,10 @@ body {
     color: white;
     font-size: 180%;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 1px;
+    z-index: 12;
 }
 
 #editingDeck {
@@ -155,7 +159,9 @@ button.navigation-butt {
 }
 
 .menu-button.ui-button {
-    padding: 0;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 12px;
 }
 
 .menu-button > .ui-button-text {

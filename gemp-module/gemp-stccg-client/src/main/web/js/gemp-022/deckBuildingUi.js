@@ -59,14 +59,14 @@ export default class GempLotrDeckBuildingUI {
                     await that.cardFilter.setFilterChanged();
                 });
 
-        var newDeckBut = $("#newDeckBut").button();
-        var saveDeckBut = $("#saveDeckBut").button();
-        var renameDeckBut = $("#renameDeckBut").button();
-        var copyDeckBut = $("#copyDeckBut").button();
-        var importDeckBut = $("#importDeckBut").button();
-        var libraryListBut = $("#libraryListBut").button();
-        var deckListBut = $("#deckListBut").button();
-        var notesBut = $("#notesBut").button();
+        var newDeckBut = $("#newDeckBut").button({icon: "ui-icon-document", label: "New"});
+        var saveDeckBut = $("#saveDeckBut").button({icon: "ui-icon-disk", label: "Save"});
+        var renameDeckBut = $("#renameDeckBut").button({icon: "ui-icon-pencil", label: "Rename"});
+        var copyDeckBut = $("#copyDeckBut").button({icon: "ui-icon-copy", label: "Copy"});
+        var importDeckBut = $("#importDeckBut").button({icon: "ui-icon-arrowthickstop-1-s", label: "Import"});
+        var libraryListBut = $("#libraryListBut").button({icon: "ui-icon-bookmark", label: "Library"});
+        var deckListBut = $("#deckListBut").button({icon: "ui-icon-suitcase", label: "My decks"});
+        var notesBut = $("#notesBut").button({icon: "ui-icon-plus", label: "Notes"});
 
         this.deckNameSpan = ("#editingDeck");
 
