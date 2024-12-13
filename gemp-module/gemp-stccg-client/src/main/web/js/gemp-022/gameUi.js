@@ -99,11 +99,11 @@ export default class GameTableUI {
 
         if (this.replayMode) {
             var slowerBut = $("#slowerButton").button({
-                icons: {primary: 'ui-icon-triangle-1-w'},
+                icon: "ui-icon-triangle-1-w",
                 text: false
             });
             var fasterBut = $("#fasterButton").button({
-                icons: {primary: 'ui-icon-triangle-1-e'},
+                icon: "ui-icon-triangle-1-e",
                 text: false
             });
             slowerBut.click(
@@ -268,8 +268,6 @@ export default class GameTableUI {
             }
         }
 
-        this.statsDiv.append("<div class='tribbleSequence'>1</div>");
-
         this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
             return (card.zone == "SPECIAL");
         }, false);
@@ -337,6 +335,7 @@ export default class GameTableUI {
     }
 
     processGameEnd() {
+        $("#currentPhase").text("Game over");
         var that = this;
         if(this.allPlayerIds == null)
             return;
@@ -895,43 +894,44 @@ export default class GameTableUI {
 
     processGameEvent(gameEvent, animate) {
         var eventType = gameEvent.getAttribute("type");
-        if (eventType == "PCIP") {
+        if (eventType === "PCIP") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
+        } else if (eventType === "PUT_SHARED_MISSION_INTO_PLAY") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType == "MCIP") {
+        } else if (eventType === "MCIP") {
             this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
-        } else if (eventType == "P") {
+        } else if (eventType === "P") {
             this.participant(gameEvent);
-        } else if (eventType == "RCFP") {
+        } else if (eventType === "RCFP") {
             this.animations.removeCardFromPlay(gameEvent, animate);
-        } else if (eventType == "UPDATE_CARD_IMAGE") {
+        } else if (eventType === "UPDATE_CARD_IMAGE") {
             this.animations.updateCardImage(gameEvent);
-        } else if (eventType == "GPC") {
+        } else if (eventType === "GPC") {
             this.animations.gamePhaseChange(gameEvent, animate);
-        } else if (eventType == "TC") {
+        } else if (eventType === "TC") {
             this.animations.turnChange(gameEvent, animate);
-        } else if (eventType == "GS") {
+        } else if (eventType === "GS") {
             this.animations.gameStats(gameEvent, animate);
-        } else if (eventType == "M") {
+        } else if (eventType === "M") {
             this.animations.message(gameEvent, animate);
-        } else if (eventType == "W") {
+        } else if (eventType === "W") {
             this.animations.warning(gameEvent, animate);
-        } else if (eventType == "CAC") {
+        } else if (eventType === "CAC") {
             this.animations.cardAffectsCard(gameEvent, animate);
-        } else if (eventType == "EP") {
+        } else if (eventType === "EP") {
             this.animations.eventPlayed(gameEvent, animate);
-        } else if (eventType == "CA") {
+        } else if (eventType === "CA") {
             this.animations.cardActivated(gameEvent, animate);
-        } else if (eventType == "D") {
+        } else if (eventType === "D") {
             this.animations.processDecision(gameEvent, animate);
-        } else if (eventType = "TSEQ") {
+        } else if (eventType === "TSEQ") {
             this.animations.tribbleSequence(gameEvent, animate);
-        } else if (eventType = "PLAYER_SCORE") {
+        } else if (eventType === "PLAYER_SCORE") {
             this.animations.playerScore(gameEvent, animate);
-        }
-        else if (eventType == "EG") {
+        } else if (eventType === "EG") {
             this.processGameEnd();
+        } else {
+            console.error("Unknown game event type: '" + eventType + "'.");
         }
     }
 
@@ -1571,7 +1571,7 @@ export default class GameTableUI {
             }
             if (selectedCardIds.length > 0) {
                 that.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
-                that.alertButtons.append("<button id='Done' style='float: right'>Done</button>");
+                that.alertButtons.append("<button id='Done'>Done</button>");
                 $("#Done").button().click(function () {
                     finishChoice();
                 });
@@ -1868,7 +1868,7 @@ export default class GameTableUI {
                 });
             }
             if (selectedCardIds.length >= min) {
-                that.alertButtons.append("<button id='Done' style='float: right'>Done</button>");
+                that.alertButtons.append("<button id='Done'>Done</button>");
                 $("#Done").button().click(function () {
                     finishChoice();
                 });
@@ -1948,6 +1948,7 @@ export default class GameTableUI {
 export class TribblesGameTableUI extends GameTableUI {
     constructor(url, replayMode) {
         super(url, replayMode);
+        this.statsDiv.append("<div id='tribbleSequence'></div>");
     }
 
     layoutUI(sizeChanged) {
@@ -2312,7 +2313,6 @@ export class ST1EGameTableUI extends GameTableUI {
 
         var advPathWidth = Math.min(150, width * 0.1);
         var specialUiWidth = 150;
-        var alertHeight = 80;
         var chatHeight = 200;
         var assignmentsCount = 0;
 
@@ -2327,10 +2327,10 @@ export class ST1EGameTableUI extends GameTableUI {
 
         this.statsDiv.css({
             position: "absolute",
-            left: padding + "px",
-            top: height - (padding * 2) - chatHeight - 50 + "px",
-            width: advPathWidth - 4,
-            height: 30
+            left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
+            top: $("#bottomLeftTabs").offset().top,
+            width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
+            height: 40
         });
         this.gameStateElem.css({
             position: "absolute",
@@ -2343,9 +2343,9 @@ export class ST1EGameTableUI extends GameTableUI {
         this.alertBox.css({
             position: "absolute",
             left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
-            top: PLAYER_ACTION_AREA_AND_HAND_TOP,
+            top: $("#bottomLeftTabs").offset().top + $("#statsDiv").height() + BORDER_PADDING * 5,
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
-            height: alertHeight
+            height: $("#bottomLeftTabs").height() - $("#statsDiv").height() - (BORDER_PADDING * 5)
         });
 
         for (var i = 0; i < 2; i++) {

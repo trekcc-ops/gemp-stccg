@@ -109,7 +109,6 @@ export default class GempHallUI {
 		$("#report-button").button();
 		$("#discord-button").button();
 		$("#wiki-button").button();
-		$("#merchant-button").button();
 
 		$(this.createTableButton).button().click(
 			function () {
