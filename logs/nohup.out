@@ -3,3 +3,9 @@ Listening for transport dt_socket at address: 8000
 WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
 Listening for transport dt_socket at address: 8000
 WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+Listening for transport dt_socket at address: 8000
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
