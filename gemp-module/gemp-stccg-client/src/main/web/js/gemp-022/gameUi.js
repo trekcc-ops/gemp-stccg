@@ -194,14 +194,14 @@ export default class GameTableUI {
         for (var i = 0; i < this.allPlayerIds.length; i++) {
 
             this.gameStateElem.append(
-                "<div class='player'>" + (i + 1) + ". " + this.allPlayerIds[i] +
-                "<div id='clock" + i + "' class='clock'></div>" +
                 "<div class='playerStats'>" +
-                    "<div id='deck" + i + "' class='deckSize'></div>" +
-                    "<div id='hand" + i + "' class='handSize'></div>" +
-                    "<div id='discard" + i + "' class='discardSize'></div>" +
-                    "<div id='score" + i + "' class='playerScore'></div>" +
-                "</div></div></div>");
+                    `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
+                    `<div id='clock${i}' class='clock'></div>` +
+                    `<div id='deck${i}' class='deckSize' title='Draw deck size'></div>` +
+                    `<div id='hand${i}' class='handSize' title='Hand size'></div>` +
+                    `<div id='discard${i}' class='discardSize' title='Discard size'></div>` +
+                    `<div id='score${i}' class='playerScore'></div>` +
+                "</div>");
 
             var showBut = $("<div class='slimButton'>+</div>").button().click(
                 (function (playerIndex) {
@@ -2337,7 +2337,8 @@ export class ST1EGameTableUI extends GameTableUI {
             left: padding * 2, // + advPathWidth,
             top: padding,
             width: specialUiWidth - padding + 75,
-            height: TABLE_AREA_TOP - padding * 2
+            //height: TABLE_AREA_TOP - padding * 2
+            height: 117
         });
         this.alertBox.css({
             position: "absolute",
