@@ -35,7 +35,7 @@ public class Blueprint156_010 extends CardBlueprint {
         DefaultGame game = player.getGame();
         List<Action> actions = new LinkedList<>();
         Phase currentPhase = game.getCurrentPhase();
-        if (currentPhase == Phase.END_OF_TURN) {
+        if (currentPhase == Phase.END_OF_TURN && card.isControlledBy(player)) {
             actions.add(new DrawCardAction(card, player));
         }
         return actions;
