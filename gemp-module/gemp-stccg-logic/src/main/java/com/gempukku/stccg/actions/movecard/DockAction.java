@@ -24,7 +24,7 @@ public class DockAction extends ActionyAction {
         super(player, "Dock", ActionType.MOVE_CARDS);
         _cardToDock = cardToDock;
 
-        _dockingTargetOptions = Filters.yourActiveFacilities(player).stream()
+        _dockingTargetOptions = Filters.yourFacilitiesInPlay(player).stream()
                 .filter(card -> card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation())
                 .toList();
         _selectAction = new SelectCardInPlayAction(this, player,

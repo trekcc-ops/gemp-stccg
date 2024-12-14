@@ -277,6 +277,35 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
+    protected void initializeGameToTestAMS() {
+        Map<String, CardDeck> decks = new HashMap<>();
+
+        CardDeck fedDeck = new CardDeck("Federation");
+        fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
+        fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
+        fedDeck.addCard(SubDeck.SEED_DECK, "109_063"); // AMS
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
+        decks.put(P1, fedDeck);
+
+        CardDeck klingonDeck = new CardDeck("Klingon");
+        klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
+        for (int i = 0; i < 35; i++)
+            klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+        decks.put(P2, klingonDeck);
+
+
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.getFormat("debug1e");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+    }
+
     protected void initializeGameToTestMissionAttempt() {
         Map<String, CardDeck> decks = new HashMap<>();
 
@@ -287,6 +316,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
         for (int i = 0; i < 35; i++)
             fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
         decks.put(P1, fedDeck);
 
         CardDeck klingonDeck = new CardDeck("Klingon");
@@ -632,11 +663,14 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
     protected void seedCard(String playerId, PhysicalCard cardToSeed) throws DecisionResultInvalidException {
-        SeedCardAction choice = null;
+        Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof SeedCardAction seedAction &&
+                        seedAction.getCardEnteringPlay() == cardToSeed)
+                    choice = seedAction;
+                if (action instanceof SeedOutpostAction seedAction &&
                         seedAction.getCardEnteringPlay() == cardToSeed)
                     choice = seedAction;
             }

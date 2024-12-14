@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DefaultActionContext;
+import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -262,6 +263,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
         else if (_blueprint instanceof Blueprint156_010 surpriseBlueprint) {
             return surpriseBlueprint.getValidResponses(this, player, effectResult);
+        }
+        else if (_blueprint instanceof Blueprint109_063 missionSpecBlueprint) {
+            return missionSpecBlueprint.getValidResponses(this, player, effectResult);
         }
         else {
             return getActionsFromActionSources(player.getPlayerId(), this, null, effectResult,

@@ -1,21 +1,22 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDecision {
     private final List<PhysicalCard> _physicalCards = new LinkedList<>();
     private final Collection<? extends PhysicalCard> _selectable;
     private final int _minimum;
     private final int _maximum;
+    private Map<String, List<String>> _validCombinations;
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards) {
@@ -44,6 +45,39 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         setParam("imageUrl", getImageUrls(physicalCards));
         setParam("selectable", getSelectable(physicalCards, selectable));
     }
+
+    public ArbitraryCardsSelectionDecision(Player player, String text,
+                                           Collection<? extends PhysicalCard> physicalCards,
+                                           Map<PersonnelCard, List<PersonnelCard>> validCombinations,
+                                           int minimum, int maximum) {
+        super(player, text, AwaitingDecisionType.ARBITRARY_CARDS);
+        _physicalCards.addAll(physicalCards);
+        _selectable = physicalCards;
+        _minimum = minimum;
+        _maximum = maximum;
+        _validCombinations = new HashMap<>();
+
+        try {
+            for (PersonnelCard personnel : validCombinations.keySet()) {
+                String cardId = getCardIdForCard(personnel);
+                List<String> pairingsList = new LinkedList<>();
+                for (PersonnelCard pairing : validCombinations.get(personnel)) {
+                    pairingsList.add(getCardIdForCard(pairing));
+                }
+                _validCombinations.put(cardId, pairingsList);
+            }
+        } catch(InvalidGameLogicException exp) {
+            player.getGame().sendErrorMessage(exp);
+        }
+
+        setParam("min", String.valueOf(minimum));
+        setParam("max", String.valueOf(maximum));
+        setParam("cardId", getCardIds(physicalCards));
+        setParam("blueprintId", getBlueprintIds(physicalCards));
+        setParam("imageUrl", getImageUrls(physicalCards));
+        setParam("selectable", getSelectable(physicalCards, physicalCards));
+    }
+
 
 
     private String[] getSelectable(Collection<? extends PhysicalCard> physicalCards,
@@ -140,5 +174,14 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
                     "Could not find card " + card.getCardId() + " in decision parameters");
         }
         decisionMade(sj.toString());
+    }
+
+    public String getValidCombinations() throws JsonProcessingException {
+        if (_validCombinations == null)
+            return null;
+        else {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(_validCombinations);
+        }
     }
 }

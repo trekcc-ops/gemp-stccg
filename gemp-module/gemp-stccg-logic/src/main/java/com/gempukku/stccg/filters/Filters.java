@@ -45,26 +45,25 @@ public class Filters {
     }
 
     public static Collection<PhysicalCard> filterYourActive(Player player, Filterable... filters) {
-        return filterActive(player.getGame(), Filters.your(player), Filters.and(filters));
+        return filterActive(player.getGame(), your(player), and(filters));
     }
-
-
 
     public static Collection<PhysicalCard> filterYourCardsPresentWith(Player player, PhysicalCard card,
                                                                       Filterable... filters) {
-        return filterYourActive(player, Filters.presentWith(card), Filters.and(filters));
+        return filterYourActive(player, presentWith(card), and(filters));
     }
 
-    public static Collection<FacilityCard> yourActiveFacilities(Player player) {
-        Collection<FacilityCard> result = new LinkedList<>();
+    public static List<FacilityCard> yourFacilitiesInPlay(Player player) {
+        List<FacilityCard> result = new LinkedList<>();
         Collection<PhysicalCard> facilities = filterYourActive(player, CardType.FACILITY);
         for (PhysicalCard facility : facilities) {
-            if (facility instanceof FacilityCard) {
+            if (facility instanceof FacilityCard && facility.isInPlay()) {
                 result.add((FacilityCard) facility);
             }
         }
         return result;
     }
+
 
     public static Collection<PersonnelCard> highestTotalAttributes(Collection<PersonnelCard> personnelCards) {
         List<PersonnelCard> highestCards = new LinkedList<>();

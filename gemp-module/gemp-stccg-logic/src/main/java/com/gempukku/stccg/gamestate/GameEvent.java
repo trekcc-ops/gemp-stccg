@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.Player;
 import org.w3c.dom.Document;
@@ -173,6 +174,18 @@ public class GameEvent {
                 decisionParam.setAttribute("name", paramEntry.getKey());
                 decisionParam.setAttribute("value", value);
                 eventElem.appendChild(decisionParam);
+            }
+
+            try {
+                if (_awaitingDecision instanceof ArbitraryCardsSelectionDecision arbitrary) {
+                    if (arbitrary.getValidCombinations() != null) {
+                        Element decisionParam = doc.createElement("parameter");
+                        decisionParam.setAttribute("combinations", arbitrary.getValidCombinations());
+                        eventElem.appendChild(decisionParam);
+                    }
+                }
+            } catch(Exception exp) {
+                _gameState.sendMessage("Unable to process decision");
             }
         }
     }
