@@ -2,13 +2,16 @@ import { TribblesDeckBuildingUI, ST1EDeckBuildingUI } from "../../js/gemp-022/de
 
 $(document).ready(
     function () {
-
+        // Hiding TribblesDeckBuildingUI for MVP launch.
+        /*
         let gameType = prompt("Select the game you are building for. Type 'ST1E' or 'Tribbles'");
         if (gameType == "Tribbles") {
             var ui = new TribblesDeckBuildingUI();
         } else {
             var ui = new ST1EDeckBuildingUI();
         }
+        */
+        var ui = new ST1EDeckBuildingUI();
 
         $('body').layout({
             applyDefaultStyles:true,

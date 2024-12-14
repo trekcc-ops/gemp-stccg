@@ -53,6 +53,9 @@ body {
     flex-direction: row;
     gap: 2px;
     align-items: center;
+    color: white;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 #advanced-filter {
@@ -94,6 +97,10 @@ body {
     color: white;
     font-size: 180%;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 1px;
+    z-index: 12;
 }
 
 #editingDeck {
@@ -152,7 +159,9 @@ button.navigation-butt {
 }
 
 .menu-button.ui-button {
-    padding: 0;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 12px;
 }
 
 .menu-button > .ui-button-text {
@@ -184,10 +193,6 @@ button.navigation-butt {
     padding: 0;
 }
 
-#collectionSelect {
-    order:  100;
-}
-
 #editingDeck {
     flex-grow:  1;
 }
@@ -208,4 +213,8 @@ button.navigation-butt {
     position: absolute;
     padding-left: 10px;
     color: white;
+}
+
+.hidden {
+    display: none;
 }
