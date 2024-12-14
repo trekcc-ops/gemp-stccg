@@ -177,7 +177,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<? extends Action> getPhaseActionsInPlay(Player player) {
+    public List<? extends Action> getRulesActionsWhileInPlay(Player player) {
+        return new LinkedList<>();
+    }
+
+    public List<? extends Action> getGameTextActionsWhileInPlay(Player player) {
         return _blueprint.getGameTextActionsWhileInPlay(player, this);
     }
 
