@@ -55,10 +55,13 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     @Override
     public Action getPlayCardAction() { return createReportCardAction(); }
 
+    @Override
+    public Action getPlayCardAction(boolean forFree) { return createReportCardAction(forFree); }
 
     public Action createReportCardAction() {
         return new ReportCardAction(this, false);
     }
+    public Action createReportCardAction(boolean forFree) { return new ReportCardAction(this, forFree); }
 
     public void leaveAwayTeam() {
         _awayTeam.remove(this);

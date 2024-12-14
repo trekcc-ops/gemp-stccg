@@ -86,11 +86,15 @@ public class ReportCardAction extends STCCGPlayCardAction {
             cardGame.sendErrorMessage(exp);
             result = false;
         }
-        return result;
+        return costsCanBePaid(cardGame);
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+
+        if (isCostFailed())
+            return null;
+
         DefaultGame game = _cardEnteringPlay.getGame();
         Player performingPlayer = game.getPlayer(_performingPlayerId);
 
@@ -121,6 +125,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
             });
             return getNextCost();
         }
+
+        Action nextCost = getNextCost();
+        if (nextCost != null)
+            return nextCost;
+
         if (!_affiliationWasChosen) {
             appendCost(new ChooseAffiliationEffect(performingPlayer, new ArrayList<>(_affiliationOptions)) {
                 @Override
