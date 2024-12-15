@@ -1535,6 +1535,11 @@ export default class GameTableUI {
         $('.ui-dialog :button').blur();
     }
 
+    cardSelectionFromCombinations(decision) {
+        // TODO: This is a passthrough for testing; replace with a unique dialog.
+        this.arbitraryCardsDecision(decision);
+    }
+
     // Choosing one action to resolve, for example phase actions
     cardActionChoiceDecision(decision) {
         var id = decision.getAttribute("id");
