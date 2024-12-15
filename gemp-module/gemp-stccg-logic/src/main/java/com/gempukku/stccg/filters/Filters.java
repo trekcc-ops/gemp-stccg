@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -190,7 +191,14 @@ public class Filters {
     public static final Filter equipment = Filters.or(CardType.EQUIPMENT);
     public static final Filter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
     public static Filter atLocation(final MissionLocation location) {
-        return (game, physicalCard) -> physicalCard.getLocation() == location;
+        return (game, physicalCard) -> {
+            try {
+                return physicalCard.getLocation() == location;
+            } catch (InvalidGameLogicException e) {
+                game.sendErrorMessage(e);
+                return false;
+            }
+        };
     }
 
     public static final Filter inPlay = (game, physicalCard) -> physicalCard.getZone().isInPlay();

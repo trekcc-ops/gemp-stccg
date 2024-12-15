@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class NormalCardPlayTest extends AbstractAtTest {
 
     @Test
-    public void normalCardPlayTest() throws DecisionResultInvalidException {
+    public void normalCardPlayTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost

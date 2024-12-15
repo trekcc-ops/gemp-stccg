@@ -148,7 +148,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isControlledBy(Player player) { return isControlledBy(player.getPlayerId()); }
 
     public String getCardLink() { return _blueprint.getCardLink(); }
-    public MissionLocation getLocation() { return _currentLocation; }
+    public MissionLocation getLocation() throws InvalidGameLogicException {
+        if (_currentLocation == null)
+            throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
+        return _currentLocation;
+    }
 
     public void setLocation(MissionLocation location) {
         _currentLocation = location;
@@ -326,8 +330,13 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     public boolean isPresentWith(PhysicalCard card) {
-        return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
         // TODO Elaborate on this definition
+        try {
+            return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
+        } catch(InvalidGameLogicException exp) {
+            card.getGame().sendErrorMessage(exp);
+            return false;
+        }
     }
 
     public boolean hasSkill(SkillName skillName) { return false; }
@@ -355,6 +364,18 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             throws InvalidGameLogicException {
         throw new InvalidGameLogicException(
                 "Tried to call getEncounterActions for a card that does not have an encounter action");
+    }
+
+    public boolean isAtPlanetLocation() {
+        if (_currentLocation == null)
+            return false;
+        else return _currentLocation.isPlanet();
+    }
+
+    public boolean isAtSpaceLocation() {
+        if (_currentLocation == null)
+            return false;
+        else return _currentLocation.isSpace();
     }
 
 }

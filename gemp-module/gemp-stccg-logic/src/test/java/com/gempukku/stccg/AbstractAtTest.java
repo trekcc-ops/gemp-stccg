@@ -699,7 +699,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
     protected void attemptMission(String playerId, AttemptingUnit attemptingUnit, MissionCard mission)
-            throws DecisionResultInvalidException {
+            throws DecisionResultInvalidException, InvalidGameLogicException {
         AttemptMissionAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {

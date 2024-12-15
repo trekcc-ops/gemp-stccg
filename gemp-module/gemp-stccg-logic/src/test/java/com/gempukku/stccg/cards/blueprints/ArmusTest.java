@@ -11,6 +11,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ArmusTest extends AbstractAtTest {
 
     @Test
-    public void misSeedTest() throws DecisionResultInvalidException, CardNotFoundException {
+    public void misSeedTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first

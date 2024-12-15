@@ -4,11 +4,13 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BeamCardsAction extends BeamOrWalkAction {
@@ -19,18 +21,23 @@ public class BeamCardsAction extends BeamOrWalkAction {
 
     @Override
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
+        try {
             // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
-        return Filters.filterActive(
-                game,
-                Filters.atLocation(_cardSource.getLocation()),
-                Filters.or(
-                        Filters.planetLocation,
-                        Filters.and(
-                                Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
-                                Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
-                        )
-                )
-        );
+            return Filters.filterActive(
+                    game,
+                    Filters.atLocation(_cardSource.getLocation()),
+                    Filters.or(
+                            Filters.planetLocation,
+                            Filters.and(
+                                    Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
+                                    Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
+                            )
+                    )
+            );
+        } catch(InvalidGameLogicException exp) {
+            game.sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
     }
 
     @Override
