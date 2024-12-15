@@ -59,7 +59,8 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
 
     boolean hasTextRemoved(DefaultGame game);
     CardType getCardType();
-    List<? extends Action> getPhaseActionsInPlay(Player player);
+    List<? extends Action> getRulesActionsWhileInPlay(Player player);
+    List<? extends Action> getGameTextActionsWhileInPlay(Player player);
 
     List<PhysicalCard> getStackedCards(DefaultGame game);
 

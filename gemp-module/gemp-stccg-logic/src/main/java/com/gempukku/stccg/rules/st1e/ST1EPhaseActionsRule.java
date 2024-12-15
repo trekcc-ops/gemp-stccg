@@ -25,10 +25,11 @@ public class ST1EPhaseActionsRule extends ST1ERule {
         List<Action> result = new LinkedList<>();
         if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
             Filters.filterActive(gameState.getGame(), CardType.MISSION).forEach(
-                    card -> result.addAll(card.getPhaseActionsInPlay(player)));
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
             Filters.filterYourActive(player, Filters.not(CardType.MISSION)).forEach(
-                    card -> result.addAll(card.getPhaseActionsInPlay(player)));
-        }
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
+        } else
+            Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }
 }

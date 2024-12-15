@@ -28,7 +28,7 @@ public class Blueprint212_019 extends CardBlueprint {
 
     public List<Action> getValidResponses(PhysicalCard card, Player player, EffectResult effectResult) {
         List<Action> actions = new ArrayList<>();
-        if (effectResult.getType() == EffectResult.Type.START_OF_MISSION_ATTEMPT) {
+        if (effectResult.getType() == EffectResult.Type.START_OF_MISSION_ATTEMPT && card.isControlledBy(player)) {
             actions.add(new DownloadCardFromZoneAction(Zone.DRAW_DECK, player, card, CardType.PERSONNEL));
         }
         return actions;

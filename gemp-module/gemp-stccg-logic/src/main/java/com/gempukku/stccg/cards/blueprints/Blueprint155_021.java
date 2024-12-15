@@ -36,7 +36,8 @@ public class Blueprint155_021 extends CardBlueprint {
         return Filters.filterYourActive(card.getOwner(), Filters.yourMatchingOutposts(card.getOwner(), card));
     }
 
-    public List<? extends ActivateCardAction> getInPlayActionsNew(Player player, PhysicalCard card) {
+    @Override
+    public List<? extends ActivateCardAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard card) {
         DefaultGame game = player.getGame();
         Phase currentPhase = game.getCurrentPhase();
         List<ActivateCardAction> actions = new LinkedList<>();

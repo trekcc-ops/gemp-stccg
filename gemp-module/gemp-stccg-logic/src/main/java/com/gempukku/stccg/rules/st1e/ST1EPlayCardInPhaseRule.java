@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ST1EGame;
@@ -52,11 +51,9 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
                 if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
                     if (card.canBePlayed(_game)) {
-                        if (card instanceof PhysicalReportableCard1E reportable) {
-                            Action action = reportable.createReportCardAction();
-                            if (action != null && action.canBeInitiated(_game))
-                                result.add(action);
-                        }
+                        Action action = card.getPlayCardAction();
+                        if (action != null && action.canBeInitiated(_game))
+                            result.add(action);
                     }
                 }
             }

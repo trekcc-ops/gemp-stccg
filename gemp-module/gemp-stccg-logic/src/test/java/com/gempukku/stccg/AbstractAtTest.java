@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.UndockAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
@@ -58,6 +59,25 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.startGame();
 
     }
+
+    protected void initializeSimple1EGame(int deckSize, String blueprintId) {
+        Map<String, CardDeck> decks = new HashMap<>();
+        CardDeck testDeck = new CardDeck("Test");
+        for (int i = 0; i < deckSize; i++) {
+            testDeck.addCard(SubDeck.DRAW_DECK, blueprintId); // Federation Outpost
+        }
+
+        decks.put(P1, testDeck);
+        decks.put(P2, testDeck);
+
+        GameFormat format = formatLibrary.getFormat("debug1e");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+
+    }
+
 
     protected void initializeSimple1EGameWithDoorways(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
@@ -370,6 +390,15 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
+    protected void skipExecuteOrders() throws DecisionResultInvalidException {
+        String playerId = _game.getCurrentPlayerId();
+        while (_game.getCurrentPhase() == Phase.EXECUTE_ORDERS) {
+            if (_userFeedback.getAwaitingDecision(playerId) != null)
+                playerDecided(playerId, "");
+        }
+    }
+
+
     protected void skipDilemma() throws DecisionResultInvalidException {
         for (String playerId : _game.getAllPlayerIds())
             if (_userFeedback.getAwaitingDecision(playerId) != null)
@@ -517,6 +546,25 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throw new DecisionResultInvalidException("No valid action to report " + cardToReport.getTitle());
     }
 
+    protected void playCard(String playerId, PhysicalCard cardToPlay)
+            throws DecisionResultInvalidException {
+        PlayCardAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof PlayCardAction playCardAction &&
+                        playCardAction.getCardEnteringPlay() == cardToPlay) {
+                    choice = playCardAction;
+                }
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle());
+    }
+
     protected void beamCard(String playerId, PhysicalCard cardWithTransporters, PhysicalReportableCard1E cardToBeam,
                             PhysicalCard destination)
             throws DecisionResultInvalidException {
@@ -598,6 +646,21 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
         if (choice == null)
             throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+    }
+
+    protected void chooseOnlyAction(String playerId) throws DecisionResultInvalidException {
+        Action choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            if (actionDecision.getActions().size() == 1) {
+                choice = actionDecision.getActions().getFirst();
+                actionDecision.decisionMade(choice);
+                _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+                _game.carryOutPendingActionsUntilDecisionNeeded();
+            }
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("Could not choose a valid action");
     }
 
 

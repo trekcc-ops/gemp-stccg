@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.*;
@@ -73,7 +74,7 @@ public class CardBlueprint {
     private final Map<TriggerTiming, List<ActionSource>> _optionalInHandTriggers = new HashMap<>();
     private final Map<TriggerTiming, List<ActionSource>> _activatedTriggers = new HashMap<>();
 
-    private List<ActionSource> inPlayPhaseActions;
+    private final List<ActionSource> inPlayPhaseActions = new LinkedList<>();
     private List<ActionSource> inDiscardPhaseActions;
 
     private final List<ModifierSource> inPlayModifiers = new LinkedList<>();
@@ -300,8 +301,6 @@ public class CardBlueprint {
     }
 
     public void appendInPlayPhaseAction(ActionSource actionSource) {
-        if (inPlayPhaseActions == null)
-            inPlayPhaseActions = new LinkedList<>();
         inPlayPhaseActions.add(actionSource);
     }
 
@@ -457,5 +456,22 @@ public class CardBlueprint {
 
     public int getShields() {
         return _cardAttributes.get(CardAttribute.SHIELDS);
+    }
+
+    public List<Action> getActionsFromActionSources(String playerId, PhysicalCard card, Effect effect,
+                                                     EffectResult effectResult, List<ActionSource> actionSources) {
+        List<Action> result = new LinkedList<>();
+        actionSources.forEach(actionSource -> {
+            if (actionSource != null) {
+                Action action = actionSource.createActionWithNewContext(card, playerId, effect, effectResult);
+                if (action != null) result.add(action);
+            }
+        });
+        return result;
+    }
+
+    public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+        return getActionsFromActionSources(
+                player.getPlayerId(), thisCard, null, null, inPlayPhaseActions);
     }
 }
