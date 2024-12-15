@@ -50,7 +50,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
                                            Collection<? extends PhysicalCard> physicalCards,
                                            Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                            int minimum, int maximum) {
-        super(player, text, AwaitingDecisionType.ARBITRARY_CARDS);
+        super(player, text, AwaitingDecisionType.CARD_SELECTION_FROM_COMBINATIONS);
         _physicalCards.addAll(physicalCards);
         _selectable = physicalCards;
         _minimum = minimum;
