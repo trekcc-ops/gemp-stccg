@@ -64,4 +64,12 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     public Effect getEffect() { return _effect; }
+
+    @Override
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        boolean result = costsCanBePaid();
+        if (_effect != null && !_effect.isPlayableInFull())
+            result = false;
+        return result;
+    }
 }

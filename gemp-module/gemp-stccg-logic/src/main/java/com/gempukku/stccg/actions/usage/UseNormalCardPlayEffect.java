@@ -9,6 +9,7 @@ import com.gempukku.stccg.game.ST1EGame;
 
 public class UseNormalCardPlayEffect extends AbstractSubActionEffect {
     private final Player _player;
+    private boolean _wasCarriedOut;
 
     public UseNormalCardPlayEffect(ST1EGame game, Player player) {
         super(game);
@@ -30,6 +31,10 @@ public class UseNormalCardPlayEffect extends AbstractSubActionEffect {
         if (isPlayableInFull()) {
             _game.getModifiersEnvironment().useNormalCardPlay(_player);
             _game.sendMessage("Normal card play used");
+            _wasCarriedOut = true;
         }
     }
+
+    @Override
+    public boolean wasCarriedOut() { return _wasCarriedOut; }
 }
