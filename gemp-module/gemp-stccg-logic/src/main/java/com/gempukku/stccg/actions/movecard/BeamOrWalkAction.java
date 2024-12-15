@@ -97,6 +97,9 @@ public abstract class BeamOrWalkAction extends ActionyAction {
             }
         }
 
+        if (_destinationOptions.isEmpty())
+            throw new InvalidGameLogicException("Unable to locate a valid destination");
+
         if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
                 _selectDestinationAction = new SelectCardInPlayAction(this, _performingPlayer,

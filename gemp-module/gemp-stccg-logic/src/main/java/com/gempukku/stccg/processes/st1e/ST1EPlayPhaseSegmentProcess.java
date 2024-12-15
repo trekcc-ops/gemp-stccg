@@ -40,6 +40,8 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                             }
                         }
                     });
+        } else {
+            _consecutivePasses++;
         }
     }
 

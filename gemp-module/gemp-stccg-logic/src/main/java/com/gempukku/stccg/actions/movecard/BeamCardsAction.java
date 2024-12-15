@@ -56,7 +56,11 @@ public class BeamCardsAction extends BeamOrWalkAction {
     protected String actionVerb() { return "beam"; }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return (!getValidFromCards(cardGame).isEmpty());
+        List<PhysicalCard> fromCards = getValidFromCards(cardGame);
+        List<PhysicalCard> toCards = new LinkedList<>(getDestinationOptions((ST1EGame) cardGame));
+        if (fromCards.isEmpty() || toCards.isEmpty())
+            return false;
+        return fromCards.size() != 1 || toCards.size() != 1 || fromCards.getFirst() != toCards.getFirst();
     }
 
     public PhysicalCard getCardUsingTransporters() { return _cardSource; }
