@@ -69,4 +69,8 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         }
         return result;
     }
+
+    public int getSkillDotCount() {
+        return _blueprint.getSkillDotCount();
+    }
 }
