@@ -1,0 +1,39 @@
+{
+    setId: "171"
+    setName: "Warp Pack: Emissary"
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 171_066
+            title: Herbert
+            type: personnel
+            affiliation: federation
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: ENGINEER
+            icons: staff
+            lore: "Representative transporter officer aboard the U.S.S. Enterprise. He held the rank of ensign in the early years of the flagship's mission."
+            skill-box: "[*] Transporter Skill [*] Biology [*] Stellar Cartography"
+            integrity: 6
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/promos/wpe/66P.jpg
+        }
+        {
+            blueprintId: 171_067
+            title: Lieutenant Ballard
+            type: personnel
+            affiliation: federation
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SCIENCE
+            icons: staff
+            lore: "Typical scientist and teacher in the U.S.S. Enterprise's primary school. She expressed concern to Data about Lal's ability to fit in."
+            skill-box: "[*] Exobiology [*] Physics"
+            integrity: 7
+            cunning: 6
+            strength: 5
+            image-url: https://www.trekcc.org/1e/cardimages/promos/wpe/67P.jpg
+        }
+    ]
+}

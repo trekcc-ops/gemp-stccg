@@ -17,6 +17,32 @@
             image-url: https://www.trekcc.org/1e/cardimages/comingofage/3.jpg
         }
         {
+            blueprintId: 204_004
+            title: Investigate Energy Readings
+            type: mission
+            mission-type: planet
+            point-box: 35
+            span: 4
+            affiliation-icons: federation,romulan,ferengi
+            location: Alpha Onias III
+            lore: Pinpoint source of subspace probe that emanated from this inhospitable world.
+            mission-requirements: SECURITY + Anthropology x2 + CUNNING>38
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/4.jpg
+        }
+        {
+            blueprintId: 204_005
+            title: Prepare War Game Scenario
+            type: mission
+            mission-type: space
+            point-box: 40
+            span: 4
+            affiliation-icons: federation,romulan,klingon,ferengi
+            location: Braslota System
+            lore: Ready crew for combat simulation designed to hone tactical skills
+            mission-requirements: Computer Skill + SECURITY + Leadership x2 + (CUNNING>40 OR Sirna Kolrami)
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/5.jpg
+        }
+        {
             blueprintId: 204_010
             title: Aletia
             type: personnel
@@ -41,6 +67,85 @@
                     image-url: https://www.trekcc.org/1e/cardimages/comingofage/10A.jpg
                 }
             ]
+        }
+        {
+            blueprintId: 204_011
+            title: Follis
+            type: personnel
+            affiliation: ferengi
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SECURITY
+            icons: staff
+            lore: Representative of Ferengi trained in the field of commercial security. He helped Lurin take over the U.S.S. Enterprise in 2369.
+            skill-box: "[*] Navigation"
+            integrity: 5
+            cunning: 6
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/11.jpg
+        }
+        {
+            blueprintId: 204_016
+            title: Larg
+            type: personnel
+            affiliation: klingon
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Typical Klingon captain. Enjoys drinking with friends and enemies alike. Commanded a squadron for the House of Duras during the Klingon Civil War.
+            skill-box: "[*] Leadership [*] SECURITY [*] Computer Skill [*] Klingon Intelligence"
+            integrity: 4
+            cunning: 6
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/16.jpg
+        }
+        {
+            blueprintId: 204_017
+            title: "Qup'ta"
+            type: personnel
+            affiliation: klingon
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SCIENCE
+            icons: command
+            lore: "Representative of senior advisors living on Qo'noS. Has loyally served the Klingon High Council since his appointment by K'mpec. Collects antique bat'leths."
+            skill-box: "[*] ENGINEER [*] Archaeology [*] Diplomacy"
+            integrity: 7
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/17.jpg
+        }
+        {
+            blueprintId: 204_018
+            title: "Vol'Jin"
+            type: personnel
+            affiliation: klingon
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: MEDICAL
+            icons: staff
+            lore: Typical Klingon physician. Personal surgeon to Kargan. Became romantically involved with Vekma while serving aboard the I.K.S. Pagh.
+            skill-box: "[*] Physics [*] Navigation [*] Exobiology"
+            integrity: 4
+            cunning: 6
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/18.jpg
+        }
+        {
+            blueprintId: 204_020
+            title: Alexana Devos
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: SECURITY
+            icons: staff
+            lore: Rutian chief of police. Takes a hard line on terrorism. Pledges to end the Ansata violence. Has survived three assassination attempts on her life.
+            skill-box: "[*] Law [*] Leadership [*] MEDICAL [*] Biology [*] Archaeology"
+            integrity: 7
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/20.jpg
         }
         {
             blueprintId: 204_021
@@ -73,6 +178,54 @@
             cunning: 7
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/comingofage/22.jpg
+        }
+        {
+            blueprintId: 204_023
+            title: Jacen
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: CIVILIAN
+            icons: staff
+            lore: Typical member of the Romulan underground. Colleague of Dr. Koramar. Impersonated a security officer to apprehend Jean-Luc Picard and Data.
+            skill-box: "[*] SECURITY [*] Navigation [*] Computer Skill [*] Astrophysics"
+            integrity: 6
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/23.jpg
+        }
+        {
+            blueprintId: 204_024
+            title: Mengran
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: ENGINEER
+            icons: staff
+            lore: "Typical Romulan underground sympathizer. Chief engineer aboard the Khazara. He aided N'Vek in misaligning the cloak. Collects antique globes."
+            skill-box: "[*] Stellar Cartography [*] Biology [*] Astrophysics [*] Honor"
+            integrity: 8
+            cunning: 7
+            strength: 5
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/24.jpg
+        }
+        {
+            blueprintId: 204_025
+            title: Nefets
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Representative of versatile bridge officers serving aboard the Haakona under Taris. He later returned to Romulus and joined the Romulan underground.
+            skill-box: "[*] Honor [*] SCIENCE [*] Leadership [*] Geology"
+            integrity: 7
+            cunning: 6
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/25.jpg
         }
     ]
 }

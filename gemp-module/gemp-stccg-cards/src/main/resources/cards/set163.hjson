@@ -43,7 +43,7 @@
             property-logo: generations-logo
             classification: OFFICER
             icons: command
-            lore: Experienced officer who often commanded the U.S.S. Enterprise. Defeated the Sisters of Duras at Veridian III. Well versed in saucer separations.
+            lore: Experienced officer who often commanded the <i>U.S.S. Enterprise</i>. Defeated the Sisters of Duras at Veridian III. Well versed in saucer separations.
             skill-box: "[*] Leadership [*] Navigation [*] Music [DL] Brace for Impact"
             integrity: 8
             cunning: 7
@@ -81,6 +81,22 @@
             image-url: https://www.trekcc.org/1e/cardimages/tstl/35.jpg
         }
         {
+            blueprintId: 163_037
+            title: Dokar
+            type: personnel
+            affiliation: klingon
+            uniqueness: universal
+            property-logo: generations-logo
+            classification: OFFICER
+            icons: staff
+            lore: Characteristic of male Klingon warriors supporting attempts by the House of Duras to regain power after their defeat in the Klingon Civil War.
+            skill-box: "[*] Biology [*] Treachery [*] Transporter Skill"
+            integrity: 5
+            cunning: 5
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/37.jpg
+        }
+        {
             blueprintId: 163_040
             title: Bosus
             type: personnel
@@ -95,6 +111,22 @@
             cunning: 6
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
+        }
+        {
+            blueprintId: 163_050
+            title: Tarvang
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            uniqueness: universal
+            classification: ENGINEER
+            icons: staff
+            lore: Typical Romulan pilot. Beamed aboard the <i>U.S.S. Enterprise</i> during an encounter with quantum singularity lifeforms in 2369. Enjoys chess.
+            skill-box: "[*] Navigation [*] Physics"
+            integrity: 5
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/50.jpg
         }
         {
             blueprintId: 163_054

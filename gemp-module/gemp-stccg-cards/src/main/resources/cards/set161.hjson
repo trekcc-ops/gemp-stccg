@@ -4,6 +4,48 @@
     gameType: First Edition
     cards: [
         {
+            blueprintId: 161_021
+            title: Advanced Combat Training
+            type: mission
+            mission-type: planet
+            uniqueness: universal
+            point-box: 30
+            span: 2
+            affiliation-icons: romulan,cardassian,bajoran
+            location: Inhospitable planet
+            lore: Participate in tactical training scenarios in harsh environment.
+            mission-requirements: Computer Skill + SECURITY + Leadership + MEDICAL
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/21.jpg
+        }
+        {
+            blueprintId: 161_024
+            title: Attend Mysterious Rendezvous
+            type: mission
+            mission-type: space
+            point-box: 35
+            span: 3
+            affiliation-icons: federation,ferengi
+            location: Near Xendi Sabu system
+            lore: 'Meet with old adversary to discuss a "gift."'
+            mission-requirements: Navigation x2 + Leadership x2 + (DaiMon Bok OR Jean-Luc Picard OR INTEGRITY>30)
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/24.jpg
+        }
+        {
+            blueprintId: 161_038
+            title: Agyer
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: SCIENCE
+            icons: staff
+            lore: "Expert in shield and cloak technology serving on the Apnex in 2368. Invited to Dr. Reyga's metaphasic shield test but refused permission by his government."
+            skill-box: "[*] Navigation [*] Stellar Cartography x2 [*] Transporter Skill [DL] Space Boomer"
+            integrity: 5
+            cunning: 9
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/engage/38.jpg
+        }
+        {
             blueprintId: 161_040
             title: "D'Lors"
             type: personnel
@@ -17,6 +59,20 @@
             cunning: 7
             strength: 4
             image-url: https://www.trekcc.org/1e/cardimages/engage/40.jpg
+        }
+        {
+            blueprintId: 161_041
+            title: Jean-Luc Picard
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: CIVILIAN
+            lore: Human captain disguised as a Romulan. Worked with the Romulan underground movement. Shared his memories of Sarek through a mindmeld with Spock.
+            skill-box: "[*] Diplomacy [*] Anthropology [*] Archaeology [*] Music [*] Honor [DL] Vulcan Mindmeld"
+            integrity: 8
+            cunning: 8
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/engage/41.jpg
         }
         {
             blueprintId: 161_043
@@ -77,6 +133,37 @@
             cunning: 8
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/engage/48.jpg
+        }
+        {
+            blueprintId: 161_049
+            title: Tacil
+            type: personnel
+            uniqueness: universal
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: One of many female officers serving aboard Romulan warbirds. Former engineering technician who got caught in a temporal fragment in 2369.
+            skill-box: "[*] ENGINEER [*] Treachery [*] Geology"
+            integrity: 4
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/engage/49.jpg
+        }
+        {
+            blueprintId: 161_050
+            title: Toraan
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: SECURITY
+            icons: staff
+            lore: Tal Shiar officer assigned to the Office of the Proconsul in 2368. Often works alongside his twin brother Telak. Likes viinerine with Romulan ale.
+            skill-box: "[*] Tal Shiar [*] Exobiology [*] Treachery [*] Transporter Skill [DL] Romulan Disruptor"
+            integrity: 5
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/engage/50.jpg
         }
         {
             blueprintId: 161_051

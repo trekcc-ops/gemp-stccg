@@ -1644,6 +1644,21 @@
             image-url: https://www.trekcc.org/1e/cardimages/tngsup/37V.jpg
         }
         {
+            blueprintId: 101_304
+            title: Alidar Jarok
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Conscientious admiral who questioned Romulan policy. Eventually stole a scout ship and defected to the Federation in 2366.
+            skill-box: "[*] Navigation [*] Leadership"
+            integrity: 2
+            cunning: 8
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/alidarjarok95.jpg
+        }
+        {
             blueprintId: 101_310
             title: Mirok
             type: personnel
@@ -1672,6 +1687,22 @@
             cunning: 8
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg
+        }
+        {
+            blueprintId: 101_314
+            title: Palteth
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: ENGINEER
+            uniqueness: universal
+            icons: staff
+            lore: Romulan trained in the field of engineering. A specialist in artificial quantum singularity. Served aboard the <i>Khazara</i> in 2369.
+            skill-box: "[*] Computer Skill"
+            integrity: 3
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/palteth95.jpg
         }
         {
             blueprintId: 101_320

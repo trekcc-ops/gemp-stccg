@@ -18,7 +18,22 @@
             integrity: 7
             cunning: 8
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/homefront3/20V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/homefront3/20.jpg
+        }
+        {
+            blueprintId: 159_026
+            title: Jaglom Shrek
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: CIVILIAN
+            icons: staff
+            lore: Yridian informant. Told Worf of the secret prison camp in the Carraya system. Likes to tinker with his warp drive. Commanded a Yridian Shuttle.
+            skill-box: "[*] Navigation [*] Physics [*] Transporter Skill [*] Greed [DL] Jaglom Shrek: Information Broker"
+            integrity: 4
+            cunning: 7
+            strength: 3
+            image-url: https://www.trekcc.org/1e/cardimages/homefront3/26.jpg
         }
         {
             blueprintId: 159_029

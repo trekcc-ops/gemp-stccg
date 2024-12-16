@@ -1,0 +1,36 @@
+{
+    setId: "117"
+    setName: Rules of Acquisition
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 117_083
+            title: Krunk
+            type: personnel
+            affiliation: ferengi
+            property-logo: tng-logo
+            classification: ENGINEER
+            uniqueness: universal
+            lore: "Transporter technician under the command of Lurin. Guarded a U.S.S. Enterprise transporter room during his DaiMon's unsuccessful takeover attempt."
+            skill-box: "[*] Physics [*] Computer Skill [*] Transporter Skill"
+            integrity: 6
+            cunning: 6
+            strength: 5
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/12.jpg
+        }
+        {
+            blueprintId: 117_123
+            title: Kreechta
+            type: ship
+            affiliation: ferengi
+            property-logo: tng-logo
+            lore: Ferengi marauder. Under the command of Bractor in 2365, interrupted a mysterious battle between the Federation starships Enterprise and Hathaway.
+            ship-class: "D'KORA CLASS"
+            gametext: Holodeck, Tractor Beam
+            range: 8
+            weapons: 9
+            shields: 8
+            image-url: https://www.trekcc.org/1e/cardimages/comingofage/27.jpg
+        }
+    ]
+}
