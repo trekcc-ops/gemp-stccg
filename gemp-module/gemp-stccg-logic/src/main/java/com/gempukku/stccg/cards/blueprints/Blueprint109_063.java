@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
-import com.gempukku.stccg.actions.playcard.DynamicDownloadAction;
+import com.gempukku.stccg.actions.playcard.DownloadMultipleCardsToSameCompatibleOutpostAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.turn.StartOfTurnResult;
 import com.gempukku.stccg.cards.RegularSkill;
@@ -11,6 +11,7 @@ import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -40,7 +41,8 @@ public class Blueprint109_063 extends CardBlueprint {
 
             List<FacilityCard> yourOutposts = new LinkedList<>();
             for (PhysicalCard card : Filters.yourFacilitiesInPlay(player)) {
-                yourOutposts.add((FacilityCard) card);
+                if (card instanceof FacilityCard facilityCard && facilityCard.getFacilityType() == FacilityType.OUTPOST)
+                    yourOutposts.add(facilityCard);
             }
 
             List<PersonnelCard> specialistsNotInPlay = new LinkedList<>();
@@ -78,15 +80,8 @@ public class Blueprint109_063 extends CardBlueprint {
                 validCombinations.put(specialist, validPairings);
             }
 
-
-            // Select up to two different mission specialists who you do not own any copies of in play.
-            // Both must be compatible with each other and with one of your outposts.
-
-            Action downloadAction = new DynamicDownloadAction(Zone.DRAW_DECK, player, thisCard,
-                    validCombinations, 2);
-            /* you may download to one of your outposts up to two different mission specialists
-                if no copies you own are in play
-             */
+            Action downloadAction = new DownloadMultipleCardsToSameCompatibleOutpostAction(
+                    Zone.DRAW_DECK, player, thisCard, validCombinations, 2);
             actions.add(downloadAction);
         }
         /* once each mission, your mission specialist may score 5 points when they use their skill to meet a mission
