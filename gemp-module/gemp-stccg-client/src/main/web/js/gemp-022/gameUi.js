@@ -1536,8 +1536,112 @@ export default class GameTableUI {
     }
 
     cardSelectionFromCombinations(decision) {
-        // TODO: This is a passthrough for testing; replace with a unique dialog.
-        this.arbitraryCardsDecision(decision);
+        var id = decision.getAttribute("id");
+        var text = decision.getAttribute("text");
+
+        var min = this.getDecisionParameter(decision, "min");
+        var max = this.getDecisionParameter(decision, "max");
+        var cardIds = this.getDecisionParameters(decision, "cardId");
+        var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
+        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
+        var selectable = this.getDecisionParameters(decision, "selectable");
+
+        var that = this;
+
+        var selectedCardIds = new Array();
+
+        var selectableCardIds = new Array();
+
+        this.cardActionDialog
+            .html("<div id='cardSelectionFromCombinations'></div>")
+            .dialog("option", "title", text);
+
+        // Create the action cards and fill the dialog with them
+        for (var i = 0; i < blueprintIds.length; i++) {
+            var cardId = cardIds[i];
+            var blueprintId = blueprintIds[i];
+            var imageUrl = imageUrls[i];
+
+            if (selectable[i] == "true")
+                selectableCardIds.push(cardId);
+
+            var card = new Card(blueprintId, "SPECIAL", cardId, null, imageUrl);
+
+            var cardDiv = this.createCardDiv(card);
+
+            $("#cardSelectionFromCombinations").append(cardDiv);
+        }
+
+        var finishChoice = function () {
+            that.cardActionDialog.dialog("close");
+            $("#cardSelectionFromCombinations").html("");
+            that.clearSelection();
+            that.decisionFunction(id, "" + selectedCardIds);
+        };
+
+        var resetChoice = function () {
+            selectedCardIds = new Array();
+            that.clearSelection();
+            allowSelection();
+            processButtons();
+        };
+
+        var processButtons = function () {
+            var buttons = {};
+            if (selectedCardIds.length > 0)
+                buttons["Clear selection"] = function () {
+                    resetChoice();
+                    processButtons();
+                };
+            if ((selectedCardIds.length >= min) &&
+                (selectedCardIds.length <= max))
+                buttons["Done"] = function () {
+                    finishChoice();
+                };
+            that.cardActionDialog.dialog("option", "buttons", buttons);
+        };
+
+        var allowSelection = function () {
+            // this.selectionFunction is called when a card is clicked
+            //   thanks to the code in clickCardFunction()
+            that.selectionFunction = function (cardId) {
+                // DEBUG: console.log("arbitraryCardsDecision -> allowSelection -> selectionFunction");
+                // If the cardId is already selected, remove it.
+                if (selectedCardIds.includes(cardId)) {
+                    let index = selectedCardIds.indexOf(cardId);
+                    selectedCardIds.splice(index, 1);
+                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");;
+                }
+                // Otherwise, if the cardId is not already selected, add it.
+                else {
+                    selectedCardIds.push(cardId);
+                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");;
+                }
+
+                that.recalculateCardSelectionOrder(selectedCardIds);
+                
+                // If the max number of cards are selected and the user has auto accept on, we're done.
+                //if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
+                //    finishChoice();
+                //    return;
+                //}
+
+                processButtons();
+            };
+
+            that.attachSelectionFunctions(selectableCardIds, true);
+        };
+
+        allowSelection();
+        if (!this.replayMode)
+        {
+            processButtons();
+            this.PlaySound("awaitAction");
+        }
+
+        openSizeDialog(this.cardActionDialog);
+        this.arbitraryDialogResize(false);
+        $('.ui-dialog :button').blur();
     }
 
     // Choosing one action to resolve, for example phase actions
