@@ -181,18 +181,18 @@ public class GameEvent {
                 decisionParam.setAttribute("value", value);
                 eventElem.appendChild(decisionParam);
             }
-
-            try {
-                if (_awaitingDecision instanceof ArbitraryCardsSelectionDecision arbitrary) {
-                    if (arbitrary.getValidCombinations() != null) {
-                        Element decisionParam = doc.createElement("parameter");
-                        decisionParam.setAttribute("combinations", arbitrary.getValidCombinations());
-                        eventElem.appendChild(decisionParam);
-                    }
+        }
+        try {
+            if (_awaitingDecision instanceof ArbitraryCardsSelectionDecision arbitrary) {
+                if (arbitrary.getValidCombinations() != null) {
+                    Element decisionParam = doc.createElement("parameter");
+                    decisionParam.setAttribute("name", "combinations");
+                    decisionParam.setAttribute("value", arbitrary.getValidCombinations());
+                    eventElem.appendChild(decisionParam);
                 }
-            } catch(Exception exp) {
-                _gameState.sendMessage("Unable to process decision");
             }
+        } catch(Exception exp) {
+            _gameState.sendMessage("Unable to process decision");
         }
     }
 
