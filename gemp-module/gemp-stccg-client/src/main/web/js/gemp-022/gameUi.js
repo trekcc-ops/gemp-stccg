@@ -1546,6 +1546,23 @@ export default class GameTableUI {
         var imageUrls = this.getDecisionParameters(decision, "imageUrl");
         var selectable = this.getDecisionParameters(decision, "selectable");
 
+        var combinations = new Array();
+
+        // TODO: replace this with getDecisionParameters(decision, "combinations");
+        var decision_parameters = decision.getElementsByTagName("parameter");
+        for (let i = 0; i < decision_parameters.length; i++) {
+            if (decision_parameters[i].getAttribute("combinations") != undefined) {
+                combinations.push(decision_parameters[i].getAttribute("combinations"));
+            }
+        }
+
+        var jsonCombinations = new Array();
+        for (let i = 0; i < combinations.length; i++) {
+            jsonCombinations.push(JSON.parse(combinations[i]));
+        }
+        console.warn(jsonCombinations);
+
+
         var that = this;
 
         var selectedCardIds = new Array();
