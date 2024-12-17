@@ -1554,7 +1554,7 @@ export default class GameTableUI {
 
         this.cardActionDialog
             .html("<div id='cardSelectionFromCombinations'></div>")
-            .dialog("option", "title", text);
+            .dialog("option", "title", `Select ${min} to ${max} cards`);
 
         // Create the action cards and fill the dialog with them
         for (var i = 0; i < blueprintIds.length; i++) {
