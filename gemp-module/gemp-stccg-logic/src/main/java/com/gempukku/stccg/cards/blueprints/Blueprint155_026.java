@@ -1,13 +1,10 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActivateCardAction;
-import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +21,7 @@ public class Blueprint155_026 extends CardBlueprint {
         Phase currentPhase = game.getCurrentPhase();
         List<ActivateCardAction> actions = new LinkedList<>();
 
-        if (currentPhase == Phase.EXECUTE_ORDERS) {
+/*        if (currentPhase == Phase.EXECUTE_ORDERS) {
                 // Choice1 - make a unique [TNG] personnel attributes +2 until end of turn
             Action choice1 = new AddUntilModifierEffect();
                 // Choice2 - make a [TNG] ship RANGE +2 until end of turn
@@ -32,7 +29,10 @@ public class Blueprint155_026 extends CardBlueprint {
                 // Choice3 - shuffle the bottom three personnel and/or ships from your discard pile into your draw deck
             Action choice3 = new Action();
 
-        }
+            // add cost to all 3 actions - place two [TNG] cards from hand on bottom of your deck
+
+            // after any use, discard incident OR discard a card from hand
+        } */
         return actions;
     }
 }
