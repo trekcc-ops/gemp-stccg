@@ -2075,7 +2075,7 @@ export default class GameTableUI {
         for (const cardId of cardIds.values()) {
             if (selectedCardIds.length === 0) {
                 // everything is selectable
-                console.log("Everything is selectable.");
+                // DEBUG: console.log("Everything is selectable.");
                 getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
             }
             else {
@@ -2092,14 +2092,13 @@ export default class GameTableUI {
                     }
 
                     // Not selected, not at the max, and compatible with other selected cards
-                    //console.log(`Card ID: ${cardId}, type: ${typeof cardId}`);
                     if (allowedCombinationsRemaining.has(cardId)) {
-                        console.log(`Not selected, compatible: ${cardId}`);
+                        // DEBUG: console.log(`Not selected, compatible: ${cardId}`);
                         getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                     }
                     // Not selected, not at the max, but not compatible with other selected cards
                     else {
-                        console.log(`Not selected, not compatible: ${cardId}`);
+                        // DEBUG: console.log(`Not selected, not compatible: ${cardId}`);
                         // same as above but w/o selectableCard
                         getCardDivFromId(cardId).removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                     }
