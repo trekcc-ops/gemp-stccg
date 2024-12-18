@@ -12,7 +12,7 @@ import java.util.List;
 public class Blueprint155_026 extends CardBlueprint {
     // Get It Done
     Blueprint155_026() {
-        super("155_021");
+        super("155_026");
     }
 
     @Override
