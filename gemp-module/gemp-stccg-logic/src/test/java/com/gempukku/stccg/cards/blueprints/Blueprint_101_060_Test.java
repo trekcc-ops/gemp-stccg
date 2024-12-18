@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ public class Blueprint_101_060_Test extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void medicalKitTest() {
+    public void medicalKitTest() throws InvalidGameLogicException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
 

@@ -5,7 +5,9 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -136,8 +138,13 @@ public class GameEvent {
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
         _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
 
-        if (card.getCardType() == CardType.MISSION && card.isInPlay())
-            _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
+        if (card.getCardType() == CardType.MISSION && card.isInPlay()) {
+            try {
+                _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
+            } catch(InvalidGameLogicException exp) {
+                _gameState.getGame().sendErrorMessage(exp);
+            }
+        }
 
         if (card.getStackedOn() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
@@ -174,6 +181,18 @@ public class GameEvent {
                 decisionParam.setAttribute("value", value);
                 eventElem.appendChild(decisionParam);
             }
+        }
+        try {
+            if (_awaitingDecision instanceof ArbitraryCardsSelectionDecision arbitrary) {
+                if (arbitrary.getValidCombinations() != null) {
+                    Element decisionParam = doc.createElement("parameter");
+                    decisionParam.setAttribute("name", "combinations");
+                    decisionParam.setAttribute("value", arbitrary.getValidCombinations());
+                    eventElem.appendChild(decisionParam);
+                }
+            }
+        } catch(Exception exp) {
+            _gameState.sendMessage("Unable to process decision");
         }
     }
 

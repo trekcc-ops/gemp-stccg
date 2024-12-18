@@ -24,6 +24,15 @@
             image-url: https://www.trekcc.org/1e/cardimages/fc/maglock.gif
         }
         {
+            blueprintId: 109_063
+            title: Assign Mission Specialists
+            type: objective
+            uniqueness: unique
+            property-logo: first-contact-logo
+            java-blueprint: true
+            image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
+        }
+        {
             blueprintId: 109_095
             title: Alyssa Ogawa
             type: personnel

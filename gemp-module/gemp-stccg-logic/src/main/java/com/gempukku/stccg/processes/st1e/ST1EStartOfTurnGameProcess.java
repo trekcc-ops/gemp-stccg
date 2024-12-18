@@ -14,8 +14,6 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
     }
     @Override
     public void process() {
-                // TODO - Don't fully understand this commented method, but it creates duplicates of modifiers
-//        _game.getGameState().startAffectingCardsForCurrentPlayer();
 
         SystemQueueAction action = new SystemQueueAction(_game);
 

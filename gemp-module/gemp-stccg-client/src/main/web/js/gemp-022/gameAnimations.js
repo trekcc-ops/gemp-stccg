@@ -666,19 +666,26 @@ export default class GameAnimations {
         $("#main").queue(
             function (next) {
                 var decisionType = decision.getAttribute("decisionType");
-                if (decisionType == "INTEGER") {
+                if (decisionType === "INTEGER") {
                     that.game.integerDecision(decision);
-                } else if (decisionType == "MULTIPLE_CHOICE") {
+                } else if (decisionType === "MULTIPLE_CHOICE") {
                     that.game.multipleChoiceDecision(decision);
-                } else if (decisionType == "ARBITRARY_CARDS") {
+                } else if (decisionType === "ARBITRARY_CARDS") {
                     that.game.arbitraryCardsDecision(decision);
-                } else if (decisionType == "ACTION_CHOICE") {
+                } else if (decisionType === "ACTION_CHOICE") {
                     that.game.actionChoiceDecision(decision);
-                } else if (decisionType == "CARD_ACTION_CHOICE") {
+                } else if (decisionType === "CARD_ACTION_CHOICE") {
                     that.game.cardActionChoiceDecision(decision);
-                } else if (decisionType == "CARD_SELECTION") {
+                } else if (decisionType === "CARD_SELECTION") {
                     that.game.cardSelectionDecision(decision);
+                } else if (decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
+                    that.game.cardSelectionFromCombinations(decision);
                 }
+                else {
+                    console.error(`Unknown decisionType: ${decisionType}`);
+                    next(); // bail out
+                }
+                
 
                 if (!animate)
                     that.game.layoutUI(false);

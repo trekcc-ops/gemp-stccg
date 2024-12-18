@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
     @Test
-    public void planetSkillsTest() throws DecisionResultInvalidException {
+    public void planetSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost
@@ -50,7 +51,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
     }
 
     @Test
-    public void spaceSkillsTest() throws DecisionResultInvalidException {
+    public void spaceSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         // Seed Federation Outpost

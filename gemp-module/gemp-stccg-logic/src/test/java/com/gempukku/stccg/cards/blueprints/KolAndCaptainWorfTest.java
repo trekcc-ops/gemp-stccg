@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void kolTest() throws JsonProcessingException {
+    public void kolTest() throws JsonProcessingException, InvalidGameLogicException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
 
@@ -60,7 +61,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void captainWorfTest() {
+    public void captainWorfTest() throws InvalidGameLogicException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
         Player player2 = _game.getPlayer(2);

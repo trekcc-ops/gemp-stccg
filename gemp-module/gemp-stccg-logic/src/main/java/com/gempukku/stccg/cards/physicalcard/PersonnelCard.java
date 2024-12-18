@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -10,6 +11,7 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.SnapshotData;
 
+import java.util.List;
 import java.util.Stack;
 
 public class PersonnelCard extends PhysicalReportableCard1E implements AffiliatedCard {
@@ -68,5 +70,9 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
             }
         }
         return result;
+    }
+
+    public List<Skill> getSkills() {
+        return _blueprint.getSkills(_game, this);
     }
 }

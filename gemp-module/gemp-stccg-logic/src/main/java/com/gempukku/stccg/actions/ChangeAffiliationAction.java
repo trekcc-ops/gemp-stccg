@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class ChangeAffiliationAction extends ActionyAction {
     public PhysicalCard getCardForActionSelection() { return (PhysicalCard) _card; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Player player = cardGame.getPlayer(_performingPlayerId);
 
         if (!_affiliationWasChosen) {

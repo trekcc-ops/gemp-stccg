@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -47,7 +48,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return true;
     }
 
-    public void reportToFacility(FacilityCard facility) {
+    public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
         setLocation(facility.getLocation());
         _game.getGameState().attachCard(this, facility);
     }

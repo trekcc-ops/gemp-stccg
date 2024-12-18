@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.SnapshotData;
@@ -26,7 +27,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
     }
-    public void changeAffiliation(Affiliation affiliation) {
+    public void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException {
         setCurrentAffiliation(affiliation);
         if (getAffiliationOptions().size() > 1) {
             if (_attachedTo instanceof MissionCard mission &&

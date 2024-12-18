@@ -21,7 +21,7 @@ public class FlyShipAction extends ActionyAction {
     private final Collection<PhysicalCard> _destinationOptions;
     private final SelectCardInPlayAction _selectAction;
 
-    public FlyShipAction(Player player, PhysicalShipCard flyingCard) {
+    public FlyShipAction(Player player, PhysicalShipCard flyingCard) throws InvalidGameLogicException {
         super(player, "Fly", ActionType.MOVE_CARDS);
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
