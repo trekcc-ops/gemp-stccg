@@ -193,7 +193,10 @@ public class Filters {
     public static Filter atLocation(final MissionLocation location) {
         return (game, physicalCard) -> {
             try {
-                return physicalCard.getLocation() == location;
+                if (physicalCard.getZone() == Zone.TABLE)
+                    return false;
+                else
+                    return physicalCard.getLocation() == location;
             } catch (InvalidGameLogicException e) {
                 game.sendErrorMessage(e);
                 return false;
