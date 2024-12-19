@@ -326,6 +326,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             effectType = ModifierEffect.CUNNING_MODIFIER;
         else if (attribute == CardAttribute.INTEGRITY)
             effectType = ModifierEffect.INTEGRITY_MODIFIER;
+        else if (attribute == CardAttribute.RANGE)
+            effectType = ModifierEffect.RANGE_MODIFIER;
         Collection<Modifier> attributeModifiers = new LinkedList<>();
         if (effectType != null)
             attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));

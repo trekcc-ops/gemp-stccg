@@ -9,7 +9,6 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Lists;
 
@@ -28,10 +27,10 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     private boolean _docked = false;
     private FacilityCard _dockedAtCard = null;
     int _rangeAvailable;
+    int _usedRange;
 
     public PhysicalShipCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _rangeAvailable = _blueprint.getRange();
     }
 
     @Override
@@ -124,16 +123,20 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         return icons.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
+    public int getFullRange() {
+        return _game.getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
+    }
+
     public int getRangeAvailable() {
-        return _rangeAvailable;
+        return Math.max(0, getFullRange() - _usedRange);
     }
 
     public void useRange(int range) {
-        _rangeAvailable = _rangeAvailable - range;
+        _usedRange = _usedRange + range;
     }
 
     public void restoreRange() {
-        _rangeAvailable = _blueprint.getRange();
+        _usedRange = 0;
     }
 
     public boolean canAttemptMission(MissionLocation mission) {
@@ -171,23 +174,4 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         return getPersonnelInCrew();
     }
 
-    @Override
-    public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
-
-        // TODO - A lot of repetition here between the various PhysicalCard classes
-
-        PhysicalShipCard newCard = new PhysicalShipCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
-        newCard.setZone(_zone);
-        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
-        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
-        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        newCard._currentAffiliation = _currentAffiliation;
-        newCard._docked = _docked;
-        newCard._dockedAtCard = snapshotData.getDataForSnapshot(_dockedAtCard);
-        newCard._rangeAvailable = _rangeAvailable;
-
-        return newCard;
-    }
-    
 }

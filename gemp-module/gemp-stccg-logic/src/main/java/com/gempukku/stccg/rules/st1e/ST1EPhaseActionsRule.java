@@ -28,8 +28,8 @@ public class ST1EPhaseActionsRule extends ST1ERule {
                     card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
             Filters.filterYourActive(player, Filters.not(CardType.MISSION)).forEach(
                     card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
-        } else
-            Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
+        }
+        Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }
 }

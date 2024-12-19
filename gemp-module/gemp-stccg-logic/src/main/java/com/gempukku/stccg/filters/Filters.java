@@ -98,6 +98,17 @@ public class Filters {
         return result;
     }
 
+    public static Collection<PhysicalCard> filter(DefaultGame game, Filterable... filters) {
+        Filter filter = Filters.and(filters);
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : game.getGameState().getAllCardsInGame()) {
+            if (filter.accepts(game, card))
+                result.add(card);
+        }
+        return result;
+    }
+
+
     public static Collection<PhysicalCard> filter(Iterable<? extends PhysicalCard> cards, DefaultGame game, Filterable... filters) {
         Filter filter = Filters.and(filters);
         List<PhysicalCard> result = new LinkedList<>();
@@ -208,6 +219,26 @@ public class Filters {
 
     public static Filter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
+    }
+
+    public static Filter yourHand(Player player) {
+        return (game, physicalCard) -> game.getGameState().getHand(player.getPlayerId()).contains(physicalCard);
+    }
+
+    public static Filter bottomCardsOfDiscard(Player player, int cardCount, Filterable... filterables) {
+        return (game, physicalCard) -> {
+            List<PhysicalCard> discardCards = player.getGame().getGameState().getDiscard(player.getPlayerId());
+            int cardsIdentified = 0;
+            for (int i = discardCards.size() - 1; i >= 0; i--) {
+                if (and(filterables).accepts(game, discardCards.get(i)) && cardsIdentified < cardCount) {
+                    if (physicalCard == discardCards.get(i)) {
+                        return true;
+                    }
+                    cardsIdentified++;
+                }
+            }
+            return false;
+        };
     }
 
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed(game);
