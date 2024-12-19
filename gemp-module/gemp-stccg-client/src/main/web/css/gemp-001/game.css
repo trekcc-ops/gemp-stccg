@@ -194,20 +194,27 @@ ul {
     color: white;
 }
 
-.selectableCard > .borderOverlay {
-    border-color: #7faf7f;
-    cursor: pointer;
+.notSelectableCard > .borderOverlay {
+    cursor: not-allowed;
+    background-color: #1b1b207d;
 }
 
+.selectableCard > .borderOverlay,
 .actionableCard > .borderOverlay {
     border-color: #7f7fff;
     cursor: pointer;
 }
 
 .selectedCard > .borderOverlay {
-    border-color: #009f9f;
+    border-color: #59C27C;
     cursor: pointer;
 }
+
+/*
+TODO: Other actiony, tetradic complimentary colors to consider for future events:
+yellow: #C2B159
+red/pink: #C2599F
+*/
 
 .selectedBadge::after {
 	content: attr(selectedOrder);
@@ -216,7 +223,7 @@ ul {
     left: 39%;
     border-radius: 50%;
     padding: 5%;
-	background: #009f9f;
+	background: #59C27C; /* keep aligned to .selectedCard */
     opacity: 0.9;
     font-size: 12px;
     font-weight: bolder;

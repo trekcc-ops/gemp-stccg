@@ -2076,31 +2076,31 @@ export default class GameTableUI {
             if (selectedCardIds.length === 0) {
                 // everything is selectable
                 // DEBUG: console.log("Everything is selectable.");
-                getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
             }
             else {
                 // selected
                 if (selectedCardIds.includes(cardId)) {
-                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");
+                    getCardDivFromId(cardId).removeClass("selectableCard").removeClass("notSelectableCard").addClass("selectedCard").addClass("selectedBadge");
                 }
                 // not selected
                 else {
                     // we hit the max, treat unselected cards as if they are not compatible
                     if (selectedCardIds.length === max) {
-                        getCardDivFromId(cardId).removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                         continue;
                     }
 
                     // Not selected, not at the max, and compatible with other selected cards
                     if (allowedCombinationsRemaining.has(cardId)) {
                         // DEBUG: console.log(`Not selected, compatible: ${cardId}`);
-                        getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                     }
                     // Not selected, not at the max, but not compatible with other selected cards
                     else {
                         // DEBUG: console.log(`Not selected, not compatible: ${cardId}`);
                         // same as above but w/o selectableCard
-                        getCardDivFromId(cardId).removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                     }
                 }
             }
