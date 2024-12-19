@@ -1,35 +1,58 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Blueprint_101_065_Test extends AbstractAtTest {
+public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
     
     // Unit tests for card definition of Tricorder
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void tricorderTest() {
+    public void tricorderTest() throws CardNotFoundException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
+        ST1EGameState gameState = _game.getGameState();
 
-        final MissionCard mission = new MissionCard(_game, 101, player1, _cardLibrary.get("101_174"));
-        final PhysicalReportableCard1E tricorder = 
-                new PhysicalReportableCard1E(_game, 102, player1, _cardLibrary.get("101_065"));
-        final PersonnelCard geordi =
-                new PersonnelCard(_game, 103, player1, _cardLibrary.get("101_212")); // ENGINEER class, no SCIENCE
-        final PersonnelCard tamal =
-                new PersonnelCard(_game, 104, player1, _cardLibrary.get("172_031")); // ENGINEER class + SCIENCE
-        final PersonnelCard deanna =
-                new PersonnelCard(_game, 105, player1, _cardLibrary.get("101_205")); // no ENGINEER or SCIENCE
+        gameState.addCardToGame("101_174", _cardLibrary, P1);
+        gameState.addCardToGame("101_065", _cardLibrary, P1);
+        gameState.addCardToGame("101_212", _cardLibrary, P1);
+        gameState.addCardToGame("172_031", _cardLibrary, P1);
+        gameState.addCardToGame("101_205", _cardLibrary, P1);
+
+        MissionCard mission = null;
+        PhysicalReportableCard1E tricorder = null;
+        PersonnelCard geordi = null;
+        PersonnelCard tamal = null;
+        PersonnelCard deanna = null;
+
+        for (PhysicalCard card : gameState.getAllCardsInGame()) {
+            switch(card.getBlueprintId()) {
+                case "101_174":
+                    mission = (MissionCard) card;
+                    break;
+                case "101_065":
+                    tricorder = (PhysicalReportableCard1E) card;
+                    break;
+                case "101_212":
+                    geordi = (PersonnelCard) card;
+                    break;
+                case "172_031":
+                    tamal = (PersonnelCard) card;
+                    break;
+                case "101_205":
+                    deanna = (PersonnelCard) card;
+                    break;
+                default:
+            }
+        }
 
         // Federation Outpost
         final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
