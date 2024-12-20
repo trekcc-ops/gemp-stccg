@@ -3,13 +3,10 @@ package com.gempukku.stccg.modifiers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
-import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -17,7 +14,10 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.SnapshotData;
+import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
@@ -522,22 +522,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     @Override
     public void addModifierHooks(PhysicalCard card) {
         CardBlueprint blueprint = card.getBlueprint();
-        List<ModifierSource> inPlayModifiers = blueprint.getInPlayModifiers();
-
-        Collection<Modifier> modifiers = new LinkedList<>();
-
-        for (ModifierSource modifierSource : inPlayModifiers) {
-            ActionContext context =
-                    new DefaultActionContext(card.getOwnerName(), _game, card, null, null);
-            modifiers.add(modifierSource.getModifier(context));
-        }
-
-        try {
-            modifiers.addAll(blueprint.getGameTextWhileActiveInPlayModifiers(card));
-        } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
-        }
-        _modifierHooks.computeIfAbsent(card, k -> new LinkedList<>());
+        _modifierHooks.computeIfAbsent(card, cardModifiers -> new LinkedList<>());
+        Iterable<Modifier> modifiers =
+                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
     }

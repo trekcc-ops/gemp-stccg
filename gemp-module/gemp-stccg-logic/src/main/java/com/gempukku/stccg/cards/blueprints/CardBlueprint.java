@@ -396,14 +396,29 @@ public class CardBlueprint {
         };
     }
 
-    // Modifiers from game text
     protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card)
             throws InvalidGameLogicException {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getGameTextWhileActiveInPlayModifiers(PhysicalCard card) throws InvalidGameLogicException {
-        return getGameTextWhileActiveInPlayModifiers(card.getOwner(), card);
+    public List<Modifier> getGameTextWhileActiveInPlayModifiers(PhysicalCard card) {
+        List<Modifier> result = new LinkedList<>();
+
+        // Add in-play modifiers created through JSON definitions
+        for (ModifierSource modifierSource : inPlayModifiers) {
+            ActionContext context =
+                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null, null);
+            result.add(modifierSource.getModifier(context));
+        }
+
+        // Add in-play modifiers created through Java definitions
+        try {
+            result.addAll(getGameTextWhileActiveInPlayModifiers(card.getOwner(), card));
+        } catch(InvalidGameLogicException exp) {
+            card.getGame().sendErrorMessage(exp);
+        }
+
+        return result;
     }
 
     public boolean hasCharacteristic(Characteristic characteristic) {
