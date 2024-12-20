@@ -197,10 +197,10 @@ export default class GameTableUI {
                 "<div class='playerStats'>" +
                     `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
                     `<div id='clock${i}' class='clock'></div>` +
-                    `<div id='deck${i}' class='deckSize' title='Draw deck size'></div>` +
-                    `<div id='hand${i}' class='handSize' title='Hand size'></div>` +
-                    `<div id='discard${i}' class='discardSize' title='Discard size'></div>` +
-                    `<div id='score${i}' class='playerScore'></div>` +
+                    `<div id='deck${i}' class='deckSize' title='Draw deck size'>0</div>` +
+                    `<div id='hand${i}' class='handSize' title='Hand size'>0</div>` +
+                    `<div id='discard${i}' class='discardSize' title='Discard size'>0</div>` +
+                    `<div id='score${i}' class='playerScore'>SCORE 0</div>` +
                 "</div>");
 
             var showBut = $("<div class='slimButton'>+</div>").button().click(
