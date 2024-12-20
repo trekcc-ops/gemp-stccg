@@ -444,5 +444,35 @@
             shields: 9
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01394.jpg
         }
+        {
+            blueprintId: 1_395
+            title: U.S.S. Nebula
+            type: ship
+            affiliation: federation
+            cost: 5
+            staffing: command,staff,staff
+            ship-class: Nebula Class
+            icons: earth
+            lore: Primarily designed for research missions, the Nebula-class starship boasts a large upper equipment module to house upgraded sensors and other scientific equipment.
+            range: 8
+            weapons: 8
+            shields: 8
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01395.jpg
+        }
+        {
+            blueprintId: 1_396
+            title: U.S.S. Sovereign
+            type: ship
+            affiliation: federation
+            cost: 6
+            staffing: command,command,staff,staff
+            ship-class: Sovereign Class
+            icons: tng-icon
+            lore: "One of several Starfleet designs introduced in the 2370s, the Sovereign-class starship would become the Federation’s primary deep-space exploration vessel."
+            range: 9
+            weapons: 9
+            shields: 9
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01396.jpg
+        }
     ]
 }
