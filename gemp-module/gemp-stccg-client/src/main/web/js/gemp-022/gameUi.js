@@ -386,8 +386,8 @@ export default class GameTableUI {
                 }
 
                 optionSelection.bind("change", function() {
-                    var userSelection = null;
-                    if (settingName == "foilPresentation") {
+                    var userSelection;
+                    if (settingName === "foilPresentation") {
                         userSelection = "" + optionSelection.val(); // Multiple choice
                     } else {
                         userSelection = optionSelection.prop("checked"); // True/false
