@@ -1433,8 +1433,8 @@ export default class GameTableUI {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
 
-        var min = this.getDecisionParameter(decision, "min");
-        var max = this.getDecisionParameter(decision, "max");
+        var min = parseInt(this.getDecisionParameter(decision, "min"));
+        var max = parseInt(this.getDecisionParameter(decision, "max"));
         var cardIds = this.getDecisionParameters(decision, "cardId");
         var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
         var imageUrls = this.getDecisionParameters(decision, "imageUrl");
@@ -1503,19 +1503,16 @@ export default class GameTableUI {
                 if (selectedCardIds.includes(cardId)) {
                     let index = selectedCardIds.indexOf(cardId);
                     selectedCardIds.splice(index, 1);
-                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
+                    //getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
                 }
                 // Otherwise, if the cardId is not already selected, add it.
                 else {
                     selectedCardIds.push(cardId);
-                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
+                    //getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
                 }
                 
-                // If the max number of cards are selected and the user has auto accept on, we're done.
-                if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
-                    finishChoice();
-                    return;
-                }
+                that.recalculateCardSelectionOrder(selectedCardIds);
+                that.recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max);
 
                 processButtons();
             };
@@ -2023,6 +2020,42 @@ export default class GameTableUI {
     recalculateCardSelectionOrder(cardArray) {
         for (const [index, cardId] of cardArray.entries()) {
             getCardDivFromId(cardId).attr("selectedOrder", index + 1); // use a 1-index
+        }
+    }
+
+    recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max) {
+        if (max === 0) {
+            console.error("Max is 0, setting all cards to not selectable. This is probably a server bug.");
+            for (const cardId of cardIds.values()) {
+                getCardDivFromId(cardId).removeClass("selectableCard").removeClass("selectedCard").addClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+            }
+            return;
+        }
+        else {
+            for (const cardId of cardIds.values()) {
+                if (selectedCardIds.length === 0) {
+                    // everything is selectable
+                    getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                }
+                else {
+                    // selected
+                    if (selectedCardIds.includes(cardId)) {
+                        getCardDivFromId(cardId).removeClass("selectableCard").removeClass("notSelectableCard").addClass("selectedCard").addClass("selectedBadge");
+                    }
+                    // not selected
+                    else {
+                        // we hit the max, gray out unselected cards since we can't add more
+                        if (selectedCardIds.length === max) {
+                            getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                            continue;
+                        }
+                        else {
+                            getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        }
+                    }
+                }
+            }
+            return;
         }
     }
 
