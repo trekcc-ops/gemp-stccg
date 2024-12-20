@@ -80,6 +80,22 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07082.jpg
         }
         {
+            blueprintId: 007_086
+            title: Mordoc
+            type: personnel
+            affiliation: ferengi
+            cost: 1
+            species: ferengi
+            icons: staff
+            java-blueprint: true
+            skill-box: "[*] Astrometrics [*] Security [*] Treachery"
+            lore: "\"We Ferengi are now challenge this hew-mon madness!\""
+            integrity: 3
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07086.jpg
+        }
+        {
             blueprintId: 007_117
             title: "D'kora Marauder"
             type: ship

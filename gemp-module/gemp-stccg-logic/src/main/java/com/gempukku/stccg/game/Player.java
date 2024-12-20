@@ -84,4 +84,8 @@ public class Player implements Snapshotable<Player> {
     public int getScore() {
         return _game.getGameState().getPlayerScore(_playerId);
     }
+
+    public Collection<PhysicalCard> getHand() {
+        return _game.getGameState().getHand(_playerId);
+    }
 }
