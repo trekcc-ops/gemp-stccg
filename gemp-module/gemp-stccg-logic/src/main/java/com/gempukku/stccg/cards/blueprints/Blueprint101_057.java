@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -23,9 +22,8 @@ public class Blueprint101_057 extends CardBlueprint {
     @Override
     protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
-        YouPlayerResolver you = new YouPlayerResolver(thisCard);
         Filterable usageFilter = Filters.and(CardType.PERSONNEL, Affiliation.FEDERATION);
-        Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(you, thisCard), CardType.PERSONNEL);
+        Filterable affectFilter = Filters.and(Filters.yourCardsPresentWithThisCard(thisCard), CardType.PERSONNEL);
         modifiers.add(new CunningModifier(thisCard, affectFilter,
                 new PresentWithYourCardCondition(thisCard, usageFilter), 2, true));
         return modifiers;
