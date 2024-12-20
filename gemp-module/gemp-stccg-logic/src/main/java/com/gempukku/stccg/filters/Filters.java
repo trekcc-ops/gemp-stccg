@@ -155,7 +155,7 @@ public class Filters {
 
 
     private static Filter species(final Species species) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getSpecies() == species;
+        return (game, physicalCard) -> physicalCard.getBlueprint().isSpecies(species);
     }
 
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);

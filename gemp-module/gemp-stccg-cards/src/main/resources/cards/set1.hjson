@@ -264,6 +264,21 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01254.jpg
         }
         {
+            blueprintId: 1_258
+            title: Daniel Kwan
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: human,napean
+            icons: tng-icon
+            skill-box: "[*] Engineer [*] Physics [*] Telepathy"
+            lore: A partially empathic species, Napeans typically seek interaction with other races to explore alien thought patterns. This leads many to join Starfleet.
+            integrity: 6
+            cunning: 5
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01258.jpg
+        }
+        {
             blueprintId: 1_262
             title: Elizabeth Shelby
             type: personnel

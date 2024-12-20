@@ -88,7 +88,10 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                         blueprint.addSpecialEquipment(specialEquipment);
                         break;
                     }
-                    case "icons": blueprint.setIcons(getCardIconListFromCommaDelimited(node, fieldName)); break;
+                    case "icons": {
+                        blueprint.setIcons(getEnumListFromCommaDelimited(CardIcon.class, node, fieldName));
+                        break;
+                    }
                     case "image-options": setImageOptions(blueprint, node); break;
                     case "image-url": blueprint.setImageUrl(BlueprintUtils.getString(node, fieldName)); break;
                     case "location": blueprint.setLocation(BlueprintUtils.getString(node, fieldName)); break;
@@ -116,8 +119,14 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     }
                     case "skill-box": processSkillBox(blueprint, node, fieldName); break;
                     case "span": blueprint.setSpan(getInteger(node, fieldName)); break;
-                    case "species": blueprint.setSpecies(getEnum(Species.class, node, fieldName)); break;
-                    case "staffing": blueprint.setStaffing(getCardIconListFromCommaDelimited(node, fieldName)); break;
+                    case "species": {
+                        blueprint.setSpecies(getEnumListFromCommaDelimited(Species.class, node, fieldName));
+                        break;
+                    }
+                    case "staffing": {
+                        blueprint.setStaffing(getEnumListFromCommaDelimited(CardIcon.class, node, fieldName));
+                        break;
+                    }
                     case "subtitle": blueprint.setSubtitle(BlueprintUtils.getString(node, fieldName)); break;
                     case "title": blueprint.setTitle(BlueprintUtils.getString(node, fieldName)); break;
                     case "tribble-power": processTribblePower(blueprint, node, fieldName); break;
@@ -148,13 +157,14 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         return result;
     }
 
-    private List<CardIcon> getCardIconListFromCommaDelimited(JsonNode parentNode, String fieldName)
+    private <T extends Enum<T>> List<T> getEnumListFromCommaDelimited(Class<T> enumClass, JsonNode parentNode,
+                                                                      String fieldName)
             throws InvalidCardDefinitionException {
-        List<CardIcon> result = new LinkedList<>();
+        List<T> result = new LinkedList<>();
         if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull())
             return result;
         for (String item : parentNode.get(fieldName).textValue().split(",")) {
-            result.add(getEnum(CardIcon.class, item, fieldName));
+            result.add(getEnum(enumClass, item, fieldName));
         }
         return result;
     }

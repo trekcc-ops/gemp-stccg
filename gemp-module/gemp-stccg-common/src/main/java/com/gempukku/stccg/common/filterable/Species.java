@@ -10,7 +10,7 @@ public enum Species implements Filterable {
     BAJORAN, BENZITE, FERENGI,
     HOLOGRAM("hologram"),
     HUMAN("human"),
-    KLINGON, MARKALIAN, ROMULAN, VULCAN;
+    KLINGON, MARKALIAN, NAPEAN, ROMULAN, VULCAN;
     private final String _humanReadable;
 
     Species() { _humanReadable = StringUtils.capitalize(name().toLowerCase(Locale.ROOT)); }

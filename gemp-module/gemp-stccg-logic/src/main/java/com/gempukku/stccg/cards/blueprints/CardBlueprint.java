@@ -36,7 +36,7 @@ public class CardBlueprint {
     private PropertyLogo _propertyLogo;
     private String _persona;
     private String _lore;
-    private Species _species;
+    private List<Species> _species;
     private final Set<Characteristic> _characteristics = new HashSet<>();
     private Uniqueness uniqueness = null;
     private List<CardIcon> _icons;
@@ -200,8 +200,14 @@ public class CardBlueprint {
     public int getSkillDotCount() { return _skillDots; }
     public int getSpecialDownloadIconCount() { return _specialDownloadIcons; }
     public void setSpecialDownloadIcons(int icons) { _specialDownloadIcons = icons; }
-    public void setSpecies(Species species) { _species = species; }
-    public Species getSpecies() { return _species; }
+    public void setSpecies(List<Species> species) { _species = species; }
+
+    public boolean isSpecies(Species species) {
+        if (_species == null)
+            return false;
+        else
+            return _species.contains(species);
+    }
 
     // Tribbles
     public void setTribbleValue(int tribbleValue) { this.tribbleValue = tribbleValue; }
