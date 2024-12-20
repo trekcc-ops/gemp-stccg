@@ -107,6 +107,51 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01167.jpg
         }
         {
+            blueprintId: 1_169
+            title: Parsion III
+            subtitle: Feldomite Rush
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: alpha
+            affiliation-icons: any except borg
+            lore: "\"Who'd have dreamed they'd strike feldomite on Parsion III? The Sepian Commodities Exchange is in chaos – everybody's selling, prices falling...\""
+            mission-requirements: Engineer, Geology, Cunning>28, and (Acquisition or Law or 2 Treachery)
+            point-box: 30
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01169.jpg
+        }
+        {
+            blueprintId: 1_170
+            title: Forcas Sector
+            subtitle: Fissure Research
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: any
+            lore: "Perform scans of this \"keyhole\" intersecting different quantum realities."
+            mission-requirements: Astrometrics, Engineer, Physics, Science, and Cunning>36
+            point-box: 35
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01170.jpg
+        }
+        {
+            blueprintId: 1_180
+            title: Sector 1156
+            subtitle: Investigate Rogue Comet
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: any except borg
+            lore: "\"It is not native to this region of space, and there is no previous record of this object...\""
+            mission-requirements: Anthropology, Archaeology, Engineer, Programming, and Cunning>34
+            point-box: 35
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01180a.jpg
+        }
+        {
             blueprintId: 1_182
             title: Investigate Sighting
             uniqueness: unique
