@@ -7,7 +7,7 @@ import java.util.Locale;
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum Species implements Filterable {
     ANDROID("android"),
-    BAJORAN, BENZITE, FERENGI,
+    BAJORAN, BENZITE, BOLIAN, FERENGI, HEKARAN,
     HOLOGRAM("hologram"),
     HUMAN("human"),
     KLINGON, MARKALIAN, NAPEAN, ROMULAN, VULCAN;

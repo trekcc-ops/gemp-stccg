@@ -270,7 +270,7 @@
             affiliation: federation
             cost: 1
             species: human,napean
-            icons: tng-icon
+            icons: staff,tng-icon
             skill-box: "[*] Engineer [*] Physics [*] Telepathy"
             lore: A partially empathic species, Napeans typically seek interaction with other races to explore alien thought patterns. This leads many to join Starfleet.
             integrity: 6
@@ -285,7 +285,7 @@
             affiliation: federation
             cost: 1
             species: human
-            icons: tng-icon
+            icons: staff,tng-icon
             skill-box: "[*] Geology [*] Physics [*] Science"
             lore: "\"...if you need any help, just give me a signal and I'll take over for you. We don't want you to get too beat up on your first command.\""
             integrity: 5
@@ -355,6 +355,36 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01278.jpg
         }
         {
+            blueprintId: 1_281
+            title: Rixx
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: bolian
+            icons: command,tng-icon
+            skill-box: "[*] Astrometrics [*] Leadership [*] Officer"
+            lore: Relatively new members of the Federation, the Bolians have quickly distinguished themselves in all branches of Starfleet service. Rixx became the first Bolian to command a Federation starship when he was given the U.S.S. Thomas Paine.
+            integrity: 6
+            cunning: 5
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01281.jpg
+        }
+        {
+            blueprintId: 1_287
+            title: Van Orton
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: human
+            icons: earth
+            skill-box: "[*] Archaeology [*] Biology [*] Science"
+            lore: "Of the Federation's many research departments, the Archaeology Council is among these most limited by the Prime Directive. It has nevertheless been responsible for countless discoveries on planets throughout the quadrant."
+            integrity: 5
+            cunning: 6
+            strength: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01287.jpg
+        }
+        {
             blueprintId: 1_307
             title: Kroval
             type: personnel
@@ -368,6 +398,21 @@
             cunning: 5
             strength: 6
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01307.jpg
+        }
+        {
+            blueprintId: 1_340
+            title: Rabal
+            type: personnel
+            affiliation: non-aligned
+            cost: 2
+            species: hekaran
+            icons: staff
+            skill-box: "[*] Astrometrics [*] Engineer [*] Physics [*] Programming [*] Transporters"
+            lore: "\"I don't think we can look at space travel the same way anymore. We're going to have to change. ... It won't be easy at all.\""
+            integrity: 4
+            cunning: 6
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01340.jpg
         }
         {
             blueprintId: 1_393
