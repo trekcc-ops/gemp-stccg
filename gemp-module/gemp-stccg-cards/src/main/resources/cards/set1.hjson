@@ -279,6 +279,21 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01258.jpg
         }
         {
+            blueprintId: 1_260
+            title: Davies
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: human
+            icons: tng-icon
+            skill-box: "[*] Geology [*] Physics [*] Science"
+            lore: "\"...if you need any help, just give me a signal and I'll take over for you. We don't want you to get too beat up on your first command.\""
+            integrity: 5
+            cunning: 6
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01260.jpg
+        }
+        {
             blueprintId: 1_262
             title: Elizabeth Shelby
             type: personnel
