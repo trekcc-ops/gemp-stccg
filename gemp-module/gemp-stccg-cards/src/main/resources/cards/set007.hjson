@@ -1,0 +1,65 @@
+{
+    setId: "007"
+    setName: Strange New Worlds
+    gameType: Second Edition
+    cards: [
+        {
+            blueprintId: 007_049
+            title: Investigate Destruction
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            point-box: 30
+            mission-requirements: Astrometrics, Diplomacy, Officer, and Integrity>25 or Navigation, Security, Treachery, and Cunning>28
+            region: Neutral Zone
+            lore: "Outpost Delta Zero-Five: \"We do not know who is responsible, why entire outposts on both sides were carried off.\""
+            affiliation-icons: federation,romulan
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07049.jpg
+        }
+        {
+            blueprintId: 007_066
+            title: E.M.H. Program
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: hologram
+            icons: earth
+            skill-box: "[*] Biology [*] Exobiology [*] Medical"
+            lore: "\"Please state the nature of the medical emergency.\""
+            integrity: 5
+            cunning: 6
+            strength: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07066.jpg
+        }
+        {
+            blueprintId: 007_117
+            title: "D'kora Marauder"
+            type: ship
+            affiliation: ferengi
+            cost: 5
+            staffing: command,command,staff,staff
+            ship-class: "D'Kora Class"
+            lore: "Though its size and capabilities rival Starfleet's Galaxy-class starship, the Ferengi Marauder carries less than half the crew compliment."
+            range: 8
+            weapons: 9
+            shields: 7
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07117.jpg
+        }
+        {
+            blueprintId: 007_119
+            title: Personal Transport
+            type: ship
+            affiliation: ferengi
+            cost: 4
+            staffing: staff,staff
+            ship-class: "Na'Far Class"
+            lore: "Styled closely after shuttlepods utilized by the military, this commercial vehicle is manufactured by Ferenginar's leading seller of private spacecraft. All the most prominent businessmen have holdings in the company."
+            range: 7
+            weapons: 5
+            shields: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07119.jpg
+        }
+    ]
+}
