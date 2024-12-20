@@ -397,12 +397,13 @@ public class CardBlueprint {
     }
 
     // Modifiers from game text
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) throws InvalidGameLogicException {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card)
+            throws InvalidGameLogicException {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) throws InvalidGameLogicException {
-        return new LinkedList<>(getGameTextWhileActiveInPlayModifiers(player, card));
+    public List<Modifier> getGameTextWhileActiveInPlayModifiers(PhysicalCard card) throws InvalidGameLogicException {
+        return getGameTextWhileActiveInPlayModifiers(card.getOwner(), card);
     }
 
     public boolean hasCharacteristic(Characteristic characteristic) {
