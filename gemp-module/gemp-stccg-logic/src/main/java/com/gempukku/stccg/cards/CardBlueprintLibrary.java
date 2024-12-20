@@ -13,6 +13,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCardDeserializer;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.game.ICallback;
 import com.gempukku.stccg.game.Player;
@@ -171,7 +172,7 @@ public class CardBlueprintLibrary {
                     throw new InvalidCardDefinitionException(
                             "Card blueprintId " + blueprintId + " invalid for set " + setId);
                 try {
-                    final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, cardNode);
+                    final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, gameType, cardNode);
                     _blueprints.put(blueprintId, cardBlueprint);
                     setDefinition.addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (Exception exp) {
@@ -191,8 +192,36 @@ public class CardBlueprintLibrary {
         LOGGER.debug("Loaded JSON card file {}", file.getName());
     }
 
+    private void validateConsistency(CardBlueprint blueprint, GameType gameType) throws InvalidCardDefinitionException {
+        if (blueprint.getTitle() == null)
+            throw new InvalidCardDefinitionException("Card has to have a title");
+        if (blueprint.getCardType() == null)
+            throw new InvalidCardDefinitionException("Card has to have a type");
+        if (blueprint.getUniqueness() == null)
+            throw new InvalidCardDefinitionException("Card has to have a uniqueness");
+        if (blueprint.getRarity() == null)
+            throw new InvalidCardDefinitionException("Card has to have a rarity");
 
-    private CardBlueprint loadCardFromDeserializer(String blueprintId, JsonNode cardNode)
+        if (blueprint.getCardType() == CardType.MISSION) {
+            if (blueprint.getPropertyLogo() != null)
+                throw new InvalidCardDefinitionException("Mission card should not have a property logo");
+            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") &&
+                    gameType != GameType.SECOND_EDITION)
+                throw new InvalidCardDefinitionException("Mission card should have a location");
+            if (blueprint.getQuadrant() == null)
+                throw new InvalidCardDefinitionException("Mission card should have a quadrant");
+        } else if (blueprint.getCardType() == CardType.TRIBBLE) {
+            if (blueprint.getTribblePower() == null)
+                throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
+            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(blueprint.getTribbleValue()))
+                throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
+        } else if (blueprint.getPropertyLogo() == null && gameType != GameType.SECOND_EDITION)
+            // Technically tribbles have property logos too, they're just never relevant
+            throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
+    }
+
+
+    private CardBlueprint loadCardFromDeserializer(String blueprintId, GameType gameType, JsonNode cardNode)
             throws JsonProcessingException, InvalidCardDefinitionException {
         if (cardNode == null)
             throw new InvalidCardDefinitionException("Could not find node for blueprintId " + blueprintId);
@@ -201,7 +230,9 @@ public class CardBlueprintLibrary {
         else if (!cardNode.get("blueprintId").textValue().equals(blueprintId))
             throw new InvalidCardDefinitionException("Non-matching card blueprint property 'blueprintId' " +
                     cardNode.get("blueprintId").textValue() + " for blueprint " + blueprintId);
-        return _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
+        CardBlueprint result = _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
+        validateConsistency(result, gameType);
+        return result;
     }
 
     public String getBaseBlueprintId(String blueprintId) {
