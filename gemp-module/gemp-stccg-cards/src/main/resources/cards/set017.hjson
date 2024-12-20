@@ -1,0 +1,22 @@
+{
+    setId: "017"
+    setName: Raise the Stakes
+    gameType: Second Edition
+    cards: [
+        {
+            blueprintId: 017_073
+            title: Delvok
+            type: personnel
+            affiliation: non-aligned
+            cost: 2
+            species: vulcan
+            icons: staff,past
+            skill-box: "[*] Astrometrics [*] Biology [*] Honor [*] Medical [*] Security"
+            lore: "\"Word has already spread of the discovery. It may take years to translate all of the writings.\""
+            integrity: 6
+            cunning: 6
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/STVE-EN17073.jpg
+        }
+    ]
+}
