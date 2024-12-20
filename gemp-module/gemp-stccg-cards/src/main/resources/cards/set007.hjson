@@ -64,13 +64,14 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07080.jpg
         }
         {
-            blueprintId: 007_080
+            blueprintId: 007_082
             title: Letek
             type: personnel
             affiliation: ferengi
             cost: 2
             species: ferengi
             icons: command
+            java-blueprint: true
             skill-box: "[*] Biology [*] Geology [*] Officer [*] Treachery"
             lore: Wary of bizarre rumors and skeptical of any significant financial opportunities, the Ferengi largely avoided contact with the Federation for many decades.
             integrity: 3
