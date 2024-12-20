@@ -1,6 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
+import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
@@ -548,6 +549,19 @@ public class Filters {
 
     public static Filterable yourCardsPresentWith(Player player, PhysicalCard card) {
         return and(your(player), presentWith(card));
+    }
+
+    public static Filterable yourCardsPresentWith(PhysicalCard contextCard, PhysicalCard presenceCard) {
+        Player you = contextCard.getController();
+        return and(your(you), presentWith(presenceCard));
+    }
+
+    public static Filterable yourCardsPresentWithThisCard(PhysicalCard thisCard) {
+        return and(your(thisCard.getController()), presentWith(thisCard));
+    }
+
+    public static Filterable yourCardsPresentWith(YouPlayerResolver you, PhysicalCard card) {
+        return yourCardsPresentWith(you.getPlayer(), card);
     }
 
 

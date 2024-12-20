@@ -91,4 +91,6 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     boolean isMisSeed(DefaultGame cardGame, MissionLocation mission);
 
     List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException;
+
+    Player getController();
 }

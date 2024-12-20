@@ -1,10 +1,9 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.modifiers.CanPlayAUIconCardsModifier;
-import com.gempukku.stccg.modifiers.CanSeedAUIconCardsModifier;
+import com.gempukku.stccg.modifiers.YouCanSeedAUIconCardsModifier;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.YouCanPlayAUIconCardsModifier;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,10 +17,10 @@ public class Blueprint103_032 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(Player player, final PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {
         List<Modifier> result = new LinkedList<>();
-        result.add(new CanPlayAUIconCardsModifier(thisCard.getOwner()));
-        result.add(new CanSeedAUIconCardsModifier(thisCard.getOwner()));
+        result.add(new YouCanPlayAUIconCardsModifier(thisCard));
+        result.add(new YouCanSeedAUIconCardsModifier(thisCard));
         return result;
     }
 

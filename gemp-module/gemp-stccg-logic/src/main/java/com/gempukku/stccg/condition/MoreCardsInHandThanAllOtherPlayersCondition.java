@@ -1,20 +1,23 @@
 package com.gempukku.stccg.condition;
 
+import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 public class MoreCardsInHandThanAllOtherPlayersCondition implements Condition {
-    private final Player _mostCardsPlayer;
+    private final YouPlayerResolver _playerResolver;
 
-    public MoreCardsInHandThanAllOtherPlayersCondition(Player mostCardsPlayer) {
-        _mostCardsPlayer = mostCardsPlayer;
+    public MoreCardsInHandThanAllOtherPlayersCondition(YouPlayerResolver playerResolver) {
+        _playerResolver = playerResolver;
     }
+
 
     @Override
     public boolean isFulfilled() {
-        DefaultGame cardGame = _mostCardsPlayer.getGame();
+        Player targetPlayer = _playerResolver.getPlayer();
+        DefaultGame cardGame = targetPlayer.getGame();
         for (Player player : cardGame.getPlayers()) {
-            if (player.getHand().size() >= _mostCardsPlayer.getHand().size() && _mostCardsPlayer != player) {
+            if (player.getHand().size() >= targetPlayer.getHand().size() && targetPlayer != player) {
                 return false;
             }
         }

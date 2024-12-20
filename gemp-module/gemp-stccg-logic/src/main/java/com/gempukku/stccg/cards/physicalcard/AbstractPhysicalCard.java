@@ -353,4 +353,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
                 "Tried to call getEncounterActions for a card that does not have an encounter action");
     }
 
+    public Player getController() {
+        return _owner;
+    }
+
 }

@@ -1,20 +1,22 @@
 package com.gempukku.stccg.condition;
 
+import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 public class HigherScoreThanAllOtherPlayersCondition implements Condition {
-    private final Player _highestScorePlayer;
+    private final YouPlayerResolver _playerResolver;
 
-    public HigherScoreThanAllOtherPlayersCondition(Player highestScorePlayer) {
-        _highestScorePlayer = highestScorePlayer;
+    public HigherScoreThanAllOtherPlayersCondition(YouPlayerResolver playerResolver) {
+        _playerResolver = playerResolver;
     }
 
     @Override
     public boolean isFulfilled() {
-        DefaultGame cardGame = _highestScorePlayer.getGame();
+        Player targetPlayer = _playerResolver.getPlayer();
+        DefaultGame cardGame = targetPlayer.getGame();
         for (Player player : cardGame.getPlayers()) {
-            if (player.getScore() >= _highestScorePlayer.getScore() && _highestScorePlayer != player) {
+            if (player.getScore() >= targetPlayer.getScore() && targetPlayer != player) {
                 return false;
             }
         }

@@ -393,7 +393,7 @@ public class CardBlueprint {
         };
     }
 
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(Player player, PhysicalCard card)
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)
             throws InvalidGameLogicException {
         return new LinkedList<>();
     }
@@ -410,7 +410,7 @@ public class CardBlueprint {
 
         // Add in-play modifiers created through Java definitions
         try {
-            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(card.getOwner(), card));
+            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(card));
         } catch(InvalidGameLogicException exp) {
             card.getGame().sendErrorMessage(exp);
         }
