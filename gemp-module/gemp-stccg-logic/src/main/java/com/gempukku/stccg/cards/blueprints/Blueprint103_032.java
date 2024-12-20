@@ -18,7 +18,7 @@ public class Blueprint103_032 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(Player player, final PhysicalCard thisCard) {
         List<Modifier> result = new LinkedList<>();
         result.add(new CanPlayAUIconCardsModifier(thisCard.getOwner()));
         result.add(new CanSeedAUIconCardsModifier(thisCard.getOwner()));

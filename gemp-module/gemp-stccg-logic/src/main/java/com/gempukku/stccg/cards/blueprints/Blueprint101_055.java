@@ -21,7 +21,7 @@ public class Blueprint101_055 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(Player player, final PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL,
                 Filters.classification(SkillName.OFFICER));

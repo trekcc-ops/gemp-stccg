@@ -21,7 +21,7 @@ public class Blueprint007_082 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(Player player, final PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
         Condition condition = new HigherScoreThanAllOtherPlayersCondition(player);
         modifiers.add(new AllAttributeModifier(thisCard, thisCard, condition, 1));

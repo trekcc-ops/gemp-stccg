@@ -377,13 +377,10 @@ public class CardBlueprint {
     public String getCardLink() {
         List<CardType> typesWithUniversalSymbol =
                 Arrays.asList(CardType.MISSION, CardType.SHIP, CardType.PERSONNEL, CardType.SITE);
-        boolean showUniversalSymbol = typesWithUniversalSymbol.contains(getCardType()) && isUniversal();
-        return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + getImageUrl() + "'>" +
+        boolean showUniversalSymbol = typesWithUniversalSymbol.contains(_cardType) && isUniversal();
+        return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + imageUrl + "'>" +
                 (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
     }
-
-    public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
-    public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 
     public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
         return switch(_cardType) {
@@ -396,7 +393,7 @@ public class CardBlueprint {
         };
     }
 
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card)
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(Player player, PhysicalCard card)
             throws InvalidGameLogicException {
         return new LinkedList<>();
     }
@@ -413,7 +410,7 @@ public class CardBlueprint {
 
         // Add in-play modifiers created through Java definitions
         try {
-            result.addAll(getGameTextWhileActiveInPlayModifiers(card.getOwner(), card));
+            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(card.getOwner(), card));
         } catch(InvalidGameLogicException exp) {
             card.getGame().sendErrorMessage(exp);
         }

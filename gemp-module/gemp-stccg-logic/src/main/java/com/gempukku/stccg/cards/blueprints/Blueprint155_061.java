@@ -29,7 +29,7 @@ public class Blueprint155_061 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard)
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(Player player, final PhysicalCard thisCard)
             throws InvalidGameLogicException {
         // TODO - Need some additional work here to check skill for usability
         List<Modifier> modifiers = new LinkedList<>();
