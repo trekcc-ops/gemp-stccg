@@ -195,7 +195,7 @@ ul {
 }
 
 .notSelectableCard > .borderOverlay {
-    cursor: not-allowed;
+    cursor: pointer;
     background-color: #1b1b207d;
 }
 
