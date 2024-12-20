@@ -17,8 +17,8 @@ import java.util.List;
 
 
 public class Blueprint155_072 extends CardBlueprint {
+    // Kol (The Next Generation)
     Blueprint155_072() {
-        // Kol (The Next Generation)
         super("155_072");
         addSkill(SkillName.DIPLOMACY);
         addSkill(SkillName.NAVIGATION);

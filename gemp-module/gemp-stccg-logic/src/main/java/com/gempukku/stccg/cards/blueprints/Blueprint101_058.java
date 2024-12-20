@@ -13,10 +13,9 @@ import java.util.List;
 
 
 public class Blueprint101_058 extends CardBlueprint {
+    // Klingon Disruptor
     Blueprint101_058() {
-        super("101_058"); // Klingon Disruptor
-        setLore("Phase-disruptor used by Klingons and other races. Similar to a phaser.");
-//        setGameText("Klingon and Non-Aligned use only. Each of your personnel STRENGTH +2 where present. (Cumulative.)");
+        super("101_058");
     }
 
     @Override
