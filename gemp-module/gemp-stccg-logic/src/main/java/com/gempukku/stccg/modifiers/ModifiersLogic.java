@@ -154,7 +154,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         else {
             LinkedList<Modifier> liveModifiers = new LinkedList<>();
             for (Modifier modifier : modifiers) {
-                if (skill == null || ((SkillAffectingModifier) modifier).getSkill() == skill) {
+                if (skill == null || ((SkillAffectingModifier) modifier).getSkills().contains(skill)) {
                     if (!_skipSet.contains(modifier)) {
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
@@ -204,7 +204,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
         for (Modifier modifier : getSkillModifiersAffectingCard(
                 skillName, physicalCard)) {
-            if (modifier instanceof GainSkillModifier skillModifier && skillModifier.getSkill() == skillName)
+            if (modifier instanceof GainSkillModifier skillModifier && skillModifier.getSkills().contains(skillName))
                 level += 1;
         }
         return level;
@@ -533,7 +533,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
 
         try {
-            modifiers.addAll(blueprint.getWhileInPlayModifiersNew(card.getOwner(), card));
+            modifiers.addAll(blueprint.getGameTextWhileActiveInPlayModifiers(card));
         } catch(InvalidGameLogicException exp) {
             _game.sendErrorMessage(exp);
         }
