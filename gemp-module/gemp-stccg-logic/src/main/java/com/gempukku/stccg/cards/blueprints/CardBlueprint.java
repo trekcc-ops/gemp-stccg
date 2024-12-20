@@ -29,6 +29,7 @@ public class CardBlueprint {
     private String subtitle;
     private ShipClass _shipClass;
     private boolean _anyCanAttempt;
+    private boolean _anyExceptBorgCanAttempt;
     protected CardType _cardType;
     private String imageUrl;
     private String _rarity;
@@ -474,4 +475,10 @@ public class CardBlueprint {
         return getActionsFromActionSources(
                 player.getPlayerId(), thisCard, null, null, inPlayPhaseActions);
     }
+
+    public void setAnyExceptBorgCanAttempt() {
+        _anyExceptBorgCanAttempt = true;
+    }
+
+    public boolean canAnyExceptBorgAttempt() { return _anyExceptBorgCanAttempt; }
 }

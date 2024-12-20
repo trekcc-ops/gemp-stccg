@@ -92,6 +92,21 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01166.jpg
         }
         {
+            blueprintId: 1_167
+            title: Sector 97
+            subtitle: Explore Black Cluster
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: any except borg
+            lore: Conduct a survey of this region known for its violent and unpredictable gravitational wavefronts.
+            mission-requirements: Astrometrics, Leadership, Physics, Science, and Cunning>34
+            point-box: 35
+            span: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01167.jpg
+        }
+        {
             blueprintId: 1_182
             title: Investigate Sighting
             uniqueness: unique

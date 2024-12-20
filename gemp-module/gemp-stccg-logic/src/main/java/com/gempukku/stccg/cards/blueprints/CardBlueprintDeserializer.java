@@ -67,6 +67,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     case "affiliation-icons":
                         for (String icon : node.get(fieldName).textValue().split(",")) {
                             if (icon.equals("any")) blueprint.setAnyCrewOrAwayTeamCanAttempt();
+                            else if (icon.equals("any except borg")) blueprint.setAnyExceptBorgCanAttempt();
                             else blueprint.addOwnerAffiliationIcon(
                                     getEnum(Affiliation.class, icon, fieldName));
                         }
