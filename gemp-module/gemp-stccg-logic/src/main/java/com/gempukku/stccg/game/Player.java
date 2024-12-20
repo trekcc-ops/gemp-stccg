@@ -80,4 +80,8 @@ public class Player implements Snapshotable<Player> {
         newPlayer._playedAffiliations.addAll(_playedAffiliations);
         return newPlayer;
     }
+
+    public int getScore() {
+        return _game.getGameState().getPlayerScore(_playerId);
+    }
 }
