@@ -51,6 +51,7 @@ public class CardBlueprint {
     private Region region;
     private SkillName _classification;
     private boolean _canInsertIntoSpaceline;
+    private final List<Keyword> _keywords = new LinkedList<>();
     private final Set<ShipSpecialEquipment> _specialEquipment = new HashSet<>();
     private final Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
     private final Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
@@ -500,4 +501,8 @@ public class CardBlueprint {
     }
 
     public boolean canAnyExceptBorgAttempt() { return _anyExceptBorgCanAttempt; }
+
+    public void setKeywords(Collection<Keyword> keywords) {
+        _keywords.addAll(keywords);
+    }
 }
