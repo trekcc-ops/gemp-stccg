@@ -1480,8 +1480,23 @@ export default class GameTableUI {
             processButtons();
         };
 
+        var selectAllCards = function () {
+            selectedCardIds = Array.from(cardIds);
+            that.recalculateCardSelectionOrder(selectedCardIds);
+            that.recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max);
+            allowSelection();
+            processButtons();
+        }
+
         var processButtons = function () {
             var buttons = {};
+            if ((cardIds.length <= max) &&
+                (selectedCardIds.length != max)) {
+                buttons["Select all"] = function() {
+                    selectAllCards();
+                    processButtons();
+                }
+            }
             if (selectedCardIds.length > 0)
                 buttons["Clear selection"] = function () {
                     resetChoice();
