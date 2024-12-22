@@ -212,14 +212,6 @@ public abstract class GameState {
         addCardToZone(card, Zone.ATTACHED);
     }
 
-    public void stackCard(PhysicalCard card, PhysicalCard stackOn) throws InvalidParameterException {
-        if(card == stackOn)
-            throw new InvalidParameterException("Cannot stack card on itself!");
-
-        card.stackOn(stackOn);
-        addCardToZone(card, Zone.STACKED);
-    }
-
     public void cardAffectsCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.sendEvent(new GameEvent(GameEvent.Type.CARD_AFFECTED_BY_CARD, card, affectedCards, getPlayer(playerPerforming)));
