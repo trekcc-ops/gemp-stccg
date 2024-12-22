@@ -14,6 +14,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.modifiers.ModifierFlag;
@@ -574,4 +575,16 @@ public abstract class GameState {
     public List<String> getMessages() { return getGame().getMessages(); }
     int getNextCardId() { return _nextCardId; }
 
+    public void placeCardOnMission(PhysicalCard cardBeingPlaced, MissionLocation mission)
+            throws InvalidGameLogicException {
+        Zone currentZone = cardBeingPlaced.getZone();
+        if (currentZone == null) {
+            throw new InvalidGameLogicException("Tried to process a card not in any zone");
+        } else {
+            removeCardsFromZone(cardBeingPlaced.getOwnerName(), Arrays.asList(cardBeingPlaced));
+            cardBeingPlaced.setPlacedOnMission(true);
+            addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
+            cardBeingPlaced.setLocation(mission);
+        }
+    }
 }
