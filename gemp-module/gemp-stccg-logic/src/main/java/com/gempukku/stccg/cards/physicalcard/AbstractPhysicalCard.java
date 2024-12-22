@@ -357,4 +357,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _owner;
     }
 
+    public int getCost() { return _blueprint.getCost(); }
+
 }
