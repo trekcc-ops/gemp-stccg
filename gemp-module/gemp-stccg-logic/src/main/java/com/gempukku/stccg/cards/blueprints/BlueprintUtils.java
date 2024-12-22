@@ -17,7 +17,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.CantDiscardFromPlayByPlayerModifier;
 import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
-import com.gempukku.stccg.modifiers.RequirementCondition;
+import com.gempukku.stccg.condition.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 
 import java.util.ArrayList;
