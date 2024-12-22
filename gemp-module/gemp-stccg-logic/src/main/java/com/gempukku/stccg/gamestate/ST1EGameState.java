@@ -216,7 +216,15 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             while (cardIterator.hasNext()) {
                 PhysicalCard physicalCard = cardIterator.next();
                 PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
+                if (physicalCard.isPlacedOnMission()) {
+                    PhysicalCard topMission = physicalCard.getLocation().getTopMission();
+                    if (sentCardsFromPlay.contains(topMission)) {
+                        sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                        sentCardsFromPlay.add(physicalCard);
+
+                        cardIterator.remove();
+                    }
+                } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
                     sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                     sentCardsFromPlay.add(physicalCard);
 
