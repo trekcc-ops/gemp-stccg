@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.SnapshotData;
 
 import java.util.Stack;
 
@@ -33,24 +32,6 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
 
     @Override
     public boolean hasSkill(SkillName skillName) { return getSkillLevel(skillName) >= 1; }
-
-    @Override
-    public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
-
-        // TODO - A lot of repetition here between the various PhysicalCard classes
-
-        PersonnelCard newCard = new PersonnelCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
-        newCard.setZone(_zone);
-        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
-        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
-        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        newCard._currentAffiliation = _currentAffiliation;
-
-        return newCard;
-
-    }
-
 
     public int getTotalAttributes() {
         return getAttribute(CardAttribute.INTEGRITY) + getAttribute(CardAttribute.CUNNING) +

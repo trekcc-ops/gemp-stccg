@@ -36,8 +36,6 @@ public class GameStateSerializer extends StdSerializer<GameState> {
             jsonGenerator.writeStringField("playerId", playerId);
             jsonGenerator.writeNumberField("score", gameState.getPlayerScore(playerId));
             jsonGenerator.writeNumberField("turnNumber", gameState.getPlayersLatestTurnNumber(playerId));
-            if (gameState.getStackedCards().get(playerId) != null)
-                writeCardIdArray("STACKED", gameState.getStackedCards().get(playerId), jsonGenerator);
             for (Zone zone : gameState._cardGroups.keySet()) {
                 List<PhysicalCard> zoneCards = gameState.getZoneCards(playerId, zone);
                 if (zoneCards != null)

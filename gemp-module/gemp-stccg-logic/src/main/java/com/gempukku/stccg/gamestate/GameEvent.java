@@ -47,7 +47,8 @@ public class GameEvent {
         /* Don't change these names without editing the client code, as it relies on the .name() method */
         allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
         locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
-        type, zone
+        type, zone,
+        placedOnMission
     }
 
     private final Type _type;
@@ -143,6 +144,11 @@ public class GameEvent {
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
         else if (card.getAttachedTo() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
+        if (card.isPlacedOnMission()) {
+            _eventAttributes.put(Attribute.placedOnMission, "true");
+            _eventAttributes.put(Attribute.targetCardId,
+                    String.valueOf(card.getLocation().getTopMission().getCardId()));
+        }
     }
 
     public Type getType() { return _type; }
