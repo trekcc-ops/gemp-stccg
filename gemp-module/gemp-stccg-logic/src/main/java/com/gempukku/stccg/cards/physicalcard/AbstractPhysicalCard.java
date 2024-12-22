@@ -330,8 +330,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     public boolean isPresentWith(PhysicalCard card) {
-        return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
-        // TODO Elaborate on this definition
         try {
             return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
         } catch(InvalidGameLogicException exp) {
