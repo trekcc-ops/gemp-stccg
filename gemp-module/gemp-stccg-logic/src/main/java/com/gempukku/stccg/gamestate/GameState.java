@@ -583,6 +583,7 @@ public abstract class GameState {
         } else {
             removeCardsFromZone(cardBeingPlaced.getOwnerName(), Arrays.asList(cardBeingPlaced));
             cardBeingPlaced.setPlacedOnMission(true);
+            cardBeingPlaced.setLocation(mission);
             addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
             cardBeingPlaced.setLocation(mission);
         }

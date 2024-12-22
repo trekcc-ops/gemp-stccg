@@ -28,8 +28,6 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
         ST1EPhysicalCard friendly =
                 new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("115_010"));
         friendly.setZone(Zone.VOID);
-
-        // Seed Maglock
         _game.getGameState().seedCardsUnder(Collections.singleton(friendly), _mission);
 
         // Seed Federation Outpost
