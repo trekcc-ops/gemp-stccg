@@ -57,7 +57,6 @@ public class ST1EGameStateDeserializer {
                 player.setDecked(playerNode.get("decked").asBoolean());
 
             readCardIdList(Zone.SEED_DECK, playerId, playerNode, gameState, gameState._seedDecks);
-            readCardIdList(Zone.STACKED, playerId, playerNode, gameState, gameState._stacked);
 
             for (Zone zone : gameState._cardGroups.keySet())
                 readCardIdList(zone, playerId, playerNode, gameState, gameState._cardGroups.get(zone));

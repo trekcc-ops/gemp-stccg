@@ -36,7 +36,6 @@ public abstract class GameState {
     PlayerOrder _playerOrder;
     private ModifiersLogic _modifiersLogic;
     protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new EnumMap<>(Zone.class);
-    final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
     Phase _currentPhase;
@@ -149,9 +148,8 @@ public abstract class GameState {
             }
         } while (!cardsLeftToSend.isEmpty());
 
-        List<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
+        Collection<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
 
-        _stacked.values().forEach(cardsPutIntoPlay::addAll);
         cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
         cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
@@ -228,8 +226,6 @@ public abstract class GameState {
         List<PhysicalCard> zoneCards = _cardGroups.get(zone).get(playerId);
         if (zoneCards != null)
             return zoneCards;
-        else if (zone == Zone.STACKED)
-            return _stacked.get(playerId);
         else
             return _inPlay;
     }
@@ -269,9 +265,6 @@ public abstract class GameState {
                 _inPlay.remove(card);
             if (zone == Zone.ATTACHED)
                 card.attachTo(null);
-
-            if (zone == Zone.STACKED)
-                card.stackOn(null);
         }
 
         for (GameStateListener listener : getAllGameStateListeners()) {
@@ -419,10 +412,6 @@ public abstract class GameState {
                 result.add(physicalCard);
         }
         return result;
-    }
-
-    public Map<String, List<PhysicalCard>> getStackedCards() {
-        return _stacked;
     }
 
     public void startPlayerTurn(String playerId) {

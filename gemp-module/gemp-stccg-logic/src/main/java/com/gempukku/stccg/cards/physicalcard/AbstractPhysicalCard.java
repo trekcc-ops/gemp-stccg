@@ -186,14 +186,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public List<PhysicalCard> getStackedCards(DefaultGame game) {
-        List<PhysicalCard> result = new LinkedList<>();
-        for (List<PhysicalCard> physicalCardList : game.getGameState().getStackedCards().values()) {
-            for (PhysicalCard physicalCard : physicalCardList) {
-                if (physicalCard.getStackedOn() == this)
-                    result.add(physicalCard);
-            }
-        }
-        return result;
+        return new LinkedList<>();
     }
 
     public Collection<PhysicalCard> getAttachedCards(DefaultGame game) { return game.getGameState().getAttachedCards(this); }

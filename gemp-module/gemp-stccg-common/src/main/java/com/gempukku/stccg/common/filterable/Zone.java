@@ -12,8 +12,6 @@ public enum Zone implements Filterable {
     SUPPORT("play", true, true, true, true),
     ATTACHED("play", true, true, true, false),
 
-    // Public knowledge but not in play
-    STACKED("stacked", true, true, false, false),
     REMOVED("removed", true, true, false, true),
 
     /* TODO - Not a perfect implementation of play pile. In a real game, only the top card is visible,

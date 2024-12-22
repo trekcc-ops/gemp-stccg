@@ -42,8 +42,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
                 zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE)
             return _cardGroups.get(zone).get(playerId);
-        else if (zone == Zone.STACKED)
-            return _stacked.get(playerId);
         else if (zone == Zone.SEED_DECK)
             return _seedDecks.get(playerId);
         else // This should never be accessed
@@ -304,7 +302,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             snapshot._spacelineLocations.add(snapshotData.getDataForSnapshot(location));
 
         // TODO SNAPSHOT: _awayTeams
-        copyCardGroup(_stacked, snapshot._stacked, snapshotData);
         copyCardGroup(_seedDecks, snapshot._seedDecks, snapshotData);
         for (PhysicalCard card : _inPlay) {
             snapshot._inPlay.add(snapshotData.getDataForSnapshot(card));
