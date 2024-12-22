@@ -10,9 +10,9 @@ public class AndCondition implements Condition {
     }
 
     @Override
-    public boolean isFulfilled() {
+    public boolean isFulfilled(DefaultGame cardGame) {
         for (Condition condition : _conditions) {
-            if (condition != null && !condition.isFulfilled())
+            if (condition != null && !condition.isFulfilled(cardGame))
                 return false;
         }
 

@@ -1,8 +1,8 @@
-package com.gempukku.stccg.modifiers;
+package com.gempukku.stccg.condition;
 
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class RequirementCondition implements Condition {
     private final Requirement[] requirements;
@@ -14,5 +14,5 @@ public class RequirementCondition implements Condition {
     }
 
     @Override
-    public boolean isFulfilled() { return actionContext.acceptsAllRequirements(requirements); }
+    public boolean isFulfilled(DefaultGame cardGame) { return actionContext.acceptsAllRequirements(requirements); }
 }

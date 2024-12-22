@@ -102,7 +102,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                 if (!_skipSet.contains(modifier)) {
                     _skipSet.add(modifier);
                     Condition condition = modifier.getCondition();
-                    if (condition == null || condition.isFulfilled())
+                    if (condition == null || condition.isFulfilled(_game))
                         if (shouldAdd(modifierEffect, modifier)) {
                             if ((card == null || modifier.affectsCard(card)) &&
                                     (foundNoCumulativeConflict(liveModifiers, modifier)))
@@ -132,7 +132,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     if (!_skipSet.contains(modifier)) {
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
-                        if (condition == null || condition.isFulfilled())
+                        if (condition == null || condition.isFulfilled(_game))
                             if (shouldAdd(ModifierEffect.GAIN_ICON_MODIFIER, modifier)) {
                                 if ((card == null || modifier.affectsCard(card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
@@ -158,7 +158,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     if (!_skipSet.contains(modifier)) {
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
-                        if (condition == null || condition.isFulfilled())
+                        if (condition == null || condition.isFulfilled(_game))
                             if (shouldAdd(ModifierEffect.GAIN_SKILL_MODIFIER, modifier)) {
                                 if ((card == null || modifier.affectsCard(card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
@@ -289,7 +289,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         for (List<Modifier> modifiers : _modifiers.values()) {
             for (Modifier modifier : modifiers) {
                 Condition condition = modifier.getCondition();
-                if (condition == null || condition.isFulfilled())
+                if (condition == null || condition.isFulfilled(_game))
                     if (affectsCardWithSkipSet(card, modifier) && (foundNoCumulativeConflict(result, modifier)))
                         result.add(modifier);
             }
@@ -395,7 +395,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
-                if (condition == null || condition.isFulfilled())
+                if (condition == null || condition.isFulfilled(_game))
                     playCost.appendExtraCosts(_game, action, target);
             }
 
