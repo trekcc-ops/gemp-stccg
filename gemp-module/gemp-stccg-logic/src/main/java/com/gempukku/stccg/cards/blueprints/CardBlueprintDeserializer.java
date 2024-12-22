@@ -94,6 +94,10 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     }
                     case "image-options": setImageOptions(blueprint, node); break;
                     case "image-url": blueprint.setImageUrl(BlueprintUtils.getString(node, fieldName)); break;
+                    case "keywords": {
+                        blueprint.setKeywords(getEnumListFromCommaDelimited(Keyword.class, node, fieldName));
+                        break;
+                    }
                     case "location": blueprint.setLocation(BlueprintUtils.getString(node, fieldName)); break;
                     case "lore": blueprint.setLore(BlueprintUtils.getString(node, fieldName)); break;
                     case "mission-requirements":
