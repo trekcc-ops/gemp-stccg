@@ -14,11 +14,9 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
-import java.util.Map;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
@@ -68,21 +66,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
             }
         }
         return false;
-    }
-
-    @Override
-    public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
-
-        // TODO - A lot of repetition here between the various PhysicalCard classes
-
-        ST1EPhysicalCard newCard = new ST1EPhysicalCard(_game, _cardId,
-                snapshotData.getDataForSnapshot(snapshotData.getDataForSnapshot(_owner)), _blueprint);
-        newCard.setZone(_zone);
-        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
-        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
-        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        return newCard;
     }
 
     public void stop() {

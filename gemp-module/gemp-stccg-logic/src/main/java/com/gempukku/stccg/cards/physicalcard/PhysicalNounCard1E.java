@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.SnapshotData;
 import com.google.common.collect.Iterables;
 
 import java.util.Set;
@@ -73,23 +72,6 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         if (_zone.isInPlay())
             return _currentAffiliation == affiliation;
         else return getAffiliationOptions().contains(affiliation);
-    }
-
-    @Override
-    public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
-
-        // TODO - A lot of repetition here between the various PhysicalCard classes
-        // TODO SNAPSHOT - Doesn't have awayTeam specified
-
-        PhysicalNounCard1E newCard = new PhysicalNounCard1E(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
-        newCard.setZone(_zone);
-        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
-        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
-        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        newCard._currentAffiliation = _currentAffiliation;
-
-        return newCard;
     }
 
 }
