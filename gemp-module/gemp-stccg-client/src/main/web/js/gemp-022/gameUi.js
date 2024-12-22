@@ -1518,12 +1518,10 @@ export default class GameTableUI {
                 if (selectedCardIds.includes(cardId)) {
                     let index = selectedCardIds.indexOf(cardId);
                     selectedCardIds.splice(index, 1);
-                    //getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
                 }
                 // Otherwise, if the cardId is not already selected, add it.
                 else {
                     selectedCardIds.push(cardId);
-                    //getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
                 }
                 
                 that.recalculateCardSelectionOrder(selectedCardIds);
@@ -1549,7 +1547,6 @@ export default class GameTableUI {
 
     cardSelectionFromCombinations(decision) {
         var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
 
         var min = parseInt(this.getDecisionParameter(decision, "min"));
         var max = parseInt(this.getDecisionParameter(decision, "max"));
