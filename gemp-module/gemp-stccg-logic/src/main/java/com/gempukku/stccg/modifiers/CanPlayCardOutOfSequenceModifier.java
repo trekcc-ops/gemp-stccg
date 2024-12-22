@@ -16,7 +16,7 @@ public class CanPlayCardOutOfSequenceModifier extends AbstractModifier {
 
     @Override
     public boolean canPlayCardOutOfSequence(PhysicalCard source) {
-        return _condition.isFulfilled();
+        return _condition.isFulfilled(source.getGame());
     }
 
     @Override

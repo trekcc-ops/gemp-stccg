@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
 
@@ -58,4 +59,7 @@ public class MissionCard extends ST1EPhysicalCard {
         return newCard;
     }
 
+    public boolean hasAffiliationIconForOwner(Affiliation affiliation) {
+        return _blueprint.getOwnerAffiliationIcons().contains(affiliation);
+    }
 }

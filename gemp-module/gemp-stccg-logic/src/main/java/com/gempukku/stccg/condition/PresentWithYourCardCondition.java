@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class PresentWithYourCardCondition implements Condition {
     private final int _count;
@@ -33,7 +34,7 @@ public class PresentWithYourCardCondition implements Condition {
     }
 
     @Override
-    public boolean isFulfilled() {
+    public boolean isFulfilled(DefaultGame cardGame) {
         return Filters.filterYourCardsPresentWith(_card.getOwner(), _card, _filters).size() >= _count;
     }
 }

@@ -1,0 +1,127 @@
+{
+    setId: "007"
+    setName: Strange New Worlds
+    gameType: Second Edition
+    cards: [
+        {
+            blueprintId: 007_049
+            title: Investigate Destruction
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            point-box: 30
+            mission-requirements: Astrometrics, Diplomacy, Officer, and Integrity>25 or Navigation, Security, Treachery, and Cunning>28
+            region: Neutral Zone
+            lore: "Outpost Delta Zero-Five: \"We do not know who is responsible, why entire outposts on both sides were carried off.\""
+            affiliation-icons: federation,romulan
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07049.jpg
+        }
+        {
+            blueprintId: 007_066
+            title: E.M.H. Program
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: hologram
+            icons: earth
+            skill-box: "[*] Biology [*] Exobiology [*] Medical"
+            lore: "\"Please state the nature of the medical emergency.\""
+            integrity: 5
+            cunning: 6
+            strength: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07066.jpg
+        }
+        {
+            blueprintId: 007_076
+            title: Gozar
+            type: personnel
+            affiliation: ferengi
+            cost: 2
+            species: ferengi
+            icons: command
+            skill-box: "[*] Acquisition [*] Archaeology [*] Leadership [*] Navigation [*] Officer [*] Treachery"
+            lore: Many Rules of Acquisition aptly describe the opportunities for profit aboard a Ferengi starship – the 34th, the 62nd, the 75th, and the 95th, among others. These helpful reminders are often displayed on a starship’s dedication plaque.
+            integrity: 3
+            cunning: 5
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07076.jpg
+        }
+        {
+            blueprintId: 007_080
+            title: Krunk
+            type: personnel
+            affiliation: ferengi
+            cost: 1
+            species: ferengi
+            icons: staff
+            skill-box: "[*] Engineer [*] Physics [*] Transporters"
+            lore: "Though most Ferengi seek profit without physical confrontation, others cite the 52nd Rule of Acquisition as reason for a more direct approach: \"Never ask when you can take.\""
+            integrity: 4
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07080.jpg
+        }
+        {
+            blueprintId: 007_082
+            title: Letek
+            type: personnel
+            affiliation: ferengi
+            cost: 2
+            species: ferengi
+            icons: command
+            java-blueprint: true
+            skill-box: "[*] Biology [*] Geology [*] Officer [*] Treachery"
+            lore: Wary of bizarre rumors and skeptical of any significant financial opportunities, the Ferengi largely avoided contact with the Federation for many decades.
+            integrity: 3
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07082.jpg
+        }
+        {
+            blueprintId: 007_086
+            title: Mordoc
+            type: personnel
+            affiliation: ferengi
+            cost: 1
+            species: ferengi
+            icons: staff
+            java-blueprint: true
+            skill-box: "[*] Astrometrics [*] Security [*] Treachery"
+            lore: "\"We Ferengi are now challenge this hew-mon madness!\""
+            integrity: 3
+            cunning: 5
+            strength: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07086.jpg
+        }
+        {
+            blueprintId: 007_117
+            title: "D'kora Marauder"
+            type: ship
+            affiliation: ferengi
+            cost: 5
+            staffing: command,command,staff,staff
+            ship-class: "D'Kora Class"
+            lore: "Though its size and capabilities rival Starfleet's Galaxy-class starship, the Ferengi Marauder carries less than half the crew compliment."
+            range: 8
+            weapons: 9
+            shields: 7
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07117.jpg
+        }
+        {
+            blueprintId: 007_119
+            title: Personal Transport
+            type: ship
+            affiliation: ferengi
+            cost: 4
+            staffing: staff,staff
+            ship-class: "Na'Far Class"
+            lore: "Styled closely after shuttlepods utilized by the military, this commercial vehicle is manufactured by Ferenginar's leading seller of private spacecraft. All the most prominent businessmen have holdings in the company."
+            range: 7
+            weapons: 5
+            shields: 6
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN07119.jpg
+        }
+    ]
+}

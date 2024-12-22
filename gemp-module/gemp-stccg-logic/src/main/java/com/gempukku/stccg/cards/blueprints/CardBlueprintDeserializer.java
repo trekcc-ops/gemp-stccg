@@ -67,6 +67,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     case "affiliation-icons":
                         for (String icon : node.get(fieldName).textValue().split(",")) {
                             if (icon.equals("any")) blueprint.setAnyCrewOrAwayTeamCanAttempt();
+                            else if (icon.equals("any except borg")) blueprint.setAnyExceptBorgCanAttempt();
                             else blueprint.addOwnerAffiliationIcon(
                                     getEnum(Affiliation.class, icon, fieldName));
                         }
@@ -87,9 +88,16 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                         blueprint.addSpecialEquipment(specialEquipment);
                         break;
                     }
-                    case "icons": blueprint.setIcons(getCardIconListFromCommaDelimited(node, fieldName)); break;
+                    case "icons": {
+                        blueprint.setIcons(getEnumListFromCommaDelimited(CardIcon.class, node, fieldName));
+                        break;
+                    }
                     case "image-options": setImageOptions(blueprint, node); break;
                     case "image-url": blueprint.setImageUrl(BlueprintUtils.getString(node, fieldName)); break;
+                    case "keywords": {
+                        blueprint.setKeywords(getEnumListFromCommaDelimited(Keyword.class, node, fieldName));
+                        break;
+                    }
                     case "location": blueprint.setLocation(BlueprintUtils.getString(node, fieldName)); break;
                     case "lore": blueprint.setLore(BlueprintUtils.getString(node, fieldName)); break;
                     case "mission-requirements":
@@ -115,8 +123,14 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     }
                     case "skill-box": processSkillBox(blueprint, node, fieldName); break;
                     case "span": blueprint.setSpan(getInteger(node, fieldName)); break;
-                    case "species": blueprint.setSpecies(getEnum(Species.class, node, fieldName)); break;
-                    case "staffing": blueprint.setStaffing(getCardIconListFromCommaDelimited(node, fieldName)); break;
+                    case "species": {
+                        blueprint.setSpecies(getEnumListFromCommaDelimited(Species.class, node, fieldName));
+                        break;
+                    }
+                    case "staffing": {
+                        blueprint.setStaffing(getEnumListFromCommaDelimited(CardIcon.class, node, fieldName));
+                        break;
+                    }
                     case "subtitle": blueprint.setSubtitle(BlueprintUtils.getString(node, fieldName)); break;
                     case "title": blueprint.setTitle(BlueprintUtils.getString(node, fieldName)); break;
                     case "tribble-power": processTribblePower(blueprint, node, fieldName); break;
@@ -128,7 +142,6 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             }
 
             fillInBlueprintBlanks(blueprint);
-            validateConsistency(blueprint);
             return blueprint;
 
         } catch(InvalidCardDefinitionException exp) {
@@ -147,13 +160,14 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         return result;
     }
 
-    private List<CardIcon> getCardIconListFromCommaDelimited(JsonNode parentNode, String fieldName)
+    private <T extends Enum<T>> List<T> getEnumListFromCommaDelimited(Class<T> enumClass, JsonNode parentNode,
+                                                                      String fieldName)
             throws InvalidCardDefinitionException {
-        List<CardIcon> result = new LinkedList<>();
+        List<T> result = new LinkedList<>();
         if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull())
             return result;
         for (String item : parentNode.get(fieldName).textValue().split(",")) {
-            result.add(getEnum(CardIcon.class, item, fieldName));
+            result.add(getEnum(enumClass, item, fieldName));
         }
         return result;
     }
@@ -379,37 +393,6 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         }
     }
 
-    private boolean isNot2E(CardBlueprint blueprint) {
-        return !blueprint.getBlueprintId().startsWith("1_");
-    }
-
-    private void validateConsistency(CardBlueprint blueprint) throws InvalidCardDefinitionException {
-        if (blueprint.getTitle() == null)
-            throw new InvalidCardDefinitionException("Card has to have a title");
-        if (blueprint.getCardType() == null)
-            throw new InvalidCardDefinitionException("Card has to have a type");
-        if (blueprint.getUniqueness() == null)
-            throw new InvalidCardDefinitionException("Card has to have a uniqueness");
-        if (blueprint.getRarity() == null)
-            throw new InvalidCardDefinitionException("Card has to have a rarity");
-
-        if (blueprint.getCardType() == CardType.MISSION) {
-            if (blueprint.getPropertyLogo() != null)
-                throw new InvalidCardDefinitionException("Mission card should not have a property logo");
-            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") && isNot2E(blueprint))
-                throw new InvalidCardDefinitionException("Mission card should have a location");
-            if (blueprint.getQuadrant() == null)
-                throw new InvalidCardDefinitionException("Mission card should have a quadrant");
-        } else if (blueprint.getCardType() == CardType.TRIBBLE) {
-            if (blueprint.getTribblePower() == null)
-                throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
-            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(blueprint.getTribbleValue()))
-                throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
-        } else if (blueprint.getPropertyLogo() == null && isNot2E(blueprint))
-                // Technically tribbles have property logos too, they're just never relevant
-            throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
-    }
-    
     private void fillInBlueprintBlanks(CardBlueprint blueprint) {
         // Apply uniqueness if the card doesn't specify it
         List<CardType> implicitlyUniqueTypes = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,

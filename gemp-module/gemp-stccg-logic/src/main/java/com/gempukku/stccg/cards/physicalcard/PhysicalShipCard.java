@@ -153,6 +153,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
             // Check for affiliation requirements
             if (_blueprint.canAnyAttempt())
                 return true;
+            if (_blueprint.canAnyExceptBorgAttempt() && _currentAffiliation != Affiliation.BORG)
+                return true;
             boolean matchesShip = false;
             boolean matchesMission = false;
             for (PersonnelCard card : getAttemptingPersonnel()) {

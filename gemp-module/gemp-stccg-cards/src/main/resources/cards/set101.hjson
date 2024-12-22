@@ -115,6 +115,7 @@
         {
             blueprintId: 101_058
             title: Klingon Disruptor
+            lore: Phase-disruptor used by Klingons and other races. Similar to a phaser.
             type: equipment
             property-logo: tng-logo
             java-blueprint: true

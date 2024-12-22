@@ -29,13 +29,14 @@ public class CardBlueprint {
     private String subtitle;
     private ShipClass _shipClass;
     private boolean _anyCanAttempt;
+    private boolean _anyExceptBorgCanAttempt;
     protected CardType _cardType;
     private String imageUrl;
     private String _rarity;
     private PropertyLogo _propertyLogo;
     private String _persona;
     private String _lore;
-    private Species _species;
+    private List<Species> _species;
     private final Set<Characteristic> _characteristics = new HashSet<>();
     private Uniqueness uniqueness = null;
     private List<CardIcon> _icons;
@@ -50,6 +51,7 @@ public class CardBlueprint {
     private Region region;
     private SkillName _classification;
     private boolean _canInsertIntoSpaceline;
+    private final List<Keyword> _keywords = new LinkedList<>();
     private final Set<ShipSpecialEquipment> _specialEquipment = new HashSet<>();
     private final Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
     private final Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
@@ -199,8 +201,14 @@ public class CardBlueprint {
     public int getSkillDotCount() { return _skillDots; }
     public int getSpecialDownloadIconCount() { return _specialDownloadIcons; }
     public void setSpecialDownloadIcons(int icons) { _specialDownloadIcons = icons; }
-    public void setSpecies(Species species) { _species = species; }
-    public Species getSpecies() { return _species; }
+    public void setSpecies(List<Species> species) { _species = species; }
+
+    public boolean isSpecies(Species species) {
+        if (_species == null)
+            return false;
+        else
+            return _species.contains(species);
+    }
 
     // Tribbles
     public void setTribbleValue(int tribbleValue) { this.tribbleValue = tribbleValue; }
@@ -370,13 +378,10 @@ public class CardBlueprint {
     public String getCardLink() {
         List<CardType> typesWithUniversalSymbol =
                 Arrays.asList(CardType.MISSION, CardType.SHIP, CardType.PERSONNEL, CardType.SITE);
-        boolean showUniversalSymbol = typesWithUniversalSymbol.contains(getCardType()) && isUniversal();
-        return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + getImageUrl() + "'>" +
+        boolean showUniversalSymbol = typesWithUniversalSymbol.contains(_cardType) && isUniversal();
+        return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + imageUrl + "'>" +
                 (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
     }
-
-    public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
-    public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 
     public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
         return switch(_cardType) {
@@ -389,13 +394,29 @@ public class CardBlueprint {
         };
     }
 
-    // Modifiers from game text
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) throws InvalidGameLogicException {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)
+            throws InvalidGameLogicException {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) throws InvalidGameLogicException {
-        return new LinkedList<>(getGameTextWhileActiveInPlayModifiers(player, card));
+    public List<Modifier> getGameTextWhileActiveInPlayModifiers(PhysicalCard card) {
+        List<Modifier> result = new LinkedList<>();
+
+        // Add in-play modifiers created through JSON definitions
+        for (ModifierSource modifierSource : inPlayModifiers) {
+            ActionContext context =
+                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null, null);
+            result.add(modifierSource.getModifier(context));
+        }
+
+        // Add in-play modifiers created through Java definitions
+        try {
+            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(card));
+        } catch(InvalidGameLogicException exp) {
+            card.getGame().sendErrorMessage(exp);
+        }
+
+        return result;
     }
 
     public boolean hasCharacteristic(Characteristic characteristic) {
@@ -473,5 +494,15 @@ public class CardBlueprint {
     public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         return getActionsFromActionSources(
                 player.getPlayerId(), thisCard, null, null, inPlayPhaseActions);
+    }
+
+    public void setAnyExceptBorgCanAttempt() {
+        _anyExceptBorgCanAttempt = true;
+    }
+
+    public boolean canAnyExceptBorgAttempt() { return _anyExceptBorgCanAttempt; }
+
+    public void setKeywords(Collection<Keyword> keywords) {
+        _keywords.addAll(keywords);
     }
 }
