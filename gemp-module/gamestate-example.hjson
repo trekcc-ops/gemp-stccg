@@ -46,7 +46,7 @@
             "VOID": [45,6,41,8,43,4,44,3,42,7,46,5],
             "VOID_FROM_HAND": [45,6,41,8,43,4,44,3,42,7,46,5],
             "SEED_DECK": []
-            // There may be additional zones specified here, like STACKED or PLAY_PILE
+            // There may be additional zones specified here, like PLAY_PILE
         },
         // etc.
     ],
