@@ -94,4 +94,8 @@ public interface PhysicalCard extends Filterable {
     Player getController();
 
     int getCost();
+
+    void setPlacedOnMission(boolean placedOnMission);
+
+    boolean isPlacedOnMission();
 }

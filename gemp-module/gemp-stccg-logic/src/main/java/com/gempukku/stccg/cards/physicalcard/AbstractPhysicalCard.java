@@ -36,6 +36,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected PhysicalCard _attachedTo;
     protected PhysicalCard _stackedOn;
     protected MissionLocation _currentLocation;
+    private boolean _placedOnMission = false;
 
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
@@ -362,5 +363,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public int getCost() { return _blueprint.getCost(); }
+
+    public void setPlacedOnMission(boolean placedOnMission) {
+        _placedOnMission = placedOnMission;
+    }
+
+    public boolean isPlacedOnMission() { return _placedOnMission; }
 
 }
