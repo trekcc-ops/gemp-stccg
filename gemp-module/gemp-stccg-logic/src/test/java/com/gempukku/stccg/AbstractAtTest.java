@@ -11,6 +11,7 @@ import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.CardDeck;
@@ -52,7 +53,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-        GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
+        GameFormat format = formatLibrary.getFormat("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -335,6 +336,10 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.startGame();
     }
 
+    protected PhysicalCard newCardForGame(String blueprintId, String playerId) throws CardNotFoundException {
+        return _game.getGameState().addCardToGame(blueprintId, _cardLibrary, playerId);
+    }
+
     protected void initializeQuickMissionAttemptWithRisk() {
         Map<String, CardDeck> decks = new HashMap<>();
 
@@ -372,7 +377,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.get(P2).addCard(SubDeck.SEED_DECK, "178_044"); // Continuing Mission
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
+        GameFormat format = formatLibrary.getFormat("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -523,7 +528,12 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             if (_userFeedback.getAwaitingDecision(P1) != null) {
                 if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
                     List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
-                    playerDecided(P1, cardIdList.getFirst());
+                    try {
+                        playerDecided(P1, cardIdList.getFirst());
+                    } catch(Exception exp) {
+                        int x = 5;
+                        int y = x + 2;
+                    }
                 }
                 else
                     playerDecided(P1, "0");
@@ -735,25 +745,47 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         else return choice;
     }
 
-    protected void selectCard(String playerId, PhysicalCard selectedCard) throws DecisionResultInvalidException {
-        PhysicalCard choice = null;
+    protected void selectCard(String playerId, PhysicalCard card) throws DecisionResultInvalidException {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof CardsSelectionDecision cardSelection) {
-            for (PhysicalCard card : cardSelection.getCardOptions()) {
-                if (card == selectedCard)
-                    choice = card;
-            }
-            cardSelection.decisionMade(choice);
+            cardSelection.decisionMade(card);
             _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
             _game.carryOutPendingActionsUntilDecisionNeeded();
         } else if (decision instanceof ArbitraryCardsSelectionDecision arbitrary) {
-            choice = selectedCard;
-            arbitrary.decisionMade(selectedCard);
+            arbitrary.decisionMade(card);
             _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
             _game.carryOutPendingActionsUntilDecisionNeeded();
         }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid card selection found");
+    }
+
+    protected void selectCards(String playerId, List<PhysicalCard> cards) throws DecisionResultInvalidException {
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof CardsSelectionDecision cardSelection) {
+            cardSelection.decisionMade(cards);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        } else if (decision instanceof ArbitraryCardsSelectionDecision arbitrary) {
+            arbitrary.decisionMade(cards);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+    }
+
+    protected void useGameText(PhysicalCard card, String playerId) throws DecisionResultInvalidException {
+        Action choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof CardActionSelectionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action.getActionSource() == card)
+                    choice = action;
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null) {
+            throw new DecisionResultInvalidException("Could not find game text action");
+        }
     }
 
 

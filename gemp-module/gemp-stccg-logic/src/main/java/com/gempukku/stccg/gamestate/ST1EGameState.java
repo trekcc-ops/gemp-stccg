@@ -328,4 +328,12 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             }
         }
     }
+
+    public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)
+            throws CardNotFoundException {
+        PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+        _allCards.put(_nextCardId, card);
+        _nextCardId++;
+        return card;
+    }
 }

@@ -37,6 +37,18 @@ public class KillSinglePersonnelAction extends ActionyAction {
     }
 
     @Override
+    public String getActionSelectionText(DefaultGame cardGame) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Kill ");
+        if (_selectVictimAction != null && _selectVictimAction.wasCarriedOut()) {
+            sb.append(_selectVictimAction.getSelectedCard().getTitle());
+        } else {
+            sb.append("a personnel");
+        }
+        return sb.toString();
+    }
+
+    @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_victimSelected) {
             if (!_selectVictimAction.wasCarriedOut())

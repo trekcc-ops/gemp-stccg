@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.TrueCondition;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.GainSkillModifier;
 import com.gempukku.stccg.modifiers.Modifier;
 
@@ -22,9 +21,9 @@ public class Blueprint101_065 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
-        Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL,
+        Filterable affectFilter = Filters.and(Filters.yourCardsPresentWithThisCard(thisCard), CardType.PERSONNEL,
                 Filters.classification(SkillName.ENGINEER));
         modifiers.add(new GainSkillModifier(thisCard, affectFilter, new TrueCondition(), SkillName.SCIENCE));
         return modifiers;

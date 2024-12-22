@@ -95,4 +95,8 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     boolean isAtSpaceLocation();
 
     boolean isAtPlanetLocation();
+
+    Player getController();
+
+    int getCost();
 }

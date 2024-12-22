@@ -72,6 +72,10 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         return result;
     }
 
+    public int getSkillDotCount() {
+        return _blueprint.getSkillDotCount();
+    }
+
     public List<Skill> getSkills() {
         return _blueprint.getSkills(_game, this);
     }

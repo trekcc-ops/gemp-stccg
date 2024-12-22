@@ -3,12 +3,11 @@ package com.gempukku.stccg.cards.blueprints;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,14 +16,13 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void kolTest() throws JsonProcessingException, InvalidGameLogicException {
+    public void kolTest() throws JsonProcessingException, CardNotFoundException {
         initializeSimple1EGame(30);
-        Player player1 = _game.getPlayer(1);
 
-        final MissionCard mission = new MissionCard(_game, 103, player1, _cardLibrary.get("101_174"));
-        final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_105"));
-        final PersonnelCard kol = new PersonnelCard(_game, 101, player1, _cardLibrary.get("155_072"));
-        final PersonnelCard arridor = new PersonnelCard(_game, 102, player1, _cardLibrary.get("155_069"));
+        final MissionCard mission = (MissionCard) newCardForGame("101_174", P1);
+        final FacilityCard outpost = (FacilityCard) newCardForGame("101_105", P1);
+        final PersonnelCard kol = (PersonnelCard) newCardForGame("155_072", P1);
+        final PersonnelCard arridor = (PersonnelCard) newCardForGame("155_069", P1);
 
         assertFalse(outpost.isInPlay());
         assertEquals("Kol", kol.getTitle());
@@ -61,16 +59,14 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void captainWorfTest() throws InvalidGameLogicException {
+    public void captainWorfTest() throws CardNotFoundException {
         initializeSimple1EGame(30);
-        Player player1 = _game.getPlayer(1);
-        Player player2 = _game.getPlayer(2);
 
-        final MissionCard mission = new MissionCard(_game, 101, player1, _cardLibrary.get("101_174"));
-        final FacilityCard outpost1 = new FacilityCard(_game, 102, player1, _cardLibrary.get("101_105"));
-        final PersonnelCard worf = new PersonnelCard(_game, 104, player1, _cardLibrary.get("155_079"));
-        final PersonnelCard kehleyr1 = new PersonnelCard(_game, 105, player1, _cardLibrary.get("155_080"));
-        final PersonnelCard kehleyr2 = new PersonnelCard(_game, 106, player2, _cardLibrary.get("101_217"));
+        final MissionCard mission = (MissionCard) newCardForGame("101_174", P1);
+        final FacilityCard outpost1 = (FacilityCard) newCardForGame("101_105", P1);
+        final PersonnelCard worf = (PersonnelCard) newCardForGame("155_079", P1);
+        final PersonnelCard kehleyr1 = (PersonnelCard) newCardForGame("155_080", P1);
+        final PersonnelCard kehleyr2 = (PersonnelCard) newCardForGame("101_217", P2);
 
         assertFalse(outpost1.isInPlay());
         assertEquals("Captain Worf", worf.getTitle()); // 8-6-10

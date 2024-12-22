@@ -92,6 +92,66 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01166.jpg
         }
         {
+            blueprintId: 1_167
+            title: Sector 97
+            subtitle: Explore Black Cluster
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: any except borg
+            lore: Conduct a survey of this region known for its violent and unpredictable gravitational wavefronts.
+            mission-requirements: Astrometrics, Leadership, Physics, Science, and Cunning>34
+            point-box: 35
+            span: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01167.jpg
+        }
+        {
+            blueprintId: 1_169
+            title: Parsion III
+            subtitle: Feldomite Rush
+            uniqueness: unique
+            type: mission
+            mission-type: planet
+            quadrant: alpha
+            affiliation-icons: any except borg
+            lore: "\"Who'd have dreamed they'd strike feldomite on Parsion III? The Sepian Commodities Exchange is in chaos – everybody's selling, prices falling...\""
+            mission-requirements: Engineer, Geology, Cunning>28, and (Acquisition or Law or 2 Treachery)
+            point-box: 30
+            span: 2
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01169.jpg
+        }
+        {
+            blueprintId: 1_170
+            title: Forcas Sector
+            subtitle: Fissure Research
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: any
+            lore: "Perform scans of this \"keyhole\" intersecting different quantum realities."
+            mission-requirements: Astrometrics, Engineer, Physics, Science, and Cunning>36
+            point-box: 35
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01170.jpg
+        }
+        {
+            blueprintId: 1_180
+            title: Sector 1156
+            subtitle: Investigate Rogue Comet
+            uniqueness: unique
+            type: mission
+            mission-type: space
+            quadrant: alpha
+            affiliation-icons: any except borg
+            lore: "\"It is not native to this region of space, and there is no previous record of this object...\""
+            mission-requirements: Anthropology, Archaeology, Engineer, Programming, and Cunning>34
+            point-box: 35
+            span: 3
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01180a.jpg
+        }
+        {
             blueprintId: 1_182
             title: Investigate Sighting
             uniqueness: unique
@@ -249,6 +309,36 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01254.jpg
         }
         {
+            blueprintId: 1_258
+            title: Daniel Kwan
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: human,napean
+            icons: staff,tng-icon
+            skill-box: "[*] Engineer [*] Physics [*] Telepathy"
+            lore: A partially empathic species, Napeans typically seek interaction with other races to explore alien thought patterns. This leads many to join Starfleet.
+            integrity: 6
+            cunning: 5
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01258.jpg
+        }
+        {
+            blueprintId: 1_260
+            title: Davies
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: human
+            icons: staff,tng-icon
+            skill-box: "[*] Geology [*] Physics [*] Science"
+            lore: "\"...if you need any help, just give me a signal and I'll take over for you. We don't want you to get too beat up on your first command.\""
+            integrity: 5
+            cunning: 6
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01260.jpg
+        }
+        {
             blueprintId: 1_262
             title: Elizabeth Shelby
             type: personnel
@@ -310,6 +400,36 @@
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01278.jpg
         }
         {
+            blueprintId: 1_281
+            title: Rixx
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: bolian
+            icons: command,tng-icon
+            skill-box: "[*] Astrometrics [*] Leadership [*] Officer"
+            lore: Relatively new members of the Federation, the Bolians have quickly distinguished themselves in all branches of Starfleet service. Rixx became the first Bolian to command a Federation starship when he was given the U.S.S. Thomas Paine.
+            integrity: 6
+            cunning: 5
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01281.jpg
+        }
+        {
+            blueprintId: 1_287
+            title: Van Orton
+            type: personnel
+            affiliation: federation
+            cost: 1
+            species: human
+            icons: earth
+            skill-box: "[*] Archaeology [*] Biology [*] Science"
+            lore: "Of the Federation's many research departments, the Archaeology Council is among these most limited by the Prime Directive. It has nevertheless been responsible for countless discoveries on planets throughout the quadrant."
+            integrity: 5
+            cunning: 6
+            strength: 4
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01287.jpg
+        }
+        {
             blueprintId: 1_307
             title: Kroval
             type: personnel
@@ -323,6 +443,21 @@
             cunning: 5
             strength: 6
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01307.jpg
+        }
+        {
+            blueprintId: 1_340
+            title: Rabal
+            type: personnel
+            affiliation: non-aligned
+            cost: 2
+            species: hekaran
+            icons: staff
+            skill-box: "[*] Astrometrics [*] Engineer [*] Physics [*] Programming [*] Transporters"
+            lore: "\"I don't think we can look at space travel the same way anymore. We're going to have to change. ... It won't be easy at all.\""
+            integrity: 4
+            cunning: 6
+            strength: 5
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01340.jpg
         }
         {
             blueprintId: 1_393
@@ -353,6 +488,36 @@
             weapons: 8
             shields: 9
             image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01394.jpg
+        }
+        {
+            blueprintId: 1_395
+            title: U.S.S. Nebula
+            type: ship
+            affiliation: federation
+            cost: 5
+            staffing: command,staff,staff
+            ship-class: Nebula Class
+            icons: earth
+            lore: Primarily designed for research missions, the Nebula-class starship boasts a large upper equipment module to house upgraded sensors and other scientific equipment.
+            range: 8
+            weapons: 8
+            shields: 8
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01395.jpg
+        }
+        {
+            blueprintId: 1_396
+            title: U.S.S. Sovereign
+            type: ship
+            affiliation: federation
+            cost: 6
+            staffing: command,command,staff,staff
+            ship-class: Sovereign Class
+            icons: tng-icon
+            lore: "One of several Starfleet designs introduced in the 2370s, the Sovereign-class starship would become the Federation’s primary deep-space exploration vessel."
+            range: 9
+            weapons: 9
+            shields: 9
+            image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01396.jpg
         }
     ]
 }

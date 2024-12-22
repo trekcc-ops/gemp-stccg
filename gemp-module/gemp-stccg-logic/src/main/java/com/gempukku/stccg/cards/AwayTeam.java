@@ -56,7 +56,10 @@ public class AwayTeam implements AttemptingUnit {
         if (!isOnSurface(mission))
             return false;
         try {
-            if (mission.getMissionForPlayer(_player.getPlayerId()).getBlueprint().canAnyAttempt())
+            MissionCard missionCard = mission.getMissionForPlayer(_player.getPlayerId());
+            if (missionCard.getBlueprint().canAnyAttempt())
+                return true;
+            if (missionCard.getBlueprint().canAnyExceptBorgAttempt() && !hasAffiliation(Affiliation.BORG))
                 return true;
             return hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_player));
         } catch(InvalidGameLogicException exp) {

@@ -2,6 +2,7 @@ package com.gempukku.stccg.condition;
 
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class FacingDilemmaCondition implements Condition {
@@ -16,7 +17,7 @@ public class FacingDilemmaCondition implements Condition {
     }
 
     @Override
-    public boolean isFulfilled() {
+    public boolean isFulfilled(DefaultGame cardGame) {
         return _card.isFacingADilemma();
     }
 }

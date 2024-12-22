@@ -1,34 +1,53 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Blueprint_101_060_Test extends AbstractAtTest {
+public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
     
     // Unit tests for card definition of Medical Kit
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void medicalKitTest() throws InvalidGameLogicException {
+    public void medicalKitTest() throws CardNotFoundException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
+        ST1EGameState gameState = _game.getGameState();
 
-        final MissionCard mission = new MissionCard(_game, 101, player1, _cardLibrary.get("101_174"));
-        final PhysicalReportableCard1E medicalKit =
-                new PhysicalReportableCard1E(_game, 102, player1, _cardLibrary.get("101_060"));
-        final PersonnelCard picard =
-                new PersonnelCard(_game, 103, player1, _cardLibrary.get("101_215")); // OFFICER class, no MEDICAL
-        final PersonnelCard taris =
-                new PersonnelCard(_game, 104, player1, _cardLibrary.get("105_085")); // OFFICER class + MEDICAL
+        gameState.addCardToGame("101_174", _cardLibrary, P1);
+        gameState.addCardToGame("101_060", _cardLibrary, P1);
+        gameState.addCardToGame("101_215", _cardLibrary, P1);
+        gameState.addCardToGame("105_085", _cardLibrary, P1);
+
+        MissionCard mission = null;
+        PhysicalReportableCard1E medicalKit = null;
+        PersonnelCard picard = null;
+        PersonnelCard taris = null;
+
+        for (PhysicalCard card : gameState.getAllCardsInGame()) {
+            switch(card.getBlueprintId()) {
+                case "101_174":
+                    mission = (MissionCard) card;
+                    break;
+                case "101_060":
+                    medicalKit = (PhysicalReportableCard1E) card;
+                    break;
+                case "101_215":
+                    picard = (PersonnelCard) card;
+                    break;
+                case "105_085":
+                    taris = (PersonnelCard) card;
+                    break;
+                default:
+            }
+        }
 
         // Federation Outpost
         final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
