@@ -19,6 +19,7 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 
 import java.util.*;
 
@@ -319,22 +320,24 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             case SHIELDS -> card.getBlueprint().getShields();
         };
 
-        ModifierEffect effectType = null;
+        ModifierEffect effectType;
         if (attribute == CardAttribute.STRENGTH)
             effectType = ModifierEffect.STRENGTH_MODIFIER;
         else if (attribute == CardAttribute.CUNNING)
             effectType = ModifierEffect.CUNNING_MODIFIER;
         else if (attribute == CardAttribute.INTEGRITY)
             effectType = ModifierEffect.INTEGRITY_MODIFIER;
-        else if (attribute == CardAttribute.RANGE)
-            effectType = ModifierEffect.RANGE_MODIFIER;
+        else
+            effectType = ModifierEffect.SHIP_ATTRIBUTE_MODIFIER;
         Collection<Modifier> attributeModifiers = new LinkedList<>();
-        if (effectType != null)
-            attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
+        attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
         // TODO - Need to separate ships vs. personnel here
         attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
         for (Modifier modifier : attributeModifiers) {
-            result += modifier.getAttributeModifier(card);
+            if (modifier instanceof AttributeModifier attributeModifier &&
+                    attributeModifier.getAttributesModified().contains(attribute)) {
+                result += modifier.getAttributeModifier(card);
+            }
         }
         return Math.max(0, result);
     }

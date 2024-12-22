@@ -6,10 +6,12 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.modifiers.AbstractModifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +33,13 @@ public class AttributeModifier extends AbstractModifier {
         super(performingCard, affectedCards, condition, effectType);
         _evaluator = evaluator;
         _attributes.add(attribute);
+    }
+
+    public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard, Condition condition,
+                             int modifierValue, ModifierEffect effectType, CardAttribute... attributes) {
+        super(performingCard, new ActionCardResolver(affectedCard), condition, effectType);
+        _evaluator = new ConstantEvaluator(performingCard.getGame(), modifierValue);
+        _attributes.addAll(Arrays.asList(attributes));
     }
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
@@ -68,6 +77,10 @@ public class AttributeModifier extends AbstractModifier {
     @Override
     public int getAttributeModifier(PhysicalCard physicalCard) {
         return _evaluator.evaluateExpression(_game, physicalCard);
+    }
+
+    public List<CardAttribute> getAttributesModified() {
+        return _attributes;
     }
 
 }
