@@ -11,12 +11,28 @@
             cost: 2
             species: vulcan
             icons: staff,past
+            keywords: dissident
             skill-box: "[*] Astrometrics [*] Biology [*] Honor [*] Medical [*] Security"
             lore: "\"Word has already spread of the discovery. It may take years to translate all of the writings.\""
             integrity: 6
             cunning: 6
             strength: 6
             image-url: https://www.trekcc.org/2e/cardimages/STVE-EN17073.jpg
+        }
+        {
+            blueprintId: 017_087
+            title: Orion Interceptor
+            type: ship
+            affiliation: non-aligned
+            cost: 6
+            staffing: staff,staff,staff
+            ship-class: Interceptor Class
+            java-blueprint: true
+            lore: "\"There never used to be Orions in this area. They must've expanded their range of operations.\""
+            range: 6
+            weapons: 6
+            shields: 6
+            image-url: https://www.trekcc.org/2e/cardimages/STVE-EN17087.jpg
         }
     ]
 }

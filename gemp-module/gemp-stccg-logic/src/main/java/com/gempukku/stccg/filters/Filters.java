@@ -284,6 +284,10 @@ public class Filters {
         };
     }
 
+    public static Filter yourOtherCards(PhysicalCard contextCard, Filterable... filterables) {
+        return and(your(contextCard.getController()), and(filterables));
+    }
+
 
     private static Filter affiliation(final Affiliation affiliation) {
         return (game, physicalCard) -> {
@@ -564,6 +568,19 @@ public class Filters {
         return yourCardsPresentWith(you.getPlayer(), card);
     }
 
+    public static Filter costAtLeast(int num) {
+        return (game, physicalCard) -> physicalCard.getCost() >= num;
+    }
+
+    public static Filter missionAffiliationIcon(Affiliation affiliation) {
+        return (game, physicalCard) -> physicalCard instanceof MissionCard missionCard &&
+                missionCard.hasAffiliationIconForOwner(affiliation);
+    }
+
+    public static Filter missionPointValueAtLeast(int pointValue) {
+        return (game, physicalCard) -> physicalCard instanceof MissionCard missionCard &&
+                missionCard.getPoints() >= pointValue;
+    }
 
 
     private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {
