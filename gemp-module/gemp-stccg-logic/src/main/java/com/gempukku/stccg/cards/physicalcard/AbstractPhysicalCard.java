@@ -151,6 +151,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public void setLocation(MissionLocation location) {
         _currentLocation = location;
+        for (PhysicalCard attachedCard : getAttachedCards(getGame())) {
+            attachedCard.setLocation(location);
+        }
+        for (PhysicalCard stackedCard : getStackedCards(getGame())) {
+            stackedCard.setLocation(location);
+        }
     }
 
     public String getFullName() { return _blueprint.getFullName(); }
