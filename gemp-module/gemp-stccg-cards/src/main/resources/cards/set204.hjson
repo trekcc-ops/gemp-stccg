@@ -171,7 +171,7 @@
             uniqueness: universal
             property-logo: tng-logo
             classification: MEDICAL
-            icons: communications-subcommand
+            icons: defense-subcommand
             lore: Characteristic of disconnected Borg. Assault team member on Ohniaka III. Assigned by The One to identify the Starfleet forces encountered there.
             skill-box: "[*] Computer Skill [*] Physics [*] Stellar Cartography"
             integrity: 5

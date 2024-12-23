@@ -1,0 +1,54 @@
+{
+    setId: "167"
+    setName: Emissary
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 167_030
+            title: Reshape the Quadrant
+            type: incident
+            property-logo: ds9-logo
+            effects: [
+                {
+                    type: seed
+                    limit: 1
+                    where: table
+                }
+                {
+                    type: action
+                    optional: true
+                    trigger: {
+                        type: played
+                        filter: self
+                    }
+                    effect: {
+                        type: download
+                        filter: choose(reactor-core)
+                    }
+                }
+                {
+                    type: modifier
+                    modifier: {
+                        type: gainIcon
+                        filter: yoursEvenIfNotInPlay + (personnel OR ship OR Nor) + ds9-logo
+                        icon: ds9-icon
+                    }
+                }
+                {
+                    type: action
+                    optional: false
+                    trigger: {
+                        type: played
+                        player: you
+                        filter: (personnel OR ship) + not(ds9-icon)
+                    }
+                    effect: {
+                        type: discard
+                        filter: self
+                    }
+                }
+            ]
+            image-url: https://www.trekcc.org/1e/cardimages/emissary/30.jpg
+        }
+    ]
+}

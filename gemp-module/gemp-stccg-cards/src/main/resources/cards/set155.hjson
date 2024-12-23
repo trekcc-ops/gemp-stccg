@@ -43,6 +43,67 @@
             image-url: https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg
         }
         {
+            blueprintId: 155_022
+            title: Continuing Mission
+            type: incident
+            property-logo: tng-logo
+            effects: [
+                {
+                    type: seed
+                    limit: 1
+                    where: table
+                }
+                {
+                    type: action
+                    optional: true
+                    trigger: {
+                        type: played
+                        filter: self
+                    }
+                    effect: {
+                        type: download
+                        filter: choose(warp-core)
+                    }
+                }
+                {
+                    type: modifier
+                    modifier: {
+                        type: gainIcon
+                        filter: yoursEvenIfNotInPlay + (personnel OR ship) + (tng-logo OR generations-logo)
+                        icon: tng-icon
+                    }
+                }
+                {
+                    type: action
+                    optional: false
+                    trigger: {
+                        type: played
+                        player: you
+                        filter: (personnel OR ship) + not(tng-icon)
+                    }
+                    effect: {
+                        type: discard
+                        filter: self
+                    }
+                }
+                {
+                    type: action
+                    optional: true
+                    limitPerTurn: 1
+                    trigger: {
+                        type: played
+                        player: you
+                        filter: personnel + tng-icon + skill-dots<=4 + sd-icons=0
+                    }
+                    effect: {
+                        type: drawCards
+                    }
+                }
+            ]
+            image-url: https://www.trekcc.org/1e/cardimages/errata/Continuing-Mission.jpg
+                // Alternate image = image-url: https://www.trekcc.org/1e/cardimages/homefront6/44.jpg
+        }
+        {
             blueprintId: 155_026
             title: Get It Done
             java-blueprint: true
@@ -355,6 +416,7 @@
             uniqueness: universal
             property-logo: tng-logo
             classification: OFFICER
+            icons: staff
             lore: Typical relief operations officer in the 24th century. Relishes the chance to explore new frontiers. Originally considered a security career.
             skill-box: "[*] Navigation [*] Transporter Skill [*] Astrophysics"
             integrity: 7

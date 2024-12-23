@@ -11,6 +11,7 @@
             property-logo: tng-logo
             classification: ENGINEER
             uniqueness: universal
+            icons: staff
             lore: "Transporter technician under the command of Lurin. Guarded a U.S.S. Enterprise transporter room during his DaiMon's unsuccessful takeover attempt."
             skill-box: "[*] Physics [*] Computer Skill [*] Transporter Skill"
             integrity: 6
@@ -26,6 +27,7 @@
             property-logo: tng-logo
             lore: Ferengi marauder. Under the command of Bractor in 2365, interrupted a mysterious battle between the Federation starships Enterprise and Hathaway.
             ship-class: "D'KORA CLASS"
+            staffing: command,staff,staff
             gametext: Holodeck, Tractor Beam
             range: 8
             weapons: 9

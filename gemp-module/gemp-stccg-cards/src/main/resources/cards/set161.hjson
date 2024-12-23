@@ -67,6 +67,7 @@
             affiliation: romulan
             property-logo: tng-logo
             classification: CIVILIAN
+            icons: staff
             lore: Human captain disguised as a Romulan. Worked with the Romulan underground movement. Shared his memories of Sarek through a mindmeld with Spock.
             skill-box: "[*] Diplomacy [*] Anthropology [*] Archaeology [*] Music [*] Honor [DL] Vulcan Mindmeld"
             integrity: 8
@@ -97,6 +98,7 @@
             affiliation: romulan
             property-logo: tng-logo
             classification: CIVILIAN
+            icons: staff
             lore: "Representative of non-military personnel guarding the Carraya system prison camp for Khitomer survivors. Sometimes serves as Tokath's bodyguard."
             skill-box: "[*] SECURITY [*] Biology [*] Youth"
             integrity: 5
@@ -112,6 +114,7 @@
             affiliation: romulan
             property-logo: tng-logo
             classification: ENGINEER
+            icons: staff
             lore: Typical Romulan engineer who became trapped in a temporal fragment in 2369. Did not realize the cause was life-form incubation in the engine core.
             skill-box: "[*] Computer Skill [*] Transporter Skill [*] Youth"
             integrity: 4

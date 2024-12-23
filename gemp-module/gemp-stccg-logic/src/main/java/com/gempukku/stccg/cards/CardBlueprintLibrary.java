@@ -193,6 +193,8 @@ public class CardBlueprintLibrary {
     }
 
     private void validateConsistency(CardBlueprint blueprint, GameType gameType) throws InvalidCardDefinitionException {
+        if (blueprint.getGameType() == null)
+            throw new InvalidCardDefinitionException("Card has to have a game type");
         if (blueprint.getTitle() == null)
             throw new InvalidCardDefinitionException("Card has to have a title");
         if (blueprint.getCardType() == null)
@@ -231,6 +233,7 @@ public class CardBlueprintLibrary {
             throw new InvalidCardDefinitionException("Non-matching card blueprint property 'blueprintId' " +
                     cardNode.get("blueprintId").textValue() + " for blueprint " + blueprintId);
         CardBlueprint result = _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
+        result.setGameType(gameType);
         validateConsistency(result, gameType);
         return result;
     }

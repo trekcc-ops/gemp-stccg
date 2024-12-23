@@ -580,7 +580,7 @@
             type: personnel
             affiliation: federation
             property-logo: tng-logo
-            classification: V.I.P.
+            classification: OFFICER
             icons: command
             characteristic: admiral
             lore: Vice-Admiral Alynna Nechayev is an antagonistic superior of Captain Jean-Luc Picard. Responsible for liaison with the Cardassians and the Maquis.
@@ -1495,7 +1495,6 @@
             uniqueness: universal
             property-logo: tng-logo
             classification: SCIENCE
-            icons: staff
             lore: Klingon trained in the field of science. Studied the effects of warp propulsion on subspace.
             skill-box: "[*] Astrophysics"
             integrity: 7
@@ -1557,7 +1556,6 @@
             affiliation: non-aligned
             property-logo: tng-logo
             classification: V.I.P.
-            uniqueness: universal
             lore: 1/4 Betazoid, 3/4 Human. Skilled negotiator. Abused his empathic powers to gain advantage. Had a dangerous liaison with Counselor Deanna Troi.
             skill-box: "[*] Empathy [*] Diplomacy [*] Treachery"
             integrity: 3
@@ -1637,6 +1635,7 @@
             property-logo: tng-logo
             classification: SCIENCE
             uniqueness: universal
+            icons: command
             lore: Representative of female mercenaries operating throughout the galaxy. Worked with Baran to find the Stone of Gol.
             skill-box: "[*] MEDICAL [*] Navigation [*] Geology"
             integrity: 2
@@ -1846,7 +1845,7 @@
         }
         {
             blueprintId: 101_344
-            title: I.K.C. Bortas
+            title: I.K.S. Bortas
             type: ship
             affiliation: klingon
             property-logo: tng-logo
@@ -1865,6 +1864,7 @@
             type: ship
             affiliation: klingon
             property-logo: tng-logo
+            uniqueness: universal
             ship-class: "K'VORT CLASS"
             lore: "Class of ships identical in configuration to the classic B'rel class Klingon Bird-of-Prey, although much larger."
             staffing: staff
@@ -1876,7 +1876,7 @@
         }
         {
             blueprintId: 101_350
-            title: "I.K.C. Vor'Cha"
+            title: "I.K.S. Vor'Cha"
             type: ship
             affiliation: klingon
             property-logo: tng-logo
@@ -1938,7 +1938,7 @@
         }
         {
             blueprintId: 101_356
-            title: Zibalian Shuttlecraft
+            title: Zibalian Transport
             type: ship
             affiliation: non-aligned
             property-logo: tng-logo
