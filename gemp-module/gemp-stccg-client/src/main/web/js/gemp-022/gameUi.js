@@ -2392,11 +2392,11 @@ export class ST1EGameTableUI extends GameTableUI {
         super(url, replayMode);
     }
 
-    addSharedMission(index, quadrant) {
+    addSharedMission(index, quadrant, region) {
         // TODO - no code here yet
     }
 
-    addLocationDiv(index, quadrant) {
+    addLocationDiv(index, quadrant, region) {
         var that = this;
 
         // Increment locationIndex for existing cards on the table to the right of the added location
@@ -2431,6 +2431,7 @@ export class ST1EGameTableUI extends GameTableUI {
         var newDiv = $("<div id='location" + index + "' class='ui-widget-content locationDiv'></div>");
         newDiv.data( "locationIndex", index);
         newDiv.data( "quadrant", quadrant);
+        newDiv.data("region", region);
         $("#main").append(newDiv);
 
         this.locationDivs.splice(index, 0, newDiv);
@@ -2614,7 +2615,7 @@ export class ST1EGameTableUI extends GameTableUI {
         for (var locationIndex = 0; locationIndex < locationsCount; locationIndex++) {
             this.locationDivs[locationIndex].css({left:x, top:y, width:locationDivWidth, height:locationDivHeight});
             var currQuadrant = this.locationDivs[locationIndex].data("quadrant");
-            if (locationIndex == 0) {
+            if (locationIndex === 0) {
                 this.locationDivs[locationIndex].addClass("first-in-quadrant");
             } else if (currQuadrant != this.locationDivs[locationIndex - 1].data("quadrant")) {
                 this.locationDivs[locationIndex].addClass("first-in-quadrant");
@@ -2622,7 +2623,7 @@ export class ST1EGameTableUI extends GameTableUI {
                 this.locationDivs[locationIndex].removeClass("first-in-quadrant");
             }
 
-            if (locationIndex == locationsCount - 1) {
+            if (locationIndex === locationsCount - 1) {
                 this.locationDivs[locationIndex].addClass("last-in-quadrant");
             } else if (currQuadrant != this.locationDivs[locationIndex + 1].data("quadrant")) {
                 this.locationDivs[locationIndex].addClass("last-in-quadrant");
@@ -2630,21 +2631,65 @@ export class ST1EGameTableUI extends GameTableUI {
                 this.locationDivs[locationIndex].removeClass("last-in-quadrant");
             }
 
-            if (currQuadrant == "ALPHA" ) {
+            let currentRegion = this.locationDivs[locationIndex].data("region");
+            let friendly_region_name = this._friendly_region_name(currentRegion);
+            if (friendly_region_name !== "") {
+                if (locationIndex === 0) {
+                    this.locationDivs[locationIndex].addClass("first-in-region");
+                } else if (currentRegion != this.locationDivs[locationIndex - 1].data("region")) {
+                    this.locationDivs[locationIndex].addClass("first-in-region");
+                } else if (this.locationDivs[locationIndex].hasClass("first-in-region")) {
+                    this.locationDivs[locationIndex].removeClass("first-in-region");
+                }
+    
+                if (locationIndex === locationsCount - 1) {
+                    this.locationDivs[locationIndex].addClass("last-in-region");
+                } else if (currentRegion != this.locationDivs[locationIndex + 1].data("region")) {
+                    this.locationDivs[locationIndex].addClass("last-in-region");
+                } else if (this.locationDivs[locationIndex].hasClass("last-in-region")) {
+                    this.locationDivs[locationIndex].removeClass("last-in-region");
+                }
+            }
+
+            if (currQuadrant === "ALPHA" ) {
                 this.locationDivs[locationIndex].addClass("alpha-quadrant");
-                this.locationDivs[locationIndex].attr("title", "Alpha Quadrant");
+
+                if (friendly_region_name === "") {
+                    this.locationDivs[locationIndex].attr("title", "Alpha Quadrant");
+                }
+                else {
+                    this.locationDivs[locationIndex].attr("title", `${friendly_region_name} (Alpha Quadrant)`);
+                }
             }
-            if (currQuadrant == "GAMMA" ) {
+            if (currQuadrant === "GAMMA" ) {
                 this.locationDivs[locationIndex].addClass("gamma-quadrant");
-                this.locationDivs[locationIndex].attr("title", "Gamma Quadrant");
+
+                if (friendly_region_name === "") {
+                    this.locationDivs[locationIndex].attr("title", "Gamma Quadrant");
+                }
+                else {
+                    this.locationDivs[locationIndex].attr("title", `${friendly_region_name} (Gamma Quadrant)`);
+                }
             }
-            if (currQuadrant == "DELTA" ) {
+            if (currQuadrant === "DELTA" ) {
                 this.locationDivs[locationIndex].addClass("delta-quadrant");
-                this.locationDivs[locationIndex].attr("title", "Delta Quadrant");
+                
+                if (friendly_region_name === "") {
+                    this.locationDivs[locationIndex].attr("title", "Delta Quadrant");
+                }
+                else {
+                    this.locationDivs[locationIndex].attr("title", `${friendly_region_name} (Delta Quadrant)`);
+                }
             }
-            if (currQuadrant == "MIRROR" ) {
+            if (currQuadrant === "MIRROR" ) {
                 this.locationDivs[locationIndex].addClass("mirror-quadrant");
-                this.locationDivs[locationIndex].attr("title", "Mirror Quadrant");
+                
+                if (friendly_region_name === "") {
+                    this.locationDivs[locationIndex].attr("title", "Mirror Quadrant");
+                }
+                else {
+                    this.locationDivs[locationIndex].attr("title", `${friendly_region_name} (Mirror Quadrant)`);
+                }
             }
 
             this.missionCardGroups[locationIndex].setBounds(x, y + locationDivHeight/3, locationDivWidth, locationDivHeight/3);
@@ -2682,6 +2727,62 @@ export class ST1EGameTableUI extends GameTableUI {
                 height: 97,
                 "z-index": 1000
             });
+        }
+    }
+
+    // Converts region enum sent from Region.java to a user friendly string
+    _friendly_region_name(locationDiv) {
+        if (locationDiv === null ||
+            locationDiv === undefined) {
+            return "";
+        }
+        switch (locationDiv) {
+            // 1E regions
+            case "ARGOLIS_CLUSTER":
+                return "Argolis Cluster Region";
+            case "BADLANDS":
+                return "Badlands Region";
+            case "BAJOR":
+                return "Bajor Region";
+            case "BRIAR_PATCH":
+                return "Briar Patch Region";
+            case "CARDASSIA":
+                return "Cardassia Region";
+            case "CETI_ALPHA":
+                return "Ceti Alpha Region";
+            case "CHIN_TOKA":
+                return "Chin'toka Region";
+            case "DELPHIC_EXPANSE":
+                return "Delphic Expanse Region";
+            case "DEMILITARIZED_ZONE":
+                return "Demilitarized Zone Region";
+            case "GREAT_BARRIER":
+                return "Great Barrier Region";
+            case "MCALLISTER":
+                return "McAllister Region";
+            case "MURASAKI":
+                return "Murasaki Region";
+            case "MUTARA":
+                return "Mutara Region";
+            case "NEKRIT_EXPANSE":
+                return "Nekrit Expanse Region";
+            case "NEUTRAL_ZONE":
+                return "Neutral Zone Region";
+            case "NORTHWEST_PASSAGE":
+                return "Northwest Passage Region";
+            case "ROMULUS_SYSTEM":
+                return "Romulus System Region";
+            case "SECTOR_001":
+                return "Sector 001 Region";
+            case "TELLUN":
+                return "Tellun Region";
+            case "VALO":
+                return "Valo Region Region";
+            // 2E regions
+            case "QO_NOS_SYSTEM":
+                return "Qo'noS Region";
+            default:
+                return "";
         }
     }
 }
