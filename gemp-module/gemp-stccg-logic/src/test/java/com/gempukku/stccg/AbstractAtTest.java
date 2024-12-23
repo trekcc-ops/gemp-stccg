@@ -342,8 +342,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
         decks.get(P1).addCard(SubDeck.DRAW_DECK, "155_021"); // Attention All Hands
         decks.get(P2).addCard(SubDeck.DRAW_DECK, "155_021");
-        decks.get(P1).addCard(SubDeck.SEED_DECK, "178_044"); // Continuing Mission
-        decks.get(P2).addCard(SubDeck.SEED_DECK, "178_044"); // Continuing Mission
+        decks.get(P1).addCard(SubDeck.SEED_DECK, "155_022"); // Continuing Mission
+        decks.get(P2).addCard(SubDeck.SEED_DECK, "155_022");
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.getFormat("debug1e");

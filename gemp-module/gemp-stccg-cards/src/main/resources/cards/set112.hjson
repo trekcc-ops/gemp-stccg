@@ -66,6 +66,7 @@
             affiliation: bajoran
             property-logo: ds9-logo
             classification: MEDICAL
+            uniqueness: universal
             lore: Bajoran nurse representative of medical assistants on Deep Space 9. Helped Dr. Julian Bashir extend the life of Bareil Antos in 2371.
             skill-box: "[*] Exobiology [*] Youth"
             integrity: 7
@@ -96,6 +97,7 @@
             affiliation: bajoran
             property-logo: ds9-logo
             classification: SCIENCE
+            icons: staff
             lore: "Member of Bajoran Institute of Science. Odo's foster father. Dr. Mora encouraged Odo to adopt humanoid form. Reconciled with his estranged \"son\" in 2373."
             skill-box: "[*] SCIENCE [*] Exobiology x2"
             integrity: 6
@@ -491,7 +493,7 @@
             affiliation: non-aligned
             property-logo: ds9-logo
             classification: ENGINEER
-            icons: staff,maquis
+            icons: maquis,staff
             uniqueness: universal
             lore: "Maquis terrorist. Cal Hudson's co-pilot. Helped abduct Gul Dukat, blaming him for supplying illegal weapons to Cardassians in the Demilitarized Zone."
             skill-box: "[*] Navigation [*] Physics"
@@ -522,7 +524,7 @@
             affiliation: non-aligned
             property-logo: ds9-logo
             classification: ENGINEER
-            icons: staff,maquis
+            icons: maquis,staff
             lore: Female Vulcan. Gunrunner. Bought weapons from Quark in 2370. Helped the Maquis abduct Gul Dukat, but failed to establish a forced mindmeld with him.
             skill-box: "[*] Treachery [*] Mindmeld [*] Physics [*] Acquisition"
             integrity: 5
