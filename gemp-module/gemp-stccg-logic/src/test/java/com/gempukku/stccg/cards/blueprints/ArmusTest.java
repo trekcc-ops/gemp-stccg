@@ -72,7 +72,7 @@ public class ArmusTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation));
+        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocation()));
 
         // Attempt mission
         attemptMission(P1, picard.getAwayTeam(), excavation);
@@ -87,7 +87,7 @@ public class ArmusTest extends AbstractAtTest {
         assertEquals(0, _game.getGameState().getAwayTeams().size());
 
         // Confirm that mission was not solved
-        assertFalse(excavation.isCompleted());
+        assertFalse(excavation.getLocation().isCompleted());
 
         // Confirm the mission attempt was added to performed actions
         int missionAttempts = 0;

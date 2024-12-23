@@ -7,49 +7,131 @@ ul {
     margin-top: 0px;
 }
 
-.deckSize {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
+.playerStats {
+    color: white;
+    display: grid;
+    grid-template-columns: 42px 42px 42px auto;
+}
+
+.playerStats .clickable {
+    cursor: pointer;
+}
+
+.player.current {
+    background-color: #191970;
+}
+
+#player0 {
+    grid-column: 1 / span 3;
+    grid-row: 1 / 1;
+}
+
+#clock0 {
+    grid-column: 4 / 4;
+    grid-row: 1 / 1;
+}
+
+#deck0 {
+    grid-column: 1 / 1;
+    grid-row: 2 / 2;
+}
+
+#hand0 {
+    grid-column: 2 / 2;
+    grid-row: 2 / 2;
+}
+
+#discard0 {
+    grid-column: 3 / 3;
+    grid-row: 2 / 2;
+}
+
+#score0 {
+    grid-column: 4 / 4;
+    grid-row: 2 / 2;
+}
+
+#player1 {
+    grid-column: 1 / span 3;
+    grid-row: 3 / 3;
+}
+
+#clock1 {
+    grid-column: 4 / 4;
+    grid-row: 3 / 3;
+}
+
+#deck1 {
+    grid-column: 1 / 1;
+    grid-row: 4 / 4;
+}
+
+#hand1 {
+    grid-column: 2 / 2;
+    grid-row: 4 / 4;
+}
+
+#discard1 {
+    grid-column: 3 / 3;
+    grid-row: 4 / 4;
+}
+
+#score1 {
+    grid-column: 4 / 4;
+    grid-row: 4 / 4;
+}
+
+.clock {
+    text-align: right;
+    color: white;
     font-weight: bolder;
-    width: 42px;
+    font-size: 150%;
+}
+
+.deckSize {
+    text-align: center;
+    color: white;
+    font-weight: bolder;
+    font-size: 150%;
+    -webkit-text-stroke: 0.5px black;
+    text-stroke: 0.5px black;
+    align-content: start;
+    background-image: url('/gemp-module/images/decipher_card_deck.svg');
+    background-size: 42px 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/deck-42.png');
 }
 
 .handSize {
-    display: table-cell;
     text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
+    color: white;
     font-weight: bolder;
-    width: 42px;
+    font-size: 150%;
+    -webkit-text-stroke: 0.5px black;
+    text-stroke: 0.5px black;
+    align-content: start;
+    background-image: url('/gemp-module/images/decipher_card_hand.svg');
+    background-size: 42px 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/hand-42.png');
 }
 
 .discardSize {
-    display: table-cell;
     text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
+    color: white;
     font-weight: bolder;
-    width: 42px;
+    font-size: 150%;
+    -webkit-text-stroke: 0.5px black;
+    text-stroke: 0.5px black;
+    align-content: start;
+    background-image: url('/gemp-module/images/decipher_card_discard.svg');
+    background-size: 42px 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/discard-42.png');
 }
 
 .playerScore {
-    display: table-cell;
     text-align: center;
-    vertical-align: middle;
     color: white;
-    font-family: "Verdana", Verdana, sans-serif;
-    font-size: 150%;
     font-weight: bolder;
-    width: 42px;
-    height: 42px;
+    font-size: 125%;
 }
 
 .adventureDeckSize {
@@ -127,44 +209,30 @@ ul {
     cursor: pointer;
 }
 
+.selectedBadge::after {
+	content: attr(selectedOrder);
+    position: relative;
+    top: -42%;
+    left: 39%;
+    border-radius: 50%;
+    padding: 5%;
+	background: #009f9f;
+    opacity: 0.9;
+    font-size: 12px;
+    font-weight: bolder;
+	color: white;
+}
+
 .stats {
     text-align: center;
     padding: 2px;
 }
 
-.player {
-    color: white;
-    position: relative;
-    z-index: 50;
-}
-
-.player.current {
-    background-color: #191970;
-}
-
-.playerStats {
+#currentPhase {
     color: white;
 }
 
-.playerStats .clickable {
-    color: #9f9fff;
-    cursor: pointer;
-}
-
-.phase {
-    color: white;
-    font-size: 120%;
-}
-
-.tribbleSequence {
-    float: left;
-    font-size: 15px;
-    width: 100px;
-    /*
-    border-radius: 7px;
-    border: 1px solid white;
-    background-color: #000000;
-    */
+#tribbleSequence {
     color: white;
     padding: 2px;
     text-align: left;
@@ -332,22 +400,15 @@ ul {
 }
 
 #alertText {
-    position: absolute;
-    left: 5px;
-    top: 5px;
     width: 100%;
-    height: 50px;
-    scroll-behavior: auto;
+    height: 60%;
+    overflow-y: auto;
     margin: 3px;
 }
 
 #alertButtons {
-    position: absolute;
-    left: 0px;
-    top: 50px;
     width: 100%;
-    height: 30px;
-    scroll-behavior: auto;
+    height: 40%;
 }
 
 .rounded {
@@ -391,6 +452,30 @@ ul {
 .last-in-quadrant {
     border-right-width: 0.5px;
     border-right-color: white;
+}
+
+.alpha-quadrant {
+    background: rgba(21, 24, 119, 0.2);
+    z-index: 10;
+}
+
+.gamma-quadrant {
+    background: rgba(21, 119, 21, 0.2);
+    z-index: 10;
+}
+
+.delta-quadrant {
+    background: rgba(255, 255, 0, 0.2);
+    z-index: 10;
+}
+
+.mirror-quadrant {
+    background: rgba(142, 29, 29, 0.2);
+    z-index: 10;
+}
+
+.st1e-card-group {
+    z-index: 9;
 }
 
 .upside-down {

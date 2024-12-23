@@ -363,7 +363,7 @@ public class HallServer extends AbstractServer {
     }
 
     final void processHall(User player, HallInfoVisitor visitor) {
-        final boolean isAdmin = player.getType().contains("a");
+        final boolean isAdmin = player.isAdmin();
         _hallDataAccessLock.readLock().lock();
         try {
             visitor.serverTime(DateUtils.getCurrentDateAsString());
@@ -375,13 +375,8 @@ public class HallServer extends AbstractServer {
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
-                visitor.visitTournamentQueue(tournamentQueueKey, tournamentQueue.getCost(),
-                        tournamentQueue.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournamentQueue.getFormat()).getName(),
-                        tournamentQueue.getTournamentQueueName(), tournamentQueue.getPrizesDescription(),
-                        tournamentQueue.getPairingDescription(), tournamentQueue.getStartCondition(),
-                        tournamentQueue.getPlayerCount(), tournamentQueue.isPlayerSignedUp(player.getName()),
-                        tournamentQueue.isJoinable());
+                GameFormat gameFormat = _formatLibrary.getFormat(tournamentQueue.getFormat());
+                visitor.visitTournamentQueue(tournamentQueue, tournamentQueueKey, gameFormat.getName(), player);
             }
 
             for (Map.Entry<String, Tournament> tournamentEntry : _runningTournaments.entrySet()) {
@@ -409,13 +404,20 @@ public class HallServer extends AbstractServer {
         List<String> validations = format.validateDeck(deck);
         if(!validations.isEmpty()) {
             String firstValidation = validations.stream().findFirst().orElse(null);
-            long count = firstValidation.chars().filter(x -> x == '\n').count();
+            long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();
             if (firstValidation.contains("\n"))
                 firstValidation = firstValidation.substring(0, firstValidation.indexOf("\n"));
-            String validation = "Deck targets '" + deck.getTargetFormat() + "' format and is incompatible with '" +
-                    format.getName() + "'.  Issues include: `" + firstValidation + "` and " +
-                    (validations.size() - 1 + count - 1) + " other issues.";
-            throw new HallException("Your selected deck is not valid for this format: " + validation);
+            long issueCount = validations.size() + newLineCount;
+            StringBuilder validationMessage = new StringBuilder();
+            validationMessage.append("Your selected deck is incompatible with the '");
+            validationMessage.append(format.getName()).append("' format. ");
+            if (issueCount <= 1) {
+                validationMessage.append(firstValidation);
+            } else {
+                validationMessage.append("Issues include: '").append(firstValidation).append("' and ");
+                validationMessage.append(issueCount - 1).append(" other issues.");
+            }
+            throw new HallException(validationMessage.toString());
         }
         return cardDeck;
     }

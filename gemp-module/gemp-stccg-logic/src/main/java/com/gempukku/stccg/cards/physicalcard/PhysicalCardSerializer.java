@@ -32,20 +32,10 @@ public class PhysicalCardSerializer extends StdSerializer<PhysicalCard> {
         if (physicalCard.getLocationZoneIndex() >= 0)
             jsonGenerator.writeNumberField("locationZoneIndex", physicalCard.getLocationZoneIndex());
 
-        if (!physicalCard.getCardsSeededUnderneath().isEmpty()) {
-            jsonGenerator.writeFieldName("cardsSeededUnderneath");
-            jsonGenerator.writeStartArray();
-            for (PhysicalCard card : physicalCard.getCardsSeededUnderneath())
-                jsonGenerator.writeNumber(card.getCardId());
-            jsonGenerator.writeEndArray();
-        }
-
-        if (physicalCard instanceof PhysicalReportableCard1E reportable)
-            jsonGenerator.writeBooleanField("isStopped", reportable.isStopped());
         if (physicalCard instanceof AffiliatedCard affiliatedCard)
             jsonGenerator.writeStringField("affiliation", affiliatedCard.getAffiliation().name());
-        if (physicalCard instanceof MissionCard mission)
-            jsonGenerator.writeBooleanField("completed", mission._completed);
+        if (physicalCard instanceof PhysicalReportableCard1E reportable)
+            jsonGenerator.writeBooleanField("isStopped", reportable.isStopped());
         if (physicalCard instanceof PhysicalShipCard shipCard) {
             if (shipCard.isDocked())
                 jsonGenerator.writeNumberField("dockedAtCardId", shipCard.getDockedAtCard().getCardId());

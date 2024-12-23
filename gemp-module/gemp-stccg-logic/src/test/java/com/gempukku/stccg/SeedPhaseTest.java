@@ -6,7 +6,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.GameSnapshot;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class SeedPhaseTest extends AbstractAtTest {
 
         // There should now be 12 missions seeded
         assertEquals(12, _game.getGameState().getSpacelineLocations().size());
-        for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
             System.out.println((location.getLocationZoneIndex()+1) + " - " + location.getLocationName());
         }
 
@@ -62,7 +62,7 @@ public class SeedPhaseTest extends AbstractAtTest {
 
         // There should now be 12 missions seeded
         assertEquals(12, _game.getGameState().getSpacelineLocations().size());
-        for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
             System.out.println((location.getLocationZoneIndex() + 1) + " - " + location.getLocationName());
         }
 
@@ -76,23 +76,25 @@ public class SeedPhaseTest extends AbstractAtTest {
                 homeward = card;
         }
 
-        assertNotEquals(null, archer);
-        assertNotEquals(null, homeward);
+        assertNotNull(archer);
+        assertNotNull(homeward);
+        MissionLocation homewardLocation = homeward.getLocation();
+        assertNotNull(homewardLocation);
 
-        assertEquals(0, homeward.getCardsPreSeeded(archer.getOwner()).size());
+        assertEquals(0, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
         seedDilemma(archer, homeward);
-        assertEquals(1, homeward.getCardsPreSeeded(archer.getOwner()).size());
+        assertEquals(1, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
         removeDilemma(archer, homeward);
-        assertEquals(0, homeward.getCardsPreSeeded(archer.getOwner()).size());
+        assertEquals(0, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
         seedDilemma(archer, homeward);
-        assertEquals(1, homeward.getCardsPreSeeded(archer.getOwner()).size());
+        assertEquals(1, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
 
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homeward.getCardsSeededUnderneath().size());
-        assertTrue(homeward.getCardsSeededUnderneath().contains(archer));
+        assertEquals(1, homewardLocation.getCardsSeededUnderneath().size());
+        assertTrue(homewardLocation.getCardsSeededUnderneath().contains(archer));
 
         for (GameSnapshot snapshot : _game.getSnapshots())
             System.out.println(snapshot.getDescription());

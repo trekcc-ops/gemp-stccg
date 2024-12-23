@@ -8,7 +8,7 @@ import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
+import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
@@ -17,12 +17,15 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractPhysicalCard implements PhysicalCard {
 
@@ -32,9 +35,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected Zone _zone;
     protected PhysicalCard _attachedTo;
     protected PhysicalCard _stackedOn;
-    protected ST1ELocation _currentLocation;
-    protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
-    protected List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
+    protected MissionLocation _currentLocation;
 
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
@@ -146,9 +147,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isControlledBy(Player player) { return isControlledBy(player.getPlayerId()); }
 
     public String getCardLink() { return _blueprint.getCardLink(); }
-    public ST1ELocation getLocation() { return _currentLocation; }
+    public MissionLocation getLocation() { return _currentLocation; }
 
-    public void setLocation(ST1ELocation location) {
+    public void setLocation(MissionLocation location) {
         _currentLocation = location;
     }
 
@@ -176,16 +177,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<? extends Action> getPhaseActionsInPlay(Player player) {
-        // TODO - Very jank just to see if I can get the Java blueprint to work
-        if (_blueprint instanceof Blueprint155_021 testCard)
-            return testCard.getInPlayActionsNew(player, this);
-        else {
-            if (_blueprint.getInPlayPhaseActions() == null)
-                return new LinkedList<>();
-            else
-                return getActivatedActions(player.getPlayerId(), _blueprint.getInPlayPhaseActions());
-        }
+    public List<? extends Action> getRulesActionsWhileInPlay(Player player) {
+        return new LinkedList<>();
+    }
+
+    public List<? extends Action> getGameTextActionsWhileInPlay(Player player) {
+        return _blueprint.getGameTextActionsWhileInPlay(player, this);
     }
 
     public List<PhysicalCard> getStackedCards(DefaultGame game) {
@@ -247,38 +244,38 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
 
-    private List<Action> getActionsFromActionSources(String playerId, Effect effect, EffectResult effectResult,
-                                                     List<ActionSource> actionSources) {
+    private List<Action> getActionsFromActionSources(String playerId, PhysicalCard card, Effect effect,
+                                                     EffectResult effectResult, List<ActionSource> actionSources) {
         List<Action> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(this, playerId, effect, effectResult);
+                Action action = actionSource.createActionWithNewContext(card, playerId, effect, effectResult);
                 if (action != null) result.add(action);
             }
         });
         return result;
     }
 
-    private List<Action> getActivatedActions(String playerId, List<ActionSource> sources) {
-        return getActionsFromActionSources(playerId, null, null, sources);
-    }
-
     public List<Action> getOptionalAfterTriggerActions(Player player, EffectResult effectResult) {
         if (_blueprint instanceof Blueprint212_019 riskBlueprint) {
             return riskBlueprint.getValidResponses(this, player, effectResult);
-        } else {
-            return getActionsFromActionSources(player.getPlayerId(), null, effectResult,
+        }
+        else if (_blueprint instanceof Blueprint156_010 surpriseBlueprint) {
+            return surpriseBlueprint.getValidResponses(this, player, effectResult);
+        }
+        else {
+            return getActionsFromActionSources(player.getPlayerId(), this, null, effectResult,
                     _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
         }
     }
 
     public List<Action> getBeforeTriggerActions(Effect effect, RequiredType requiredType) {
-        return getActionsFromActionSources(getOwnerName(), effect, null,
+        return getActionsFromActionSources(getOwnerName(), this, effect, null,
                 _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.BEFORE));
     }
 
     public List<Action> getBeforeTriggerActions(String playerId, Effect effect, RequiredType requiredType) {
-        return getActionsFromActionSources(playerId, effect, null,
+        return getActionsFromActionSources(playerId, this, effect, null,
                 _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.BEFORE));
     }
 
@@ -348,46 +345,18 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.hasCharacteristic(characteristic);
     }
 
-    public void addCardToSeededUnder(PhysicalCard card) {
-        _cardsSeededUnderneath.add(card);
-    }
 
-    public List<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
-    public Collection<PhysicalCard> getCardsPreSeeded(Player player) {
-        if (_cardsPreSeededUnderneath.get(player) == null)
-            return new LinkedList<>();
-        else return _cardsPreSeededUnderneath.get(player);
-    }
-
-    public void removeSeedCard(PhysicalCard card) {
-        _cardsSeededUnderneath.remove(card);
-    }
-
-    public void removePreSeedCard(PhysicalCard card, Player player) {
-        _cardsPreSeededUnderneath.get(player).remove(card);
-    }
-
-    public void seedPreSeeds() {
-        // TODO - This won't work quite right for shared missions
-        Set<Player> playersWithSeeds = _cardsPreSeededUnderneath.keySet();
-        for (Player player : playersWithSeeds) {
-            for (PhysicalCard card : _cardsPreSeededUnderneath.get(player)) {
-                _cardsSeededUnderneath.add(card);
-            }
-            _cardsPreSeededUnderneath.remove(player);
-        }
-    }
-
-
-    public void addCardToPreSeeds(PhysicalCard card, Player player) {
-        _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
-        _cardsPreSeededUnderneath.get(player).add(card);
-    }
-
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard missionCard,
-                                            EncounterSeedCardAction action) throws InvalidGameLogicException {
+    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
+                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+            throws InvalidGameLogicException {
         throw new InvalidGameLogicException(
                 "Tried to call getEncounterActions for a card that does not have an encounter action");
     }
+
+    public Player getController() {
+        return _owner;
+    }
+
+    public int getCost() { return _blueprint.getCost(); }
 
 }

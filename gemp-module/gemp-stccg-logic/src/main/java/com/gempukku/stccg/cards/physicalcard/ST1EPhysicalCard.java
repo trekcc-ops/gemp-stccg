@@ -15,6 +15,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.SnapshotData;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public boolean isMisSeed(DefaultGame cardGame, MissionCard mission) {
+    public boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) {
         if (_blueprint.getCardType() != CardType.DILEMMA && _blueprint.getCardType() != CardType.ARTIFACT)
             return true; // TODO - Sometimes gametext allows them to be seeded
         if (hasIcon(cardGame, CardIcon.AU_ICON))
@@ -81,13 +82,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
 
-        for (PhysicalCard card : _cardsSeededUnderneath)
-            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
-
-        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
-            for (PhysicalCard card : entry.getValue())
-                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
-
         return newCard;
     }
 
@@ -106,9 +100,9 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard missionCard,
-                                            EncounterSeedCardAction action) {
-        return _blueprint.getEncounterActions(this, game, attemptingUnit, missionCard, action);
+    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
+                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+        return _blueprint.getEncounterActions(this, game, attemptingUnit, action, missionLocation);
     }
 
 }

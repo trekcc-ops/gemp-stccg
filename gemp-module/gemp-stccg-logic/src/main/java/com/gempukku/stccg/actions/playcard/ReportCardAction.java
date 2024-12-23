@@ -14,7 +14,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 return _destinationOptions;
             else {
                 Collection<PhysicalCard> availableFacilities = new HashSet<>();
-                for (ST1ELocation location : gameState.getSpacelineLocations()) {
+                for (MissionLocation location : gameState.getSpacelineLocations()) {
                     Collection<PhysicalCard> facilities =
                             Filters.filterActive(game, FacilityType.OUTPOST, Filters.atLocation(location));
                     for (PhysicalCard card : facilities) {
@@ -86,11 +86,15 @@ public class ReportCardAction extends STCCGPlayCardAction {
             cardGame.sendErrorMessage(exp);
             result = false;
         }
-        return result;
+        return costsCanBePaid(cardGame);
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+
+        if (isCostFailed())
+            return null;
+
         DefaultGame game = _cardEnteringPlay.getGame();
         Player performingPlayer = game.getPlayer(_performingPlayerId);
 
@@ -121,6 +125,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
             });
             return getNextCost();
         }
+
+        Action nextCost = getNextCost();
+        if (nextCost != null)
+            return nextCost;
+
         if (!_affiliationWasChosen) {
             appendCost(new ChooseAffiliationEffect(performingPlayer, new ArrayList<>(_affiliationOptions)) {
                 @Override

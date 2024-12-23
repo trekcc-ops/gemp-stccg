@@ -46,16 +46,18 @@
             "VOID": [45,6,41,8,43,4,44,3,42,7,46,5],
             "VOID_FROM_HAND": [45,6,41,8,43,4,44,3,42,7,46,5],
             "SEED_DECK": []
-            // There may be additional zones specified here, like STACKED, ATTACHED, or PLAY_PILE
+            // There may be additional zones specified here, like PLAY_PILE
         },
         // etc.
     ],
     "spacelineLocations": [
         // List of spaceline locations for 1E game.
         {
-            "locationZoneIndex": 1, // Cards at this location (including missions) will have this locationZoneIndex
+            "locationZoneIndex": 1,
             "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
-            "locationName": "Gravesworld"
+            "locationName": "Gravesworld",
+            "cardsSeededUnderneath": [6,7], // list of cardIds for cards seeded underneath a mission
+            "isCompleted": false
         },
         {
             "locationZoneIndex": 2,
@@ -84,7 +86,7 @@
         /* List of away teams in the game. As of 11/16/24, the format of this information is expected to change
             significantly. */
         {
-            "parentCard": 25, // cardId for mission, ship, time location, etc.
+            "locationZoneIndex": 3,
             "playerId": "player1",
             "cardsInAwayTeam": [10,17] // cardIds
         },
@@ -109,13 +111,13 @@
             "cardId": 2,
             "owner": "player1",
             "zone": "ATTACHED",
-                /* Cards in the ATTACHED zone are attached to other cards. In this case, it demonstrates
+               /* Cards in the ATTACHED zone are attached to other cards. In this case, it demonstrates
                     that this ship is docked at a facility. */
             "affiliation": "FEDERATION", // only included for affiliated cards
             "locationZoneIndex": 3 // only included if the card is on the spaceline
             "attachedToCardId": 1, // only included if the card is attached to another
             "dockedAtCardId": 1, // only included for a docked ship
-            "rangeAvailable": 3, // only included for a ship
+            "rangeAvailable": 3 // only included for a ship
             "isStopped": false // only included for reportables (personnel, ships, equipment)
         },
         {
@@ -123,11 +125,9 @@
             "blueprintId": "101_154",
             "cardId": 3,
             "owner": "player1",
-            "zone": "STACKED", // as of 11/18/24, cards in the STACKED zone are stacked on top of other cards
+            "zone": "SPACELINE",
             "locationZoneIndex": 3, // only included if the card is on the spaceline
             "stackedOnCardId": 4, // only included if the card is stacked on another
-            "cardsSeededUnderneath": [6,7], // list of cardIds for cards seeded underneath a mission
-            "completed": false // only included for missions
         },
         // etc.
     ]

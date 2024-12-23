@@ -1,12 +1,13 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
+import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
 
@@ -98,6 +99,17 @@ public class Filters {
         return result;
     }
 
+    public static Collection<PhysicalCard> filter(DefaultGame game, Filterable... filters) {
+        Filter filter = Filters.and(filters);
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : game.getGameState().getAllCardsInGame()) {
+            if (filter.accepts(game, card))
+                result.add(card);
+        }
+        return result;
+    }
+
+
     public static Collection<PhysicalCard> filter(Iterable<? extends PhysicalCard> cards, DefaultGame game, Filterable... filters) {
         Filter filter = Filters.and(filters);
         List<PhysicalCard> result = new LinkedList<>();
@@ -144,7 +156,7 @@ public class Filters {
 
 
     private static Filter species(final Species species) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getSpecies() == species;
+        return (game, physicalCard) -> physicalCard.getBlueprint().isSpecies(species);
     }
 
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);
@@ -190,7 +202,7 @@ public class Filters {
                     physicalCard.getTitle().equals("Deep Space 9");
     public static final Filter equipment = Filters.or(CardType.EQUIPMENT);
     public static final Filter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
-    public static Filter atLocation(final ST1ELocation location) {
+    public static Filter atLocation(final MissionLocation location) {
         return (game, physicalCard) -> physicalCard.getLocation() == location;
     }
 
@@ -208,6 +220,26 @@ public class Filters {
 
     public static Filter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
+    }
+
+    public static Filter yourHand(Player player) {
+        return (game, physicalCard) -> game.getGameState().getHand(player.getPlayerId()).contains(physicalCard);
+    }
+
+    public static Filter bottomCardsOfDiscard(Player player, int cardCount, Filterable... filterables) {
+        return (game, physicalCard) -> {
+            List<PhysicalCard> discardCards = player.getGame().getGameState().getDiscard(player.getPlayerId());
+            int cardsIdentified = 0;
+            for (int i = discardCards.size() - 1; i >= 0; i--) {
+                if (and(filterables).accepts(game, discardCards.get(i)) && cardsIdentified < cardCount) {
+                    if (physicalCard == discardCards.get(i)) {
+                        return true;
+                    }
+                    cardsIdentified++;
+                }
+            }
+            return false;
+        };
     }
 
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed(game);
@@ -250,6 +282,10 @@ public class Filters {
                 return noun.hasCharacteristic(characteristic);
             else return false;
         };
+    }
+
+    public static Filter yourOtherCards(PhysicalCard contextCard, Filterable... filterables) {
+        return and(your(contextCard.getController()), and(filterables));
     }
 
 
@@ -519,6 +555,32 @@ public class Filters {
         return and(your(player), presentWith(card));
     }
 
+    public static Filterable yourCardsPresentWith(PhysicalCard contextCard, PhysicalCard presenceCard) {
+        Player you = contextCard.getController();
+        return and(your(you), presentWith(presenceCard));
+    }
+
+    public static Filterable yourCardsPresentWithThisCard(PhysicalCard thisCard) {
+        return and(your(thisCard.getController()), presentWith(thisCard));
+    }
+
+    public static Filterable yourCardsPresentWith(YouPlayerResolver you, PhysicalCard card) {
+        return yourCardsPresentWith(you.getPlayer(), card);
+    }
+
+    public static Filter costAtLeast(int num) {
+        return (game, physicalCard) -> physicalCard.getCost() >= num;
+    }
+
+    public static Filter missionAffiliationIcon(Affiliation affiliation) {
+        return (game, physicalCard) -> physicalCard instanceof MissionCard missionCard &&
+                missionCard.hasAffiliationIconForOwner(affiliation);
+    }
+
+    public static Filter missionPointValueAtLeast(int pointValue) {
+        return (game, physicalCard) -> physicalCard instanceof MissionCard missionCard &&
+                missionCard.getPoints() >= pointValue;
+    }
 
 
     private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {

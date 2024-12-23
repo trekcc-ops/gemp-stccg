@@ -1,36 +1,38 @@
-// Set 113: Starter Deck II
-
 {
-    113_003: {
-        title: Botanical Research
-        type: mission
-        uniqueness: universal
-        mission-type: planet
-        location: Unexplored planet
-        lore: Gather plant life for medical research from planet with highly ionized atmosphere.
-        gametext: Atmospheric Ionization may seed here.
-        mission-requirements: SCIENCE + MEDICAL + CUNNING>35
-        affiliation-icons: federation,klingon,dominion
-        point-box: 30
-        span: 2
-        image-url: https://www.trekcc.org/1e/cardimages/tngsup/15V.jpg
-        rarity: P
-    }
-    113_006: {
-        title: Search for Weapons
-        type: mission
-        uniqueness: universal
-        mission-type: planet
-        region: Demilitarized Zone
-        location: Border planet
-        lore: Search planet for illegal Maquis arms cache.
-        gametext: May seed hand weapons under here.
-        mission-requirements: OFFICER + Navigation + Treachery
-        affiliation-icons: federation,klingon,cardassian,bajoran,ferengi
-        point-box: 30
-        span: 3
-        image-url: https://www.trekcc.org/1e/cardimages/tngsup/17V.jpg
-        rarity: P
-    }
-
+    setId: "113"
+    setName: Starter Deck II
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 113_003
+            title: Botanical Research
+            type: mission
+            uniqueness: universal
+            mission-type: planet
+            location: Unexplored planet
+            lore: Gather plant life for medical research from planet with highly ionized atmosphere.
+            mission-requirements: SCIENCE + MEDICAL + CUNNING>35
+            affiliation-icons: federation,klingon,dominion
+            point-box: 30
+            span: 2
+            image-url: https://www.trekcc.org/1e/cardimages/tngsup/15V.jpg
+            rarity: P
+        }
+        {
+            blueprintId: 113_006
+            title: Search for Weapons
+            type: mission
+            uniqueness: universal
+            mission-type: planet
+            region: Demilitarized Zone
+            location: Border planet
+            lore: Search planet for illegal Maquis arms cache.
+            mission-requirements: OFFICER + Navigation + Treachery
+            affiliation-icons: federation,klingon,cardassian,bajoran,ferengi
+            point-box: 30
+            span: 3
+            image-url: https://www.trekcc.org/1e/cardimages/tngsup/17V.jpg
+            rarity: P
+        }
+    ]
 }

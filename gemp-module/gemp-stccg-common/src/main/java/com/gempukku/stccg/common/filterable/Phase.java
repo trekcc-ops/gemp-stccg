@@ -12,6 +12,7 @@ public enum Phase {
     SEED_FACILITY("Facility seed phase"),
     CARD_PLAY("Card play"),
     EXECUTE_ORDERS("Execute orders"),
+    END_OF_TURN("End of turn"),
     // Tribbles
     TRIBBLES_TURN("Tribbles turn"),
 

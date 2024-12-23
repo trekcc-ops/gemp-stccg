@@ -1,49 +1,71 @@
-// Set 127: All Good Things
-
 {
-    127_026: {
-        title: "K'Temoc"
-        type: personnel
-        affiliation: klingon
-        property-logo: tng-logo
-        classification: OFFICER
-        icons: command
-        lore: "Captain of the sleeper ship <i>I.K.S. T'Ong</i>, on a crucial mission ordered by the High Command in the late 23rd century. Awoke 75 years later in a much-changed galaxy."
-        skill-box: "[*] Astrophysics [*] Transporter Skill [*] Geology [DL] Engage Cloak"
-        integrity: 6
-        cunning: 7
-        strength: 8
-        image-url: https://www.trekcc.org/1e/cardimages/errata/KTemoc.jpg
-        rarity: P
-    }
-    127_031: {
-        title: Sunad
-        type: personnel
-        affiliation: non-aligned
-        property-logo: tng-logo
-        classification: OFFICER
-        icons: command
-        lore: Zalkonian captain. Sought to capture criminals undergoing a dangerous mutation before they could further disrupt society.
-        skill-box: "[*] SECURITY [*] Leadership [*] Physics [*] Law"
-        integrity: 5
-        cunning: 8
-        strength: 6
-        image-url: https://www.trekcc.org/1e/cardimages/errata/Sunad.jpg
-        rarity: P
-    }
-    127_035: {
-        title: U.S.S. Drake
-        type: ship
-        affiliation: federation
-        property-logo: tng-logo
-        ship-class: WAMBUNDU CLASS
-        lore: Starfleet vessel, registry NCC-20381. In 2364, was assigned a routine mission of exploration in and around the Lorenze Cluster under the command of Paul Rice.
-        staffing: command,staff
-        gametext: Holodeck, Tractor Beam
-        range: 7
-        weapons: 8
-        shields: 7
-        image-url: https://www.trekcc.org/1e/cardimages/tngsup/38V.jpg
-        rarity: P
-    }
+    setId: "127"
+    setName: All Good Things
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 127_023
+            title: Robert DeSoto
+            java-blueprint: true
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Captain of the <i>U.S.S. Hood</i> and former commanding officer of William T. Riker. Years ago, he and Jean-Luc Picard served together as lieutenants on the same ship."
+            integrity: 8
+            cunning: 7
+            strength: 5
+            image-url: https://www.trekcc.org/1e/cardimages/tngsup/20V.jpg
+            rarity: P
+        }
+        {
+            blueprintId: 127_026
+            title: "K'Temoc"
+            type: personnel
+            affiliation: klingon
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Captain of the sleeper ship <i>I.K.S. T'Ong</i>, on a crucial mission ordered by the High Command in the late 23rd century. Awoke 75 years later in a much-changed galaxy."
+            skill-box: "[*] Astrophysics [*] Transporter Skill [*] Geology [DL] Engage Cloak"
+            integrity: 6
+            cunning: 7
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/errata/KTemoc.jpg
+            rarity: P
+        }
+        {
+            blueprintId: 127_031
+            title: Sunad
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Zalkonian captain. Sought to capture criminals undergoing a dangerous mutation before they could further disrupt society.
+            skill-box: "[*] SECURITY [*] Leadership [*] Physics [*] Law"
+            integrity: 5
+            cunning: 8
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/errata/Sunad.jpg
+            rarity: P
+        }
+        {
+            blueprintId: 127_035
+            title: U.S.S. Drake
+            type: ship
+            affiliation: federation
+            property-logo: tng-logo
+            ship-class: WAMBUNDU CLASS
+            lore: Starfleet vessel, registry NCC-20381. In 2364, was assigned a routine mission of exploration in and around the Lorenze Cluster under the command of Paul Rice.
+            staffing: command,staff
+            gametext: Holodeck, Tractor Beam
+            range: 7
+            weapons: 8
+            shields: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tngsup/38V.jpg
+            rarity: P
+        }
+    ]
 }

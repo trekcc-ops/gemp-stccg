@@ -1,8 +1,5 @@
 package com.gempukku.stccg.processes.st1e;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
@@ -64,19 +61,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        Set<String> players = _game.getPlayerIds();
         _game.takeSnapshot("Start of game");
-        for (String player : players) {
-            Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
-            for (PhysicalCard seedCard : _game.getGameState().getSeedDeck(player)) {
-                if (seedCard.getCardType() == CardType.DOORWAY)
-                    doorwaySeeds.add(seedCard);
-            }
-            for (PhysicalCard card : doorwaySeeds) {
-                _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
-                _game.getGameState().addCardToZone(card, Zone.HAND);
-            }
-        }
         return new DoorwaySeedPhaseProcess(_game);
     }
 }

@@ -1,6 +1,310 @@
 import CardFilter from "../gemp-022/cardFilter.js";
 
-test('setType can set the type', () => {
+beforeEach(() => {
+    // clear any stored fetch mock statistics
+    fetchMock.resetMocks();
+});
+
+test('setCollectionType sets the collectionType', async () => {
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.collectionType).toBe("default");
+    cf.setCollectionType("permanent");
+    expect(cf.collectionType).toBe("permanent");
+});
+
+test('setCollectionType resets the start point', async () => {
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.start).toBe(0);
+    cf.start = 18;
+    expect(cf.start).toBe(18);
+    cf.setCollectionType("permanent");
+    expect(cf.start).toBe(0);
+});
+
+test('setFilter sets the filter', async () => {
+    // I don't know what part of the UI uses this except for the now-dead merchantUI - unneeded?
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.filter).toBe("");
+    cf.setFilter("type:card");
+    expect(cf.filter).toBe("type:card");
+});
+
+test('setFilter resets the start point', async () => {
+    // I don't know what part of the UI uses this except for now-dead merchantUI - unneeded?
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.start).toBe(0);
+    cf.start = 18;
+    expect(cf.start).toBe(18);
+    cf.setFilter("type:card");
+    expect(cf.start).toBe(0);
+});
+
+test('setFormat sets the format', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.format).toBe("ST1E");
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+});
+
+test('setFormat does not reset the start point', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.start).toBe(0);
+    cf.start = 18;
+    expect(cf.start).toBe(18);
+    cf.setFormat("tribbles");
+    expect(cf.start).toBe(18);
+});
+
+test('setFormat hides the Tribble Power selector', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "st1emoderncomplete";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    // 1e to tribbles shows it
+    expect(cf.format).toBe("st1emoderncomplete");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+    expect(!cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // tribbles back to 1e hides it
+    cf.setFormat("st1emoderncomplete");
+    expect(cf.format).toBe("st1emoderncomplete");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // 1e to 2e keeps it hidden
+    cf.setFormat("st2e");
+    expect(cf.format).toBe("st2e");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // 2e to tribbles shows it
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+    expect(!cf.tribblePowerSelect.classList.contains("hidden"));
+
+    // tribbles back to 2e hides it
+    cf.setFormat("st2e");
+    expect(cf.format).toBe("st2e");
+    expect(cf.tribblePowerSelect.classList.contains("hidden"));
+});
+
+test('setFormat changes the TrekCC search URL', async () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            <div id='advanced-filter'>
+				<a id='card-search-url' target='_blank' href='https://www.trekcc.org/'>
+					More filters available in the TrekCC.org card search engine.
+				</a>
+			</div>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "st1emoderncomplete";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    
+    // default case is 1e
+    let anchor_under_test = document.getElementById("card-search-url");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+
+    // 1e to tribbles changes to default case
+    cf.setFormat("tribbles");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/");
+
+    // tribbles back to 1e
+    cf.setFormat("st1emoderncomplete");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+
+    // 1e to 2e changes to 2e link
+    cf.setFormat("st2e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/2e/?mode=search");
+
+    // 2e back to tribbles
+    cf.setFormat("tribbles");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/");
+
+    // tribbles back to 2e hides it
+    cf.setFormat("st2e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/2e/?mode=search");
+
+    // 2e to 1e debug
+    cf.setFormat("debug1e");
+    expect(anchor_under_test.getAttribute("href") === "https://www.trekcc.org/1e/?mode=search");
+});
+
+test('setType can set the type', async () => {
     document.body.innerHTML = 
         '<select id="type" class="cardFilterSelect">' +
             '<option value="200">All physical card types</option>' +
@@ -12,8 +316,14 @@ test('setType can set the type', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     let selectUnderTest = $('#type');
 
@@ -22,7 +332,85 @@ test('setType can set the type', () => {
     expect(selectUnderTest.val()).toBe('101');
 });
 
-test('calculateNormalFilter none checked', () => {
+test('updateSetOptions can reset the full list', async () => {
+    document.body.innerHTML = '<select id="setSelect">' +
+    '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>' +
+    '</select>';
+
+    let beforeclear = '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>';
+    
+    const mockCollection = jest.fn(() => {return});
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization and every updateSetOptions requires a server call, mock them with data.
+    const getSets_retval = JSON.stringify(
+        [{"code": "1234", "name": "butts"}, {"code": "3456", "name": "in seats"}]
+    );
+    fetchMock.mockResponse(getSets_retval);
+
+    var selectUnderTest = $('#setSelect');
+    expect(selectUnderTest.html()).toBe(beforeclear);
+    expect(selectUnderTest.val()).toBe('101');
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf_setsel = await cf.updateSetOptions();
+
+    expect(fetch.mock.calls.length).toEqual(2) // Fetch was called twice, once in instantiation, once in updateSetOptions
+
+    let afterClear = '<option value="1234">butts</option>' +
+    '<option value="3456">in seats</option>'
+
+    expect(selectUnderTest.html()).toBe(afterClear);
+    expect(selectUnderTest.val()).toBe('1234'); // first obj in list
+});
+
+test('updateSetOptions adds a line for disabled options', async () => {
+    document.body.innerHTML = '<select id="setSelect">' +
+    '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>' +
+    '</select>';
+
+    let beforeclear = '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>';
+    
+    const mockCollection = jest.fn(() => {return});
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization and every updateSetOptions requires a server call, mock them with data.
+    const getSets_retval = JSON.stringify(
+        [{"code": "1234", "name": "butts"}, {"code": "disabled", "name": "in seats"}]
+    );
+    fetchMock.mockResponse(getSets_retval);
+
+    var selectUnderTest = $('#setSelect');
+    expect(selectUnderTest.html()).toBe(beforeclear);
+    expect(selectUnderTest.val()).toBe('101');
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf_setsel = await cf.updateSetOptions();
+
+    expect(fetch.mock.calls.length).toEqual(2) // Fetch was called twice, once in instantiation, once in updateSetOptions
+
+    let afterClear = '<option value="1234">butts</option>' +
+    '<option disabled="">----------</option>'
+
+    expect(selectUnderTest.html()).toBe(afterClear);
+    expect(selectUnderTest.val()).toBe('1234'); // first obj in list
+});
+
+test('calculateNormalFilter none checked', async () => {
     document.body.innerHTML = 
     '<select id="type" class="cardFilterSelect">' +
         '<option value="200">All physical card types</option>' +
@@ -53,16 +441,22 @@ test('calculateNormalFilter none checked', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
-    
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
-    let expectedResult = "|cardType:undefined|keyword:undefined|type:200|phase:undefined";
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    let expectedResult = "|cardType:undefined|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);
 });
 
-test('calculateNormalFilter Federation checked', () => {
+test('calculateNormalFilter Federation checked', async () => {
     document.body.innerHTML = 
     '<select id="type" class="cardFilterSelect">' +
         '<option value="200">All physical card types</option>' +
@@ -93,8 +487,14 @@ test('calculateNormalFilter Federation checked', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
     
     // set up a watch on the button, verify it is unchecked
     let fedInput = $("#FEDERATION");
@@ -106,13 +506,13 @@ test('calculateNormalFilter Federation checked', () => {
     expect(fedLabel.prop("classList").contains("ui-checkboxradio-checked")).toBe(true);
     
     // run the full filter and verify it returns what we want
-    let expectedResult = "|cardType:undefined|affiliation:FEDERATION|keyword:undefined|type:200|phase:undefined";
+    let expectedResult = "|cardType:undefined|affiliation:FEDERATION|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);
 });
 
-test('calculateNormalFilter Federation + Kazon checked', () => {
+test('calculateNormalFilter Federation + Kazon checked', async () => {
     document.body.innerHTML = 
     '<select id="type" class="cardFilterSelect">' +
         '<option value="200">All physical card types</option>' +
@@ -143,8 +543,14 @@ test('calculateNormalFilter Federation + Kazon checked', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
     
     // set up a watch on the button, verify it is unchecked
     let fedInput = $("#FEDERATION");
@@ -165,7 +571,7 @@ test('calculateNormalFilter Federation + Kazon checked', () => {
     expect(kazLabel.prop("classList").contains("ui-checkboxradio-checked")).toBe(true);
     
     // run the full filter and verify it returns what we want
-    let expectedResult = "|cardType:undefined|affiliation:FEDERATION,KAZON|keyword:undefined|type:200|phase:undefined";
+    let expectedResult = "|cardType:undefined|affiliation:FEDERATION,KAZON|type:200";
     let actualResult = cf.calculateNormalFilter();
 
     expect(actualResult).toBe(expectedResult);

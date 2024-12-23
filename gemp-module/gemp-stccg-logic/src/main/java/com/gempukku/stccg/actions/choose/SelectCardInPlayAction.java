@@ -9,6 +9,8 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
+import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -21,10 +23,11 @@ import java.util.Collections;
  * An effect that causes the specified player to choose a card on the table.
  */
 public class SelectCardInPlayAction extends ActionyAction implements SelectCardsAction {
-    private final Collection<? extends PhysicalCard> _selectableCards;
+    private Collection<? extends PhysicalCard> _selectableCards;
     private PhysicalCard _selectedCard;
     private final PhysicalCard _actionSource;
     private final AwaitingDecisionType _decisionType;
+    private Filter _cardFilter;
 
     public SelectCardInPlayAction(Action parentAction, Player selectingPlayer, String choiceText,
                                   Collection<? extends PhysicalCard> cards) {
@@ -32,6 +35,14 @@ public class SelectCardInPlayAction extends ActionyAction implements SelectCards
         _selectableCards = cards;
         _actionSource = parentAction.getActionSource();
         _decisionType = AwaitingDecisionType.CARD_SELECTION;
+    }
+
+    public SelectCardInPlayAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
+                                  Filter cardFilter, AwaitingDecisionType decisionType) {
+        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        _cardFilter = cardFilter;
+        _actionSource = cardSource;
+        _decisionType = decisionType;
     }
 
     public SelectCardInPlayAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
@@ -62,11 +73,23 @@ public class SelectCardInPlayAction extends ActionyAction implements SelectCards
 
 
     public boolean requirementsAreMet(DefaultGame game) {
-        return !_selectableCards.isEmpty();
+        if (_selectableCards == null) {
+            if (_cardFilter != null) {
+                return !Filters.filter(game, _cardFilter).isEmpty();
+            } else {
+                game.sendMessage("ERROR: Unable to identify eligible cards for SelectCardsInPlayAction");
+                return false;
+            }
+        } else {
+            return !_selectableCards.isEmpty();
+        }
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        if (_selectableCards == null) {
+            _selectableCards = Filters.filter(cardGame, _cardFilter);
+        }
         if (_selectableCards.size() == 1) {
             _selectedCard = Iterables.getOnlyElement(_selectableCards);
             _wasCarriedOut = true;

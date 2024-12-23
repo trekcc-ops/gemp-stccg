@@ -12,7 +12,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.Snapshotable;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 
 import java.util.Collection;
@@ -51,15 +51,16 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
     String getCardLink();
-    ST1ELocation getLocation();
-    void setLocation(ST1ELocation location);
+    MissionLocation getLocation();
+    void setLocation(MissionLocation location);
     String getFullName();
     Action getPlayCardAction();
     Action getPlayCardAction(boolean forFree);
 
     boolean hasTextRemoved(DefaultGame game);
     CardType getCardType();
-    List<? extends Action> getPhaseActionsInPlay(Player player);
+    List<? extends Action> getRulesActionsWhileInPlay(Player player);
+    List<? extends Action> getGameTextActionsWhileInPlay(Player player);
 
     List<PhysicalCard> getStackedCards(DefaultGame game);
 
@@ -86,14 +87,12 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     boolean checkTurnLimit(DefaultGame game, int max);
     boolean isInPlay();
     boolean hasCharacteristic(Characteristic characteristic);
-    void addCardToSeededUnder(PhysicalCard card);
-    Collection<PhysicalCard> getCardsSeededUnderneath();
-    Collection<PhysicalCard> getCardsPreSeeded(Player player);
-    void removePreSeedCard(PhysicalCard card, Player player);
-    void seedPreSeeds();
-    void addCardToPreSeeds(PhysicalCard card, Player player);
 
-    boolean isMisSeed(DefaultGame cardGame, MissionCard mission);
+    boolean isMisSeed(DefaultGame cardGame, MissionLocation mission);
 
-    List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard mission, EncounterSeedCardAction action) throws InvalidGameLogicException;
+    List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException;
+
+    Player getController();
+
+    int getCost();
 }

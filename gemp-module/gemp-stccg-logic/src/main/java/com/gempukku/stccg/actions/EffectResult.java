@@ -27,7 +27,7 @@ public class EffectResult {
         START_OF_MISSION_ATTEMPT,
         START_OF_PHASE,
         START_OF_TURN,
-        WHEN_MOVE_FROM
+        DRAW_CARD, WHEN_MOVE_FROM
     }
 
     private final Type _type;
@@ -89,7 +89,7 @@ public class EffectResult {
         Map<Player, List<Action>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
             List<Action> playerActions = new LinkedList<>();
-            for (PhysicalCard card : Filters.filterYourActive(player)) {
+            for (PhysicalCard card : Filters.filterActive(game)) {
                 if (!card.hasTextRemoved(game)) {
                     final List<Action> actions = card.getOptionalAfterTriggerActions(player, this);
                     if (actions != null)

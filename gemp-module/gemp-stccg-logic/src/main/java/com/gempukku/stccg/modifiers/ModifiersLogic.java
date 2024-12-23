@@ -3,14 +3,10 @@ package com.gempukku.stccg.modifiers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
-import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -22,6 +18,8 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.Snapshotable;
+import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 
 import java.util.*;
 
@@ -105,7 +103,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                 if (!_skipSet.contains(modifier)) {
                     _skipSet.add(modifier);
                     Condition condition = modifier.getCondition();
-                    if (condition == null || condition.isFulfilled())
+                    if (condition == null || condition.isFulfilled(_game))
                         if (shouldAdd(modifierEffect, modifier)) {
                             if ((card == null || modifier.affectsCard(card)) &&
                                     (foundNoCumulativeConflict(liveModifiers, modifier)))
@@ -135,7 +133,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     if (!_skipSet.contains(modifier)) {
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
-                        if (condition == null || condition.isFulfilled())
+                        if (condition == null || condition.isFulfilled(_game))
                             if (shouldAdd(ModifierEffect.GAIN_ICON_MODIFIER, modifier)) {
                                 if ((card == null || modifier.affectsCard(card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
@@ -157,11 +155,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         else {
             LinkedList<Modifier> liveModifiers = new LinkedList<>();
             for (Modifier modifier : modifiers) {
-                if (skill == null || ((SkillAffectingModifier) modifier).getSkill() == skill) {
+                if (skill == null || ((SkillAffectingModifier) modifier).getSkills().contains(skill)) {
                     if (!_skipSet.contains(modifier)) {
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
-                        if (condition == null || condition.isFulfilled())
+                        if (condition == null || condition.isFulfilled(_game))
                             if (shouldAdd(ModifierEffect.GAIN_SKILL_MODIFIER, modifier)) {
                                 if ((card == null || modifier.affectsCard(card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
@@ -195,7 +193,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     public Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName) {
         int level = 0;
-        for (Skill skill : physicalCard.getBlueprint().getSkills()) {
+        for (Skill skill : physicalCard.getBlueprint().getSkills(_game, physicalCard)) {
             if (skill instanceof RegularSkill regularSkill) {
                 if (regularSkill.getRegularSkill() == skillName) {
                     level += regularSkill.getLevel();
@@ -207,7 +205,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
         for (Modifier modifier : getSkillModifiersAffectingCard(
                 skillName, physicalCard)) {
-            if (modifier instanceof GainSkillModifier skillModifier && skillModifier.getSkill() == skillName)
+            if (modifier instanceof GainSkillModifier skillModifier && skillModifier.getSkills().contains(skillName))
                 level += 1;
         }
         return level;
@@ -257,7 +255,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         _turnLimitActionSourceCounters.clear();
     }
 
-    public boolean canPlayerSolveMission(String playerId, MissionCard mission) {
+    public boolean canPlayerSolveMission(String playerId, MissionLocation mission) {
         for (Modifier modifier : getModifiers(ModifierEffect.SOLVE_MISSION_MODIFIER)) {
             if (modifier instanceof PlayerCannotSolveMissionModifier missionModifier)
                 if (missionModifier.cannotSolveMission(mission, playerId))
@@ -265,6 +263,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
         return true;
     }
+
 
     public void signalEndOfRound() {
         for (List<Modifier> modifiers: _untilEndOfPlayersNextTurnThisRoundModifiers.values())
@@ -291,7 +290,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         for (List<Modifier> modifiers : _modifiers.values()) {
             for (Modifier modifier : modifiers) {
                 Condition condition = modifier.getCondition();
-                if (condition == null || condition.isFulfilled())
+                if (condition == null || condition.isFulfilled(_game))
                     if (affectsCardWithSkipSet(card, modifier) && (foundNoCumulativeConflict(result, modifier)))
                         result.add(modifier);
             }
@@ -312,21 +311,33 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public int getAttribute(PhysicalCard card, CardAttribute attribute) {
-        int result = card.getBlueprint().getAttribute(attribute);
-        ModifierEffect effectType = null;
+        int result = switch(attribute) {
+            case INTEGRITY -> card.getBlueprint().getIntegrity();
+            case CUNNING -> card.getBlueprint().getCunning();
+            case STRENGTH -> card.getBlueprint().getStrength();
+            case RANGE -> card.getBlueprint().getRange();
+            case WEAPONS -> card.getBlueprint().getWeapons();
+            case SHIELDS -> card.getBlueprint().getShields();
+        };
+
+        ModifierEffect effectType;
         if (attribute == CardAttribute.STRENGTH)
             effectType = ModifierEffect.STRENGTH_MODIFIER;
         else if (attribute == CardAttribute.CUNNING)
             effectType = ModifierEffect.CUNNING_MODIFIER;
         else if (attribute == CardAttribute.INTEGRITY)
             effectType = ModifierEffect.INTEGRITY_MODIFIER;
+        else
+            effectType = ModifierEffect.SHIP_ATTRIBUTE_MODIFIER;
         Collection<Modifier> attributeModifiers = new LinkedList<>();
-        if (effectType != null)
-            attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
+        attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
         // TODO - Need to separate ships vs. personnel here
         attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
         for (Modifier modifier : attributeModifiers) {
-            result += modifier.getAttributeModifier(card);
+            if (modifier instanceof AttributeModifier attributeModifier &&
+                    attributeModifier.getAttributesModified().contains(attribute)) {
+                result += modifier.getAttributeModifier(card);
+            }
         }
         return Math.max(0, result);
     }
@@ -337,9 +348,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public boolean canPlayAction(String performingPlayer, Action action) {
+    public boolean canPerformAction(String performingPlayer, Action action) {
         for (Modifier modifier : getModifiers(ModifierEffect.ACTION_MODIFIER))
-            if (!modifier.canPlayAction(_game, performingPlayer, action))
+            if (!modifier.canPerformAction(_game, performingPlayer, action))
                 return false;
         return true;
     }
@@ -387,7 +398,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
-                if (condition == null || condition.isFulfilled())
+                if (condition == null || condition.isFulfilled(_game))
                     playCost.appendExtraCosts(_game, action, target);
             }
 
@@ -514,18 +525,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     @Override
     public void addModifierHooks(PhysicalCard card) {
         CardBlueprint blueprint = card.getBlueprint();
-        List<ModifierSource> inPlayModifiers = blueprint.getInPlayModifiers();
-
-        Collection<Modifier> modifiers = new LinkedList<>();
-
-        for (ModifierSource modifierSource : inPlayModifiers) {
-            ActionContext context =
-                    new DefaultActionContext(card.getOwnerName(), _game, card, null, null);
-            modifiers.add(modifierSource.getModifier(context));
-        }
-
-        modifiers.addAll(blueprint.getWhileInPlayModifiersNew(card.getOwner(), card));
-        _modifierHooks.computeIfAbsent(card, k -> new LinkedList<>());
+        _modifierHooks.computeIfAbsent(card, cardModifiers -> new LinkedList<>());
+        Iterable<Modifier> modifiers =
+                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
     }

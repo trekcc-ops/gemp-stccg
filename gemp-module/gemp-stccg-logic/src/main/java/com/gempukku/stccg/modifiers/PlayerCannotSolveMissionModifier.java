@@ -1,19 +1,21 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 public class PlayerCannotSolveMissionModifier extends AbstractModifier {
     private final String _playerId;
-    private final MissionCard _mission;
+    private final MissionLocation _missionLocation;
 
-    public PlayerCannotSolveMissionModifier(MissionCard mission, String playerId) {
-        super(mission.getGame(), ModifierEffect.SOLVE_MISSION_MODIFIER);
+    public PlayerCannotSolveMissionModifier(DefaultGame game, MissionLocation missionLocation, String playerId) {
+        super(game, ModifierEffect.SOLVE_MISSION_MODIFIER);
         _playerId = playerId;
-        _mission = mission;
+        _missionLocation = missionLocation;
     }
 
-    public boolean cannotSolveMission(MissionCard mission, String playerId) {
-        return (_playerId.equals(playerId) && _mission == mission);
+    public boolean cannotSolveMission(MissionLocation mission, String playerId) {
+        return (_playerId.equals(playerId) && _missionLocation == mission);
     }
+
 
 }

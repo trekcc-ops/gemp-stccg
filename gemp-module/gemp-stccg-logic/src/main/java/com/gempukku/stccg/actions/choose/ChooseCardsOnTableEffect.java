@@ -33,7 +33,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         this(action, player, choiceText, 1,1,cards,Filters.any);
     }
 
-
     public ChooseCardsOnTableEffect(Action action, Player player, String choiceText, int minimum, int maximum,
                                     Collection<? extends PhysicalCard> cards) {
         this(action, player, choiceText, minimum, maximum, cards, Filters.any);

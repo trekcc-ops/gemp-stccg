@@ -40,6 +40,8 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                             }
                         }
                     });
+        } else {
+            _consecutivePasses++;
         }
     }
 
@@ -57,7 +59,10 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                     _game.sendMessage("\n" + message);
                     yield new ST1EPlayPhaseSegmentProcess(_game);
                 }
-                case EXECUTE_ORDERS -> new ST1EEndOfTurnProcess(_game);
+                case EXECUTE_ORDERS -> {
+                    _game.getGameState().setCurrentPhase(Phase.END_OF_TURN);
+                    yield new ST1EEndOfTurnProcess(_game);
+                }
                 case null, default -> throw new RuntimeException(
                         "End of play phase segment process reached without being in a valid play phase segment");
             };

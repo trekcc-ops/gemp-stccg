@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
-import com.gempukku.stccg.actions.playcard.ChooseAndPlayCardFromZoneEffect;
+import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.turn.OnceEachTurnEffect;
 import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
@@ -36,7 +36,8 @@ public class Blueprint155_021 extends CardBlueprint {
         return Filters.filterYourActive(card.getOwner(), Filters.yourMatchingOutposts(card.getOwner(), card));
     }
 
-    public List<? extends ActivateCardAction> getInPlayActionsNew(Player player, PhysicalCard card) {
+    @Override
+    public List<? extends ActivateCardAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard card) {
         DefaultGame game = player.getGame();
         Phase currentPhase = game.getCurrentPhase();
         List<ActivateCardAction> actions = new LinkedList<>();
@@ -51,8 +52,8 @@ public class Blueprint155_021 extends CardBlueprint {
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON));
             action1.setCardActionPrefix("1");
             action1.appendUsage(new OnceEachTurnEffect(game, action1));
-            action1.appendEffect(
-                    new ChooseAndPlayCardFromZoneEffect(Zone.HAND, card.getOwner(), playableCardFilter) {
+            action1.appendAction(
+                    new DownloadCardFromZoneAction(Zone.HAND, card.getOwner(), card, playableCardFilter) {
                         @Override
                         protected Collection<PhysicalCard> getPlayableCards() {
                             Collection<PhysicalCard> playableCards = Filters.filter(
@@ -71,9 +72,7 @@ public class Blueprint155_021 extends CardBlueprint {
                             getPlayCardAction().appendEffect(
                                     new UnrespondableEffect(card.getGame()) {
                                         @Override
-                                        protected void doPlayEffect() {
-                                            afterCardPlayed(selectedCard);
-                                        }
+                                        protected void doPlayEffect() {}
                                     });
                             selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
                         }

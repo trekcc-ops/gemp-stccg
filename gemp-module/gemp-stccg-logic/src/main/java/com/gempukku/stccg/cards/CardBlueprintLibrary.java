@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintDeserializer;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -12,15 +13,15 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCardDeserializer;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.game.ICallback;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -48,8 +49,7 @@ public class CardBlueprintLibrary {
         collectionReady.acquireUninterruptibly();
         _blueprintLoadErrorEncountered = false;
 
-        loadSets();
-        loadCards(_cardPath);
+        loadSetsWithCards(_cardPath);
         loadMappings();
 
         LOGGER.info("Unlocking blueprint library in constructor");
@@ -83,21 +83,21 @@ public class CardBlueprintLibrary {
     }
 
     public void reloadAllDefinitions() {
-        reloadSets();
-        reloadCards();
+        reloadSetsWithCards();
         reloadMappings();
         _refreshCallbacks.forEach(ICallback::Invoke);
     }
 
-    private void reloadSets() {
+    private void reloadSetsWithCards() {
         try {
             collectionReady.acquire();
-            loadSets();
+            loadSetsWithCards(_cardPath);
             collectionReady.release();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public void reloadMappings() {
         try {
@@ -106,42 +106,6 @@ public class CardBlueprintLibrary {
             collectionReady.release();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void reloadCards() {
-        _blueprintLoadErrorEncountered = false;
-        try {
-            collectionReady.acquire();
-            loadCards(_cardPath);
-            collectionReady.release();
-        } catch (InterruptedException e) {
-            _blueprintLoadErrorEncountered = true;
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void loadSets() {
-        try {
-            final InputStreamReader reader = new InputStreamReader(
-                    new FileInputStream(AppConfig.getSetDefinitionsPath()), StandardCharsets.UTF_8);
-            try {
-                for (JsonNode setDefinitionObj : _objectMapper.readTree(JsonUtils.readJson(reader))) {
-
-                    String setId = setDefinitionObj.get("setId").textValue();
-                    String setName = setDefinitionObj.get("setName").textValue();
-
-                    Set<String> flags = new HashSet<>();
-                    determineNeedsLoadingFlag(setDefinitionObj, flags);
-
-                    SetDefinition setDefinition = new SetDefinition(setId, setName, flags);
-                    _allSets.put(setId, setDefinition);
-                }
-            } finally {
-                IOUtils.closeQuietly(reader);
-            }
-        } catch (IOException exp) {
-            throw new RuntimeException("Unable to read card rarities: " + exp);
         }
     }
 
@@ -173,31 +137,44 @@ public class CardBlueprintLibrary {
         _alternateBlueprintMapping.computeIfAbsent(blueprint2, k -> new HashSet<>()).add(blueprint1);
     }
 
-    private void loadCards(File path) {
+    private void loadSetsWithCards(File path) {
         if (path.isFile()) {
-            loadCardsFromFile(path);
+            loadSetWithCardsFromFile(path);
         }
         else if (path.isDirectory()) {
             for (File file : Objects.requireNonNull(path.listFiles())) {
-                loadCards(file);
+                loadSetsWithCards(file);
             }
         }
     }
 
-    private void loadCardsFromFile(File file) {
+    private void loadSetWithCardsFromFile(File file) {
         if (JsonUtils.isNotAValidHJSONFile(file))
             return;
         try {
             JsonNode jsonNode = JsonUtils.readJsonFromFile(file);
-            List<String> blueprintIds = new ArrayList<>();
-            jsonNode.fieldNames().forEachRemaining(blueprintIds::add);
 
-            for (String blueprintId : blueprintIds) {
+            // Add set
+            String setId = jsonNode.get("setId").textValue();
+            String setName = jsonNode.get("setName").textValue();
+            GameType gameType = BlueprintUtils.getEnum(GameType.class, jsonNode, "gameType");
+            Set<String> flags = new HashSet<>();
+            determineNeedsLoadingFlag(jsonNode, flags);
+            SetDefinition setDefinition = new SetDefinition(setId, setName, gameType, flags);
+            _allSets.put(setId, setDefinition);
+
+            // Add cards
+            JsonNode setCardsNode = jsonNode.get("cards");
+
+            for (JsonNode cardNode : setCardsNode) {
+                String blueprintId = cardNode.get("blueprintId").textValue();
+                if (blueprintId == null || !blueprintId.startsWith(setId + "_"))
+                    throw new InvalidCardDefinitionException(
+                            "Card blueprintId " + blueprintId + " invalid for set " + setId);
                 try {
-                    final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, jsonNode);
+                    final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, gameType, cardNode);
                     _blueprints.put(blueprintId, cardBlueprint);
-                    String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
-                    _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
+                    setDefinition.addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (Exception exp) {
                     _blueprintLoadErrorEncountered = true;
                     LOGGER.error("Unable to load card {}", blueprintId, exp);
@@ -215,9 +192,37 @@ public class CardBlueprintLibrary {
         LOGGER.debug("Loaded JSON card file {}", file.getName());
     }
 
-    private CardBlueprint loadCardFromDeserializer(String blueprintId, JsonNode node)
+    private void validateConsistency(CardBlueprint blueprint, GameType gameType) throws InvalidCardDefinitionException {
+        if (blueprint.getTitle() == null)
+            throw new InvalidCardDefinitionException("Card has to have a title");
+        if (blueprint.getCardType() == null)
+            throw new InvalidCardDefinitionException("Card has to have a type");
+        if (blueprint.getUniqueness() == null)
+            throw new InvalidCardDefinitionException("Card has to have a uniqueness");
+        if (blueprint.getRarity() == null)
+            throw new InvalidCardDefinitionException("Card has to have a rarity");
+
+        if (blueprint.getCardType() == CardType.MISSION) {
+            if (blueprint.getPropertyLogo() != null)
+                throw new InvalidCardDefinitionException("Mission card should not have a property logo");
+            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") &&
+                    gameType != GameType.SECOND_EDITION)
+                throw new InvalidCardDefinitionException("Mission card should have a location");
+            if (blueprint.getQuadrant() == null)
+                throw new InvalidCardDefinitionException("Mission card should have a quadrant");
+        } else if (blueprint.getCardType() == CardType.TRIBBLE) {
+            if (blueprint.getTribblePower() == null)
+                throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
+            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(blueprint.getTribbleValue()))
+                throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
+        } else if (blueprint.getPropertyLogo() == null && gameType != GameType.SECOND_EDITION)
+            // Technically tribbles have property logos too, they're just never relevant
+            throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
+    }
+
+
+    private CardBlueprint loadCardFromDeserializer(String blueprintId, GameType gameType, JsonNode cardNode)
             throws JsonProcessingException, InvalidCardDefinitionException {
-        JsonNode cardNode = node.get(blueprintId);
         if (cardNode == null)
             throw new InvalidCardDefinitionException("Could not find node for blueprintId " + blueprintId);
         if (!cardNode.has("blueprintId"))
@@ -225,7 +230,9 @@ public class CardBlueprintLibrary {
         else if (!cardNode.get("blueprintId").textValue().equals(blueprintId))
             throw new InvalidCardDefinitionException("Non-matching card blueprint property 'blueprintId' " +
                     cardNode.get("blueprintId").textValue() + " for blueprint " + blueprintId);
-        return _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
+        CardBlueprint result = _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
+        validateConsistency(result, gameType);
+        return result;
     }
 
     public String getBaseBlueprintId(String blueprintId) {
@@ -304,7 +311,7 @@ public class CardBlueprintLibrary {
         }
     }
 
-    public boolean hasAlternateInSet(String blueprintId, int setNo) {
+    public boolean hasAlternateInSet(String blueprintId, String setId) {
         try {
             collectionReady.acquire();
             var alternatives = _alternateBlueprintMapping.get(blueprintId);
@@ -312,7 +319,7 @@ public class CardBlueprintLibrary {
 
             if (alternatives != null)
                 for (String alternative : alternatives)
-                    if (alternative.startsWith(setNo + "_"))
+                    if (alternative.startsWith(setId + "_"))
                         return true;
 
             return false;
@@ -320,6 +327,7 @@ public class CardBlueprintLibrary {
             throw new RuntimeException("CardBlueprintLibrary.hasAlternateInSet() interrupted: ", exp);
         }
     }
+
 
     public String getCardFullName(String blueprintId) throws CardNotFoundException {
         return getCardBlueprint(blueprintId).getFullName();
@@ -344,7 +352,7 @@ public class CardBlueprintLibrary {
         }
 
         // Throw exception if card not found in blueprints
-        throw new CardNotFoundException(blueprintId1);
+        throw new CardNotFoundException("Unable to find card blueprint for id '" + blueprintId1 + "'");
     }
 
     public String stripBlueprintModifiers(String blueprintId) {

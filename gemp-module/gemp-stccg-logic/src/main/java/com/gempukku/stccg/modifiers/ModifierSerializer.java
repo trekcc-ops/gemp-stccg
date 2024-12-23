@@ -25,7 +25,6 @@ public class ModifierSerializer extends StdSerializer<Modifier> {
         jsonGenerator.writeStringField("text", modifier.getText());
         jsonGenerator.writeStringField("playerId", modifier.getForPlayer());
         jsonGenerator.writeStringField("modifierType", modifier.getModifierEffect().name());
-        // TODO Filter _affectFilter
         // TODO Condition _condition
         // TODO Evaluator _evaluator (currently only in AttributeModifier)
         // TODO Filter _filters (CanPlayCardOutOfSequenceModifier, CantPlayCardsModifier)

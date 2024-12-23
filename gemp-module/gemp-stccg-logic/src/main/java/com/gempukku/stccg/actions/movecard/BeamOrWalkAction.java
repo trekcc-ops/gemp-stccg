@@ -11,6 +11,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.google.common.collect.Iterables;
@@ -69,7 +70,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
 
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
         Action cost = getNextCost();
@@ -95,6 +96,9 @@ public abstract class BeamOrWalkAction extends ActionyAction {
                 }
             }
         }
+
+        if (_destinationOptions.isEmpty())
+            throw new InvalidGameLogicException("Unable to locate a valid destination");
 
         if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
@@ -132,7 +136,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
                 if (_origin instanceof MissionCard)
                     ((PhysicalReportableCard1E) card).leaveAwayTeam();
                 if (_destination instanceof MissionCard mission)
-                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission);
+                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission.getLocation());
             }
             if (!_cardsToMove.isEmpty()) {
                 cardGame.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +

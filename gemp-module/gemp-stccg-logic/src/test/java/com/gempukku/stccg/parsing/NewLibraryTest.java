@@ -225,13 +225,11 @@ public class NewLibraryTest {
     public class Sentence implements GameTextObject {
 
         String text;
+        String parameterizedText;
+        Map<String, String> identifiedParts;
 
         Sentence(String string) {
             text = string;
-            if (string.contains(";")) {
-                List<String> splitString = Arrays.asList(string.split(";"));
-
-            }
         }
         @Override
         public boolean canBeParsed() {
@@ -246,6 +244,15 @@ public class NewLibraryTest {
 
         public String toString() {
             return text;
+        }
+
+        public void identifyPart(String partName, String partText) {
+            if (identifiedParts.get(partName) != null)
+                throw new RuntimeException("Already have " + partName);
+            else {
+                identifiedParts.put(partName, partText);
+
+            }
         }
 
     }

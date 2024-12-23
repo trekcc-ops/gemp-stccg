@@ -1,6 +1,5 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg;
 
-import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -8,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -59,13 +59,13 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation));
+        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocation()));
 
         // Attempt mission
         attemptMission(P1, picard.getAwayTeam(), excavation);
 
         // Confirm that mission was solved and player earned points
-        assertTrue(excavation.isCompleted());
+        assertTrue(excavation.getLocation().isCompleted());
         assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
     }
 
@@ -110,17 +110,17 @@ public class AttemptMissionTest extends AbstractAtTest {
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
+        MissionLocation excavationLocation = excavation.getLocation();
+
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation));
+        assertTrue(picard.getAwayTeam().isOnSurface(excavationLocation));
 
         // Attempt mission without specifying Away Team
-        attemptMission(P1, excavation);
+        attemptMission(P1, excavationLocation);
 
         // Confirm that mission was solved and player earned points
-        assertTrue(excavation.isCompleted());
+        assertTrue(excavationLocation.isCompleted());
         assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
     }
-
-
 }

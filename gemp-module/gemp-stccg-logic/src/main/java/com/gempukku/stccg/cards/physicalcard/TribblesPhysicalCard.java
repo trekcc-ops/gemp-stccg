@@ -7,6 +7,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     @Override
     public TribblesGame getGame() { return _game; }
 
-    public boolean isMisSeed(DefaultGame game, MissionCard mission) {
+    public boolean isMisSeed(DefaultGame game, MissionLocation mission) {
         return false;
     }
 
@@ -51,13 +52,6 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        for (PhysicalCard card : _cardsSeededUnderneath)
-            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
-
-        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
-            for (PhysicalCard card : entry.getValue())
-                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
 
         return newCard;
     }

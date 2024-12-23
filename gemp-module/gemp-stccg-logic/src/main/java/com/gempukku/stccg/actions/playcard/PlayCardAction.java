@@ -57,9 +57,6 @@ public abstract class PlayCardAction extends ActionyAction {
 
         if (!_cardWasRemoved) {
             _cardWasRemoved = true;
-            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
-                    _cardEnteringPlay.getCardLink() +  " from " + _fromZone.getHumanReadable() +
-                    " to " + _toZone.getHumanReadable());
             if (_fromZone == Zone.DRAW_DECK) {
                 cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
                 cardGame.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
@@ -79,6 +76,9 @@ public abstract class PlayCardAction extends ActionyAction {
         gameState.removeCardsFromZone(_cardEnteringPlay.getOwnerName(), Collections.singleton(_cardEnteringPlay));
         gameState.addCardToZone(_cardEnteringPlay, _toZone);
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardEnteringPlay));
+        game.sendMessage(_cardEnteringPlay.getOwnerName() + " played " +
+                _cardEnteringPlay.getCardLink() +  " from " + _fromZone.getHumanReadable() +
+                " to " + _toZone.getHumanReadable());
     }
 
     public void setVirtualCardAction(boolean virtualCardAction) { _virtualCardAction = virtualCardAction; }

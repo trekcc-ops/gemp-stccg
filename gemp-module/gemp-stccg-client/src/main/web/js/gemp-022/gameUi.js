@@ -99,11 +99,11 @@ export default class GameTableUI {
 
         if (this.replayMode) {
             var slowerBut = $("#slowerButton").button({
-                icons: {primary: 'ui-icon-triangle-1-w'},
+                icon: "ui-icon-triangle-1-w",
                 text: false
             });
             var fasterBut = $("#fasterButton").button({
-                icons: {primary: 'ui-icon-triangle-1-e'},
+                icon: "ui-icon-triangle-1-e",
                 text: false
             });
             slowerBut.click(
@@ -194,14 +194,14 @@ export default class GameTableUI {
         for (var i = 0; i < this.allPlayerIds.length; i++) {
 
             this.gameStateElem.append(
-                "<div class='player'>" + (i + 1) + ". " + this.allPlayerIds[i] +
-                "<div id='clock" + i + "' class='clock'></div>" +
                 "<div class='playerStats'>" +
-                    "<div id='deck" + i + "' class='deckSize'></div>" +
-                    "<div id='hand" + i + "' class='handSize'></div>" +
-                    "<div id='discard" + i + "' class='discardSize'></div>" +
-                    "<div id='score" + i + "' class='playerScore'></div>" +
-                "</div></div></div>");
+                    `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
+                    `<div id='clock${i}' class='clock'></div>` +
+                    `<div id='deck${i}' class='deckSize' title='Draw deck size'></div>` +
+                    `<div id='hand${i}' class='handSize' title='Hand size'></div>` +
+                    `<div id='discard${i}' class='discardSize' title='Discard size'></div>` +
+                    `<div id='score${i}' class='playerScore'></div>` +
+                "</div>");
 
             var showBut = $("<div class='slimButton'>+</div>").button().click(
                 (function (playerIndex) {
@@ -267,8 +267,6 @@ export default class GameTableUI {
                     })(i));
             }
         }
-
-        this.statsDiv.append("<div class='tribbleSequence'>1</div>");
 
         this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
             return (card.zone == "SPECIAL");
@@ -337,6 +335,7 @@ export default class GameTableUI {
     }
 
     processGameEnd() {
+        $("#currentPhase").text("Game over");
         var that = this;
         if(this.allPlayerIds == null)
             return;
@@ -895,43 +894,44 @@ export default class GameTableUI {
 
     processGameEvent(gameEvent, animate) {
         var eventType = gameEvent.getAttribute("type");
-        if (eventType == "PCIP") {
+        if (eventType === "PCIP") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
+        } else if (eventType === "PUT_SHARED_MISSION_INTO_PLAY") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType == "MCIP") {
+        } else if (eventType === "MCIP") {
             this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
-        } else if (eventType == "P") {
+        } else if (eventType === "P") {
             this.participant(gameEvent);
-        } else if (eventType == "RCFP") {
+        } else if (eventType === "RCFP") {
             this.animations.removeCardFromPlay(gameEvent, animate);
-        } else if (eventType == "UPDATE_CARD_IMAGE") {
+        } else if (eventType === "UPDATE_CARD_IMAGE") {
             this.animations.updateCardImage(gameEvent);
-        } else if (eventType == "GPC") {
+        } else if (eventType === "GPC") {
             this.animations.gamePhaseChange(gameEvent, animate);
-        } else if (eventType == "TC") {
+        } else if (eventType === "TC") {
             this.animations.turnChange(gameEvent, animate);
-        } else if (eventType == "GS") {
+        } else if (eventType === "GS") {
             this.animations.gameStats(gameEvent, animate);
-        } else if (eventType == "M") {
+        } else if (eventType === "M") {
             this.animations.message(gameEvent, animate);
-        } else if (eventType == "W") {
+        } else if (eventType === "W") {
             this.animations.warning(gameEvent, animate);
-        } else if (eventType == "CAC") {
+        } else if (eventType === "CAC") {
             this.animations.cardAffectsCard(gameEvent, animate);
-        } else if (eventType == "EP") {
+        } else if (eventType === "EP") {
             this.animations.eventPlayed(gameEvent, animate);
-        } else if (eventType == "CA") {
+        } else if (eventType === "CA") {
             this.animations.cardActivated(gameEvent, animate);
-        } else if (eventType == "D") {
+        } else if (eventType === "D") {
             this.animations.processDecision(gameEvent, animate);
-        } else if (eventType = "TSEQ") {
+        } else if (eventType === "TSEQ") {
             this.animations.tribbleSequence(gameEvent, animate);
-        } else if (eventType = "PLAYER_SCORE") {
+        } else if (eventType === "PLAYER_SCORE") {
             this.animations.playerScore(gameEvent, animate);
-        }
-        else if (eventType == "EG") {
+        } else if (eventType === "EG") {
             this.processGameEnd();
+        } else {
+            console.error("Unknown game event type: '" + eventType + "'.");
         }
     }
 
@@ -1547,7 +1547,6 @@ export default class GameTableUI {
         var actionTexts = this.getDecisionParameters(decision, "actionText");
         var actionTypes = this.getDecisionParameters(decision, "actionType");
         var noPass = this.getDecisionParameters(decision, "noPass");
-        var isRevertEligible = this.getDecisionParameters(decision, "revertEligible");
 
         var that = this;
 
@@ -1570,15 +1569,9 @@ export default class GameTableUI {
                     finishChoice();
                 });
             }
-            if (isRevertEligible == "true") {
-                that.alertButtons.append("<button id='Revert' style='float: right'>Revert</button>");
-                $("#Revert").button().click(function () {
-                    finishChoice(true);
-                });
-            }
             if (selectedCardIds.length > 0) {
                 that.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
-                that.alertButtons.append("<button id='Done' style='float: right'>Done</button>");
+                that.alertButtons.append("<button id='Done'>Done</button>");
                 $("#Done").button().click(function () {
                     finishChoice();
                 });
@@ -1588,7 +1581,7 @@ export default class GameTableUI {
             }
         };
 
-        var finishChoice = function (isRevert) {
+        var finishChoice = function () {
             that.alertText.html("");
             // ****CCG League****: Border around alert box
             that.alertBox.removeClass("alert-box-highlight");
@@ -1601,12 +1594,7 @@ export default class GameTableUI {
                         $(this).remove();
                 });
             that.hand.layoutCards();
-            if (isRevert) {
-                that.decisionFunction(id, "revert");
-            }
-            else {
-                that.decisionFunction(id, "" + selectedCardIds);
-            }
+            that.decisionFunction(id, "" + selectedCardIds);
         };
 
         var resetChoice = function () {
@@ -1880,7 +1868,7 @@ export default class GameTableUI {
                 });
             }
             if (selectedCardIds.length >= min) {
-                that.alertButtons.append("<button id='Done' style='float: right'>Done</button>");
+                that.alertButtons.append("<button id='Done'>Done</button>");
                 $("#Done").button().click(function () {
                     finishChoice();
                 });
@@ -1896,13 +1884,15 @@ export default class GameTableUI {
                 if (selectedCardIds.includes(cardId)) {
                     let index = selectedCardIds.indexOf(cardId);
                     selectedCardIds.splice(index, 1);
-                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
+                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                 }
                 // Otherwise, if the cardId is not already selected, add it.
                 else {
                     selectedCardIds.push(cardId);
-                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
+                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");
                 }
+
+                that.recalculateCardSelectionOrder(selectedCardIds);
                 
                 // If the max number of cards are selected and the user has auto accept on, we're done.
                 if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
@@ -1924,10 +1914,16 @@ export default class GameTableUI {
         }
     }
 
+    recalculateCardSelectionOrder(cardArray) {
+        for (const [index, cardId] of cardArray.entries()) {
+            getCardDivFromId(cardId).attr("selectedOrder", index + 1); // use a 1-index
+        }
+    }
+
     clearSelection() {
         $(".selectableCard").removeClass("selectableCard").data("action", null);
         $(".actionableCard").removeClass("actionableCard").data("action", null);
-        $(".selectedCard").removeClass("selectedCard");
+        $(".selectedCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
         this.selectionFunction = null;
     }
 
@@ -1952,6 +1948,7 @@ export default class GameTableUI {
 export class TribblesGameTableUI extends GameTableUI {
     constructor(url, replayMode) {
         super(url, replayMode);
+        this.statsDiv.append("<div id='tribbleSequence'></div>");
     }
 
     layoutUI(sizeChanged) {
@@ -2316,7 +2313,6 @@ export class ST1EGameTableUI extends GameTableUI {
 
         var advPathWidth = Math.min(150, width * 0.1);
         var specialUiWidth = 150;
-        var alertHeight = 80;
         var chatHeight = 200;
         var assignmentsCount = 0;
 
@@ -2331,24 +2327,25 @@ export class ST1EGameTableUI extends GameTableUI {
 
         this.statsDiv.css({
             position: "absolute",
-            left: padding + "px",
-            top: height - (padding * 2) - chatHeight - 50 + "px",
-            width: advPathWidth - 4,
-            height: 30
+            left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
+            top: $("#bottomLeftTabs").offset().top,
+            width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
+            height: 40
         });
         this.gameStateElem.css({
             position: "absolute",
             left: padding * 2, // + advPathWidth,
             top: padding,
             width: specialUiWidth - padding + 75,
-            height: TABLE_AREA_TOP - padding * 2
+            //height: TABLE_AREA_TOP - padding * 2
+            height: 117
         });
         this.alertBox.css({
             position: "absolute",
             left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
-            top: PLAYER_ACTION_AREA_AND_HAND_TOP,
+            top: $("#bottomLeftTabs").offset().top + $("#statsDiv").height() + BORDER_PADDING * 5,
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
-            height: alertHeight
+            height: $("#bottomLeftTabs").height() - $("#statsDiv").height() - (BORDER_PADDING * 5)
         });
 
         for (var i = 0; i < 2; i++) {
@@ -2369,7 +2366,6 @@ export class ST1EGameTableUI extends GameTableUI {
             this.hand.layoutCards();
         }
 
-            // LOCATION CODE FROM SWCCG GEMP
         var locationsCount = this.locationDivs.length;
 
         var zoomedInLocationDivWidth = (width / Math.min(3.25, locationsCount)) - (LOCATION_BORDER_PADDING / 2);
@@ -2399,6 +2395,23 @@ export class ST1EGameTableUI extends GameTableUI {
                 this.locationDivs[locationIndex].removeClass("last-in-quadrant");
             }
 
+            if (currQuadrant == "ALPHA" ) {
+                this.locationDivs[locationIndex].addClass("alpha-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Alpha Quadrant");
+            }
+            if (currQuadrant == "GAMMA" ) {
+                this.locationDivs[locationIndex].addClass("gamma-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Gamma Quadrant");
+            }
+            if (currQuadrant == "DELTA" ) {
+                this.locationDivs[locationIndex].addClass("delta-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Delta Quadrant");
+            }
+            if (currQuadrant == "MIRROR" ) {
+                this.locationDivs[locationIndex].addClass("mirror-quadrant");
+                this.locationDivs[locationIndex].attr("title", "Mirror Quadrant");
+            }
+
             this.missionCardGroups[locationIndex].setBounds(x, y + locationDivHeight/3, locationDivWidth, locationDivHeight/3);
             this.missionCardGroups[locationIndex].layoutCards();
             this.opponentAtLocationCardGroups[locationIndex].setBounds(x, y, locationDivWidth, locationDivHeight / 3);
@@ -2408,7 +2421,6 @@ export class ST1EGameTableUI extends GameTableUI {
 
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
         }
-                // END OF SWCCG GEMP LOCATION CODE
 
         for (var playerId in this.discardPileGroups)
             if (this.discardPileGroups.hasOwnProperty(playerId))

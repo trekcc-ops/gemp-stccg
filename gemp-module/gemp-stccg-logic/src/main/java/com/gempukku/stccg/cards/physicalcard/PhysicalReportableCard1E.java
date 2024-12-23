@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     private AwayTeam _awayTeam;
@@ -54,10 +55,13 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     @Override
     public Action getPlayCardAction() { return createReportCardAction(); }
 
+    @Override
+    public Action getPlayCardAction(boolean forFree) { return createReportCardAction(forFree); }
 
     public Action createReportCardAction() {
         return new ReportCardAction(this, false);
     }
+    public Action createReportCardAction(boolean forFree) { return new ReportCardAction(this, forFree); }
 
     public void leaveAwayTeam() {
         _awayTeam.remove(this);
@@ -69,9 +73,9 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         _awayTeam.add(this);
     }
 
-    public void joinEligibleAwayTeam(MissionCard mission) {
-                // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
-                // TODO - When there are multiple eligible away teams, there should be a player decision
+    public void joinEligibleAwayTeam(MissionLocation mission) {
+        // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
+        // TODO - When there are multiple eligible away teams, there should be a player decision
         for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_owner).toList()) {
             if (awayTeam.isCompatibleWith(this) && _awayTeam == null) {
                 addToAwayTeam(awayTeam);
@@ -82,6 +86,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
             addToAwayTeam(awayTeam);
         }
     }
+
 
     public AwayTeam getAwayTeam() { return _awayTeam; }
 }

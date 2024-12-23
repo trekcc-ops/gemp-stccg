@@ -263,7 +263,7 @@ export default class GempClientCommunication {
             data:{
                 participantId:getUrlParam("participantId")},
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"text"
         });
     }
 
@@ -359,82 +359,41 @@ export default class GempClientCommunication {
             dataType:"xml"
         });
     }
-    
-    getMerchant(filter, ownedMin, start, count, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/merchant",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                filter:filter,
-                ownedMin:ownedMin,
-                start:start,
-                count:count},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
 
-    buyItem(blueprintId, price, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/merchant/buy",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                blueprintId:blueprintId,
-                price:price},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
+    async getCollection(collectionType, participantId, filter, start, count) {
+        const url = this.url + "/collection/" + collectionType + "?";
+        const parameters = new URLSearchParams({
+            "participantId": participantId,
+            "filter": filter,
+            "start": start,
+            "count": count
+        }).toString();
 
-    sellItem(blueprintId, price, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/merchant/sell",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                blueprintId:blueprintId,
-                price:price},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
+        const fullurl = url + parameters;
 
-    tradeInFoil(blueprintId, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/merchant/tradeFoil",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                blueprintId:blueprintId},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
+        try {
+            let response = await fetch(fullurl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/xml"
+                }
+            });
 
-    getCollection(collectionType, filter, start, count, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/collection/" + collectionType,
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                filter:filter,
-                start:start,
-                count:count},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
+            if (!response.ok) {
+                if (response.status == 404) {
+                    alert("You don't have collection of that type.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                return response.text();
+            }
+        }
+        catch(error) {
+            console.error({"getCollection fetch error": error.message});
+        }
     }
 
     importCollection(decklist, callback, errorMap) {
@@ -541,19 +500,34 @@ export default class GempClientCommunication {
             dataType:"html"
         });
     }
-
-    getSets(format, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/deck/sets",
-            cache:true,
-            data:{ 
-                format:format
-            },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
+    
+    async getSets(format) {
+        const url = this.url + "/deck/sets";
+        try {
+            let response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: `format=${format}`
+            });
+            
+            if (!response.ok) {
+                if (response.status == 400) {
+                    alert("Could not retrieve sets.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                let retval = await response.json();
+                return retval;
+            }
+        }
+        catch(error) {
+            console.error({"getSets fetch error": error.message});
+        }
     }
 
     getFormats(includeEvents, callback, errorMap) {

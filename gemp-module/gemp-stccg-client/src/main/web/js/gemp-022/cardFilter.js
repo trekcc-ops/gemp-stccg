@@ -1,12 +1,12 @@
 import GempClientCommunication from "./communication.js";
-import { log } from "./common.js";
+import { log, getUrlParam } from "./common.js";
 
 export default class CardFilter {
     clearCollectionFunc;
     addCardFunc;
     finishCollectionFunc;
-    getCollectionFunc;
 
+    collectionType = "default";
     filter = "";
     start = 0;
     count = 18;
@@ -20,13 +20,14 @@ export default class CardFilter {
     setSelect = $("#setSelect");
     nameInput = $("#nameInput");
     sortSelect = $("#sortSelect");
+    tribblePowerSelect = document.getElementById("tribblePower");
     raritySelect;
     format;
     comm;
 
-    constructor(pageElem, getCollectionFunc, clearCollectionFunc, addCardFunc, finishCollectionFunc, format) {
+    constructor(pageElem, collectionType, clearCollectionFunc, addCardFunc, finishCollectionFunc, format) {
         var that = this;
-        this.getCollectionFunc = getCollectionFunc;
+        this.collectionType = collectionType;
         this.clearCollectionFunc = clearCollectionFunc;
         this.addCardFunc = addCardFunc;
         this.finishCollectionFunc = finishCollectionFunc;
@@ -34,80 +35,140 @@ export default class CardFilter {
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
         this.buildUi(pageElem);
+        // BUG: This call is async so uhhhhh creating a new CardFilter probably has a race condition.
         this.updateSetOptions();
+    }
+
+    setCollectionType(collectionType) {
+        this.collectionType = collectionType;
+        this.start = 0;
     }
 
     setFilter(filter) {
         this.filter = filter;
-
         this.start = 0;
-        this.getCollection();
     }
 
     setFormat(format) {
         this.format = format;
+
+        // Change search URL
+        if ((this.format === "debug1e") ||
+            (this.format === "st1emoderncomplete")) {
+            
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/1e/?mode=search");
+            }
+        }
+        else if (this.format === "st2e") {
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/2e/?mode=search");
+            }
+        }
+        else {
+            let anchor = document.getElementById("card-search-url");
+            if (anchor) {
+                anchor.setAttribute("href", "https://www.trekcc.org/");
+            }
+        }
+
+        // show/hide Tribble Power selector
+        if (this.format === "tribbles") {
+            if (this.tribblePowerSelect) {
+                this.tribblePowerSelect.classList.remove("hidden");
+            }
+        }
+        else {
+            if (this.tribblePowerSelect) {
+                this.tribblePowerSelect.classList.add("hidden");
+            }
+        }
     }
 
     setType(typeValue) {
         $("#type").val(typeValue);
     }
 
-    updateSetOptions() {
-        var that = this;
-        var currentSet = that.setSelect.val();
-
-        this.comm.getSets(that.format,
-            function (json)
-            {
-                that.setSelect.empty();
-                $(json).each(function (index, o) {
-                    if (o.code == "disabled") {
-                        that.setSelect.append("<option disabled>----------</option>")
-                    } else {
-                        var $option = $("<option/>")
-                            .attr("value", o.code)
-                            .text(o.name);
-                        that.setSelect.append($option);
-                    }
-                });
-
-                that.setSelect.val(currentSet);
-            },
-            {
-                "400":function ()
-                {
-                    alert("Could not retrieve sets.");
+    async updateSetOptions() {
+        let promise = this.comm.getSets(this.format);
+        return promise.then((json) => {
+            this.setSelect.empty();
+            let that = this;
+            $(json).each(function (index, o) {
+                if (o.code == "disabled") {
+                    that.setSelect.append("<option disabled>----------</option>")
+                } else {
+                    var $option = $("<option/>")
+                        .attr("value", o.code)
+                        .text(o.name);
+                    that.setSelect.append($option);
                 }
             });
+            return this.setSelect;
+        })
+        .catch(error => {
+            // NOTE: Because comm.getSets() has the response.json() call that catches all possible
+            //       "return value is not JSON" errors, and because JQuery tends to error silently,
+            //       this line is not testable right now.
+            //       Skip it by telling babel-instanbul to ignore it.
+            /* istanbul ignore next */
+            console.error(error);
+        });
     }
+
+    async setFilterChanged() {
+        this.filter = this.calculateNormalFilter();
+        this.start = 0
+        await this.getCollection();
+        return true;
+    };
+
+    async fullFilterChanged() {
+        this.start = 0;
+        await this.getCollection();
+        return true;
+    };
+
+    async filterOut() {
+        this.filter = this.calculateNormalFilter();
+        this.start = 0;
+        await this.getCollection();
+        return true;
+    };
+
+    async changeDynamicFilters() {
+        var cardType = $("#cardType option:selected").prop("value");
+        this.filter = this.calculateNormalFilter();
+        this.start = 0;
+        await this.getCollection();
+        return true;
+    };
 
     buildUi(pageElem) {
         var that = this;
 
         this.previousPageBut = $("#previousPage").button({
-            text: false,
-            icons: {
-                primary: "ui-icon-circle-triangle-w"
-            },
+            label: "Previous",
+            icon: "ui-icon-circle-triangle-w",
             disabled: true
         }).click(
-            function () {
+            async function () {
                 that.disableNavigation();
                 that.start -= that.count;
-                that.getCollection();
+                await that.getCollection();
             });
 
         this.nextPageBut = $("#nextPage").button({
-            text: false,
-            icons: {
-                primary: "ui-icon-circle-triangle-e"
-            },
+            label: "Next",
+            icon: "ui-icon-circle-triangle-e",
             disabled: true
         }).click(
-            function () {
+            async function () {
                 that.disableNavigation();
                 that.start += that.count;
-                that.getCollection();
+                await that.getCollection();
             });
 
         this.countSlider = $("#countSlider").slider({
@@ -116,10 +177,10 @@ export default class CardFilter {
             max: 40,
             step: 1,
             disabled: true,
-            slide: function (event, ui) {
+            slide: async function (event, ui) {
                 that.start = 0;
                 that.count = ui.value;
-                that.getCollection();
+                await that.getCollection();
             }
         });
 
@@ -137,56 +198,19 @@ export default class CardFilter {
             + "<option value='C,U,P,S'>Poorman's</option>"
             + "<option value='V'>Virtual</option>"
             + "</select>"); */
-
-
-        var setFilterChanged = function () {
-            that.filter = that.calculateNormalFilter();
-            that.start = 0
-            that.getCollection();
-            return true;
-        };
-
-        var fullFilterChanged = function () {
-            that.start = 0;
-            that.getCollection();
-            return true;
-        };
-
-        this.setSelect.change(setFilterChanged);
-        this.nameInput.change(fullFilterChanged);
-        this.sortSelect.change(fullFilterChanged);
-//        this.raritySelect.change(fullFilterChanged);
-
-        var filterOut = function () {
-            that.filter = that.calculateNormalFilter();
-            that.start = 0;
-            that.getCollection();
-            return true;
-        };
         
-        //Hide dynamic filters by default
-        $("#phase").hide();
-        
-        var changeDynamicFilters = function () {
-            var cardType = $("#cardType option:selected").prop("value");
-            if (cardType.includes("EVENT")) {
-                $("#phase").show();
-            } else {
-                $("#phase").hide();
-                $("#phase").val("")
-            }
-            that.filter = that.calculateNormalFilter();
-            that.start = 0;
-            that.getCollection();
-            return true;
-            
-        };
+        if (this.tribblePowerSelect) {
+            this.tribblePowerSelect.classList.add("hidden");
+        }
 
-        $("#cardType").change(changeDynamicFilters);
-        $("#keyword").change(filterOut);
-        $("#type").change(filterOut);
-        $("#phase").change(filterOut);
-        $(".affiliationFilter").click(filterOut);
+        this.setSelect.on("change", async () => {await this.setFilterChanged()});
+        this.nameInput.on("change", async () => {await this.fullFilterChanged()});
+        this.sortSelect.on("change", async () => {await this.fullFilterChanged()});
+//        this.raritySelect.on("change", async () => {await this.fullFilterChanged()});
+
+        $("#cardType").on("change", async () => {await this.changeDynamicFilters()});
+        $("#type").on("change", async () => {await this.filterOut()});
+        $(".affiliationFilter").on("click", async () => {await this.filterOut()});
         this.collectionDiv = $("#collection-display");
         //collection-display
         pageElem.append(this.collectionDiv);
@@ -210,7 +234,7 @@ export default class CardFilter {
     }
 
     calculateNormalFilter() {
-        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "phase");
+        var normalFilterArray = new Array("cardType", "affiliation", "type");
         var filterString = "";
 
         for (var i = 0; i < normalFilterArray.length; i++) {
@@ -273,10 +297,23 @@ export default class CardFilter {
         return filterString;
     }
 
-    getCollection() {
-        var that = this;
-        this.getCollectionFunc((this.filter + this.calculateFullFilterPostfix()).trim(), this.start, this.count, function (xml) {
-            that.displayCollection(xml);
+    async getCollection() {
+        let promise = this.comm.getCollection(
+            this.collectionType,
+            getUrlParam("participantId"),
+            (this.filter + this.calculateFullFilterPostfix()).trim(),
+            this.start,
+            this.count
+        );
+        promise.then((xml) => {
+            // convert incoming string to an XML DOM document, since
+            // that's what displayCollection expects
+            let xmlparser = new DOMParser();
+            var xmlDoc = xmlparser.parseFromString(xml, "text/xml");
+            this.displayCollection(xmlDoc);
+        })
+        .catch(error => {
+            console.error(error);
         });
     }
 

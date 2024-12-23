@@ -14,7 +14,7 @@ import java.util.*;
 
 public class ST1EGameState extends GameState implements Snapshotable<ST1EGameState> {
     final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
-    final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
+    final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     private final ST1EGame _game;
     final List<AwayTeam> _awayTeams = new ArrayList<>();
 
@@ -62,7 +62,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
                         _allCards.put(_nextCardId, card);
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
-                        throw new RuntimeException("Card blueprint not found");
+                        _game.sendErrorMessage(e);
                     }
                 }
                 if (entry.getKey() == SubDeck.DRAW_DECK) {
@@ -88,26 +88,33 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     }
 
     public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) {
-        AwayTeam result = new AwayTeam(_game, player, mission);
+        AwayTeam result = new AwayTeam(_game, player, mission.getLocation());
         _awayTeams.add(result);
         return result;
     }
 
+    public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
+        AwayTeam result = new AwayTeam(_game, player, location);
+        _awayTeams.add(result);
+        return result;
+    }
+
+
     public boolean hasLocationsInQuadrant(Quadrant quadrant) {
-        for (ST1ELocation location : _spacelineLocations) {
+        for (MissionLocation location : _spacelineLocations) {
             if (location.getQuadrant() == quadrant) return true;
         }
         return false;
     }
 
     public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
-        _spacelineLocations.add(indexNumber, new ST1ELocation(newMission));
+        _spacelineLocations.add(indexNumber, new MissionLocation(newMission));
         addCardToZone(newMission, Zone.SPACELINE, true, false);
     }
 
     public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
             throws InvalidGameLogicException {
-        ST1ELocation location = _spacelineLocations.get(indexNumber);
+        MissionLocation location = _spacelineLocations.get(indexNumber);
         List<MissionCard> missionsAtLocation = location.getMissions();
         if (missionsAtLocation.size() != 1 ||
                 Objects.equals(missionsAtLocation.getFirst().getOwnerName(), newMission.getOwnerName()))
@@ -170,16 +177,16 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     public int getSpacelineLocationsSize() { return _spacelineLocations.size(); }
     public int getQuadrantLocationsSize(Quadrant quadrant) {
         int x = 0;
-        for (ST1ELocation location : _spacelineLocations) {
+        for (MissionLocation location : _spacelineLocations) {
             if (location.getQuadrant() == quadrant) x++;
         }
         return x;
     }
-    public List<ST1ELocation> getSpacelineLocations() { return _spacelineLocations; }
+    public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
     public Set<PhysicalCard> getQuadrantLocationCards(Quadrant quadrant) {
         Set<PhysicalCard> newCollection = new HashSet<>();
-        for (ST1ELocation location : _spacelineLocations)
+        for (MissionLocation location : _spacelineLocations)
             for (PhysicalCard mission : location.getMissions())
                 if (location.getQuadrant() == quadrant)
                     newCollection.add(mission);
@@ -193,7 +200,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
 
         // Send missions in order
-        for (ST1ELocation location : _spacelineLocations) {
+        for (MissionLocation location : _spacelineLocations) {
             for (int i = 0; i < location.getMissions().size(); i++) {
                 sharedMission = i != 0;
                 // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
@@ -267,7 +274,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
-            topCard.addCardToSeededUnder(card);
+            topCard.getLocation().addCardToSeededUnder(card);
         }
     }
 
@@ -276,7 +283,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
-            topCard.addCardToPreSeeds(card, player);
+            topCard.getLocation().addCardToPreSeeds(card, player);
         }
     }
 
@@ -298,7 +305,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         for (Zone zone : _cardGroups.keySet())
             copyCardGroup(_cardGroups.get(zone), snapshot._cardGroups.get(zone), snapshotData);
 
-        for (ST1ELocation location : _spacelineLocations)
+        for (MissionLocation location : _spacelineLocations)
             snapshot._spacelineLocations.add(snapshotData.getDataForSnapshot(location));
 
         // TODO SNAPSHOT: _awayTeams
@@ -324,5 +331,18 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
                 snapshotList.add(snapshotData.getDataForSnapshot(card));
             }
         }
+    }
+
+    public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)
+            throws CardNotFoundException {
+        PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+        _allCards.put(_nextCardId, card);
+        _nextCardId++;
+        return card;
+    }
+
+    public void sendSerializedGameStateToClient() {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(GameEvent.Type.SERIALIZED_GAME_STATE, this));
     }
 }

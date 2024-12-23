@@ -14,7 +14,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -51,9 +51,9 @@ public class SeedOutpostAction extends PlayCardAction {
         ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
 
         Set<PhysicalCard> availableMissions = new HashSet<>();
-        for (ST1ELocation location : gameState.getSpacelineLocations()) {
+        for (MissionLocation location : gameState.getSpacelineLocations()) {
             MissionCard missionCard = location.getMissionForPlayer(_performingPlayerId);
-            if (_cardEnteringPlay.canSeedAtMission(missionCard)) {
+            if (_cardEnteringPlay.canSeedAtMission(location)) {
                 availableMissions.add(missionCard);
             }
         }
@@ -69,7 +69,8 @@ public class SeedOutpostAction extends PlayCardAction {
                     _placementWasChosen = true;
                     if (!_affiliationWasChosen) {
                         for (Affiliation affiliation : _cardEnteringPlay.getAffiliationOptions()) {
-                            if (_cardEnteringPlay.canSeedAtMissionAsAffiliation(selectedMission, affiliation))
+                            if (_cardEnteringPlay.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
+                                    affiliation))
                                 _affiliationOptions.add(affiliation);
                         }
                         if (_affiliationOptions.size() == 1) {
@@ -106,7 +107,7 @@ public class SeedOutpostAction extends PlayCardAction {
         return null;
     }
 
-    public void setDestination(ST1ELocation location) {
+    public void setDestination(MissionLocation location) {
         _locationZoneIndex = location.getLocationZoneIndex();
         _placementWasChosen = true;
     }

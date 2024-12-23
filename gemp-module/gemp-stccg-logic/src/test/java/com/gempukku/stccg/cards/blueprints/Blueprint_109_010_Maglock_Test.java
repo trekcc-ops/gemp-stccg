@@ -23,6 +23,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
     @Test
     public void maglockFailedTest() throws DecisionResultInvalidException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
+        assertNotNull(_mission);
 
         ST1EPhysicalCard maglock = new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("109_010"));
         maglock.setZone(Zone.VOID);
@@ -76,8 +77,8 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
             assertTrue(personnel.isStopped());
         }
         assertTrue(runabout.isStopped());
-        assertFalse(_mission.isCompleted());
-        assertTrue(_mission.getCardsSeededUnderneath().contains(maglock));
+        assertFalse(_mission.getLocation().isCompleted());
+        assertTrue(_mission.getLocation().getCardsSeededUnderneath().contains(maglock));
     }
 
     @Test
@@ -136,8 +137,8 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
             assertFalse(personnel.isStopped());
         }
         assertFalse(runabout.isStopped());
-        assertTrue(_mission.isCompleted());
-        assertFalse(_mission.getCardsSeededUnderneath().contains(maglock));
+        assertTrue(_mission.getLocation().isCompleted());
+        assertFalse(_mission.getLocation().getCardsSeededUnderneath().contains(maglock));
         assertEquals(Zone.REMOVED, maglock.getZone());
     }
 

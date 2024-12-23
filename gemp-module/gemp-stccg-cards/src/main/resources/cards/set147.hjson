@@ -1,52 +1,59 @@
-// Set 147: Virtual Promos [Tribbles]
-
 {
-	147_001: {
-		title: "10,000 Tribbles - Clone"
-		type: tribble
-		tribble-value: 10000
-		tribble-power: clone
-		image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/1VTP.jpg
-		effects: {
-		    type: playOutOfSequence
-            requires: {
-                type: lastTribblePlayed
-                count: 10000
+    setId: "147"
+    setName: Virtual Promos
+    gameType: Tribbles
+    cards: [
+        {
+            blueprintId: 147_001
+            title: "10,000 Tribbles - Clone"
+            type: tribble
+            tribble-value: 10000
+            tribble-power: clone
+            image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/1VTP.jpg
+            effects: {
+                type: playOutOfSequence
+                requires: {
+                    type: lastTribblePlayed
+                    count: 10000
+                }
             }
-		}
-	}
-    147_006: {
-        title: "10,000 Tribbles - Poison"
-        type: tribble
-        tribble-value: 10000
-        tribble-power: poison
-		image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/6VTP.jpg
-    }
-	147_008: {
-		title: "100,000 Tribbles - Clone"
-		type: tribble
-		tribble-value: 100000
-		tribble-power: clone
-		image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/8VTP.jpg
-		effects: {
-		    type: playOutOfSequence
-            requires: {
-                type: lastTribblePlayed
-                count: 100000
+        }
+        {
+            blueprintId: 147_006
+            title: "10,000 Tribbles - Poison"
+            type: tribble
+            tribble-value: 10000
+            tribble-power: poison
+            image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/6VTP.jpg
+        }
+        {
+            blueprintId: 147_008
+            title: "100,000 Tribbles - Clone"
+            type: tribble
+            tribble-value: 100000
+            tribble-power: clone
+            image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/8VTP.jpg
+            effects: {
+                type: playOutOfSequence
+                requires: {
+                    type: lastTribblePlayed
+                    count: 100000
+                }
             }
-		}
-	}
-    147_018: {
-        title: "10,000 Tribbles - Advance"
-        type: tribble
-        tribble-value: 10000
-        tribble-power: advance
-        image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/18VTP.jpg
-		effects: {
-		    type: playOutOfSequence
-            requires: {
-                type: tribbleSequenceBroken
+        }
+        {
+            blueprintId: 147_018
+            title: "10,000 Tribbles - Advance"
+            type: tribble
+            tribble-value: 10000
+            tribble-power: advance
+            image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/18VTP.jpg
+            effects: {
+                type: playOutOfSequence
+                requires: {
+                    type: tribbleSequenceBroken
+                }
             }
-		}
-    }
+        }
+    ]
 }

@@ -1,16 +1,14 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.hall.GameTimer;
+import com.gempukku.stccg.hall.GameSettings;
 
 public class TribblesGameMediator extends CardGameMediator {
     private final TribblesGame _tribblesgame;
-    public TribblesGameMediator(String gameId, GameFormat gameFormat, GameParticipant[] participants,
-                                CardBlueprintLibrary library, GameTimer gameTimer, boolean allowSpectators,
-                                boolean showInGameHall) {
-        super(gameId, participants, gameTimer, allowSpectators, showInGameHall);
-        _tribblesgame = new TribblesGame(gameFormat, _playerDecks, library);
+    public TribblesGameMediator(String gameId, GameParticipant[] participants, CardBlueprintLibrary library,
+                                GameSettings gameSettings) {
+        super(gameId, participants, gameSettings);
+        _tribblesgame = new TribblesGame(gameSettings.getGameFormat(), _playerDecks, library);
     }
     @Override
     public final TribblesGame getGame() { return _tribblesgame; }

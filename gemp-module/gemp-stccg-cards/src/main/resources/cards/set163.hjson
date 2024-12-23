@@ -1,116 +1,158 @@
-// Set 163: The Sky's the Limit
-
 {
-    163_026: {
-        title: Goran
-        type: personnel
-        uniqueness: universal
-        affiliation: cardassian
-        property-logo: tng-logo
-        classification: MEDICAL
-        icons: command
-        lore: Representative of espionage specialists serving in the Cardassian military. Posed as a monk to attack a Maquis cell at the Juhraya colony in 2370.
-        skill-box: "[*] Transporter Skill [*] Anthropology [*] Obsidian Order [DL] Cardassian Disruptor"
-        integrity: 6
-        cunning: 7
-        strength: 7
-        image-url: https://www.trekcc.org/1e/cardimages/tstl/26.jpg
-    }
-    163_032: {
-        title: Martinez
-        type: personnel
-        uniqueness: universal
-        affiliation: federation
-        property-logo: first-contact-logo
-        classification: MEDICAL
-        icons: staff,first-contact-icon
-        lore: Typical nurse who served under Beverly Crusher for many years. Helped evacuate sickbay when the Borg boarded the U.S.S. Enterprise-E.
-        skill-box: "[*] Biology [*] Transporter Skill"
-        integrity: 8
-        cunning: 7
-        strength: 6
-        image-url: https://www.trekcc.org/1e/cardimages/tstl/32.jpg
-    }
-    163_033: {
-        title: William T. Riker
-        type: personnel
-        affiliation: federation
-        property-logo: generations-logo
-        classification: OFFICER
-        icons: command
-        lore: Experienced officer who often commanded the U.S.S. Enterprise. Defeated the Sisters of Duras at Veridian III. Well versed in saucer separations.
-        skill-box: "[*] Leadership [*] Navigation [*] Music [DL] Brace for Impact"
-        integrity: 8
-        cunning: 7
-        strength: 7
-        image-url: https://www.trekcc.org/1e/cardimages/tstl/33.jpg
-    }
-    163_034: {
-        title: Dr. Farek
-        type: personnel
-        uniqueness: universal
-        affiliation: ferengi
-        property-logo: tng-logo
-        classification: MEDICAL
-        icons: staff
-        lore: Typical Ferengi physician. Served aboard the Krayton in 2366. Distrusted Lwaxana Troi. Tried to study her empathic powers with a mind probe.
-        skill-box: "[*] Exobiology [*] Treachery [*] Computer Skill"
-        integrity: 3
-        cunning: 7
-        strength: 4
-        image-url: https://www.trekcc.org/1e/cardimages/tstl/34.jpg
-    }
-    163_035: {
-        title: Lwaxana Troi
-        type: personnel
-        affiliation: ferengi
-        property-logo: tng-logo
-        classification: V.I.P.
-        lore: Betazoid ambassador held captive by Tog. Misled him about her willingness to cooperate. Later described Tog as slightly repulsive, but with a certain charm.
-        skill-box: "[*] Empathy x2 [*] Anthropology [*] Computer Skill"
-        integrity: 5
-        cunning: 8
-        strength: 2
-        image-url: https://www.trekcc.org/1e/cardimages/tstl/35.jpg
-    }
-    163_040: {
-        title: Bosus
-        type: personnel
-        affiliation: non-aligned
-        property-logo: tng-logo
-        uniqueness: universal
-        classification: SECURITY
-        lore: Typical disconnected Borg disciple of The One. Participated in the raid on Ohniaka III. Swore to avenge the death of his friend Torsus.
-        icons: defense-subcommand
-        skill-box: "[*] Astrophysics [*] Treachery [*] Navigation"
-        integrity: 6
-        cunning: 6
-        strength: 8
-        image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
-    }
-    163_054: {
-        title: Stolen Ship
-        type: ship
-        affiliation: federation,romulan
-        property-logo: tng-logo
-        uniqueness: universal
-        ship-class: MERCHANT CLASS
-        lore: One of many decommissioned Vulcan merchant vessels. Several were stolen by the Romulans in a ploy to conquer Vulcan for the Star Empire.
-        staffing: staff
-        gametext: Tractor Beam
-        range: 7
-        weapons: 6
-        shields: 5
-        image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
-        image-options: [
-            {
-                affiliation: romulan
-                image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
-            }
-            {
-                affiliation: federation
-                image-url: https://www.trekcc.org/1e/cardimages/tstl/54A.jpg
-            }
-        ]
-    }
+    setId: "163"
+    setName: "The Sky's the Limit"
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 163_026
+            title: Goran
+            type: personnel
+            uniqueness: universal
+            affiliation: cardassian
+            property-logo: tng-logo
+            classification: MEDICAL
+            icons: command
+            lore: Representative of espionage specialists serving in the Cardassian military. Posed as a monk to attack a Maquis cell at the Juhraya colony in 2370.
+            skill-box: "[*] Transporter Skill [*] Anthropology [*] Obsidian Order [DL] Cardassian Disruptor"
+            integrity: 6
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/26.jpg
+        }
+        {
+            blueprintId: 163_032
+            title: Martinez
+            type: personnel
+            uniqueness: universal
+            affiliation: federation
+            property-logo: first-contact-logo
+            classification: MEDICAL
+            icons: staff,first-contact-icon
+            lore: Typical nurse who served under Beverly Crusher for many years. Helped evacuate sickbay when the Borg boarded the U.S.S. Enterprise-E.
+            skill-box: "[*] Biology [*] Transporter Skill"
+            integrity: 8
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/32.jpg
+        }
+        {
+            blueprintId: 163_033
+            title: William T. Riker
+            type: personnel
+            affiliation: federation
+            property-logo: generations-logo
+            classification: OFFICER
+            icons: command
+            lore: Experienced officer who often commanded the <i>U.S.S. Enterprise</i>. Defeated the Sisters of Duras at Veridian III. Well versed in saucer separations.
+            skill-box: "[*] Leadership [*] Navigation [*] Music [DL] Brace for Impact"
+            integrity: 8
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/33.jpg
+        }
+        {
+            blueprintId: 163_034
+            title: Dr. Farek
+            type: personnel
+            uniqueness: universal
+            affiliation: ferengi
+            property-logo: tng-logo
+            classification: MEDICAL
+            icons: staff
+            lore: Typical Ferengi physician. Served aboard the Krayton in 2366. Distrusted Lwaxana Troi. Tried to study her empathic powers with a mind probe.
+            skill-box: "[*] Exobiology [*] Treachery [*] Computer Skill"
+            integrity: 3
+            cunning: 7
+            strength: 4
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/34.jpg
+        }
+        {
+            blueprintId: 163_035
+            title: Lwaxana Troi
+            type: personnel
+            affiliation: ferengi
+            property-logo: tng-logo
+            classification: V.I.P.
+            lore: Betazoid ambassador held captive by Tog. Misled him about her willingness to cooperate. Later described Tog as slightly repulsive, but with a certain charm.
+            skill-box: "[*] Empathy x2 [*] Anthropology [*] Computer Skill"
+            integrity: 5
+            cunning: 8
+            strength: 2
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/35.jpg
+        }
+        {
+            blueprintId: 163_037
+            title: Dokar
+            type: personnel
+            affiliation: klingon
+            uniqueness: universal
+            property-logo: generations-logo
+            classification: OFFICER
+            icons: staff
+            lore: Characteristic of male Klingon warriors supporting attempts by the House of Duras to regain power after their defeat in the Klingon Civil War.
+            skill-box: "[*] Biology [*] Treachery [*] Transporter Skill"
+            integrity: 5
+            cunning: 5
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/37.jpg
+        }
+        {
+            blueprintId: 163_040
+            title: Bosus
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            uniqueness: universal
+            classification: SECURITY
+            lore: Typical disconnected Borg disciple of The One. Participated in the raid on Ohniaka III. Swore to avenge the death of his friend Torsus.
+            icons: defense-subcommand
+            skill-box: "[*] Astrophysics [*] Treachery [*] Navigation"
+            integrity: 6
+            cunning: 6
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
+        }
+        {
+            blueprintId: 163_050
+            title: Tarvang
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            uniqueness: universal
+            classification: ENGINEER
+            icons: staff
+            lore: Typical Romulan pilot. Beamed aboard the <i>U.S.S. Enterprise</i> during an encounter with quantum singularity lifeforms in 2369. Enjoys chess.
+            skill-box: "[*] Navigation [*] Physics"
+            integrity: 5
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/50.jpg
+        }
+        {
+            blueprintId: 163_054
+            title: Stolen Ship
+            type: ship
+            affiliation: federation,romulan
+            property-logo: tng-logo
+            uniqueness: universal
+            ship-class: MERCHANT CLASS
+            lore: One of many decommissioned Vulcan merchant vessels. Several were stolen by the Romulans in a ploy to conquer Vulcan for the Star Empire.
+            staffing: staff
+            gametext: Tractor Beam
+            range: 7
+            weapons: 6
+            shields: 5
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
+            image-options: [
+                {
+                    affiliation: romulan
+                    image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
+                }
+                {
+                    affiliation: federation
+                    image-url: https://www.trekcc.org/1e/cardimages/tstl/54A.jpg
+                }
+            ]
+        }
+    ]
 }

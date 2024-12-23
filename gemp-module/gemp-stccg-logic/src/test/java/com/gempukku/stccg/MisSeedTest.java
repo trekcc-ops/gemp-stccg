@@ -67,7 +67,7 @@ public class MisSeedTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation));
+        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocation()));
 
         // Attempt mission
         attemptMission(P1, picard.getAwayTeam(), excavation);
@@ -75,6 +75,6 @@ public class MisSeedTest extends AbstractAtTest {
         // Confirm that mission was not solved and Simon Tarses was removed from play
         assertEquals(Zone.REMOVED, tarses.getZone());
         assertEquals(Zone.REMOVED, maglock.getZone());
-        assertFalse(excavation.isCompleted());
+        assertFalse(excavation.getLocation().isCompleted());
     }
 }

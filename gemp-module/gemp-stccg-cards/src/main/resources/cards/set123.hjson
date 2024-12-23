@@ -1,19 +1,37 @@
-// Set 123: Voyager
-
 {
-    123_193: {
-        title: U.S.S. Intrepid
-        type: ship
-        affiliation: federation
-        property-logo: voy-logo
-        ship-class: INTREPID CLASS
-        uniqueness: universal
-        lore: Prototype introduced in the early 2370s. Its bio-neural circuits respond faster than optical relays. Average crew complement of 140. Capable of a sustained warp 9.975.
-        staffing: command,staff
-        gametext: Holodeck, Tractor Beam
-        range: 8
-        weapons: 7
-        shields: 8
-        image-url: https://www.trekcc.org/1e/cardimages/voy/ussintrepid.jpg
-    }
+    setId: "123"
+    setName: Voyager
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 123_079
+            title: Aftermath
+            type: mission
+            mission-type: planet
+            location: Lifeless world
+            lore: Determine cause of a disaster that obliterated all life on this once-thriving planet.
+            mission-requirements: ENGINEER + Physics x2 + (Honor OR Treachery)
+            affiliation-icons: federation,romulan,non-aligned
+            point-box: 35
+            span: 4
+            quadrant: delta
+            image-url: https://www.trekcc.org/1e/cardimages/voy/aftermath.jpg
+        }
+        {
+            blueprintId: 123_193
+            title: U.S.S. Intrepid
+            type: ship
+            affiliation: federation
+            property-logo: voy-logo
+            ship-class: INTREPID CLASS
+            uniqueness: universal
+            lore: Prototype introduced in the early 2370s. Its bio-neural circuits respond faster than optical relays. Average crew complement of 140. Capable of a sustained warp 9.975.
+            staffing: command,staff
+            gametext: Holodeck, Tractor Beam
+            range: 8
+            weapons: 7
+            shields: 8
+            image-url: https://www.trekcc.org/1e/cardimages/voy/ussintrepid.jpg
+        }
+    ]
 }
