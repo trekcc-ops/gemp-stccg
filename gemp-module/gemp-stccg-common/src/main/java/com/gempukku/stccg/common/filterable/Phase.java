@@ -5,6 +5,7 @@ import java.util.Locale;
 public enum Phase {
     // Generic
     BETWEEN_TURNS("Between turns"),
+    START_OF_TURN("Start of turn"),
     // 1E
     SEED_DOORWAY("Doorway seed phase"),
     SEED_MISSION("Mission seed phase"),

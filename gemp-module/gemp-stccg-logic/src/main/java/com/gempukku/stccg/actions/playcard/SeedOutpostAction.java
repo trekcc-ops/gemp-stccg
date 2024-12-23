@@ -69,9 +69,13 @@ public class SeedOutpostAction extends PlayCardAction {
                     _placementWasChosen = true;
                     if (!_affiliationWasChosen) {
                         for (Affiliation affiliation : _cardEnteringPlay.getAffiliationOptions()) {
-                            if (_cardEnteringPlay.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
-                                    affiliation))
-                                _affiliationOptions.add(affiliation);
+                            try {
+                                if (_cardEnteringPlay.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
+                                        affiliation))
+                                    _affiliationOptions.add(affiliation);
+                            } catch(InvalidGameLogicException exp) {
+                                _game.sendErrorMessage(exp);
+                            }
                         }
                         if (_affiliationOptions.size() == 1) {
                             _affiliationWasChosen = true;

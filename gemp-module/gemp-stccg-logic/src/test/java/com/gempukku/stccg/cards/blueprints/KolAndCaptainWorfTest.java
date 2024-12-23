@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void kolTest() throws JsonProcessingException, CardNotFoundException {
+    public void kolTest() throws JsonProcessingException, CardNotFoundException, InvalidGameLogicException {
         initializeSimple1EGame(30);
 
         final MissionCard mission = (MissionCard) newCardForGame("101_174", P1);
@@ -59,7 +60,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void captainWorfTest() throws CardNotFoundException {
+    public void captainWorfTest() throws CardNotFoundException, InvalidGameLogicException {
         initializeSimple1EGame(30);
 
         final MissionCard mission = (MissionCard) newCardForGame("101_174", P1);

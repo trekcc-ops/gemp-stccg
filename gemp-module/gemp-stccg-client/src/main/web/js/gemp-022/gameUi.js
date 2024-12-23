@@ -197,10 +197,10 @@ export default class GameTableUI {
                 "<div class='playerStats'>" +
                     `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
                     `<div id='clock${i}' class='clock'></div>` +
-                    `<div id='deck${i}' class='deckSize' title='Draw deck size'></div>` +
-                    `<div id='hand${i}' class='handSize' title='Hand size'></div>` +
-                    `<div id='discard${i}' class='discardSize' title='Discard size'></div>` +
-                    `<div id='score${i}' class='playerScore'></div>` +
+                    `<div id='deck${i}' class='deckSize' title='Draw deck size'>0</div>` +
+                    `<div id='hand${i}' class='handSize' title='Hand size'>0</div>` +
+                    `<div id='discard${i}' class='discardSize' title='Discard size'>0</div>` +
+                    `<div id='score${i}' class='playerScore'>SCORE 0</div>` +
                 "</div>");
 
             var showBut = $("<div class='slimButton'>+</div>").button().click(
@@ -386,8 +386,8 @@ export default class GameTableUI {
                 }
 
                 optionSelection.bind("change", function() {
-                    var userSelection = null;
-                    if (settingName == "foilPresentation") {
+                    var userSelection;
+                    if (settingName === "foilPresentation") {
                         userSelection = "" + optionSelection.val(); // Multiple choice
                     } else {
                         userSelection = optionSelection.prop("checked"); // True/false
@@ -1433,8 +1433,8 @@ export default class GameTableUI {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
 
-        var min = this.getDecisionParameter(decision, "min");
-        var max = this.getDecisionParameter(decision, "max");
+        var min = parseInt(this.getDecisionParameter(decision, "min"));
+        var max = parseInt(this.getDecisionParameter(decision, "max"));
         var cardIds = this.getDecisionParameters(decision, "cardId");
         var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
         var imageUrls = this.getDecisionParameters(decision, "imageUrl");
@@ -1480,8 +1480,23 @@ export default class GameTableUI {
             processButtons();
         };
 
+        var selectAllCards = function () {
+            selectedCardIds = Array.from(cardIds);
+            that.recalculateCardSelectionOrder(selectedCardIds);
+            that.recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max);
+            allowSelection();
+            processButtons();
+        }
+
         var processButtons = function () {
             var buttons = {};
+            if ((cardIds.length <= max) &&
+                (selectedCardIds.length != max)) {
+                buttons["Select all"] = function() {
+                    selectAllCards();
+                    processButtons();
+                }
+            }
             if (selectedCardIds.length > 0)
                 buttons["Clear selection"] = function () {
                     resetChoice();
@@ -1503,19 +1518,119 @@ export default class GameTableUI {
                 if (selectedCardIds.includes(cardId)) {
                     let index = selectedCardIds.indexOf(cardId);
                     selectedCardIds.splice(index, 1);
-                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
                 }
                 // Otherwise, if the cardId is not already selected, add it.
                 else {
                     selectedCardIds.push(cardId);
-                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
                 }
                 
-                // If the max number of cards are selected and the user has auto accept on, we're done.
-                if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
+                that.recalculateCardSelectionOrder(selectedCardIds);
+                that.recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max);
+
+                processButtons();
+            };
+
+            that.attachSelectionFunctions(selectableCardIds, true);
+        };
+
+        allowSelection();
+        if (!this.replayMode)
+        {
+            processButtons();
+            this.PlaySound("awaitAction");
+        }
+
+        openSizeDialog(this.cardActionDialog);
+        this.arbitraryDialogResize(false);
+        $('.ui-dialog :button').blur();
+    }
+
+    cardSelectionFromCombinations(decision) {
+        var id = decision.getAttribute("id");
+
+        var min = parseInt(this.getDecisionParameter(decision, "min"));
+        var max = parseInt(this.getDecisionParameter(decision, "max"));
+        var cardIds = this.getDecisionParameters(decision, "cardId");
+        var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
+        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
+        var selectable = this.getDecisionParameters(decision, "selectable");
+
+        var combinations = this.getDecisionParameters(decision, "combinations");
+        var jsonCombinations = JSON.parse(combinations);
+        // DEBUG: console.log(jsonCombinations);
+
+
+        var that = this;
+
+        var selectedCardIds = new Array();
+        var selectableCardIds = new Array();
+
+        this.cardActionDialog
+            .html("<div id='cardSelectionFromCombinations'></div>")
+            .dialog("option", "title", `Select ${min} to ${max} cards`);
+
+        // Create the action cards and fill the dialog with them
+        for (var i = 0; i < blueprintIds.length; i++) {
+            var cardId = cardIds[i];
+            var blueprintId = blueprintIds[i];
+            var imageUrl = imageUrls[i];
+
+            if (selectable[i] == "true")
+                selectableCardIds.push(cardId);
+
+            var card = new Card(blueprintId, "SPECIAL", cardId, null, imageUrl);
+
+            var cardDiv = this.createCardDiv(card);
+
+            $("#cardSelectionFromCombinations").append(cardDiv);
+        }
+
+        var finishChoice = function () {
+            that.cardActionDialog.dialog("close");
+            $("#cardSelectionFromCombinations").html("");
+            that.clearSelection();
+            that.decisionFunction(id, "" + selectedCardIds);
+        };
+
+        var resetChoice = function () {
+            selectedCardIds = new Array();
+            that.clearSelection();
+            allowSelection();
+            processButtons();
+        };
+
+        var processButtons = function () {
+            var buttons = {};
+            if (selectedCardIds.length > 0)
+                buttons["Clear selection"] = function () {
+                    resetChoice();
+                    processButtons();
+                };
+            if ((selectedCardIds.length >= min) &&
+                (selectedCardIds.length <= max))
+                buttons["Done"] = function () {
                     finishChoice();
-                    return;
+                };
+            that.cardActionDialog.dialog("option", "buttons", buttons);
+        };
+
+        var allowSelection = function () {
+            // this.selectionFunction is called when a card is clicked
+            //   thanks to the code in clickCardFunction()
+            that.selectionFunction = function (cardId) {
+                // DEBUG: console.log("arbitraryCardsDecision -> allowSelection -> selectionFunction");
+                // If the cardId is already selected, remove it.
+                if (selectedCardIds.includes(cardId)) {
+                    let index = selectedCardIds.indexOf(cardId);
+                    selectedCardIds.splice(index, 1);
                 }
+                // Otherwise, if the cardId is not already selected, add it.
+                else {
+                    selectedCardIds.push(cardId);
+                }
+
+                that.recalculateCardSelectionOrder(selectedCardIds);
+                that.recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max);
 
                 processButtons();
             };
@@ -1919,6 +2034,126 @@ export default class GameTableUI {
             getCardDivFromId(cardId).attr("selectedOrder", index + 1); // use a 1-index
         }
     }
+
+    recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max) {
+        if (max === 0) {
+            console.error("Max is 0, setting all cards to not selectable. This is probably a server bug.");
+            for (const cardId of cardIds.values()) {
+                getCardDivFromId(cardId).removeClass("selectableCard").removeClass("selectedCard").addClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+            }
+            return;
+        }
+        else {
+            for (const cardId of cardIds.values()) {
+                if (selectedCardIds.length === 0) {
+                    // everything is selectable
+                    getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                }
+                else {
+                    // selected
+                    if (selectedCardIds.includes(cardId)) {
+                        getCardDivFromId(cardId).removeClass("selectableCard").removeClass("notSelectableCard").addClass("selectedCard").addClass("selectedBadge");
+                    }
+                    // not selected
+                    else {
+                        // we hit the max, gray out unselected cards since we can't add more
+                        if (selectedCardIds.length === max) {
+                            getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                            continue;
+                        }
+                        else {
+                            getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        }
+                    }
+                }
+            }
+            return;
+        }
+    }
+
+    recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
+        let allowedCombinationsRemaining = new Set();
+        
+        if (selectedCardIds.length === 0) {
+            // DEBUG: console.log("No selected cards.");
+            allowedCombinationsRemaining = new Set(cardIds);
+            // DEBUG: console.log(`Allowed combinations remaining: ${Array.from(allowedCombinationsRemaining)}`);
+        }
+        else if (selectedCardIds.length === 1) {
+            // selected one card
+            // DEBUG: console.log(`Selected cards: ${selectedCardIds}`);
+            const cardId = selectedCardIds[0];
+            let this_card_allowed = new Array();
+            for (const compatible_cardId of jsonCombinations[cardId]) {
+                this_card_allowed.push(compatible_cardId);
+            }
+            const this_allowed_as_set = new Set(this_card_allowed);
+            allowedCombinationsRemaining = this_allowed_as_set;
+            
+            // DEBUG: console.log(`Allowed combinations remaining: ${Array.from(allowedCombinationsRemaining)}`);
+        }
+        else {
+            // selected two or more cards
+            // DEBUG: console.log(`Selected cards: ${selectedCardIds}`);
+            for (const [index, cardId] of selectedCardIds.entries()) {
+                let this_card_allowed = new Array();
+                for (const compatible_cardId of jsonCombinations[cardId]) {
+                    this_card_allowed.push(compatible_cardId);
+                }
+                const this_allowed_as_set = new Set(this_card_allowed);
+
+                if (index === 0) {
+                    // Don't use .intersection on the first pass, since the intersection of empty set and valid choices is nothing.
+                    allowedCombinationsRemaining = this_allowed_as_set;
+                }
+                else {
+                    allowedCombinationsRemaining = allowedCombinationsRemaining.intersection(this_allowed_as_set);
+                }
+                // DEBUG: console.log(`Allowed combinations remaining: ${Array.from(allowedCombinationsRemaining)}`);
+            }
+        }
+
+
+        // Apply CSS
+        // BUG: Normally I'd split this into another function but when I did, JQuery
+        //      didn't pass the Sets around properly. IDK. One big function it is.
+        for (const cardId of cardIds.values()) {
+            if (selectedCardIds.length === 0) {
+                // everything is selectable
+                // DEBUG: console.log("Everything is selectable.");
+                getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+            }
+            else {
+                // selected
+                if (selectedCardIds.includes(cardId)) {
+                    getCardDivFromId(cardId).removeClass("selectableCard").removeClass("notSelectableCard").addClass("selectedCard").addClass("selectedBadge");
+                }
+                // not selected
+                else {
+                    // we hit the max, treat unselected cards as if they are not compatible
+                    if (selectedCardIds.length === max) {
+                        getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        continue;
+                    }
+
+                    // Not selected, not at the max, and compatible with other selected cards
+                    if (allowedCombinationsRemaining.has(cardId)) {
+                        // DEBUG: console.log(`Not selected, compatible: ${cardId}`);
+                        getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                    }
+                    // Not selected, not at the max, but not compatible with other selected cards
+                    else {
+                        // DEBUG: console.log(`Not selected, not compatible: ${cardId}`);
+                        // same as above but w/o selectableCard
+                        getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                    }
+                }
+            }
+            
+        }
+        
+    }
+
 
     clearSelection() {
         $(".selectableCard").removeClass("selectableCard").data("action", null);

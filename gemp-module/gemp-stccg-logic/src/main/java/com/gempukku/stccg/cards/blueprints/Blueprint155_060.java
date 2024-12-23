@@ -24,13 +24,12 @@ public class Blueprint155_060 extends CardBlueprint {
     @Override
     public List<Skill> getSkills(DefaultGame game, PhysicalCard thisCard) {
         Collection<SkillName> skillNames = new LinkedList<>();
-        MissionLocation currentLocation = thisCard.getLocation();
-        if (currentLocation.isSpace()) {
+        if (thisCard.isAtSpaceLocation()) {
             skillNames.add(SkillName.NAVIGATION);
             skillNames.add(SkillName.ASTROPHYSICS);
             skillNames.add(SkillName.STELLAR_CARTOGRAPHY);
         }
-        if (currentLocation.isPlanet()) {
+        if (thisCard.isAtPlanetLocation()) {
             skillNames.add(SkillName.ENGINEER);
             skillNames.add(SkillName.PHYSICS);
             skillNames.add(SkillName.COMPUTER_SKILL);

@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
     // Unit tests for card definition of Dedication to Duty
 
     @Test
-    public void dedicationToDutyTest1() throws DecisionResultInvalidException {
+    public void dedicationToDutyTest1() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
@@ -73,7 +74,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
     }
 
     @Test
-    public void dedicationToDutyTest2() throws DecisionResultInvalidException {
+    public void dedicationToDutyTest2() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 

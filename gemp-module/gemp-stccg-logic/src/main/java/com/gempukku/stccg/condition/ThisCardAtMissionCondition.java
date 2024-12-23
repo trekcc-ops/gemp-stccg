@@ -18,10 +18,10 @@ public class ThisCardAtMissionCondition implements Condition {
 
     @Override
     public boolean isFulfilled(DefaultGame cardGame) {
-        MissionLocation location = _thisCard.getLocation();
-        if (location == null)
-            return false;
-        else try {
+        try {
+            MissionLocation location = _thisCard.getLocation();
+            if (location == null)
+                return false;
             MissionCard missionCard = location.getMissionForPlayer(_thisCard.getController().getPlayerId());
             return _missionFilter.accepts(cardGame, missionCard);
         } catch(InvalidGameLogicException exp) {

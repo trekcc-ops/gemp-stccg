@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DefaultActionContext;
+import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -147,7 +148,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isControlledBy(Player player) { return isControlledBy(player.getPlayerId()); }
 
     public String getCardLink() { return _blueprint.getCardLink(); }
-    public MissionLocation getLocation() { return _currentLocation; }
+    public MissionLocation getLocation() throws InvalidGameLogicException {
+        if (_currentLocation == null)
+            throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
+        return _currentLocation;
+    }
 
     public void setLocation(MissionLocation location) {
         _currentLocation = location;
@@ -263,6 +268,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         else if (_blueprint instanceof Blueprint156_010 surpriseBlueprint) {
             return surpriseBlueprint.getValidResponses(this, player, effectResult);
         }
+        else if (_blueprint instanceof Blueprint109_063 missionSpecBlueprint) {
+            return missionSpecBlueprint.getValidResponses(this, player, effectResult);
+        }
         else {
             return getActionsFromActionSources(player.getPlayerId(), this, null, effectResult,
                     _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
@@ -322,8 +330,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     public boolean isPresentWith(PhysicalCard card) {
-        return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
-        // TODO Elaborate on this definition
+        try {
+            return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
+        } catch(InvalidGameLogicException exp) {
+            card.getGame().sendErrorMessage(exp);
+            return false;
+        }
     }
 
     public boolean hasSkill(SkillName skillName) { return false; }
@@ -351,6 +363,18 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             throws InvalidGameLogicException {
         throw new InvalidGameLogicException(
                 "Tried to call getEncounterActions for a card that does not have an encounter action");
+    }
+
+    public boolean isAtPlanetLocation() {
+        if (_currentLocation == null)
+            return false;
+        else return _currentLocation.isPlanet();
+    }
+
+    public boolean isAtSpaceLocation() {
+        if (_currentLocation == null)
+            return false;
+        else return _currentLocation.isSpace();
     }
 
     public Player getController() {

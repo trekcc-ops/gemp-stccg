@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -46,26 +47,25 @@ public class Filters {
     }
 
     public static Collection<PhysicalCard> filterYourActive(Player player, Filterable... filters) {
-        return filterActive(player.getGame(), Filters.your(player), Filters.and(filters));
+        return filterActive(player.getGame(), your(player), and(filters));
     }
-
-
 
     public static Collection<PhysicalCard> filterYourCardsPresentWith(Player player, PhysicalCard card,
                                                                       Filterable... filters) {
-        return filterYourActive(player, Filters.presentWith(card), Filters.and(filters));
+        return filterYourActive(player, presentWith(card), and(filters));
     }
 
-    public static Collection<FacilityCard> yourActiveFacilities(Player player) {
-        Collection<FacilityCard> result = new LinkedList<>();
+    public static List<FacilityCard> yourFacilitiesInPlay(Player player) {
+        List<FacilityCard> result = new LinkedList<>();
         Collection<PhysicalCard> facilities = filterYourActive(player, CardType.FACILITY);
         for (PhysicalCard facility : facilities) {
-            if (facility instanceof FacilityCard) {
+            if (facility instanceof FacilityCard && facility.isInPlay()) {
                 result.add((FacilityCard) facility);
             }
         }
         return result;
     }
+
 
     public static Collection<PersonnelCard> highestTotalAttributes(Collection<PersonnelCard> personnelCards) {
         List<PersonnelCard> highestCards = new LinkedList<>();
@@ -203,7 +203,17 @@ public class Filters {
     public static final Filter equipment = Filters.or(CardType.EQUIPMENT);
     public static final Filter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
     public static Filter atLocation(final MissionLocation location) {
-        return (game, physicalCard) -> physicalCard.getLocation() == location;
+        return (game, physicalCard) -> {
+            try {
+                if (physicalCard.getZone() == Zone.TABLE)
+                    return false;
+                else
+                    return physicalCard.getLocation() == location;
+            } catch (InvalidGameLogicException e) {
+                game.sendErrorMessage(e);
+                return false;
+            }
+        };
     }
 
     public static final Filter inPlay = (game, physicalCard) -> physicalCard.getZone().isInPlay();
