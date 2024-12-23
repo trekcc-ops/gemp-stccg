@@ -2501,7 +2501,7 @@ export class ST1EGameTableUI extends GameTableUI {
             locationDiv === undefined) {
             return "";
         }
-        switch (locationDiv.data("region")) {
+        switch (locationDiv) {
             // 1E regions
             case "ARGOLIS_CLUSTER":
                 return "Argolis Cluster Region";
