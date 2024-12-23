@@ -35,7 +35,7 @@
             "turnNumber": 0, // Turn number for this player. Will be 0 if they have not had their first turn yet.
             "decked": true, // Tribbles only
 
-                /* List of cardIds the cards in each zone. As of 11/16/24, there are expected changes to this format.
+                /* List of cardIds for the cards in each zone. As of 11/16/24, there are expected changes to this format.
                     The information is not always reliable or intuitive. */
             "DRAW_DECK": [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38],
             "MISSIONS_PILE": [],
@@ -46,22 +46,39 @@
             "VOID": [45,6,41,8,43,4,44,3,42,7,46,5],
             "VOID_FROM_HAND": [45,6,41,8,43,4,44,3,42,7,46,5],
             "SEED_DECK": []
-            // There may be additional zones specified here, like STACKED or PLAY_PILE
+            // There may be additional zones specified here, like PLAY_PILE
         },
         // etc.
     ],
     "spacelineLocations": [
-        // List of spacleine locations in order for 1E game.
+        // List of spaceline locations for 1E game.
         {
+            "locationZoneIndex": 1,
             "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
             "locationName": "Gravesworld",
             "cardsSeededUnderneath": [6,7], // list of cardIds for cards seeded underneath a mission
             "isCompleted": false
         },
         {
+            "locationZoneIndex": 2,
             "quadrant": "ALPHA",
             "region": "Romulus System", // There will not be a region item if the location is not in one
             "locationName": "Romulus"
+        },
+        {
+            "locationZoneIndex": 3,
+            "quadrant": "ALPHA",
+            "locationName": "Excavation"
+        },
+        {
+            "locationZoneIndex": 4,
+            "quadrant": "ALPHA",
+            "locationName": "Space"
+        },
+        {
+            "locationZoneIndex": 5,
+            "quadrant": "ALPHA",
+            "locationName": "Space"
         },
         // etc.
     ],
@@ -94,11 +111,14 @@
             "cardId": 2,
             "owner": "player1",
             "zone": "ATTACHED",
+               /* Cards in the ATTACHED zone are attached to other cards. In this case, it demonstrates
+                    that this ship is docked at a facility. */
             "affiliation": "FEDERATION", // only included for affiliated cards
             "locationZoneIndex": 3 // only included if the card is on the spaceline
             "attachedToCardId": 1, // only included if the card is attached to another
             "dockedAtCardId": 1, // only included for a docked ship
             "rangeAvailable": 3 // only included for a ship
+            "isStopped": false // only included for reportables (personnel, ships, equipment)
         },
         {
             "title": "Excavation",

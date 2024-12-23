@@ -34,6 +34,8 @@ public class PhysicalCardSerializer extends StdSerializer<PhysicalCard> {
 
         if (physicalCard instanceof AffiliatedCard affiliatedCard)
             jsonGenerator.writeStringField("affiliation", affiliatedCard.getAffiliation().name());
+        if (physicalCard instanceof PhysicalReportableCard1E reportable)
+            jsonGenerator.writeBooleanField("isStopped", reportable.isStopped());
         if (physicalCard instanceof PhysicalShipCard shipCard) {
             if (shipCard.isDocked())
                 jsonGenerator.writeNumberField("dockedAtCardId", shipCard.getDockedAtCard().getCardId());
