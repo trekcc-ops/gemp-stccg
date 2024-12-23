@@ -340,9 +340,4 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         _nextCardId++;
         return card;
     }
-
-    public void sendSerializedGameStateToClient() {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.SERIALIZED_GAME_STATE, this));
-    }
 }
