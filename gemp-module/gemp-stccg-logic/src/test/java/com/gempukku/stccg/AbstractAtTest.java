@@ -727,6 +727,24 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throw new DecisionResultInvalidException("No valid action to attempt " + mission.getTitle());
     }
 
+    protected void attemptMission(String playerId, MissionLocation mission)
+            throws DecisionResultInvalidException {
+        AttemptMissionAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof AttemptMissionAction attemptAction &&
+                        attemptAction.getMission() == mission)
+                    choice = attemptAction;
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to attempt " + mission.getLocationName());
+    }
+
     protected <T extends Action> T selectAction(Class<T> clazz, PhysicalCard card, String playerId)
             throws DecisionResultInvalidException {
         T choice = null;

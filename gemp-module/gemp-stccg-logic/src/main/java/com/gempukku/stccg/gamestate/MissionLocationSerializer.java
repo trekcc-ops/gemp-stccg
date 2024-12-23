@@ -25,6 +25,7 @@ public class MissionLocationSerializer extends StdSerializer<MissionLocation> {
         if (location.getRegion() != null)
             jsonGenerator.writeStringField("region", location.getRegion().name());
         jsonGenerator.writeStringField("locationName", location.getLocationName());
+        jsonGenerator.writeNumberField("locationZoneIndex", location.getLocationZoneIndex());
         jsonGenerator.writeBooleanField("isCompleted", location.isCompleted());
 
         if (!location.getCardsSeededUnderneath().isEmpty()) {
