@@ -637,6 +637,15 @@ export default class GameAnimations {
             });
     }
 
+    parseSerializedGameState(element, animate) {
+        var that = this;
+        
+        let gameStateRaw = element.getAttribute("serializedGameState");
+        let parsedGameState = JSON.parse(gameStateRaw);
+
+        console.warn(parsedGameState);
+    }
+
     message(element, animate) {
         var that = this;
         $("#main").queue(
