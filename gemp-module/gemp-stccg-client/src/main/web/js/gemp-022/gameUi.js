@@ -912,6 +912,8 @@ export default class GameTableUI {
             this.animations.turnChange(gameEvent, animate);
         } else if (eventType === "GS") {
             this.animations.gameStats(gameEvent, animate);
+        } else if (eventType === "SERIALIZED_GAME_STATE") {
+            this.animations.parseSerializedGameState(gameEvent, animate);
         } else if (eventType === "M") {
             this.animations.message(gameEvent, animate);
         } else if (eventType === "W") {
