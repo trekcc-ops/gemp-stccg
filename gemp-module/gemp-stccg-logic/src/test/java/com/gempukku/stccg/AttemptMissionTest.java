@@ -70,7 +70,7 @@ public class AttemptMissionTest extends AbstractAtTest {
     }
 
     @Test
-    public void selectAwayTeamTest() throws DecisionResultInvalidException {
+    public void selectAwayTeamTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
