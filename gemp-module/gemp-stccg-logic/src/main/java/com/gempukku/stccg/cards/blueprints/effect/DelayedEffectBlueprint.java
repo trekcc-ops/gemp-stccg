@@ -61,7 +61,8 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
         }
     }
 
-    protected List<Action> createActions(Action action, ActionContext actionContext) {
+    protected List<Action> createActions(Action action, ActionContext actionContext)
+            throws InvalidGameLogicException, InvalidCardDefinitionException {
         throw new UnsupportedOperationException("No methodology defined for createActions");
     }
 

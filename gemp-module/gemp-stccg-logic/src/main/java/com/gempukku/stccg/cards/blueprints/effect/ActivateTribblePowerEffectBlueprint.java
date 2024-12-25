@@ -12,6 +12,9 @@ import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint {
 
     public ActivateTribblePowerEffectBlueprint(JsonNode effectObject) throws InvalidCardDefinitionException {
@@ -19,9 +22,10 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
     }
 
     @Override
-    protected Effect createEffect(Action action, ActionContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException {
+    protected List<Action> createActions(Action action, ActionContext context)
+            throws InvalidCardDefinitionException, InvalidGameLogicException {
 
+        List<Action> result = new LinkedList<>();
         TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();
         if (context instanceof TribblesActionContext tribblesContext) {
 
@@ -46,7 +50,8 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
                 default -> throw new InvalidCardDefinitionException(
                         "Code not yet implemented for Tribble power " + tribblePower.getHumanReadable());
             };
-            return new StackActionEffect(context.getGame(), activateAction);
+            result.add(activateAction);
+            return result;
         } else throw new InvalidCardDefinitionException(
                 "Could not create Tribbles power effect for a non-Tribbles context");
     }
