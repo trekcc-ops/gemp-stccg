@@ -48,8 +48,6 @@ public abstract class PlayCardAction extends ActionyAction {
 
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    protected Effect getFinalEffect() { return null; }
-
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Action cost = getNextCost();
         if (cost != null)
