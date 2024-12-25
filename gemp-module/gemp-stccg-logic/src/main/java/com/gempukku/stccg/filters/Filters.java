@@ -159,6 +159,10 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.getBlueprint().isSpecies(species);
     }
 
+    public static Filter inCards(Collection<PhysicalCard> cards) {
+        return (game, physicalCard) -> cards.contains(physicalCard);
+    }
+
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);
     public static final Filter ship = Filters.or(CardType.SHIP);
     public static final Filter facility = Filters.or(CardType.FACILITY);
@@ -592,8 +596,8 @@ public class Filters {
                 missionCard.getPoints() >= pointValue;
     }
 
-    public static Filter yourDiscard(String chosenPlayer) {
-        return (game, physicalCard) -> game.getGameState().getDiscard(chosenPlayer).contains(physicalCard);
+    public static Filter yourDiscard(String playerId) {
+        return (game, physicalCard) -> game.getGameState().getDiscard(playerId).contains(physicalCard);
     }
 
 
