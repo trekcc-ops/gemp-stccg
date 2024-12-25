@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -10,6 +11,9 @@ import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ChooseEffectBlueprintProducer {
 
@@ -46,8 +50,9 @@ public class ChooseEffectBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected Effect createEffect(Action action, ActionContext context) {
-                return switch (effectType) {
+            protected List<Action> createActions(Action action, ActionContext context) {
+                List<Action> result = new LinkedList<>();
+                Effect effect = switch (effectType) {
                     case CHOOSEANUMBER -> new ChooseNumberEffect(context, choiceText, valueSource, memorize);
                     case CHOOSEOPPONENT -> new ChooseOpponentEffect(context, memorize);
                     case CHOOSEPLAYER -> new ChoosePlayerEffect(context, memorize);
@@ -55,6 +60,8 @@ public class ChooseEffectBlueprintProducer {
                             new ChoosePlayerExceptEffect(context, excludePlayerSource.getPlayerId(context), memorize);
                     case CHOOSETRIBBLEPOWER -> new ChooseTribblePowerEffect(context, memorize);
                 };
+                result.add(new SubAction(action, effect));
+                return result;
             }
         };
     }
