@@ -16,14 +16,14 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
             @Override
             protected void doPlayEffect() throws InvalidCardDefinitionException, InvalidGameLogicException {
                 // Need to insert them, but in the reverse order
-                final List<? extends Effect> effects = createEffects(action, actionContext);
-                if (effects != null) {
-                    final Effect[] effectsArray = effects.toArray(new Effect[0]);
+                final List<Action> actions = createActions(action, actionContext);
+                if (actions != null) {
+                    final Action[] effectsArray = actions.toArray(new Action[0]);
                     for (int i = effectsArray.length - 1; i >= 0; i--)
                         if (cost)
-                            action.insertCost(effectsArray[i]);
+                            action.insertCost(new StackActionEffect(actionContext.getGame(), effectsArray[i]));
                         else
-                            action.insertEffect(effectsArray[i]);
+                            action.insertEffect(new StackActionEffect(actionContext.getGame(), effectsArray[i]));
                 }
             }
 
@@ -36,23 +36,8 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
         }
     }
 
-    protected List<? extends Effect> createEffects(Action action, ActionContext actionContext)
-            throws InvalidCardDefinitionException, InvalidGameLogicException {
-        List<Effect> result = new LinkedList<>();
-        try {
-            for (Action createdAction : createActions(action, actionContext)) {
-                result.add(new StackActionEffect(actionContext.getGame(), createdAction));
-            }
-            return result;
-        } catch(UnsupportedOperationException exp2) {
-            throw new InvalidCardDefinitionException("Unable to identify effects from blueprint");
-        }
-    }
-
-    protected List<Action> createActions(Action action, ActionContext actionContext)
-            throws InvalidGameLogicException, InvalidCardDefinitionException {
-        throw new UnsupportedOperationException("No methodology defined for createActions");
-    }
+    abstract protected List<Action> createActions(Action action, ActionContext actionContext)
+            throws InvalidGameLogicException, InvalidCardDefinitionException;
 
     @Override
     public boolean isPlayableInFull(ActionContext actionContext) {
