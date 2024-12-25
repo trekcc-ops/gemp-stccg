@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
             @Override
             protected void doPlayEffect() throws InvalidCardDefinitionException, InvalidGameLogicException {
                 // Need to insert them, but in the reverse order
-                final List<? extends Effect> effects = createEffects(cost, action, actionContext);
+                final List<? extends Effect> effects = createEffects(action, actionContext);
                 if (effects != null) {
                     final Effect[] effectsArray = effects.toArray(new Effect[0]);
                     for (int i = effectsArray.length - 1; i >= 0; i--)
@@ -41,7 +40,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
         throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
     }
 
-    protected List<? extends Effect> createEffects(boolean cost, Action action, ActionContext actionContext)
+    protected List<? extends Effect> createEffects(Action action, ActionContext actionContext)
             throws InvalidCardDefinitionException, InvalidGameLogicException {
         List<Effect> result = new LinkedList<>();
         try {

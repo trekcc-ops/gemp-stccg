@@ -26,22 +26,6 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
         _requirements = RequirementFactory.getRequirements(node);
     }
     @Override
-    protected Effect createEffect(Action action, ActionContext context) {
-
-        if(requirementsNotMet(context))
-            return null;
-        SubAction subAction = new SubAction(action);
-
-        for (EffectBlueprint costAppender : _costAppenders) {
-            costAppender.addEffectToAction(true, subAction, context);
-        }
-        for (EffectBlueprint effectBlueprint : _effectBlueprints)
-            effectBlueprint.addEffectToAction(false, subAction, context);
-
-        return new StackActionEffect(context.getGame(), subAction);
-    }
-
-    @Override
     protected List<Action> createActions(Action action, ActionContext context) {
 
         List<Action> result = new LinkedList<>();
