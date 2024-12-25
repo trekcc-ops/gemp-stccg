@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.usage.UseNormalCardPlayEffect;
+import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -16,7 +16,7 @@ public class STCCGPlayCardAction extends PlayCardAction {
         super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
         setText("Play " + card.getFullName());
         if (!forFree)
-            appendCost(new UseNormalCardPlayEffect(card.getGame(), player));
+            appendCost(new UseNormalCardPlayAction(card, player));
     }
 
     @Override
