@@ -36,28 +36,16 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
         }
     }
 
-    protected Effect createEffect(Action action, ActionContext context) throws InvalidGameLogicException, InvalidCardDefinitionException {
-        throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
-    }
-
     protected List<? extends Effect> createEffects(Action action, ActionContext actionContext)
             throws InvalidCardDefinitionException, InvalidGameLogicException {
         List<Effect> result = new LinkedList<>();
         try {
-            final Effect effect = createEffect(action, actionContext);
-            if (effect != null) {
-                result.add(effect);
+            for (Action createdAction : createActions(action, actionContext)) {
+                result.add(new StackActionEffect(actionContext.getGame(), createdAction));
             }
             return result;
-        } catch(UnsupportedOperationException exp) {
-            try {
-                for (Action createdAction : createActions(action, actionContext)) {
-                    result.add(new StackActionEffect(actionContext.getGame(), createdAction));
-                }
-                return result;
-            } catch(UnsupportedOperationException exp2) {
-                throw new InvalidCardDefinitionException("Unable to identify effects from blueprint");
-            }
+        } catch(UnsupportedOperationException exp2) {
+            throw new InvalidCardDefinitionException("Unable to identify effects from blueprint");
         }
     }
 
