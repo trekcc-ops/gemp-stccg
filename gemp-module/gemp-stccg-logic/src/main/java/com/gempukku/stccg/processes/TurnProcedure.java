@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
@@ -73,10 +74,10 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             if (effect == null) {
                 actionsEnvironment.removeCompletedAction(action);
             } else {
-                if (effect.getType() == null) {
-                    effect.playEffect();
-                } else
+                if (effect instanceof DiscardCardsFromPlayEffect) {
                     actionsEnvironment.addActionToStack(new PlayOutEffect(effect));
+                } else
+                    effect.playEffect();
             }
         } catch (InvalidGameLogicException exp) {
             _game.sendErrorMessage(exp);
