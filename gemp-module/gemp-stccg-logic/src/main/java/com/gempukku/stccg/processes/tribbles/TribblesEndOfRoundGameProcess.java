@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.actions.PlayerWentOutResult;
+import com.gempukku.stccg.actions.scorepoints.PlayerWentOutResult;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;

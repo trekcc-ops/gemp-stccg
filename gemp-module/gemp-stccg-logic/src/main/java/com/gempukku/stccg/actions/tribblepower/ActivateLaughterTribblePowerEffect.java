@@ -1,13 +1,15 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ScorePointsEffect;
+import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.stccg.actions.choose.ChooseAndPutCardsFromHandBeneathDrawDeckEffect;
+import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.google.common.collect.Iterables;
 
@@ -45,7 +47,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
             getGame().getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player to discard a card", players) {
                         @Override
-                        protected void validDecisionMade(int index, String result) {
+                        protected void validDecisionMade(int index, String result) throws InvalidGameLogicException {
                             firstPlayerChosen(players, result, _tribblesGame);
                         }
                     });
@@ -54,7 +56,8 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
         }
     }
 
-    private void firstPlayerChosen(List<String> allPlayers, String chosenPlayer, TribblesGame game) {
+    private void firstPlayerChosen(List<String> allPlayers, String chosenPlayer, TribblesGame game)
+            throws InvalidGameLogicException {
         _discardingPlayer = chosenPlayer;
         List<String> newSelectablePlayers = new ArrayList<>(allPlayers);
         newSelectablePlayers.remove(chosenPlayer);
@@ -65,21 +68,23 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
                     new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer),
                             "Choose a player to place a card from hand on the bottom of their deck", newSelectablePlayers) {
                         @Override
-                        protected void validDecisionMade(int index, String result) {
+                        protected void validDecisionMade(int index, String result) throws InvalidGameLogicException {
                             secondPlayerChosen(result, game);
                         }
                     });
         }
     }
 
-    private void secondPlayerChosen(String secondPlayerChosen, TribblesGame game) {
+    private void secondPlayerChosen(String secondPlayerChosen, TribblesGame game) throws InvalidGameLogicException {
         SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(getGame(), _action, _discardingPlayer,false,1));
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
                 game, _action, secondPlayerChosen, 1, false, Filters.any));
         if (!(Objects.equals(_discardingPlayer, _activatingPlayer) ||
-                Objects.equals(secondPlayerChosen, _activatingPlayer)))
-            subAction.appendEffect(new ScorePointsEffect(game, _source, _activatingPlayer, BONUS_POINTS));
+                Objects.equals(secondPlayerChosen, _activatingPlayer))) {
+            Action scoreAction = new ScorePointsAction(game, _source, _activatingPlayer, BONUS_POINTS);
+            subAction.appendEffect(new StackActionEffect(game, scoreAction));
+        }
         game.getActionsEnvironment().addActionToStack(subAction);
     }
 }
