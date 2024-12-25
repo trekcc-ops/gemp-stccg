@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.placecard.PlacePlayedCardBeneathDrawDeckEffect;
 import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardAtRandomFromHandEffect;
@@ -63,11 +64,11 @@ public class CardEffectBlueprintProducer {
         
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Effect> createEffects(boolean cost, Action action, ActionContext context) {
+            protected List<Action> createActions(Action action, ActionContext context) {
                 final String selectingPlayerId = selectingPlayer.getPlayerId(context);
                 final String targetPlayerId = targetPlayer.getPlayerId(context);
                 final int count = countSource.evaluateExpression(context, null);
-                List<Effect> result = new LinkedList<>();
+                List<Action> result = new LinkedList<>();
                 int numberOfEffects = (effectType == EffectType.DISCARDCARDATRANDOMFROMHAND) ? count : 1;
                 for (int i = 0; i < numberOfEffects; i++) {
                     Effect effect = switch (effectType) {
@@ -95,7 +96,7 @@ public class CardEffectBlueprintProducer {
                                 new RevealBottomCardsOfDrawDeckEffect(context, targetPlayerId, count, memory);
                         case REVEALHAND -> new RevealHandEffect(context, targetPlayerId, memory);
                     };
-                    result.add(effect);
+                    result.add(new SubAction(action, effect));
                 }
                 return result;
             }
