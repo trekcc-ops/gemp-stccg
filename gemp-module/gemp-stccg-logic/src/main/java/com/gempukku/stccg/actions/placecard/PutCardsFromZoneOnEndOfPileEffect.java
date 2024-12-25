@@ -1,4 +1,4 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.placecard;
 
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;

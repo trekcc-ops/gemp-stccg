@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.RequiredTriggerAction;
+import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.actions.choose.SelectSkillEffect;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionSkill;

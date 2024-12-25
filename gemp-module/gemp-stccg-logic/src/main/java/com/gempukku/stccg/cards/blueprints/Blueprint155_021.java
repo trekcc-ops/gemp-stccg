@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActivateCardAction;
+import com.gempukku.stccg.actions.turn.ActivateCardAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;

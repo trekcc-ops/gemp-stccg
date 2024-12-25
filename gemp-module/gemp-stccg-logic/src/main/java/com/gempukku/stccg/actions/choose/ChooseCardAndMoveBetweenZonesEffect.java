@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.PutCardFromZoneIntoHandEffect;
+import com.gempukku.stccg.actions.placecard.PutCardFromZoneIntoHandEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;

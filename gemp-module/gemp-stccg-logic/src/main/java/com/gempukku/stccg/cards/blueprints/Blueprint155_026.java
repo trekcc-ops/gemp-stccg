@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.CustomGameTextAction;
+import com.gempukku.stccg.actions.turn.CustomGameTextAction;
 import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.actions.choose.SelectCardsOnTableAction;

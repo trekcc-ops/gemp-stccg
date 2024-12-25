@@ -5,7 +5,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.actions.ActivateCardAction;
+import com.gempukku.stccg.actions.turn.ActivateCardAction;
 
 import java.util.Collections;
 import java.util.List;

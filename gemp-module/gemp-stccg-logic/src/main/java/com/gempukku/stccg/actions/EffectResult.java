@@ -61,7 +61,7 @@ public class EffectResult {
         _performingPlayerId = effect.getPerformingPlayerId();
     }
 
-    protected EffectResult(Type type, Action action, PhysicalCard source) {
+    public EffectResult(Type type, Action action, PhysicalCard source) {
         _type = type;
         _source = source;
         _performingPlayerId = action.getPerformingPlayerId();

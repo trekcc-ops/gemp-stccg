@@ -1,5 +1,6 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.placecard;
 
+import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.discard.DiscardUtils;

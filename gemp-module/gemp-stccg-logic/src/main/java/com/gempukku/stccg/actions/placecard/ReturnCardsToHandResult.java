@@ -1,5 +1,6 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.placecard;
 
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 public class ReturnCardsToHandResult extends EffectResult {

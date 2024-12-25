@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.actions.draw.DrawCardOrPutIntoHandResult;
 import com.gempukku.stccg.actions.draw.DrawOneCardEffect;
+import com.gempukku.stccg.actions.placecard.ReturnCardsToHandResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;

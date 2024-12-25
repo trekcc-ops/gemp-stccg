@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.stccg.actions.placecard.PutCardsFromZoneOnEndOfPileEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
