@@ -1,14 +1,12 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class DelayedEffectBlueprint implements EffectBlueprint {
@@ -45,10 +43,27 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
 
     protected List<? extends Effect> createEffects(boolean cost, Action action, ActionContext actionContext)
             throws InvalidCardDefinitionException, InvalidGameLogicException {
-        final Effect effect = createEffect(action, actionContext);
-        if (effect == null)
-            return null;
-        return Collections.singletonList(effect);
+        List<Effect> result = new LinkedList<>();
+        try {
+            final Effect effect = createEffect(action, actionContext);
+            if (effect != null) {
+                result.add(effect);
+            }
+            return result;
+        } catch(UnsupportedOperationException exp) {
+            try {
+                for (Action createdAction : createActions(action, actionContext)) {
+                    result.add(new StackActionEffect(actionContext.getGame(), createdAction));
+                }
+                return result;
+            } catch(UnsupportedOperationException exp2) {
+                throw new InvalidCardDefinitionException("Unable to identify effects from blueprint");
+            }
+        }
+    }
+
+    protected List<Action> createActions(Action action, ActionContext actionContext) {
+        throw new UnsupportedOperationException("No methodology defined for createActions");
     }
 
     @Override

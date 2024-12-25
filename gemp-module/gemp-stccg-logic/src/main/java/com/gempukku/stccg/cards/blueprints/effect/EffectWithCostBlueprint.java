@@ -11,6 +11,7 @@ import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
@@ -39,6 +40,24 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
 
         return new StackActionEffect(context.getGame(), subAction);
     }
+
+    @Override
+    protected List<Action> createActions(Action action, ActionContext context) {
+
+        List<Action> result = new LinkedList<>();
+        if(requirementsNotMet(context)) {
+            SubAction subAction = new SubAction(action, context.getGame());
+
+            for (EffectBlueprint costAppender : _costAppenders) {
+                costAppender.addEffectToAction(true, subAction, context);
+            }
+            for (EffectBlueprint effectBlueprint : _effectBlueprints)
+                effectBlueprint.addEffectToAction(false, subAction, context);
+            result.add(subAction);
+        }
+        return result;
+    }
+
 
     private boolean requirementsNotMet(ActionContext actionContext) {
         return (!actionContext.acceptsAllRequirements(_requirements));
