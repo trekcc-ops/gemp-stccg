@@ -2,8 +2,6 @@ package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.gempukku.stccg.actions.ActionsEnvironment;
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;

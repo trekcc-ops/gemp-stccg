@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;

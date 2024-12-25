@@ -1,4 +1,8 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.gamestate;
+
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
 
 import java.util.List;
 

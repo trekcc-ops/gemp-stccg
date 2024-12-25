@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.*;
 

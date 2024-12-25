@@ -1,7 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;

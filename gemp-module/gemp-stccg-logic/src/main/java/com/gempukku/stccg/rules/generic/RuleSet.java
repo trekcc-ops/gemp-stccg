@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules.generic;
 
-import com.gempukku.stccg.actions.ActionProxy;
-import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.ActionProxy;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class RuleSet {

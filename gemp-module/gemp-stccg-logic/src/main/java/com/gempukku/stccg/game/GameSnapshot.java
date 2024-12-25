@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 
-import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
