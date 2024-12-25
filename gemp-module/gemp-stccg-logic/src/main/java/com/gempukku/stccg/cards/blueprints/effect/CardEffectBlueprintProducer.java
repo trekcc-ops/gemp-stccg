@@ -3,12 +3,13 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.placecard.PlacePlayedCardBeneathDrawDeckEffect;
-import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardAtRandomFromHandEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
-import com.gempukku.stccg.actions.draw.DrawCardsEffect;
+import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.placecard.PlacePlayedCardBeneathDrawDeckEffect;
+import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
 import com.gempukku.stccg.actions.revealcards.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -20,6 +21,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 
 import java.util.LinkedList;
@@ -57,7 +59,7 @@ public class CardEffectBlueprintProducer {
 
         final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
         final PlayerSource selectingPlayer = BlueprintUtils.getSelectingPlayerSource(effectObject);
-        final PlayerSource targetPlayer = BlueprintUtils.getTargetPlayerSource(effectObject);
+        final PlayerSource targetPlayerSource = BlueprintUtils.getTargetPlayerSource(effectObject);
         final ValueSource countSource =
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1);
         final boolean forced = BlueprintUtils.getBoolean(effectObject, "forced", false);
@@ -66,7 +68,9 @@ public class CardEffectBlueprintProducer {
             @Override
             protected List<Action> createActions(Action action, ActionContext context) {
                 final String selectingPlayerId = selectingPlayer.getPlayerId(context);
-                final String targetPlayerId = targetPlayer.getPlayerId(context);
+                final String targetPlayerId = targetPlayerSource.getPlayerId(context);
+                DefaultGame cardGame = context.getGame();
+                Player targetPlayer = cardGame.getPlayer(targetPlayerId);
                 final int count = countSource.evaluateExpression(context, null);
                 List<Action> result = new LinkedList<>();
                 int numberOfEffects = (effectType == EffectType.DISCARDCARDATRANDOMFROMHAND) ? count : 1;
@@ -82,13 +86,13 @@ public class CardEffectBlueprintProducer {
                         case DISCARDTOPCARDFROMPLAYPILE ->
                                 new DiscardCardsFromEndOfCardPileEffect(Zone.PLAY_PILE, EndOfPile.TOP, targetPlayerId,
                                         count, true, context, memory);
-                        case DRAWCARDS -> new DrawCardsEffect(context.getGame(), action, targetPlayerId, count);
-                        case LOOKATHAND -> new LookAtOpponentsHandEffect(context, targetPlayer.getPlayerId(context));
+                        case DRAWCARDS -> new StackActionEffect(context.getGame(),
+                                new DrawCardAction(context.getSource(), targetPlayer, count));
+                        case LOOKATHAND -> new LookAtOpponentsHandEffect(context, targetPlayerId);
                         case LOOKATRANDOMCARDSFROMHAND ->
                                 new LookAtRandomCardsFromHandEffect(context, targetPlayerId, count, memory);
                         case LOOKATTOPCARDSOFDRAWDECK ->
-                                new LookAtTopCardOfADeckEffect(
-                                        context, count, targetPlayer.getPlayerId(context), memory);
+                                new LookAtTopCardOfADeckEffect(context, count, targetPlayerId, memory);
                         case PLACEPLAYEDCARDBENEATHDRAWDECK -> new PlacePlayedCardBeneathDrawDeckEffect(context);
                         case PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE ->
                                 new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(context, targetPlayerId, count);
@@ -104,7 +108,7 @@ public class CardEffectBlueprintProducer {
             @Override
             public boolean isPlayableInFull(ActionContext context) {
                 final int count = countSource.evaluateExpression(context, null);
-                final String targetPlayerId = targetPlayer.getPlayerId(context);
+                final String targetPlayerId = targetPlayerSource.getPlayerId(context);
                 final DefaultGame game = context.getGame();
                 final PhysicalCard source = context.getSource();
                 final ModifiersQuerying modifiersQuerying = game.getModifiersQuerying();
