@@ -39,9 +39,6 @@ public class EffectBlueprintDeserializer {
             case "activatetribblepower" -> new ActivateTribblePowerEffectBlueprint(effectObject);
             case "addmodifier" -> new AddModifierEffectBlueprint(effectObject);
             case "costtoeffect" -> new EffectWithCostBlueprint(effectObject);
-            case "shufflehandintodrawdeck" -> new ShuffleCardGroupIntoDrawDeckEffectBlueprint(effectObject, Zone.HAND);
-            case "shuffleplaypileintodrawdeck" ->
-                    new ShuffleCardGroupIntoDrawDeckEffectBlueprint(effectObject, Zone.PLAY_PILE);
             default ->
                     throw new InvalidCardDefinitionException("Unable to find effect of type: " + type);
         };
