@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
+import com.gempukku.stccg.actions.turn.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -16,6 +17,7 @@ import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -96,8 +98,10 @@ public abstract class DefaultActionSource implements ActionSource {
         addCost(
             new DelayedEffectBlueprint() {
                 @Override
-                protected Effect createEffect(Action action, ActionContext actionContext) {
-                    return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
+                protected List<Action> createActions(Action action, ActionContext actionContext) {
+                    Action usageLimitAction = new UseOncePerTurnAction(
+                            action, action.getPerformingCard(), actionContext.getPerformingPlayer());
+                    return Collections.singletonList(usageLimitAction);
                 }
             });
     }
