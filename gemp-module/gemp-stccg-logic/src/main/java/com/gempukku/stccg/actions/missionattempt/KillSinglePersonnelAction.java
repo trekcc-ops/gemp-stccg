@@ -1,5 +1,7 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.missionattempt;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
