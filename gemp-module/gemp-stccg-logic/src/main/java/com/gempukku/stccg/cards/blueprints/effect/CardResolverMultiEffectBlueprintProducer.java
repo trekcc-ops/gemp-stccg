@@ -139,7 +139,7 @@ public class CardResolverMultiEffectBlueprintProducer {
         result.addEffectBlueprint(
                 new DelayedEffectBlueprint() {
                     @Override
-                    protected List<Effect> createEffects(boolean cost, Action action, ActionContext context) {
+                    protected List<Action> createActions(Action action, ActionContext context) {
                         final Collection<PhysicalCard> cardsFromMemory = context.getCardsFromMemory(memory);
                         final List<Collection<PhysicalCard>> effectCardLists = new LinkedList<>();
 
@@ -152,7 +152,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                             }
                         }
                         
-                        List<Effect> effects = new LinkedList<>();
+                        List<Action> subActions = new LinkedList<>();
                         for (Collection<PhysicalCard> cards : effectCardLists) {
                             Effect effect = switch (effectType) {
                                 case DISCARD ->
@@ -207,9 +207,9 @@ public class CardResolverMultiEffectBlueprintProducer {
                                         new ShuffleCardsFromPlayIntoDeckEffect(
                                                 context, targetPlayer.getPlayerId(context), cards);
                             };
-                            effects.add(effect);
+                            subActions.add(new SubAction(action, effect));
                         }
-                        return effects;
+                        return subActions;
                     }
                     
                     @Override
