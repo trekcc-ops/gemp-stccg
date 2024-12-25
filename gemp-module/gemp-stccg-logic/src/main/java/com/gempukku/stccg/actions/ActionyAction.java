@@ -4,10 +4,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
@@ -212,6 +209,8 @@ public abstract class ActionyAction implements Action {
     protected void setProgress(Enum<?> progressType, boolean value) {
         _progressIndicators.put(progressType.name(), value);
     }
+
+    protected List<Action> getActions() { return _effects; }
 
     protected boolean getProgress(Enum<?> progressType) {
         return _progressIndicators.get(progressType.name());

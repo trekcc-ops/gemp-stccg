@@ -592,6 +592,10 @@ public class Filters {
                 missionCard.getPoints() >= pointValue;
     }
 
+    public static Filter yourDiscard(String chosenPlayer) {
+        return (game, physicalCard) -> game.getGameState().getDiscard(chosenPlayer).contains(physicalCard);
+    }
+
 
     private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {
         private final DefaultGame game;

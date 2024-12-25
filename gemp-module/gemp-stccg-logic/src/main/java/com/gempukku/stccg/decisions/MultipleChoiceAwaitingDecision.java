@@ -27,7 +27,8 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
     }
 
 
-    protected abstract void validDecisionMade(int index, String result) throws InvalidGameLogicException;
+    protected abstract void validDecisionMade(int index, String result)
+            throws InvalidGameLogicException, DecisionResultInvalidException;
 
     @Override
     public final void decisionMade(String result) throws DecisionResultInvalidException {

@@ -3,9 +3,11 @@ package com.gempukku.stccg.actions.discard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
@@ -25,6 +27,19 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
     public DiscardCardsFromEndOfCardPileEffect(Zone fromZone, EndOfPile endOfPile,
                                                String playerId, ActionContext context) {
         this(fromZone, endOfPile, playerId, 1, true, context, null);
+    }
+
+    public DiscardCardsFromEndOfCardPileEffect(Zone fromZone, EndOfPile endOfPile, Player performingPlayer,
+                                               PhysicalCard performingCard) {
+        super(performingPlayer.getGame(), performingPlayer.getPlayerId());
+        _source = performingCard;
+        _fromZone = fromZone;
+        _playerId = performingPlayer.getPlayerId();
+        _count = 1;
+        _forced = true;
+        _endOfPile = endOfPile;
+        _context = new DefaultActionContext(performingPlayer.getPlayerId(), _game, _source, null, null);
+        _memoryId = null;
     }
 
     public DiscardCardsFromEndOfCardPileEffect(Zone fromZone,

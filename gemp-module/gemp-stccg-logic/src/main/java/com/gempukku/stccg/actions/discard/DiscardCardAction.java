@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.discard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
@@ -11,13 +12,14 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 
+import java.util.Collection;
 import java.util.Collections;
 
 public class DiscardCardAction extends ActionyAction {
 
     private final PhysicalCard _performingCard;
-    private PhysicalCard _cardToDiscard;
     private SelectCardInPlayAction _selectAction;
+    private Collection<PhysicalCard> _cardsToDiscard;
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, SelectCardInPlayAction selectAction) {
         super(performingPlayer, "Discard", ActionType.DISCARD);
@@ -28,8 +30,16 @@ public class DiscardCardAction extends ActionyAction {
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, PhysicalCard cardToDiscard) {
         super(performingPlayer, "Discard", ActionType.DISCARD);
         _performingCard = performingCard;
-        _cardToDiscard = cardToDiscard;
+        _cardsToDiscard = Collections.singleton(cardToDiscard);
     }
+
+    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer,
+                             Collection<PhysicalCard> cardsToDiscard) {
+        super(performingPlayer, "Discard", ActionType.DISCARD);
+        _performingCard = performingCard;
+        _cardsToDiscard = cardsToDiscard;
+    }
+
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
@@ -47,12 +57,12 @@ public class DiscardCardAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (_cardToDiscard == null) {
+        if (_cardsToDiscard == null) {
             if (_selectAction == null) {
                 throw new InvalidGameLogicException("Unable to target a card to discard");
             } else {
                 if (_selectAction.wasCarriedOut()) {
-                    _cardToDiscard = _selectAction.getSelectedCard();
+                    _cardsToDiscard = _selectAction.getSelectedCards();
                 } else {
                     return _selectAction;
                 }
@@ -60,13 +70,15 @@ public class DiscardCardAction extends ActionyAction {
         }
 
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(_performingPlayerId, Collections.singleton(_cardToDiscard));
-        if (_cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
-            stCard.unstop();
+        gameState.removeCardsFromZone(_performingPlayerId, _cardsToDiscard);
+        for (PhysicalCard cardToDiscard : _cardsToDiscard) {
+            if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
+                stCard.unstop();
+            }
+            gameState.addCardToZone(cardToDiscard, Zone.DISCARD);
+            cardGame.getActionsEnvironment().emitEffectResult(new DiscardCardFromPlayResult(_performingCard, cardToDiscard));
         }
-        gameState.addCardToZone(_cardToDiscard, Zone.DISCARD);
-        cardGame.sendMessage(_performingPlayerId + " discards " + _cardToDiscard.getCardLink());
-        cardGame.getActionsEnvironment().emitEffectResult(new DiscardCardFromPlayResult(_performingCard, _cardToDiscard));
+        cardGame.sendMessage(_performingPlayerId + " discards " + TextUtils.getConcatenatedCardLinks(_cardsToDiscard));
         return getNextAction();
     }
 }
