@@ -17,7 +17,7 @@ import java.util.LinkedList;
 /**
  * An effect that causes the specified player to choose cards on the table.
  */
-public class SelectCardsOnTableAction extends ActionyAction implements SelectCardsAction {
+public class SelectVisibleCardsAction extends ActionyAction implements SelectCardsAction {
     private Collection<? extends PhysicalCard> _selectableCards;
     private Collection<PhysicalCard> _selectedCards = new LinkedList<>();
     private final PhysicalCard _actionSource;
@@ -26,7 +26,7 @@ public class SelectCardsOnTableAction extends ActionyAction implements SelectCar
     private Filter _selectionFilter;
     private Integer _maximum;
 
-    public SelectCardsOnTableAction(Action action, Player selectingPlayer, String choiceText,
+    public SelectVisibleCardsAction(Action action, Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsIdentified = true;
@@ -35,7 +35,7 @@ public class SelectCardsOnTableAction extends ActionyAction implements SelectCar
         _minimum = minimum;
     }
 
-    public SelectCardsOnTableAction(PhysicalCard performingCard, Player selectingPlayer, String choiceText,
+    public SelectVisibleCardsAction(PhysicalCard performingCard, Player selectingPlayer, String choiceText,
                                     Filter selectionFilter, int minimum, int maximum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectionFilter = selectionFilter;

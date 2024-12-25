@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
-import com.gempukku.stccg.actions.choose.SelectCardsOnTableAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
@@ -100,7 +100,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         appendAction(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
 
         Player performingPlayer = game.getPlayer(_performingPlayerId);
-        SelectCardsOnTableAction selectAction = new SelectCardsOnTableAction(_performingCard, performingPlayer,
+        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(_performingCard, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 2, 2);
         appendAction(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction, _performingCard));

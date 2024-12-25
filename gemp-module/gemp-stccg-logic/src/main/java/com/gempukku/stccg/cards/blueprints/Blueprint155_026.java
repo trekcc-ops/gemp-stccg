@@ -3,10 +3,10 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.turn.CustomGameTextAction;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
-import com.gempukku.stccg.actions.choose.SelectCardsOnTableAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
@@ -42,13 +42,13 @@ public class Blueprint155_026 extends CardBlueprint {
 
         if (currentPhase == Phase.EXECUTE_ORDERS && thisCard.isControlledBy(player)) {
             ActionyAction getItDoneAction =
-                    new CustomGameTextAction(thisCard, player, "Discard 2 cards to choose effect");
+                    new UseGameTextAction(thisCard, player, "Discard 2 cards to choose effect");
 
             getItDoneAction.appendCost(new UseOncePerTurnAction(getItDoneAction, thisCard, player));
             getItDoneAction.setCardActionPrefix("1");
 
             Filter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
-            SelectCardsOnTableAction selectCardsToPlaceAction = new SelectCardsOnTableAction(thisCard, player,
+            SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(thisCard, player,
                     "Select cards to place beneath draw deck", selectableFilter, 2, 2);
             Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(player, selectCardsToPlaceAction, thisCard);
             getItDoneAction.appendCost(costAction);

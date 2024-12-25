@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.missionattempt;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
-import com.gempukku.stccg.actions.choose.SelectCardsOnTableAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -23,7 +23,7 @@ public class StopCardsAction extends ActionyAction {
         super(performingPlayer, "Stop cards", ActionType.STOP_CARDS);
         _personnelChosen = true;
         _cardsToStop.addAll(cardsToStop);
-        _selectionAction = new SelectCardsOnTableAction(this, performingPlayer, "", cardsToStop,
+        _selectionAction = new SelectVisibleCardsAction(this, performingPlayer, "", cardsToStop,
                 cardsToStop.size());
     }
 

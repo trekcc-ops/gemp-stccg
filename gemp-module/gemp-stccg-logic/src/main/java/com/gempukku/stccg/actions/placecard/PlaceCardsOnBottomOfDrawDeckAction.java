@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardsOnTableAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -16,11 +16,11 @@ import java.util.Collection;
 
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
-    private final SelectCardsOnTableAction _selectionAction;
+    private final SelectVisibleCardsAction _selectionAction;
     private final PhysicalCard _causingCard;
 
 
-    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectCardsOnTableAction selectionAction,
+    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectVisibleCardsAction selectionAction,
                                               PhysicalCard causingCard) {
         super(performingPlayer, ActionType.PLACE_CARD);
         _selectionAction = selectionAction;

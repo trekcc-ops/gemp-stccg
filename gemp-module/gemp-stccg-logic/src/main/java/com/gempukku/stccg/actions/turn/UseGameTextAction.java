@@ -6,10 +6,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
-public class CustomGameTextAction extends ActionyAction {
+public class UseGameTextAction extends ActionyAction {
     private final PhysicalCard _physicalCard;
 
-    public CustomGameTextAction(PhysicalCard physicalCard, Player performingPlayer, String text) {
+    public UseGameTextAction(PhysicalCard physicalCard, Player performingPlayer, String text) {
         super(performingPlayer, text, ActionType.USE_GAME_TEXT);
         _physicalCard = physicalCard;
     }
