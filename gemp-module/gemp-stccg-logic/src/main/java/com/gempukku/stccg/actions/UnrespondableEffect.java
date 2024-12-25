@@ -1,7 +1,9 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 public abstract class UnrespondableEffect extends DefaultEffect {
@@ -21,7 +23,7 @@ public abstract class UnrespondableEffect extends DefaultEffect {
         super(game, playerId);
     }
 
-    protected abstract void doPlayEffect();
+    protected abstract void doPlayEffect() throws InvalidCardDefinitionException, InvalidGameLogicException;
 
     @Override
     public boolean isPlayableInFull() {
@@ -30,7 +32,11 @@ public abstract class UnrespondableEffect extends DefaultEffect {
 
     @Override
     public FullEffectResult playEffectReturningResult() {
-        doPlayEffect();
-        return new FullEffectResult(true);
+        try {
+            doPlayEffect();
+            return new FullEffectResult(true);
+        } catch(InvalidGameLogicException | InvalidCardDefinitionException exp) {
+            return new FullEffectResult(false);
+        }
     }
 }

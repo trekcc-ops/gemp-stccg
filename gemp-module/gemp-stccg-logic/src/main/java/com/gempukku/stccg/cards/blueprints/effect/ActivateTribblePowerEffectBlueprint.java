@@ -3,12 +3,14 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.tribblepower.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint {
 
@@ -17,59 +19,35 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
     }
 
     @Override
-    protected Effect createEffect(Action action, ActionContext context) {
+    protected Effect createEffect(Action action, ActionContext context)
+            throws InvalidGameLogicException, InvalidCardDefinitionException {
 
         TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();
-        if (context instanceof TribblesActionContext)
-            return createTribblePowerEffect(tribblePower, (TribblesActionContext) context, action);
-        else return null;
-    }
+        if (context instanceof TribblesActionContext tribblesContext) {
 
-    private Effect createTribblePowerEffect(TribblePower tribblePower, TribblesActionContext actionContext,
-                                            Action action) {
-
-        if (tribblePower == TribblePower.ACQUIRE)
-            return new ActivateAcquireTribblePowerEffect(action, actionContext);
-        if (tribblePower == TribblePower.AVALANCHE)
-            return new ActivateAvalancheTribblePowerEffect(action, actionContext);
-        if (tribblePower == TribblePower.CONVERT)
-            return new ActivateConvertTribblePowerEffect(action, actionContext);
-        if (tribblePower == TribblePower.CYCLE)
-            return new ActivateCycleTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.DISCARD)
-            return new ActivateDiscardTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.DRAW)
-            return new ActivateDrawTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.EVOLVE)
-            return new ActivateEvolveTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.EXCHANGE)
-            return new ActivateExchangeTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.FAMINE)
-            return new ActivateFamineTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.FREEZE) // TODO- Freeze not yet implemented
-            return new ActivateCycleTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.GENEROSITY)
-            return new ActivateGenerosityTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.KILL)
-            return new ActivateKillTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.KINDNESS)
-            return new ActivateKindnessTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.LAUGHTER)
-            return new ActivateLaughterTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.MASAKA)
-            return new ActivateMasakaTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.MUTATE)
-            return new ActivateMutateTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.POISON)
-            return new ActivatePoisonTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.PROCESS)
-            return new ActivateProcessTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.RECYCLE)
-            return new ActivateRecycleTribblePowerEffect(action, actionContext);
-        else if (tribblePower == TribblePower.REVERSE)
-            return new ActivateReverseTribblePowerEffect(action, actionContext);
-        else
-            throw new RuntimeException(
-                    "Code not yet implemented for Tribble power " + tribblePower.getHumanReadable());
+            Action activateAction = switch (tribblePower) {
+                case AVALANCHE -> new ActivateAvalancheTribblePowerAction(tribblesContext, tribblePower);
+                case CONVERT -> new ActivateConvertTribblePowerAction(tribblesContext, tribblePower);
+                case CYCLE -> new ActivateCycleTribblePowerAction(tribblesContext, tribblePower);
+                case DISCARD -> new ActivateDiscardTribblePowerAction(tribblesContext, tribblePower);
+                case DRAW -> new ActivateDrawTribblePowerAction(tribblesContext, tribblePower);
+                case EVOLVE -> new ActivateEvolveTribblePowerAction(tribblesContext, tribblePower);
+                case FAMINE -> new ActivateFamineTribblePowerAction(tribblesContext, tribblePower);
+                case GENEROSITY -> new ActivateGenerosityTribblePowerAction(tribblesContext, tribblePower);
+                case KILL -> new ActivateKillTribblePowerAction(tribblesContext, tribblePower);
+                case KINDNESS -> new ActivateKindnessTribblePowerAction(tribblesContext, tribblePower);
+                case LAUGHTER -> new ActivateLaughterTribblePowerAction(tribblesContext, tribblePower);
+                case MASAKA -> new ActivateMasakaTribblePowerAction(tribblesContext, tribblePower);
+                case MUTATE -> new ActivateMutateTribblePowerAction(tribblesContext, tribblePower);
+                case POISON -> new ActivatePoisonTribblePowerAction(tribblesContext, tribblePower);
+                case PROCESS -> new ActivateProcessTribblePowerAction(tribblesContext, tribblePower);
+                case RECYCLE -> new ActivateRecycleTribblePowerAction(tribblesContext, tribblePower);
+                case REVERSE -> new ActivateReverseTribblePowerAction(tribblesContext, tribblePower);
+                default -> throw new InvalidCardDefinitionException(
+                        "Code not yet implemented for Tribble power " + tribblePower.getHumanReadable());
+            };
+            return new StackActionEffect(context.getGame(), activateAction);
+        } else throw new InvalidCardDefinitionException(
+                "Could not create Tribbles power effect for a non-Tribbles context");
     }
 }
