@@ -163,9 +163,10 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(Action action, ActionContext context) {
+            protected List<Action> createActions(Action action, ActionContext context) {
+                List<Action> actions = new LinkedList<>();
 
-                return switch (selectionType) {
+                Effect effect = switch (selectionType) {
                     case "self", "memory" -> {
                         Collection<PhysicalCard> result = filterCards(context, choiceFilter);
                         yield new DefaultEffect(context.getGame(), choicePlayer.getPlayerId(context)) {
@@ -203,6 +204,10 @@ public class CardResolver {
                     };
                     default -> null;
                 };
+                if (effect != null) {
+                    actions.add(new SubAction(action, effect));
+                }
+                return actions;
             }
 
             private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
@@ -239,10 +244,13 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(Action action, ActionContext context) {
+            protected List<Action> createActions(Action action, ActionContext context) {
+                List<Action> result = new LinkedList<>();
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
-                return effectSource.createEffect(cards, action, context,
+                Effect effect = effectSource.createEffect(cards, action, context,
                         countSource.getMinimum(context), countSource.getMaximum(context));
+                result.add(new SubAction(action, effect));
+                return result;
             }
 
             private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
@@ -269,8 +277,11 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(Action action, ActionContext context) {
-                return choiceEffect.apply(context);
+            protected List<Action> createActions(Action action, ActionContext context) {
+                List<Action> result = new LinkedList<>();
+                Effect effect = choiceEffect.apply(context);
+                result.add(new SubAction(action, effect));
+                return result;
             }
 
             private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
