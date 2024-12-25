@@ -1,6 +1,7 @@
-package com.gempukku.stccg.actions.turn;
+package com.gempukku.stccg.actions.usage;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.usage.CheckTurnLimitEffect;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class OnceEachTurnEffect extends CheckTurnLimitEffect {

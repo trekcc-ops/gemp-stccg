@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.turn.UsageEffect;
+import com.gempukku.stccg.actions.usage.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collections;

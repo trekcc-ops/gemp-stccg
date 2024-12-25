@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.turn.ActivateCardAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.turn.OnceEachTurnEffect;
+import com.gempukku.stccg.actions.usage.OnceEachTurnEffect;
 import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
