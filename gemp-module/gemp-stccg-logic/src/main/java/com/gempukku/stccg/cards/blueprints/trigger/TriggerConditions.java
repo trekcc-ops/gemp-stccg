@@ -1,11 +1,13 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.EffectType;
+import com.gempukku.stccg.actions.PreventableCardEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.actions.draw.DrawCardOrPutIntoHandResult;
-import com.gempukku.stccg.actions.draw.DrawOneCardEffect;
 import com.gempukku.stccg.actions.placecard.ReturnCardsToHandResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
@@ -79,14 +81,6 @@ public class TriggerConditions {
         if (effectResult.getType() == EffectResult.Type.FOR_EACH_REVEALED_FROM_TOP_OF_DECK) {
             RevealCardFromTopOfDeckResult revealCardFromTopOfDeckResult = (RevealCardFromTopOfDeckResult) effectResult;
             return revealCardFromTopOfDeckResult.getPlayerId().equals(playerId);
-        }
-        return false;
-    }
-
-    public static boolean isDrawingACard(Effect effect, DefaultGame game, String playerId) {
-        if (effect.getType() == EffectType.BEFORE_DRAW_CARD) {
-            DrawOneCardEffect drawEffect = (DrawOneCardEffect) effect;
-            return effect.getPerformingPlayerId().equals(playerId) && drawEffect.canDrawCard();
         }
         return false;
     }

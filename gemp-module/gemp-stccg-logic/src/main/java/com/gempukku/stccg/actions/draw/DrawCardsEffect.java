@@ -38,19 +38,19 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
     @Override
     public void playEffect() {
         SubAction subAction = new SubAction(_action, _game);
-        final List<DrawOneCardEffect> drawEffects = new LinkedList<>();
+        final List<DrawCardAction> drawActions = new LinkedList<>();
         for (int i = 0; i < _count; i++) {
-            final DrawOneCardEffect effect = new DrawOneCardEffect(_game, _playerId);
-            subAction.appendEffect(effect);
-            drawEffects.add(effect);
+            final DrawCardAction drawAction = new DrawCardAction(_action.getPerformingCard(), _game.getPlayer(_playerId));
+            subAction.appendEffect(new StackActionEffect(_game, drawAction));
+            drawActions.add(drawAction);
         }
         subAction.appendEffect(
                 new UnrespondableEffect(_game) {
                     @Override
                     protected void doPlayEffect() {
                         int count = 0;
-                        for (DrawOneCardEffect drawEffect : drawEffects) {
-                            if (drawEffect.wasCarriedOut())
+                        for (DrawCardAction drawAction : drawActions) {
+                            if (drawAction.wasCarriedOut())
                                 count++;
                         }
                         if (count > 0)
