@@ -39,7 +39,7 @@ public class AllPlayersDiscardFromHandEffect extends DefaultEffect {
             for (String player : _game.getAllPlayerIds()) {
                 Collection<PhysicalCard> hand = Filters.filter(_game.getGameState().getHand(player), _game, Filters.any);
                 if (hand.size() == 1) {
-                    new DiscardCardsFromZoneEffect(_game, _action.getActionSource(), Zone.HAND, player, hand, _forced).playEffect();
+                    new DiscardCardsFromZoneEffect(_game, _action.getPerformingCard(), Zone.HAND, player, hand, _forced).playEffect();
                 } else {
                     _game.getUserFeedback().sendAwaitingDecision(
                             new CardsSelectionDecision(_game.getPlayer(player), "Choose a card to discard", hand,
@@ -47,7 +47,7 @@ public class AllPlayersDiscardFromHandEffect extends DefaultEffect {
                                 @Override
                                 public void decisionMade(String result) throws DecisionResultInvalidException {
                                     Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
-                                    new DiscardCardsFromZoneEffect(_game, _action.getActionSource(), Zone.HAND, player, cards, _forced).playEffect();
+                                    new DiscardCardsFromZoneEffect(_game, _action.getPerformingCard(), Zone.HAND, player, cards, _forced).playEffect();
                                 }
                             });
                 }

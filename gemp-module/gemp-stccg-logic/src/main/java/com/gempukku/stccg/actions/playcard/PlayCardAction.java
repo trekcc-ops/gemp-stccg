@@ -37,7 +37,7 @@ public abstract class PlayCardAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _actionSource;
     }
 

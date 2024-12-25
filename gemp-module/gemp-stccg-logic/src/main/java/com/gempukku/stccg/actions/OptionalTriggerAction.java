@@ -31,7 +31,7 @@ public class OptionalTriggerAction extends ActionyAction {
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _physicalCard;
     }
 

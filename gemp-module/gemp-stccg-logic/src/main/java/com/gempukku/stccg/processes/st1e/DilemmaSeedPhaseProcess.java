@@ -71,7 +71,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {
-                                PhysicalCard topCard = action.getActionSource();
+                                PhysicalCard topCard = action.getPerformingCard();
                                 selectCardsToSeed(player, topCard);
                                 if (action instanceof AddSeedCardsAction)
                                     selectCardsToSeed(player, topCard);

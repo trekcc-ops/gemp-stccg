@@ -31,7 +31,7 @@ public class EncounterSeedCardAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _encounteredCard;
     }
 

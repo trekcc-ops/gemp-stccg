@@ -42,7 +42,7 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
         final List<Action> optionalBeforeTriggers =
                 _actionsEnvironment.getOptionalBeforeTriggers(activePlayer, _effect);
         // Remove triggers already resolved
-        optionalBeforeTriggers.removeIf(action -> _cardTriggersUsed.contains(action.getActionSource()));
+        optionalBeforeTriggers.removeIf(action -> _cardTriggersUsed.contains(action.getPerformingCard()));
 
         final List<Action> optionalBeforeActions =
                 _actionsEnvironment.getOptionalBeforeActions(activePlayer, _effect);
@@ -67,7 +67,7 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
                             if (action != null) {
                                 _actionsEnvironment.addActionToStack(action);
                                 if (optionalBeforeTriggers.contains(action))
-                                    _cardTriggersUsed.add(action.getActionSource());
+                                    _cardTriggersUsed.add(action.getPerformingCard());
                                 _action.insertEffect(new PlayOutOptionalBeforeResponsesEffect(
                                         _action, _cardTriggersUsed, _actionOrder, 0, _effect));
                             } else {

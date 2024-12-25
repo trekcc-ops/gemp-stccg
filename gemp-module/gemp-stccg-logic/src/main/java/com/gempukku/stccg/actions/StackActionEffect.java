@@ -34,7 +34,7 @@ public class StackActionEffect implements Effect {
 
     @Override
     public PhysicalCard getSource() {
-        return _action.getActionSource();
+        return _action.getPerformingCard();
     }
 
     @Override

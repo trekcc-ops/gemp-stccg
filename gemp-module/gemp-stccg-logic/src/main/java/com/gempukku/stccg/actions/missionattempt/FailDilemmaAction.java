@@ -31,7 +31,7 @@ public class FailDilemmaAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _dilemma;
     }
 

@@ -33,7 +33,7 @@ public class SelectCardInPlayAction extends ActionyAction implements SelectCards
                                   Collection<? extends PhysicalCard> cards) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCards = cards;
-        _actionSource = parentAction.getActionSource();
+        _actionSource = parentAction.getPerformingCard();
         _decisionType = AwaitingDecisionType.CARD_SELECTION;
     }
 
@@ -128,7 +128,7 @@ public class SelectCardInPlayAction extends ActionyAction implements SelectCards
         return _wasCarriedOut;
     }
 
-    public PhysicalCard getActionSource() { return _actionSource; }
+    public PhysicalCard getPerformingCard() { return _actionSource; }
 
     public PhysicalCard getCardForActionSelection() { return _actionSource; }
 

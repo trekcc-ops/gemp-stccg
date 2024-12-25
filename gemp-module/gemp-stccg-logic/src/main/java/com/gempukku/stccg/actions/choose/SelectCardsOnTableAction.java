@@ -31,7 +31,7 @@ public class SelectCardsOnTableAction extends ActionyAction implements SelectCar
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsIdentified = true;
         _selectableCards = new LinkedList<>(cards);
-        _actionSource = action.getActionSource();
+        _actionSource = action.getPerformingCard();
         _minimum = minimum;
     }
 
@@ -93,7 +93,7 @@ public class SelectCardsOnTableAction extends ActionyAction implements SelectCar
         return _wasCarriedOut;
     }
 
-    public PhysicalCard getActionSource() { return _actionSource; }
+    public PhysicalCard getPerformingCard() { return _actionSource; }
 
     public PhysicalCard getCardForActionSelection() { return _actionSource; }
 

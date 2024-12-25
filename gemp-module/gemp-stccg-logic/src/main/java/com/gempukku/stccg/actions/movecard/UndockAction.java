@@ -18,7 +18,7 @@ public class UndockAction extends ActionyAction {
     @Override
     public PhysicalCard getCardForActionSelection() { return _cardToMove; }
     @Override
-    public PhysicalCard getActionSource() { return _cardToMove; }
+    public PhysicalCard getPerformingCard() { return _cardToMove; }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {

@@ -32,7 +32,7 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
     protected void doPlayEffect() {
         final List<Action> requiredBeforeTriggers = _actionsEnvironment.getRequiredBeforeTriggers(_effect);
         // Remove triggers already resolved
-        requiredBeforeTriggers.removeIf(action -> _cardTriggersUsed.contains(action.getActionSource()));
+        requiredBeforeTriggers.removeIf(action -> _cardTriggersUsed.contains(action.getPerformingCard()));
 
         if (requiredBeforeTriggers.size() == 1) {
             _actionsEnvironment.addActionToStack(requiredBeforeTriggers.getFirst());
@@ -46,7 +46,7 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
                             if (action != null) {
                                 _actionsEnvironment.addActionToStack(action);
                                 if (requiredBeforeTriggers.contains(action))
-                                    _cardTriggersUsed.add(action.getActionSource());
+                                    _cardTriggersUsed.add(action.getPerformingCard());
                                 _actionsEnvironment.addActionToStack(action);
                                 _action.insertEffect(new PlayOutRequiredBeforeResponsesEffect(
                                         _action, _cardTriggersUsed, _effect));

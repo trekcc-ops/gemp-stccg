@@ -12,7 +12,7 @@ public class CheckTurnLimitEffect extends DefaultEffect implements UsageEffect {
 
     public CheckTurnLimitEffect(DefaultGame game, Action action, int limit) {
         super(game, action);
-        _card = action.getActionSource();
+        _card = action.getPerformingCard();
         _limit = limit;
         _prefix = action.getCardActionPrefix();
     }

@@ -43,7 +43,7 @@ public class AttemptMissionAction extends ActionyAction {
     @Override
     public PhysicalCard getCardForActionSelection() { return _missionCard; }
     @Override
-    public PhysicalCard getActionSource() { return _missionCard; }
+    public PhysicalCard getPerformingCard() { return _missionCard; }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

@@ -64,7 +64,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
     @Override
     public PhysicalCard getCardForActionSelection() { return _cardSource; }
     @Override
-    public PhysicalCard getActionSource() { return _cardSource; }
+    public PhysicalCard getPerformingCard() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);
     public abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
 

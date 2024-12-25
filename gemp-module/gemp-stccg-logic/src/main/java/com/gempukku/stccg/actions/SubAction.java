@@ -36,8 +36,8 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
-        return _action.getActionSource();
+    public PhysicalCard getPerformingCard() {
+        return _action.getPerformingCard();
     }
 
     @Override

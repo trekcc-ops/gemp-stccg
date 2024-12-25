@@ -67,7 +67,7 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         if (_cards != null)
             selectableCards = Filters.filter(_cards, _game, _filters);
         else
-            selectableCards = Filters.filterActive(_game, _action.getActionSource(), _filters);
+            selectableCards = Filters.filterActive(_game, _action.getPerformingCard(), _filters);
 
         // Make sure at least the minimum number of cards can be found
         if (selectableCards.size() < _minimum) {

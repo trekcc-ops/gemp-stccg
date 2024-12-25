@@ -22,7 +22,7 @@ public class KillSinglePersonnelAction extends ActionyAction {
         _selectVictimAction = selectVictimAction;
     }
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _performingCard;
     }
 

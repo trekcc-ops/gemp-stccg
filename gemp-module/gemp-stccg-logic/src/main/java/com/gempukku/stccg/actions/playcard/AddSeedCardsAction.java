@@ -18,7 +18,7 @@ public class AddSeedCardsAction extends ActionyAction {
 
     public boolean requirementsAreMet(DefaultGame game) { return true; }
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _topCard;
     }
 

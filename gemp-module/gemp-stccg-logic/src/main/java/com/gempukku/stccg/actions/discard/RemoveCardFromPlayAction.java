@@ -26,7 +26,7 @@ public class RemoveCardFromPlayAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _cardCausingRemoval;
     }
 

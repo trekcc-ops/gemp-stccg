@@ -26,7 +26,7 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _causingCard;
     }
 

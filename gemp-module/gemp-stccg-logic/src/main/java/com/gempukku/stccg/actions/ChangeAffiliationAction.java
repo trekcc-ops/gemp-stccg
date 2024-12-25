@@ -49,7 +49,7 @@ public class ChangeAffiliationAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getActionSource() { return (PhysicalCard) _card; }
+    public PhysicalCard getPerformingCard() { return (PhysicalCard) _card; }
 
     @Override
     public PhysicalCard getCardForActionSelection() { return (PhysicalCard) _card; }

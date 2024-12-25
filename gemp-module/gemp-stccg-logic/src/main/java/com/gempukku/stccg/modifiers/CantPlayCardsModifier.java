@@ -23,7 +23,7 @@ public class CantPlayCardsModifier extends AbstractModifier {
 
     @Override
     public boolean canPerformAction(DefaultGame game, String performingPlayer, Action action) {
-        final PhysicalCard actionSource = action.getActionSource();
+        final PhysicalCard actionSource = action.getPerformingCard();
         if (actionSource != null)
             if (action.getActionType() == Action.ActionType.PLAY_CARD)
                 return !_filters.accepts(game, actionSource);

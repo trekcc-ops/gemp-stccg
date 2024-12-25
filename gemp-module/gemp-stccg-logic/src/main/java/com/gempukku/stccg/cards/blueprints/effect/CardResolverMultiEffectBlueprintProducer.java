@@ -160,7 +160,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                                         new DiscardCardsFromPlayEffect(context, targetPlayer.getPlayerId(context),
                                                 Iterables.getOnlyElement(cards));
                                 case DISCARDCARDSFROMDRAWDECK ->
-                                        new DiscardCardsFromZoneEffect(context.getGame(), action.getActionSource(),
+                                        new DiscardCardsFromZoneEffect(context.getGame(), action.getPerformingCard(),
                                                 effectType.fromZone, Iterables.getOnlyElement(cards));
                                 case DISCARDFROMHAND ->
                                         new DiscardCardsFromZoneEffect(context, effectType.fromZone,

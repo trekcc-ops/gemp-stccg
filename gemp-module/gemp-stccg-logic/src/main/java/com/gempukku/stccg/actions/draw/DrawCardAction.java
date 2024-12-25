@@ -66,7 +66,7 @@ public class DrawCardAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _performingCard;
     }
 

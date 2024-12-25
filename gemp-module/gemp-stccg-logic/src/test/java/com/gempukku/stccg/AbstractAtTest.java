@@ -794,7 +794,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof CardActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
-                if (action.getActionSource() == card)
+                if (action.getPerformingCard() == card)
                     choice = action;
             }
             actionDecision.decisionMade(choice);

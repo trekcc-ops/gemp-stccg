@@ -37,7 +37,7 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
         for (int i = 0; i < result.length; i++) {
             Action action = _actions.get(i);
             if (action.isVirtualCardAction())
-                result[i] = String.valueOf(action.getActionSource().getBlueprintId());
+                result[i] = String.valueOf(action.getPerformingCard().getBlueprintId());
             else
                 result[i] = "inPlay";
         }
@@ -49,7 +49,7 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
         for (int i = 0; i < result.length; i++) {
             Action action = _actions.get(i);
             if (action.isVirtualCardAction())
-                result[i] = String.valueOf(action.getActionSource().getBlueprint().getImageUrl());
+                result[i] = String.valueOf(action.getPerformingCard().getBlueprint().getImageUrl());
             else
                 result[i] = "inPlay";
         }

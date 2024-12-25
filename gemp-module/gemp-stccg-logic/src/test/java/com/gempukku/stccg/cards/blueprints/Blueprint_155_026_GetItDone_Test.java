@@ -163,7 +163,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(P1);
         if (decision instanceof CardActionSelectionDecision actionSelection) {
             for (Action action : actionSelection.getActions()) {
-                if (Objects.equals(action.getActionSource().getTitle(), "Get It Done")) {
+                if (Objects.equals(action.getPerformingCard().getTitle(), "Get It Done")) {
                     result = true;
                 }
             }

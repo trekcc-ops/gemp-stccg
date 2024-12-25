@@ -90,8 +90,8 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
         Stack<Action> actionStack = _game.getActionsEnvironment().getActionStack();
         sendMessage("Action stack size: " + actionStack.size());
         actionStack.forEach(action -> sendMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
-                action.getClass().getSimpleName() + (action.getActionSource() != null ?
-                " Source: " + action.getActionSource().getFullName() : "")));
+                action.getClass().getSimpleName() + (action.getPerformingCard() != null ?
+                " Source: " + action.getPerformingCard().getFullName() : "")));
 
         List<EffectResult> effectResults =
                 _game.getActionsEnvironment().consumeEffectResults().stream().toList();

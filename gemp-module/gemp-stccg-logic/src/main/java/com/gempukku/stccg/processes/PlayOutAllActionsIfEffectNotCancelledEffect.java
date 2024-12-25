@@ -49,12 +49,12 @@ final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEff
     private static boolean areAllActionsTheSame(List<? extends Action> actions) {
         boolean result = true;
         Action firstAction = actions.getFirst();
-        if (firstAction.getActionSource() == null)
+        if (firstAction.getPerformingCard() == null)
                 result = false;
         for (Action action : actions) {
-            if (action.getActionSource() == null)
+            if (action.getPerformingCard() == null)
                 result = false;
-            else if (action.getActionSource().getBlueprint() != firstAction.getActionSource().getBlueprint())
+            else if (action.getPerformingCard().getBlueprint() != firstAction.getPerformingCard().getBlueprint())
                 result = false;
         }
         return result;

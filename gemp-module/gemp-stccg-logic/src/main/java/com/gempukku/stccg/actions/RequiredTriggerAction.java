@@ -16,7 +16,7 @@ public class RequiredTriggerAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _physicalCard;
     }
 

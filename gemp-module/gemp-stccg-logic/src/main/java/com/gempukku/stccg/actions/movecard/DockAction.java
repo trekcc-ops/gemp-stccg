@@ -42,7 +42,7 @@ public class DockAction extends ActionyAction {
     @Override
     public PhysicalCard getCardForActionSelection() { return _cardToDock; }
     @Override
-    public PhysicalCard getActionSource() { return _cardToDock; }
+    public PhysicalCard getPerformingCard() { return _cardToDock; }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {

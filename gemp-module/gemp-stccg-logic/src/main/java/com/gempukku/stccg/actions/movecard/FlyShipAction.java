@@ -51,7 +51,7 @@ public class FlyShipAction extends ActionyAction {
     public PhysicalCard getCardForActionSelection() { return _flyingCard; }
 
     @Override
-    public PhysicalCard getActionSource() { return _flyingCard; }
+    public PhysicalCard getPerformingCard() { return _flyingCard; }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {

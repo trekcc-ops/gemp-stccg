@@ -81,7 +81,7 @@ public class SelectAndInsertAction extends ActionyAction {
         return _wasCarriedOut;
     }
 
-    public PhysicalCard getActionSource() { return _actionSource; }
+    public PhysicalCard getPerformingCard() { return _actionSource; }
 
     public PhysicalCard getCardForActionSelection() { return _actionSource; }
 

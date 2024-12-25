@@ -145,7 +145,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _actionSource;
     }
 

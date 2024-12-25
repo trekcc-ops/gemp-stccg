@@ -14,7 +14,7 @@ public class CustomGameTextAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _physicalCard;
     }
 

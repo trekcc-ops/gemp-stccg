@@ -16,7 +16,7 @@ public interface Action {
     }
 
     ActionType getActionType();
-    PhysicalCard getActionSource();
+    PhysicalCard getPerformingCard();
     String getActionSelectionText(DefaultGame game);
     PhysicalCard getCardForActionSelection();
     void setVirtualCardAction(boolean virtualCardAction);

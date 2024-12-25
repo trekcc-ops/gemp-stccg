@@ -31,7 +31,7 @@ public class DiscardCardAction extends ActionyAction {
         _cardToDiscard = cardToDiscard;
     }
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _performingCard;
     }
 

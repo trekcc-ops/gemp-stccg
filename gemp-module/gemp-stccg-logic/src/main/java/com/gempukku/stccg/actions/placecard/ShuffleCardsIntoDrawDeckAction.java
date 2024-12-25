@@ -41,7 +41,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _performingCard;
     }
 

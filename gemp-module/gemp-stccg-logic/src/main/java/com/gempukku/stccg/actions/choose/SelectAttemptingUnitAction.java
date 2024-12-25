@@ -60,7 +60,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return null;
     }
 

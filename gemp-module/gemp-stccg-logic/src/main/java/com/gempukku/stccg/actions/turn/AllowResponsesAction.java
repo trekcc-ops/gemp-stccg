@@ -19,7 +19,7 @@ public class AllowResponsesAction extends SystemQueueAction {
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return null;
     }
 
