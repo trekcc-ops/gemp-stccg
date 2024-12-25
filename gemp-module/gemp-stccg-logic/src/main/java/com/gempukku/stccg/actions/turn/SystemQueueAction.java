@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class SystemQueueAction extends ActionyAction {
 
@@ -24,7 +25,7 @@ public class SystemQueueAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (isCostFailed()) {
             return null;
         } else {
