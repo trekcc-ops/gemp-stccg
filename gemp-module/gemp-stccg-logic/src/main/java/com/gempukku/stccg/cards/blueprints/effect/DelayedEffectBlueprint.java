@@ -15,6 +15,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
 
     @Override
     public final void addEffectToAction(boolean cost, Action action, ActionContext actionContext) {
+        DefaultGame cardGame = actionContext.getGame();
         final SystemQueueAction sysAction = new SystemQueueAction(actionContext.getGame()) {
             @Override
             public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
@@ -37,9 +38,9 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
         };
 
         if (cost) {
-            action.appendCost(new StackActionEffect(actionContext.getGame(), sysAction));
+            action.appendCost(cardGame, sysAction);
         } else {
-            action.appendEffect(new StackActionEffect(actionContext.getGame(), sysAction));
+            action.appendEffect(cardGame, sysAction);
         }
     }
 

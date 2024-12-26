@@ -200,8 +200,6 @@ public abstract class ActionyAction implements Action {
         insertCost(costAction);
     }
 
-    public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
-
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType) {
         _progressIndicators.put(progressType.name(), true);
@@ -214,6 +212,16 @@ public abstract class ActionyAction implements Action {
     }
     public void insertEffect(DefaultGame cardGame, Action actionEffect) {
         insertAction(actionEffect);
+    }
+
+    @Override
+    public void appendCost(DefaultGame cardGame, Action costAction) {
+        appendCost(costAction);
+    }
+
+    @Override
+    public void appendEffect(DefaultGame cardGame, Action actionEffect) {
+        appendAction(actionEffect);
     }
 
 }

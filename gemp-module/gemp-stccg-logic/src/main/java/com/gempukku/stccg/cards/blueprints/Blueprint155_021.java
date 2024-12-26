@@ -86,7 +86,7 @@ public class Blueprint155_021 extends CardBlueprint {
                     Filters.playable);
             action2.setCardActionPrefix("2");
             action2.appendUsage(new OncePerGameEffect(action2));
-            action2.appendCost(new NormalCardPlayCost());
+            // append normal card play cost
             action2.appendEffect(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
             actions.add(action2);*/
         }

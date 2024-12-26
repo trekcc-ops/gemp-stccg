@@ -82,6 +82,16 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
+    public void appendCost(DefaultGame cardGame, Action costAction) {
+        _costs.add(new StackActionEffect(cardGame, costAction));
+    }
+
+    @Override
+    public void appendEffect(DefaultGame cardGame, Action actionEffect) {
+        _effects.add(new StackActionEffect(cardGame, actionEffect));
+    }
+
+    @Override
     public void insertEffect(DefaultGame cardGame, Action actionEffect) {
         Effect effect = new StackActionEffect(cardGame, actionEffect);
         _effects.addFirst(effect);
