@@ -12,7 +12,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private final LinkedList<Effect> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Effect> _targeting = new LinkedList<>();
     private final LinkedList<Effect> _processedCosts = new LinkedList<>();
-    private final LinkedList<Effect> _effects = new LinkedList<>();
+    protected final LinkedList<Effect> _effects = new LinkedList<>();
     private final LinkedList<Effect> _processedEffects = new LinkedList<>();
     private final LinkedList<Effect> _usageCosts = new LinkedList<>();
     protected String text;
@@ -68,11 +68,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     @Override
     public final void insertCost(Effect cost) {
         _costs.addAll(0, Collections.singletonList(cost));
-    }
-
-    @Override
-    public final void insertEffect(Effect effect) {
-        _effects.addAll(0, Collections.singletonList(effect));
     }
 
     @Override

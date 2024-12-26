@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
@@ -30,7 +31,8 @@ final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEff
             Action anyAction = _actions.getFirst();
             _actions.remove(anyAction);
             environment.addActionToStack(anyAction);
-            _action.insertEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions));
+            _action.insertEffect(_game,
+                    new SubAction(_action, new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions)));
         } else {
             _game.getUserFeedback().sendAwaitingDecision(
                     new ActionSelectionDecision(_game.getCurrentPlayer(), "Required responses", _actions) {
@@ -39,8 +41,8 @@ final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEff
                             Action action = getSelectedAction(result);
                             environment.addActionToStack(action);
                             _actions.remove(action);
-                            _action.insertEffect(
-                                    new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions));
+                            _action.insertEffect(_game, new SubAction(_action,
+                                    new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions)));
                         }
                     });
         }

@@ -27,7 +27,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
                             if (cost)
                                 action.insertCost(new StackActionEffect(cardGame, effectsArray[i]));
                             else
-                                action.insertEffect(new StackActionEffect(cardGame, effectsArray[i]));
+                                action.insertEffect(cardGame, effectsArray[i]);
                     }
                 } catch (InvalidCardDefinitionException exp) {
                     throw new InvalidGameLogicException(exp.getMessage());

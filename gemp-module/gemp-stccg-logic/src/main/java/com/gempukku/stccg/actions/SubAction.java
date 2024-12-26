@@ -3,6 +3,8 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.Collections;
+
 public class SubAction extends AbstractCostToEffectAction {
     private final Action _action;
     private Effect _effect;
@@ -71,5 +73,11 @@ public class SubAction extends AbstractCostToEffectAction {
         if (_effect != null && !_effect.isPlayableInFull())
             result = false;
         return result;
+    }
+
+    @Override
+    public void insertEffect(DefaultGame cardGame, Action actionEffect) {
+        Effect effect = new StackActionEffect(cardGame, actionEffect);
+        _effects.addAll(0, Collections.singletonList(effect));
     }
 }

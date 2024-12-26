@@ -18,13 +18,6 @@ public interface CostToEffectAction extends Action {
     void appendCost(Effect cost);
 
     /**
-     * Inserts the specified effects as the next effects to be executedD.
-     *
-     * @param effect
-     */
-    void insertEffect(Effect effect);
-
-    /**
      * Appends the specified effect to the list of the effects. It will be executed after all the other effects currently
      * in the queue.
      *

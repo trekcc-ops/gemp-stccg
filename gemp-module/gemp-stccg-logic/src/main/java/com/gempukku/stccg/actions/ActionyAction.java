@@ -192,11 +192,6 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
-    public final void appendUsage(Effect effect) {
-        appendUsage(new SubAction(this, effect));
-    }
-    public final void insertEffect(Effect effect) { insertAction(new SubAction(this, effect)); }
-
     public final void appendEffect(Effect effect) { appendAction(new SubAction(this, effect)); }
 
     public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
@@ -214,6 +209,9 @@ public abstract class ActionyAction implements Action {
 
     protected boolean getProgress(Enum<?> progressType) {
         return _progressIndicators.get(progressType.name());
+    }
+    public void insertEffect(DefaultGame cardGame, Action actionEffect) {
+        insertAction(actionEffect);
     }
 
 }

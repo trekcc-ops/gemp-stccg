@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
@@ -54,7 +55,7 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
             if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
                 Effect effect = new PlayOutOptionalBeforeResponsesEffect(_action, _cardTriggersUsed,
                         _actionOrder, _passCount + 1, _effect);
-                _action.insertEffect(effect);
+                _action.insertEffect(_game, new SubAction(_action, effect));
             }
         } else {
             Player decidingPlayer = _game.getGameState().getPlayer(activePlayer);
@@ -64,19 +65,22 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
+                            Action subAction = null;
                             if (action != null) {
                                 _actionsEnvironment.addActionToStack(action);
                                 if (optionalBeforeTriggers.contains(action))
                                     _cardTriggersUsed.add(action.getPerformingCard());
-                                _action.insertEffect(new PlayOutOptionalBeforeResponsesEffect(
+                                subAction = new SubAction(_action, new PlayOutOptionalBeforeResponsesEffect(
                                         _action, _cardTriggersUsed, _actionOrder, 0, _effect));
                             } else {
                                 if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
-                                    _action.insertEffect(new PlayOutOptionalBeforeResponsesEffect(
+                                    subAction = new SubAction(_action, new PlayOutOptionalBeforeResponsesEffect(
                                             _action, _cardTriggersUsed, _actionOrder,
                                             _passCount + 1, _effect));
                                 }
                             }
+                            if (subAction != null)
+                                _action.insertEffect(_game, subAction);
                         }
                     });
         }

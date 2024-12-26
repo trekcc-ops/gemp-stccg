@@ -29,6 +29,7 @@ public interface Action {
     boolean wasCarriedOut();
     void insertCost(Effect effect);
     void appendCost(Effect effect);
-    void insertEffect(Effect effect);
+
     void appendEffect(Effect effect);
+    void insertEffect(DefaultGame cardGame, Action actionEffect);
 }

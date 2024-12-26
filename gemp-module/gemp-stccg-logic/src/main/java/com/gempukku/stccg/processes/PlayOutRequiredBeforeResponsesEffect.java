@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
@@ -48,8 +49,8 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
                                 if (requiredBeforeTriggers.contains(action))
                                     _cardTriggersUsed.add(action.getPerformingCard());
                                 _actionsEnvironment.addActionToStack(action);
-                                _action.insertEffect(new PlayOutRequiredBeforeResponsesEffect(
-                                        _action, _cardTriggersUsed, _effect));
+                                _action.insertEffect(_game, new SubAction(_action,
+                                        new PlayOutRequiredBeforeResponsesEffect(_action, _cardTriggersUsed, _effect)));
                             }
                         }
                     });
