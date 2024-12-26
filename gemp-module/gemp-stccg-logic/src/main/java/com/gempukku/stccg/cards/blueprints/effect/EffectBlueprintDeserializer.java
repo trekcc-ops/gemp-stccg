@@ -3,7 +3,6 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,12 +28,8 @@ public class EffectBlueprintDeserializer {
                     ChooseEffectBlueprintProducer.createEffectBlueprint(effectObject);
             case "chooseactivecards", "choosecardsfromdiscard", "choosecardsfromdrawdeck" ->
                     ChooseCardEffectBlueprintProducer.createEffectBlueprint(effectObject);
-            case "discardbottomcardsfromdeck", "discardcardatrandomfromhand", "discardtopcardfromplaypile",
-                    "discardtopcardsfromdeck", "drawcards", "lookattopcardsofdrawdeck", "lookathand",
-                    "lookatrandomcardsfromhand", "placeplayedcardbeneathdrawdeck",
-                    "placetopcardofdrawdeckontopofplaypile", "reordertopcardsofdrawdeck",
-                    "revealbottomcardsofdrawdeck", "revealhand" ->
-                    CardEffectBlueprintProducer.createEffectBlueprint(effectObject);
+            case "drawcards" ->
+                    DrawActionBlueprintProducer.createEffectBlueprint(effectObject);
                             // TODO - Activate tribble power should come through as a rule, not a card def
             case "activatetribblepower" -> new ActivateTribblePowerEffectBlueprint(effectObject);
             case "addmodifier" -> new AddModifierEffectBlueprint(effectObject);

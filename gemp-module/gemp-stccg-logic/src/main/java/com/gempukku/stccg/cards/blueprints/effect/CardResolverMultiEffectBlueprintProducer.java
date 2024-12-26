@@ -85,7 +85,7 @@ public class CardResolverMultiEffectBlueprintProducer {
         // Get blueprint parameters
         final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
         final PlayerSource selectingPlayer = BlueprintUtils.getSelectingPlayerSource(effectObject);
-        final PlayerSource targetPlayer = BlueprintUtils.getTargetPlayerSource(effectObject);
+        final PlayerSource targetPlayerSource = BlueprintUtils.getTargetPlayerSource(effectObject);
         final String defaultText = getDefaultText(effectType);
 
         /* TODO - "reveal" indicates whether the card title will be visible in the chat. The default for this should
@@ -119,7 +119,7 @@ public class CardResolverMultiEffectBlueprintProducer {
         };
 
         Function<ActionContext, List<PhysicalCard>> cardSource =
-                getCardSource(filter, effectType.fromZone, targetPlayer);
+                getCardSource(filter, effectType.fromZone, targetPlayerSource);
 
         targetCardAppender = switch (effectType) {
             case DISCARD, PUTCARDSFROMPLAYONBOTTOMOFDECK, SHUFFLECARDSFROMPLAYINTODRAWDECK, REVEALCARDS ->
@@ -132,7 +132,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                     REMOVECARDSINDISCARDFROMGAME, REVEALCARDSFROMHAND, SHUFFLECARDSFROMDISCARDINTODRAWDECK,
                     SHUFFLECARDSFROMHANDINTODRAWDECK ->
                     CardResolver.resolveCardsInZone(filter, choiceFilter, count, memory,
-                            selectingPlayer, targetPlayer, defaultText, cardFilter, effectType.fromZone,
+                            selectingPlayer, targetPlayerSource, defaultText, cardFilter, effectType.fromZone,
                             effectType.showMatchingOnly, cardSource);
         };
 
@@ -155,61 +155,55 @@ public class CardResolverMultiEffectBlueprintProducer {
                         }
                         
                         List<Action> subActions = new LinkedList<>();
+                        String targetPlayerId = targetPlayerSource.getPlayerId(context);
+                        Player targetPlayer = context.getGame().getPlayer(targetPlayerId);
                         for (Collection<PhysicalCard> cards : effectCardLists) {
-                            Effect effect = switch (effectType) {
-                                case DISCARD -> {
-                                    String targetPlayerId = targetPlayer.getPlayerId(context);
-                                    Player target = context.getGame().getPlayer(targetPlayerId);
-                                    Action action = new DiscardCardAction(context.getSource(), target, cards);
-                                    yield new StackActionEffect(context.getGame(), action);
-                                }
+                            Action subAction = switch (effectType) {
+                                case DISCARD, DISCARDFROMHAND ->
+                                        new DiscardCardAction(context.getSource(), targetPlayer, cards);
                                 case DISCARDCARDSFROMDRAWDECK ->
-                                        new DiscardCardsFromZoneEffect(context.getGame(), parentAction.getPerformingCard(),
-                                                effectType.fromZone, Iterables.getOnlyElement(cards));
-                                case DISCARDFROMHAND ->
-                                        new DiscardCardsFromZoneEffect(context, effectType.fromZone,
-                                                targetPlayer.getPlayerId(context), cards, forced);
-                                case DOWNLOAD ->
-                                        new StackActionEffect(context.getGame(),
-                                                Iterables.getOnlyElement(cards).getPlayCardAction(true));
-                                case PUTCARDSFROMDECKINTOHAND ->
+                                        new DiscardCardAction(parentAction.getPerformingCard(),
+                                                targetPlayer, Iterables.getOnlyElement(cards));
+                                case DOWNLOAD -> Iterables.getOnlyElement(cards).getPlayCardAction(true);
+                                case PUTCARDSFROMDECKINTOHAND -> new SubAction(parentAction,
                                         new PutCardFromZoneIntoHandEffect(context.getGame(),
-                                                Iterables.getOnlyElement(cards), effectType.fromZone, reveal);
+                                                Iterables.getOnlyElement(cards), effectType.fromZone, reveal));
                                 case PUTCARDSFROMDECKONBOTTOMOFDECK, PUTCARDSFROMDISCARDONBOTTOMOFDECK,
                                         PUTCARDSFROMHANDONBOTTOMOFDECK ->
-                                        new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
+                                        new SubAction(parentAction, new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
                                                 effectType.fromZone, Zone.DRAW_DECK, EndOfPile.BOTTOM,
-                                                Iterables.getOnlyElement(cards));
+                                                Iterables.getOnlyElement(cards)));
                                 case PUTCARDSFROMHANDONBOTTOMOFPLAYPILE ->
-                                        new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
+                                        new SubAction(parentAction, new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
                                                 effectType.fromZone, Zone.PLAY_PILE, EndOfPile.BOTTOM,
-                                                Iterables.getOnlyElement(cards));
+                                                Iterables.getOnlyElement(cards)));
                                 case PUTCARDSFROMDISCARDINTOHAND ->
-                                        new PutCardFromZoneIntoHandEffect(context.getGame(),
-                                                Iterables.getOnlyElement(cards), effectType.fromZone);
+                                        new SubAction(parentAction, new PutCardFromZoneIntoHandEffect(context.getGame(),
+                                                Iterables.getOnlyElement(cards), effectType.fromZone));
                                 case PUTCARDSFROMDECKONTOPOFDECK, PUTCARDSFROMDISCARDONTOPOFDECK,
                                         PUTCARDSFROMHANDONTOPOFDECK ->
-                                        new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
+                                        new SubAction(parentAction, new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
                                                 effectType.fromZone, Zone.DRAW_DECK, EndOfPile.TOP,
-                                                Iterables.getOnlyElement(cards));
+                                                Iterables.getOnlyElement(cards)));
                                 case PUTCARDSFROMPLAYONBOTTOMOFDECK ->
-                                        new PutCardFromPlayOnBottomOfDeckEffect(Iterables.getOnlyElement(cards));
+                                        new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer, cards, context.getSource());
                                 case REMOVECARDSINDISCARDFROMGAME ->
-                                        new RemoveCardsFromZoneEffect(context, cards, Zone.DISCARD);
-                                case REVEALCARDS -> new RevealCardEffect(context, cards);
+                                        new SubAction(parentAction,
+                                        new RemoveCardsFromZoneEffect(context, cards, Zone.DISCARD));
+                                case REVEALCARDS -> new SubAction(parentAction, new RevealCardEffect(context, cards));
                                 case REVEALCARDSFROMHAND ->
-                                        new RevealCardsFromYourHandEffect(context, cards);
+                                        new SubAction(parentAction, new RevealCardsFromYourHandEffect(context, cards));
                                 case SHUFFLECARDSFROMDISCARDINTODRAWDECK ->
-                                        new ShuffleCardsIntoDrawDeckEffect(context.getGame(), context.getSource(),
-                                                Zone.DISCARD, targetPlayer.getPlayerId(context), cards);
+                                        new SubAction(parentAction, new ShuffleCardsIntoDrawDeckEffect(context.getGame(), context.getSource(),
+                                                Zone.DISCARD, targetPlayerSource.getPlayerId(context), cards));
                                 case SHUFFLECARDSFROMHANDINTODRAWDECK ->
-                                        new ShuffleCardsIntoDrawDeckEffect(context.getGame(), context.getSource(),
-                                                Zone.HAND, targetPlayer.getPlayerId(context), cards);
+                                        new SubAction(parentAction, new ShuffleCardsIntoDrawDeckEffect(context.getGame(), context.getSource(),
+                                                Zone.HAND, targetPlayerSource.getPlayerId(context), cards));
                                 case SHUFFLECARDSFROMPLAYINTODRAWDECK ->
-                                        new ShuffleCardsFromPlayIntoDeckEffect(
-                                                context, targetPlayer.getPlayerId(context), cards);
+                                        new SubAction(parentAction, new ShuffleCardsFromPlayIntoDeckEffect(
+                                                context, targetPlayerSource.getPlayerId(context), cards));
                             };
-                            subActions.add(new SubAction(parentAction, effect));
+                            subActions.add(subAction);
                         }
                         return subActions;
                     }
@@ -218,7 +212,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                     public boolean isPlayableInFull(ActionContext actionContext) {
                         if (effectType == EffectType.DISCARDFROMHAND) {
                             final ModifiersQuerying modifiers = actionContext.getGame().getModifiersQuerying();
-                            final String handPlayer = targetPlayer.getPlayerId(actionContext);
+                            final String handPlayer = targetPlayerSource.getPlayerId(actionContext);
                             final String choosingPlayer = selectingPlayer.getPlayerId(actionContext);
                             if (!handPlayer.equals(choosingPlayer) &&
                                     modifiers.canLookOrRevealCardsInHand(handPlayer, choosingPlayer))
