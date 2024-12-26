@@ -36,7 +36,11 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             effectResults.forEach(effectResult -> effectResult.createOptionalAfterTriggerActions(_game));
             if (effectResults.isEmpty()) {
                 if (actionsEnvironment.hasNoActionsInProgress())
-                    continueCurrentProcess();
+                    try {
+                        continueCurrentProcess();
+                    } catch(InvalidGameLogicException exp) {
+                        _game.sendErrorMessage(exp);
+                    }
                 else
                     executeNextSubaction();
             } else {
@@ -50,12 +54,12 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
     }
 
-    private void continueCurrentProcess() {
+    private void continueCurrentProcess() throws InvalidGameLogicException {
         if (_currentGameProcess.isFinished()) {
-            _currentGameProcess = _currentGameProcess.getNextProcess();
+            _currentGameProcess = _currentGameProcess.getNextProcess(_game);
         } else {
             // TODO - This implementation seems to assume that game stats will never change during a process
-            _currentGameProcess.process();
+            _currentGameProcess.process(_game);
             _game.getGameState().updateGameStatsAndSendIfChanged();
             _currentGameProcess.finish();
         }

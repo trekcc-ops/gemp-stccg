@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
@@ -14,7 +15,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
         super(game);
     }
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
 
         Map<String, Integer> pointsScored = new HashMap<>();
         TribblesGameState gameState = _game.getGameState();
@@ -82,7 +83,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         return new TribblesStartOfRoundGameProcess(_game);
     }
 }

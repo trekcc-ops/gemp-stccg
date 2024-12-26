@@ -29,7 +29,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         String _currentPlayer = _game.getCurrentPlayerId();
 
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
@@ -56,7 +56,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         PlayerOrder playerOrder = _game.getGameState().getPlayerOrder();
 
         // Check if any missions are left to be seeded

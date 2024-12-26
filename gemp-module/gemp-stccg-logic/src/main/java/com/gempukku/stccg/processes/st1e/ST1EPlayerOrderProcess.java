@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
@@ -13,7 +14,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         List<String> playerOrder;
         if (_game.getFormat().hasFixedPlayerOrder()) {
             playerOrder = Arrays.asList(_game.getAllPlayerIds());
@@ -60,7 +61,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         _game.takeSnapshot("Start of game");
         return new DoorwaySeedPhaseProcess(_game);
     }

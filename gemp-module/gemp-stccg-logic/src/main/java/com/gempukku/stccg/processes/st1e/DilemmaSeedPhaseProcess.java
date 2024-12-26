@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -27,7 +28,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         Collection<String> playerIds = _game.getPlayerIds();
         for (String playerId : playerIds) {
             if (_playersParticipating.contains(playerId))

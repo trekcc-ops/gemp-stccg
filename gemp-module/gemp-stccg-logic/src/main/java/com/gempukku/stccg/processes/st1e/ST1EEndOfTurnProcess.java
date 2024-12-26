@@ -21,7 +21,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         DefaultGame thisGame = _game;
         String playerId = _game.getCurrentPlayerId();
         for (PhysicalCard card : Filters.filterActive(_game, Filters.ship))
@@ -48,7 +48,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         _game.getModifiersEnvironment().signalEndOfTurn(); // Remove "until end of turn" modifiers
         _game.getActionsEnvironment().signalEndOfTurn(); // Remove "until end of turn" permitted actions
         _game.getGameState().sendMessage(_game.getCurrentPlayerId() + " ended their turn");

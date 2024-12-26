@@ -24,14 +24,13 @@ public class GameProcessDeserializer {
         ST1EMissionSeedPhaseProcess,
         ST1EPlayerOrderProcess,
         ST1EPlayPhaseSegmentProcess,
-        ST1EStartOfTurnGameProcess,
+        StartOfTurnGameProcess,
         TribblesBetweenTurnProcess,
         TribblesEndOfRoundGameProcess,
         TribblesPlayerDrawsAndCanPlayProcess,
         TribblesPlayerOrderProcess,
         TribblesPlayerPlaysOrDraws,
-        TribblesStartOfRoundGameProcess,
-        TribblesStartOfTurnGameProcess
+        TribblesStartOfRoundGameProcess
     }
 
     public static GameProcess deserialize(DefaultGame game, JsonNode node) throws CardNotFoundException {
@@ -57,14 +56,13 @@ public class GameProcessDeserializer {
             case ST1EMissionSeedPhaseProcess -> new ST1EMissionSeedPhaseProcess(consecutivePasses, (ST1EGame) game);
             case ST1EPlayerOrderProcess -> new ST1EPlayerOrderProcess((ST1EGame) game);
             case ST1EPlayPhaseSegmentProcess -> new ST1EPlayPhaseSegmentProcess((ST1EGame) game);
-            case ST1EStartOfTurnGameProcess -> new ST1EStartOfTurnGameProcess((ST1EGame) game);
+            case StartOfTurnGameProcess -> new StartOfTurnGameProcess();
             case TribblesBetweenTurnProcess -> new TribblesBetweenTurnsProcess((TribblesGame) game);
             case TribblesEndOfRoundGameProcess -> new TribblesEndOfRoundGameProcess((TribblesGame) game);
             case TribblesPlayerDrawsAndCanPlayProcess -> new TribblesPlayerDrawsAndCanPlayProcess((TribblesGame) game);
             case TribblesPlayerOrderProcess -> new TribblesPlayerOrderProcess((TribblesGame) game);
             case TribblesPlayerPlaysOrDraws -> new TribblesPlayerPlaysOrDraws((TribblesGame) game);
             case TribblesStartOfRoundGameProcess -> new TribblesStartOfRoundGameProcess((TribblesGame) game);
-            case TribblesStartOfTurnGameProcess -> new TribblesStartOfTurnGameProcess((TribblesGame) game);
         };
 
         if (isFinished)

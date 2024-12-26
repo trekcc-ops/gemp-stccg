@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
@@ -23,7 +24,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         List<String> playerIds = new LinkedList<>(_game.getPlayerIds());
         for (String playerId : playerIds) {
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
@@ -49,7 +50,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         ST1EGameState _gameState = _game.getGameState();
         _gameState.setCurrentPhase(Phase.SEED_MISSION);
         for (String player : _game.getPlayerIds()) {

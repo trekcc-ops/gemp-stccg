@@ -14,7 +14,7 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
         super(game);
     }
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
 
         SystemQueueAction action = new SystemQueueAction(_game);
 
@@ -32,7 +32,7 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         _game.getGameState().setCurrentPhase(Phase.CARD_PLAY);
         String message = "Start of " + Phase.CARD_PLAY + " phase";
         _game.sendMessage("\n" + message);

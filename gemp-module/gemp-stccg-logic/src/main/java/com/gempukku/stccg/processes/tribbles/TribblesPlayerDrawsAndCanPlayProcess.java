@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -18,7 +19,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         String playerId = _game.getCurrentPlayerId();
         if (_game.getGameState().getDrawDeck(playerId).isEmpty()) {
             _game.sendMessage(playerId + " can't draw a card");
@@ -64,7 +65,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         return new TribblesEndOfTurnGameProcess(_game);
     }
 }

@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -37,7 +38,7 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         if (_playersParticipating.isEmpty()) {
             for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
                 location.seedPreSeeds();
