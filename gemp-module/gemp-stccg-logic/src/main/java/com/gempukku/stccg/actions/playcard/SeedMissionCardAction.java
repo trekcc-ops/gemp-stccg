@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.PlayOutDecisionEffect;
-import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.choose.MakeDecisionAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
@@ -52,7 +51,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                     _directionChosen = true;
                     _locationZoneIndex = 0;
                 } else {
-                    appendCost(new SubAction(this, new PlayOutDecisionEffect(cardGame,
+                    appendCost(new MakeDecisionAction(_cardEnteringPlay,
                             new MultipleChoiceAwaitingDecision(performingPlayer,
                                     "Add new quadrant to which end of the table?", directions) {
                                 @Override
@@ -65,7 +64,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                                         _locationZoneIndex = gameState.getSpacelineLocationsSize();
                                     }
                                 }
-                            })));
+                            }));
                     return getNextCost();
                 }
             } else if (_sharedMission) {
@@ -73,7 +72,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 _placementChosen = true;
                 _directionChosen = true;
             } else if (gameState.firstInRegion(region, quadrant) != null) {
-                appendCost(new SubAction(this, new PlayOutDecisionEffect(cardGame,
+                appendCost(new MakeDecisionAction(_cardEnteringPlay,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
                                 "Insert on which end of the region?", directions) {
                             @Override
@@ -86,13 +85,13 @@ public class SeedMissionCardAction extends PlayCardAction {
                                     _locationZoneIndex = gameState.lastInRegion(region, quadrant) + 1;
                                 }
                             }
-                        })));
+                        }));
                 return getNextCost();
             } else if (_cardEnteringPlay.canInsertIntoSpaceline() && gameState.getQuadrantLocationsSize(quadrant) >= 2) {
                 // TODO: canInsertIntoSpaceline method not defined
                 throw new InvalidGameLogicException("No method defined for cards to insert into spaceline");
             } else {
-                appendCost(new SubAction(this, new PlayOutDecisionEffect(cardGame,
+                appendCost(new MakeDecisionAction(_cardEnteringPlay,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
                                 "Insert on which end of the quadrant?", directions) {
                             @Override
@@ -105,7 +104,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                                     _locationZoneIndex = gameState.lastInQuadrant(quadrant) + 1;
                                 }
                             }
-                        })));
+                        }));
                 return getNextCost();
             }
         }

@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
@@ -53,7 +54,8 @@ public class ChooseEffectBlueprintProducer {
             protected List<Action> createActions(Action action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Effect effect = switch (effectType) {
-                    case CHOOSEANUMBER -> new ChooseNumberEffect(context, choiceText, valueSource, memorize);
+                    case CHOOSEANUMBER -> new StackActionEffect(context.getGame(),
+                            new SelectNumberAction(context, choiceText, valueSource, memorize));
                     case CHOOSEOPPONENT -> new ChooseOpponentEffect(context, memorize);
                     case CHOOSEPLAYER -> new ChoosePlayerEffect(context, memorize);
                     case CHOOSEPLAYEREXCEPT ->
