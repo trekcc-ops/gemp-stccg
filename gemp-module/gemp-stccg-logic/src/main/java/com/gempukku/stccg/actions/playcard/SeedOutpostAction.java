@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,7 +15,6 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +25,7 @@ public class SeedOutpostAction extends PlayCardAction {
     private final Set<Affiliation> _affiliationOptions = new HashSet<>();
     private Affiliation _selectedAffiliation;
     private final FacilityCard _cardEnteringPlay;
+    private SelectAffiliationAction _selectAffiliationAction;
     public SeedOutpostAction(FacilityCard cardToSeed) {
         super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION, ActionType.SEED_CARD);
         _cardEnteringPlay = cardToSeed;
@@ -80,14 +80,23 @@ public class SeedOutpostAction extends PlayCardAction {
             return getNextCost();
         }
         if (!_affiliationWasChosen) {
-            appendCost(new ChooseAffiliationEffect(performingPlayer, new ArrayList<>(_affiliationOptions)) {
-                @Override
-                protected void affiliationChosen(Affiliation affiliation) {
+
+            if (_affiliationOptions.size() > 1) {
+                if (_selectAffiliationAction == null) {
+                    _selectAffiliationAction =
+                            new SelectAffiliationAction(performingPlayer, _cardEnteringPlay, _affiliationOptions);
+                } else if (_selectAffiliationAction.wasCarriedOut()) {
+                    _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
                     _affiliationWasChosen = true;
-                    _selectedAffiliation = affiliation;
+                } else {
+                    return _selectAffiliationAction;
                 }
-            });
+            } else {
+                _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
+                _affiliationWasChosen = true;
+            }
         }
+
         if (!_cardWasSeeded) {
             _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
 

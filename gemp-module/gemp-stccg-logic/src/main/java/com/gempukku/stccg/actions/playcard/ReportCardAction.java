@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -17,7 +17,6 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +31,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
     private boolean _affiliationWasChosen;
     private Affiliation _selectedAffiliation;
     private final PhysicalReportableCard1E _cardEnteringPlay;
+    private SelectAffiliationAction _selectAffiliationAction;
 
     public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree) {
                     // TODO - Zone is null because these will be attached and the implementation is weird
@@ -95,8 +95,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         if (isCostFailed())
             return null;
 
-        DefaultGame game = _cardEnteringPlay.getGame();
-        Player performingPlayer = game.getPlayer(_performingPlayerId);
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (!_destinationChosen) {
             appendCost(new ChooseCardsOnTableEffect(
@@ -131,14 +130,20 @@ public class ReportCardAction extends STCCGPlayCardAction {
             return nextCost;
 
         if (!_affiliationWasChosen) {
-            appendCost(new ChooseAffiliationEffect(performingPlayer, new ArrayList<>(_affiliationOptions)) {
-                @Override
-                protected void affiliationChosen(Affiliation affiliation) {
+            if (_affiliationOptions.size() > 1) {
+                if (_selectAffiliationAction == null) {
+                    _selectAffiliationAction =
+                            new SelectAffiliationAction(performingPlayer, _cardEnteringPlay, _affiliationOptions);
+                } else if (_selectAffiliationAction.wasCarriedOut()) {
+                    _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
                     _affiliationWasChosen = true;
-                    _selectedAffiliation = affiliation;
+                } else {
+                    return _selectAffiliationAction;
                 }
-            });
-            return getNextCost();
+            } else {
+                _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
+                _affiliationWasChosen = true;
+            }
         }
         if (!_cardPlayed) {
             _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
@@ -148,7 +153,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " played " + _cardEnteringPlay.getCardLink());
 
             gameState.removeCardFromZone(_cardEnteringPlay);
-            cardGame.getGameState().getPlayer(_cardEnteringPlay.getOwnerName()).addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
+            performingPlayer.addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
             _cardEnteringPlay.reportToFacility(_reportingDestination);
             cardGame.getActionsEnvironment().emitEffectResult(
                     new PlayCardResult(this, _fromZone, _cardEnteringPlay));

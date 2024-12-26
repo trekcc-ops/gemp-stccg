@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
+import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -10,7 +10,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,6 +18,7 @@ public class ChangeAffiliationAction extends ActionyAction {
     private boolean _affiliationWasChosen;
     private Affiliation _selectedAffiliation;
     private boolean _actionCompleted;
+    private SelectAffiliationAction _selectAffiliationAction;
     private final List<Affiliation> _affiliationOptions = new LinkedList<>();
 
     public ChangeAffiliationAction(Player player, AffiliatedCard card) {
@@ -60,15 +60,18 @@ public class ChangeAffiliationAction extends ActionyAction {
 
         if (!_affiliationWasChosen) {
             if (_affiliationOptions.size() > 1) {
-                appendCost(new ChooseAffiliationEffect(player, new ArrayList<>(_affiliationOptions)) {
-                    @Override
-                    protected void affiliationChosen(Affiliation affiliation) {
-                        _selectedAffiliation = affiliation;
-                    }
-                });
-                return getNextCost();
-            } else _selectedAffiliation = _affiliationOptions.getFirst();
-            _affiliationWasChosen = true;
+                if (_selectAffiliationAction == null) {
+                    _selectAffiliationAction = new SelectAffiliationAction(player, _card, _affiliationOptions);
+                } else if (_selectAffiliationAction.wasCarriedOut()) {
+                    _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
+                    _affiliationWasChosen = true;
+                } else {
+                    return _selectAffiliationAction;
+                }
+            } else {
+                _selectedAffiliation = _affiliationOptions.getFirst();
+                _affiliationWasChosen = true;
+            }
         }
 
         if (!_actionCompleted) {
