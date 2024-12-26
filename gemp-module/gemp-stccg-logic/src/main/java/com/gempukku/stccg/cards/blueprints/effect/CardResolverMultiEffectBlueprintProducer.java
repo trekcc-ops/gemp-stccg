@@ -132,7 +132,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                     SHUFFLECARDSFROMHANDINTODRAWDECK ->
                     CardResolver.resolveCardsInZone(filter, choiceFilter, count, memory,
                             selectingPlayer, targetPlayerSource, defaultText, cardFilter, effectType.fromZone,
-                            effectType.showMatchingOnly, cardSource);
+                            cardSource);
         };
 
         result.addEffectBlueprint(targetCardAppender);

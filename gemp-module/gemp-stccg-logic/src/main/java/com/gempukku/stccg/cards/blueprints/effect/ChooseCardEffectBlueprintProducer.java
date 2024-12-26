@@ -50,7 +50,7 @@ public class ChooseCardEffectBlueprintProducer {
                     CardResolver.resolveCardsInPlay(filter, count, memorize, targetPlayer, text, cardFilter);
             case CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK ->
                     CardResolver.resolveCardsInZone(filter, null, count, memorize, selectingPlayer,
-                            targetPlayer, text, cardFilter, effectType.fromZone, false,
+                            targetPlayer, text, cardFilter, effectType.fromZone,
                             BlueprintUtils.getCardSourceFromZone(targetPlayer, effectType.fromZone, filter));
         };
     }

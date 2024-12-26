@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
+import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
@@ -38,8 +37,8 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
                 gameState.shuffleDeck(_performingPlayerId);
 
                 // Then put that many cards from the top of your draw deck in your play pile
-                appendAction(new SubAction(this,
-                        new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(game, _performingPlayerId, cardsInPlayPile)));
+                appendAction(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(game.getPlayer(_performingPlayerId),
+                        _performingCard, cardsInPlayPile));
             } else {
                 throw new InvalidGameLogicException("Could not use tribble power Mutate in a non-Tribbles game");
             }

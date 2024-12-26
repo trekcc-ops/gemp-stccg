@@ -33,7 +33,7 @@ public class CardResolver {
                                                      ValueSource countSource,
                                                      String memory, PlayerSource selectingPlayer,
                                                      PlayerSource targetPlayer, String choiceText,
-                                                     FilterableSource typeFilter, Zone zone, boolean showMatchingOnly,
+                                                     FilterableSource typeFilter, Zone zone,
                                                      Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
@@ -44,7 +44,7 @@ public class CardResolver {
                             selectionType, typeFilter);
             case "choose" -> resolveChoiceCards(typeFilter, choiceFilter, choiceFilter, countSource, cardSource,
                     createChoiceActionSourceFromZone(selectingPlayer, targetPlayer, zone, memory, choiceText,
-                            showMatchingOnly, cardSource));
+                            cardSource));
             default -> throw new RuntimeException("Unable to resolve card resolver of type: " + selectionType);
         };
     }
@@ -109,7 +109,6 @@ public class CardResolver {
     private static ChoiceActionSource createChoiceActionSourceFromZone(PlayerSource selectingPlayer,
                                                                        PlayerSource targetPlayer, Zone zone,
                                                                        String memory, String choiceText,
-                                                                       boolean showMatchingOnly,
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource) {
         return (possibleCards, action, actionContext, min, max) -> {
             String choicePlayerId = selectingPlayer.getPlayerId(actionContext);
