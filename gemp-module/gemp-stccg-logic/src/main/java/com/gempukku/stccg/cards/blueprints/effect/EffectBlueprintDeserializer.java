@@ -15,10 +15,7 @@ public class EffectBlueprintDeserializer {
         final String type = effectObject.get("type").textValue();
         return switch (type.toLowerCase()) {
             case "discard", "discardcardsfromdrawdeck", "discardfromhand", "download", "play", "playcardfromdiscard",
-                    "putcardsfromdeckintohand", "putcardsfromdeckontopofdeck", "putcardsfromdeckonbottomofdeck",
-                    "putcardsfromdiscardintohand", "putcardsfromdiscardonbottomofdeck",
-                    "putcardsfromdiscardontopofdeck", "putcardsfromhandonbottomofdeck",
-                    "putcardsfromhandonbottomofplaypile", "putcardsfromhandontopofdeck",
+                    "putcardsfromdeckintohand",
                     "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame", "revealcards",
                     "revealcardsfromhand", "shufflecardsfromdiscardintodrawdeck",
                     "shufflecardsfromhandintodrawdeck", "shufflecardsfromplayintodrawdeck" ->

@@ -15,10 +15,6 @@ public class PutCardFromZoneIntoHandEffect extends DefaultEffect {
     private final Zone _fromZone;
     private final DefaultGame _game;
 
-    public PutCardFromZoneIntoHandEffect(DefaultGame game, PhysicalCard card, Zone fromZone) {
-        this(game, card, fromZone, true);
-    }
-
     public PutCardFromZoneIntoHandEffect(DefaultGame game, PhysicalCard card, Zone fromZone, boolean reveal) {
         super(card);
         _card = card;

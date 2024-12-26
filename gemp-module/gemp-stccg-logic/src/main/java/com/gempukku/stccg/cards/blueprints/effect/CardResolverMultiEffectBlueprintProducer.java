@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.discard.RemoveCardsFromZoneEffect;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.PutCardFromZoneIntoHandEffect;
-import com.gempukku.stccg.actions.placecard.PutCardsFromZoneOnEndOfPileEffect;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.revealcards.RevealCardEffect;
 import com.gempukku.stccg.actions.revealcards.RevealCardsFromYourHandEffect;
@@ -21,7 +20,6 @@ import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
@@ -44,14 +42,6 @@ public class CardResolverMultiEffectBlueprintProducer {
         DISCARDFROMHAND(Zone.HAND, true, true),
         DOWNLOAD(Zone.DRAW_DECK, false, false), // TODO - Should allow downloading from more than one zone
         PUTCARDSFROMDECKINTOHAND(Zone.DRAW_DECK, false, true), // only premiere cards that will be reworded
-        PUTCARDSFROMDECKONBOTTOMOFDECK(Zone.DRAW_DECK, false, true),
-        PUTCARDSFROMDECKONTOPOFDECK(Zone.DRAW_DECK, false, true), // Celebratory Toast; Data, Keep Dealing
-        PUTCARDSFROMDISCARDINTOHAND(Zone.DISCARD, false, true),
-        PUTCARDSFROMDISCARDONBOTTOMOFDECK(Zone.DISCARD, false, true),
-        PUTCARDSFROMDISCARDONTOPOFDECK(Zone.DISCARD, false, true), // Diplomatic Contact, For the Sisko
-        PUTCARDSFROMHANDONBOTTOMOFDECK(Zone.HAND, false, true), // Recreation Room
-        PUTCARDSFROMHANDONBOTTOMOFPLAYPILE(Zone.HAND, false, true),
-        PUTCARDSFROMHANDONTOPOFDECK(Zone.HAND, true, true), // Bleed Resources
         PUTCARDSFROMPLAYONBOTTOMOFDECK(null, false, true), // Ferengi Locator Bomb
         REMOVECARDSINDISCARDFROMGAME(Zone.DISCARD, false, true),
         REVEALCARDS(null, false, false),
@@ -124,10 +114,7 @@ public class CardResolverMultiEffectBlueprintProducer {
             case DISCARD, PUTCARDSFROMPLAYONBOTTOMOFDECK, SHUFFLECARDSFROMPLAYINTODRAWDECK, REVEALCARDS ->
                     CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
                             selectingPlayer, defaultText, cardSource);
-            case DOWNLOAD, DISCARDFROMHAND, PUTCARDSFROMHANDONTOPOFDECK,
-                    DISCARDCARDSFROMDRAWDECK, PUTCARDSFROMDECKINTOHAND, PUTCARDSFROMDECKONBOTTOMOFDECK,
-                    PUTCARDSFROMDECKONTOPOFDECK, PUTCARDSFROMDISCARDINTOHAND, PUTCARDSFROMDISCARDONBOTTOMOFDECK,
-                    PUTCARDSFROMDISCARDONTOPOFDECK, PUTCARDSFROMHANDONBOTTOMOFDECK, PUTCARDSFROMHANDONBOTTOMOFPLAYPILE,
+            case DOWNLOAD, DISCARDFROMHAND, DISCARDCARDSFROMDRAWDECK, PUTCARDSFROMDECKINTOHAND,
                     REMOVECARDSINDISCARDFROMGAME, REVEALCARDSFROMHAND, SHUFFLECARDSFROMDISCARDINTODRAWDECK,
                     SHUFFLECARDSFROMHANDINTODRAWDECK ->
                     CardResolver.resolveCardsInZone(filter, choiceFilter, count, memory,
@@ -167,23 +154,6 @@ public class CardResolverMultiEffectBlueprintProducer {
                                 case PUTCARDSFROMDECKINTOHAND -> new SubAction(parentAction,
                                         new PutCardFromZoneIntoHandEffect(context.getGame(),
                                                 Iterables.getOnlyElement(cards), effectType.fromZone, reveal));
-                                case PUTCARDSFROMDECKONBOTTOMOFDECK, PUTCARDSFROMDISCARDONBOTTOMOFDECK,
-                                        PUTCARDSFROMHANDONBOTTOMOFDECK ->
-                                        new SubAction(parentAction, new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
-                                                effectType.fromZone, Zone.DRAW_DECK, EndOfPile.BOTTOM,
-                                                Iterables.getOnlyElement(cards)));
-                                case PUTCARDSFROMHANDONBOTTOMOFPLAYPILE ->
-                                        new SubAction(parentAction, new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
-                                                effectType.fromZone, Zone.PLAY_PILE, EndOfPile.BOTTOM,
-                                                Iterables.getOnlyElement(cards)));
-                                case PUTCARDSFROMDISCARDINTOHAND ->
-                                        new SubAction(parentAction, new PutCardFromZoneIntoHandEffect(context.getGame(),
-                                                Iterables.getOnlyElement(cards), effectType.fromZone));
-                                case PUTCARDSFROMDECKONTOPOFDECK, PUTCARDSFROMDISCARDONTOPOFDECK,
-                                        PUTCARDSFROMHANDONTOPOFDECK ->
-                                        new SubAction(parentAction, new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
-                                                effectType.fromZone, Zone.DRAW_DECK, EndOfPile.TOP,
-                                                Iterables.getOnlyElement(cards)));
                                 case PUTCARDSFROMPLAYONBOTTOMOFDECK ->
                                         new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer, cards, context.getSource());
                                 case REMOVECARDSINDISCARDFROMGAME ->
@@ -244,12 +214,8 @@ public class CardResolverMultiEffectBlueprintProducer {
             case DISCARD, DISCARDCARDSFROMDRAWDECK -> "Choose cards to discard";
             case DISCARDFROMHAND -> "Choose cards from hand to discard";
             case DOWNLOAD -> "Choose card to play";
-            case PUTCARDSFROMDISCARDONBOTTOMOFDECK, PUTCARDSFROMDISCARDONTOPOFDECK, PUTCARDSFROMHANDONTOPOFDECK,
-                    REMOVECARDSINDISCARDFROMGAME, PUTCARDSFROMDECKONBOTTOMOFDECK, PUTCARDSFROMDECKONTOPOFDECK,
-                    PUTCARDSFROMDECKINTOHAND, PUTCARDSFROMDISCARDINTOHAND ->
+            case REMOVECARDSINDISCARDFROMGAME, PUTCARDSFROMDECKINTOHAND ->
                     "Choose cards from " + effectType.getZoneName();
-            case PUTCARDSFROMHANDONBOTTOMOFDECK -> "Choose cards from hand to put beneath draw deck";
-            case PUTCARDSFROMHANDONBOTTOMOFPLAYPILE -> "Choose cards from hand to put beneath play pile";
             case REVEALCARDS, REVEALCARDSFROMHAND -> "Choose cards to reveal";
             case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                     SHUFFLECARDSFROMPLAYINTODRAWDECK ->
