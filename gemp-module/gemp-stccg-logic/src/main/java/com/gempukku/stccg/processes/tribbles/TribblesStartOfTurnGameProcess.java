@@ -24,7 +24,7 @@ public class TribblesStartOfTurnGameProcess extends TribblesGameProcess {
             public Action nextAction(DefaultGame cardGame) {
                 cardGame.sendMessage("\n\n========\n\nStart of " + cardGame.getCurrentPlayerId() + "'s turn.");
                 return new SubAction(this,
-                        new TriggeringResultEffect(_game, new StartOfTurnResult(_game), "Start of turn"));
+                        new TriggeringResultEffect(_game, new StartOfTurnResult(), "Start of turn"));
             }
         };
 

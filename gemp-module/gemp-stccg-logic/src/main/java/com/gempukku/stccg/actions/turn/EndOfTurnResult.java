@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class EndOfTurnResult extends EffectResult {
-    public EndOfTurnResult(DefaultGame game) {
+    public EndOfTurnResult() {
         super(EffectResult.Type.END_OF_TURN);
     }
 }

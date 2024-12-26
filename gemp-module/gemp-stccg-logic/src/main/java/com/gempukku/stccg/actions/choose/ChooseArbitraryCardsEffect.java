@@ -22,29 +22,6 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
     private final int _minimum;
     private final int _maximum;
 
-    ChooseArbitraryCardsEffect(Player player, String choiceText, Collection<? extends PhysicalCard> cards,
-                               int minimum, int maximum) {
-        this(player, choiceText, cards, Filters.any, minimum, maximum, false);
-    }
-
-
-    ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText,
-                               Collection<? extends PhysicalCard> cards, int minimum, int maximum) {
-        this(game.getPlayer(playerId), choiceText, cards, Filters.any, minimum, maximum, false);
-    }
-
-    protected ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText,
-                                         Collection<? extends PhysicalCard> cards, Filterable filter,
-                                         int minimum, int maximum, boolean showMatchingOnly) {
-        super(game, playerId);
-        _playerId = playerId;
-        _choiceText = choiceText;
-        _showMatchingOnly = showMatchingOnly;
-        _cards = new HashSet<>(cards);
-        _filter = filter;
-        _minimum = minimum;
-        _maximum = maximum;
-    }
 
     protected ChooseArbitraryCardsEffect(Player player, String choiceText,
                                          Collection<? extends PhysicalCard> cards, Filterable filter,

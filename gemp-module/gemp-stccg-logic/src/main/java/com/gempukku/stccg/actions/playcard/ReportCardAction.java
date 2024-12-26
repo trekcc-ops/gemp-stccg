@@ -87,7 +87,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             cardGame.sendErrorMessage(exp);
             result = false;
         }
-        return costsCanBePaid(cardGame);
+        return costsCanBePaid(cardGame) && result;
     }
 
     @Override

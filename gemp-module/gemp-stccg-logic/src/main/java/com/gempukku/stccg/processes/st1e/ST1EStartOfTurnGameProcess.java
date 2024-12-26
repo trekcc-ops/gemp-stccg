@@ -28,7 +28,7 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
         });
 
         action.appendAction(new SubAction(action,
-                new TriggeringResultEffect(_game, new StartOfTurnResult(_game), "Start of turn")));
+                new TriggeringResultEffect(_game, new StartOfTurnResult(), "Start of turn")));
         _game.getModifiersEnvironment().signalStartOfTurn();
         _game.getActionsEnvironment().addActionToStack(action);
     }

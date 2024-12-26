@@ -13,9 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * An effect that causes the specified player to choose a card on the table.
- */
 public class SelectAndInsertAction extends ActionyAction {
     private final PhysicalCard _actionSource;
     private final List<Action> _actionsToChooseFrom = new LinkedList<>();
