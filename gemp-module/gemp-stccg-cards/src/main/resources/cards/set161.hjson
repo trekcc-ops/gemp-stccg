@@ -15,7 +15,7 @@
             location: Inhospitable planet
             lore: Participate in tactical training scenarios in harsh environment.
             mission-requirements: Computer Skill + SECURITY + Leadership + MEDICAL
-            image-url: https://www.trekcc.org/1e/cardimages/comingofage/21.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/engage/21.jpg
         }
         {
             blueprintId: 161_024
@@ -28,7 +28,7 @@
             location: Near Xendi Sabu system
             lore: 'Meet with old adversary to discuss a "gift."'
             mission-requirements: Navigation x2 + Leadership x2 + (DaiMon Bok OR Jean-Luc Picard OR INTEGRITY>30)
-            image-url: https://www.trekcc.org/1e/cardimages/comingofage/24.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/engage/24.jpg
         }
         {
             blueprintId: 161_038
