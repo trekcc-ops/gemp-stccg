@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
@@ -13,14 +14,15 @@ import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
-    private final SelectVisibleCardsAction _selectionAction;
+    private final SelectCardsAction _selectionAction;
     private final PhysicalCard _causingCard;
 
 
-    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectVisibleCardsAction selectionAction,
+    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectCardsAction selectionAction,
                                               PhysicalCard causingCard) {
         super(performingPlayer, ActionType.PLACE_CARD);
         _selectionAction = selectionAction;
@@ -50,7 +52,7 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
             Collection<PhysicalCard> cardsBeingPlaced = _selectionAction.getSelectedCards();
             for (PhysicalCard card : cardsBeingPlaced) {
                 GameState gameState = cardGame.getGameState();
-                gameState.removeCardsFromZone(card.getOwnerName(), Arrays.asList(card));
+                gameState.removeCardsFromZone(card.getOwnerName(), List.of(card));
                 gameState.sendMessage(_performingPlayerId + " placed " + card + " beneath their draw deck");
                 gameState.addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
             }
