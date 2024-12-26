@@ -1,4 +1,4 @@
-package com.gempukku.stccg.actions.turn;
+package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;

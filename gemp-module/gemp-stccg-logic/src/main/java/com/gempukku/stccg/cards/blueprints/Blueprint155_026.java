@@ -10,7 +10,7 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
-import com.gempukku.stccg.actions.turn.AddUntilEndOfTurnModifierAction;
+import com.gempukku.stccg.actions.modifiers.AddUntilEndOfTurnModifierAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;

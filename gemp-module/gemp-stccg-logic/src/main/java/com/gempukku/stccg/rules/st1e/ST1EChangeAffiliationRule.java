@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ChangeAffiliationAction;
+import com.gempukku.stccg.actions.modifiers.ChangeAffiliationAction;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;

@@ -1,5 +1,7 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.modifiers;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;

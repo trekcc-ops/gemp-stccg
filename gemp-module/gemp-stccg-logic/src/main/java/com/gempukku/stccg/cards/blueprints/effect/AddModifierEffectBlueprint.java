@@ -2,16 +2,13 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
+import com.gempukku.stccg.actions.modifiers.AddUntilModifierAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.modifiers.Modifier;
 
-import java.util.Collections;
 import java.util.List;
 
 public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
@@ -26,9 +23,9 @@ public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected List<Action> createActions(Action action, ActionContext context) {
+    protected List<Action> createActions(Action parentAction, ActionContext context) {
         final Modifier modifier = _modifierSource.getModifier(context);
-        Effect effect = new AddUntilModifierEffect(context.getGame(), modifier, _until);
-        return Collections.singletonList(new SubAction(action, effect));
+        Action action = new AddUntilModifierAction(context.getGame(), context.getSource(), modifier, _until);
+        return List.of(action);
     }
 }
