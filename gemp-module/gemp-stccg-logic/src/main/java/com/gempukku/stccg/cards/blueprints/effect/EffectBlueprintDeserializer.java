@@ -16,8 +16,8 @@ public class EffectBlueprintDeserializer {
         return switch (type.toLowerCase()) {
             case "discard", "discardcardsfromdrawdeck", "discardfromhand", "download", "play", "playcardfromdiscard",
                     "putcardsfromdeckintohand",
-                    "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame", "revealcards",
-                    "revealcardsfromhand", "shufflecardsfromdiscardintodrawdeck",
+                    "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame",
+                    "shufflecardsfromdiscardintodrawdeck",
                     "shufflecardsfromhandintodrawdeck", "shufflecardsfromplayintodrawdeck" ->
                     CardResolverMultiEffectBlueprintProducer.createEffectBlueprint(effectObject);
             case "chooseanumber", "chooseopponent", "chooseplayer", "chooseplayerexcept", "chooseplayerwithcardsindeck",

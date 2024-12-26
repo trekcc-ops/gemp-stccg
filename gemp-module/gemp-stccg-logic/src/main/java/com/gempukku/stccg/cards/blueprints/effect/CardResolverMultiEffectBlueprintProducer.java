@@ -8,8 +8,6 @@ import com.gempukku.stccg.actions.discard.RemoveCardsFromZoneEffect;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.PutCardFromZoneIntoHandEffect;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
-import com.gempukku.stccg.actions.revealcards.RevealCardEffect;
-import com.gempukku.stccg.actions.revealcards.RevealCardsFromYourHandEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
@@ -44,8 +42,6 @@ public class CardResolverMultiEffectBlueprintProducer {
         PUTCARDSFROMDECKINTOHAND(Zone.DRAW_DECK, false, true), // only premiere cards that will be reworded
         PUTCARDSFROMPLAYONBOTTOMOFDECK(null, false, true), // Ferengi Locator Bomb
         REMOVECARDSINDISCARDFROMGAME(Zone.DISCARD, false, true),
-        REVEALCARDS(null, false, false),
-        REVEALCARDSFROMHAND(Zone.HAND, false, false),
         SHUFFLECARDSFROMDISCARDINTODRAWDECK(Zone.DISCARD, false, false), // Get It Done, Raktajino, Regenerate, Tinkerer
         SHUFFLECARDSFROMHANDINTODRAWDECK(Zone.HAND, false, false), // Isomagnetic Disintegrator
         SHUFFLECARDSFROMPLAYINTODRAWDECK(null, false, false); // Cloaked Maneuvers
@@ -111,11 +107,11 @@ public class CardResolverMultiEffectBlueprintProducer {
                 getCardSource(filter, effectType.fromZone, targetPlayerSource);
 
         targetCardAppender = switch (effectType) {
-            case DISCARD, PUTCARDSFROMPLAYONBOTTOMOFDECK, SHUFFLECARDSFROMPLAYINTODRAWDECK, REVEALCARDS ->
+            case DISCARD, PUTCARDSFROMPLAYONBOTTOMOFDECK, SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                     CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
                             selectingPlayer, defaultText, cardSource);
             case DOWNLOAD, DISCARDFROMHAND, DISCARDCARDSFROMDRAWDECK, PUTCARDSFROMDECKINTOHAND,
-                    REMOVECARDSINDISCARDFROMGAME, REVEALCARDSFROMHAND, SHUFFLECARDSFROMDISCARDINTODRAWDECK,
+                    REMOVECARDSINDISCARDFROMGAME, SHUFFLECARDSFROMDISCARDINTODRAWDECK,
                     SHUFFLECARDSFROMHANDINTODRAWDECK ->
                     CardResolver.resolveCardsInZone(filter, choiceFilter, count, memory,
                             selectingPlayer, targetPlayerSource, defaultText, cardFilter, effectType.fromZone,
@@ -159,9 +155,6 @@ public class CardResolverMultiEffectBlueprintProducer {
                                 case REMOVECARDSINDISCARDFROMGAME ->
                                         new SubAction(parentAction,
                                         new RemoveCardsFromZoneEffect(context, cards, Zone.DISCARD));
-                                case REVEALCARDS -> new SubAction(parentAction, new RevealCardEffect(context, cards));
-                                case REVEALCARDSFROMHAND ->
-                                        new SubAction(parentAction, new RevealCardsFromYourHandEffect(context, cards));
                                 case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                                         SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                                         new ShuffleCardsIntoDrawDeckAction(context.getSource(), context.getPerformingPlayer(), Filters.in(cards));
@@ -216,7 +209,6 @@ public class CardResolverMultiEffectBlueprintProducer {
             case DOWNLOAD -> "Choose card to play";
             case REMOVECARDSINDISCARDFROMGAME, PUTCARDSFROMDECKINTOHAND ->
                     "Choose cards from " + effectType.getZoneName();
-            case REVEALCARDS, REVEALCARDSFROMHAND -> "Choose cards to reveal";
             case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                     SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                     "Choose cards to shuffle into the draw deck";
