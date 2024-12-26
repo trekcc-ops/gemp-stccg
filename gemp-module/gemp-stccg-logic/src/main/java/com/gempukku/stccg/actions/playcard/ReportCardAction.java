@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -13,8 +13,8 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -32,6 +32,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
     private Affiliation _selectedAffiliation;
     private final PhysicalReportableCard1E _cardEnteringPlay;
     private SelectAffiliationAction _selectAffiliationAction;
+    private SelectVisibleCardsAction _selectDestinationAction;
 
     public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree) {
                     // TODO - Zone is null because these will be attached and the implementation is weird
@@ -98,31 +99,33 @@ public class ReportCardAction extends STCCGPlayCardAction {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (!_destinationChosen) {
-            appendCost(new ChooseCardsOnTableEffect(
-                    this, performingPlayer,
-                    "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
-                    getDestinationOptions(cardGame)
-            ) {
-                @Override
-                protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
-                    assert selectedCards.size() == 1;
-                    FacilityCard selectedFacility =
-                            (FacilityCard) Iterables.getOnlyElement(selectedCards);
-                    _reportingDestination = selectedFacility;
-                    _destinationChosen = true;
-                    if (!_affiliationWasChosen) {
-                        for (Affiliation affiliation : _cardEnteringPlay.getAffiliationOptions()) {
-                            if (_cardEnteringPlay.canReportToFacilityAsAffiliation(selectedFacility, affiliation))
-                                _affiliationOptions.add(affiliation);
+            if (_selectDestinationAction == null) {
+                _selectDestinationAction = new SelectVisibleCardsAction(_cardEnteringPlay, performingPlayer,
+                        "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
+                        Filters.inCards(getDestinationOptions(cardGame)), 1, 1);
+                return _selectDestinationAction;
+            } else if (_selectDestinationAction.wasCarriedOut()) {
+                try {
+                    PhysicalCard result = Iterables.getOnlyElement(_selectDestinationAction.getSelectedCards());
+                    if (result instanceof FacilityCard facility) {
+                        _reportingDestination = facility;
+                        _destinationChosen = true;
+                        if (!_affiliationWasChosen) {
+                            for (Affiliation affiliation : _cardEnteringPlay.getAffiliationOptions()) {
+                                if (_cardEnteringPlay.canReportToFacilityAsAffiliation(
+                                        _reportingDestination, affiliation))
+                                    _affiliationOptions.add(affiliation);
+                            }
+                            if (_affiliationOptions.size() == 1) {
+                                _affiliationWasChosen = true;
+                                _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
+                            }
                         }
-                        if (_affiliationOptions.size() == 1) {
-                            _affiliationWasChosen = true;
-                            _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
-                        }
-                    }
+                    } else throw new InvalidGameLogicException("Expected a facility card from selection action");
+                } catch (IllegalArgumentException exp) {
+                    throw new InvalidGameLogicException(exp.getMessage());
                 }
-            });
-            return getNextCost();
+            }
         }
 
         Action nextCost = getNextCost();
@@ -134,11 +137,10 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 if (_selectAffiliationAction == null) {
                     _selectAffiliationAction =
                             new SelectAffiliationAction(performingPlayer, _cardEnteringPlay, _affiliationOptions);
+                    return _selectAffiliationAction;
                 } else if (_selectAffiliationAction.wasCarriedOut()) {
                     _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
                     _affiliationWasChosen = true;
-                } else {
-                    return _selectAffiliationAction;
                 }
             } else {
                 _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
