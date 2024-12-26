@@ -10,6 +10,7 @@ import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                 }
             }
             gameState.sendMessage("Players drew starting hands");
-            return new ST1EStartOfTurnGameProcess(_game);
+            return new StartOfTurnGameProcess();
         } else {
             playerOrder.advancePlayer();
             return new ST1EFacilitySeedPhaseProcess(_consecutivePasses, _game);

@@ -11,6 +11,7 @@ import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
 import java.util.List;
 
@@ -59,5 +60,6 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
         String nextPlayer = actionOrder.getNextPlayer();
         _game.getGameState().startPlayerTurn(nextPlayer);
-        return new ST1EStartOfTurnGameProcess(_game); }
+        return new StartOfTurnGameProcess();
+    }
 }
