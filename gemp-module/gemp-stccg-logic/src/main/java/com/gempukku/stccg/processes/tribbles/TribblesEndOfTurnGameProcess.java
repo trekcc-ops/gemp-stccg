@@ -3,7 +3,6 @@ package com.gempukku.stccg.processes.tribbles;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
-import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.actions.turn.EndOfTurnResult;
 import com.gempukku.stccg.processes.GameProcess;
@@ -26,10 +25,6 @@ public class TribblesEndOfTurnGameProcess extends TribblesGameProcess {
                         return null;
                     }
 
-                    @Override
-                    public EffectType getType() {
-                        return null;
-                    }
                     @Override
                     public boolean isPlayableInFull() {
                         return true;

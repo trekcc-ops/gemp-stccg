@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.revealcards;
 
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
@@ -28,10 +27,6 @@ public class RevealCardEffect implements Effect {
         return null;
     }
 
-    @Override
-    public EffectType getType() {
-        return null;
-    }
     @Override
     public boolean isPlayableInFull() {
         return true;

@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -52,11 +51,6 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
 
     public String getPerformingPlayerId() {
         return _performingPlayer;
-    }
-
-    @Override
-    public EffectType getType() {
-        return EffectType.BEFORE_DISCARD_FROM_PLAY;
     }
 
 

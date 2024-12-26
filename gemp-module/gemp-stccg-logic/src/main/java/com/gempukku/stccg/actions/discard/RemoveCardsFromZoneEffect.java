@@ -1,6 +1,7 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.discard;
 
 import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;

@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.game.DefaultGame;
 
 public interface Effect {
@@ -13,14 +12,6 @@ public interface Effect {
      * @return
      */
     String getText();
-
-    /**
-     * Returns the type of the effect. This should list the type of effect it represents
-     * if the effect is a recognizable by the game.
-     *
-     * @return
-     */
-    EffectType getType();
 
     /**
      * Checks whether this effect can be played in full. This is required to check

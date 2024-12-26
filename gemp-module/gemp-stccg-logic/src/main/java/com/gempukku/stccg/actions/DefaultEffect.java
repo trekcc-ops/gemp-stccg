@@ -59,11 +59,6 @@ public abstract class DefaultEffect implements Effect {
 
     public String getText() { return null; }
 
-    @Override
-    public EffectType getType() {
-        return null;
-    }
-
     public static class FullEffectResult {
         private final boolean _carriedOut;
 

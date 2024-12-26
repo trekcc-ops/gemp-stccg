@@ -18,11 +18,6 @@ public class StackActionEffect implements Effect {
     }
 
     @Override
-    public EffectType getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull() {
         return true;
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromZoneEffect;
+import com.gempukku.stccg.actions.discard.RemoveCardsFromZoneEffect;
 import com.gempukku.stccg.actions.placecard.*;
 import com.gempukku.stccg.actions.revealcards.RevealCardEffect;
 import com.gempukku.stccg.actions.revealcards.RevealCardsFromYourHandEffect;

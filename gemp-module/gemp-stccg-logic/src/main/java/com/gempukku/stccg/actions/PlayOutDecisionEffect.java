@@ -19,11 +19,6 @@ public class PlayOutDecisionEffect implements Effect {
     }
 
     @Override
-    public EffectType getType() {
-        return null;
-    }
-
-    @Override
     public void playEffect() {
         getGame().getUserFeedback().sendAwaitingDecision(_decision);
     }

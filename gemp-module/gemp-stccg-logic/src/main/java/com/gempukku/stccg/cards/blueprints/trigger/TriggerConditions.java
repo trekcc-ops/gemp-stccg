@@ -2,11 +2,11 @@ package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.actions.PreventableCardEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.actions.draw.DrawCardOrPutIntoHandResult;
 import com.gempukku.stccg.actions.placecard.ReturnCardsToHandResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
@@ -94,7 +94,7 @@ public class TriggerConditions {
     }
 
     public static boolean isGettingDiscardedBy(Effect effect, DefaultGame game, Filterable sourceFilter, Filterable... filters) {
-        if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
+        if (effect instanceof DiscardCardsFromPlayEffect) {
             PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
             if (effect.getSource() != null && Filters.and(sourceFilter).accepts(game, effect.getSource()))
                 return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
@@ -103,7 +103,7 @@ public class TriggerConditions {
     }
 
     public static boolean isGettingDiscardedByOpponent(Effect effect, DefaultGame game, String playerId, Filterable... filters) {
-        if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
+        if (effect instanceof DiscardCardsFromPlayEffect) {
             PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
             if (effect.getSource() != null && !effect.getPerformingPlayerId().equals(playerId))
                 return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
@@ -112,7 +112,7 @@ public class TriggerConditions {
     }
 
     public static boolean isGettingDiscarded(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
+        if (effect instanceof DiscardCardsFromPlayEffect) {
             PreventableCardEffect discardEffect = (PreventableCardEffect) effect;
             return !Filters.filter(discardEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
         }
