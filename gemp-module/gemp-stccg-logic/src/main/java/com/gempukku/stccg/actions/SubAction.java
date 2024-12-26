@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -136,7 +137,7 @@ public class SubAction implements Action {
     }
 
     @Override
-    public String getActionSelectionText(DefaultGame game) {
+    public String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException {
         if (text == null) {
             return _action.getActionSelectionText(game);
         }

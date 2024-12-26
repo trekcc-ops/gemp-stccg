@@ -45,7 +45,7 @@ public class DockAction extends ActionyAction {
     public PhysicalCard getPerformingCard() { return _cardToDock; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
         Action cost = getNextCost();

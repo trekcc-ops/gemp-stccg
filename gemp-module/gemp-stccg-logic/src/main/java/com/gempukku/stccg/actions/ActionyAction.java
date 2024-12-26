@@ -113,7 +113,7 @@ public abstract class ActionyAction implements Action {
     }
 
     @Override
-    public String getActionSelectionText(DefaultGame game) { return _text; }
+    public String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException { return _text; }
 
     protected boolean isCostFailed() {
         for (Action processedCost : _processedCosts) {

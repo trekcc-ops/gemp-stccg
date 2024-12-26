@@ -39,7 +39,7 @@ public class KillSinglePersonnelAction extends ActionyAction {
     }
 
     @Override
-    public String getActionSelectionText(DefaultGame cardGame) {
+    public String getActionSelectionText(DefaultGame cardGame) throws InvalidGameLogicException {
         StringBuilder sb = new StringBuilder();
         sb.append("Kill ");
         if (_selectVictimAction != null && _selectVictimAction.wasCarriedOut()) {

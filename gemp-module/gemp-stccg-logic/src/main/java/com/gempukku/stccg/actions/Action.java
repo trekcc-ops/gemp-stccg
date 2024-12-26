@@ -19,7 +19,7 @@ public interface Action {
 
     ActionType getActionType();
     PhysicalCard getPerformingCard();
-    String getActionSelectionText(DefaultGame game);
+    String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException;
     PhysicalCard getCardForActionSelection();
     void setVirtualCardAction(boolean virtualCardAction);
     boolean isVirtualCardAction();

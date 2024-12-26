@@ -1,9 +1,11 @@
 package com.gempukku.stccg.cards.blueprints.resolver;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.ChooseArbitraryCardsEffect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.DefaultEffect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
+import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -13,6 +15,7 @@ import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -110,6 +113,7 @@ public class CardResolver {
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource) {
         return (possibleCards, action, actionContext, min, max) -> {
             String choicePlayerId = selectingPlayer.getPlayerId(actionContext);
+            Player choicePlayer = actionContext.getGame().getPlayer(choicePlayerId);
             String targetPlayerId = targetPlayer.getPlayerId(actionContext);
             if (targetPlayerId.equals(choicePlayerId)) {
                 return new SubAction(action, new ChooseCardsFromZoneEffect(actionContext.getGame(), zone, choicePlayerId,
@@ -125,15 +129,11 @@ public class CardResolver {
                     }
                 });
             } else {
-                return new SubAction(action, new ChooseArbitraryCardsEffect(actionContext.getGame().getPlayer(choicePlayerId),
+                return new SelectCardInPlayAction(actionContext.getSource(), choicePlayer,
                         actionContext.substituteText(choiceText),
-                        cardSource.apply(actionContext), Filters.in(possibleCards),
-                        min, max, showMatchingOnly) {
-                    @Override
-                    protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
-                        actionContext.setCardMemory(memory, selectedCards);
-                    }
-                });
+                        Filters.and(Filters.in(cardSource.apply(actionContext)), Filters.in(possibleCards)),
+                        AwaitingDecisionType.ARBITRARY_CARDS,
+                        min, max, actionContext, memory);
             }
         };
     }
