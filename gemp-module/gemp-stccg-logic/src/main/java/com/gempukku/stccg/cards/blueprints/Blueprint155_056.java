@@ -2,9 +2,9 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
-import com.gempukku.stccg.actions.choose.SelectSkillEffect;
+import com.gempukku.stccg.actions.choose.SelectSkillAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
+import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.ActionSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -45,15 +45,8 @@ public class Blueprint155_056 extends CardBlueprint {
                 skillOptions.add(SkillName.ANTHROPOLOGY);
                 skillOptions.add(SkillName.PHYSICS);
                 skillOptions.add(SkillName.NAVIGATION);
-                action.appendTargeting(
-                        new SelectSkillEffect(thisCard.getGame(), thisCard.getOwner(), skillOptions) {
-
-                            @Override
-                            protected void skillChosen(SkillName skill) {
-//                                ((PersonnelCard) thisCard).addSkill(skill);
-                            }
-                        }
-                );
+                    // TODO - This won't actually do anything at present other than the selection
+                action.appendTargeting(new SelectSkillAction(thisCard.getOwner(), thisCard, skillOptions));
                 return action;
             }
         };

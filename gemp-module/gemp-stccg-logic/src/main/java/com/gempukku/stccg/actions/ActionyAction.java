@@ -201,7 +201,7 @@ public abstract class ActionyAction implements Action {
     }
 
     public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
-    public void appendTargeting(Effect effect) { appendCost(new SubAction(this, effect)); }
+
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType, boolean value) {
         _progressIndicators.put(progressType.name(), value);
