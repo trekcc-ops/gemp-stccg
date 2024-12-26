@@ -1,9 +1,12 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class SubAction implements Action {
     int _actionId;
@@ -23,12 +26,6 @@ public class SubAction implements Action {
     private final Action _action;
     private Effect _effect;
 
-    public SubAction(Action action) {
-        _performingPlayerId = action.getPerformingPlayerId();
-        _actionType = action.getActionType();
-        _action = action;
-    }
-
     public SubAction(Action action, DefaultGame game) {
         _performingPlayerId = action.getPerformingPlayerId();
         _actionType = action.getActionType();
@@ -39,14 +36,20 @@ public class SubAction implements Action {
 
 
     public SubAction(Action action, Effect effect) {
-        DefaultGame cardGame = effect.getGame();
-        _performingPlayerId = action.getPerformingPlayerId();
-        _actionType = action.getActionType();
-        _actionId = cardGame.getActionsEnvironment().getNextActionId();
-        cardGame.getActionsEnvironment().incrementActionId();
-        _action = action;
+        this(action, effect.getGame());
         _effect = effect;
         _effects.add(effect);
+    }
+
+    public SubAction(Action action, ActionContext context,
+                     List<EffectBlueprint> costAppenders, List<EffectBlueprint> effectBlueprints) {
+        this(action, context.getGame());
+
+        for (EffectBlueprint costAppender : costAppenders) {
+            costAppender.addEffectToAction(true, this, context);
+        }
+        for (EffectBlueprint effectBlueprint : effectBlueprints)
+            effectBlueprint.addEffectToAction(false, this, context);
     }
 
     public ActionType getActionType() { return _actionType; }

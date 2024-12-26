@@ -2,8 +2,6 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -30,13 +28,7 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
 
         List<Action> result = new LinkedList<>();
         if(requirementsNotMet(context)) {
-            SubAction subAction = new SubAction(action, context.getGame());
-
-            for (EffectBlueprint costAppender : _costAppenders) {
-                costAppender.addEffectToAction(true, subAction, context);
-            }
-            for (EffectBlueprint effectBlueprint : _effectBlueprints)
-                effectBlueprint.addEffectToAction(false, subAction, context);
+            SubAction subAction = new SubAction(action, context, _costAppenders, _effectBlueprints);
             result.add(subAction);
         }
         return result;
