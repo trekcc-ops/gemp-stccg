@@ -20,7 +20,7 @@ public class EffectBlueprintDeserializer {
                     "putcardsfromdiscardintohand", "putcardsfromdiscardonbottomofdeck",
                     "putcardsfromdiscardontopofdeck", "putcardsfromhandonbottomofdeck",
                     "putcardsfromhandonbottomofplaypile", "putcardsfromhandontopofdeck",
-                    "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame", "returntohand", "revealcards",
+                    "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame", "revealcards",
                     "revealcardsfromhand", "shufflecardsfromdiscardintodrawdeck",
                     "shufflecardsfromhandintodrawdeck", "shufflecardsfromplayintodrawdeck" ->
                     CardResolverMultiEffectBlueprintProducer.createEffectBlueprint(effectObject);

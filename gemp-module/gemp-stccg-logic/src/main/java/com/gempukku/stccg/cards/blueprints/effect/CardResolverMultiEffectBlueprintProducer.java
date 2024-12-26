@@ -55,7 +55,6 @@ public class CardResolverMultiEffectBlueprintProducer {
         PUTCARDSFROMHANDONTOPOFDECK(Zone.HAND, true, true), // Bleed Resources
         PUTCARDSFROMPLAYONBOTTOMOFDECK(null, false, true), // Ferengi Locator Bomb
         REMOVECARDSINDISCARDFROMGAME(Zone.DISCARD, false, true),
-        RETURNTOHAND(null, false, false),
         REVEALCARDS(null, false, false),
         REVEALCARDSFROMHAND(Zone.HAND, false, false),
         SHUFFLECARDSFROMDISCARDINTODRAWDECK(Zone.DISCARD, false, false), // Get It Done, Raktajino, Regenerate, Tinkerer
@@ -115,8 +114,6 @@ public class CardResolverMultiEffectBlueprintProducer {
         FilterableSource choiceFilter = (actionContext) -> switch (effectType) {
             case DISCARD ->
                     Filters.canBeDiscarded(actionContext.getPerformingPlayerId(), actionContext.getSource());
-            case RETURNTOHAND -> (Filter) (game, physicalCard) ->
-                    game.getModifiersQuerying().canBeReturnedToHand(physicalCard, actionContext.getSource());
             case DOWNLOAD -> Filters.playable;
             default -> null;
         };
@@ -137,9 +134,6 @@ public class CardResolverMultiEffectBlueprintProducer {
                     CardResolver.resolveCardsInZone(filter, choiceFilter, count, memory,
                             selectingPlayer, targetPlayer, defaultText, cardFilter, effectType.fromZone,
                             effectType.showMatchingOnly, cardSource);
-            case RETURNTOHAND ->
-                    CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
-                            targetPlayer, defaultText, cardSource);
         };
 
         result.addEffectBlueprint(targetCardAppender);
@@ -202,9 +196,6 @@ public class CardResolverMultiEffectBlueprintProducer {
                                         new PutCardFromPlayOnBottomOfDeckEffect(Iterables.getOnlyElement(cards));
                                 case REMOVECARDSINDISCARDFROMGAME ->
                                         new RemoveCardsFromZoneEffect(context, cards, Zone.DISCARD);
-                                case RETURNTOHAND ->
-                                        new ReturnCardsToHandEffect(
-                                                context.getGame(), context.getSource(), Filters.in(cards));
                                 case REVEALCARDS -> new RevealCardEffect(context, cards);
                                 case REVEALCARDSFROMHAND ->
                                         new RevealCardsFromYourHandEffect(context, cards);
@@ -253,9 +244,6 @@ public class CardResolverMultiEffectBlueprintProducer {
         if (effectType == EffectType.DISCARDFROMHAND) {
             BlueprintUtils.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize");
             BlueprintUtils.validateRequiredFields(effectObject, "forced");
-        } else if (effectType == EffectType.RETURNTOHAND) {
-            BlueprintUtils.validateAllowedFields(effectObject, "filter", "count");
-            BlueprintUtils.validateRequiredFields(effectObject, "filter");
         } else if (effectType == EffectType.DOWNLOAD) {
             BlueprintUtils.validateAllowedFields(effectObject, "filter", "memorize");
             BlueprintUtils.validateRequiredFields(effectObject, "filter");
@@ -279,7 +267,6 @@ public class CardResolverMultiEffectBlueprintProducer {
             case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                     SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                     "Choose cards to shuffle into the draw deck";
-            case RETURNTOHAND -> "Choose cards to return to hand";
             case PUTCARDSFROMPLAYONBOTTOMOFDECK ->  "Choose cards in play";
         };
     }
