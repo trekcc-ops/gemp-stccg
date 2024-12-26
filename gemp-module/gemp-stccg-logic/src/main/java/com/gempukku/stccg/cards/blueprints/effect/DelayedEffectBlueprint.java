@@ -25,7 +25,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
                         final Action[] effectsArray = actions.toArray(new Action[0]);
                         for (int i = effectsArray.length - 1; i >= 0; i--)
                             if (cost)
-                                action.insertCost(new StackActionEffect(cardGame, effectsArray[i]));
+                                action.insertCost(cardGame, effectsArray[i]);
                             else
                                 action.insertEffect(cardGame, effectsArray[i]);
                     }

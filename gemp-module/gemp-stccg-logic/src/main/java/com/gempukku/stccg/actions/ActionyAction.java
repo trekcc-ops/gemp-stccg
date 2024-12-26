@@ -196,7 +196,9 @@ public abstract class ActionyAction implements Action {
 
     public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
 
-    public void insertCost(Effect effect) { insertCost(new SubAction(this, effect)); }
+    public void insertCost(DefaultGame cardGame, Action costAction) {
+        insertCost(costAction);
+    }
 
     public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
     public void appendTargeting(Effect effect) { appendCost(new SubAction(this, effect)); }

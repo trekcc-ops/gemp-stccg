@@ -9,6 +9,8 @@ public interface Action {
 
     int getActionId();
 
+    void insertCost(DefaultGame cardGame, Action action);
+
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, OTHER,
         MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,
@@ -27,7 +29,7 @@ public interface Action {
     boolean canBeInitiated(DefaultGame cardGame);
     void setText(String text);
     boolean wasCarriedOut();
-    void insertCost(Effect effect);
+
     void appendCost(Effect effect);
 
     void appendEffect(Effect effect);

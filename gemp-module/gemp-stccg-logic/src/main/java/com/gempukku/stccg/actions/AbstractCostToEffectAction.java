@@ -2,13 +2,12 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.Collections;
 import java.util.LinkedList;
 
 public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private String _cardActionPrefix;
     int _actionId;
-    private final LinkedList<Effect> _costs = new LinkedList<>();
+    protected final LinkedList<Effect> _costs = new LinkedList<>();
     private final LinkedList<Effect> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Effect> _targeting = new LinkedList<>();
     private final LinkedList<Effect> _processedCosts = new LinkedList<>();
@@ -63,11 +62,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     @Override
     public final void appendEffect(Effect effect) {
         _effects.add(effect);
-    }
-
-    @Override
-    public final void insertCost(Effect cost) {
-        _costs.addAll(0, Collections.singletonList(cost));
     }
 
     @Override
