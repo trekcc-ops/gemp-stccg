@@ -91,7 +91,7 @@ public class DrawCardAction extends ActionyAction {
         if (_cardsDrawnCount < _cardDrawCount) {
             cardGame.getGameState().playerDrawsCard(_performingPlayerId);
             _cardsDrawnCount++;
-            return new AllowResponsesAction(cardGame, this, EffectResult.Type.DRAW_CARD);
+            return new AllowResponsesAction(cardGame, EffectResult.Type.DRAW_CARD);
         }
         return null;
     }

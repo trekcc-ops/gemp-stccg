@@ -1,12 +1,11 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
-import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.actions.turn.EndOfTurnResult;
 import com.gempukku.stccg.processes.GameProcess;
 
 public class TribblesEndOfTurnGameProcess extends TribblesGameProcess {
@@ -18,8 +17,7 @@ public class TribblesEndOfTurnGameProcess extends TribblesGameProcess {
 //        game.sendMessage("DEBUG: Beginning TribblesEndOfTurnGameProcess");
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("End of turn");
-        action.appendAction(new SubAction(action,
-                new TriggeringResultEffect(_game, new EndOfTurnResult(), "End of turn")));
+        action.appendAction(new AllowResponsesAction(_game, EffectResult.Type.END_OF_TURN));
         action.appendAction(new SystemQueueAction(_game) {
                     @Override
                     public Action nextAction(DefaultGame cardGame) {

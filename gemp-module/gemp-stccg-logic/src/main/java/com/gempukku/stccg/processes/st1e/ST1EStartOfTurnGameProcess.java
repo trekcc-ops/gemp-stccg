@@ -1,10 +1,9 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.turn.StartOfTurnResult;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
-import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -27,8 +26,7 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
             }
         });
 
-        action.appendAction(new SubAction(action,
-                new TriggeringResultEffect(_game, new StartOfTurnResult(), "Start of turn")));
+        action.appendAction(new AllowResponsesAction(_game, EffectResult.Type.START_OF_TURN));
         _game.getModifiersEnvironment().signalStartOfTurn();
         _game.getActionsEnvironment().addActionToStack(action);
     }

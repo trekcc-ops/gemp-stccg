@@ -1,10 +1,9 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.turn.StartOfTurnResult;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
-import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
@@ -23,8 +22,7 @@ public class TribblesStartOfTurnGameProcess extends TribblesGameProcess {
             @Override
             public Action nextAction(DefaultGame cardGame) {
                 cardGame.sendMessage("\n\n========\n\nStart of " + cardGame.getCurrentPlayerId() + "'s turn.");
-                return new SubAction(this,
-                        new TriggeringResultEffect(_game, new StartOfTurnResult(), "Start of turn"));
+                return new AllowResponsesAction(_game, EffectResult.Type.START_OF_TURN);
             }
         };
 

@@ -8,24 +8,10 @@ import com.gempukku.stccg.game.DefaultGame;
 public class AllowResponsesAction extends SystemQueueAction {
 
     private final EffectResult.Type _type;
-    private final Action _actionBeingRespondedTo;
 
-    public AllowResponsesAction(DefaultGame game, Action actionBeingRespondedTo, EffectResult.Type type) {
+    public AllowResponsesAction(DefaultGame game, EffectResult.Type type) {
         super(game);
         _type = type;
-        _actionBeingRespondedTo = actionBeingRespondedTo;
-    }
-
-    public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
-
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return null;
-    }
-
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return null;
     }
 
     @Override

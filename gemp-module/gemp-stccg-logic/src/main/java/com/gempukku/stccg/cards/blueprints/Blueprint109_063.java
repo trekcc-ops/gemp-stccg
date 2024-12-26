@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadMultipleCardsToSameCompatibleOutpostAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
-import com.gempukku.stccg.actions.turn.StartOfTurnResult;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -88,7 +87,7 @@ public class Blueprint109_063 extends CardBlueprint {
             requirement
          */
 
-        if (effectResult instanceof StartOfTurnResult && player == thisCard.getOwner() &&
+        if (effectResult.getType() == EffectResult.Type.START_OF_TURN && player == thisCard.getOwner() &&
                 player == game.getCurrentPlayer()) {
             actions.add(new DiscardCardAction(thisCard, player, thisCard));
         }

@@ -94,7 +94,7 @@ public class AttemptMissionAction extends ActionyAction {
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt);
                 return new AllowResponsesAction(
-                        cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
+                        cardGame, EffectResult.Type.START_OF_MISSION_ATTEMPT);
             }
 
             if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
