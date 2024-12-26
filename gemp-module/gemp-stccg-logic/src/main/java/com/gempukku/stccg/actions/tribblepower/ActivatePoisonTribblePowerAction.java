@@ -55,7 +55,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
                                 playerChosen(result, cardGame);
                             }
                         });
-            setProgress(Progress.playerSelected, true);
+            setProgress(Progress.playerSelected);
         }
 
         return getNextAction();

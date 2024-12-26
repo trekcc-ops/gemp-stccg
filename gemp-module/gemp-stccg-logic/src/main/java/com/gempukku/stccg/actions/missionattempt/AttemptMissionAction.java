@@ -92,7 +92,7 @@ public class AttemptMissionAction extends ActionyAction {
             }
 
             if (!getProgress(Progress.startedMissionAttempt)) {
-                setProgress(Progress.startedMissionAttempt, true);
+                setProgress(Progress.startedMissionAttempt);
                 return new AllowResponsesAction(
                         cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
             }
@@ -129,13 +129,13 @@ public class AttemptMissionAction extends ActionyAction {
                         }
                     }
                 }
-                setProgress(Progress.endedMissionAttempt, true);
+                setProgress(Progress.endedMissionAttempt);
             }
         return getNextAction();
     }
 
     private void solveMission(DefaultGame cardGame) throws InvalidGameLogicException {
-        setProgress(Progress.solvedMission, true);
+        setProgress(Progress.solvedMission);
         _missionLocation.complete(_performingPlayerId);
         cardGame.sendMessage(_performingPlayerId + " solved " + _missionCard.getCardLink());
     }
@@ -150,8 +150,8 @@ public class AttemptMissionAction extends ActionyAction {
     public boolean isFailed() { return getProgress(Progress.failedMissionAttempt); }
 
     private void failMission(DefaultGame game) {
-        setProgress(Progress.failedMissionAttempt, true);
-        setProgress(Progress.endedMissionAttempt,true);
+        setProgress(Progress.failedMissionAttempt);
+        setProgress(Progress.endedMissionAttempt);
         game.sendMessage(_performingPlayerId + " failed mission attempt of " + _missionCard.getCardLink());
     }
 

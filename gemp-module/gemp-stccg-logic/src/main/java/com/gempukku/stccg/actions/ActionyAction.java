@@ -15,7 +15,7 @@ public abstract class ActionyAction implements Action {
     private final LinkedList<Action> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Action> _targeting = new LinkedList<>();
     private final LinkedList<Action> _processedCosts = new LinkedList<>();
-    private final LinkedList<Action> _effects = new LinkedList<>();
+    private final LinkedList<Action> _actionEffects = new LinkedList<>();
     private final LinkedList<Action> _processedActions = new LinkedList<>();
     private final LinkedList<Action> _usageCosts = new LinkedList<>();
     protected String _text;
@@ -88,7 +88,7 @@ public abstract class ActionyAction implements Action {
     }
 
     public final void appendAction(Action action) {
-        _effects.add(action);
+        _actionEffects.add(action);
     }
 
     public final void insertCost(Action cost) {
@@ -96,7 +96,7 @@ public abstract class ActionyAction implements Action {
     }
 
     public final void insertAction(Action action) {
-        _effects.addAll(0, Collections.singletonList(action));
+        _actionEffects.addAll(0, Collections.singletonList(action));
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class ActionyAction implements Action {
     }
 
     protected final Action getNextAction() {
-        final Action effect = _effects.poll();
+        final Action effect = _actionEffects.poll();
         if (effect != null)
             _processedActions.add(effect);
         return effect;
@@ -187,7 +187,7 @@ public abstract class ActionyAction implements Action {
     public String getCardActionPrefix() { return _cardActionPrefix; }
 
     public final void appendUsage(Action cost) {
-        if (!_costs.isEmpty() || !_processedCosts.isEmpty() || !_effects.isEmpty() || !_processedActions.isEmpty())
+        if (!_costs.isEmpty() || !_processedCosts.isEmpty() || !_actionEffects.isEmpty() || !_processedActions.isEmpty())
             throw new UnsupportedOperationException("Called appendUsage() in incorrect order");
         _usageCosts.add(cost);
     }
@@ -203,11 +203,11 @@ public abstract class ActionyAction implements Action {
     public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
 
     public int getActionId() { return _actionId; }
-    protected void setProgress(Enum<?> progressType, boolean value) {
-        _progressIndicators.put(progressType.name(), value);
+    protected void setProgress(Enum<?> progressType) {
+        _progressIndicators.put(progressType.name(), true);
     }
 
-    protected List<Action> getActions() { return _effects; }
+    protected List<Action> getActions() { return _actionEffects; }
 
     protected boolean getProgress(Enum<?> progressType) {
         return _progressIndicators.get(progressType.name());
