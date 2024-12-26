@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
-import com.gempukku.stccg.actions.discard.AllPlayersDiscardFromHandEffect;
+import com.gempukku.stccg.actions.discard.AllPlayersDiscardFromHandAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.AwaitingDecisionType;
@@ -18,8 +17,7 @@ public class ActivateAvalancheTribblePowerAction extends ActivateTribblePowerAct
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        appendAction(new SubAction(this,
-                new AllPlayersDiscardFromHandEffect(cardGame, this, false, true)));
+        appendAction(new AllPlayersDiscardFromHandAction(cardGame, this, false, true));
         SelectCardInPlayAction selectAction =
                 new SelectCardInPlayAction(_performingCard, performingPlayer, "select",
                         Filters.yourHand(performingPlayer), AwaitingDecisionType.CARD_SELECTION);
