@@ -69,11 +69,6 @@ public class Blueprint155_021 extends CardBlueprint {
                                     true, Filters.filterYourActive(thisCard.getOwner(),
                                     Filters.yourMatchingOutposts(thisCard.getOwner(), thisCard)));
                             setPlayCardAction(action);
-                            getPlayCardAction().appendEffect(
-                                    new UnrespondableEffect(thisCard.getGame()) {
-                                        @Override
-                                        protected void doPlayEffect() {}
-                                    });
                             selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
                         }
                     });
@@ -87,7 +82,7 @@ public class Blueprint155_021 extends CardBlueprint {
             action2.setCardActionPrefix("2");
             action2.appendUsage(new OncePerGameEffect(action2));
             // append normal card play cost
-            action2.appendEffect(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
+            action2.appendAction(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
             actions.add(action2);*/
         }
         return actions;

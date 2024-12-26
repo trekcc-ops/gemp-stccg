@@ -32,7 +32,6 @@ public interface Action {
 
     void appendCost(DefaultGame cardGame, Action costAction);
 
-    void appendEffect(Effect effect);
     void appendEffect(DefaultGame cardGame, Action actionEffect);
     void insertEffect(DefaultGame cardGame, Action actionEffect);
 }

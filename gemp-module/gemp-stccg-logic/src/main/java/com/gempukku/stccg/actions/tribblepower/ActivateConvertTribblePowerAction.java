@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.placecard.PlacePlayedCardBeneathDrawDeckEffect;
 import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -12,8 +13,9 @@ public class ActivateConvertTribblePowerAction extends ActivateTribblePowerActio
     public ActivateConvertTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
-        appendEffect(new PlacePlayedCardBeneathDrawDeckEffect(_performingCard));
-        appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(cardGame, _performingPlayerId, 1));
+        appendAction(new SubAction(this, new PlacePlayedCardBeneathDrawDeckEffect(_performingCard)));
+        appendAction(new SubAction(this,
+                new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(cardGame, _performingPlayerId, 1)));
     }
 
 }

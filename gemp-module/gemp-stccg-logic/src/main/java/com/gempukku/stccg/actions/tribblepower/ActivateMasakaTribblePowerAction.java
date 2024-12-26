@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.actions.placecard.PutCardsFromZoneOnEndOfPileEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -17,8 +18,8 @@ public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction
         TribblesGame cardGame = actionContext.getGame();
         for (String player : cardGame.getPlayerIds()) {
             for (PhysicalCard card : cardGame.getGameState().getHand(player)) {
-                appendEffect(new PutCardsFromZoneOnEndOfPileEffect(
-                        cardGame, false, Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
+                appendAction(new SubAction(this, new PutCardsFromZoneOnEndOfPileEffect(
+                        cardGame, false, Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, card)));
             }
             appendAction(new DrawCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), 3));
         }

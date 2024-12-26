@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.playcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -66,17 +67,7 @@ public class DownloadCardFromZoneAction extends ActionyAction {
 
     protected void playCard(final PhysicalCard selectedCard) {
         _playCardAction = selectedCard.getPlayCardAction(true);
-        _playCardAction.appendEffect(
-                new UnrespondableEffect(_game) {
-                    @Override
-                    protected void doPlayEffect() {
-                        afterCardPlayed(selectedCard);
-                    }
-                });
         _game.getActionsEnvironment().addActionToStack(_playCardAction);
-    }
-
-    private void afterCardPlayed(PhysicalCard cardPlayed) {
     }
 
     @Override

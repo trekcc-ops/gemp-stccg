@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
@@ -25,7 +26,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (String player : cardGame.getPlayerIds()) {
             if (cardGame.getGameState().getHand(player).size() >= 4) {
-                appendEffect(
+                appendAction(new SubAction(this,
                         new ChooseCardsFromZoneEffect(cardGame, Zone.HAND, player, 1, 1) {
                             @Override
                             protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
@@ -36,7 +37,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
                                     game.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);
                                 }
                             }
-                        });
+                        }));
             }
         }
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);

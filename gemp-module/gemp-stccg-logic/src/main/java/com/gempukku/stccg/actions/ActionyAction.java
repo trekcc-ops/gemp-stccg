@@ -192,8 +192,6 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
-    public final void appendEffect(Effect effect) { appendAction(new SubAction(this, effect)); }
-
     public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
 
     public void insertCost(DefaultGame cardGame, Action costAction) {

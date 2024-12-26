@@ -1,10 +1,13 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.StartOfTurnResult;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -17,14 +20,16 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
 
         SystemQueueAction action = new SystemQueueAction(_game);
 
-        action.appendEffect(new UnrespondableEffect(_game) {
+        action.appendAction(new SystemQueueAction(_game) {
             @Override
-            protected void doPlayEffect() {
+            public Action nextAction(DefaultGame cardGame) {
                 _game.sendMessage("\n\n========\n\nStart of " + _game.getCurrentPlayerId() + "'s turn.");
+                return getNextAction();
             }
         });
 
-        action.appendEffect(new TriggeringResultEffect(_game, new StartOfTurnResult(_game), "Start of turn"));
+        action.appendAction(new SubAction(action,
+                new TriggeringResultEffect(_game, new StartOfTurnResult(_game), "Start of turn")));
         _game.getModifiersEnvironment().signalStartOfTurn();
         _game.getActionsEnvironment().addActionToStack(action);
     }

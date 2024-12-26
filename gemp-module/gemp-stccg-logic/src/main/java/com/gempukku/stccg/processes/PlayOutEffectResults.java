@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.turn.PlayOutOptionalAfterResponsesAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.game.ActionOrder;
@@ -26,7 +27,8 @@ class PlayOutEffectResults extends SystemQueueAction {
             _initialized = true;
             List<Action> requiredResponses = cardGame.getActionsEnvironment().getRequiredAfterTriggers(_effectResults);
             if (!requiredResponses.isEmpty())
-                appendEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(cardGame, this, requiredResponses));
+                appendAction(new SubAction(this,
+                        new PlayOutAllActionsIfEffectNotCancelledEffect(cardGame, this, requiredResponses)));
 
             GameState gameState = cardGame.getGameState();
             ActionOrder actionOrder = gameState.getPlayerOrder().getCounterClockwisePlayOrder(

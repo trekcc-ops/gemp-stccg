@@ -1,7 +1,6 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.UndockAction;
@@ -9,7 +8,6 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -478,19 +476,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         else throw new InvalidGameLogicException("Player decision is not the expected type");
     }
 
-
-    protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
-        SystemQueueAction action = new SystemQueueAction(_game);
-        action.appendEffect(effect);
-        carryOutEffectInPhaseActionByPlayer(playerId, action);
-    }
-
-    protected void carryOutEffectInPhaseActionByPlayer(String playerId, Action action) throws DecisionResultInvalidException {
-        CardActionSelectionDecision awaitingDecision = (CardActionSelectionDecision) _userFeedback.getAwaitingDecision(playerId);
-        awaitingDecision.addAction(action);
-
-        playerDecided(playerId, "0");
-    }
 
     protected void autoSeedMissions() throws DecisionResultInvalidException {
         // Both players keep picking option #1 until all missions are seeded

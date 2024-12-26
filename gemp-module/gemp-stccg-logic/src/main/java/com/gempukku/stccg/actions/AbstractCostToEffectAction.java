@@ -50,15 +50,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return _performingPlayerId;
     }
 
-    public final void appendTargeting(Effect targeting) {
-        _targeting.add(targeting);
-    }
-
-    @Override
-    public final void appendEffect(Effect effect) {
-        _effects.add(effect);
-    }
-
     @Override
     public void setText(String text) {
         this.text = text;

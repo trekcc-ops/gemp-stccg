@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
@@ -65,7 +66,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
         // That opponent must discard the top card
         ActionContext context = new DefaultActionContext(_performingPlayerId, game, _performingCard,
                 null, null);
-        appendEffect(new DiscardCardsFromEndOfCardPileEffect(Zone.DRAW_DECK, EndOfPile.TOP,
+        appendAction(new SubAction(this, new DiscardCardsFromEndOfCardPileEffect(Zone.DRAW_DECK, EndOfPile.TOP,
                 chosenPlayer, 1, true, context, null) {
             @Override
             protected void cardsDiscardedCallback(Collection<PhysicalCard> cards) {
@@ -74,7 +75,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
                 PhysicalCard card = Iterables.getOnlyElement(cards);
                 game.getGameState().addToPlayerScore(_performingPlayerId, card.getBlueprint().getTribbleValue());
             }
-        });
+        }));
     }
 
 
