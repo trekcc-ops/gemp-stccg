@@ -11,6 +11,8 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -62,6 +64,7 @@ public class GameEvent {
     private GameState _gameState;
     private AwaitingDecision _awaitingDecision;
     private final Map<Attribute, String> _eventAttributes = new HashMap<>();
+    private static final Logger LOGGER = LogManager.getLogger(GameEvent.class);
 
     public GameEvent(Type type) {
         _type = type;
@@ -99,12 +102,7 @@ public class GameEvent {
     public GameEvent(Type type, GameState gameState) {
         this(type);
         if (type == Type.SERIALIZED_GAME_STATE) {
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                _eventAttributes.put(Attribute.serializedGameState, mapper.writeValueAsString(gameState));
-            } catch(JsonProcessingException exp) {
-                gameState.sendMessage("Unable to create serialized game state");
-            }
+            serializeGameState(gameState);
         } else {
             _gameState = gameState;
         }
@@ -166,14 +164,7 @@ public class GameEvent {
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
         else if (card.getAttachedTo() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            _eventAttributes.put(
-                    Attribute.serializedGameState, mapper.writeValueAsString(card.getGame().getGameState()));
-        } catch(JsonProcessingException exp) {
-            card.getGame().sendMessage("Unable to create serialized game state");
-        }
+        serializeGameState(card.getGame().getGameState());
     }
 
     public Type getType() { return _type; }
@@ -247,6 +238,14 @@ public class GameEvent {
             eventElem.setAttribute("charStats", charStr.toString());
     }
 
-
+    private void serializeGameState(GameState gameState) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            _eventAttributes.put(Attribute.serializedGameState, mapper.writeValueAsString(gameState));
+        } catch(JsonProcessingException exp) {
+            gameState.sendMessage("Unable to create serialized game state");
+            LOGGER.error("Unable to create serialized game state", exp);
+        }
+    }
 
 }
