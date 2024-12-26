@@ -193,15 +193,9 @@ public class CardResolverMultiEffectBlueprintProducer {
                                 case REVEALCARDS -> new SubAction(parentAction, new RevealCardEffect(context, cards));
                                 case REVEALCARDSFROMHAND ->
                                         new SubAction(parentAction, new RevealCardsFromYourHandEffect(context, cards));
-                                case SHUFFLECARDSFROMDISCARDINTODRAWDECK ->
-                                        new SubAction(parentAction, new ShuffleCardsIntoDrawDeckEffect(context.getGame(), context.getSource(),
-                                                Zone.DISCARD, targetPlayerSource.getPlayerId(context), cards));
-                                case SHUFFLECARDSFROMHANDINTODRAWDECK ->
-                                        new SubAction(parentAction, new ShuffleCardsIntoDrawDeckEffect(context.getGame(), context.getSource(),
-                                                Zone.HAND, targetPlayerSource.getPlayerId(context), cards));
-                                case SHUFFLECARDSFROMPLAYINTODRAWDECK ->
-                                        new SubAction(parentAction, new ShuffleCardsFromPlayIntoDeckEffect(
-                                                context, targetPlayerSource.getPlayerId(context), cards));
+                                case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
+                                        SHUFFLECARDSFROMPLAYINTODRAWDECK ->
+                                        new ShuffleCardsIntoDrawDeckAction(context.getSource(), context.getPerformingPlayer(), Filters.in(cards));
                             };
                             subActions.add(subAction);
                         }

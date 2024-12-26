@@ -1,27 +1,29 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.DefaultEffect;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.choose.SelectPlayerAction;
+import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.Arrays;
 
 
 public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
-    public ActivateKillTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
-        super(actionContext, power);
+    private enum Progress { playerSelected, wasCarriedOut }
+    private Player _targetPlayer;
+    private SelectPlayerAction _selectPlayerAction;
+    private final TribblesActionContext _actionContext;
+
+    public ActivateKillTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+            throws InvalidGameLogicException {
+        super(actionContext, power, Progress.values());
+        _actionContext = actionContext;
     }
 
     @Override
@@ -30,24 +32,30 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
         if (cost != null)
             return cost;
 
-        // Choose a player...
-        String[] players = cardGame.getAllPlayerIds();
-        if (players.length == 1)
-            new DiscardCardsFromEndOfCardPileEffect(
-                    Zone.PLAY_PILE, EndOfPile.TOP, cardGame.getPlayer(players[0]), _performingCard).playEffect();
-        else
-            cardGame.getUserFeedback().sendAwaitingDecision(
-                    new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
-                            "Choose a player to shuffle his or her discard pile into his or her draw deck",
-                            players) {
-                        @Override
-                        protected void validDecisionMade(int index, String result) {
-                            Player targetPlayer = cardGame.getPlayer(result);
-                            new DiscardCardsFromEndOfCardPileEffect(
-                                    Zone.PLAY_PILE, EndOfPile.TOP, targetPlayer, _performingCard).playEffect();
-                        }
-                    });
+        if (!getProgress(Progress.playerSelected)) {
+            // Choose a player...
+            String[] players = cardGame.getAllPlayerIds();
+            if (players.length == 1) {
+                _targetPlayer = cardGame.getPlayer(players[0]);
+                setProgress(Progress.playerSelected);
+            }
+            else {
+                if (_selectPlayerAction == null) {
+                    _selectPlayerAction =
+                            new SelectPlayerAction(_actionContext, "selectedPlayer", Arrays.asList(players));
+                    return _selectPlayerAction;
+                } else {
+                    String targetPlayerId = _actionContext.getValueFromMemory("selectedPlayer");
+                    _targetPlayer = cardGame.getPlayer(targetPlayerId);
+                    setProgress(Progress.playerSelected);
+                }
+            }
+        }
 
+        if (!getProgress(Progress.wasCarriedOut)) {
+            setProgress(Progress.wasCarriedOut);
+            return new DiscardCardAction(_performingCard, _targetPlayer, Filters.topOfPlayPile(_targetPlayer));
+        }
         return getNextAction();
     }
 

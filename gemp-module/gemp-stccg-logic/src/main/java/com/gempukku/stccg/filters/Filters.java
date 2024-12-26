@@ -8,6 +8,7 @@ import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
@@ -153,6 +154,22 @@ public class Filters {
     public static Filter lessStrengthThan(final PhysicalCard card) {
         return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) < game.getModifiersQuerying().getStrength(card);
     }
+
+    public static Filter topOfPlayPile(Player player) {
+        return (game, physicalCard) -> {
+            if (game instanceof TribblesGame tribblesGame) {
+                return tribblesGame.getGameState().getPlayPile(player.getPlayerId()).getLast() == physicalCard;
+            } else {
+                return false;
+            }
+        };
+    }
+
+    public static Filter topOfDrawDeck(Player player) {
+        return (game, physicalCard) ->
+            game.getGameState().getDrawDeck(player.getPlayerId()).getLast() == physicalCard;
+    }
+
 
 
     private static Filter species(final Species species) {

@@ -95,4 +95,8 @@ public class DiscardCardAction extends ActionyAction {
         cardGame.sendMessage(_performingPlayerId + " discards " + TextUtils.getConcatenatedCardLinks(_cardsToDiscard));
         return getNextAction();
     }
+
+    public Collection<PhysicalCard> getDiscardedCards() {
+        return _cardsToDiscard;
+    }
 }

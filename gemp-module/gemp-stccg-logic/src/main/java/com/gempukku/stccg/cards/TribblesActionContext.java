@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.game.TribblesGame;
@@ -11,6 +12,11 @@ import java.util.Objects;
 public class TribblesActionContext extends DefaultActionContext {
     private final TribblesGame _game;
     protected final ActionContext _relevantContext;
+
+    public TribblesActionContext(Player performingPlayer, PhysicalCard source) {
+        this(null, performingPlayer.getPlayerId(), (TribblesGame) performingPlayer.getGame(),
+                source, null, null);
+    }
 
 
     public TribblesActionContext(String performingPlayer, TribblesGame game, PhysicalCard source,
