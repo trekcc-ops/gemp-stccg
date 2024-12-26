@@ -1,11 +1,9 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.actions.draw.DrawCardOrPutIntoHandResult;
 import com.gempukku.stccg.actions.placecard.ReturnCardsToHandResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
@@ -88,14 +86,6 @@ public class TriggerConditions {
         if (effectResult.getType() == EffectResult.Type.FOR_EACH_RETURNED_TO_HAND) {
             ReturnCardsToHandResult result = (ReturnCardsToHandResult) effectResult;
             return Filters.and(filters).accepts(game, result.getReturnedCard());
-        }
-        return false;
-    }
-
-    public static boolean isGettingDiscardedBy(Effect effect, DefaultGame game, Filterable sourceFilter, Filterable... filters) {
-        if (effect instanceof DiscardCardsFromPlayEffect discardEffect) {
-            if (effect.getSource() != null && Filters.and(sourceFilter).accepts(game, effect.getSource()))
-                return !Filters.filter(discardEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
         }
         return false;
     }

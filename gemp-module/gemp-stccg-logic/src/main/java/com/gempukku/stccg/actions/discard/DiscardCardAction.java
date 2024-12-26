@@ -7,6 +7,8 @@ import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -19,6 +21,7 @@ public class DiscardCardAction extends ActionyAction {
 
     private final PhysicalCard _performingCard;
     private SelectCardInPlayAction _selectAction;
+    private Filter _cardFilter;
     private Collection<PhysicalCard> _cardsToDiscard;
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, SelectCardInPlayAction selectAction) {
@@ -40,6 +43,13 @@ public class DiscardCardAction extends ActionyAction {
         _cardsToDiscard = cardsToDiscard;
     }
 
+    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, Filter cardFilter) {
+        super(performingPlayer, "Discard", ActionType.DISCARD);
+        _performingCard = performingCard;
+        _cardFilter = cardFilter;
+    }
+
+
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
@@ -59,7 +69,11 @@ public class DiscardCardAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (_cardsToDiscard == null) {
             if (_selectAction == null) {
-                throw new InvalidGameLogicException("Unable to target a card to discard");
+                if (_cardFilter == null) {
+                    throw new InvalidGameLogicException("Unable to target a card to discard");
+                } else {
+                    _cardsToDiscard = Filters.filter(cardGame, _cardFilter);
+                }
             } else {
                 if (_selectAction.wasCarriedOut()) {
                     _cardsToDiscard = _selectAction.getSelectedCards();

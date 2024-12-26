@@ -11,7 +11,6 @@ public class TriggerCheckerFactory {
             throw new InvalidCardDefinitionException("Trigger type not defined");
         final String triggerType = object.get("type").textValue();
         final TriggerCheckerProducer triggerCheckerProducer = switch(triggerType.toLowerCase()) {
-            case "abouttodiscard" -> new AboutToDiscardFromPlay();
             case "discarded" -> new Discarded();
             case "discardfromdeck" -> new DiscardFromDeck();
             case "discardfromhand" -> new DiscardFromHand();

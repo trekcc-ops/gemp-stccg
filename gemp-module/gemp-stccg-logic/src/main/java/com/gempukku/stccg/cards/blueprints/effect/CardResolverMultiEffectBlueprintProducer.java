@@ -1,8 +1,10 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromZoneEffect;
 import com.gempukku.stccg.actions.discard.RemoveCardsFromZoneEffect;
 import com.gempukku.stccg.actions.placecard.*;
@@ -12,7 +14,10 @@ import com.gempukku.stccg.actions.turn.StackActionEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.*;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.FilterFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -20,6 +25,7 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.google.common.collect.Iterables;
@@ -141,7 +147,7 @@ public class CardResolverMultiEffectBlueprintProducer {
         result.addEffectBlueprint(
                 new DelayedEffectBlueprint() {
                     @Override
-                    protected List<Action> createActions(Action action, ActionContext context) {
+                    protected List<Action> createActions(Action parentAction, ActionContext context) {
                         final Collection<PhysicalCard> cardsFromMemory = context.getCardsFromMemory(memory);
                         final List<Collection<PhysicalCard>> effectCardLists = new LinkedList<>();
 
@@ -157,11 +163,14 @@ public class CardResolverMultiEffectBlueprintProducer {
                         List<Action> subActions = new LinkedList<>();
                         for (Collection<PhysicalCard> cards : effectCardLists) {
                             Effect effect = switch (effectType) {
-                                case DISCARD ->
-                                        new DiscardCardsFromPlayEffect(context, targetPlayer.getPlayerId(context),
-                                                Iterables.getOnlyElement(cards));
+                                case DISCARD -> {
+                                    String targetPlayerId = targetPlayer.getPlayerId(context);
+                                    Player target = context.getGame().getPlayer(targetPlayerId);
+                                    Action action = new DiscardCardAction(context.getSource(), target, cards);
+                                    yield new StackActionEffect(context.getGame(), action);
+                                }
                                 case DISCARDCARDSFROMDRAWDECK ->
-                                        new DiscardCardsFromZoneEffect(context.getGame(), action.getPerformingCard(),
+                                        new DiscardCardsFromZoneEffect(context.getGame(), parentAction.getPerformingCard(),
                                                 effectType.fromZone, Iterables.getOnlyElement(cards));
                                 case DISCARDFROMHAND ->
                                         new DiscardCardsFromZoneEffect(context, effectType.fromZone,
@@ -209,7 +218,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                                         new ShuffleCardsFromPlayIntoDeckEffect(
                                                 context, targetPlayer.getPlayerId(context), cards);
                             };
-                            subActions.add(new SubAction(action, effect));
+                            subActions.add(new SubAction(parentAction, effect));
                         }
                         return subActions;
                     }
