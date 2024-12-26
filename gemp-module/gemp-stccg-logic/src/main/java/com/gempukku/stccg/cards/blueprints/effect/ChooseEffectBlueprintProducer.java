@@ -60,7 +60,8 @@ public class ChooseEffectBlueprintProducer {
                     case CHOOSEPLAYER -> new ChoosePlayerEffect(context, memorize);
                     case CHOOSEPLAYEREXCEPT ->
                             new ChoosePlayerExceptEffect(context, excludePlayerSource.getPlayerId(context), memorize);
-                    case CHOOSETRIBBLEPOWER -> new ChooseTribblePowerEffect(context, memorize);
+                    case CHOOSETRIBBLEPOWER -> new StackActionEffect(context.getGame(),
+                            new SelectTribblePowerAction(context, memorize));
                 };
                 result.add(new SubAction(action, effect));
                 return result;
