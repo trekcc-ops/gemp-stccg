@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.discard;
 
 import com.gempukku.stccg.actions.DefaultEffect;
-import com.gempukku.stccg.actions.PreventableCardEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -14,7 +13,7 @@ import com.gempukku.stccg.TextUtils;
 
 import java.util.*;
 
-public class DiscardCardsFromPlayEffect extends DefaultEffect implements PreventableCardEffect {
+public class DiscardCardsFromPlayEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final Filter _filter;
     private final Set<PhysicalCard> _preventedTargets = new HashSet<>();
@@ -39,10 +38,6 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
         return _source;
     }
 
-    public void preventEffect(PhysicalCard card) {
-        _preventedTargets.add(card);
-        _prevented = true;
-    }
     protected Filter getExtraAffectableFilter() {
         if (_source == null)
             return Filters.any;

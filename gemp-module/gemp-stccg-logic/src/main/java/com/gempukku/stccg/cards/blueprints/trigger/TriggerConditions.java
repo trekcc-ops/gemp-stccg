@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.PreventableCardEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
@@ -94,27 +93,9 @@ public class TriggerConditions {
     }
 
     public static boolean isGettingDiscardedBy(Effect effect, DefaultGame game, Filterable sourceFilter, Filterable... filters) {
-        if (effect instanceof DiscardCardsFromPlayEffect) {
-            PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
+        if (effect instanceof DiscardCardsFromPlayEffect discardEffect) {
             if (effect.getSource() != null && Filters.and(sourceFilter).accepts(game, effect.getSource()))
-                return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
-        }
-        return false;
-    }
-
-    public static boolean isGettingDiscardedByOpponent(Effect effect, DefaultGame game, String playerId, Filterable... filters) {
-        if (effect instanceof DiscardCardsFromPlayEffect) {
-            PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
-            if (effect.getSource() != null && !effect.getPerformingPlayerId().equals(playerId))
-                return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
-        }
-        return false;
-    }
-
-    public static boolean isGettingDiscarded(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect instanceof DiscardCardsFromPlayEffect) {
-            PreventableCardEffect discardEffect = (PreventableCardEffect) effect;
-            return !Filters.filter(discardEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
+                return !Filters.filter(discardEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
         }
         return false;
     }

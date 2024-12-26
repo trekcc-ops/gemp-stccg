@@ -4,7 +4,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
 
-public abstract class AbstractCostToEffectAction implements CostToEffectAction {
+public abstract class AbstractCostToEffectAction implements Action {
     private String _cardActionPrefix;
     int _actionId;
     protected final LinkedList<Effect> _costs = new LinkedList<>();
