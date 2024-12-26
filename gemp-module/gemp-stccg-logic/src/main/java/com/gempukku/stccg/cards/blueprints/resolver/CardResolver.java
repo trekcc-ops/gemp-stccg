@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.ChooseActiveCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseArbitraryCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
@@ -163,13 +164,13 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(Action action, ActionContext context) {
-                List<Action> actions = new LinkedList<>();
-
-                Effect effect = switch (selectionType) {
+            protected List<Action> createActions(Action parentAction, ActionContext context) {
+                DefaultGame cardGame = context.getGame();
+                Action action = switch (selectionType) {
                     case "self", "memory" -> {
                         Collection<PhysicalCard> result = filterCards(context, choiceFilter);
-                        yield new DefaultEffect(context.getGame(), choicePlayer.getPlayerId(context)) {
+                        yield new SubAction(parentAction,
+                                new DefaultEffect(context.getGame(), choicePlayer.getPlayerId(context)) {
                             @Override
                             public boolean isPlayableInFull() {
                                 int min = countSource.getMinimum(context);
@@ -186,28 +187,31 @@ public class CardResolver {
                                     return new FullEffectResult(false);
                                 }
                             }
-                        };
+                        });
                     }
-                    case "all" -> new UnrespondableEffect(context) {
+                    case "all" -> new SystemQueueAction(cardGame) {
                         @Override
-                        protected void doPlayEffect() {
+                        public Action nextAction(DefaultGame cardGame) {
                             context.setCardMemory(memory, filterCards(context, choiceFilter));
+                            return getNextAction();
                         }
                     };
-                    case "random" -> new UnrespondableEffect(context) {
+                    case "random" -> new SystemQueueAction(cardGame) {
                         @Override
-                        protected void doPlayEffect() {
+                        public Action nextAction(DefaultGame cardGame) {
                             context.setCardMemory(memory,
                                     TextUtils.getRandomItemsFromList(filterCards(context, playabilityFilter),
                                             countSource.evaluateExpression(context)));
+                            return getNextAction();
                         }
                     };
                     default -> null;
                 };
-                if (effect != null) {
-                    actions.add(new SubAction(action, effect));
+                if (action != null) {
+                    return List.of(action);
+                } else {
+                    return new LinkedList<>();
                 }
-                return actions;
             }
 
             private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
