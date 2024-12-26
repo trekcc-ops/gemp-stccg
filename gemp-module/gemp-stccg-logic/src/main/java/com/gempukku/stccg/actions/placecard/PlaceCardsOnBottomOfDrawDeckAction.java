@@ -18,16 +18,26 @@ import java.util.List;
 
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
-    private final SelectCardsAction _selectionAction;
+    private SelectCardsAction _selectionAction;
     private final PhysicalCard _causingCard;
+    private Collection<PhysicalCard> _cardsToPlace;
+    private enum Progress { cardsSelected }
 
 
     public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectCardsAction selectionAction,
                                               PhysicalCard causingCard) {
-        super(performingPlayer, ActionType.PLACE_CARD);
+        super(performingPlayer, ActionType.PLACE_CARD, Progress.values());
         _selectionAction = selectionAction;
         _causingCard = causingCard;
     }
+
+    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, Collection<PhysicalCard> cardsToPlace,
+                                              PhysicalCard causingCard) {
+        super(performingPlayer, ActionType.PLACE_CARD);
+        _causingCard = causingCard;
+        _cardsToPlace = cardsToPlace;
+    }
+
 
     @Override
     public PhysicalCard getPerformingCard() {
@@ -46,17 +56,23 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_selectionAction.wasCarriedOut()) {
-            return _selectionAction;
-        } else {
-            Collection<PhysicalCard> cardsBeingPlaced = _selectionAction.getSelectedCards();
-            for (PhysicalCard card : cardsBeingPlaced) {
-                GameState gameState = cardGame.getGameState();
-                gameState.removeCardsFromZone(card.getOwnerName(), List.of(card));
-                gameState.sendMessage(_performingPlayerId + " placed " + card + " beneath their draw deck");
-                gameState.addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
+        if (!getProgress(Progress.cardsSelected)) {
+            if (_selectionAction != null && !_selectionAction.wasCarriedOut()) {
+                return _selectionAction;
+            } else if (_selectionAction != null) {
+                _cardsToPlace = _selectionAction.getSelectedCards();
+                setProgress(Progress.cardsSelected);
+            } else {
+                throw new InvalidGameLogicException("Unable to identify cards to place on bottom of deck");
             }
-            return getNextAction();
         }
+
+        for (PhysicalCard card : _cardsToPlace) {
+            GameState gameState = cardGame.getGameState();
+            gameState.removeCardsFromZone(card.getOwnerName(), List.of(card));
+            gameState.sendMessage(_performingPlayerId + " placed " + card + " beneath their draw deck");
+            gameState.addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
+        }
+        return getNextAction();
     }
 }

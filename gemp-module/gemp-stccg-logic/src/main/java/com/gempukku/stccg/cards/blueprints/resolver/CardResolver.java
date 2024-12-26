@@ -39,7 +39,7 @@ public class CardResolver {
                     finalTargetAppender(choiceFilter, choiceFilter, countSource, memory, cardSource, selectingPlayer,
                             selectionType, typeFilter);
             case "choose" -> resolveChoiceCards(typeFilter, choiceFilter, choiceFilter, countSource, cardSource,
-                    createChoiceEffectSourceFromZone(selectingPlayer, targetPlayer, zone, memory, choiceText,
+                    createChoiceActionSourceFromZone(selectingPlayer, targetPlayer, zone, memory, choiceText,
                             showMatchingOnly, cardSource));
             default -> throw new RuntimeException("Unable to resolve card resolver of type: " + selectionType);
         };
@@ -103,7 +103,7 @@ public class CardResolver {
 
 
 
-    private static ChoiceEffectSource createChoiceEffectSourceFromZone(PlayerSource selectingPlayer,
+    private static ChoiceActionSource createChoiceActionSourceFromZone(PlayerSource selectingPlayer,
                                                                        PlayerSource targetPlayer, Zone zone,
                                                                        String memory, String choiceText,
                                                                        boolean showMatchingOnly,
@@ -112,7 +112,7 @@ public class CardResolver {
             String choicePlayerId = selectingPlayer.getPlayerId(actionContext);
             String targetPlayerId = targetPlayer.getPlayerId(actionContext);
             if (targetPlayerId.equals(choicePlayerId)) {
-                return new ChooseCardsFromZoneEffect(actionContext.getGame(), zone, choicePlayerId,
+                return new SubAction(action, new ChooseCardsFromZoneEffect(actionContext.getGame(), zone, choicePlayerId,
                         targetPlayerId, min, max, Filters.in(possibleCards)) {
                     @Override
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
@@ -123,9 +123,9 @@ public class CardResolver {
                     public String getText() {
                         return actionContext.substituteText(choiceText);
                     }
-                };
+                });
             } else {
-                return new ChooseArbitraryCardsEffect(actionContext.getGame().getPlayer(choicePlayerId),
+                return new SubAction(action, new ChooseArbitraryCardsEffect(actionContext.getGame().getPlayer(choicePlayerId),
                         actionContext.substituteText(choiceText),
                         cardSource.apply(actionContext), Filters.in(possibleCards),
                         min, max, showMatchingOnly) {
@@ -133,7 +133,7 @@ public class CardResolver {
                     protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                         actionContext.setCardMemory(memory, selectedCards);
                     }
-                };
+                });
             }
         };
     }
@@ -238,7 +238,7 @@ public class CardResolver {
                                                              FilterableSource playabilityFilter,
                                                              ValueSource countSource,
                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                             ChoiceEffectSource effectSource) {
+                                                             ChoiceActionSource effectSource) {
 
         return new DelayedEffectBlueprint() {
             @Override
@@ -251,9 +251,9 @@ public class CardResolver {
             protected List<Action> createActions(Action action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
-                Effect effect = effectSource.createEffect(cards, action, context,
+                Action selectionAction = effectSource.createAction(cards, action, context,
                         countSource.getMinimum(context), countSource.getMaximum(context));
-                result.add(new SubAction(action, effect));
+                result.add(selectionAction);
                 return result;
             }
 
@@ -299,10 +299,10 @@ public class CardResolver {
         };
     }
 
-
-
-    private interface ChoiceEffectSource {
-        Effect createEffect(Collection<? extends PhysicalCard> possibleCards, Action action,
+    private interface ChoiceActionSource {
+        Action createAction(Collection<? extends PhysicalCard> possibleCards, Action action,
                             ActionContext actionContext, int min, int max);
     }
+
+
 }

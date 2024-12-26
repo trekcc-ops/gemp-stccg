@@ -3,14 +3,14 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.turn.StackActionEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAtRandomFromHandEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
-import com.gempukku.stccg.actions.placecard.PlacePlayedCardBeneathDrawDeckEffect;
+import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
 import com.gempukku.stccg.actions.revealcards.*;
+import com.gempukku.stccg.actions.turn.StackActionEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
@@ -67,7 +67,6 @@ public class CardEffectBlueprintProducer {
         return new DelayedEffectBlueprint() {
             @Override
             protected List<Action> createActions(Action action, ActionContext context) {
-                final String selectingPlayerId = selectingPlayer.getPlayerId(context);
                 final String targetPlayerId = targetPlayerSource.getPlayerId(context);
                 DefaultGame cardGame = context.getGame();
                 Player targetPlayer = cardGame.getPlayer(targetPlayerId);
@@ -93,7 +92,9 @@ public class CardEffectBlueprintProducer {
                                 new LookAtRandomCardsFromHandEffect(context, targetPlayerId, count, memory);
                         case LOOKATTOPCARDSOFDRAWDECK ->
                                 new LookAtTopCardOfADeckEffect(context, count, targetPlayerId, memory);
-                        case PLACEPLAYEDCARDBENEATHDRAWDECK -> new PlacePlayedCardBeneathDrawDeckEffect(context);
+                        case PLACEPLAYEDCARDBENEATHDRAWDECK ->
+                                new StackActionEffect(cardGame, new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer,
+                                        List.of(context.getSource()), context.getSource()));
                         case PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE ->
                                 new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(context, targetPlayerId, count);
                         case REVEALBOTTOMCARDSOFDRAWDECK ->

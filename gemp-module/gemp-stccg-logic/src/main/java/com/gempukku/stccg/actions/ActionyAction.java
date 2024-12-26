@@ -40,6 +40,11 @@ public abstract class ActionyAction implements Action {
         player.getGame().getActionsEnvironment().incrementActionId();
     }
 
+    protected ActionyAction(Player player, ActionType actionType, Enum<?>[] progressValues) {
+        this(player, null, actionType, progressValues);
+    }
+
+
     protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
         _performingPlayerId = player.getPlayerId();
         _text = text;
