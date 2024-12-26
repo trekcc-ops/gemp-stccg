@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.usage.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collections;
@@ -156,11 +155,5 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     public String getCardActionPrefix() { return _cardActionPrefix; }
-
-    public final void appendUsage(UsageEffect cost) {
-        if (!_costs.isEmpty() || !_processedCosts.isEmpty() || !_effects.isEmpty() || !_processedEffects.isEmpty())
-            throw new UnsupportedOperationException("Called appendUsage() in incorrect order");
-        _usageCosts.add(cost);
-    }
 
 }
