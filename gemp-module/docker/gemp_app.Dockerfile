@@ -1,7 +1,7 @@
 #
 # Stage 0, Maven and dependency cache
 #
-FROM maven as build
+FROM maven AS build
 
 # Make and switch to a /gemp-module folder.
 RUN mkdir -p /gemp-module/
@@ -26,7 +26,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn install -DskipTests
 #
 # Stage 1, new container with just our build file
 #
-FROM amazoncorretto:21-alpine-jdk as runtime
+FROM amazoncorretto:21-alpine-jdk AS runtime
 
 # Patch any runtime security holes
 RUN apk update
