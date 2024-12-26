@@ -1,9 +1,12 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.actions.turn.PlayOutEffect;
+import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
+import com.gempukku.stccg.actions.turn.StackActionEffect;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
+import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 

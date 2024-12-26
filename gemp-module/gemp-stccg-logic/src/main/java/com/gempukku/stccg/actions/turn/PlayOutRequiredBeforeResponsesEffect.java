@@ -1,10 +1,7 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -12,13 +9,13 @@ import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import java.util.List;
 import java.util.Set;
 
-class PlayOutRequiredBeforeResponsesEffect extends DefaultEffect {
+public class PlayOutRequiredBeforeResponsesEffect extends DefaultEffect {
     private final SystemQueueAction _action;
     private final Set<PhysicalCard> _cardTriggersUsed;
     private final Effect _effect;
     private final ActionsEnvironment _actionsEnvironment;
 
-    PlayOutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
+    public PlayOutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
                                          Effect effect) {
         super(effect);
         _action = action;

@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.ST2EGameState;
-import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.Map;

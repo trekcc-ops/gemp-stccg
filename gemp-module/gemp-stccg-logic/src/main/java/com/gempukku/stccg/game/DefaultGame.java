@@ -15,7 +15,6 @@ import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.TurnProcedure;
 
 import java.util.*;
 

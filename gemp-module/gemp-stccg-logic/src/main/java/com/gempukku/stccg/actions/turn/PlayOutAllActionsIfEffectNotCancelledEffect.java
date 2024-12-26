@@ -1,21 +1,20 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;
 
-final class PlayOutAllActionsIfEffectNotCancelledEffect extends DefaultEffect {
+public final class PlayOutAllActionsIfEffectNotCancelledEffect extends DefaultEffect {
     private final SystemQueueAction _action;
     private final List<Action> _actions;
 
-    PlayOutAllActionsIfEffectNotCancelledEffect(DefaultGame game, SystemQueueAction action, List<Action> actions) {
+    public PlayOutAllActionsIfEffectNotCancelledEffect(DefaultGame game, SystemQueueAction action, List<Action> actions) {
         super(game, "none");
         _action = action;
         _actions = actions;

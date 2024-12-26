@@ -1,10 +1,7 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
@@ -15,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-class PlayOutOptionalBeforeResponsesEffect extends DefaultEffect {
+public class PlayOutOptionalBeforeResponsesEffect extends DefaultEffect {
     private final SystemQueueAction _action;
     private final Set<PhysicalCard> _cardTriggersUsed;
     private final ActionOrder _actionOrder;
@@ -23,7 +20,7 @@ class PlayOutOptionalBeforeResponsesEffect extends DefaultEffect {
     private final Effect _effect;
     private final ActionsEnvironment _actionsEnvironment;
 
-    PlayOutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
+    public PlayOutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
                                          ActionOrder actionOrder, int passCount, Effect effect) {
         super(effect);
         _action = action;

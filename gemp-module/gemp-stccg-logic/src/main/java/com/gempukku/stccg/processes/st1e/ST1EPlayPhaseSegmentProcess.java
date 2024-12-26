@@ -6,7 +6,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.GameUtils;
+import com.gempukku.stccg.game.GameUtils;
 
 import java.util.List;
 

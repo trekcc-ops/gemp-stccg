@@ -1,18 +1,17 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.HashSet;
 
-class PlayOutEffect extends SystemQueueAction {
+public class PlayOutEffect extends SystemQueueAction {
     private final Effect _effect;
     private boolean _initialized;
 
-    PlayOutEffect(Effect effect) {
+    public PlayOutEffect(Effect effect) {
         super(effect.getGame());
         _effect = effect;
     }

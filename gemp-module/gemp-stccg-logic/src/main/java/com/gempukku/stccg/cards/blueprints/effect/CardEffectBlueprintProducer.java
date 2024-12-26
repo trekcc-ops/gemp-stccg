@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.StackActionEffect;
+import com.gempukku.stccg.actions.turn.StackActionEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAtRandomFromHandEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;

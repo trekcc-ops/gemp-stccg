@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.actions.turn.StackActionEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;

@@ -1,12 +1,12 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.actions.Effect;
 
-class PlayEffect extends DefaultEffect {
+public class PlayEffect extends DefaultEffect {
     private final Effect _effect;
 
-    PlayEffect(Effect effect) {
+    public PlayEffect(Effect effect) {
         super(effect);
         _effect = effect;
     }
