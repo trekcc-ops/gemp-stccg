@@ -15,11 +15,6 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends DefaultEffect i
     private final int _count;
     private boolean _prevented;
 
-    public PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(ActionContext actionContext, String playerId, int count) {
-        super(actionContext, playerId);
-        _playerId = playerId;
-        _count = count;
-    }
     public PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(DefaultGame game, String playerId, int count) {
         super(game, playerId);
         _playerId = playerId;

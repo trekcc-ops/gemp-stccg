@@ -165,12 +165,6 @@ public class Filters {
         };
     }
 
-    public static Filter topOfDrawDeck(Player player) {
-        return (game, physicalCard) ->
-            game.getGameState().getDrawDeck(player.getPlayerId()).getLast() == physicalCard;
-    }
-
-
 
     private static Filter species(final Species species) {
         return (game, physicalCard) -> physicalCard.getBlueprint().isSpecies(species);

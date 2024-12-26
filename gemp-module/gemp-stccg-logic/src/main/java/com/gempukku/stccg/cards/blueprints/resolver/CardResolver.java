@@ -2,9 +2,9 @@ package com.gempukku.stccg.cards.blueprints.resolver;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.ChooseActiveCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseArbitraryCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
@@ -17,6 +17,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -79,24 +80,23 @@ public class CardResolver {
     }
 
 
-    private static Function<ActionContext, Effect> getChoiceEffectFromInPlay(String choiceText, ValueSource countSource,
-                                               String memory, PlayerSource choicePlayer,
+    private static Function<ActionContext, Action> getChoiceEffectFromInPlay(String choiceText, ValueSource countSource,
+                                                                             String memory,
+                                                                             PlayerSource choicePlayer,
                                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
                                                                              FilterableSource typeFilter, FilterableSource choiceFilter) {
         return (actionContext) -> {
             List<PhysicalCard> possibleCards = (List<PhysicalCard>) Filters.filter(cardSource.apply(actionContext),
                     typeFilter.getFilterable(actionContext),
                     choiceFilter == null ? Filters.any : choiceFilter.getFilterable(actionContext));
-            return new ChooseActiveCardsEffect(actionContext, choicePlayer.getPlayerId(actionContext),
-                    actionContext.substituteText(choiceText),
-                    countSource.getMinimum(actionContext), countSource.getMaximum(actionContext),
-                    possibleCards) {
 
-                @Override
-                protected void cardsSelected(Collection<PhysicalCard> cards) {
-                    actionContext.setCardMemory(memory, cards);
-                }
-            };
+            String selectingPlayerId = choicePlayer.getPlayerId(actionContext);
+            Player selectingPlayer = actionContext.getGame().getPlayer(selectingPlayerId);
+
+            return new SelectVisibleCardsAction(actionContext.getSource(), selectingPlayer,
+                    actionContext.substituteText(choiceText), Filters.in(possibleCards),
+                    countSource.getMinimum(actionContext), countSource.getMaximum(actionContext),
+                    actionContext, memory);
         };
     }
 
@@ -272,7 +272,7 @@ public class CardResolver {
                                                                        FilterableSource playabilityFilter,
                                                                        ValueSource countSource,
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                                       Function<ActionContext, Effect> choiceEffect) {
+                                                                       Function<ActionContext, Action> choiceAction) {
         return new DelayedEffectBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
@@ -283,8 +283,8 @@ public class CardResolver {
             @Override
             protected List<Action> createActions(Action action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
-                Effect effect = choiceEffect.apply(context);
-                result.add(new SubAction(action, effect));
+                Action selectionAction = choiceAction.apply(context);
+                result.add(selectionAction);
                 return result;
             }
 

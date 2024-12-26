@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
@@ -25,6 +26,8 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     private boolean _selectableCardsIdentified = false;
     private Filter _selectionFilter;
     private Integer _maximum;
+    private ActionContext _actionContext;
+    private String _memory;
 
     public SelectVisibleCardsAction(Action action, Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
@@ -42,6 +45,18 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         _actionSource = performingCard;
         _minimum = minimum;
         _maximum = maximum;
+    }
+
+    public SelectVisibleCardsAction(PhysicalCard performingCard, Player selectingPlayer, String choiceText,
+                                    Filter selectionFilter, int minimum, int maximum, ActionContext context,
+                                    String memory) {
+        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        _selectionFilter = selectionFilter;
+        _actionSource = performingCard;
+        _minimum = minimum;
+        _maximum = maximum;
+        _actionContext = context;
+        _memory = memory;
     }
 
 
@@ -81,6 +96,9 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             _selectedCards = getSelectedCardsByResponse(result);
                             _wasCarriedOut = true;
+                            if (_actionContext != null) {
+                                _actionContext.setCardMemory(_memory, _selectedCards);
+                            }
                         }
                     });
         }
