@@ -40,9 +40,7 @@ public class DrawActionBlueprintProducer {
                 List<Action> result = new LinkedList<>();
                 int numberOfEffects = 1;
                 for (int i = 0; i < numberOfEffects; i++) {
-                    Effect effect = new StackActionEffect(context.getGame(),
-                                new DrawCardAction(context.getSource(), targetPlayer, count));
-                    result.add(new SubAction(action, effect));
+                    result.add(new DrawCardAction(context.getSource(), targetPlayer, count));
                 }
                 return result;
             }
