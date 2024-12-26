@@ -1,9 +1,9 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -11,18 +11,17 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;
 
-final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEffect {
+final class PlayOutAllActionsIfEffectNotCancelledEffect extends DefaultEffect {
     private final SystemQueueAction _action;
     private final List<Action> _actions;
 
     PlayOutAllActionsIfEffectNotCancelledEffect(DefaultGame game, SystemQueueAction action, List<Action> actions) {
-        super(game);
+        super(game, "none");
         _action = action;
         _actions = actions;
     }
 
 
-    @Override
     public void doPlayEffect() {
         ActionsEnvironment environment = _game.getActionsEnvironment();
         if (_actions.size() == 1) {
@@ -61,4 +60,16 @@ final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEff
         }
         return result;
     }
+
+    @Override
+    public boolean isPlayableInFull() {
+        return true;
+    }
+
+    @Override
+    public FullEffectResult playEffectReturningResult() {
+        doPlayEffect();
+        return new FullEffectResult(true);
+    }
+
 }

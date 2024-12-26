@@ -2,7 +2,6 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.StartOfTurnResult;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.turn.TriggeringResultEffect;

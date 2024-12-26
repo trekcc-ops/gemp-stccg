@@ -1,18 +1,25 @@
 package com.gempukku.stccg.processes;
 
+import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.UnrespondableEffect;
 
-class PlayEffect extends UnrespondableEffect {
+class PlayEffect extends DefaultEffect {
     private final Effect _effect;
 
     PlayEffect(Effect effect) {
-        super(effect.getGame());
+        super(effect);
         _effect = effect;
     }
 
     @Override
-    protected void doPlayEffect() {
-        _effect.playEffect();
+    public boolean isPlayableInFull() {
+        return true;
     }
+
+    @Override
+    public FullEffectResult playEffectReturningResult() {
+        _effect.playEffect();
+        return new FullEffectResult(true);
+    }
+
 }

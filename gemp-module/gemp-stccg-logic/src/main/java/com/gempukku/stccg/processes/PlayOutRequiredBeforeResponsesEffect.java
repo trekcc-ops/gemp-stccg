@@ -1,10 +1,9 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -13,7 +12,7 @@ import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import java.util.List;
 import java.util.Set;
 
-class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
+class PlayOutRequiredBeforeResponsesEffect extends DefaultEffect {
     private final SystemQueueAction _action;
     private final Set<PhysicalCard> _cardTriggersUsed;
     private final Effect _effect;
@@ -21,7 +20,7 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
 
     PlayOutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
                                          Effect effect) {
-        super(effect.getGame());
+        super(effect);
         _action = action;
         _cardTriggersUsed = cardTriggersUsed;
         _effect = effect;
@@ -29,7 +28,6 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
     }
 
 
-    @Override
     protected void doPlayEffect() {
         final List<Action> requiredBeforeTriggers = _actionsEnvironment.getRequiredBeforeTriggers(_effect);
         // Remove triggers already resolved
@@ -56,4 +54,16 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
                     });
         }
     }
+
+    @Override
+    public boolean isPlayableInFull() {
+        return true;
+    }
+
+    @Override
+    public FullEffectResult playEffectReturningResult() {
+        doPlayEffect();
+        return new FullEffectResult(true);
+    }
+
 }

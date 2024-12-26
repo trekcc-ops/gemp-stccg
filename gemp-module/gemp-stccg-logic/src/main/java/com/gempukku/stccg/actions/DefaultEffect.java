@@ -26,6 +26,11 @@ public abstract class DefaultEffect implements Effect {
         _game = actionContext.getGame();
     }
 
+    protected DefaultEffect(Effect effect) {
+        _performingPlayerId = effect.getPerformingPlayerId();
+        _game = effect.getGame();
+    }
+
     protected DefaultEffect(ActionContext actionContext) {
         _performingPlayerId = actionContext.getPerformingPlayerId();
         _game = actionContext.getGame();

@@ -1,8 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.StackActionEffect;
-import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
