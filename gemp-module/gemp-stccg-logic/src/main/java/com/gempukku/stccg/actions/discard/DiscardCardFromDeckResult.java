@@ -1,9 +1,9 @@
 package com.gempukku.stccg.actions.discard;
 
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
-public class DiscardCardFromDeckResult extends EffectResult {
+public class DiscardCardFromDeckResult extends ActionResult {
     private final PhysicalCard _card;
 
     public DiscardCardFromDeckResult(PhysicalCard source, PhysicalCard card) {

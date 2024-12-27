@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -30,19 +30,19 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
             public boolean accepts(ActionContext actionContext) {
                 final Filterable filterable = filter.getFilterable(actionContext);
                 final String playingPlayerId = playingPlayer.getPlayerId(actionContext);
-                final EffectResult effectResult = actionContext.getEffectResult();
+                final ActionResult actionResult = actionContext.getEffectResult();
                 final boolean played;
 
                 if (onFilter != null) {
                     final Filterable onFilterable = onFilter.getFilterable(actionContext);
-                    played = TriggerConditions.playedOn(actionContext.getGame(), effectResult, onFilterable, filterable);
+                    played = TriggerConditions.playedOn(actionContext.getGame(), actionResult, onFilterable, filterable);
                 } else {
                     played = TriggerConditions.played(actionContext.getGame().getPlayer(playingPlayerId),
-                            effectResult, filterable);
+                            actionResult, filterable);
                 }
 
                 if (played && memorize != null)
-                    actionContext.setCardMemory(memorize, ((PlayCardResult) effectResult).getPlayedCard());
+                    actionContext.setCardMemory(memorize, ((PlayCardResult) actionResult).getPlayedCard());
                 return played;
             }
 

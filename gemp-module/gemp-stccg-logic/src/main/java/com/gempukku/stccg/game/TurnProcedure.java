@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.processes.GameProcess;
@@ -34,9 +34,9 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
         while (_game.isCarryingOutEffects()) {
             numSinceDecision++;
             // First check for any "state-based" effects
-            Set<EffectResult> effectResults = actionsEnvironment.consumeEffectResults();
-            effectResults.forEach(effectResult -> effectResult.createOptionalAfterTriggerActions(_game));
-            if (effectResults.isEmpty()) {
+            Set<ActionResult> actionResults = actionsEnvironment.consumeEffectResults();
+            actionResults.forEach(effectResult -> effectResult.createOptionalAfterTriggerActions(_game));
+            if (actionResults.isEmpty()) {
                 if (actionsEnvironment.hasNoActionsInProgress())
                     try {
                         continueCurrentProcess();
@@ -46,7 +46,7 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
                 else
                     executeNextSubaction();
             } else {
-                actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, effectResults));
+                actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, actionResults));
             }
             _game.getGameState().updateGameStatsAndSendIfChanged();
 
@@ -93,10 +93,10 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
                 action.getClass().getSimpleName() + (action.getPerformingCard() != null ?
                 " Source: " + action.getPerformingCard().getFullName() : "")));
 
-        List<EffectResult> effectResults =
+        List<ActionResult> actionResults =
                 _game.getActionsEnvironment().consumeEffectResults().stream().toList();
-        effectResults.forEach(effectResult -> sendMessage(
-                "EffectResult " + (effectResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
+        actionResults.forEach(effectResult -> sendMessage(
+                "EffectResult " + (actionResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
         throw new UnsupportedOperationException(errorMessage);
     }
 

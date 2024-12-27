@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints.actionsource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
@@ -109,13 +109,13 @@ public abstract class DefaultActionSource implements ActionSource {
                 new DefaultActionContext(card.getOwnerName(), card, null));
     }
 
-    public Action createActionWithNewContext(PhysicalCard card, EffectResult effectResult) {
+    public Action createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
         return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, effectResult));
+                new DefaultActionContext(card.getOwnerName(), card, actionResult));
     }
 
 
-    public Action createActionWithNewContext(PhysicalCard card, String playerId, EffectResult effectResult) {
-        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, effectResult));
+    public Action createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult) {
+        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, actionResult));
     }
 }

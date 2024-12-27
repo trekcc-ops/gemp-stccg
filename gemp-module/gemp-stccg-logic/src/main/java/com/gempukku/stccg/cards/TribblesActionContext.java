@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
@@ -13,8 +13,8 @@ public class TribblesActionContext extends DefaultActionContext {
 
 
     public TribblesActionContext(ActionContext delegate, String performingPlayer, TribblesGame game,
-                                 PhysicalCard source, EffectResult effectResult) {
-        super(performingPlayer, game, source, effectResult);
+                                 PhysicalCard source, ActionResult actionResult) {
+        super(performingPlayer, game, source, actionResult);
         _game = game;
         _relevantContext = Objects.requireNonNullElse(delegate, this);
     }
@@ -31,8 +31,8 @@ public class TribblesActionContext extends DefaultActionContext {
     public TribblesGameState getGameState() { return _game.getGameState(); }
 
     @Override
-    public ActionContext createDelegateContext(EffectResult effectResult) {
-        return new TribblesActionContext(this, getPerformingPlayerId(), getGame(), getSource(), effectResult);
+    public ActionContext createDelegateContext(ActionResult actionResult) {
+        return new TribblesActionContext(this, getPerformingPlayerId(), getGame(), getSource(), actionResult);
     }
 
 

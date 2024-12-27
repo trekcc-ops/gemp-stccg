@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -94,7 +94,7 @@ public class AttemptMissionAction extends ActionyAction {
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt);
                 return new AllowResponsesAction(
-                        cardGame, EffectResult.Type.START_OF_MISSION_ATTEMPT);
+                        cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT);
             }
 
             if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {

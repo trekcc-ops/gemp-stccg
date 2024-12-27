@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -26,9 +26,9 @@ public class Blueprint212_019 extends CardBlueprint {
         return actionSource;
     }
 
-    public List<Action> getValidResponses(PhysicalCard card, Player player, EffectResult effectResult) {
+    public List<Action> getValidResponses(PhysicalCard card, Player player, ActionResult actionResult) {
         List<Action> actions = new ArrayList<>();
-        if (effectResult.getType() == EffectResult.Type.START_OF_MISSION_ATTEMPT && card.isControlledBy(player)) {
+        if (actionResult.getType() == ActionResult.Type.START_OF_MISSION_ATTEMPT && card.isControlledBy(player)) {
             actions.add(new DownloadCardFromZoneAction(Zone.DRAW_DECK, player, card, CardType.PERSONNEL));
         }
         return actions;

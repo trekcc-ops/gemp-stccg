@@ -7,7 +7,7 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.*;
 
-public class EffectResult {
+public class ActionResult {
     private final Set<Action> _optionalTriggersUsed = new HashSet<>();
 
     public enum Type {
@@ -37,19 +37,19 @@ public class EffectResult {
         // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
 
-    protected EffectResult(Type type, PhysicalCard source) {
+    protected ActionResult(Type type, PhysicalCard source) {
         _type = type;
         _source = source;
         _performingPlayerId = source.getOwnerName();
     }
 
-    public EffectResult(Type type) {
+    public ActionResult(Type type) {
         _type = type;
         _source = null;
         _performingPlayerId = null;
     }
 
-    public EffectResult(Type type, Action action, PhysicalCard source) {
+    public ActionResult(Type type, Action action, PhysicalCard source) {
         _type = type;
         _source = source;
         _performingPlayerId = action.getPerformingPlayerId();

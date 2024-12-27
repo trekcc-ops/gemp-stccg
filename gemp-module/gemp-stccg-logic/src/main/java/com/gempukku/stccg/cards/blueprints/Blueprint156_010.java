@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -21,9 +21,9 @@ public class Blueprint156_010 extends CardBlueprint {
         super("156_010");
     }
 
-    public List<Action> getValidResponses(PhysicalCard thisCard, Player player, EffectResult effectResult) {
+    public List<Action> getValidResponses(PhysicalCard thisCard, Player player, ActionResult actionResult) {
         List<Action> actions = new ArrayList<>();
-        if (effectResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
+        if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 Objects.equals(thisCard.getGame().getOpponent(thisCard.getOwnerName()), player.getPlayerId())) {
             actions.add(new DrawCardAction(thisCard, player, 2));
         }

@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.ActionOrder;
@@ -18,16 +18,16 @@ public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
     private final SystemQueueAction _action;
     private final ActionOrder _actionOrder;
     private final int _passCount;
-    private final Collection<EffectResult> _effectResults;
+    private final Collection<ActionResult> _actionResults;
     private final ActionsEnvironment _actionsEnvironment;
 
     public PlayOutOptionalAfterResponsesAction(DefaultGame game, SystemQueueAction action, ActionOrder actionOrder,
-                                        int passCount, Collection<EffectResult> effectResults) {
+                                        int passCount, Collection<ActionResult> actionResults) {
         super(game);
         _action = action;
         _actionOrder = actionOrder;
         _passCount = passCount;
-        _effectResults = effectResults;
+        _actionResults = actionResults;
         _actionsEnvironment = game.getActionsEnvironment();
     }
 
@@ -35,16 +35,16 @@ public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
     public Action nextAction(DefaultGame cardGame) {
         final String activePlayer = _actionOrder.getNextPlayer();
 
-        final Map<Action, EffectResult> optionalAfterTriggers =
-                _actionsEnvironment.getOptionalAfterTriggers(activePlayer, _effectResults);
+        final Map<Action, ActionResult> optionalAfterTriggers =
+                _actionsEnvironment.getOptionalAfterTriggers(activePlayer, _actionResults);
 
         List<Action> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
-        possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(activePlayer, _effectResults));
+        possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(activePlayer, _actionResults));
 
         if (possibleActions.isEmpty()) {
             if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
                 _action.insertAction(new PlayOutOptionalAfterResponsesAction(cardGame,
-                        _action, _actionOrder, _passCount + 1, _effectResults));
+                        _action, _actionOrder, _passCount + 1, _actionResults));
             }
         } else {
             Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayer);
@@ -64,13 +64,13 @@ public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
                             }
                             if (nextPassCount < _actionOrder.getPlayerCount())
                                 _action.insertAction(new PlayOutOptionalAfterResponsesAction(cardGame,
-                                        _action, _actionOrder, nextPassCount, _effectResults));
+                                        _action, _actionOrder, nextPassCount, _actionResults));
                         }
                     });
         }
         return getNextAction();
     }
 
-    public Collection<EffectResult> getEffectResults() { return _effectResults; }
+    public Collection<ActionResult> getEffectResults() { return _actionResults; }
 
 }

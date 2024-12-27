@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -54,7 +54,7 @@ public class ActivateCardAction extends ActionyAction {
             if (!_activated) {
                 _activated = true;
                 cardGame.getActionsEnvironment().emitEffectResult(
-                        new EffectResult(EffectResult.Type.ACTIVATE, this, _physicalCard));
+                        new ActionResult(ActionResult.Type.ACTIVATE, this, _physicalCard));
             }
 
             if (!_prevented)

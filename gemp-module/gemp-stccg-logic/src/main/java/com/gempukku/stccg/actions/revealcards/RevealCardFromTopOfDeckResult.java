@@ -1,9 +1,9 @@
 package com.gempukku.stccg.actions.revealcards;
 
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
-public class RevealCardFromTopOfDeckResult extends EffectResult {
+public class RevealCardFromTopOfDeckResult extends ActionResult {
     private final String _playerId;
     private final PhysicalCard _revealedCard;
 

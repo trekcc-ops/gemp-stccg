@@ -1,7 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
@@ -12,7 +12,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
     private final List<Action> _performedActions = new LinkedList<>();
-    private Set<EffectResult> _effectResults = new HashSet<>();
+    private Set<ActionResult> _actionResults = new HashSet<>();
     private int _nextActionId = 1;
 
     public DefaultActionsEnvironment(DefaultGame game) {
@@ -40,13 +40,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     public DefaultGame getGame() { return _game; }
 
     @Override
-    public void emitEffectResult(EffectResult effectResult) {
-        _effectResults.add(effectResult);
+    public void emitEffectResult(ActionResult actionResult) {
+        _actionResults.add(actionResult);
     }
 
-    public Set<EffectResult> consumeEffectResults() {
-        Set<EffectResult> result = _effectResults;
-        _effectResults = new HashSet<>();
+    public Set<ActionResult> consumeEffectResults() {
+        Set<ActionResult> result = _actionResults;
+        _actionResults = new HashSet<>();
         return result;
     }
 
@@ -66,13 +66,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public List<Action> getRequiredAfterTriggers(Collection<? extends EffectResult> effectResults) {
+    public List<Action> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults) {
         List<Action> gatheredActions = new LinkedList<>();
 
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
-                for (EffectResult effectResult : effectResults) {
-                    List<? extends Action> actions = actionProxy.getRequiredAfterTriggers(effectResult);
+                for (ActionResult actionResult : effectResults) {
+                    List<? extends Action> actions = actionProxy.getRequiredAfterTriggers(actionResult);
                     if (actions != null)
                         gatheredActions.addAll(actions);
                 }
@@ -83,18 +83,18 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public Map<Action, EffectResult> getOptionalAfterTriggers(String playerId,
-                                                              Collection<? extends EffectResult> effectResults) {
-        final Map<Action, EffectResult> gatheredActions = new HashMap<>();
+    public Map<Action, ActionResult> getOptionalAfterTriggers(String playerId,
+                                                              Collection<? extends ActionResult> effectResults) {
+        final Map<Action, ActionResult> gatheredActions = new HashMap<>();
 
         if (effectResults != null) {
-            for (EffectResult effectResult : effectResults) {
-                List<? extends Action> actions = effectResult.getOptionalAfterTriggerActions(
+            for (ActionResult actionResult : effectResults) {
+                List<? extends Action> actions = actionResult.getOptionalAfterTriggerActions(
                         _game.getGameState().getPlayer(playerId));
                 if (actions != null) {
                     for (Action action : actions) {
-                        if (!effectResult.wasOptionalTriggerUsed(action)) {
-                            gatheredActions.put(action, effectResult);
+                        if (!actionResult.wasOptionalTriggerUsed(action)) {
+                            gatheredActions.put(action, actionResult);
                         }
                     }
                 }
@@ -105,13 +105,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public List<Action> getOptionalAfterActions(String playerId, Collection<? extends EffectResult> effectResults) {
+    public List<Action> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults) {
         List<Action> result = new LinkedList<>();
 
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
-                for (EffectResult effectResult : effectResults) {
-                    List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, effectResult);
+                for (ActionResult actionResult : effectResults) {
+                    List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, actionResult);
                     List<Action> playableActions = getPlayableActions(playerId, actions);
                     result.addAll(playableActions);
                 }

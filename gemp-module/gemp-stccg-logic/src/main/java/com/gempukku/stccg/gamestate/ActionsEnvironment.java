@@ -1,19 +1,19 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
 
 public interface ActionsEnvironment {
 
-    List<Action> getRequiredAfterTriggers(Collection<? extends EffectResult> effectResults);
+    List<Action> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
 
-    Map<Action, EffectResult> getOptionalAfterTriggers(String playerId,
-                                                       Collection<? extends EffectResult> effectResults);
+    Map<Action, ActionResult> getOptionalAfterTriggers(String playerId,
+                                                       Collection<? extends ActionResult> effectResults);
 
-    List<Action> getOptionalAfterActions(String playerId, Collection<? extends EffectResult> effectResults);
+    List<Action> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults);
 
     List<Action> getPhaseActions(String playerId);
 
@@ -21,9 +21,9 @@ public interface ActionsEnvironment {
 
     void addActionToStack(Action action);
 
-    void emitEffectResult(EffectResult effectResult);
+    void emitEffectResult(ActionResult actionResult);
 
-    Set<EffectResult> consumeEffectResults();
+    Set<ActionResult> consumeEffectResults();
     void signalEndOfTurn();
     void addAlwaysOnActionProxy(ActionProxy actionProxy);
     DefaultGame getGame();

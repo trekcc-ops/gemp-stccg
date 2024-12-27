@@ -7,8 +7,6 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-import java.util.Collection;
-
 public abstract class ActivateTribblePowerAction extends ActionyAction {
     protected final PhysicalCard _performingCard;
     protected final TribblePower _tribblePower;
@@ -44,8 +42,8 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
 
         Action action = getNextAction();
         if (action == null) {
-            EffectResult result =
-                    new EffectResult(EffectResult.Type.ACTIVATE_TRIBBLE_POWER, this, _performingCard);
+            ActionResult result =
+                    new ActionResult(ActionResult.Type.ACTIVATE_TRIBBLE_POWER, this, _performingCard);
             cardGame.getActionsEnvironment().emitEffectResult(result);
         }
         return action;

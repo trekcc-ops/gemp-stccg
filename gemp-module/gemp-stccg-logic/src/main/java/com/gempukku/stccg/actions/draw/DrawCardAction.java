@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.draw;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.SkillDotCountEvaluator;
@@ -91,7 +91,7 @@ public class DrawCardAction extends ActionyAction {
         if (_cardsDrawnCount < _cardDrawCount) {
             cardGame.getGameState().playerDrawsCard(_performingPlayerId);
             _cardsDrawnCount++;
-            return new AllowResponsesAction(cardGame, EffectResult.Type.DRAW_CARD);
+            return new AllowResponsesAction(cardGame, ActionResult.Type.DRAW_CARD);
         }
         return null;
     }

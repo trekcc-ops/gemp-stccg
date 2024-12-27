@@ -2,7 +2,7 @@ package com.gempukku.stccg.rules.generic;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -15,11 +15,11 @@ public class RequiredTriggersRule extends GenericRule {
     }
 
     @Override
-    public List<? extends Action> getRequiredAfterTriggers(EffectResult effectResult) {
+    public List<? extends Action> getRequiredAfterTriggers(ActionResult actionResult) {
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(_game)) {
             if (!card.hasTextRemoved(_game)) {
-                result.addAll(card.getRequiredResponseActions(effectResult));
+                result.addAll(card.getRequiredResponseActions(actionResult));
             }
         }
         return result;

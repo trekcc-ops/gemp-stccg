@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
@@ -444,11 +444,11 @@ public class CardBlueprint {
         _characteristics.add(characteristic);
     }
 
-    public List<Action> getRequiredAfterTriggerActions(EffectResult effectResult, PhysicalCard card) {
+    public List<Action> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
         List<Action> result = new LinkedList<>();
         getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, effectResult);
+                Action action = actionSource.createActionWithNewContext(card, actionResult);
                 if (action != null) result.add(action);
             }
         });
@@ -489,11 +489,11 @@ public class CardBlueprint {
     }
 
     public List<Action> getActionsFromActionSources(String playerId, PhysicalCard card,
-                                                    EffectResult effectResult, List<ActionSource> actionSources) {
+                                                    ActionResult actionResult, List<ActionSource> actionSources) {
         List<Action> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, playerId, effectResult);
+                Action action = actionSource.createActionWithNewContext(card, playerId, actionResult);
                 if (action != null) result.add(action);
             }
         });

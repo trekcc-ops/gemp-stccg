@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
@@ -17,8 +17,8 @@ public interface ActionSource {
     Action createAction(PhysicalCard card);
 
     Action createActionWithNewContext(PhysicalCard card);
-    Action createActionWithNewContext(PhysicalCard card, EffectResult effectResult);
-    Action createActionWithNewContext(PhysicalCard card, String playerId, EffectResult effectResult);
+    Action createActionWithNewContext(PhysicalCard card, ActionResult actionResult);
+    Action createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult);
 
     void addCost(EffectBlueprint effectBlueprint);
     void addEffect(EffectBlueprint effectBlueprint);

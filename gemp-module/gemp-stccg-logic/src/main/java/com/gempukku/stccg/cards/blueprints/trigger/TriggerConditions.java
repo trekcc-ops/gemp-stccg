@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
@@ -20,53 +20,53 @@ import java.util.Objects;
 
 public class TriggerConditions {
 
-    public static boolean startOfPhase(DefaultGame game, EffectResult effectResult, Phase phase) {
-        return (effectResult.getType() == EffectResult.Type.START_OF_PHASE
+    public static boolean startOfPhase(DefaultGame game, ActionResult actionResult, Phase phase) {
+        return (actionResult.getType() == ActionResult.Type.START_OF_PHASE
                 && game.getGameState().getCurrentPhase() == phase);
     }
 
-    public static boolean startOfTurn(EffectResult effectResult) {
-        return effectResult.getType() == EffectResult.Type.START_OF_TURN;
+    public static boolean startOfTurn(ActionResult actionResult) {
+        return actionResult.getType() == ActionResult.Type.START_OF_TURN;
     }
 
-    public static boolean endOfTurn(EffectResult effectResult) {
-        return effectResult.getType() == EffectResult.Type.END_OF_TURN;
+    public static boolean endOfTurn(ActionResult actionResult) {
+        return actionResult.getType() == ActionResult.Type.END_OF_TURN;
     }
 
-    public static boolean playerGoesOut(EffectResult effectResult, String playerId) {
-        return (effectResult.getType() == EffectResult.Type.PLAYER_WENT_OUT &&
-                Objects.equals(effectResult.getPlayer(), playerId));
+    public static boolean playerGoesOut(ActionResult actionResult, String playerId) {
+        return (actionResult.getType() == ActionResult.Type.PLAYER_WENT_OUT &&
+                Objects.equals(actionResult.getPlayer(), playerId));
     }
 
-    public static boolean forEachCardDrawn(EffectResult effectResult, String playerId) {
-        if (effectResult.getType() == EffectResult.Type.DRAW_CARD_OR_PUT_INTO_HAND) {
-            DrawCardOrPutIntoHandResult drawResult = (DrawCardOrPutIntoHandResult) effectResult;
+    public static boolean forEachCardDrawn(ActionResult actionResult, String playerId) {
+        if (actionResult.getType() == ActionResult.Type.DRAW_CARD_OR_PUT_INTO_HAND) {
+            DrawCardOrPutIntoHandResult drawResult = (DrawCardOrPutIntoHandResult) actionResult;
             return drawResult.isDraw() && drawResult.getPlayerId().equals(playerId);
         }
         return false;
     }
 
-    public static boolean forEachDiscardedFromPlay(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY)
-            return Filters.and(filters).accepts(game, ((DiscardCardFromPlayResult) effectResult).getDiscardedCard());
+    public static boolean forEachDiscardedFromPlay(DefaultGame game, ActionResult actionResult, Filterable... filters) {
+        if (actionResult.getType() == ActionResult.Type.FOR_EACH_DISCARDED_FROM_PLAY)
+            return Filters.and(filters).accepts(game, ((DiscardCardFromPlayResult) actionResult).getDiscardedCard());
         return false;
     }
 
-    public static boolean forEachDiscardedFromHand(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_HAND)
-            return Filters.and(filters).accepts(game, ((DiscardCardFromHandResult) effectResult).getDiscardedCard());
+    public static boolean forEachDiscardedFromHand(DefaultGame game, ActionResult actionResult, Filterable... filters) {
+        if (actionResult.getType() == ActionResult.Type.FOR_EACH_DISCARDED_FROM_HAND)
+            return Filters.and(filters).accepts(game, ((DiscardCardFromHandResult) actionResult).getDiscardedCard());
         return false;
     }
 
-    public static boolean forEachDiscardedFromDeck(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_DECK)
-            return Filters.and(filters).accepts(game, ((DiscardCardFromDeckResult) effectResult).getDiscardedCard());
+    public static boolean forEachDiscardedFromDeck(DefaultGame game, ActionResult actionResult, Filterable... filters) {
+        if (actionResult.getType() == ActionResult.Type.FOR_EACH_DISCARDED_FROM_DECK)
+            return Filters.and(filters).accepts(game, ((DiscardCardFromDeckResult) actionResult).getDiscardedCard());
         return false;
     }
 
-    public static boolean forEachDiscardedFromHandBy(DefaultGame game, EffectResult effectResult, Filterable discardedBy, Filterable... discarded) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_HAND) {
-            DiscardCardFromHandResult discardResult = (DiscardCardFromHandResult) effectResult;
+    public static boolean forEachDiscardedFromHandBy(DefaultGame game, ActionResult actionResult, Filterable discardedBy, Filterable... discarded) {
+        if (actionResult.getType() == ActionResult.Type.FOR_EACH_DISCARDED_FROM_HAND) {
+            DiscardCardFromHandResult discardResult = (DiscardCardFromHandResult) actionResult;
             if (discardResult.getSource() != null 
                     && Filters.and(discardedBy).accepts(game, discardResult.getSource()))
                 return Filters.and(discarded).accepts(game, discardResult.getDiscardedCard());
@@ -74,34 +74,34 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean revealedCardsFromTopOfDeck(EffectResult effectResult, String playerId) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_REVEALED_FROM_TOP_OF_DECK) {
-            RevealCardFromTopOfDeckResult revealCardFromTopOfDeckResult = (RevealCardFromTopOfDeckResult) effectResult;
+    public static boolean revealedCardsFromTopOfDeck(ActionResult actionResult, String playerId) {
+        if (actionResult.getType() == ActionResult.Type.FOR_EACH_REVEALED_FROM_TOP_OF_DECK) {
+            RevealCardFromTopOfDeckResult revealCardFromTopOfDeckResult = (RevealCardFromTopOfDeckResult) actionResult;
             return revealCardFromTopOfDeckResult.getPlayerId().equals(playerId);
         }
         return false;
     }
 
-    public static boolean forEachReturnedToHand(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_RETURNED_TO_HAND) {
-            ReturnCardsToHandResult result = (ReturnCardsToHandResult) effectResult;
+    public static boolean forEachReturnedToHand(DefaultGame game, ActionResult actionResult, Filterable... filters) {
+        if (actionResult.getType() == ActionResult.Type.FOR_EACH_RETURNED_TO_HAND) {
+            ReturnCardsToHandResult result = (ReturnCardsToHandResult) actionResult;
             return Filters.and(filters).accepts(game, result.getReturnedCard());
         }
         return false;
     }
 
-    public static boolean played(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
-            PhysicalCard playedCard = ((PlayCardResult) effectResult).getPlayedCard();
+    public static boolean played(DefaultGame game, ActionResult actionResult, Filterable... filters) {
+        if (actionResult.getType() == ActionResult.Type.PLAY_CARD) {
+            PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();
             return Filters.and(filters).accepts(game, playedCard);
         }
         return false;
     }
 
-    public static boolean played(Player player, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
-            if (effectResult.getPerformingPlayerId().equals(player.getPlayerId())) {
-                PhysicalCard playedCard = ((PlayCardResult) effectResult).getPlayedCard();
+    public static boolean played(Player player, ActionResult actionResult, Filterable... filters) {
+        if (actionResult.getType() == ActionResult.Type.PLAY_CARD) {
+            if (actionResult.getPerformingPlayerId().equals(player.getPlayerId())) {
+                PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();
                 return Filters.and(filters).accepts(player.getGame(), playedCard);
             }
         }
@@ -109,19 +109,19 @@ public class TriggerConditions {
     }
 
 
-    public static boolean playedFromZone(DefaultGame game, EffectResult effectResult, Zone zone, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
-            final PlayCardResult playResult = (PlayCardResult) effectResult;
+    public static boolean playedFromZone(DefaultGame game, ActionResult actionResult, Zone zone, Filterable... filters) {
+        if (actionResult.getType() == ActionResult.Type.PLAY_CARD) {
+            final PlayCardResult playResult = (PlayCardResult) actionResult;
             PhysicalCard playedCard = playResult.getPlayedCard();
             return (playResult.getPlayedFrom() == zone && Filters.and(filters).accepts(game, playedCard));
         }
         return false;
     }
 
-    public static boolean playedOn(DefaultGame game, EffectResult effectResult,
+    public static boolean playedOn(DefaultGame game, ActionResult actionResult,
                                    Filterable targetFilter, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
-            final PlayCardResult playResult = (PlayCardResult) effectResult;
+        if (actionResult.getType() == ActionResult.Type.PLAY_CARD) {
+            final PlayCardResult playResult = (PlayCardResult) actionResult;
             final PhysicalCard attachedTo = playResult.getAttachedTo();
             if (attachedTo == null)
                 return false;

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadMultipleCardsToSameCompatibleOutpostAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
@@ -32,10 +32,10 @@ public class Blueprint109_063 extends CardBlueprint {
         return actionSource;
     }
 
-    public List<Action> getValidResponses(PhysicalCard thisCard, Player player, EffectResult effectResult) {
+    public List<Action> getValidResponses(PhysicalCard thisCard, Player player, ActionResult actionResult) {
         DefaultGame game = player.getGame();
         List<Action> actions = new ArrayList<>();
-        if (effectResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
+        if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 thisCard.isControlledBy(player)) {
 
             List<FacilityCard> yourOutposts = new LinkedList<>();
@@ -87,7 +87,7 @@ public class Blueprint109_063 extends CardBlueprint {
             requirement
          */
 
-        if (effectResult.getType() == EffectResult.Type.START_OF_TURN && player == thisCard.getOwner() &&
+        if (actionResult.getType() == ActionResult.Type.START_OF_TURN && player == thisCard.getOwner() &&
                 player == game.getCurrentPlayer()) {
             actions.add(new DiscardCardAction(thisCard, player, thisCard));
         }

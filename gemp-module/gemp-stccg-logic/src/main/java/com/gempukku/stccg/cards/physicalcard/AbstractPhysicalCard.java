@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -212,13 +212,13 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public List<Action> getOptionalInPlayActions(EffectResult effectResult, TriggerTiming timing) {
+    public List<Action> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing) {
         List<Action> result = new LinkedList<>();
         List<ActionSource> triggers = _blueprint.getActivatedTriggers(timing);
 
         if (triggers != null) {
             for (ActionSource trigger : triggers) {
-                Action action = trigger.createActionWithNewContext(this, effectResult);
+                Action action = trigger.createActionWithNewContext(this, actionResult);
                 if (action != null)
                     result.add(action);
             }
@@ -236,33 +236,33 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     private List<Action> getActionsFromActionSources(String playerId, PhysicalCard card,
-                                                     EffectResult effectResult, List<ActionSource> actionSources) {
+                                                     ActionResult actionResult, List<ActionSource> actionSources) {
         List<Action> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, playerId, effectResult);
+                Action action = actionSource.createActionWithNewContext(card, playerId, actionResult);
                 if (action != null) result.add(action);
             }
         });
         return result;
     }
 
-    public List<Action> getOptionalAfterTriggerActions(Player player, EffectResult effectResult) {
+    public List<Action> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) {
         return switch (_blueprint) {
-            case Blueprint212_019 riskBlueprint -> riskBlueprint.getValidResponses(this, player, effectResult);
-            case Blueprint156_010 surpriseBlueprint -> surpriseBlueprint.getValidResponses(this, player, effectResult);
+            case Blueprint212_019 riskBlueprint -> riskBlueprint.getValidResponses(this, player, actionResult);
+            case Blueprint156_010 surpriseBlueprint -> surpriseBlueprint.getValidResponses(this, player, actionResult);
             case Blueprint109_063 missionSpecBlueprint ->
-                    missionSpecBlueprint.getValidResponses(this, player, effectResult);
+                    missionSpecBlueprint.getValidResponses(this, player, actionResult);
             case null, default -> {
                 assert _blueprint != null;
-                yield getActionsFromActionSources(player.getPlayerId(), this, effectResult,
+                yield getActionsFromActionSources(player.getPlayerId(), this, actionResult,
                         _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
             }
         };
     }
 
-    public List<Action> getRequiredResponseActions(EffectResult effectResult) {
-        return _blueprint.getRequiredAfterTriggerActions(effectResult, this);
+    public List<Action> getRequiredResponseActions(ActionResult actionResult) {
+        return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
     }
 
     ActionContext createActionContext(DefaultGame game) {
