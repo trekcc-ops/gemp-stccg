@@ -1,9 +1,10 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.turn.ActivateCardAction;
+import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -36,14 +37,14 @@ public class Blueprint155_021 extends CardBlueprint {
     }
 
     @Override
-    public List<? extends ActivateCardAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+    public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         DefaultGame game = player.getGame();
         Phase currentPhase = game.getCurrentPhase();
-        List<ActivateCardAction> actions = new LinkedList<>();
+        List<Action> actions = new LinkedList<>();
 
         if (currentPhase == Phase.CARD_PLAY) {
 
-            ActivateCardAction action1 = new ActivateCardAction(thisCard);
+            ActionyAction action1 = new UseGameTextAction(thisCard, player, "Report a card for free");
                 // TODO - This should not be where the Filters.playable filter is included
                 // TODO - Make sure there's a native quadrant requirement here if Modern rules are used
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
