@@ -1,12 +1,14 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
-import com.gempukku.stccg.actions.turn.StackActionEffect;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.processes.GameProcess;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 public class TurnProcedure implements Snapshotable<TurnProcedure> {
     private static final int MAXIMUM_LOOPS = 5000; // Max number of loops allowed before throwing error
@@ -69,13 +71,11 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
         Action action = actionsEnvironment.getCurrentAction();
         try {
-            Effect effect;
             Action nextAction = action.nextAction(_game);
-            effect = (nextAction == null) ? null : new StackActionEffect(_game, nextAction);
-            if (effect == null) {
+            if (nextAction == null) {
                 actionsEnvironment.removeCompletedAction(action);
             } else {
-                effect.playEffect();
+                _game.getActionsEnvironment().addActionToStack(nextAction);
             }
         } catch (InvalidGameLogicException exp) {
             _game.sendErrorMessage(exp);

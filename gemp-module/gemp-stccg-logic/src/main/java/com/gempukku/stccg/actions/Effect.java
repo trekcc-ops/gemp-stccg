@@ -1,25 +1,8 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 
 public interface Effect {
-
-    /**
-     * Checks whether this effect can be played in full. This is required to check
-     * for example for cards that give a choice of effects to carry out and one
-     * that can be played in full has to be chosen.
-     *
-     * @return
-     */
-    boolean isPlayableInFull();
-
-    /**
-     * Plays the effect and emits the results.
-     *
-     * @return
-     */
-    void playEffect();
 
 
     /**
@@ -34,7 +17,5 @@ public interface Effect {
     default PhysicalCard getSource() { return null; }
 
     String getPerformingPlayerId();
-
-    DefaultGame getGame();
 
 }
