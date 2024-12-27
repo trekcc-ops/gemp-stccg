@@ -1,13 +1,12 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
@@ -94,9 +93,9 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
 
     private void secondPlayerChosen(String secondPlayerChosen, DefaultGame game) throws InvalidGameLogicException {
         Player discardingPlayer = game.getPlayer(_discardingPlayerId);
-        SelectCardInPlayAction discardSelectAction =
-                new SelectCardInPlayAction(_performingCard, discardingPlayer, "Choose a card to discard",
-                        Filters.yourHand(discardingPlayer), AwaitingDecisionType.CARD_SELECTION);
+        SelectVisibleCardAction discardSelectAction =
+                new SelectVisibleCardAction(_performingCard, discardingPlayer, "Choose a card to discard",
+                        Filters.yourHand(discardingPlayer));
         appendAction(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
 
         Player performingPlayer = game.getPlayer(_performingPlayerId);

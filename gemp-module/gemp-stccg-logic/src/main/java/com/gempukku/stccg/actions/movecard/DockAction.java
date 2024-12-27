@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
@@ -19,7 +19,7 @@ public class DockAction extends ActionyAction {
     private boolean _cardDocked;
     private FacilityCard _dockingTarget;
     private final Collection<FacilityCard> _dockingTargetOptions;
-    private final SelectCardInPlayAction _selectAction;
+    private final SelectVisibleCardAction _selectAction;
 
     public DockAction(Player player, PhysicalShipCard cardToDock) {
         super(player, "Dock", ActionType.MOVE_CARDS);
@@ -35,7 +35,7 @@ public class DockAction extends ActionyAction {
                     }
                 })
                 .toList();
-        _selectAction = new SelectCardInPlayAction(this, player,
+        _selectAction = new SelectVisibleCardAction(this, player,
                 "Choose facility to dock at", _dockingTargetOptions);
     }
 

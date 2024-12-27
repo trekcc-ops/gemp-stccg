@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.discard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -20,11 +20,11 @@ import java.util.Collections;
 public class DiscardCardAction extends ActionyAction {
 
     private final PhysicalCard _performingCard;
-    private SelectCardInPlayAction _selectAction;
+    private SelectVisibleCardAction _selectAction;
     private Filter _cardFilter;
     private Collection<PhysicalCard> _cardsToDiscard;
 
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, SelectCardInPlayAction selectAction) {
+    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, SelectVisibleCardAction selectAction) {
         super(performingPlayer, "Discard", ActionType.DISCARD);
         _performingCard = performingCard;
         _selectAction = selectAction;

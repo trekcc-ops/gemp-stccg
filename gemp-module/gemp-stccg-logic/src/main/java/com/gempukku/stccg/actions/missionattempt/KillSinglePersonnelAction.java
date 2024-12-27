@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -13,12 +13,12 @@ import com.gempukku.stccg.game.Player;
 public class KillSinglePersonnelAction extends ActionyAction {
 
     private final PhysicalCard _performingCard;
-    private final SelectCardInPlayAction _selectVictimAction;
+    private final SelectCardsAction _selectVictimAction;
     private boolean _victimSelected;
     private PhysicalCard _victim;
 
     public KillSinglePersonnelAction(Player performingPlayer, PhysicalCard performingCard,
-                                     SelectCardInPlayAction selectVictimAction) {
+                                     SelectCardsAction selectVictimAction) {
         super(performingPlayer, "Kill", ActionType.KILL);
         _performingCard = performingCard;
         _selectVictimAction = selectVictimAction;
@@ -42,8 +42,10 @@ public class KillSinglePersonnelAction extends ActionyAction {
     public String getActionSelectionText(DefaultGame cardGame) throws InvalidGameLogicException {
         StringBuilder sb = new StringBuilder();
         sb.append("Kill ");
-        if (_selectVictimAction != null && _selectVictimAction.wasCarriedOut()) {
-            sb.append(_selectVictimAction.getSelectedCard().getTitle());
+        if (_selectVictimAction != null && _selectVictimAction.wasCarriedOut() &&
+                _selectVictimAction.getSelectedCards().size() == 1) {
+            PhysicalCard victim = _selectVictimAction.getSelectedCards().stream().toList().getFirst();
+            sb.append(victim.getTitle());
         } else {
             sb.append("a personnel");
         }
@@ -57,7 +59,7 @@ public class KillSinglePersonnelAction extends ActionyAction {
                 return _selectVictimAction;
             else {
                 _victimSelected = true;
-                _victim = _selectVictimAction.getSelectedCard();
+                _victim = _selectVictimAction.getSelectedCards().stream().toList().getFirst();
             }
         }
 

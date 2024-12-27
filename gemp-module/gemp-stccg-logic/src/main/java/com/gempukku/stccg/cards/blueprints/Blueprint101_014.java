@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.KillSinglePersonnelAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
@@ -34,8 +34,8 @@ public class Blueprint101_014 extends CardBlueprint {
         if (!conditions.canBeMetBy(attemptingUnit)) {
             Collection<PersonnelCard> highestPersonnel =
                     Filters.highestTotalAttributes(attemptingUnit.getAttemptingPersonnel());
-            SelectCardInPlayAction selectAction =
-                    new SelectCardInPlayAction(action, thisCard.getOwner(), "Select a personnel to kill",
+            SelectVisibleCardAction selectAction =
+                    new SelectVisibleCardAction(action, thisCard.getOwner(), "Select a personnel to kill",
                             highestPersonnel);
             result.add(selectAction);
             result.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction));

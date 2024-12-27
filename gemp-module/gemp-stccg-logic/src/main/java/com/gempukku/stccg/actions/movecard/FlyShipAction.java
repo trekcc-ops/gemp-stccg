@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -19,7 +19,7 @@ public class FlyShipAction extends ActionyAction {
     private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
-    private final SelectCardInPlayAction _selectAction;
+    private final SelectVisibleCardAction _selectAction;
 
     public FlyShipAction(Player player, PhysicalShipCard flyingCard) throws InvalidGameLogicException {
         super(player, "Fly", ActionType.MOVE_CARDS);
@@ -44,7 +44,7 @@ public class FlyShipAction extends ActionyAction {
             }
         }
         _selectAction =
-                new SelectCardInPlayAction(this, player, "Choose destination", _destinationOptions);
+                new SelectVisibleCardAction(this, player, "Choose destination", _destinationOptions);
     }
 
     @Override

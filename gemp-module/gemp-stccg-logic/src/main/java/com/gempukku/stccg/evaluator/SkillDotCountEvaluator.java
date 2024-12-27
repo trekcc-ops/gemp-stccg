@@ -1,15 +1,15 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class SkillDotCountEvaluator extends Evaluator {
-    private final SelectCardInPlayAction _selectAction;
+    private final SelectVisibleCardAction _selectAction;
 
-    public SkillDotCountEvaluator(SelectCardInPlayAction selectAction, DefaultGame cardGame) {
+    public SkillDotCountEvaluator(SelectVisibleCardAction selectAction, DefaultGame cardGame) {
         super(cardGame);
         _selectAction = selectAction;
     }

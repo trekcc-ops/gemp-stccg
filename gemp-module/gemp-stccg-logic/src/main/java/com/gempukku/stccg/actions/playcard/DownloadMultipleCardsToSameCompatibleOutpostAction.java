@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -35,7 +35,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     private List<PhysicalCard> _cardsToDownload;
     private boolean _cardsPlayed = false;
     private boolean _cardsToDownloadChosen = false;
-    private SelectCardInPlayAction _selectDestinationAction;
+    private SelectVisibleCardAction _selectDestinationAction;
 
     public DownloadMultipleCardsToSameCompatibleOutpostAction(Zone fromZone, Player player, PhysicalCard actionSource,
                                                               Map<PersonnelCard, List<PersonnelCard>> validCombinations,
@@ -119,7 +119,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
         if (!_destinationChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectCardInPlayAction(thisAction, performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(thisAction, performingPlayer,
                         "Select outpost to download cards to", _destinationOptions);
                 return _selectDestinationAction;
             } else if (_selectDestinationAction.wasCarriedOut()) {

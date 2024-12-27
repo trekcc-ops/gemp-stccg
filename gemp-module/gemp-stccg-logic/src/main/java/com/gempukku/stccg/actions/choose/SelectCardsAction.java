@@ -7,5 +7,5 @@ import java.util.Collection;
 
 public interface SelectCardsAction extends Action {
 
-    public Collection<PhysicalCard> getSelectedCards();
+    Collection<PhysicalCard> getSelectedCards();
 }

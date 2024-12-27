@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.movecard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -28,8 +28,8 @@ public abstract class BeamOrWalkAction extends ActionyAction {
     private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen;
     final Player _performingPlayer;
     final Collection<PhysicalCard> _destinationOptions;
-    private SelectCardInPlayAction _selectOriginAction;
-    private SelectCardInPlayAction _selectDestinationAction;
+    private SelectVisibleCardAction _selectOriginAction;
+    private SelectVisibleCardAction _selectDestinationAction;
     private SelectVisibleCardsAction _selectCardsToMoveAction;
 
     /**
@@ -79,7 +79,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
 
         if (!_fromCardChosen) {
             if (_selectOriginAction == null) {
-                _selectOriginAction = new SelectCardInPlayAction(this, _performingPlayer,
+                _selectOriginAction = new SelectVisibleCardAction(this, _performingPlayer,
                         "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
                 appendTargeting(_selectOriginAction);
                 return getNextCost();
@@ -102,7 +102,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
 
         if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectCardInPlayAction(this, _performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(this, _performingPlayer,
                         "Choose card to " + actionVerb() + " to ", _destinationOptions);
                 appendTargeting(_selectDestinationAction);
                 return getNextCost();

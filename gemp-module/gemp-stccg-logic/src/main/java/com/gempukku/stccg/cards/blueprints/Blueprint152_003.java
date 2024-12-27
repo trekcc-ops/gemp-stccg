@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.KillSinglePersonnelAction;
 import com.gempukku.stccg.actions.choose.SelectAndAppendAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
@@ -37,8 +37,8 @@ public class Blueprint152_003 extends CardBlueprint {
                 uniquePersonnel.add(personnel);
         }
 
-        SelectCardInPlayAction randomSelection =
-                new SelectCardInPlayAction(thisCard, thisCard.getOwner(), "Choose a personnel to be stopped",
+        SelectVisibleCardAction randomSelection =
+                new SelectVisibleCardAction(thisCard, thisCard.getOwner(), "Choose a personnel to be stopped",
                         uniquePersonnel, true);
         Action stopAction = new StopCardsAction(thisCard.getOwner(), randomSelection);
         Action action1 = new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);

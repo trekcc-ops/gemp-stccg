@@ -3,17 +3,14 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
-import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
-import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.modifiers.AddUntilEndOfTurnModifierAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -64,8 +61,8 @@ public class Blueprint155_026 extends CardBlueprint {
             // after any use, discard incident OR discard a [TNG] card from hand
             Filter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
             Filter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
-            SelectCardInPlayAction selectCardToDiscardAction = new SelectCardInPlayAction(thisCard, player,
-                    "Select a card to discard", discardCardFilter, AwaitingDecisionType.CARD_SELECTION);
+            SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(thisCard, player,
+                    "Select a card to discard", discardCardFilter);
             Action discardAction = new DiscardCardAction(thisCard, player, selectCardToDiscardAction);
             getItDoneAction.appendAction(discardAction);
 
@@ -75,10 +72,10 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     private Action choice1(PhysicalCard thisCard, Player player) {
-        SelectCardInPlayAction targetAction = new SelectCardInPlayAction(thisCard, player,
+        SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard, player,
                 "Select a personnel",
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
-                        CardType.PERSONNEL), AwaitingDecisionType.ARBITRARY_CARDS);
+                        CardType.PERSONNEL));
 
         ActionCardResolver resolver = new ActionCardResolver(targetAction);
         Modifier modifier = new AllAttributeModifier(thisCard, resolver, 2);
@@ -89,9 +86,9 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     private Action choice2(PhysicalCard thisCard, Player player) {
-        SelectCardInPlayAction targetAction = new SelectCardInPlayAction(thisCard, player, "Select a ship",
+        SelectVisibleCardAction targetAction = new SelectVisibleCardAction(thisCard, player, "Select a ship",
                 Filters.and(Filters.your(player), Filters.inPlay, CardIcon.TNG_ICON,
-                        CardType.SHIP), AwaitingDecisionType.CARD_SELECTION);
+                        CardType.SHIP));
 
         ActionCardResolver resolver = new ActionCardResolver(targetAction);
         Modifier modifier = new RangeModifier(thisCard, resolver, 2);
