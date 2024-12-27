@@ -102,7 +102,45 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         List<Action> performedActions = _game.getActionsEnvironment().getPerformedActions();
         int performedId = 1;
 
-        for (Action action : performedActions) {
+        int maxActionId = _game.getActionsEnvironment().getNextActionId() - 1;
+        for (int i = 1; i <= maxActionId; i++) {
+            Action action = _game.getActionsEnvironment().getActionById(i);
+            String message = i + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
+                    " (" + action.getActionType().name() + ")";
+            String actionType = action.getClass().getSimpleName();
+            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
+                if (action.getActionSelectionText(_game) != null)
+                    message = message + " - " + action.getActionSelectionText(_game);
+                if (action instanceof SubAction)
+                    message = message + " (SubAction)";
+                if (action instanceof PlayOutOptionalAfterResponsesAction response)
+                    message = message + " [ EffectResult = " + response.getEffectResults();
+                System.out.println(message);
+            } else {
+                System.out.println(message);
+            }
+        };
+
+        System.out.println();
+        System.out.println();
+        for (Action action : _game.getActionsEnvironment().getActionStack()) {
+            String message = action.getActionId() + " - " + action.getClass().getSimpleName() +
+                    " (" + action.getActionType().name() + ")";
+            String actionType = action.getClass().getSimpleName();
+            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
+                if (action.getActionSelectionText(_game) != null)
+                    message = message + " - " + action.getActionSelectionText(_game);
+                if (action instanceof SubAction)
+                    message = message + " (SubAction)";
+                if (action instanceof PlayOutOptionalAfterResponsesAction response)
+                    message = message + " [ EffectResult = " + response.getEffectResults();
+                System.out.println(message);
+            } else {
+                System.out.println(message);
+            }
+        };
+
+/*        for (Action action : performedActions) {
             String message = performedId + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
                     " (" + action.getActionType().name() + ")";
             String actionType = action.getClass().getSimpleName();
@@ -116,7 +154,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
                 System.out.println(message);
                 performedId++;
             }
-        }
+        } */
     }
 
 }

@@ -1,12 +1,12 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.missionattempt.KillSinglePersonnelAction;
+import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.actions.choose.SelectAndAppendAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;

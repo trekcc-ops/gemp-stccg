@@ -4,6 +4,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
+import java.util.Set;
+
 public interface Action {
     String getCardActionPrefix();
 
@@ -35,5 +37,6 @@ public interface Action {
     boolean wasCarriedOut();
 
     void insertEffect(Action actionEffect);
+    void playOutActionResults(DefaultGame game, Set<ActionResult> actionResults);
 
 }

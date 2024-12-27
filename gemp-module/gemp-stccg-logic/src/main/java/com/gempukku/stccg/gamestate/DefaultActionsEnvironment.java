@@ -188,4 +188,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         return _createdActionMap.get(actionId);
     }
 
+    public void logAction(Action action) {
+        _createdActionMap.put(action.getActionId(), action);
+    }
+
 }

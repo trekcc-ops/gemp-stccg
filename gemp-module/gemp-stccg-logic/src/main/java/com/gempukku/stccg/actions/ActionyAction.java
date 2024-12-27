@@ -28,6 +28,7 @@ public abstract class ActionyAction implements Action {
 
     protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
         _actionId = environment.getNextActionId();
+        environment.logAction(this);
         environment.incrementActionId();
         _actionType = actionType;
         _performingPlayerId = performingPlayerId;

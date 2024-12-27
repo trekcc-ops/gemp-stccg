@@ -2,6 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
@@ -42,4 +43,6 @@ public interface ActionsEnvironment {
     void incrementActionId();
 
     Action getActionById(int actionId);
+
+    void logAction(Action action);
 }

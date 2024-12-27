@@ -9,11 +9,11 @@ import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import java.util.List;
 
 public final class PlayOutAllSubActionsIfActionNotCancelledAction extends SystemQueueAction {
-    private final SystemQueueAction _action;
+    private final Action _action;
     private final List<Action> _actions;
     private boolean _initialized;
 
-    public PlayOutAllSubActionsIfActionNotCancelledAction(DefaultGame game, SystemQueueAction action,
+    public PlayOutAllSubActionsIfActionNotCancelledAction(DefaultGame game, Action action,
                                                           List<Action> actions) {
         super(game);
         _action = action;
