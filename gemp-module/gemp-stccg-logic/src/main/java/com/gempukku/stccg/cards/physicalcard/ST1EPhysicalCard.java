@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
@@ -18,7 +19,6 @@ import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
-import java.util.Map;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
@@ -39,7 +39,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
 
-    public Action getPlayCardAction(boolean forFree) {
+    public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
         STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.TABLE, getOwner(), forFree);
         _game.getModifiersQuerying().appendExtraCosts(action, this);

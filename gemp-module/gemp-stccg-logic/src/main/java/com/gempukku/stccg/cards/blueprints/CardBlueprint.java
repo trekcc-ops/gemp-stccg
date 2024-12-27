@@ -491,12 +491,12 @@ public class CardBlueprint {
         _specialEquipment.addAll(specialEquipment);
     }
 
-    public List<Action> getActionsFromActionSources(String playerId, PhysicalCard card,
+    public List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
                                                     ActionResult actionResult, List<ActionSource> actionSources) {
-        List<Action> result = new LinkedList<>();
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, playerId, actionResult);
+                TopLevelSelectableAction action = actionSource.createActionWithNewContext(card, playerId, actionResult);
                 if (action != null) result.add(action);
             }
         });
@@ -504,7 +504,7 @@ public class CardBlueprint {
     }
 
 
-    public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         return getActionsFromActionSources(
                 player.getPlayerId(), thisCard, null, inPlayPhaseActions);
     }

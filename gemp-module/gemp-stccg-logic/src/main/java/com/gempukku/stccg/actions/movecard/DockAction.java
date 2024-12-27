@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -13,7 +14,7 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 
-public class DockAction extends ActionyAction {
+public class DockAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalShipCard _cardToDock;
     private boolean _targetChosen;
     private boolean _cardDocked;

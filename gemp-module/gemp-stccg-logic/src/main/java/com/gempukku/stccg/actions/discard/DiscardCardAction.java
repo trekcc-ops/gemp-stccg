@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.discard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -17,7 +18,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import java.util.Collection;
 import java.util.Collections;
 
-public class DiscardCardAction extends ActionyAction {
+public class DiscardCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
     private SelectVisibleCardAction _selectAction;

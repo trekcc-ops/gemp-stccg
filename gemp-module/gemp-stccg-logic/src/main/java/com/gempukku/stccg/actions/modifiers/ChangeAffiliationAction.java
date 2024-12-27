@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
@@ -15,7 +16,7 @@ import com.gempukku.stccg.game.Player;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChangeAffiliationAction extends ActionyAction {
+public class ChangeAffiliationAction extends ActionyAction implements TopLevelSelectableAction {
     private final AffiliatedCard _card;
     private boolean _affiliationWasChosen;
     private Affiliation _selectedAffiliation;

@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadMultipleCardsToSameCompatibleOutpostAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
@@ -32,9 +33,10 @@ public class Blueprint109_063 extends CardBlueprint {
         return actionSource;
     }
 
-    public List<Action> getValidResponses(PhysicalCard thisCard, Player player, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
+                                                            ActionResult actionResult) {
         DefaultGame game = player.getGame();
-        List<Action> actions = new ArrayList<>();
+        List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 thisCard.isControlledBy(player)) {
 
@@ -79,9 +81,8 @@ public class Blueprint109_063 extends CardBlueprint {
                 validCombinations.put(specialist, validPairings);
             }
 
-            Action downloadAction = new DownloadMultipleCardsToSameCompatibleOutpostAction(
-                    Zone.DRAW_DECK, player, thisCard, validCombinations, 2);
-            actions.add(downloadAction);
+            actions.add(new DownloadMultipleCardsToSameCompatibleOutpostAction(
+                    Zone.DRAW_DECK, player, thisCard, validCombinations, 2));
         }
         /* once each mission, your mission specialist may score 5 points when they use their skill to meet a mission
             requirement

@@ -3,6 +3,7 @@ package com.gempukku.stccg.modifiers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -380,13 +381,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public List<? extends Action> getExtraPhaseActions(DefaultGame game, PhysicalCard target) {
-        List<Action> activateCardActions = new LinkedList<>();
+    public List<TopLevelSelectableAction> getExtraPhaseActions(DefaultGame game, PhysicalCard target) {
+        List<TopLevelSelectableAction> activateCardActions = new LinkedList<>();
 
         for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.EXTRA_ACTION_MODIFIER, target)) {
-            List<? extends Action> actions = modifier.getExtraPhaseAction(game, target);
-            if (actions != null)
-                activateCardActions.addAll(actions);
         }
 
         return activateCardActions;

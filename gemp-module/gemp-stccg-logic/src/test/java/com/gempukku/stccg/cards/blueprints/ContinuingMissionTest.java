@@ -62,7 +62,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
         assertInstanceOf(CardActionSelectionDecision.class, _userFeedback.getAwaitingDecision(ownerId));
         CardActionSelectionDecision decision =
                 (CardActionSelectionDecision) _userFeedback.getAwaitingDecision(ownerId);
-        List<Action> possibleActions = decision.getActions();
+        List<? extends Action> possibleActions = decision.getActions();
         int decisionIndex = -1;
         for (Action action : possibleActions) {
             if (action instanceof SeedCardAction seedAction && seedAction.getCardEnteringPlay() == card) {

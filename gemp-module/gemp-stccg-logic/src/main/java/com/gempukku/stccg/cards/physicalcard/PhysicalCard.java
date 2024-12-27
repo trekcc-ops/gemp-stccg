@@ -54,13 +54,13 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     MissionLocation getLocation() throws InvalidGameLogicException;
     void setLocation(MissionLocation location);
     String getFullName();
-    Action getPlayCardAction();
+    TopLevelSelectableAction getPlayCardAction();
     Action getPlayCardAction(boolean forFree);
 
     boolean hasTextRemoved(DefaultGame game);
     CardType getCardType();
-    List<? extends Action> getRulesActionsWhileInPlay(Player player);
-    List<? extends Action> getGameTextActionsWhileInPlay(Player player);
+    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player);
+    List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player);
 
     List<PhysicalCard> getStackedCards(DefaultGame game);
 
@@ -68,16 +68,16 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
 
     List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame _game);
 
-    List<Action> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing);
-    Action getDiscardedFromPlayTriggerAction(RequiredType requiredType);
-    List<Action> getOptionalAfterTriggerActions(Player player, ActionResult actionResult);
+    List<TopLevelSelectableAction> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing);
+    TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
+    List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult);
 
     List<TopLevelSelectableAction> getRequiredResponseActions(ActionResult actionResult);
 
     boolean isUnique();
     Integer getNumberOfCopiesSeededByPlayer(Player player);
     boolean isCopyOf(PhysicalCard card);
-    Action createSeedCardAction();
+    TopLevelSelectableAction createSeedCardAction();
 
     boolean hasIcon(DefaultGame game, CardIcon icon);
     boolean isPresentWith(PhysicalCard card);

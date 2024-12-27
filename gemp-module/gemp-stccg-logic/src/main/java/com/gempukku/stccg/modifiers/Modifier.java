@@ -2,6 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -38,10 +39,6 @@ public interface Modifier {
     boolean canPerformAction(DefaultGame game, String performingPlayer, Action action);
 
     boolean cantPlayCard(DefaultGame game, String performingPlayer, PhysicalCard card);
-
-    List<? extends Action> getExtraPhaseAction(DefaultGame game, PhysicalCard card);
-
-    List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, PhysicalCard card);
 
     boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card);
 

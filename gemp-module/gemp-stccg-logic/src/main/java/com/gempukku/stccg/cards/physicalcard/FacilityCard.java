@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
@@ -75,8 +76,8 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     }
 
     @Override
-    public List<? extends Action> getRulesActionsWhileInPlay(Player player) {
-        List<Action> actions = new LinkedList<>();
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {
                 actions.add(new BeamCardsAction(player, this));
@@ -89,7 +90,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return actions;
     }
 
-    public Action createSeedCardAction() {
+    public TopLevelSelectableAction createSeedCardAction() {
         return new SeedOutpostAction(this);
         // TODO - Add actions for non-outposts
     }

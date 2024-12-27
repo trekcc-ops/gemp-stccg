@@ -2,12 +2,13 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
-public class UndockAction extends ActionyAction {
+public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalShipCard _cardToMove;
 
     public UndockAction(Player player, PhysicalShipCard cardUndocking) {

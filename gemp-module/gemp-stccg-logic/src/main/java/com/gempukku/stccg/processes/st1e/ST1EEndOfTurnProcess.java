@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -29,7 +30,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
             ((PhysicalShipCard) card).restoreRange();
         _game.getGameState().playerDrawsCard(playerId);
         _game.sendMessage(playerId + " drew their normal end-of-turn card draw");
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
+        final List<TopLevelSelectableAction> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
         Phase phase = thisGame.getCurrentPhase();
         if (!playableActions.isEmpty() || !_game.shouldAutoPass(phase)) {
             thisGame.getUserFeedback().sendAwaitingDecision(

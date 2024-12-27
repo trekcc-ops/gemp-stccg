@@ -1,6 +1,7 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -19,15 +20,15 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
     }
 
     @Override
-    public List<Action> getPhaseActions(String playerId) {
+    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
         final List<PhysicalCard> cardsInHand = _game.getGameState().getHand(playerId);
         final String currentPlayerId = _game.getGameState().getCurrentPlayerId();
-        final List<Action> result = new LinkedList<>();
+        final List<TopLevelSelectableAction> result = new LinkedList<>();
 
         final Phase phase = _game.getGameState().getCurrentPhase();
         if (phase == Phase.SEED_DOORWAY) {
             for (PhysicalCard card : cardsInHand) {
-                Action action = card.createSeedCardAction();
+                TopLevelSelectableAction action = card.createSeedCardAction();
                 if (action != null && action.canBeInitiated(_game))
                     result.add(action);
             }
@@ -40,7 +41,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             for (PhysicalCard card : cardsInHand) {
                 if (Objects.equals(playerId, currentPlayerId)) {
                     if (card.canBeSeeded(_game)) {
-                        Action action = card.createSeedCardAction();
+                        TopLevelSelectableAction action = card.createSeedCardAction();
                         if (action != null && action.canBeInitiated(_game))
                             result.add(action);
                     }
@@ -51,7 +52,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
                 if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
                     if (card.canBePlayed(_game)) {
-                        Action action = card.getPlayCardAction();
+                        TopLevelSelectableAction action = card.getPlayCardAction();
                         if (action != null && action.canBeInitiated(_game))
                             result.add(action);
                     }

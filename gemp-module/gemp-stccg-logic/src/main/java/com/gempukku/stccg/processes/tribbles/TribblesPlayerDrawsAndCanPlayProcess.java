@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
@@ -30,7 +31,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             _game.sendMessage(playerId + " drew a card");
             List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(playerId);
             PhysicalCard cardDrawn = playerHand.getLast();
-            final List<Action> playableActions = new LinkedList<>();
+            final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
             if (cardDrawn.canBePlayed(_game)) {
                 TribblesPlayCardAction action = new TribblesPlayCardAction((TribblesPhysicalCard) cardDrawn);
                 playableActions.add(action);

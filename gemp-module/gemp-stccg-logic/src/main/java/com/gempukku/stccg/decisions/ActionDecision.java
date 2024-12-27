@@ -1,6 +1,7 @@
 package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -11,9 +12,9 @@ import java.util.List;
 
 public abstract class ActionDecision extends AbstractAwaitingDecision {
 
-    final List<Action> _actions;
+    final List<TopLevelSelectableAction> _actions;
 
-    ActionDecision(Player player, String text, List<Action> actions, AwaitingDecisionType type) {
+    ActionDecision(Player player, String text, List<TopLevelSelectableAction> actions, AwaitingDecisionType type) {
         super(player, text, type);
         _actions = actions;
         setParam("actionId", getActionIds());
@@ -40,11 +41,7 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
         return result;
     }
 
-    public void addAction(Action action) {
-        _actions.add(action);
-    }
-
-    public List<Action> getActions() { return _actions; }
+    public List<TopLevelSelectableAction> getActions() { return _actions; }
 
     public void decisionMade(Action action) throws DecisionResultInvalidException {
         if (_actions.contains(action))

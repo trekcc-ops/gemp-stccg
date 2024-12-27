@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.AddSeedCardsAction;
 import com.gempukku.stccg.actions.playcard.RemoveSeedCardsAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -47,18 +48,18 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             _playersParticipating.remove(playerId);
         } else {
             ST1EGameState gameState = _game.getGameState();
-            List<Action> seedActions = new ArrayList<>();
+            List<TopLevelSelectableAction> seedActions = new ArrayList<>();
             Player player = gameState.getPlayer(playerId);
             List<MissionCard> availableMissions = getAvailableMissions(player);
             for (MissionCard mission : availableMissions) {
                 // TODO - These actions are red herrings and are never actually used
                 if (!gameState.getHand(playerId).isEmpty()) {
-                    Action seedCardsAction = new AddSeedCardsAction(player, mission);
+                    TopLevelSelectableAction seedCardsAction = new AddSeedCardsAction(player, mission);
                     seedActions.add(seedCardsAction);
                 }
                 Collection<PhysicalCard> cardsPreSeeded = mission.getLocation().getCardsPreSeeded(player);
                 if (cardsPreSeeded != null && !cardsPreSeeded.isEmpty()) {
-                    Action removeSeedCardsAction = new RemoveSeedCardsAction(player, mission);
+                    TopLevelSelectableAction removeSeedCardsAction = new RemoveSeedCardsAction(player, mission);
                     seedActions.add(removeSeedCardsAction);
                 }
             }

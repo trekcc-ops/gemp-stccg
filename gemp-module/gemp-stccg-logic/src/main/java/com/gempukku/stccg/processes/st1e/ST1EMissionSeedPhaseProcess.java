@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -32,7 +33,8 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     public void process(DefaultGame cardGame) {
         String _currentPlayer = _game.getCurrentPlayerId();
 
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
+        final List<TopLevelSelectableAction> playableActions =
+                _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         ST1EGameState gameState = _game.getGameState();
         Phase currentPhase = gameState.getCurrentPhase();
 

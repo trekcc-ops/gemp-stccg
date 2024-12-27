@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
@@ -10,11 +11,11 @@ import java.util.List;
 
 public final class PlayOutAllSubActionsIfActionNotCancelledAction extends SystemQueueAction {
     private final Action _action;
-    private final List<Action> _actions;
+    private final List<TopLevelSelectableAction> _actions;
     private boolean _initialized;
 
     public PlayOutAllSubActionsIfActionNotCancelledAction(DefaultGame game, Action action,
-                                                          List<Action> actions) {
+                                                          List<TopLevelSelectableAction> actions) {
         super(game);
         _action = action;
         _actions = actions;

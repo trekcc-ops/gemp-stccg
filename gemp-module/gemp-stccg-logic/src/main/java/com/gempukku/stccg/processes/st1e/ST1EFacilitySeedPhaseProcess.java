@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -28,7 +29,8 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     public void process(DefaultGame cardGame) {
         String _currentPlayer = _game.getCurrentPlayerId();
 
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
+        final List<TopLevelSelectableAction> playableActions =
+                _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {

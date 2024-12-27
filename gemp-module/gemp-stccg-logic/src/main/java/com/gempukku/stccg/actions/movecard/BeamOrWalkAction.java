@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.movecard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -21,7 +22,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BeamOrWalkAction extends ActionyAction {
+public abstract class BeamOrWalkAction extends ActionyAction implements TopLevelSelectableAction {
     private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
     final PhysicalNounCard1E _cardSource;
     private PhysicalCard _origin, _destination;

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.rules.generic;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
@@ -15,20 +16,13 @@ public class ActivatePhaseActionsRule extends GenericRule {
     }
 
     @Override
-    public List<? extends Action> getPhaseActions(String playerId) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(), _game,
                     Filters.and(Filters.owner(playerId), Filters.active))) {
                 if (!activatableCard.hasTextRemoved(_game)) {
 
-                    final List<? extends Action> extraActions = _game.getModifiersQuerying().getExtraPhaseActions(_game, activatableCard);
-                    if (extraActions != null) {
-                        for (Action action : extraActions) {
-                            if (action != null)
-                                result.add(action);
-                        }
-                    }
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.missionattempt;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -21,7 +22,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AttemptMissionAction extends ActionyAction {
+public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction {
     private AttemptingUnit _attemptingUnit;
     private SelectAttemptingUnitAction _selectAttemptingUnitAction;
     private final MissionCard _missionCard;

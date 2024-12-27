@@ -160,10 +160,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public String getFullName() { return _blueprint.getFullName(); }
 
-    public Action getPlayCardAction() {
+    public TopLevelSelectableAction getPlayCardAction() {
         return getPlayCardAction(false);
     }
-    public abstract Action getPlayCardAction(boolean forFree);
+    public abstract TopLevelSelectableAction getPlayCardAction(boolean forFree);
 
 
     public boolean hasTextRemoved(DefaultGame game) {
@@ -182,11 +182,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<? extends Action> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
         return new LinkedList<>();
     }
 
-    public List<? extends Action> getGameTextActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player) {
         return _blueprint.getGameTextActionsWhileInPlay(player, this);
     }
 
@@ -213,13 +213,13 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public List<Action> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         List<ActionSource> triggers = _blueprint.getActivatedTriggers(timing);
 
         if (triggers != null) {
             for (ActionSource trigger : triggers) {
-                Action action = trigger.createActionWithNewContext(this, actionResult);
+                TopLevelSelectableAction action = trigger.createActionWithNewContext(this, actionResult);
                 if (action != null)
                     result.add(action);
             }
@@ -229,26 +229,27 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
 
-    public Action getDiscardedFromPlayTriggerAction(RequiredType requiredType) {
+    public TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType) {
         ActionSource actionSource = _blueprint.getDiscardedFromPlayTrigger(requiredType);
         return (actionSource == null) ?
                 null : actionSource.createActionWithNewContext(this, null);
     }
 
 
-    private List<Action> getActionsFromActionSources(String playerId, PhysicalCard card,
+    private List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
                                                      ActionResult actionResult, List<ActionSource> actionSources) {
-        List<Action> result = new LinkedList<>();
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, playerId, actionResult);
+                TopLevelSelectableAction action =
+                        actionSource.createActionWithNewContext(card, playerId, actionResult);
                 if (action != null) result.add(action);
             }
         });
         return result;
     }
 
-    public List<Action> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) {
         return switch (_blueprint) {
             case Blueprint212_019 riskBlueprint -> riskBlueprint.getValidResponses(this, player, actionResult);
             case Blueprint156_010 surpriseBlueprint -> surpriseBlueprint.getValidResponses(this, player, actionResult);
@@ -292,7 +293,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return card.getBlueprint() == _blueprint;
     }
 
-    public Action createSeedCardAction() {
+    public TopLevelSelectableAction createSeedCardAction() {
         if (_blueprint.getSeedCardActionSource() == null)
             return null;
         else

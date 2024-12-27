@@ -1,6 +1,7 @@
 package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.Player;
@@ -9,12 +10,13 @@ import java.util.List;
 
 public abstract class CardActionSelectionDecision extends ActionDecision {
 
-    public CardActionSelectionDecision(Player player, String text, List<Action> actions) {
+    public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions) {
         this(player, text, actions, false);
     }
 
 
-    public CardActionSelectionDecision(Player player, String text, List<Action> actions, boolean noPass) {
+    public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
+                                       boolean noPass) {
         super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE);
         setParam("cardId", getCardIds());
         setParam("blueprintId", getBlueprintIds()); // done in super

@@ -33,7 +33,7 @@ public class ActionResult {
     private final Type _type;
     protected String _playerId;
     protected final PhysicalCard _source;
-    private Map<Player, List<Action>> _optionalAfterTriggerActions = new HashMap<>();
+    private Map<Player, List<TopLevelSelectableAction>> _optionalAfterTriggerActions = new HashMap<>();
         // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
 
@@ -67,19 +67,20 @@ public class ActionResult {
     }
     public String getPlayer() { return _playerId; }
 
-    public List<Action> getOptionalAfterTriggerActions(Player player) {
+    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player) {
         if (_optionalAfterTriggerActions.get(player) == null)
             return new LinkedList<>();
         else return _optionalAfterTriggerActions.get(player);
     }
 
     public void createOptionalAfterTriggerActions(DefaultGame game) {
-        Map<Player, List<Action>> allActions = new HashMap<>();
+        Map<Player, List<TopLevelSelectableAction>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
-            List<Action> playerActions = new LinkedList<>();
+            List<TopLevelSelectableAction> playerActions = new LinkedList<>();
             for (PhysicalCard card : Filters.filterActive(game)) {
                 if (!card.hasTextRemoved(game)) {
-                    final List<Action> actions = card.getOptionalAfterTriggerActions(player, this);
+                    final List<TopLevelSelectableAction> actions =
+                            card.getOptionalAfterTriggerActions(player, this);
                     if (actions != null)
                         playerActions.addAll(actions);
                 }

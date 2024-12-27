@@ -1,6 +1,7 @@
 package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public abstract class ActionSelectionDecision extends ActionDecision {
 
-    public ActionSelectionDecision(Player player, String text, List<Action> actions) {
+    public ActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions) {
         super(player, text, actions, AwaitingDecisionType.ACTION_CHOICE);
         setParam("blueprintId", getBlueprintIds());
         setParam("imageUrl", getImageUrls());

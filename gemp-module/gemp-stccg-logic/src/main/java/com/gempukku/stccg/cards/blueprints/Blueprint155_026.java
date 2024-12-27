@@ -33,13 +33,13 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     @Override
-    public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         DefaultGame game = player.getGame();
         Phase currentPhase = game.getCurrentPhase();
-        List<Action> actions = new LinkedList<>();
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
 
         if (currentPhase == Phase.EXECUTE_ORDERS && thisCard.isControlledBy(player)) {
-            ActionyAction getItDoneAction =
+            UseGameTextAction getItDoneAction =
                     new UseGameTextAction(thisCard, player, "Discard 2 cards to choose effect");
 
             getItDoneAction.appendCost(new UseOncePerTurnAction(getItDoneAction, thisCard, player));

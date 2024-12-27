@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -21,8 +22,9 @@ public class Blueprint156_010 extends CardBlueprint {
         super("156_010");
     }
 
-    public List<Action> getValidResponses(PhysicalCard thisCard, Player player, ActionResult actionResult) {
-        List<Action> actions = new ArrayList<>();
+    public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
+                                                            ActionResult actionResult) {
+        List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 Objects.equals(thisCard.getGame().getOpponent(thisCard.getOwnerName()), player.getPlayerId())) {
             actions.add(new DrawCardAction(thisCard, player, 2));
@@ -31,9 +33,9 @@ public class Blueprint156_010 extends CardBlueprint {
     }
 
     @Override
-    public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard card) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard card) {
         DefaultGame game = player.getGame();
-        List<Action> actions = new LinkedList<>();
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
         Phase currentPhase = game.getCurrentPhase();
         if (currentPhase == Phase.END_OF_TURN && card.isControlledBy(player)) {
             actions.add(new DrawCardAction(card, player));

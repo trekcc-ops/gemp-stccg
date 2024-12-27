@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -21,7 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyAction {
+public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyAction
+        implements TopLevelSelectableAction {
     private final String _playerId;
     private final int _maxCardCount;
     private List<Action> _playCardActions = new LinkedList<>();

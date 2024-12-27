@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes.tribbles;
 
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.Action;
@@ -18,7 +19,7 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
     @Override
     public void process(DefaultGame cardGame) {
         String playerId = _game.getCurrentPlayerId();
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
+        final List<TopLevelSelectableAction> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
 
         if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _consecutivePasses++;

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -35,10 +36,10 @@ public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
     public Action nextAction(DefaultGame cardGame) {
         final String activePlayer = _actionOrder.getNextPlayer();
 
-        final Map<Action, ActionResult> optionalAfterTriggers =
+        final Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
                 _actionsEnvironment.getOptionalAfterTriggers(activePlayer, _actionResults);
 
-        List<Action> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
+        List<TopLevelSelectableAction> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
         possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(activePlayer, _actionResults));
 
         if (possibleActions.isEmpty()) {

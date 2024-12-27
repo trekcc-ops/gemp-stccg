@@ -1,6 +1,7 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.UndockAction;
@@ -735,7 +736,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         T choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
+            for (TopLevelSelectableAction action : actionDecision.getActions()) {
                 if (action.getClass() == clazz && action.getCardForActionSelection() == card)
                     choice = (T) action;
             }

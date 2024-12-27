@@ -2,6 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
@@ -67,13 +68,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public List<Action> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults) {
-        List<Action> gatheredActions = new LinkedList<>();
+    public List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults) {
+        List<TopLevelSelectableAction> gatheredActions = new LinkedList<>();
 
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (ActionResult actionResult : effectResults) {
-                    List<? extends Action> actions = actionProxy.getRequiredAfterTriggers(actionResult);
+                    List<TopLevelSelectableAction> actions = actionProxy.getRequiredAfterTriggers(actionResult);
                     if (actions != null)
                         gatheredActions.addAll(actions);
                 }
@@ -84,16 +85,16 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public Map<Action, ActionResult> getOptionalAfterTriggers(String playerId,
+    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(String playerId,
                                                               Collection<? extends ActionResult> effectResults) {
-        final Map<Action, ActionResult> gatheredActions = new HashMap<>();
+        final Map<TopLevelSelectableAction, ActionResult> gatheredActions = new HashMap<>();
 
         if (effectResults != null) {
             for (ActionResult actionResult : effectResults) {
-                List<? extends Action> actions = actionResult.getOptionalAfterTriggerActions(
+                List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(
                         _game.getGameState().getPlayer(playerId));
                 if (actions != null) {
-                    for (Action action : actions) {
+                    for (TopLevelSelectableAction action : actions) {
                         if (!actionResult.wasOptionalTriggerUsed(action)) {
                             gatheredActions.put(action, actionResult);
                         }
@@ -106,14 +107,16 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public List<Action> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getOptionalAfterActions(String playerId,
+                                                                  Collection<? extends ActionResult> effectResults) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
 
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (ActionResult actionResult : effectResults) {
-                    List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, actionResult);
-                    List<Action> playableActions = getPlayableActions(playerId, actions);
+                    List<TopLevelSelectableAction> actions =
+                            actionProxy.getOptionalAfterActions(playerId, actionResult);
+                    List<TopLevelSelectableAction> playableActions = getPlayableActions(playerId, actions);
                     result.addAll(playableActions);
                 }
             }
@@ -122,10 +125,10 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         return result;
     }
 
-    private List<Action> getPlayableActions(String playerId, Iterable<? extends Action> actions) {
-        List<Action> result = new LinkedList<>();
+    private <T extends Action> List<T> getPlayableActions(String playerId, Iterable<T> actions) {
+        List<T> result = new LinkedList<>();
         if (actions != null) {
-            for (Action action : actions) {
+            for (T action : actions) {
                 if (_game.getModifiersQuerying().canPerformAction(playerId, action) && action.canBeInitiated(_game))
                     result.add(action);
             }
@@ -134,12 +137,12 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public List<Action> getPhaseActions(String playerId) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getPhaseActions(playerId);
-            List<Action> playableActions = getPlayableActions(playerId, actions);
+            List<TopLevelSelectableAction> actions = actionProxy.getPhaseActions(playerId);
+            List<TopLevelSelectableAction> playableActions = getPlayableActions(playerId, actions);
             result.addAll(playableActions);
         }
 

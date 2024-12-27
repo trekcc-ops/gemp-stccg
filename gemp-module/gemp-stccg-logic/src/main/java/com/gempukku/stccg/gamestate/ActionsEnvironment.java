@@ -3,20 +3,21 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
 
 public interface ActionsEnvironment {
 
-    List<Action> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
+    List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
 
-    Map<Action, ActionResult> getOptionalAfterTriggers(String playerId,
+    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(String playerId,
                                                        Collection<? extends ActionResult> effectResults);
 
-    List<Action> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults);
+    List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults);
 
-    List<Action> getPhaseActions(String playerId);
+    List<TopLevelSelectableAction> getPhaseActions(String playerId);
 
     void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);
 

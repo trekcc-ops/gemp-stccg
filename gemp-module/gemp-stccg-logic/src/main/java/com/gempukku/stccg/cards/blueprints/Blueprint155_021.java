@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
@@ -37,14 +37,14 @@ public class Blueprint155_021 extends CardBlueprint {
     }
 
     @Override
-    public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         DefaultGame game = player.getGame();
         Phase currentPhase = game.getCurrentPhase();
-        List<Action> actions = new LinkedList<>();
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
 
         if (currentPhase == Phase.CARD_PLAY) {
 
-            ActionyAction action1 = new UseGameTextAction(thisCard, player, "Report a card for free");
+            UseGameTextAction action1 = new UseGameTextAction(thisCard, player, "Report a card for free");
                 // TODO - This should not be where the Filters.playable filter is included
                 // TODO - Make sure there's a native quadrant requirement here if Modern rules are used
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,

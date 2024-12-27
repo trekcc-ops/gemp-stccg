@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
@@ -14,7 +15,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FlyShipAction extends ActionyAction {
+public class FlyShipAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalShipCard _flyingCard;
     private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
