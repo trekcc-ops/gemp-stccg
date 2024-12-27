@@ -25,6 +25,14 @@ public class RemoveCardFromPlayAction extends ActionyAction {
         _cardCausingRemoval = cardRemoving;
     }
 
+    public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardRemoving,
+                                    Collection<PhysicalCard> cardsToRemove) {
+        super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+        _cardsToRemove = cardsToRemove;
+        _cardCausingRemoval = cardRemoving;
+    }
+
+
     @Override
     public PhysicalCard getPerformingCard() {
         return _cardCausingRemoval;
@@ -44,8 +52,7 @@ public class RemoveCardFromPlayAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Collection<PhysicalCard> removedCards = new HashSet<>(_cardsToRemove);
 
-        Set<PhysicalCard> toRemoveFromZone = new HashSet<>();
-        toRemoveFromZone.addAll(removedCards);
+        Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
 
         cardGame.getGameState().removeCardsFromZone(_performingPlayerId, toRemoveFromZone);
         for (PhysicalCard removedCard : removedCards) {

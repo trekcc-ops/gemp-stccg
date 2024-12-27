@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
-import com.gempukku.stccg.actions.discard.RemoveCardsFromZoneEffect;
+import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.PutCardFromZoneIntoHandEffect;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
@@ -153,8 +153,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                                 case PUTCARDSFROMPLAYONBOTTOMOFDECK ->
                                         new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer, cards, context.getSource());
                                 case REMOVECARDSINDISCARDFROMGAME ->
-                                        new SubAction(parentAction,
-                                        new RemoveCardsFromZoneEffect(context, cards, Zone.DISCARD));
+                                        new RemoveCardFromPlayAction(targetPlayer, context.getSource(), cards);
                                 case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                                         SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                                         new ShuffleCardsIntoDrawDeckAction(context.getSource(), context.getPerformingPlayer(), Filters.in(cards));
