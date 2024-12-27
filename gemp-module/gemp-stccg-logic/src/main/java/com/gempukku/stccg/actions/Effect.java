@@ -6,14 +6,6 @@ import com.gempukku.stccg.game.DefaultGame;
 public interface Effect {
 
     /**
-     * Returns the text that represents this effect. This text might be displayed
-     * to the user.
-     *
-     * @return
-     */
-    String getText();
-
-    /**
      * Checks whether this effect can be played in full. This is required to check
      * for example for cards that give a choice of effects to carry out and one
      * that can be played in full has to be chosen.

@@ -11,6 +11,8 @@ public interface Action {
 
     void insertCost(DefaultGame cardGame, Action action);
 
+    Action nextAction(DefaultGame game) throws InvalidGameLogicException;
+
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, OTHER,
         MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,

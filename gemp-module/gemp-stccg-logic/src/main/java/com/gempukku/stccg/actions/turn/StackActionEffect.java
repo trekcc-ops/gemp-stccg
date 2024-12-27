@@ -15,11 +15,6 @@ public class StackActionEffect implements Effect {
     }
 
     @Override
-    public String getText() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull() {
         return true;
     }
