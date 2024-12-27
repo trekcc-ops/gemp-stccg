@@ -2,11 +2,9 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
-import com.gempukku.stccg.actions.placecard.PutCardFromZoneIntoHandEffect;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -39,7 +37,6 @@ public class CardResolverMultiEffectBlueprintProducer {
         DISCARDCARDSFROMDRAWDECK(Zone.DRAW_DECK, false, true),
         DISCARDFROMHAND(Zone.HAND, true, true),
         DOWNLOAD(Zone.DRAW_DECK, false, false), // TODO - Should allow downloading from more than one zone
-        PUTCARDSFROMDECKINTOHAND(Zone.DRAW_DECK, false, true), // only premiere cards that will be reworded
         PUTCARDSFROMPLAYONBOTTOMOFDECK(null, false, true), // Ferengi Locator Bomb
         REMOVECARDSINDISCARDFROMGAME(Zone.DISCARD, false, true),
         SHUFFLECARDSFROMDISCARDINTODRAWDECK(Zone.DISCARD, false, false), // Get It Done, Raktajino, Regenerate, Tinkerer
@@ -110,9 +107,8 @@ public class CardResolverMultiEffectBlueprintProducer {
             case DISCARD, PUTCARDSFROMPLAYONBOTTOMOFDECK, SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                     CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
                             selectingPlayer, defaultText, cardSource);
-            case DOWNLOAD, DISCARDFROMHAND, DISCARDCARDSFROMDRAWDECK, PUTCARDSFROMDECKINTOHAND,
-                    REMOVECARDSINDISCARDFROMGAME, SHUFFLECARDSFROMDISCARDINTODRAWDECK,
-                    SHUFFLECARDSFROMHANDINTODRAWDECK ->
+            case DOWNLOAD, DISCARDFROMHAND, DISCARDCARDSFROMDRAWDECK, REMOVECARDSINDISCARDFROMGAME,
+                    SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK ->
                     CardResolver.resolveCardsInZone(filter, choiceFilter, count, memory,
                             selectingPlayer, targetPlayerSource, defaultText, cardFilter, effectType.fromZone,
                             cardSource);
@@ -147,9 +143,6 @@ public class CardResolverMultiEffectBlueprintProducer {
                                         new DiscardCardAction(parentAction.getPerformingCard(),
                                                 targetPlayer, Iterables.getOnlyElement(cards));
                                 case DOWNLOAD -> Iterables.getOnlyElement(cards).getPlayCardAction(true);
-                                case PUTCARDSFROMDECKINTOHAND -> new SubAction(parentAction,
-                                        new PutCardFromZoneIntoHandEffect(context.getGame(),
-                                                Iterables.getOnlyElement(cards), effectType.fromZone, reveal));
                                 case PUTCARDSFROMPLAYONBOTTOMOFDECK ->
                                         new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer, cards, context.getSource());
                                 case REMOVECARDSINDISCARDFROMGAME ->
@@ -206,7 +199,7 @@ public class CardResolverMultiEffectBlueprintProducer {
             case DISCARD, DISCARDCARDSFROMDRAWDECK -> "Choose cards to discard";
             case DISCARDFROMHAND -> "Choose cards from hand to discard";
             case DOWNLOAD -> "Choose card to play";
-            case REMOVECARDSINDISCARDFROMGAME, PUTCARDSFROMDECKINTOHAND ->
+            case REMOVECARDSINDISCARDFROMGAME ->
                     "Choose cards from " + effectType.getZoneName();
             case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                     SHUFFLECARDSFROMPLAYINTODRAWDECK ->
