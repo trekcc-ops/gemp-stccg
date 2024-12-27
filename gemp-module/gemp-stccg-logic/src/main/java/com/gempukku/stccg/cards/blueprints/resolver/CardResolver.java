@@ -36,7 +36,7 @@ public class CardResolver {
 
         return switch (selectionType) {
             case "self", "memory", "all", "random" ->
-                    finalTargetAppender(choiceFilter, choiceFilter, countSource, memory, cardSource, selectingPlayer,
+                    finalTargetAppender(choiceFilter, choiceFilter, countSource, memory, cardSource,
                             selectionType, typeFilter);
             case "choose" -> resolveChoiceCards(typeFilter, choiceFilter, choiceFilter, countSource, cardSource,
                     createChoiceActionSourceFromZone(selectingPlayer, targetPlayer, zone, memory, choiceText,
@@ -70,7 +70,7 @@ public class CardResolver {
 
         return switch (selectionType) {
             case "self", "memory", "all", "random" ->
-                    finalTargetAppender(choiceFilter, playabilityFilter, countSource, memory, cardSource, choicePlayer,
+                    finalTargetAppender(choiceFilter, playabilityFilter, countSource, memory, cardSource,
                             selectionType, typeFilter);
             case "choose" -> resolveChoiceCardsWithEffect(typeFilter, playabilityFilter, countSource, cardSource,
                     getChoiceEffectFromInPlay(choiceText, countSource, memory, choicePlayer, cardSource, typeFilter, choiceFilter));
@@ -125,20 +125,23 @@ public class CardResolver {
     }
 
 
-    private static DelayedEffectBlueprint finalTargetAppender(FilterableSource choiceFilter, FilterableSource playabilityFilter,
+    private static DelayedEffectBlueprint finalTargetAppender(FilterableSource choiceFilter,
+                                                              FilterableSource playabilityFilter,
                                                               ValueSource countSource, String memory,
                                                               Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                              PlayerSource choicePlayer, String selectionType, FilterableSource typeFilter) {
+                                                              String selectionType, FilterableSource typeFilter) {
 
         return new DelayedEffectBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 switch(selectionType) {
                     case "self", "random", "choose":
-                        return filterCards(actionContext, playabilityFilter).size() >= countSource.getMinimum(actionContext);
+                        return filterCards(actionContext, playabilityFilter).size() >=
+                                countSource.getMinimum(actionContext);
                     case "memory":
                         if (playabilityFilter != null) {
-                            return filterCards(actionContext, playabilityFilter).size() >= countSource.getMinimum(actionContext);
+                            return filterCards(actionContext, playabilityFilter).size() >=
+                                    countSource.getMinimum(actionContext);
                         } else {
                             return true;
                         }

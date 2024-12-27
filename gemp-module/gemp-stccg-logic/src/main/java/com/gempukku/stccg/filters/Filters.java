@@ -269,31 +269,6 @@ public class Filters {
 
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed(game);
 
-    public static Filter playable(final DefaultGame game) {
-        return playable(0);
-    }
-    public static Filter playable() { return (game, physicalCard) -> physicalCard.canBePlayed(game); }
-
-    public static Filter playable(final int twilightModifier) {
-        return playable(twilightModifier, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty) {
-        return playable(twilightModifier, ignoreRoamingPenalty, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile) {
-        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, ignoreResponseEvents);
-    }
-
-    public static Filter playable(final int withTwilightRemoved, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return (game1, physicalCard) -> physicalCard.canBePlayed(game1);
-    }
-
     public static final Filter any = (game, physicalCard) -> true;
 
     public static final Filter none = (game, physicalCard) -> false;
@@ -302,11 +277,7 @@ public class Filters {
             physicalCard.getBlueprint().getUniqueness() == Uniqueness.UNIQUE;
 
     public static Filter any(Characteristic characteristic) {
-        return (game, physicalCard) -> {
-            if (physicalCard instanceof PhysicalNounCard1E noun)
-                return noun.hasCharacteristic(characteristic);
-            else return false;
-        };
+        return new CharacteristicFilter(characteristic);
     }
 
     public static Filter yourOtherCards(PhysicalCard contextCard, Filterable... filterables) {
@@ -457,9 +428,7 @@ public class Filters {
 
     public static Filter and(final Filterable... filters) {
         Filter[] filtersInt = convertToFilters(filters);
-        if (filtersInt.length == 1)
-            return filtersInt[0];
-        return andInternal(filtersInt);
+        return new AndFilter(filtersInt);
     }
 
     public static Filter or(final Filterable... filters) {
@@ -553,7 +522,7 @@ public class Filters {
     }
 
     public static Filter attachableTo(final DefaultGame game, final int twilightModifier, final Filterable... filters) {
-        return Filters.and(Filters.playable(twilightModifier),
+        return Filters.and(Filters.playable,
                 (Filter) (game1, physicalCard) -> {
                     if (physicalCard.getBlueprint().getValidTargetFilter() == null)
                         return false;
