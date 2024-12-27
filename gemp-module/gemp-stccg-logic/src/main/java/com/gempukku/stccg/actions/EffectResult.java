@@ -49,18 +49,6 @@ public class EffectResult {
         _performingPlayerId = null;
     }
 
-    protected EffectResult(Type type, Effect effect) {
-        _type = type;
-        _source = effect.getSource();
-        _performingPlayerId = effect.getPerformingPlayerId();
-    }
-
-    protected EffectResult(Type type, Effect effect, PhysicalCard source) {
-        _type = type;
-        _source = source;
-        _performingPlayerId = effect.getPerformingPlayerId();
-    }
-
     public EffectResult(Type type, Action action, PhysicalCard source) {
         _type = type;
         _source = source;

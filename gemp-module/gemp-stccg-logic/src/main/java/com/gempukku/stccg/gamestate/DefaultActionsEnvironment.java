@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -64,47 +63,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     public void addUntilEndOfTurnActionProxy(ActionProxy actionProxy) {
         _actionProxies.add(actionProxy);
         _untilEndOfTurnActionProxies.add(actionProxy);
-    }
-
-    @Override
-    public List<Action> getRequiredBeforeTriggers(Effect effect) {
-        List<Action> gatheredActions = new LinkedList<>();
-
-        for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getRequiredBeforeTriggers(effect);
-            if (actions != null) {
-                gatheredActions.addAll(actions);
-            }
-        }
-
-        return gatheredActions;
-    }
-
-    @Override
-    public List<Action> getOptionalBeforeTriggers(String playerId, Effect effect) {
-        List<Action> result = new LinkedList<>();
-
-        for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getOptionalBeforeTriggerActions(playerId, effect);
-            if (actions != null) result.addAll(actions);
-        }
-
-        return result;
-    }
-
-    @Override
-    public List<Action> getOptionalBeforeActions(String playerId, Effect effect) {
-        List<Action> result = new LinkedList<>();
-
-        for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getOptionalBeforeActions(playerId, effect);
-            if (actions != null) {
-                actions.stream().filter(action ->
-                        _game.getModifiersQuerying().canPerformAction(playerId, action)).forEach(result::add);
-            }
-        }
-
-        return result;
     }
 
     @Override

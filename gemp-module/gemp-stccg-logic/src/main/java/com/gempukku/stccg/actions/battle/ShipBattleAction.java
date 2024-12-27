@@ -2,9 +2,7 @@ package com.gempukku.stccg.actions.battle;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -26,7 +24,6 @@ public class ShipBattleAction extends ActionyAction {
     private boolean _actionWasInitiated = false;
     private boolean _returningFire;
     private boolean _virtualCardAction;
-    protected Effect _finalEffect;
     private final MissionLocation _location;
     private boolean _returnFireDecisionMade;
     private boolean _damageApplied;
@@ -217,7 +214,7 @@ public class ShipBattleAction extends ActionyAction {
     public boolean isVirtualCardAction() { return _virtualCardAction; }
 
     public boolean wasCarriedOut() {
-        return _finalEffect != null && _finalEffect.wasCarriedOut();
+        return _wasCarriedOut = true;
     }
 
 }

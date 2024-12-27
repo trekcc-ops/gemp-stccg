@@ -1,7 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.*;
@@ -423,7 +422,7 @@ public class CardBlueprint {
         // Add in-play modifiers created through JSON definitions
         for (ModifierSource modifierSource : inPlayModifiers) {
             ActionContext context =
-                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null, null);
+                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null);
             result.add(modifierSource.getModifier(context));
         }
 
@@ -489,21 +488,22 @@ public class CardBlueprint {
         _specialEquipment.addAll(specialEquipment);
     }
 
-    public List<Action> getActionsFromActionSources(String playerId, PhysicalCard card, Effect effect,
-                                                     EffectResult effectResult, List<ActionSource> actionSources) {
+    public List<Action> getActionsFromActionSources(String playerId, PhysicalCard card,
+                                                    EffectResult effectResult, List<ActionSource> actionSources) {
         List<Action> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, playerId, effect, effectResult);
+                Action action = actionSource.createActionWithNewContext(card, playerId, effectResult);
                 if (action != null) result.add(action);
             }
         });
         return result;
     }
 
+
     public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         return getActionsFromActionSources(
-                player.getPlayerId(), thisCard, null, null, inPlayPhaseActions);
+                player.getPlayerId(), thisCard, null, inPlayPhaseActions);
     }
 
     public void setAnyExceptBorgCanAttempt() {

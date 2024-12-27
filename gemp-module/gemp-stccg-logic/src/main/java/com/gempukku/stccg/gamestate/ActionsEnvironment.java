@@ -1,18 +1,12 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
 
 public interface ActionsEnvironment {
-    List<Action> getRequiredBeforeTriggers(Effect effect);
-
-    List<Action> getOptionalBeforeTriggers(String playerId, Effect effect);
-
-    List<Action> getOptionalBeforeActions(String playerId, Effect effect);
 
     List<Action> getRequiredAfterTriggers(Collection<? extends EffectResult> effectResults);
 

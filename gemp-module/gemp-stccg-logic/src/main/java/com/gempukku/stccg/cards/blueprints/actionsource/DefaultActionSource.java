@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.blueprints.actionsource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -107,22 +106,16 @@ public abstract class DefaultActionSource implements ActionSource {
 
     public Action createActionWithNewContext(PhysicalCard card) {
         return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, null, null));
+                new DefaultActionContext(card.getOwnerName(), card, null));
     }
 
     public Action createActionWithNewContext(PhysicalCard card, EffectResult effectResult) {
         return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, null, effectResult));
+                new DefaultActionContext(card.getOwnerName(), card, effectResult));
     }
 
 
-    public Action createActionWithNewContext(PhysicalCard card, Effect effect, EffectResult effectResult) {
-        return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, effect, effectResult));
-    }
-
-    public Action createActionWithNewContext(PhysicalCard card, String playerId, Effect effect,
-                                             EffectResult effectResult) {
-        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, effect, effectResult));
+    public Action createActionWithNewContext(PhysicalCard card, String playerId, EffectResult effectResult) {
+        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, effectResult));
     }
 }

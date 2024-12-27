@@ -1,7 +1,6 @@
 package com.gempukku.stccg.cards;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -31,12 +30,11 @@ public interface ActionContext {
     String getPerformingPlayerId();
     PhysicalCard getSource();
     EffectResult getEffectResult();
-    Effect getEffect();
 
     boolean acceptsAllRequirements(Requirement[] requirementArray);
     boolean acceptsAllRequirements(List<Requirement> requirementList);
     boolean acceptsAnyRequirements(Requirement[] requirementArray);
-    ActionContext createDelegateContext(Effect effect);
+
     ActionContext createDelegateContext(EffectResult effectResult);
     ActionContext createDelegateContext(String playerId);
     String substituteText(String text);

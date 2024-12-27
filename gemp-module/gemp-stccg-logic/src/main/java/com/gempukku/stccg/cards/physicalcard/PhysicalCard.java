@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -67,12 +66,11 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     Collection<PhysicalCard> getAttachedCards(DefaultGame game);
 
     List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame _game);
-    List<Action> getOptionalInPlayActions(Effect effect, TriggerTiming timing);
+
     List<Action> getOptionalInPlayActions(EffectResult effectResult, TriggerTiming timing);
     Action getDiscardedFromPlayTriggerAction(RequiredType requiredType);
     List<Action> getOptionalAfterTriggerActions(Player player, EffectResult effectResult);
-    List<Action> getBeforeTriggerActions(Effect effect, RequiredType requiredType);
-    List<Action> getBeforeTriggerActions(String playerId, Effect effect, RequiredType requiredType);
+
     List<Action> getRequiredResponseActions(EffectResult effectResult);
 
     boolean isUnique();

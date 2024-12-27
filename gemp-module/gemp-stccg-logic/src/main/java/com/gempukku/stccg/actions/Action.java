@@ -28,7 +28,6 @@ public interface Action {
     void setVirtualCardAction(boolean virtualCardAction);
     boolean isVirtualCardAction();
     String getPerformingPlayerId();
-    Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException;
 
     boolean canBeInitiated(DefaultGame cardGame);
     void setText(String text);

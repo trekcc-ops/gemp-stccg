@@ -17,7 +17,6 @@ public abstract class PlayCardAction extends ActionyAction {
     final PhysicalCard _cardEnteringPlay;
     protected final Zone _fromZone;
     final Zone _toZone;
-    private Effect _finalEffect;
 
     /**
      * Creates an action for playing the specified card.

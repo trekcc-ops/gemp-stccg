@@ -66,8 +66,6 @@ public abstract class ActionyAction implements Action {
         game.getActionsEnvironment().incrementActionId();
     }
 
-    public Effect nextEffect(DefaultGame game) { return null; }
-
 
     @Override
     public void setVirtualCardAction(boolean virtualCardAction) {
