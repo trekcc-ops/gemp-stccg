@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.*;
 
@@ -25,45 +26,41 @@ public abstract class ActionyAction implements Action {
     protected final ActionType _actionType;
     public ActionType getActionType() { return _actionType; }
 
-    protected ActionyAction(Player player, ActionType actionType) {
-        _performingPlayerId = player.getPlayerId();
+    protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
+        _actionId = environment.getNextActionId();
+        environment.incrementActionId();
         _actionType = actionType;
-        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
-        player.getGame().getActionsEnvironment().incrementActionId();
+        _performingPlayerId = performingPlayerId;
+    }
+
+    protected ActionyAction(Player player, ActionType actionType) {
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
     }
 
     protected ActionyAction(Player player, String text, ActionType actionType) {
-        _performingPlayerId = player.getPlayerId();
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
         _text = text;
-        _actionType = actionType;
-        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
-        player.getGame().getActionsEnvironment().incrementActionId();
     }
 
     protected ActionyAction(Player player, ActionType actionType, Enum<?>[] progressValues) {
-        this(player, null, actionType, progressValues);
-    }
-
-
-    protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
-        _performingPlayerId = player.getPlayerId();
-        _text = text;
-        _actionType = actionType;
-        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
-        player.getGame().getActionsEnvironment().incrementActionId();
-        for (Enum<?> progressType : progressTypes) {
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+        for (Enum<?> progressType : progressValues) {
             _progressIndicators.put(progressType.name(), false);
         }
     }
 
 
-    // This constructor is only used for automated actions used to pass effects through or perform system actions
+    protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+        _text = text;
+        for (Enum<?> progressType : progressTypes) {
+            _progressIndicators.put(progressType.name(), false);
+        }
+    }
+
+    // This constructor is only used for system queue actions
     protected ActionyAction(DefaultGame game) {
-        _performingPlayerId = null;
-        _text = null;
-        _actionType = ActionType.OTHER;
-        _actionId = game.getActionsEnvironment().getNextActionId();
-        game.getActionsEnvironment().incrementActionId();
+        this(game.getActionsEnvironment(), ActionType.OTHER, null);
     }
 
 
@@ -90,7 +87,7 @@ public abstract class ActionyAction implements Action {
         _targeting.add(targeting);
     }
 
-    public final void appendAction(Action action) {
+    public final void appendEffect(Action action) {
         _actionEffects.add(action);
     }
 
@@ -197,10 +194,6 @@ public abstract class ActionyAction implements Action {
 
     public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
 
-    public void insertCost(DefaultGame cardGame, Action costAction) {
-        insertCost(costAction);
-    }
-
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType) {
         _progressIndicators.put(progressType.name(), true);
@@ -211,18 +204,7 @@ public abstract class ActionyAction implements Action {
     protected boolean getProgress(Enum<?> progressType) {
         return _progressIndicators.get(progressType.name());
     }
-    public void insertEffect(DefaultGame cardGame, Action actionEffect) {
-        insertAction(actionEffect);
-    }
 
-    @Override
-    public void appendCost(DefaultGame cardGame, Action costAction) {
-        appendCost(costAction);
-    }
-
-    @Override
-    public void appendEffect(DefaultGame cardGame, Action actionEffect) {
-        appendAction(actionEffect);
-    }
+    public void insertEffect(Action actionEffect) { insertAction(actionEffect); }
 
 }

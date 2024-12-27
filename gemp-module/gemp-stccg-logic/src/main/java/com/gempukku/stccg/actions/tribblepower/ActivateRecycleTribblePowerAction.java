@@ -43,7 +43,7 @@ public class ActivateRecycleTribblePowerAction extends ActivateTribblePowerActio
     private void playerChosen(String chosenPlayer, DefaultGame game) {
         Action shuffleAction = new ShuffleCardsIntoDrawDeckAction(
                 _performingCard, game.getPlayer(chosenPlayer), Filters.yourDiscard(chosenPlayer));
-        appendAction(shuffleAction);
+        appendEffect(shuffleAction);
     }
 
 

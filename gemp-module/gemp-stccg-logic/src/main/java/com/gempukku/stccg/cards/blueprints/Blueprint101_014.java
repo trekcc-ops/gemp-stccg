@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
+import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -31,17 +32,17 @@ public class Blueprint101_014 extends CardBlueprint {
                                             EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> result = new LinkedList<>();
         MissionRequirement conditions = new AndMissionRequirement(SkillName.MEDICAL, SkillName.SECURITY);
-        if (!conditions.canBeMetBy(attemptingUnit)) {
-            Collection<PersonnelCard> highestPersonnel =
-                    Filters.highestTotalAttributes(attemptingUnit.getAttemptingPersonnel());
-            SelectVisibleCardAction selectAction =
-                    new SelectVisibleCardAction(action, thisCard.getOwner(), "Select a personnel to kill",
-                            highestPersonnel);
-            result.add(selectAction);
-            result.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction));
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
-        }
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+
+        Collection<PersonnelCard> highestPersonnel =
+                Filters.highestTotalAttributes(attemptingUnit.getAttemptingPersonnel());
+        SelectVisibleCardAction selectAction =
+                new SelectVisibleCardAction(action, game.getOpponent(attemptingUnit.getPlayer()),
+                        "Select a personnel to kill", highestPersonnel);
+        result.add(selectAction);
+        Action killAction = new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction);
+        Action overcomeAction =
+                new OvercomeDilemmaConditionAction(thisCard, conditions, attemptingUnit, killAction, action);
+        result.add(overcomeAction);
         return result;
     }
 

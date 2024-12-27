@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.discard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -13,10 +12,10 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import java.util.Collections;
 
 public class RemoveDilemmaFromGameAction extends ActionyAction {
-    private final ST1EPhysicalCard _cardToRemove;
+    private final PhysicalCard _cardToRemove;
     private final MissionLocation _mission;
 
-    public RemoveDilemmaFromGameAction(Player performingPlayer, ST1EPhysicalCard cardToRemove,
+    public RemoveDilemmaFromGameAction(Player performingPlayer, PhysicalCard cardToRemove,
                                        MissionLocation mission) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
         _cardToRemove = cardToRemove;

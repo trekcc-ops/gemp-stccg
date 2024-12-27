@@ -3,8 +3,6 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
@@ -64,8 +62,8 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
         Player chosenPlayer = game.getPlayer(chosenPlayerId);
         PhysicalCard discardingCard = game.getGameState().getDrawDeck(chosenPlayerId).getLast();
         DiscardCardAction discardAction = new DiscardCardAction(_performingCard, chosenPlayer, discardingCard);
-        appendAction(discardAction);
-        appendAction(new ScorePointsAction(game, _performingCard, _performingPlayerId,
+        appendEffect(discardAction);
+        appendEffect(new ScorePointsAction(game, _performingCard, _performingPlayerId,
                 discardingCard.getBlueprint().getTribbleValue()));
     }
 

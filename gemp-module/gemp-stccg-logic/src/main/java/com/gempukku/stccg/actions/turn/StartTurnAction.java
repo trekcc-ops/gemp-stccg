@@ -9,7 +9,7 @@ public class StartTurnAction extends SystemQueueAction {
 
     public StartTurnAction(DefaultGame cardGame) {
         super(cardGame);
-        appendAction(new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_TURN));
+        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_TURN));
     }
     @Override
     public Action nextAction(DefaultGame cardGame) {

@@ -29,8 +29,7 @@ public final class PlayOutAllSubActionsIfActionNotCancelledAction extends System
             Action anyAction = _actions.getFirst();
             _actions.remove(anyAction);
             environment.addActionToStack(anyAction);
-            _action.insertEffect(cardGame,
-                    new PlayOutAllSubActionsIfActionNotCancelledAction(cardGame, _action, _actions));
+            _action.insertEffect(new PlayOutAllSubActionsIfActionNotCancelledAction(cardGame, _action, _actions));
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new ActionSelectionDecision(cardGame.getCurrentPlayer(), "Required responses", _actions) {
@@ -39,7 +38,7 @@ public final class PlayOutAllSubActionsIfActionNotCancelledAction extends System
                             Action action = getSelectedAction(result);
                             environment.addActionToStack(action);
                             _actions.remove(action);
-                            _action.insertEffect(cardGame,
+                            _action.insertEffect(
                                     new PlayOutAllSubActionsIfActionNotCancelledAction(cardGame, _action, _actions));
                         }
                     });

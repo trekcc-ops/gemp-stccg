@@ -51,7 +51,7 @@ public class EncounterSeedCardAction extends ActionyAction {
             List<Action> encounterActions = _encounteredCard.getEncounterActions(
                     cardGame, _attemptingUnit, this, _location);
             for (Action action : encounterActions)
-                appendAction(action);
+                appendEffect(action);
             _effectsAdded = true;
         }
         return getNextAction();
@@ -61,4 +61,6 @@ public class EncounterSeedCardAction extends ActionyAction {
 
     public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _encounteredCard; }
+
+    public MissionLocation getLocation() { return _location; }
 }

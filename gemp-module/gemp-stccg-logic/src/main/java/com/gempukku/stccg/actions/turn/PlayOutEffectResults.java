@@ -24,13 +24,13 @@ public class PlayOutEffectResults extends SystemQueueAction {
             _initialized = true;
             List<Action> requiredResponses = cardGame.getActionsEnvironment().getRequiredAfterTriggers(_actionResults);
             if (!requiredResponses.isEmpty())
-                appendAction(
+                appendEffect(
                         new PlayOutAllSubActionsIfActionNotCancelledAction(cardGame, this, requiredResponses));
 
             GameState gameState = cardGame.getGameState();
             ActionOrder actionOrder = gameState.getPlayerOrder().getCounterClockwisePlayOrder(
                     gameState.getCurrentPlayerId(), true);
-            appendAction(new PlayOutOptionalAfterResponsesAction(
+            appendEffect(new PlayOutOptionalAfterResponsesAction(
                     cardGame, this, actionOrder, 0, _actionResults));
         }
         return getNextAction();

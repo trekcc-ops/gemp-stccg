@@ -25,7 +25,7 @@ public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
     @Override
     protected List<Action> createActions(Action parentAction, ActionContext context) {
         final Modifier modifier = _modifierSource.getModifier(context);
-        Action action = new AddUntilModifierAction(context.getGame(), context.getSource(), modifier, _until);
+        Action action = new AddUntilModifierAction(context.getSource(), modifier, _until);
         return List.of(action);
     }
 }

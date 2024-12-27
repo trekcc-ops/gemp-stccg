@@ -52,7 +52,7 @@ public class Blueprint155_021 extends CardBlueprint {
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON));
             action1.setCardActionPrefix("1");
             action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
-            action1.appendAction(
+            action1.appendEffect(
                     new DownloadCardFromZoneAction(Zone.HAND, thisCard.getOwner(), thisCard, playableCardFilter) {
                         @Override
                         protected Collection<PhysicalCard> getPlayableCards() {

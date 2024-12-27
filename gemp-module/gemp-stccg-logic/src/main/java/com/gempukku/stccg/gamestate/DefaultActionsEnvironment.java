@@ -8,6 +8,7 @@ import java.util.*;
 
 public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final DefaultGame _game;
+    private final Map<Integer, Action> _createdActionMap = new HashMap<>();
     private final Stack<Action> _actionStack;
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
@@ -163,7 +164,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public void removeCompletedAction(Action action) {
+    public void removeCompletedActionFromStack(Action action) {
         _actionStack.remove(action);
         _performedActions.add(action);
     }
@@ -181,6 +182,10 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     @Override
     public void incrementActionId() {
         _nextActionId++;
+    }
+
+    public Action getActionById(int actionId) {
+        return _createdActionMap.get(actionId);
     }
 
 }

@@ -38,7 +38,7 @@ public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
     }
 
     private void playerChosen(String playerId, DefaultGame game) {
-        appendAction(new DrawCardAction(_performingCard, game.getPlayer(playerId)));
+        appendEffect(new DrawCardAction(_performingCard, game.getPlayer(playerId)));
     }
 
 }

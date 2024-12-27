@@ -17,7 +17,7 @@ public class ActivateDiscardTribblePowerAction extends ActivateTribblePowerActio
         SelectVisibleCardAction selectAction =
                 new SelectVisibleCardAction(_performingCard, performingPlayer, "select",
                         Filters.yourHand(performingPlayer));
-        appendAction(new DiscardCardAction(_performingCard, performingPlayer, selectAction));
+        appendEffect(new DiscardCardAction(_performingCard, performingPlayer, selectAction));
     }
 
 }

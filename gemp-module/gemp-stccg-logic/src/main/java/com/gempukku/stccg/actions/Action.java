@@ -8,8 +8,9 @@ public interface Action {
     String getCardActionPrefix();
 
     int getActionId();
-
-    void insertCost(DefaultGame cardGame, Action action);
+    void insertCost(Action costAction);
+    void appendCost(Action costAction);
+    void appendEffect(Action actionEffect);
 
     Action nextAction(DefaultGame game) throws InvalidGameLogicException;
 
@@ -18,7 +19,7 @@ public interface Action {
         MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,
         BATTLE, SELECT_CARD, SEED_CARD, ENCOUNTER_SEED_CARD, KILL, DISCARD, DRAW_CARD, REMOVE_CARD_FROM_PLAY,
         STOP_CARDS, SELECT_AWAY_TEAM, PLACE_CARD, FAIL_DILEMMA, DOWNLOAD_CARD, SELECT_ACTION, ADD_MODIFIER,
-        USE_GAME_TEXT, USAGE_LIMIT, SCORE_POINTS, SELECT_AFFILIATION, SELECT_SKILL, MAKE_DECISION, REVEAL_SEED_CARD
+        USE_GAME_TEXT, USAGE_LIMIT, SCORE_POINTS, SELECT_AFFILIATION, SELECT_SKILL, MAKE_DECISION, OVERCOME_DILEMMA, REVEAL_SEED_CARD
     }
 
     ActionType getActionType();
@@ -33,8 +34,6 @@ public interface Action {
     void setText(String text);
     boolean wasCarriedOut();
 
-    void appendCost(DefaultGame cardGame, Action costAction);
+    void insertEffect(Action actionEffect);
 
-    void appendEffect(DefaultGame cardGame, Action actionEffect);
-    void insertEffect(DefaultGame cardGame, Action actionEffect);
 }

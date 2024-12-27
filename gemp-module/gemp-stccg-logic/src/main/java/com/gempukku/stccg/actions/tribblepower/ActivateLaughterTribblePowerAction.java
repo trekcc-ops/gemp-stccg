@@ -96,17 +96,17 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         SelectVisibleCardAction discardSelectAction =
                 new SelectVisibleCardAction(_performingCard, discardingPlayer, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
-        appendAction(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
+        appendEffect(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
 
         Player performingPlayer = game.getPlayer(_performingPlayerId);
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(_performingCard, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 2, 2);
-        appendAction(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction, _performingCard));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction, _performingCard));
 
         if (!(Objects.equals(_discardingPlayerId, _performingPlayerId) ||
                 Objects.equals(secondPlayerChosen, _performingPlayerId))) {
-            appendAction(new ScorePointsAction(game, _performingCard, _performingPlayerId, BONUS_POINTS));
+            appendEffect(new ScorePointsAction(game, _performingCard, _performingPlayerId, BONUS_POINTS));
         }
     }
 

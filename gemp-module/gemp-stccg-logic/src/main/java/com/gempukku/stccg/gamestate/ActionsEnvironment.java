@@ -33,11 +33,13 @@ public interface ActionsEnvironment {
 
     boolean hasNoActionsInProgress();
 
-    void removeCompletedAction(Action action);
+    void removeCompletedActionFromStack(Action action);
 
     Action getCurrentAction();
 
     int getNextActionId();
 
     void incrementActionId();
+
+    Action getActionById(int actionId);
 }

@@ -58,7 +58,7 @@ public class SelectAndAppendAction extends ActionyAction {
                 protected void validDecisionMade(int index, String result) {
                     try {
                         _chosenAction = performableActions.get(index);
-                        _parentAction.appendAction(_chosenAction);
+                        _parentAction.appendEffect(_chosenAction);
                         _actionSelected = true;
                         _wasCarriedOut = true;
                     } catch(NoSuchElementException exp) {

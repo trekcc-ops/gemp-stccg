@@ -24,9 +24,9 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
                         final Action[] effectsArray = actions.toArray(new Action[0]);
                         for (int i = effectsArray.length - 1; i >= 0; i--)
                             if (cost)
-                                action.insertCost(cardGame, effectsArray[i]);
+                                action.insertCost(effectsArray[i]);
                             else
-                                action.insertEffect(cardGame, effectsArray[i]);
+                                action.insertEffect(effectsArray[i]);
                     }
                 } catch (InvalidCardDefinitionException exp) {
                     throw new InvalidGameLogicException(exp.getMessage());
@@ -36,9 +36,9 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
         };
 
         if (cost) {
-            action.appendCost(cardGame, sysAction);
+            action.appendCost(sysAction);
         } else {
-            action.appendEffect(cardGame, sysAction);
+            action.appendEffect(sysAction);
         }
     }
 

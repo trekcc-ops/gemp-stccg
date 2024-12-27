@@ -56,7 +56,7 @@ public class Blueprint155_026 extends CardBlueprint {
 
             Action chooseAction =
                     new SelectAndInsertAction(getItDoneAction, thisCard, player, choice1, choice2, choice3);
-            getItDoneAction.appendAction(chooseAction);
+            getItDoneAction.appendEffect(chooseAction);
 
             // after any use, discard incident OR discard a [TNG] card from hand
             Filter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
@@ -64,7 +64,7 @@ public class Blueprint155_026 extends CardBlueprint {
             SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(thisCard, player,
                     "Select a card to discard", discardCardFilter);
             Action discardAction = new DiscardCardAction(thisCard, player, selectCardToDiscardAction);
-            getItDoneAction.appendAction(discardAction);
+            getItDoneAction.appendEffect(discardAction);
 
             actions.add(getItDoneAction);
         }
