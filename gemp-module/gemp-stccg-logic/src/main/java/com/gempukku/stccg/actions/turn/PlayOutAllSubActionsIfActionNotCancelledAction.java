@@ -1,46 +1,50 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.gamestate.ActionsEnvironment;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.List;
 
-public final class PlayOutAllActionsIfEffectNotCancelledEffect extends DefaultEffect {
+public final class PlayOutAllSubActionsIfActionNotCancelledAction extends SystemQueueAction {
     private final SystemQueueAction _action;
     private final List<Action> _actions;
+    private boolean _initialized;
 
-    public PlayOutAllActionsIfEffectNotCancelledEffect(DefaultGame game, SystemQueueAction action, List<Action> actions) {
-        super(game, "none");
+    public PlayOutAllSubActionsIfActionNotCancelledAction(DefaultGame game, SystemQueueAction action,
+                                                          List<Action> actions) {
+        super(game);
         _action = action;
         _actions = actions;
     }
 
 
-    public void doPlayEffect() {
-        ActionsEnvironment environment = _game.getActionsEnvironment();
+    public void doPlayEffect(DefaultGame cardGame) {
+        ActionsEnvironment environment = cardGame.getActionsEnvironment();
         if (_actions.size() == 1) {
             environment.addActionToStack(_actions.getFirst());
         } else if (areAllActionsTheSame(_actions)) {
             Action anyAction = _actions.getFirst();
             _actions.remove(anyAction);
             environment.addActionToStack(anyAction);
-            _action.insertEffect(_game,
-                    new SubAction(_action, new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions)));
+            _action.insertEffect(cardGame,
+                    new PlayOutAllSubActionsIfActionNotCancelledAction(cardGame, _action, _actions));
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(
-                    new ActionSelectionDecision(_game.getCurrentPlayer(), "Required responses", _actions) {
+            cardGame.getUserFeedback().sendAwaitingDecision(
+                    new ActionSelectionDecision(cardGame.getCurrentPlayer(), "Required responses", _actions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
                             environment.addActionToStack(action);
                             _actions.remove(action);
-                            _action.insertEffect(_game, new SubAction(_action,
-                                    new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions)));
+                            _action.insertEffect(cardGame,
+                                    new PlayOutAllSubActionsIfActionNotCancelledAction(cardGame, _action, _actions));
                         }
                     });
         }
@@ -61,14 +65,11 @@ public final class PlayOutAllActionsIfEffectNotCancelledEffect extends DefaultEf
     }
 
     @Override
-    public boolean isPlayableInFull() {
-        return true;
+    public Action nextAction(DefaultGame cardGame) {
+        if (!_initialized) {
+            _initialized = true;
+            doPlayEffect(cardGame);
+        }
+        return getNextAction();
     }
-
-    @Override
-    public FullEffectResult playEffectReturningResult() {
-        doPlayEffect();
-        return new FullEffectResult(true);
-    }
-
 }

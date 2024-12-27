@@ -2,8 +2,6 @@ package com.gempukku.stccg.cards.blueprints.resolver;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.DefaultEffect;
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
@@ -157,25 +155,19 @@ public class CardResolver {
                 Action action = switch (selectionType) {
                     case "self", "memory" -> {
                         Collection<PhysicalCard> result = filterCards(context, choiceFilter);
-                        yield new SubAction(parentAction,
-                                new DefaultEffect(context.getGame(), choicePlayer.getPlayerId(context)) {
+                        yield new SystemQueueAction(cardGame) {
                             @Override
-                            public boolean isPlayableInFull() {
+                            public boolean requirementsAreMet(DefaultGame cardGame) {
                                 int min = countSource.getMinimum(context);
                                 return result.size() >= min;
                             }
 
                             @Override
-                            protected FullEffectResult playEffectReturningResult() {
+                            public Action nextAction(DefaultGame cardGame) {
                                 context.setCardMemory(memory, result);
-                                int min = countSource.getMinimum(context);
-                                if (result.size() >= min) {
-                                    return new FullEffectResult(true);
-                                } else {
-                                    return new FullEffectResult(false);
-                                }
+                                return getNextAction();
                             }
-                        });
+                        };
                     }
                     case "all" -> new SystemQueueAction(cardGame) {
                         @Override
