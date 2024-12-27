@@ -64,11 +64,6 @@ public class SelectAttemptingUnitAction extends ActionyAction {
         return null;
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return null;
-    }
-
     private void attemptingUnitChosen(AttemptingUnit attemptingUnit) {
         _wasCarriedOut = true;
         _selectedResponse = attemptingUnit;

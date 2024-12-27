@@ -44,10 +44,6 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
         return _causingCard;
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _causingCard;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

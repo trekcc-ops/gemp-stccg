@@ -64,11 +64,6 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
         return _performingCard;
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
-    }
-
     private boolean canDiscard(DefaultGame cardGame, String playerId) {
         return !_forced || cardGame.getModifiersQuerying().canDiscardCardsFromHand(playerId, _performingCard);
     }

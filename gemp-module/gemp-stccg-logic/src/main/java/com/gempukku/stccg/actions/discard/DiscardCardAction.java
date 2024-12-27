@@ -57,11 +57,6 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }
@@ -99,5 +94,10 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
 
     public Collection<PhysicalCard> getDiscardedCards() {
         return _cardsToDiscard;
+    }
+
+    @Override
+    public PhysicalCard getCardForActionSelection() {
+        return _performingCard;
     }
 }

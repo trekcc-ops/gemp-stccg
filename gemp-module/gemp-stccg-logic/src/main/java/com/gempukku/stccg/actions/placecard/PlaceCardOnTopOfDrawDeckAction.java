@@ -32,11 +32,6 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _causingCard;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

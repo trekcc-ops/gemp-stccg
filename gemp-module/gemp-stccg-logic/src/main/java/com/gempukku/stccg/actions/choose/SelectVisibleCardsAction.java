@@ -113,8 +113,6 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
 
     public PhysicalCard getPerformingCard() { return _actionSource; }
 
-    public PhysicalCard getCardForActionSelection() { return _actionSource; }
-
     public Collection<PhysicalCard> getSelectedCards() { return _selectedCards; }
 
 }

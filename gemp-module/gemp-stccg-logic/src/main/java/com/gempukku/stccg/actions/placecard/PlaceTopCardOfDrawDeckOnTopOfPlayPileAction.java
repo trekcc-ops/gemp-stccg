@@ -30,11 +30,6 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
-    }
-    
-    @Override
     public Action nextAction(DefaultGame cardGame) {
         int drawn = 0;
 

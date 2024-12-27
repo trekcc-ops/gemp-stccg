@@ -55,11 +55,6 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         boolean result = costsCanBePaid(cardGame);
         for (Action action : getActions()) {

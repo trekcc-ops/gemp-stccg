@@ -92,8 +92,6 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
 
     public PhysicalCard getPerformingCard() { return _actionSource; }
 
-    public PhysicalCard getCardForActionSelection() { return _actionSource; }
-
     public PhysicalCard getSelectedCard() {
         return _selectedCard;
     }

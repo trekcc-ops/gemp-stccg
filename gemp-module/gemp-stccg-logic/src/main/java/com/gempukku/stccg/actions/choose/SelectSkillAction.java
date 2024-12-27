@@ -47,8 +47,4 @@ public class SelectSkillAction extends ActionyAction {
         return _performingCard;
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
-    }
 }

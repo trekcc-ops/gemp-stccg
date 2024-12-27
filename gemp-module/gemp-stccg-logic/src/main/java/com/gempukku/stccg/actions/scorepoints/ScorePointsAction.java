@@ -34,11 +34,6 @@ public class ScorePointsAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

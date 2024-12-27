@@ -30,11 +30,6 @@ public class SubAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _action.getCardForActionSelection();
-    }
-
-    @Override
     public PhysicalCard getPerformingCard() {
         return _action.getPerformingCard();
     }

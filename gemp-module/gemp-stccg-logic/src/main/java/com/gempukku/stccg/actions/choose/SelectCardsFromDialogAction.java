@@ -109,16 +109,6 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
 
     public PhysicalCard getPerformingCard() { return _actionSource; }
 
-    public PhysicalCard getCardForActionSelection() { return _actionSource; }
-
-    public PhysicalCard getSelectedCard() throws InvalidGameLogicException {
-        if (_selectedCards.size() == 1) {
-            return _selectedCards.stream().toList().getFirst();
-        } else {
-            throw new InvalidGameLogicException("Selected too many cards");
-        }
-    }
-
     @Override
     public Collection<PhysicalCard> getSelectedCards() {
         return _selectedCards;

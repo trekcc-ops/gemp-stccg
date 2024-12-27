@@ -38,11 +38,6 @@ public class StopCardsAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return null;
-    }
-
-    @Override
     public String getActionSelectionText(DefaultGame game) {
         if (_personnelChosen && _cardsToStop.size() == 1) {
             return "Stop " + Iterables.getOnlyElement(_cardsToStop).getTitle();

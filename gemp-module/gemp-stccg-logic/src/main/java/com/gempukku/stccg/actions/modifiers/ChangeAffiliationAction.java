@@ -55,7 +55,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     public PhysicalCard getPerformingCard() { return (PhysicalCard) _card; }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return (PhysicalCard) _card; }
+    public PhysicalCard getCardForActionSelection() { return _card; }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {

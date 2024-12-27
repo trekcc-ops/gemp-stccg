@@ -73,8 +73,6 @@ public class SelectRandomCardAction extends ActionyAction implements SelectCardA
 
     public PhysicalCard getPerformingCard() { return _actionSource; }
 
-    public PhysicalCard getCardForActionSelection() { return _actionSource; }
-
     public PhysicalCard getSelectedCard() {
         return _selectedCard;
     }

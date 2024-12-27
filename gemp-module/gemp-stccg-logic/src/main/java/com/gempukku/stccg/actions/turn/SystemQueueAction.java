@@ -20,11 +20,6 @@ public class SystemQueueAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return null;
-    }
-
-    @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (isCostFailed()) {
             return null;

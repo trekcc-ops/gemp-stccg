@@ -125,11 +125,6 @@ public class DownloadCardFromZoneAction extends ActionyAction {
         return _actionSource;
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _actionSource;
-    }
-
     protected Action getPlayCardAction() { return _playCardAction; }
     protected void setPlayCardAction(Action action) { _playCardAction = action; }
 
