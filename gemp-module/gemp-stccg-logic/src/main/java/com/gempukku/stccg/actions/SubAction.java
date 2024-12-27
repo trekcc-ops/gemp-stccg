@@ -26,7 +26,6 @@ public class SubAction implements Action {
     protected final ActionType _actionType;
 
     private final Action _action;
-    private Effect _effect;
 
     public SubAction(Action action, DefaultGame game) {
         _performingPlayerId = action.getPerformingPlayerId();
@@ -36,12 +35,6 @@ public class SubAction implements Action {
         _action = action;
     }
 
-
-    public SubAction(Action action, Effect effect) {
-        this(action, effect.getGame());
-        _effect = effect;
-        _effects.add(effect);
-    }
 
     public SubAction(Action action, ActionContext context,
                      List<EffectBlueprint> costAppenders, List<EffectBlueprint> effectBlueprints) {
@@ -90,14 +83,9 @@ public class SubAction implements Action {
         }
     }
 
-    public Effect getEffect() { return _effect; }
-
     @Override
     public boolean canBeInitiated(DefaultGame cardGame) {
-        boolean result = costsCanBePaid();
-        if (_effect != null && !_effect.isPlayableInFull())
-            result = false;
-        return result;
+        return costsCanBePaid();
     }
 
     @Override

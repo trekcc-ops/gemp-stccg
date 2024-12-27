@@ -109,8 +109,8 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
             if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
                 if (action.getActionSelectionText(_game) != null)
                     message = message + " - " + action.getActionSelectionText(_game);
-                if (action instanceof SubAction sub && sub.getEffect() != null)
-                    message = message + " [Effect = " + sub.getEffect().getClass().getSimpleName() + "]";
+                if (action instanceof SubAction)
+                    message = message + " (SubAction)";
                 if (action instanceof PlayOutOptionalAfterResponsesAction response)
                     message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
