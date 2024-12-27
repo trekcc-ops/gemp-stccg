@@ -11,6 +11,7 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
 
@@ -43,7 +44,7 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(_cardBeingPlaced.getOwnerName(), Arrays.asList(_cardBeingPlaced));
+        gameState.removeCardsFromZone(_cardBeingPlaced.getOwnerName(), List.of(_cardBeingPlaced));
         gameState.sendMessage(_performingPlayerId + " placed " + _cardBeingPlaced + " on top of their draw deck");
         gameState.addCardToZone(_cardBeingPlaced, Zone.DRAW_DECK, EndOfPile.TOP);
         return getNextAction();

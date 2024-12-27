@@ -4,6 +4,7 @@ import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.SkillDotCountEvaluator;
@@ -13,7 +14,7 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.List;
 
-public class DrawCardAction extends ActionyAction {
+public class DrawCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
     private final boolean _optional;

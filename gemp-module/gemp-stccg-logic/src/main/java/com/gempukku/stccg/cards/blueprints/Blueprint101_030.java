@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
+import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -26,14 +27,9 @@ public class Blueprint101_030 extends CardBlueprint {
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action, MissionLocation missionLocation) {
-        List<Action> actions = new LinkedList<>();
         MissionRequirement condition = new RegularSkillMissionRequirement(SkillName.COMPUTER_SKILL);
-        if (condition.canBeMetBy(attemptingUnit)) {
-            actions.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
-        } else {
-            actions.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
-        }
-        return actions;
+        Action overcomeAction = new OvercomeDilemmaConditionAction(thisCard, condition, attemptingUnit, action);
+        return List.of(overcomeAction);
     }
 
 }

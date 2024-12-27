@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectSkillAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
@@ -25,9 +26,9 @@ public class Blueprint155_056 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard thisCard) {
+    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard thisCard) {
             // TODO - Need some additional work here to be check skill for usability
-        List<Action> actions = new LinkedList<>();
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard) {
             for (Skill skill : _skills)
                 if (skill instanceof ActionSkill actionSkill)
@@ -39,7 +40,7 @@ public class Blueprint155_056 extends CardBlueprint {
     private ActionSkill specialSkill() {
         return new ActionSkill("When reported, selects Anthropology, Physics, or Navigation.") {
             @Override
-            public Action getAction(final PhysicalCard thisCard) {
+            public TopLevelSelectableAction getAction(final PhysicalCard thisCard) {
                 final RequiredTriggerAction action = new RequiredTriggerAction(thisCard);
                 List<SkillName> skillOptions = new LinkedList<>();
                 skillOptions.add(SkillName.ANTHROPOLOGY);

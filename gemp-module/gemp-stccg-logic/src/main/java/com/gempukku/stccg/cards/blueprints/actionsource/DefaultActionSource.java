@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints.actionsource;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
@@ -88,7 +89,7 @@ public abstract class DefaultActionSource implements ActionSource {
     }
 
 
-    protected abstract Action createActionAndAppendToContext(PhysicalCard card, ActionContext context);
+    protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 
     public void setTurnLimit(int limitPerTurn) {
         addRequirement((actionContext) ->
@@ -104,18 +105,18 @@ public abstract class DefaultActionSource implements ActionSource {
             });
     }
 
-    public Action createActionWithNewContext(PhysicalCard card) {
+    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card) {
         return createActionAndAppendToContext(card,
                 new DefaultActionContext(card.getOwnerName(), card, null));
     }
 
-    public Action createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
+    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
         return createActionAndAppendToContext(card,
                 new DefaultActionContext(card.getOwnerName(), card, actionResult));
     }
 
 
-    public Action createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult) {
+    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult) {
         return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, actionResult));
     }
 }

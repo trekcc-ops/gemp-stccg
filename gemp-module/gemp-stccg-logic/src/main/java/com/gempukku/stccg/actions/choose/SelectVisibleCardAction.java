@@ -12,6 +12,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -19,21 +20,17 @@ import java.util.LinkedList;
 /**
  * An effect that causes the specified player to choose a card on the table.
  */
-public class SelectVisibleCardAction extends ActionyAction implements SelectCardsAction {
+public class SelectVisibleCardAction extends ActionyAction implements SelectCardAction {
     private Collection<? extends PhysicalCard> _selectableCards;
     private final PhysicalCard _actionSource;
     private Filter _cardFilter;
-    private final int _minimum;
-    private final int _maximum;
-    private Collection<PhysicalCard> _selectedCards;
+    private PhysicalCard _selectedCard;
 
     public SelectVisibleCardAction(Action parentAction, Player selectingPlayer, String choiceText,
                                    Collection<? extends PhysicalCard> cards) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCards = cards;
         _actionSource = parentAction.getPerformingCard();
-        _minimum = 1;
-        _maximum = 1;
     }
 
     public SelectVisibleCardAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
@@ -41,40 +38,27 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _cardFilter = cardFilter;
         _actionSource = cardSource;
-        _minimum = 1;
-        _maximum = 1;
     }
 
 
     public SelectVisibleCardAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
                                    Collection<? extends PhysicalCard> cards) {
-        this(cardSource, selectingPlayer, choiceText, cards, false);
-    }
-
-
-    public SelectVisibleCardAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
-                                   Collection<? extends PhysicalCard> cards, boolean randomSelection) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        if (randomSelection) {
-            _selectableCards = TextUtils.getRandomItemsFromList(cards, 1);
-        } else {
-            _selectableCards = cards;
-        }
+        _selectableCards = cards;
         _actionSource = cardSource;
-        _minimum = 1;
-        _maximum = 1;
     }
+
 
     public boolean requirementsAreMet(DefaultGame game) {
         if (_selectableCards == null) {
             if (_cardFilter != null) {
-                return Filters.filter(game, _cardFilter).size() >= _minimum;
+                return !Filters.filter(game, _cardFilter).isEmpty();
             } else {
                 game.sendMessage("ERROR: Unable to identify eligible cards for SelectCardsInPlayAction");
                 return false;
             }
         } else {
-            return _selectableCards.size() >= _minimum;
+            return !_selectableCards.isEmpty();
         }
     }
 
@@ -83,16 +67,16 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         if (_selectableCards == null) {
             _selectableCards = Filters.filter(cardGame, _cardFilter);
         }
-        if (_selectableCards.size() == _minimum) {
-            _selectedCards = new LinkedList<>(_selectableCards);
+        if (_selectableCards.size() == 1) {
+            _selectedCard = Iterables.getOnlyElement(_selectableCards);
             _wasCarriedOut = true;
         } else {
             AwaitingDecision decision = new CardsSelectionDecision(
                                 cardGame.getPlayer(_performingPlayerId), _text, _selectableCards,
-                                _minimum, _maximum) {
+                                1, 1) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
-                                _selectedCards = getSelectedCardsByResponse(result);
+                                _selectedCard = getSelectedCardByResponse(result);
                                 _wasCarriedOut = true;
                             }
                         };
@@ -110,16 +94,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
 
     public PhysicalCard getCardForActionSelection() { return _actionSource; }
 
-    public PhysicalCard getSelectedCard() throws InvalidGameLogicException {
-        if (_selectedCards.size() == 1) {
-            return _selectedCards.stream().toList().getFirst();
-        } else {
-            throw new InvalidGameLogicException("Selected too many cards");
-        }
-    }
-
-    @Override
-    public Collection<PhysicalCard> getSelectedCards() {
-        return _selectedCards;
+    public PhysicalCard getSelectedCard() {
+        return _selectedCard;
     }
 }

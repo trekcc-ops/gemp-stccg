@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillType;
 
@@ -9,5 +10,5 @@ public abstract class ActionSkill extends Skill {
         super(SkillType.SPECIAL, text);
     }
 
-    public abstract Action getAction(PhysicalCard card);
+    public abstract TopLevelSelectableAction getAction(PhysicalCard card);
 }

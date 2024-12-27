@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -261,7 +262,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         };
     }
 
-    public List<Action> getRequiredResponseActions(ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getRequiredResponseActions(ActionResult actionResult) {
         return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
     }
 

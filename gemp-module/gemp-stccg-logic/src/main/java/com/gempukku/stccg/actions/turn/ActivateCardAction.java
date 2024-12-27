@@ -3,10 +3,11 @@ package com.gempukku.stccg.actions.turn;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ActivateCardAction extends ActionyAction {
+public class ActivateCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _physicalCard;
     private boolean _sentMessage;

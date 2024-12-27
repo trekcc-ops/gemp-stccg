@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -578,6 +579,10 @@ public class Filters {
 
     public static Filter yourDiscard(String playerId) {
         return (game, physicalCard) -> game.getGameState().getDiscard(playerId).contains(physicalCard);
+    }
+
+    public static Filter personnelInAttemptingUnit(AttemptingUnit attemptingUnit) {
+        return (game, physicalCard) -> attemptingUnit.getAttemptingPersonnel().contains(physicalCard);
     }
 
 

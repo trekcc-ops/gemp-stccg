@@ -9,7 +9,7 @@ import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collections;
 
-public abstract class PlayCardAction extends ActionyAction {
+public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     final PhysicalCard _actionSource;
     private boolean _cardWasRemoved, _cardHasEnteredPlay;

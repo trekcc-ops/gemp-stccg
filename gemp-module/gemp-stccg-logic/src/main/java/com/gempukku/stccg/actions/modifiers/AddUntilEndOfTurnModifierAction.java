@@ -2,13 +2,14 @@ package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.Modifier;
 
-public class AddUntilEndOfTurnModifierAction extends ActionyAction {
+public class AddUntilEndOfTurnModifierAction extends ActionyAction implements TopLevelSelectableAction {
     private final Modifier _modifier;
     private final PhysicalCard _performingCard;
 

@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
@@ -50,9 +51,9 @@ public class Blueprint155_026 extends CardBlueprint {
             Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(player, selectCardsToPlaceAction, thisCard);
             getItDoneAction.appendCost(costAction);
 
-            Action choice1 = choice1(thisCard, player);
-            Action choice2 = choice2(thisCard, player);
-            Action choice3 = choice3(thisCard, player);
+            TopLevelSelectableAction choice1 = choice1(thisCard, player);
+            TopLevelSelectableAction choice2 = choice2(thisCard, player);
+            TopLevelSelectableAction choice3 = choice3(thisCard, player);
 
             Action chooseAction =
                     new SelectAndInsertAction(getItDoneAction, thisCard, player, choice1, choice2, choice3);
@@ -71,7 +72,7 @@ public class Blueprint155_026 extends CardBlueprint {
         return actions;
     }
 
-    private Action choice1(PhysicalCard thisCard, Player player) {
+    private TopLevelSelectableAction choice1(PhysicalCard thisCard, Player player) {
         SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard, player,
                 "Select a personnel",
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
@@ -80,12 +81,12 @@ public class Blueprint155_026 extends CardBlueprint {
         ActionCardResolver resolver = new ActionCardResolver(targetAction);
         Modifier modifier = new AllAttributeModifier(thisCard, resolver, 2);
 
-        ActionyAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
+        TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
         addModifierAction.appendCost(targetAction);
         return addModifierAction;
     }
 
-    private Action choice2(PhysicalCard thisCard, Player player) {
+    private TopLevelSelectableAction choice2(PhysicalCard thisCard, Player player) {
         SelectVisibleCardAction targetAction = new SelectVisibleCardAction(thisCard, player, "Select a ship",
                 Filters.and(Filters.your(player), Filters.inPlay, CardIcon.TNG_ICON,
                         CardType.SHIP));
@@ -93,12 +94,12 @@ public class Blueprint155_026 extends CardBlueprint {
         ActionCardResolver resolver = new ActionCardResolver(targetAction);
         Modifier modifier = new RangeModifier(thisCard, resolver, 2);
 
-        ActionyAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
+        TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
         addModifierAction.appendCost(targetAction);
         return addModifierAction;
     }
 
-    private Action choice3(PhysicalCard thisCard, Player player) {
+    private TopLevelSelectableAction choice3(PhysicalCard thisCard, Player player) {
         // shuffle the bottom three personnel and/or ships from your discard pile into your draw deck
         Filter shuffleCardsFilter = Filters.bottomCardsOfDiscard(player, 3, CardIcon.TNG_ICON,
                 Filters.or(CardType.PERSONNEL, CardType.SHIP));

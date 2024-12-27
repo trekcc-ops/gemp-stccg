@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.placecard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
@@ -12,7 +13,7 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 
-public class ShuffleCardsIntoDrawDeckAction extends ActionyAction {
+public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
     private final Filter _cardFilter;
 

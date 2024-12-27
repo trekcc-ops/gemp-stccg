@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.battle;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.filters.Filters;
@@ -14,7 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShipBattleAction extends ActionyAction {
+public class ShipBattleAction extends ActionyAction implements TopLevelSelectableAction {
         // TODO - For now, ignores affiliation attack restrictions, as well as tactics, as well as leadership requirements
         // TODO - Very much not complete
                 // i.e. it is just an action to compare numbers

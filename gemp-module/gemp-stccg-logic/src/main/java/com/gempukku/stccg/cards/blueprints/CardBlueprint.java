@@ -2,9 +2,12 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.RequiredTriggerActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
@@ -444,11 +447,11 @@ public class CardBlueprint {
         _characteristics.add(characteristic);
     }
 
-    public List<Action> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
-            if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, actionResult);
+            if (actionSource instanceof RequiredTriggerActionSource triggerSource) {
+                RequiredTriggerAction action = triggerSource.createActionWithNewContext(card, actionResult);
                 if (action != null) result.add(action);
             }
         });

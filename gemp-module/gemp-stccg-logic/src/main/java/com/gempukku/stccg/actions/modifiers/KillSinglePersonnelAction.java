@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -10,7 +11,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
-public class KillSinglePersonnelAction extends ActionyAction {
+public class KillSinglePersonnelAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
     private final SelectCardsAction _selectVictimAction;

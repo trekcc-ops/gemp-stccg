@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ArmusTest extends AbstractAtTest {
 
     @Test
-    public void misSeedTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first

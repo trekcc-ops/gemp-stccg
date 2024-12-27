@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -71,7 +72,7 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     Action getDiscardedFromPlayTriggerAction(RequiredType requiredType);
     List<Action> getOptionalAfterTriggerActions(Player player, ActionResult actionResult);
 
-    List<Action> getRequiredResponseActions(ActionResult actionResult);
+    List<TopLevelSelectableAction> getRequiredResponseActions(ActionResult actionResult);
 
     boolean isUnique();
     Integer getNumberOfCopiesSeededByPlayer(Player player);

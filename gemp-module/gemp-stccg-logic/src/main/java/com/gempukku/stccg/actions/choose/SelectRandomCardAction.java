@@ -68,7 +68,7 @@ public class SelectRandomCardAction extends ActionyAction implements SelectCardA
 
     @Override
     public boolean wasCarriedOut() {
-        return _wasCarriedOut;
+        return _selectedCard != null;
     }
 
     public PhysicalCard getPerformingCard() { return _actionSource; }
