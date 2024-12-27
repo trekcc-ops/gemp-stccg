@@ -37,6 +37,5 @@ public interface Action {
     boolean wasCarriedOut();
 
     void insertEffect(Action actionEffect);
-    void playOutActionResults(DefaultGame game, Set<ActionResult> actionResults);
 
 }
