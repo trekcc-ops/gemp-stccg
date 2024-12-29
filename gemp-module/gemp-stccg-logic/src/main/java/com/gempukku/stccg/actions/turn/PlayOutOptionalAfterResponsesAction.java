@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
-    private final Action _action;
+    private final PlayOutEffectResults _action;
     private final ActionOrder _actionOrder;
     private final int _passCount;
     private final Collection<ActionResult> _actionResults;
     private final ActionsEnvironment _actionsEnvironment;
 
-    public PlayOutOptionalAfterResponsesAction(DefaultGame game, Action action, ActionOrder actionOrder,
+    public PlayOutOptionalAfterResponsesAction(DefaultGame game, PlayOutEffectResults action, ActionOrder actionOrder,
                                         int passCount, Collection<ActionResult> actionResults) {
         super(game);
         _action = action;

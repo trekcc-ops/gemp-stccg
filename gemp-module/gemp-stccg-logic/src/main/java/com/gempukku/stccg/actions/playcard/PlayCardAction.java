@@ -40,7 +40,6 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         return _actionSource;
     }
 
-    @Override
     public PhysicalCard getCardForActionSelection() {
         return getCardEnteringPlay();
     }

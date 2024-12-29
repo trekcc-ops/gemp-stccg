@@ -31,6 +31,13 @@ public class FailDilemmaAction extends ActionyAction {
         _dilemma = dilemma;
     }
 
+    public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma,
+                             EncounterSeedCardAction encounterAction, Action additionalEffect) {
+        this(attemptingUnit.getPlayer(), attemptingUnit, dilemma, encounterAction);
+        appendEffect(additionalEffect);
+    }
+
+
     @Override
     public PhysicalCard getPerformingCard() {
         return _dilemma;
@@ -43,6 +50,10 @@ public class FailDilemmaAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        Action nextAction = getNextAction();
+        if (nextAction != null)
+            return nextAction;
+
         if (!_wasCarriedOut) {
             cardGame.sendMessage(_performingPlayerId + " failed to overcome " + _dilemma.getCardLink());
             Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>(_attemptingUnit.getAttemptingPersonnel());

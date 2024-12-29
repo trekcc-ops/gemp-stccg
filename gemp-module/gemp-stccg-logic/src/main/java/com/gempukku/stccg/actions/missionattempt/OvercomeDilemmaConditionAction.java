@@ -5,15 +5,9 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-
-import java.util.Collection;
-import java.util.LinkedList;
 
 public class OvercomeDilemmaConditionAction extends ActionyAction {
 
@@ -30,8 +24,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
-        Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, encounterAction);
-        failAction.insertEffect(failDilemmaAction);
+        Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, encounterAction, failDilemmaAction);
         _failActionId = failAction.getActionId();
         Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma,
                 encounterAction.getLocation());
