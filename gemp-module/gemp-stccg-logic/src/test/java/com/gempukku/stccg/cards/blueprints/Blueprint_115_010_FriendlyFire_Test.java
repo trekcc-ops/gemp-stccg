@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
     // Unit tests for card definition of Maglock
 
     @Test
-    public void placeOnMissionTest() throws DecisionResultInvalidException {
+    public void placeOnMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 

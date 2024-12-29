@@ -166,9 +166,13 @@ public class GameEvent {
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
         serializeGameState(card.getGame().getGameState());
         if (card.isPlacedOnMission()) {
-            _eventAttributes.put(Attribute.placedOnMission, "true");
-            _eventAttributes.put(Attribute.targetCardId,
-                    String.valueOf(card.getLocation().getTopMission().getCardId()));
+            try {
+                _eventAttributes.put(Attribute.placedOnMission, "true");
+                _eventAttributes.put(Attribute.targetCardId,
+                        String.valueOf(card.getLocation().getTopMission().getCardId()));
+            } catch(InvalidGameLogicException exp) {
+                _gameState.getGame().sendErrorMessage(exp);
+            }
         }
     }
 
