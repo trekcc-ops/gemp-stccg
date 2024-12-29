@@ -43,8 +43,6 @@ public final class TribblesGameState extends GameState {
             return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.PLAY_PILE)
             return _playPiles.get(playerId);
-        else if (zone == Zone.STACKED)
-            return _stacked.get(playerId);
         else // This should never be accessed
             return _inPlay;
     }

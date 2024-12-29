@@ -53,10 +53,10 @@ public class GameEvent {
     public enum Attribute {
         /* Don't change these names without editing the client code, as it relies on the .name() method */
         allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
-        locationIndex, message, otherCardIds, quadrant, participantId, phase, region,
-        serializedGameState,
-        targetCardId, text, timestamp,
-        type, zone
+        locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
+        type, zone,
+        placedOnMission,
+        region, serializedGameState
     }
 
     private final Type _type;
@@ -165,6 +165,15 @@ public class GameEvent {
         else if (card.getAttachedTo() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
         serializeGameState(card.getGame().getGameState());
+        if (card.isPlacedOnMission()) {
+            try {
+                _eventAttributes.put(Attribute.placedOnMission, "true");
+                _eventAttributes.put(Attribute.targetCardId,
+                        String.valueOf(card.getLocation().getTopMission().getCardId()));
+            } catch(InvalidGameLogicException exp) {
+                _gameState.getGame().sendErrorMessage(exp);
+            }
+        }
     }
 
     public Type getType() { return _type; }

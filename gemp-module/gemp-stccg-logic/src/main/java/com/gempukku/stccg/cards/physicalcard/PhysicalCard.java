@@ -11,7 +11,6 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 
@@ -19,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 @JsonSerialize(using = PhysicalCardSerializer.class)
-public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
+public interface PhysicalCard extends Filterable {
     DefaultGame getGame();
     Zone getZone();
     void setZone(Zone zone);
@@ -99,4 +98,8 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     Player getController();
 
     int getCost();
+
+    void setPlacedOnMission(boolean placedOnMission);
+
+    boolean isPlacedOnMission();
 }

@@ -14,6 +14,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.modifiers.ModifierFlag;
@@ -36,7 +37,6 @@ public abstract class GameState {
     PlayerOrder _playerOrder;
     private ModifiersLogic _modifiersLogic;
     protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new EnumMap<>(Zone.class);
-    final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
     Phase _currentPhase;
@@ -149,9 +149,8 @@ public abstract class GameState {
             }
         } while (!cardsLeftToSend.isEmpty());
 
-        List<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
+        Collection<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
 
-        _stacked.values().forEach(cardsPutIntoPlay::addAll);
         cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
         cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
@@ -212,14 +211,6 @@ public abstract class GameState {
         addCardToZone(card, Zone.ATTACHED);
     }
 
-    public void stackCard(PhysicalCard card, PhysicalCard stackOn) throws InvalidParameterException {
-        if(card == stackOn)
-            throw new InvalidParameterException("Cannot stack card on itself!");
-
-        card.stackOn(stackOn);
-        addCardToZone(card, Zone.STACKED);
-    }
-
     public void cardAffectsCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.sendEvent(new GameEvent(GameEvent.Type.CARD_AFFECTED_BY_CARD, card, affectedCards, getPlayer(playerPerforming)));
@@ -236,8 +227,6 @@ public abstract class GameState {
         List<PhysicalCard> zoneCards = _cardGroups.get(zone).get(playerId);
         if (zoneCards != null)
             return zoneCards;
-        else if (zone == Zone.STACKED)
-            return _stacked.get(playerId);
         else
             return _inPlay;
     }
@@ -277,9 +266,6 @@ public abstract class GameState {
                 _inPlay.remove(card);
             if (zone == Zone.ATTACHED)
                 card.attachTo(null);
-
-            if (zone == Zone.STACKED)
-                card.stackOn(null);
         }
 
         for (GameStateListener listener : getAllGameStateListeners()) {
@@ -427,10 +413,6 @@ public abstract class GameState {
                 result.add(physicalCard);
         }
         return result;
-    }
-
-    public Map<String, List<PhysicalCard>> getStackedCards() {
-        return _stacked;
     }
 
     public void startPlayerTurn(String playerId) {
@@ -593,4 +575,17 @@ public abstract class GameState {
     public List<String> getMessages() { return getGame().getMessages(); }
     int getNextCardId() { return _nextCardId; }
 
+    public void placeCardOnMission(PhysicalCard cardBeingPlaced, MissionLocation mission)
+            throws InvalidGameLogicException {
+        Zone currentZone = cardBeingPlaced.getZone();
+        if (currentZone == null) {
+            throw new InvalidGameLogicException("Tried to process a card not in any zone");
+        } else {
+            removeCardsFromZone(cardBeingPlaced.getOwnerName(), Arrays.asList(cardBeingPlaced));
+            cardBeingPlaced.setPlacedOnMission(true);
+            cardBeingPlaced.setLocation(mission);
+            addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
+            cardBeingPlaced.setLocation(mission);
+        }
+    }
 }

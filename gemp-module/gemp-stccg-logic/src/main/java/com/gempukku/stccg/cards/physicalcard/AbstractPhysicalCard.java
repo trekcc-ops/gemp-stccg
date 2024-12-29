@@ -37,6 +37,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected PhysicalCard _attachedTo;
     protected PhysicalCard _stackedOn;
     protected MissionLocation _currentLocation;
+    private boolean _placedOnMission = false;
 
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
@@ -156,6 +157,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public void setLocation(MissionLocation location) {
         _currentLocation = location;
+        for (PhysicalCard attachedCard : getAttachedCards(getGame())) {
+            attachedCard.setLocation(location);
+        }
+        for (PhysicalCard stackedCard : getStackedCards(getGame())) {
+            stackedCard.setLocation(location);
+        }
     }
 
     public String getFullName() { return _blueprint.getFullName(); }
@@ -192,11 +199,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public List<PhysicalCard> getStackedCards(DefaultGame game) {
         List<PhysicalCard> result = new LinkedList<>();
-        for (List<PhysicalCard> physicalCardList : game.getGameState().getStackedCards().values()) {
-            for (PhysicalCard physicalCard : physicalCardList) {
-                if (physicalCard.getStackedOn() == this)
-                    result.add(physicalCard);
-            }
+        for (PhysicalCard card : game.getGameState().getAllCardsInGame()) {
+            if (card.getStackedOn() == this)
+                result.add(card);
         }
         return result;
     }
@@ -382,5 +387,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public int getCost() { return _blueprint.getCost(); }
+
+    public void setPlacedOnMission(boolean placedOnMission) {
+        _placedOnMission = placedOnMission;
+    }
+
+    public boolean isPlacedOnMission() { return _placedOnMission; }
 
 }

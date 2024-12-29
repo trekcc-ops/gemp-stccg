@@ -58,8 +58,7 @@ public class AttemptMissionAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-
-            Player player = cardGame.getPlayer(_performingPlayerId);
+        Player player = cardGame.getPlayer(_performingPlayerId);
 
             Action cost = getNextCost();
             if (cost != null)
@@ -87,9 +86,9 @@ public class AttemptMissionAction extends ActionyAction {
                 }
             }
 
-            if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
-                failMission(cardGame);
-            }
+        if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
+            failMission(cardGame);
+        } else {
 
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt, true);
@@ -131,6 +130,7 @@ public class AttemptMissionAction extends ActionyAction {
                 }
                 setProgress(Progress.endedMissionAttempt, true);
             }
+        }
         return getNextAction();
     }
 

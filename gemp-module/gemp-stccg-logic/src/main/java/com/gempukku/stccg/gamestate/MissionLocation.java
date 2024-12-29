@@ -227,4 +227,7 @@ public class MissionLocation implements Snapshotable<MissionLocation> {
 
     public boolean isPlanet() { return getMissionType() == MissionType.PLANET || getMissionType() == MissionType.DUAL; }
     public boolean isSpace() { return getMissionType() == MissionType.SPACE || getMissionType() == MissionType.DUAL; }
+
+    public MissionCard getTopMission() { return getMissions().getLast(); }
+
 }
