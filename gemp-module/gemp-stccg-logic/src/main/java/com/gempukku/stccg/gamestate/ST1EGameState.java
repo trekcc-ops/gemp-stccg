@@ -85,7 +85,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         return Collections.unmodifiableList(_seedDecks.get(playerId));
     }
 
-    public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) {
+    public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) throws InvalidGameLogicException {
         AwayTeam result = new AwayTeam(_game, player, mission.getLocation());
         _awayTeams.add(result);
         return result;
@@ -270,7 +270,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         _awayTeams.remove(awayTeam);
     }
 
-    public void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) {
+    public void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) throws InvalidGameLogicException {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
@@ -279,7 +279,8 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         }
     }
 
-    public void preSeedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard, Player player) {
+    public void preSeedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard, Player player)
+            throws InvalidGameLogicException {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
@@ -315,5 +316,10 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         _allCards.put(_nextCardId, card);
         _nextCardId++;
         return card;
+    }
+
+    public void sendSerializedGameStateToClient() {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(GameEvent.Type.SERIALIZED_GAME_STATE, this));
     }
 }

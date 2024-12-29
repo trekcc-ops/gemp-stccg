@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
@@ -24,8 +25,15 @@ public class DockAction extends ActionyAction {
         super(player, "Dock", ActionType.MOVE_CARDS);
         _cardToDock = cardToDock;
 
-        _dockingTargetOptions = Filters.yourActiveFacilities(player).stream()
-                .filter(card -> card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation())
+        _dockingTargetOptions = Filters.yourFacilitiesInPlay(player).stream()
+                .filter(card -> {
+                    try {
+                        return card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation();
+                    } catch (InvalidGameLogicException e) {
+                        player.getGame().sendErrorMessage(e);
+                        return false;
+                    }
+                })
                 .toList();
         _selectAction = new SelectCardInPlayAction(this, player,
                 "Choose facility to dock at", _dockingTargetOptions);

@@ -221,6 +221,7 @@
             property-logo: tng-logo
             classification: SCIENCE
             icons: staff
+            uniqueness: universal
             lore: Typical Romulan scientist. Led team of archaeologists on an unsuccessful mission to locate an Iconian gateway in Romulan territory.
             skill-box: "[*] Archaeology"
             integrity: 7

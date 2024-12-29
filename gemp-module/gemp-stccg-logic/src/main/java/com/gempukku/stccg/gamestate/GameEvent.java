@@ -1,12 +1,18 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,7 +39,8 @@ public class GameEvent {
         CHAT_MESSAGE("CM"),
         GAME_ENDED("EG"),
         UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
-        CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"), DECISION("D");
+        CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"),
+        DECISION("D"), SERIALIZED_GAME_STATE("SERIALIZED_GAME_STATE");
 
         private final String code;
 
@@ -48,7 +55,8 @@ public class GameEvent {
         allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
         locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
         type, zone,
-        placedOnMission
+        placedOnMission,
+        region, serializedGameState
     }
 
     private final Type _type;
@@ -56,6 +64,7 @@ public class GameEvent {
     private GameState _gameState;
     private AwaitingDecision _awaitingDecision;
     private final Map<Attribute, String> _eventAttributes = new HashMap<>();
+    private static final Logger LOGGER = LogManager.getLogger(GameEvent.class);
 
     public GameEvent(Type type) {
         _type = type;
@@ -92,7 +101,11 @@ public class GameEvent {
 
     public GameEvent(Type type, GameState gameState) {
         this(type);
-        _gameState = gameState;
+        if (type == Type.SERIALIZED_GAME_STATE) {
+            serializeGameState(gameState);
+        } else {
+            _gameState = gameState;
+        }
     }
 
 
@@ -137,13 +150,21 @@ public class GameEvent {
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
         _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
 
-        if (card.getCardType() == CardType.MISSION && card.isInPlay())
-            _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
+        if (card.getCardType() == CardType.MISSION && card.isInPlay()) {
+            try {
+                _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
+                if (card.getLocation().getRegion() != null)
+                    _eventAttributes.put(Attribute.region, card.getLocation().getRegion().name());
+            } catch(InvalidGameLogicException exp) {
+                _gameState.getGame().sendErrorMessage(exp);
+            }
+        }
 
         if (card.getStackedOn() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
         else if (card.getAttachedTo() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
+        serializeGameState(card.getGame().getGameState());
         if (card.isPlacedOnMission()) {
             _eventAttributes.put(Attribute.placedOnMission, "true");
             _eventAttributes.put(Attribute.targetCardId,
@@ -181,6 +202,18 @@ public class GameEvent {
                 eventElem.appendChild(decisionParam);
             }
         }
+        try {
+            if (_awaitingDecision instanceof ArbitraryCardsSelectionDecision arbitrary) {
+                if (arbitrary.getValidCombinations() != null) {
+                    Element decisionParam = doc.createElement("parameter");
+                    decisionParam.setAttribute("name", "combinations");
+                    decisionParam.setAttribute("value", arbitrary.getValidCombinations());
+                    eventElem.appendChild(decisionParam);
+                }
+            }
+        } catch(Exception exp) {
+            _gameState.sendMessage("Unable to process decision");
+        }
     }
 
     private void serializeGameStats(Document doc, Element eventElem) {
@@ -210,6 +243,14 @@ public class GameEvent {
             eventElem.setAttribute("charStats", charStr.toString());
     }
 
-
+    private void serializeGameState(GameState gameState) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            _eventAttributes.put(Attribute.serializedGameState, mapper.writeValueAsString(gameState));
+        } catch(JsonProcessingException exp) {
+            gameState.sendMessage("Unable to create serialized game state");
+            LOGGER.error("Unable to create serialized game state", exp);
+        }
+    }
 
 }

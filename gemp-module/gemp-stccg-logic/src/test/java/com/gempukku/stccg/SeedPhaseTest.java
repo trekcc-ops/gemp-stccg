@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.GameSnapshot;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeedPhaseTest extends AbstractAtTest {
 
     @Test
-    public void autoSeedTest() throws DecisionResultInvalidException {
+    public void autoSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeIntroductoryTwoPlayerGame();
 
         // Figure out which player is going first
@@ -40,9 +41,6 @@ public class SeedPhaseTest extends AbstractAtTest {
 
         // Verify that both facilities were seeded
         assertEquals(2, Filters.filterActive(_game, CardType.FACILITY).size());
-        for (PhysicalCard card : Filters.filterActive(_game, CardType.FACILITY)) {
-            System.out.println(card.getTitle() + " seeded at " + card.getLocation().getLocationName());
-        }
 
         // Verify that the seed phase is over and both players have drawn starting hands
         assertEquals(Phase.CARD_PLAY, _game.getGameState().getCurrentPhase());

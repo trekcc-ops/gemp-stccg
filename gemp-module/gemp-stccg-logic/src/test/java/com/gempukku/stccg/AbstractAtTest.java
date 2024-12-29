@@ -298,6 +298,35 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
+    protected void initializeGameToTestAMS() {
+        Map<String, CardDeck> decks = new HashMap<>();
+
+        CardDeck fedDeck = new CardDeck("Federation");
+        fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
+        fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
+        fedDeck.addCard(SubDeck.SEED_DECK, "109_063"); // AMS
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
+        decks.put(P1, fedDeck);
+
+        CardDeck klingonDeck = new CardDeck("Klingon");
+        klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
+        for (int i = 0; i < 35; i++)
+            klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+        decks.put(P2, klingonDeck);
+
+
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.getFormat("debug1e");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+    }
+
     protected void initializeGameToTestMissionAttempt() {
         Map<String, CardDeck> decks = new HashMap<>();
 
@@ -308,6 +337,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
         for (int i = 0; i < 35; i++)
             fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
         decks.put(P1, fedDeck);
 
         CardDeck klingonDeck = new CardDeck("Klingon");
@@ -362,8 +393,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
         decks.get(P1).addCard(SubDeck.DRAW_DECK, "155_021"); // Attention All Hands
         decks.get(P2).addCard(SubDeck.DRAW_DECK, "155_021");
-        decks.get(P1).addCard(SubDeck.SEED_DECK, "178_044"); // Continuing Mission
-        decks.get(P2).addCard(SubDeck.SEED_DECK, "178_044"); // Continuing Mission
+        decks.get(P1).addCard(SubDeck.SEED_DECK, "155_022"); // Continuing Mission
+        decks.get(P2).addCard(SubDeck.SEED_DECK, "155_022");
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.getFormat("debug1e");
@@ -662,11 +693,14 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
     protected void seedCard(String playerId, PhysicalCard cardToSeed) throws DecisionResultInvalidException {
-        SeedCardAction choice = null;
+        Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof SeedCardAction seedAction &&
+                        seedAction.getCardEnteringPlay() == cardToSeed)
+                    choice = seedAction;
+                if (action instanceof SeedOutpostAction seedAction &&
                         seedAction.getCardEnteringPlay() == cardToSeed)
                     choice = seedAction;
             }
@@ -695,7 +729,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
     protected void attemptMission(String playerId, AttemptingUnit attemptingUnit, MissionCard mission)
-            throws DecisionResultInvalidException {
+            throws DecisionResultInvalidException, InvalidGameLogicException {
         AttemptMissionAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
@@ -711,6 +745,24 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
         if (choice == null)
             throw new DecisionResultInvalidException("No valid action to attempt " + mission.getTitle());
+    }
+
+    protected void attemptMission(String playerId, MissionLocation mission)
+            throws DecisionResultInvalidException {
+        AttemptMissionAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof AttemptMissionAction attemptAction &&
+                        attemptAction.getMission() == mission)
+                    choice = attemptAction;
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to attempt " + mission.getLocationName());
     }
 
     protected <T extends Action> T selectAction(Class<T> clazz, PhysicalCard card, String playerId)

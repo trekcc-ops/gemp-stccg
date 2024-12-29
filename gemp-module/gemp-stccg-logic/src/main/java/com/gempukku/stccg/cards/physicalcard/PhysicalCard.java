@@ -50,7 +50,7 @@ public interface PhysicalCard extends Filterable {
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
     String getCardLink();
-    MissionLocation getLocation();
+    MissionLocation getLocation() throws InvalidGameLogicException;
     void setLocation(MissionLocation location);
     String getFullName();
     Action getPlayCardAction();
@@ -90,6 +90,10 @@ public interface PhysicalCard extends Filterable {
     boolean isMisSeed(DefaultGame cardGame, MissionLocation mission);
 
     List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException;
+
+    boolean isAtSpaceLocation();
+
+    boolean isAtPlanetLocation();
 
     Player getController();
 

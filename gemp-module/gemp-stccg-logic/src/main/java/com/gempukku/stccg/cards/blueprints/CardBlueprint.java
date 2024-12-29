@@ -24,6 +24,7 @@ import java.util.*;
 
 public class CardBlueprint {
     private final String _blueprintId;
+    private GameType _gameType;
     private String _baseBlueprintId;
     private String title;
     private String subtitle;
@@ -129,7 +130,9 @@ public class CardBlueprint {
         }
         Collections.addAll(_icons, icons);
     }
-    public List<CardIcon> getIcons() { return _icons; }
+    public List<CardIcon> getIcons() {
+        return Objects.requireNonNullElseGet(_icons, LinkedList::new);
+    }
     public boolean hasIcon(CardIcon icon) { return _icons != null && _icons.contains(icon); }
     public void setQuadrant(Quadrant quadrant) {
         this.quadrant = quadrant;
@@ -180,7 +183,22 @@ public class CardBlueprint {
     public int getCunning() { return _cardAttributes.get(CardAttribute.CUNNING); }
 
     public int getStrength() { return _cardAttributes.get(CardAttribute.STRENGTH); }
-    public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
+    public int getRange() {
+        Integer range = _cardAttributes.get(CardAttribute.RANGE);
+        return (range == null) ? 0 : range;
+    }
+
+    public int getWeapons() {
+        Integer weapons = _cardAttributes.get(CardAttribute.WEAPONS);
+        return (weapons == null) ? 0 : weapons;
+    }
+
+    public int getShields() {
+        Integer shields = _cardAttributes.get(CardAttribute.SHIELDS);
+        return (shields == null) ? 0 : shields;
+    }
+
+
     public void setStaffing(List<CardIcon> staffing) { _staffing = staffing; }
     public List<CardIcon> getStaffing() { return _staffing; }
     public void setClassification(SkillName classification) { _classification = classification; }
@@ -471,14 +489,6 @@ public class CardBlueprint {
         _specialEquipment.addAll(specialEquipment);
     }
 
-    public int getWeapons() {
-        return _cardAttributes.get(CardAttribute.WEAPONS);
-    }
-
-    public int getShields() {
-        return _cardAttributes.get(CardAttribute.SHIELDS);
-    }
-
     public List<Action> getActionsFromActionSources(String playerId, PhysicalCard card, Effect effect,
                                                      EffectResult effectResult, List<ActionSource> actionSources) {
         List<Action> result = new LinkedList<>();
@@ -504,5 +514,15 @@ public class CardBlueprint {
 
     public void setKeywords(Collection<Keyword> keywords) {
         _keywords.addAll(keywords);
+    }
+
+    public void setGameType(GameType gameType) {
+        _gameType = gameType;
+    }
+
+    public GameType getGameType() { return _gameType; }
+
+    public ShipClass getShipClass() {
+        return _shipClass;
     }
 }

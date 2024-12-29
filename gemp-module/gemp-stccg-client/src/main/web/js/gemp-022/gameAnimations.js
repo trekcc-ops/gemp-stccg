@@ -211,6 +211,7 @@ export default class GameAnimations {
         var cardId = element.getAttribute("cardId");
         var zone = element.getAttribute("zone");
         var imageUrl = element.getAttribute("imageUrl");
+        let region = element.getAttribute("region");
         var quadrant = element.getAttribute("quadrant");
         var locationIndex = element.getAttribute("locationIndex");
 
@@ -224,9 +225,9 @@ export default class GameAnimations {
 
                 if (zone == "SPACELINE") {
                     if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
-                        that.game.addSharedMission(locationIndex, quadrant);
+                        that.game.addSharedMission(locationIndex, quadrant, region);
                     } else {
-                        that.game.addLocationDiv(locationIndex, quadrant);
+                        that.game.addLocationDiv(locationIndex, quadrant, region);
                     }
                 }
 
@@ -665,19 +666,26 @@ export default class GameAnimations {
         $("#main").queue(
             function (next) {
                 var decisionType = decision.getAttribute("decisionType");
-                if (decisionType == "INTEGER") {
+                if (decisionType === "INTEGER") {
                     that.game.integerDecision(decision);
-                } else if (decisionType == "MULTIPLE_CHOICE") {
+                } else if (decisionType === "MULTIPLE_CHOICE") {
                     that.game.multipleChoiceDecision(decision);
-                } else if (decisionType == "ARBITRARY_CARDS") {
+                } else if (decisionType === "ARBITRARY_CARDS") {
                     that.game.arbitraryCardsDecision(decision);
-                } else if (decisionType == "ACTION_CHOICE") {
+                } else if (decisionType === "ACTION_CHOICE") {
                     that.game.actionChoiceDecision(decision);
-                } else if (decisionType == "CARD_ACTION_CHOICE") {
+                } else if (decisionType === "CARD_ACTION_CHOICE") {
                     that.game.cardActionChoiceDecision(decision);
-                } else if (decisionType == "CARD_SELECTION") {
+                } else if (decisionType === "CARD_SELECTION") {
                     that.game.cardSelectionDecision(decision);
+                } else if (decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
+                    that.game.cardSelectionFromCombinations(decision);
                 }
+                else {
+                    console.error(`Unknown decisionType: ${decisionType}`);
+                    next(); // bail out
+                }
+                
 
                 if (!animate)
                     that.game.layoutUI(false);

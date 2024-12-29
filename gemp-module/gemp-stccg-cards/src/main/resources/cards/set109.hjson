@@ -10,6 +10,7 @@
             mission-type: planet
             property-logo: first-contact-logo
             java-blueprint: true
+            icons: first-contact-icon
             lore: "Sometimes obtaining information from locals requires consuming beverages of dubious nutritional value. It's best not to criticize such \"counseling\" techniques."
             image-url: https://www.trekcc.org/1e/cardimages/fc/blended.gif
         }
@@ -20,8 +21,18 @@
             mission-type: space
             property-logo: first-contact-logo
             java-blueprint: true
+            icons: first-contact-icon
             lore: Maglocks such as those securing the <i>U.S.S. Enterprise-E</i> deflector dish require triple-input authorization. The need for coordinated effort prevents accidental activation.
             image-url: https://www.trekcc.org/1e/cardimages/fc/maglock.gif
+        }
+        {
+            blueprintId: 109_063
+            title: Assign Mission Specialists
+            type: objective
+            uniqueness: unique
+            property-logo: first-contact-logo
+            java-blueprint: true
+            image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
         }
         {
             blueprintId: 109_095

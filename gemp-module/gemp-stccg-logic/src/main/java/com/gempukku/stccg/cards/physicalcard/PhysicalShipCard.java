@@ -48,7 +48,11 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                         actions.add(new UndockAction(player, this));
                     if (!isDocked())
                         actions.add(new DockAction(player, this));
-                    actions.add(new FlyShipAction(player, this));
+                    try {
+                        actions.add(new FlyShipAction(player, this));
+                    } catch(InvalidGameLogicException exp) {
+                        player.getGame().sendErrorMessage(exp);
+                    }
                 }
             }
         }
@@ -59,7 +63,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     public boolean isDocked() { return _docked; }
 
     @Override
-    public void reportToFacility(FacilityCard facility) {
+    public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
         setLocation(facility.getLocation()); // TODO - What happens if the facility doesn't allow docking?
         _game.getGameState().attachCard(this, facility);
         _docked = true;

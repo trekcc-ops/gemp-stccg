@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
@@ -17,7 +18,7 @@ import java.util.*;
 
 public class ST1EGameStateDeserializer {
 
-    public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException {
+    public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException, InvalidGameLogicException {
 
         ST1EGameState gameState = new ST1EGameState(game);
         gameState.setCurrentPhase(Phase.valueOf(node.get("currentPhase").textValue()));
