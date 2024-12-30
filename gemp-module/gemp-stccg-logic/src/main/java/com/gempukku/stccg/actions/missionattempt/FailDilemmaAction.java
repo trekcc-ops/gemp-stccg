@@ -37,11 +37,6 @@ public class FailDilemmaAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return _dilemma;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

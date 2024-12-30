@@ -26,7 +26,6 @@ public interface Action {
     }
 
     ActionType getActionType();
-    PhysicalCard getPerformingCard();
     String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException;
     void setVirtualCardAction(boolean virtualCardAction);
     boolean isVirtualCardAction();

@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
@@ -46,9 +45,9 @@ public class Blueprint155_026 extends CardBlueprint {
             getItDoneAction.setCardActionPrefix("1");
 
             Filter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
-            SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(thisCard, player,
+            SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(player,
                     "Select cards to place beneath draw deck", selectableFilter, 2, 2);
-            Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(player, selectCardsToPlaceAction, thisCard);
+            Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(player, selectCardsToPlaceAction);
             getItDoneAction.appendCost(costAction);
 
             TopLevelSelectableAction choice1 = choice1(thisCard, player);

@@ -65,7 +65,7 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
         return result;
     }
 
-    protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
+    protected TopLevelSelectableAction getSelectedAction(String result) throws DecisionResultInvalidException {
         if (result.isEmpty())
             return null;
         try {

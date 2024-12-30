@@ -28,10 +28,6 @@ public class ScorePointsAction extends ActionyAction {
     public String getActionSelectionText(DefaultGame cardGame) {
         return _performingPlayerId + " scored " + _points + " from " + _performingCard.getCardLink();
     }
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

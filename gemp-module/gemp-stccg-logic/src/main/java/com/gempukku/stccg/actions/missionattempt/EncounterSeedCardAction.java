@@ -26,12 +26,6 @@ public class EncounterSeedCardAction extends ActionyAction {
     }
 
 
-
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _encounteredCard;
-    }
-
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;

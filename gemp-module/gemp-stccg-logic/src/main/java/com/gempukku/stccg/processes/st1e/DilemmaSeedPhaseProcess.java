@@ -69,7 +69,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             seedActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Action action = getSelectedAction(result);
+                            TopLevelSelectableAction action = getSelectedAction(result);
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {

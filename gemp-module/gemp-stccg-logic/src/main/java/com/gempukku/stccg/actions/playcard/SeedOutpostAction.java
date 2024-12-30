@@ -56,7 +56,7 @@ public class SeedOutpostAction extends PlayCardAction {
         if (!_placementWasChosen) {
 
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardsAction(_cardEnteringPlay, performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardsAction(performingPlayer,
                         "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
                         Filters.in(availableMissions), 1, 1);
                 return _selectDestinationAction;

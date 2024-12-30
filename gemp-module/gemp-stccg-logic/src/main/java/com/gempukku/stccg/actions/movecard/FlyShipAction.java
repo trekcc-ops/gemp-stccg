@@ -45,7 +45,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             }
         }
         _selectAction =
-                new SelectVisibleCardAction(this, player, "Choose destination", _destinationOptions);
+                new SelectVisibleCardAction(player, "Choose destination", _destinationOptions);
     }
 
     @Override

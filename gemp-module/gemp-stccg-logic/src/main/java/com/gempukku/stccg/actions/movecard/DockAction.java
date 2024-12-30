@@ -36,7 +36,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
                     }
                 })
                 .toList();
-        _selectAction = new SelectVisibleCardAction(this, player,
+        _selectAction = new SelectVisibleCardAction(player,
                 "Choose facility to dock at", _dockingTargetOptions);
     }
 

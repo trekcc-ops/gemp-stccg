@@ -12,7 +12,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     private final AttemptingUnit _attemptingUnit;
-    private final PhysicalCard _dilemma;
     private final int _failActionId;
     private final int _succeedActionId;
     private enum Progress { conditionsChecked }
@@ -23,7 +22,6 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                                           EncounterSeedCardAction encounterAction) {
         super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
-        _dilemma = dilemma;
         Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, failDilemmaAction);
         _failActionId = failAction.getActionId();
         Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma,
@@ -36,7 +34,6 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                                           AttemptingUnit attemptingUnit, EncounterSeedCardAction encounterAction) {
         super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
-        _dilemma = dilemma;
         Action failAction = new FailDilemmaAction(attemptingUnit, dilemma);
         _failActionId = failAction.getActionId();
         Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma,
@@ -45,11 +42,6 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         _conditions = conditions;
     }
 
-
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _dilemma;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

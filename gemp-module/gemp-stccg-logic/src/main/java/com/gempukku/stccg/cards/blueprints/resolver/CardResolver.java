@@ -2,6 +2,8 @@ package com.gempukku.stccg.cards.blueprints.resolver;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.AppendableAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
@@ -153,7 +155,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(Action parentAction, ActionContext context) {
+            protected List<Action> createActions(AppendableAction parentAction, ActionContext context) {
                 DefaultGame cardGame = context.getGame();
                 Action action = switch (selectionType) {
                     case "self", "memory" -> {
@@ -231,7 +233,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(Action action, ActionContext context) {
+            protected List<Action> createActions(AppendableAction action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
                 Action selectionAction = effectSource.createAction(cards, action, context,
@@ -264,7 +266,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(Action action, ActionContext context) {
+            protected List<Action> createActions(AppendableAction action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Action selectionAction = choiceAction.apply(context);
                 result.add(selectionAction);

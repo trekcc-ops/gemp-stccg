@@ -121,7 +121,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
         if (!_destinationChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(thisAction, performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(performingPlayer,
                         "Select outpost to download cards to", _destinationOptions);
                 return _selectDestinationAction;
             } else if (_selectDestinationAction.wasCarriedOut()) {

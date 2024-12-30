@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.AppendableAction;
 import com.gempukku.stccg.actions.modifiers.AddUntilModifierAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -23,7 +24,7 @@ public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected List<Action> createActions(Action parentAction, ActionContext context) {
+    protected List<Action> createActions(AppendableAction parentAction, ActionContext context) {
         final Modifier modifier = _modifierSource.getModifier(context);
         Action action = new AddUntilModifierAction(context.getSource(), modifier, _until);
         return List.of(action);

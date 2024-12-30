@@ -21,7 +21,6 @@ import java.util.LinkedList;
 public class SelectVisibleCardsAction extends ActionyAction implements SelectCardsAction {
     private Collection<? extends PhysicalCard> _selectableCards;
     private Collection<PhysicalCard> _selectedCards = new LinkedList<>();
-    private final PhysicalCard _actionSource;
     private final int _minimum;
     private boolean _selectableCardsIdentified = false;
     private Filter _selectionFilter;
@@ -29,20 +28,18 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     private ActionContext _actionContext;
     private String _memory;
 
-    public SelectVisibleCardsAction(Action action, Player selectingPlayer, String choiceText,
+    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsIdentified = true;
         _selectableCards = new LinkedList<>(cards);
-        _actionSource = action.getPerformingCard();
         _minimum = minimum;
     }
 
-    public SelectVisibleCardsAction(PhysicalCard performingCard, Player selectingPlayer, String choiceText,
+    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText,
                                     Filter selectionFilter, int minimum, int maximum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectionFilter = selectionFilter;
-        _actionSource = performingCard;
         _minimum = minimum;
         _maximum = maximum;
     }
@@ -52,7 +49,6 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
                                     String memory) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectionFilter = selectionFilter;
-        _actionSource = performingCard;
         _minimum = minimum;
         _maximum = maximum;
         _actionContext = context;
@@ -110,8 +106,6 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     public boolean wasCarriedOut() {
         return _wasCarriedOut;
     }
-
-    public PhysicalCard getPerformingCard() { return _actionSource; }
 
     public Collection<PhysicalCard> getSelectedCards() { return _selectedCards; }
 

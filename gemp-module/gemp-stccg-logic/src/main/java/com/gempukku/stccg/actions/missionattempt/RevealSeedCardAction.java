@@ -25,11 +25,6 @@ public class RevealSeedCardAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return _revealedCard;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

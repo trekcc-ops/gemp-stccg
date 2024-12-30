@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.AppendableAction;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -29,7 +30,7 @@ public class DrawActionBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Action> createActions(Action action, ActionContext context) {
+            protected List<Action> createActions(AppendableAction action, ActionContext context) {
                 final String targetPlayerId = targetPlayerSource.getPlayerId(context);
                 DefaultGame cardGame = context.getGame();
                 Player targetPlayer = cardGame.getPlayer(targetPlayerId);

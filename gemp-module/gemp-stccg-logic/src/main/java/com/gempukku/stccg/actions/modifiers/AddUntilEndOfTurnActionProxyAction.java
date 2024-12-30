@@ -18,11 +18,6 @@ public class AddUntilEndOfTurnActionProxyAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return null;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return false;
     }

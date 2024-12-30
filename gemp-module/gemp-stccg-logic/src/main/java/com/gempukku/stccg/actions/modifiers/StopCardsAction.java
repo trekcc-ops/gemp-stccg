@@ -23,18 +23,13 @@ public class StopCardsAction extends ActionyAction {
         super(performingPlayer, "Stop cards", ActionType.STOP_CARDS);
         _personnelChosen = true;
         _cardsToStop.addAll(cardsToStop);
-        _selectionAction = new SelectVisibleCardsAction(this, performingPlayer, "", cardsToStop,
+        _selectionAction = new SelectVisibleCardsAction(performingPlayer, "", cardsToStop,
                 cardsToStop.size());
     }
 
     public StopCardsAction(Player performingPlayer, SelectCardsAction selectionAction) {
         super(performingPlayer, "Stop cards", ActionType.STOP_CARDS);
         _selectionAction = selectionAction;
-    }
-
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return null;
     }
 
     @Override

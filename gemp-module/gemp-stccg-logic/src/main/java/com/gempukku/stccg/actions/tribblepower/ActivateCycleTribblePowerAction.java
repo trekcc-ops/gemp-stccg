@@ -15,10 +15,10 @@ public class ActivateCycleTribblePowerAction extends ActivateTribblePowerAction 
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(_performingCard, performingPlayer,
+        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 1, 1);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction, _performingCard));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction));
         appendEffect(new DrawCardAction(_performingCard, performingPlayer));
     }
 

@@ -28,9 +28,4 @@ public class MakeDecisionAction extends ActionyAction {
         return getNextAction();
     }
 
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
-    }
-
 }

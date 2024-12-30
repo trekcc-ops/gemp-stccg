@@ -21,11 +21,6 @@ public class UseOncePerTurnAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return _card;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix).getUsedLimit() < _limit;
     }

@@ -100,7 +100,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
         if (!_destinationChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardsAction(_cardEnteringPlay, performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardsAction(performingPlayer,
                         "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                         Filters.inCards(getDestinationOptions(cardGame)), 1, 1);
                 return _selectDestinationAction;

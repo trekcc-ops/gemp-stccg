@@ -24,11 +24,6 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return _cardToRemove;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

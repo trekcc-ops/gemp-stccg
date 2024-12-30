@@ -20,11 +20,6 @@ public class UseNormalCardPlayAction extends ActionyAction {
     public String getActionSelectionText(DefaultGame cardGame) { return "Use normal card play"; }
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
-    }
-
-    @Override
     public boolean wasCarriedOut() { return _wasCarriedOut; }
 
     @Override

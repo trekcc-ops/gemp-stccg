@@ -30,11 +30,6 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return _causingCard;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

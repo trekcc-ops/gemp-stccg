@@ -20,10 +20,10 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     private final boolean _allPlayersMustBeAble;
     private final boolean _forced;
 
-    public AllPlayersDiscardFromHandAction(DefaultGame game, Action action, boolean allPlayersMustBeAble,
-                                           boolean forced) {
+    public AllPlayersDiscardFromHandAction(DefaultGame game, Action action, PhysicalCard performingCard,
+                                           boolean allPlayersMustBeAble, boolean forced) {
         super(game.getPlayer(action.getPerformingPlayerId()), ActionType.DISCARD);
-        _performingCard = action.getPerformingCard();
+        _performingCard = performingCard;
         _allPlayersMustBeAble = allPlayersMustBeAble;
         _forced = forced;
     }
@@ -57,11 +57,6 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
 
         }
         return getNextAction();
-    }
-
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
     }
 
     private boolean canDiscard(DefaultGame cardGame, String playerId) {

@@ -16,12 +16,10 @@ import java.util.Map;
 public class SelectSkillAction extends ActionyAction {
     private final Map<String, SkillName> _skillOptions = new HashMap<>();
     private SkillName _selectedSkill;
-    private final PhysicalCard _performingCard;
-    public SelectSkillAction(Player player, PhysicalCard performingCard, List<SkillName> skillOptions) {
+    public SelectSkillAction(Player player, List<SkillName> skillOptions) {
         super(player, ActionType.SELECT_SKILL);
         for (SkillName skill : skillOptions)
             _skillOptions.put(skill.get_humanReadable(), skill);
-        _performingCard = performingCard;
     }
 
     @Override
@@ -40,11 +38,6 @@ public class SelectSkillAction extends ActionyAction {
                     }
                 });
         return getNextAction();
-    }
-
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
     }
 
 }

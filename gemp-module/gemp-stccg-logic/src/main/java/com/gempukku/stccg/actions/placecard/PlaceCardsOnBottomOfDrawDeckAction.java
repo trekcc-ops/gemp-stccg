@@ -19,29 +19,19 @@ import java.util.List;
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
     private SelectCardsAction _selectionAction;
-    private final PhysicalCard _causingCard;
     private Collection<PhysicalCard> _cardsToPlace;
     private enum Progress { cardsSelected }
 
 
-    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectCardsAction selectionAction,
-                                              PhysicalCard causingCard) {
+    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectCardsAction selectionAction) {
         super(performingPlayer, ActionType.PLACE_CARD, Progress.values());
         _selectionAction = selectionAction;
-        _causingCard = causingCard;
     }
 
     public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, Collection<PhysicalCard> cardsToPlace,
                                               PhysicalCard causingCard) {
         super(performingPlayer, ActionType.PLACE_CARD);
-        _causingCard = causingCard;
         _cardsToPlace = cardsToPlace;
-    }
-
-
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _causingCard;
     }
 
 

@@ -80,7 +80,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
         if (!_fromCardChosen) {
             if (_selectOriginAction == null) {
-                _selectOriginAction = new SelectVisibleCardAction(this, _performingPlayer,
+                _selectOriginAction = new SelectVisibleCardAction(_performingPlayer,
                         "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
                 appendTargeting(_selectOriginAction);
                 return getNextCost();
@@ -103,7 +103,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
         if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(this, _performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(_performingPlayer,
                         "Choose card to " + actionVerb() + " to ", _destinationOptions);
                 appendTargeting(_selectDestinationAction);
                 return getNextCost();
@@ -119,7 +119,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                 Collection<PhysicalCard> movableCards =
                         Filters.filter(_origin.getAttachedCards(_origin.getGame()),
                                 Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
-                _selectCardsToMoveAction = new SelectVisibleCardsAction(this, _performingPlayer,
+                _selectCardsToMoveAction = new SelectVisibleCardsAction(_performingPlayer,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
                         movableCards, 1);
                 appendTargeting(_selectCardsToMoveAction);

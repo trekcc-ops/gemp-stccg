@@ -34,10 +34,10 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
             }
         }
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        SelectVisibleCardsAction selectionAction = new SelectVisibleCardsAction(_performingCard, performingPlayer,
+        SelectVisibleCardsAction selectionAction = new SelectVisibleCardsAction(performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 1, 1);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectionAction, _performingCard));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectionAction));
     }
 
     @Override

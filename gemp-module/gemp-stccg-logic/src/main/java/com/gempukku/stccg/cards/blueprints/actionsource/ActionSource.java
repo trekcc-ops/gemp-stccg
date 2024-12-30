@@ -14,7 +14,7 @@ public interface ActionSource {
     void setText(String text);
     void addRequirement(Requirement requirement);
 
-    void appendActionToContext(Action action, ActionContext actionContext);
+    void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext);
     Action createAction(PhysicalCard card);
 
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card);

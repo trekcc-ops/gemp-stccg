@@ -23,11 +23,6 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return cardGame.getGameState().getDrawDeck(_performingPlayerId).size() >= _count;
     }
-    
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
-    }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {

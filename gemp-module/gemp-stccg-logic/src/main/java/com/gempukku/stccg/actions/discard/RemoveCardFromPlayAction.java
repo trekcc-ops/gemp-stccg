@@ -34,11 +34,6 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
 
     @Override
-    public PhysicalCard getPerformingCard() {
-        return _cardCausingRemoval;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

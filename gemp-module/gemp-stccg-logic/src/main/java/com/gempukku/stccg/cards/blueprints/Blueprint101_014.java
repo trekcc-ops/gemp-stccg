@@ -34,7 +34,7 @@ public class Blueprint101_014 extends CardBlueprint {
         Collection<PersonnelCard> highestPersonnel =
                 Filters.highestTotalAttributes(attemptingUnit.getAttemptingPersonnel());
         SelectVisibleCardAction selectAction =
-                new SelectVisibleCardAction(action, game.getOpponent(attemptingUnit.getPlayer()),
+                new SelectVisibleCardAction(game.getOpponent(attemptingUnit.getPlayer()),
                         "Select a personnel to kill", highestPersonnel);
         result.add(selectAction);
         Action killAction = new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction);

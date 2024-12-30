@@ -47,11 +47,6 @@ public class SelectAffiliationAction extends ActionyAction {
         return getNextAction();
     }
 
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
-    }
-
 
     public Affiliation getSelectedAffiliation() {
         return _selectedAffiliation;

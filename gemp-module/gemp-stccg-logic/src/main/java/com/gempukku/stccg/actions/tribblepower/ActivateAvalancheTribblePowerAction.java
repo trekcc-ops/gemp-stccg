@@ -16,7 +16,7 @@ public class ActivateAvalancheTribblePowerAction extends ActivateTribblePowerAct
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        appendEffect(new AllPlayersDiscardFromHandAction(cardGame, this, false, true));
+        appendEffect(new AllPlayersDiscardFromHandAction(cardGame, this, actionContext.getSource(), false, true));
         SelectVisibleCardAction selectAction =
                 new SelectVisibleCardAction(_performingCard, performingPlayer, "select",
                         Filters.yourHand(performingPlayer));

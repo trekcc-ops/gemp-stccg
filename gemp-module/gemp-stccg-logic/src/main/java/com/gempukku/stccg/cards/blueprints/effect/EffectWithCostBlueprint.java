@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.AppendableAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -24,7 +25,7 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
         _requirements = RequirementFactory.getRequirements(node);
     }
     @Override
-    protected List<Action> createActions(Action action, ActionContext context) {
+    protected List<Action> createActions(AppendableAction action, ActionContext context) {
 
         List<Action> result = new LinkedList<>();
         if(requirementsNotMet(context)) {
