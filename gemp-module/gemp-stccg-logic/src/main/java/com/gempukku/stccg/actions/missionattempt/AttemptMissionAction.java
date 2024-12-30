@@ -115,7 +115,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                     }
                     if (!_encounteredCards.contains(firstSeedCard)) {
                         _encounteredCards.add(firstSeedCard);
-                        return new EncounterSeedCardAction(this, performingPlayer, firstSeedCard,
+                        return new EncounterSeedCardAction(performingPlayer, firstSeedCard,
                                 _missionLocation, _attemptingUnit);
                     }
                 }

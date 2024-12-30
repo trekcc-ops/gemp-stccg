@@ -32,7 +32,7 @@ public class Blueprint155_010 extends CardBlueprint {
             Replace dilemma under mission to be encountered again.
          */
         if (attemptingPersonnel.size() < 2) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         }
 
         /* Randomly select two personnel to be stopped. If any [Q] card in play when dilemma is encountered,

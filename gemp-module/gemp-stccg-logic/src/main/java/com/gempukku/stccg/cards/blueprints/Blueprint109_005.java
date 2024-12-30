@@ -39,7 +39,7 @@ public class Blueprint109_005 extends CardBlueprint {
         }
 
         if (!hasEmpathyOrDiplomacy && targetPersonnel.isEmpty()) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         } else {
             if (targetPersonnel.size() >= 2) {
                 PersonnelCard cardToContinue = TextUtils.getRandomItemFromList(targetPersonnel);

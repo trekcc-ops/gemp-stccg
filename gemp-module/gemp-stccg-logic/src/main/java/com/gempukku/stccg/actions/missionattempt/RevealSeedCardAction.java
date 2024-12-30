@@ -13,12 +13,12 @@ import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.PlayerCannotSolveMissionModifier;
 
 public class RevealSeedCardAction extends ActionyAction {
-    private boolean _misSeedResolved;
     private final PhysicalCard _revealedCard;
     private final MissionLocation _missionLocation;
+    private enum Progress { misSeedResolved }
 
     public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, MissionLocation mission) {
-        super(revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD);
+        super(revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCard = revealedCard;
         _missionLocation = mission;
     }
@@ -36,8 +36,8 @@ public class RevealSeedCardAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_misSeedResolved) {
-            _misSeedResolved = true;
+        if (!getProgress(Progress.misSeedResolved)) {
+            setProgress(Progress.misSeedResolved);
             if (_revealedCard.isMisSeed(cardGame, _missionLocation)) {
                 if (_performingPlayerId.equals(_revealedCard.getOwnerName())) {
                     // TODO - Player also cannot solve objectives targeting the mission

@@ -24,7 +24,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
-        Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, encounterAction, failDilemmaAction);
+        Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, failDilemmaAction);
         _failActionId = failAction.getActionId();
         Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma,
                 encounterAction.getLocation());
@@ -37,7 +37,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
-        Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, encounterAction);
+        Action failAction = new FailDilemmaAction(attemptingUnit, dilemma);
         _failActionId = failAction.getActionId();
         Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma,
                 encounterAction.getLocation());

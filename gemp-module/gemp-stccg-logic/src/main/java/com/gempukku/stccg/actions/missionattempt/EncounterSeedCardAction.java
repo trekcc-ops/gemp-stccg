@@ -15,17 +15,14 @@ public class EncounterSeedCardAction extends ActionyAction {
     private final PhysicalCard _encounteredCard;
     private final MissionLocation _location;
     private final AttemptingUnit _attemptingUnit;
-    private boolean _effectsAdded;
-    private final AttemptMissionAction _missionAttempt;
+    private enum Progress { effectsAdded }
 
-    public EncounterSeedCardAction(AttemptMissionAction missionAttempt, Player encounteringPlayer,
-                                   PhysicalCard encounteredCard, MissionLocation mission,
+    public EncounterSeedCardAction(Player encounteringPlayer, PhysicalCard encounteredCard, MissionLocation mission,
                                    AttemptingUnit attemptingUnit) throws InvalidGameLogicException {
-        super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD);
+        super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         _encounteredCard = encounteredCard;
         _location = mission;
         _attemptingUnit = attemptingUnit;
-        _missionAttempt = missionAttempt;
     }
 
 
@@ -42,17 +39,15 @@ public class EncounterSeedCardAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_effectsAdded) {
+        if (!getProgress(Progress.effectsAdded)) {
             List<Action> encounterActions = _encounteredCard.getEncounterActions(
                     cardGame, _attemptingUnit, this, _location);
             for (Action action : encounterActions)
                 appendEffect(action);
-            _effectsAdded = true;
+            setProgress(Progress.effectsAdded);
         }
         return getNextAction();
     }
-
-    public AttemptMissionAction getMissionAttempt() { return _missionAttempt; }
 
     public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _encounteredCard; }

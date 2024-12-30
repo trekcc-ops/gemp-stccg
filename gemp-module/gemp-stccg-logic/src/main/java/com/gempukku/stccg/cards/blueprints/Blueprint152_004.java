@@ -49,7 +49,7 @@ public class Blueprint152_004 extends CardBlueprint {
         if (fullCondition.canBeMetBy(attemptingUnit)) {
             result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
         } else {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         }
         return result;
     }

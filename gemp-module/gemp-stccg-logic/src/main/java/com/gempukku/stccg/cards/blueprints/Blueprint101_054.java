@@ -41,7 +41,7 @@ public class Blueprint101_054 extends CardBlueprint {
         }
 
         if (meetsConditions) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         } else {
             result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
         }
