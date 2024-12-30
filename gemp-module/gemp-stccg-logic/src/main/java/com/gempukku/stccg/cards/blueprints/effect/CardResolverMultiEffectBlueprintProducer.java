@@ -140,7 +140,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                                 case DISCARD, DISCARDFROMHAND ->
                                         new DiscardCardAction(context.getSource(), targetPlayer, cards);
                                 case DISCARDCARDSFROMDRAWDECK ->
-                                        new DiscardCardAction(parentAction.getPerformingCard(),
+                                        new DiscardCardAction(context.getSource(),
                                                 targetPlayer, Iterables.getOnlyElement(cards));
                                 case DOWNLOAD -> Iterables.getOnlyElement(cards).getPlayCardAction(true);
                                 case PUTCARDSFROMPLAYONBOTTOMOFDECK ->

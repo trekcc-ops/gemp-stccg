@@ -46,12 +46,12 @@ public final class PlayOutAllSubActionsIfActionNotCancelledAction extends System
         }
     }
 
-    private static boolean areAllActionsTheSame(List<? extends Action> actions) {
+    private static boolean areAllActionsTheSame(List<TopLevelSelectableAction> actions) {
         boolean result = true;
-        Action firstAction = actions.getFirst();
+        TopLevelSelectableAction firstAction = actions.getFirst();
         if (firstAction.getPerformingCard() == null)
                 result = false;
-        for (Action action : actions) {
+        for (TopLevelSelectableAction action : actions) {
             if (action.getPerformingCard() == null)
                 result = false;
             else if (action.getPerformingCard().getBlueprint() != firstAction.getPerformingCard().getBlueprint())
