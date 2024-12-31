@@ -72,7 +72,7 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     private TopLevelSelectableAction choice1(PhysicalCard thisCard, Player player) {
-        SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard, player,
+        SelectCardsAction targetAction = new SelectCardsFromDialogAction(player,
                 "Select a personnel",
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
                         CardType.PERSONNEL));

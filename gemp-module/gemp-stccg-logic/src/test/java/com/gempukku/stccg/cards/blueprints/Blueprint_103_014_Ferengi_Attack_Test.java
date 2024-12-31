@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -8,6 +9,8 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
+import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +26,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
     // Unit tests for card definition of Ferengi Attack
 
     @Test
-    public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException, CardNotFoundException {
         initializeQuickMissionAttempt("Excavation");
 
         ST1EPhysicalCard ferengiAttack =
@@ -38,12 +41,12 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = new PersonnelCard(_game, 902, _game.getPlayer(P1), _cardLibrary.get("101_205"));
-        PersonnelCard hobson = new PersonnelCard(_game, 903, _game.getPlayer(P1), _cardLibrary.get("101_202"));
-        PersonnelCard picard = new PersonnelCard(_game, 904, _game.getPlayer(P1), _cardLibrary.get("101_215"));
-        PersonnelCard data = new PersonnelCard(_game, 905, _game.getPlayer(P1), _cardLibrary.get("101_204"));
+        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard hobson = (PersonnelCard) _game.getGameState().addCardToGame("101_202", _cardLibrary, P1);
+        PersonnelCard picard = (PersonnelCard) _game.getGameState().addCardToGame("101_215", _cardLibrary, P1);
+        PersonnelCard data = (PersonnelCard) _game.getGameState().addCardToGame("101_204", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                new PhysicalShipCard(_game, 906, _game.getPlayer(P1), _cardLibrary.get("101_331"));
+                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
 
         troi.reportToFacility(_outpost);
         hobson.reportToFacility(_outpost);
@@ -74,6 +77,10 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         attemptMission(P1, troi.getAwayTeam(), _mission);
         assertNotNull(_userFeedback.getAwaitingDecision(P2));
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P2));
+
+        Filter inAwayTeamFilter = Filters.personnelInAttemptingUnit(troi.getAwayTeam());
+        assertTrue(inAwayTeamFilter.accepts(_game, hobson));
+
         selectCard(P2, hobson);
         assertEquals(Zone.DISCARD, hobson.getZone());
         assertTrue(_mission.getLocation().isCompleted());

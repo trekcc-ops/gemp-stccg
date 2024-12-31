@@ -11,6 +11,7 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -52,8 +53,8 @@ public class Blueprint155_009 extends CardBlueprint {
             if (eligiblePersonnelToStop.isEmpty()) {
                 result.add(new FailDilemmaAction(attemptingUnit, thisCard));
             } else {
-                SelectCardsAction selectAction = new SelectCardsFromDialogAction(thisCard, thisCard.getOwner(),
-                        "Select personnel to stop", eligiblePersonnelToStop
+                SelectCardsAction selectAction = new SelectCardsFromDialogAction(thisCard.getOwner(),
+                        "Select personnel to stop", Filters.in(eligiblePersonnelToStop)
                 );
                 result.add(selectAction);
                 result.add(new StopCardsAction(thisCard.getOwner(), selectAction));

@@ -36,17 +36,16 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         _minimum = minimum;
     }
 
-    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText,
-                                    Filter selectionFilter, int minimum, int maximum) {
+    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
+                                    int maximum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectionFilter = selectionFilter;
         _minimum = minimum;
         _maximum = maximum;
     }
 
-    public SelectVisibleCardsAction(PhysicalCard performingCard, Player selectingPlayer, String choiceText,
-                                    Filter selectionFilter, int minimum, int maximum, ActionContext context,
-                                    String memory) {
+    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
+                                    int maximum, ActionContext context, String memory) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectionFilter = selectionFilter;
         _minimum = minimum;
@@ -54,6 +53,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         _actionContext = context;
         _memory = memory;
     }
+
 
 
     public boolean requirementsAreMet(DefaultGame game) {

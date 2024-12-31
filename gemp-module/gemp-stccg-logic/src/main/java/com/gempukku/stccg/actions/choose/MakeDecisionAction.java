@@ -9,12 +9,10 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class MakeDecisionAction extends ActionyAction {
     private final AwaitingDecision _decision;
-    private final PhysicalCard _performingCard;
 
     public MakeDecisionAction(PhysicalCard performingCard, AwaitingDecision decision) {
         super(decision.getDecidingPlayer(performingCard.getGame()), decision.getText(), ActionType.MAKE_DECISION);
         _decision = decision;
-        _performingCard = performingCard;
     }
 
     @Override

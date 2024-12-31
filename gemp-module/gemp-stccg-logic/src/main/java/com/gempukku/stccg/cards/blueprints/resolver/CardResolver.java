@@ -94,7 +94,7 @@ public class CardResolver {
             String selectingPlayerId = choicePlayer.getPlayerId(actionContext);
             Player selectingPlayer = actionContext.getGame().getPlayer(selectingPlayerId);
 
-            return new SelectVisibleCardsAction(actionContext.getSource(), selectingPlayer,
+            return new SelectVisibleCardsAction(selectingPlayer,
                     actionContext.substituteText(choiceText), Filters.in(possibleCards),
                     countSource.getMinimum(actionContext), countSource.getMaximum(actionContext),
                     actionContext, memory);
@@ -112,13 +112,11 @@ public class CardResolver {
             String choicePlayerId = selectingPlayer.getPlayerId(actionContext);
             Player choicePlayer = actionContext.getGame().getPlayer(choicePlayerId);
             String targetPlayerId = targetPlayer.getPlayerId(actionContext);
-            PhysicalCard performingCard = actionContext.getSource();
             if (targetPlayerId.equals(choicePlayerId) && zone == Zone.HAND) {
-                return new SelectVisibleCardsAction(performingCard, choicePlayer,
-                        actionContext.substituteText(choiceText), Filters.in(possibleCards), min, max, actionContext,
-                        memory);
+                return new SelectVisibleCardsAction(choicePlayer, actionContext.substituteText(choiceText),
+                        Filters.in(possibleCards), min, max, actionContext, memory);
             } else {
-                return new SelectCardsFromDialogAction(actionContext.getSource(), choicePlayer,
+                return new SelectCardsFromDialogAction(choicePlayer,
                         actionContext.substituteText(choiceText),
                         Filters.and(Filters.in(cardSource.apply(actionContext)), Filters.in(possibleCards)),
                         min, max, actionContext, memory);

@@ -21,43 +21,28 @@ import java.util.LinkedList;
 
 public class SelectCardsFromDialogAction extends ActionyAction implements SelectCardsAction {
     private Collection<? extends PhysicalCard> _selectableCards;
-    private final PhysicalCard _actionSource;
-    private Filter _cardFilter;
+    private final Filter _cardFilter;
     private final int _minimum;
     private final int _maximum;
     private Collection<PhysicalCard> _selectedCards;
     private ActionContext _actionContext;
     private String _memory;
 
-    public SelectCardsFromDialogAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
-                                       Filter cardFilter) {
+    public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, Filter cardFilter) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _cardFilter = cardFilter;
-        _actionSource = cardSource;
         _minimum = 1;
         _maximum = 1;
     }
 
-    public SelectCardsFromDialogAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
-                                       Filter cardFilter, int minimum, int maximum,
-                                       ActionContext context, String memory) {
+    public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, Filter cardFilter, int minimum,
+                                       int maximum, ActionContext context, String memory) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _cardFilter = cardFilter;
-        _actionSource = cardSource;
         _minimum = minimum;
         _maximum = maximum;
         _actionContext = context;
         _memory = memory;
-    }
-
-
-    public SelectCardsFromDialogAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
-                                       Collection<? extends PhysicalCard> cards) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCards = cards;
-        _actionSource = cardSource;
-        _minimum = 1;
-        _maximum = 1;
     }
 
 
@@ -106,8 +91,6 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     public boolean wasCarriedOut() {
         return _wasCarriedOut;
     }
-
-    public PhysicalCard getPerformingCard() { return _actionSource; }
 
     @Override
     public Collection<PhysicalCard> getSelectedCards() {

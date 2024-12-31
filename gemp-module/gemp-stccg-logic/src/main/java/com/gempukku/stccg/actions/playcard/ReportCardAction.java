@@ -136,7 +136,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             if (_affiliationOptions.size() > 1) {
                 if (_selectAffiliationAction == null) {
                     _selectAffiliationAction =
-                            new SelectAffiliationAction(performingPlayer, _cardEnteringPlay, _affiliationOptions);
+                            new SelectAffiliationAction(performingPlayer, _affiliationOptions);
                     return _selectAffiliationAction;
                 } else if (_selectAffiliationAction.wasCarriedOut()) {
                     _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();

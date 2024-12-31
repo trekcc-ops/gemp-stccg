@@ -22,22 +22,17 @@ import java.util.LinkedList;
 public class SelectRandomCardAction extends ActionyAction implements SelectCardAction {
 
     private Collection<? extends PhysicalCard> _selectableCards;
-    private final PhysicalCard _actionSource;
     private Filter _cardFilter;
     private PhysicalCard _selectedCard;
 
-    public SelectRandomCardAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
-                                   Filter cardFilter) {
+    public SelectRandomCardAction(Player selectingPlayer, String choiceText, Filter cardFilter) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _cardFilter = cardFilter;
-        _actionSource = cardSource;
     }
 
-    public SelectRandomCardAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
-                                   Collection<? extends PhysicalCard> cards) {
+    public SelectRandomCardAction(Player selectingPlayer, String choiceText, Collection<? extends PhysicalCard> cards) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCards = cards;
-        _actionSource = cardSource;
     }
 
     public boolean requirementsAreMet(DefaultGame game) {
@@ -70,8 +65,6 @@ public class SelectRandomCardAction extends ActionyAction implements SelectCardA
     public boolean wasCarriedOut() {
         return _selectedCard != null;
     }
-
-    public PhysicalCard getPerformingCard() { return _actionSource; }
 
     public PhysicalCard getSelectedCard() {
         return _selectedCard;

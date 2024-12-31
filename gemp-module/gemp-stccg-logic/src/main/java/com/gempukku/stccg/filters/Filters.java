@@ -582,7 +582,14 @@ public class Filters {
     }
 
     public static Filter personnelInAttemptingUnit(AttemptingUnit attemptingUnit) {
-        return (game, physicalCard) -> attemptingUnit.getAttemptingPersonnel().contains(physicalCard);
+        return (game, physicalCard) -> {
+            Collection<PersonnelCard> personnel = attemptingUnit.getAttemptingPersonnel();
+            if (physicalCard.getTitle().equals("Christopher Hobson")) {
+                int y = 5;
+                int x = y + 3;
+            }
+            return physicalCard instanceof PersonnelCard personnelCard && personnel.contains(personnelCard);
+        };
     }
 
 

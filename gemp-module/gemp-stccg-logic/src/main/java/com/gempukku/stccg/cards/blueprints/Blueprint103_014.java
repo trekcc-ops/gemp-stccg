@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -42,9 +43,9 @@ public class Blueprint103_014 extends CardBlueprint {
         if ((totalCunning + totalStrength <= 68) && !condition.canBeMetBy(attemptingUnit)) {
             String opponentId = game.getOpponent(attemptingUnit.getPlayer().getPlayerId());
             SelectCardsAction selectAction =
-                    new SelectCardsFromDialogAction(thisCard, game.getPlayer(opponentId),
+                    new SelectCardsFromDialogAction(game.getPlayer(opponentId),
                             "Select a personnel to kill",
-                    attemptingUnit.getAttemptingPersonnel());
+                            Filters.personnelInAttemptingUnit(attemptingUnit));
             result.add(selectAction);
             result.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction));
         }

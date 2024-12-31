@@ -4,15 +4,16 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.Player;
 
 public abstract class IntegerAwaitingDecision extends AbstractAwaitingDecision {
     private final int _min;
     private final int _max;
 
-    public IntegerAwaitingDecision(ActionContext context, String choiceText, ValueSource valueSource) {
-        super(context.getPerformingPlayer(), context.substituteText(choiceText), AwaitingDecisionType.INTEGER);
-        _min = valueSource.getMinimum(context);
-        _max = valueSource.getMaximum(context);
+    public IntegerAwaitingDecision(Player performingPlayer, String choiceText, int min, int max) {
+        super(performingPlayer, choiceText, AwaitingDecisionType.INTEGER);
+        _min = min;
+        _max = max;
         setParam("min", _min);
         setParam("max", _max);
     }

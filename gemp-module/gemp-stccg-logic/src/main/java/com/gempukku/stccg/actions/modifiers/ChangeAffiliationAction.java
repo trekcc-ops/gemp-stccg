@@ -64,7 +64,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
         if (!_affiliationWasChosen) {
             if (_affiliationOptions.size() > 1) {
                 if (_selectAffiliationAction == null) {
-                    _selectAffiliationAction = new SelectAffiliationAction(player, _card, _affiliationOptions);
+                    _selectAffiliationAction = new SelectAffiliationAction(player, _affiliationOptions);
                     return _selectAffiliationAction;
                 } else if (_selectAffiliationAction.wasCarriedOut()) {
                     _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();

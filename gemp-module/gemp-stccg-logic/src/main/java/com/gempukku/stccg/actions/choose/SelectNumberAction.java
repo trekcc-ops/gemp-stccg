@@ -8,7 +8,8 @@ import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 public class SelectNumberAction extends MakeDecisionAction {
 
     public SelectNumberAction(ActionContext context, String choiceText, ValueSource valueSource, String memoryId) {
-        super(context.getSource(), new IntegerAwaitingDecision(context, choiceText, valueSource) {
+        super(context.getSource(), new IntegerAwaitingDecision(context.getPerformingPlayer(),
+                context.substituteText(choiceText), valueSource.getMinimum(context), valueSource.getMaximum(context)) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 context.setValueToMemory(memoryId, String.valueOf(getValidatedResult(result)));

@@ -13,13 +13,10 @@ import java.util.*;
 public class SelectAffiliationAction extends ActionyAction {
     private final Collection<Affiliation> _affiliationOptions;
     private Affiliation _selectedAffiliation;
-    private final PhysicalCard _performingCard;
 
-    public SelectAffiliationAction(Player player, PhysicalCard performingCard,
-                                   Collection<Affiliation> affiliationOptions) {
+    public SelectAffiliationAction(Player player, Collection<Affiliation> affiliationOptions) {
         super(player, ActionType.SELECT_AFFILIATION);
         _affiliationOptions = affiliationOptions;
-        _performingCard = performingCard;
     }
 
 

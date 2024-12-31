@@ -38,7 +38,7 @@ public class Blueprint152_003 extends CardBlueprint {
         }
 
         SelectCardAction randomSelection =
-                new SelectRandomCardAction(thisCard, thisCard.getOwner(), "Choose a personnel to be stopped",
+                new SelectRandomCardAction(thisCard.getOwner(), "Choose a personnel to be stopped",
                         uniquePersonnel);
         Action stopAction = new StopCardsAction(thisCard.getOwner(), randomSelection);
         TopLevelSelectableAction action1 =
