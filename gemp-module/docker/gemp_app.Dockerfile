@@ -14,7 +14,6 @@ COPY gemp-module/gemp-stccg-server/pom.xml ./gemp-stccg-server/pom.xml
 COPY gemp-module/gemp-stccg-logic/pom.xml ./gemp-stccg-logic/pom.xml
 COPY gemp-module/gemp-stccg-common/pom.xml ./gemp-stccg-common/pom.xml
 COPY gemp-module/gemp-stccg-cards/pom.xml ./gemp-stccg-cards/pom.xml
-COPY gemp-module/gemp-stccg-client/pom.xml ./gemp-stccg-client/pom.xml
 
 RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline
 
