@@ -145,7 +145,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
         _attemptingUnit = attemptingUnit;
-        _progressIndicators.put(Progress.choseAttemptingUnit.name(), true);
+        setProgress(Progress.choseAttemptingUnit);
     }
 
     public boolean isFailed() { return getProgress(Progress.failedMissionAttempt); }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
