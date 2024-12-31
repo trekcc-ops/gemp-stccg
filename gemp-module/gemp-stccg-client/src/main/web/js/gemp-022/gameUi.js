@@ -1170,29 +1170,22 @@ export default class GameTableUI {
 
         var that = this;
         this.smallDialog
-            .html(text + "<br /><input id='integerDecision' type='text' value='0'>");
+            .html(text + `<br /><input id='integerDecision' value='${val}'>`);
 
         if (!this.replayMode) {
             this.smallDialog.dialog("option", "buttons",
                 {
                     "OK": function () {
+                        let retval = document.getElementById("integerDecision").value
                         $(this).dialog("close");
-                        that.decisionFunction(id, $("#integerDecision").val());
+                        that.decisionFunction(id, retval);
                     }
                 });
         }
 
-        $("#integerDecision").SpinnerControl({
-            type: 'range',
-            typedata: {
-                min: parseInt(min),
-                max: parseInt(max),
-                interval: 1,
-                decimalplaces: 0
-            },
-            defaultVal: val,
-            width: '50px',
-            backColor: "#000000"
+        $("#integerDecision").spinner({
+            min: parseInt(min),
+            max: parseInt(max)
         });
 
         this.smallDialog.dialog("open");
