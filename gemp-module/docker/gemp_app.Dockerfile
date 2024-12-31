@@ -30,4 +30,4 @@ FROM amazoncorretto:21-alpine-jdk AS runtime
 
 RUN mkdir -p /src/gemp-module/gemp-stccg-client/target/
 COPY --from=build /gemp-module/gemp-stccg-server/src/main/resources/log4j2.xml /src/gemp-module/gemp-stccg-client/target/log4j2.xml
-COPY --from=build /gemp-module/gemp-stccg-client/target/web.jar /src/gemp-module/gemp-stccg-client/target/web.jar
+COPY --from=build /gemp-module/gemp-stccg-server/target/gemp-stccg-server-jar-with-dependencies.jar /src/gemp-module/gemp-stccg-client/target/web.jar
