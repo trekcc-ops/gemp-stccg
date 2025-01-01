@@ -704,19 +704,6 @@ export default class GameTableUI {
                 resizable: false,
                 title: "Card information"
             });
-
-        var swipeOptions = {
-            threshold: 20,
-            swipeUp: function (event) {
-                that.infoDialog.prop({scrollTop: that.infoDialog.prop("scrollHeight")});
-                return false;
-            },
-            swipeDown: function (event) {
-                that.infoDialog.prop({scrollTop: 0});
-                return false;
-            }
-        };
-        this.infoDialog.swipe(swipeOptions);
     }
 
     windowResized() {
@@ -1389,24 +1376,6 @@ export default class GameTableUI {
         var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
         cardDiv.data("card", card);
-
-        var that = this;
-        var swipeOptions = {
-            threshold: 20,
-            fallbackToMouseEvents: false,
-            swipeUp: function (event) {
-                var tar = $(event.target);
-                if (tar.hasClass("actionArea")) {
-                    var selectedCardElem = tar.closest(".card");
-                    that.displayCardInfo(selectedCardElem.data("card"));
-                }
-                return false;
-            },
-            click: function (event) {
-                return that.clickCardFunction(event);
-            }
-        };
-        cardDiv.swipe(swipeOptions);
 
         return cardDiv;
     }
