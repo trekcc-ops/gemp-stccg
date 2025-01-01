@@ -6,6 +6,7 @@ import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup
 import GameAnimations from './gameAnimations.js';
 import ChatBoxUI from './chat.js';
 import { openSizeDialog } from "./common.js";
+import Cookies from "js-cookie";
 
 export default class GameTableUI {
     padding = 5;
@@ -371,16 +372,16 @@ export default class GameTableUI {
             var settingName = setting[0];
             if (settingName != "autoPass") { // TODO: currently, autoPass always set to false
                 var optionSelection = $("#" + settingName);
-                var cookie = $.cookie(settingName);
+                var cookieValue = Cookies.get(settingName);
 
                     // Multiple choice settings: foilPresentation
-                if (settingName == "foilPresentation" && cookie != null) {
-                    optionSelection.val(cookie);
-                    that.gameSettings.set(settingName, cookie);
+                if (settingName == "foilPresentation" && cookieValue != null) {
+                    optionSelection.val(cookieValue);
+                    that.gameSettings.set(settingName, cookieValue);
                 }
 
                     // True/false settings: autoAccept, alwaysDropDown
-                if (cookie == "true" || cookie == null) {
+                if (cookieValue == "true" || cookieValue == null) {
                     optionSelection.prop("checked", true);
                     that.gameSettings.set(settingName, true);
                 }
@@ -393,7 +394,7 @@ export default class GameTableUI {
                         userSelection = optionSelection.prop("checked"); // True/false
                     }
                     that.gameSettings.set(settingName, userSelection);
-                    $.cookie(settingName, "" + userSelection, {expires: 365});
+                    Cookies.set(settingName, "" + userSelection, {expires: 365});
                 });
             }
         }
@@ -409,11 +410,11 @@ export default class GameTableUI {
 
         // Load auto-pass settings from cookie, or set to default (current default is all phases auto-pass)
         var currPassedPhases = new Array();
-        var currAutoPassCookie = $.cookie("autoPassPhases");
-        if (currAutoPassCookie == null) {
+        var currAutoPassCookieValue = Cookies.get("autoPassPhases");
+        if (currAutoPassCookieValue == null) {
             currPassedPhases = allPhaseNames;
         } else {
-            currPassedPhases = currAutoPassCookie.split("0");
+            currPassedPhases = currAutoPassCookieValue.split("0");
         }
 
         // Create settings panel for user selection of auto-pass settings
@@ -438,7 +439,7 @@ export default class GameTableUI {
             }
             if (newAutoPassPhases.length > 0)
                 newAutoPassPhases = newAutoPassPhases.substr(1);
-            $.cookie("autoPassPhases", newAutoPassPhases, {expires: 365});
+            Cookies.set("autoPassPhases", newAutoPassPhases, {expires: 365});
         });
 
         var playerListener = function (players) {

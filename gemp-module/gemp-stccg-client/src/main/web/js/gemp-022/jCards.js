@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 export var cardCache = {};
 export var cardScale = 357 / 497;
 
@@ -303,7 +304,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
 }
 
 export function getFoilPresentation() {
-    var result = $.cookie("foilPresentation");
+    var result = Cookies.get("foilPresentation");
     if (result === null)
         result = "static";
     if (result === "true")
