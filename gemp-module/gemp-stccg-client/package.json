@@ -13,20 +13,21 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
-    "jquery": "^3.7.1",
-    "jquery-ui": "^1.14.1",
     "vite": "^6.0.6",
     "vite-babel-plugin": "^0.0.2"
   },
   "scripts": {
-    "build": "babel src -d src/main/web/npm-lib",
-    "test": "jest"
+    "build": "vite build src/main/web",
+    "test": "jest",
+    "clean": "rm -r src/main/web/dist"
   },
   "overrides": {
     "globals": "$globals"
   },
   "dependencies": {
     "js-cookie": "^3.0.5",
+    "jquery": "^3.7.1",
+    "jquery-ui": "^1.14.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }
