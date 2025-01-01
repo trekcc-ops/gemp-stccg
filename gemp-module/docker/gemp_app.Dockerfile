@@ -1,7 +1,7 @@
 #
 # Stage 0, Maven and dependency cache
 #
-FROM maven AS build
+FROM maven AS server-build
 
 # Make and switch to a /gemp-module folder.
 RUN mkdir -p /gemp-module/
@@ -23,10 +23,34 @@ RUN --mount=type=cache,target=/root/.m2 mvn install -DskipTests
 
 
 #
-# Stage 1, new container with just our build file
+# Stage 1, Client build
+#
+FROM node:20-alpine AS client-build
+
+# Make and switch to a /gemp-client folder
+RUN mkdir -p /gemp-client
+WORKDIR /gemp-client
+
+# Load the package.json and lock files and tell NPM to cache them
+COPY gemp-module/gemp-stccg-client/package.json .
+COPY gemp-module/gemp-stccg-client/package-lock.json .
+
+RUN --mount=type=cache,target=/root/.npm npm install
+
+# Copy in and build the client
+
+COPY gemp-module/gemp-stccg-client/babel.config.json .
+COPY gemp-module/gemp-stccg-client/src ./src
+
+RUN --mount=type=cache,target=/root/.npm npm run build
+
+
+#
+# Stage 2, new container with just our build files
 #
 FROM amazoncorretto:21-alpine-jdk AS runtime
 
 RUN mkdir -p /src/gemp-module/gemp-stccg-client/target/
-COPY --from=build /gemp-module/gemp-stccg-server/src/main/resources/log4j2.xml /src/gemp-module/gemp-stccg-client/target/log4j2.xml
-COPY --from=build /gemp-module/gemp-stccg-server/target/gemp-stccg-server-jar-with-dependencies.jar /src/gemp-module/gemp-stccg-client/target/web.jar
+COPY --from=server-build /gemp-module/gemp-stccg-server/src/main/resources/log4j2.xml /src/gemp-module/gemp-stccg-client/target/log4j2.xml
+COPY --from=server-build /gemp-module/gemp-stccg-server/target/gemp-stccg-server-jar-with-dependencies.jar /src/gemp-module/gemp-stccg-client/target/web.jar
+COPY --from=client-build /gemp-client/src/main/web/dist /src/gemp-module/web
