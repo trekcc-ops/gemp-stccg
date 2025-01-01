@@ -1,4 +1,6 @@
 import GempClientCommunication from "../../js/gemp-022/communication.js";
+import "jquery-ui";
+import "jquery-ui/ui/widgets/button";
 
 var comm = new GempClientCommunication("/gemp-stccg-server", function () {
     alert("Unable to contact the server");
