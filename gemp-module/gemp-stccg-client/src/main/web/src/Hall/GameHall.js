@@ -1,15 +1,5 @@
-import "jquery-ui";
-import "jquery-ui/ui/data";
-import "jquery-ui/ui/unique-id";
-import "jquery-ui/ui/disable-selection";
-import "jquery-ui/ui/plugin";
-import "jquery-ui/ui/focusable";
-import "jquery-ui/ui/tabbable";
-import "jquery-ui/ui/widgets/button";
-import "jquery-ui/ui/widgets/mouse";
-import "jquery-ui/ui/widgets/resizable";
-import "jquery-ui/ui/widgets/dialog";
-import "jquery-ui/ui/widgets/tabs";
+import "../../js/jquery/jquery-3.7.1.js";
+import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
 import ChatBoxUI from "../../js/gemp-022/chat.js";
 import GempHallUI from "../../js/gemp-022/hallUi.js";
 import GameHistoryUI from "../../js/gemp-022/gameHistoryUi.js";

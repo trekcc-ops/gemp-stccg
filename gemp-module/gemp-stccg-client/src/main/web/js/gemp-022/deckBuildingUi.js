@@ -1,3 +1,5 @@
+import "../../js/jquery/jquery-3.7.1.js";
+import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
 import GempClientCommunication from "./communication.js";
 import Card from "./jCards.js";
 import { createCardDiv } from "./jCards.js";
