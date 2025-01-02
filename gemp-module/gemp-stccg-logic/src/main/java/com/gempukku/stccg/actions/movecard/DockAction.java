@@ -20,7 +20,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     private boolean _cardDocked;
     private FacilityCard _dockingTarget;
     private final Collection<FacilityCard> _dockingTargetOptions;
-    private final SelectVisibleCardAction _selectAction;
+    private SelectVisibleCardAction _selectAction;
 
     public DockAction(Player player, PhysicalShipCard cardToDock) {
         super(player, "Dock", ActionType.MOVE_CARDS);
@@ -36,12 +36,10 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
                     }
                 })
                 .toList();
-        _selectAction = new SelectVisibleCardAction(player,
-                "Choose facility to dock at", _dockingTargetOptions);
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _cardToDock; }
+    public int getCardIdForActionSelection() { return _cardToDock.getCardId(); }
     @Override
     public PhysicalCard getPerformingCard() { return _cardToDock; }
 
@@ -54,6 +52,8 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
             return cost;
 
         if (!_targetChosen) {
+            _selectAction = new SelectVisibleCardAction(cardGame.getPlayer(_performingPlayerId),
+                    "Choose facility to dock at", _dockingTargetOptions);
             if (!_selectAction.wasCarriedOut()) {
                 appendTargeting(_selectAction);
                 return getNextCost();

@@ -150,13 +150,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
         if (!_cardPlayed) {
             _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
             _cardPlayed = true;
-            GameState gameState = cardGame.getGameState();
 
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " played " + _cardEnteringPlay.getCardLink());
 
-            gameState.removeCardFromZone(_cardEnteringPlay);
-            performingPlayer.addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
             _cardEnteringPlay.reportToFacility(_reportingDestination);
+            performingPlayer.addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
             cardGame.getActionsEnvironment().emitEffectResult(
                     new PlayCardResult(this, _fromZone, _cardEnteringPlay));
         }

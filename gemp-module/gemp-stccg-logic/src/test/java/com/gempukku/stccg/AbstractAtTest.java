@@ -737,7 +737,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (action.getClass() == clazz && action.getCardForActionSelection() == card)
+                if (action.getClass() == clazz && action.getCardIdForActionSelection() == card.getCardId())
                     choice = (T) action;
             }
             actionDecision.decisionMade(choice);
@@ -780,7 +780,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof CardActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (action.getPerformingCard() == card)
+                if (action.getCardIdForActionSelection() == card.getCardId())
                     choice = action;
             }
             actionDecision.decisionMade(choice);

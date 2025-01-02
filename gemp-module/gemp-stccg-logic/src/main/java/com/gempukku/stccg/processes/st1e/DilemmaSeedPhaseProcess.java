@@ -3,6 +3,7 @@ package com.gempukku.stccg.processes.st1e;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.AddSeedCardsAction;
 import com.gempukku.stccg.actions.playcard.RemoveSeedCardsAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -72,13 +73,18 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {
-                                PhysicalCard topCard = action.getPerformingCard();
-                                selectCardsToSeed(player, topCard);
-                                if (action instanceof AddSeedCardsAction)
+                                try {
+                                    int cardId = action.getCardIdForActionSelection();
+                                    PhysicalCard topCard = _game.getCardFromCardId(cardId);
                                     selectCardsToSeed(player, topCard);
-                                else if (action instanceof RemoveSeedCardsAction)
-                                    selectCardsToRemove(player, topCard);
-                                else gameState.sendMessage("Game error - invalid action selected");
+                                    if (action instanceof AddSeedCardsAction)
+                                        selectCardsToSeed(player, topCard);
+                                    else if (action instanceof RemoveSeedCardsAction)
+                                        selectCardsToRemove(player, topCard);
+                                    else gameState.sendMessage("Game error - invalid action selected");
+                                } catch(CardNotFoundException exp) {
+                                    throw new DecisionResultInvalidException(exp.getMessage());
+                                }
                             }
                         }
                     });

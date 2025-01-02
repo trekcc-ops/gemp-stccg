@@ -24,8 +24,8 @@ public class UseGameTextAction extends ActionyAction implements TopLevelSelectab
     public boolean requirementsAreMet(DefaultGame game) { return true; }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _physicalCard;
+    public int getCardIdForActionSelection() {
+        return _physicalCard.getCardId();
     }
 
     @Override

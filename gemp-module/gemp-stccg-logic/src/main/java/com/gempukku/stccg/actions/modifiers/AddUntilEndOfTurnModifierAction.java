@@ -9,14 +9,16 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.Modifier;
 
+import java.util.Objects;
+
 public class AddUntilEndOfTurnModifierAction extends ActionyAction implements TopLevelSelectableAction {
     private final Modifier _modifier;
     private final PhysicalCard _performingCard;
 
     public AddUntilEndOfTurnModifierAction(Player performingPlayer, PhysicalCard performingCard, Modifier modifier) {
         super(performingPlayer, "Add modifier", ActionType.ADD_MODIFIER);
-        _performingCard = performingCard;
-        _modifier = modifier;
+        _performingCard = Objects.requireNonNull(performingCard);
+        _modifier = Objects.requireNonNull(modifier);
     }
 
 
@@ -26,8 +28,8 @@ public class AddUntilEndOfTurnModifierAction extends ActionyAction implements To
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
+    public int getCardIdForActionSelection() {
+        return _performingCard.getCardId();
     }
 
     @Override

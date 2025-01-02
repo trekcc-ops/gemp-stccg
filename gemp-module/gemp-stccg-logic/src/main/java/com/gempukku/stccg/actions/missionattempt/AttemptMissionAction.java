@@ -26,6 +26,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     private AttemptingUnit _attemptingUnit;
     private SelectAttemptingUnitAction _selectAttemptingUnitAction;
     private final MissionCard _missionCard;
+    private final int _missionCardId;
     private final MissionLocation _missionLocation;
     private final Collection<PhysicalCard> _revealedCards = new LinkedList<>();
     private final Collection<PhysicalCard> _encounteredCards = new LinkedList<>();
@@ -38,11 +39,12 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         super(player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
         _missionLocation = mission;
         _missionCard = mission.getMissionForPlayer(player.getPlayerId());
+        _missionCardId = _missionCard.getCardId();
     }
 
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _missionCard; }
+    public int getCardIdForActionSelection() { return _missionCard.getCardId(); }
     @Override
     public PhysicalCard getPerformingCard() { return _missionCard; }
 

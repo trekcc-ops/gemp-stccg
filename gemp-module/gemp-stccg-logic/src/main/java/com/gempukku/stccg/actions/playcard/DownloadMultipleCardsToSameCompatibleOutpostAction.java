@@ -151,8 +151,8 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _actionSource;
+    public int getCardIdForActionSelection() {
+        return _actionSource.getCardId();
     }
 
     public String getPerformingPlayerId() { return _playerId; }

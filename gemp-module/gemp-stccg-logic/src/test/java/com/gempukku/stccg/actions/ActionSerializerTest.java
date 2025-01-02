@@ -3,16 +3,10 @@ package com.gempukku.stccg.actions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
-import com.gempukku.stccg.actions.movecard.BeamCardsAction;
-import com.gempukku.stccg.actions.turn.PlayOutOptionalAfterResponsesAction;
+import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.gamestate.ST1EGameStateDeserializer;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -93,13 +87,15 @@ public class ActionSerializerTest extends AbstractAtTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalAfterResponsesAction response)
+                if (action instanceof PlayOutOptionalResponsesAction response)
                     message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
                 String serialized = new ObjectMapper().writeValueAsString(action);
                 System.out.println(serialized);
             } else {
                 System.out.println(message);
+                String serialized = new ObjectMapper().writeValueAsString(action);
+                System.out.println(serialized);
             }
         };
 
@@ -114,7 +110,7 @@ public class ActionSerializerTest extends AbstractAtTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalAfterResponsesAction response)
+                if (action instanceof PlayOutOptionalResponsesAction response)
                     message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
                 if (action instanceof RevealSeedCardAction revealAction) {

@@ -15,15 +15,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
+public class PlayOutOptionalResponsesAction extends SystemQueueAction {
     private final PlayOutEffectResults _action;
     private final ActionOrder _actionOrder;
     private final int _passCount;
     private final Collection<ActionResult> _actionResults;
     private final ActionsEnvironment _actionsEnvironment;
 
-    public PlayOutOptionalAfterResponsesAction(DefaultGame game, PlayOutEffectResults action, ActionOrder actionOrder,
-                                        int passCount, Collection<ActionResult> actionResults) {
+    public PlayOutOptionalResponsesAction(DefaultGame game, PlayOutEffectResults action, ActionOrder actionOrder,
+                                          int passCount, Collection<ActionResult> actionResults) {
         super(game);
         _action = action;
         _actionOrder = actionOrder;
@@ -44,7 +44,7 @@ public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
 
         if (possibleActions.isEmpty()) {
             if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
-                _action.insertEffect(new PlayOutOptionalAfterResponsesAction(cardGame,
+                _action.insertEffect(new PlayOutOptionalResponsesAction(cardGame,
                         _action, _actionOrder, _passCount + 1, _actionResults));
             }
         } else {
@@ -64,7 +64,7 @@ public class PlayOutOptionalAfterResponsesAction extends SystemQueueAction {
                                 nextPassCount = _passCount + 1;
                             }
                             if (nextPassCount < _actionOrder.getPlayerCount())
-                                _action.insertEffect(new PlayOutOptionalAfterResponsesAction(cardGame,
+                                _action.insertEffect(new PlayOutOptionalResponsesAction(cardGame,
                                         _action, _actionOrder, nextPassCount, _actionResults));
                         }
                     });

@@ -63,7 +63,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _cardSource; }
+    public int getCardIdForActionSelection() { return _cardSource.getCardId(); }
     @Override
     public PhysicalCard getPerformingCard() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);

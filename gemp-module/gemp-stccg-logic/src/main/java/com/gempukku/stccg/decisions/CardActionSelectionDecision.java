@@ -49,7 +49,7 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
     private String[] getCardIds() {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
-            result[i] = String.valueOf(_actions.get(i).getCardForActionSelection().getCardId());
+            result[i] = String.valueOf(_actions.get(i).getCardIdForActionSelection());
         return result;
     }
 

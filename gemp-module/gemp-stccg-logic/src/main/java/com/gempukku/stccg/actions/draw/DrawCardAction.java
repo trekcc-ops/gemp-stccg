@@ -72,8 +72,8 @@ public class DrawCardAction extends ActionyAction implements TopLevelSelectableA
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
+    public int getCardIdForActionSelection() {
+        return _performingCard.getCardId();
     }
 
     @Override

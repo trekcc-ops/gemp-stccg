@@ -20,7 +20,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
     private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
-    private final SelectVisibleCardAction _selectAction;
+    private SelectVisibleCardAction _selectAction;
 
     public FlyShipAction(Player player, PhysicalShipCard flyingCard) throws InvalidGameLogicException {
         super(player, "Fly", ActionType.MOVE_CARDS);
@@ -44,12 +44,10 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
                 }
             }
         }
-        _selectAction =
-                new SelectVisibleCardAction(player, "Choose destination", _destinationOptions);
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _flyingCard; }
+    public int getCardIdForActionSelection() { return _flyingCard.getCardId(); }
 
     @Override
     public PhysicalCard getPerformingCard() { return _flyingCard; }
@@ -63,6 +61,9 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             return cost;
 
         if (!_destinationChosen) {
+            _selectAction =
+                    new SelectVisibleCardAction(cardGame.getPlayer(_performingPlayerId),
+                            "Choose destination", _destinationOptions);
             if (_selectAction.wasCarriedOut()) {
                 _destinationChosen = true;
                 _destination = _selectAction.getSelectedCard();

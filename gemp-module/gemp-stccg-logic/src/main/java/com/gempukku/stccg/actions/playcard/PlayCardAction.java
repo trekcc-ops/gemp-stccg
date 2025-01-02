@@ -39,8 +39,8 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         return _actionSource;
     }
 
-    public PhysicalCard getCardForActionSelection() {
-        return getCardEnteringPlay();
+    public int getCardIdForActionSelection() {
+        return _cardEnteringPlay.getCardId();
     }
 
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }

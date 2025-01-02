@@ -39,8 +39,8 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _actionAttachedToCard;
+    public int getCardIdForActionSelection() {
+        return _actionAttachedToCard.getCardId();
     }
 
     @Override

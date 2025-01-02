@@ -207,8 +207,8 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _actionSource;
+    public int getCardIdForActionSelection() {
+        return _actionSource.getCardId();
     }
 
     public boolean wasCarriedOut() {

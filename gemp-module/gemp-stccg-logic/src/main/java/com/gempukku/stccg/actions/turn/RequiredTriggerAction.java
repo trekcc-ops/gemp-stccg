@@ -24,8 +24,8 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _physicalCard;
+    public int getCardIdForActionSelection() {
+        return _physicalCard.getCardId();
     }
 
     public void setMessage(String message) {

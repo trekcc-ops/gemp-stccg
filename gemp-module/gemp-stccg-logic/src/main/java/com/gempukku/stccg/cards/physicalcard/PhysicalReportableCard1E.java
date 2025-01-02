@@ -50,6 +50,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     }
 
     public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
+        _game.getGameState().removeCardFromZone(this);
         setLocation(facility.getLocation());
         _game.getGameState().attachCard(this, facility);
     }

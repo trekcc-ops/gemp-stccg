@@ -17,7 +17,7 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _cardToMove; }
+    public int getCardIdForActionSelection() { return _cardToMove.getCardId(); }
     @Override
     public PhysicalCard getPerformingCard() { return _cardToMove; }
 

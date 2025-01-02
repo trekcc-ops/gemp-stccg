@@ -25,8 +25,8 @@ public class RemoveSeedCardsAction extends ActionyAction implements TopLevelSele
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _topCard;
+    public int getCardIdForActionSelection() {
+        return _topCard.getCardId();
     }
 
     @Override

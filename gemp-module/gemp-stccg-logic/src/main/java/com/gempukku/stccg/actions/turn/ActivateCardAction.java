@@ -28,9 +28,10 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
     public boolean requirementsAreMet(DefaultGame game) { return true; }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _physicalCard;
+    public int getCardIdForActionSelection() {
+        return _physicalCard.getCardId();
     }
+
 
     public void prevent() {
         _prevented = true;

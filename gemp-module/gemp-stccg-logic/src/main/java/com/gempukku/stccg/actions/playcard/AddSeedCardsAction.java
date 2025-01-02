@@ -8,13 +8,15 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
+import java.util.Objects;
+
 public class AddSeedCardsAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _topCard;
 
     public AddSeedCardsAction(Player player, PhysicalCard topCard) {
         super(player, "Seed cards under " + topCard.getFullName(), ActionType.OTHER);
-        _topCard = topCard;
+        _topCard = Objects.requireNonNull(topCard);
     }
 
     public boolean requirementsAreMet(DefaultGame game) { return true; }
@@ -24,8 +26,8 @@ public class AddSeedCardsAction extends ActionyAction implements TopLevelSelecta
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _topCard;
+    public int getCardIdForActionSelection() {
+        return _topCard.getCardId();
     }
 
     @Override

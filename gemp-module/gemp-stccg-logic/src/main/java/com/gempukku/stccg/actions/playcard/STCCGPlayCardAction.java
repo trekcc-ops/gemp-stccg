@@ -15,9 +15,4 @@ public class STCCGPlayCardAction extends PlayCardAction {
             appendCost(new UseNormalCardPlayAction(player));
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _cardEnteringPlay;
-    }
-
 }

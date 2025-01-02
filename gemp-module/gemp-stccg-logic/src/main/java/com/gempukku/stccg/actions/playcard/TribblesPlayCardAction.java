@@ -28,11 +28,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _cardToPlay;
-    }
-
-    @Override
     public Action nextAction(DefaultGame cardGame) {
         TribblesGameState gameState = (TribblesGameState) cardGame.getGameState();
 

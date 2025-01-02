@@ -252,32 +252,32 @@ public abstract class GameState {
 
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
-            List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), card.getZone());
-            if (!zoneCards.contains(card) && card.getZone() != Zone.VOID)
-                LOGGER.error(
-                        "Card was not found in the expected zone: " + card.getTitle() + ", " + card.getZone().name());
-        }
+            if (card.getZone() != null) {
+                List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), card.getZone());
+                if (!zoneCards.contains(card) && card.getZone() != Zone.VOID)
+                    LOGGER.error(
+                            "Card was not found in the expected zone: " + card.getTitle() + ", " + card.getZone().name());
 
-        for (PhysicalCard card : cards) {
-            Zone zone = card.getZone();
+                Zone zone = card.getZone();
 
-            if (zone.isInPlay()) card.stopAffectingGame(getGame());
+                if (zone.isInPlay()) card.stopAffectingGame(getGame());
 
-            getZoneCards(card.getOwnerName(), zone).remove(card);
+                getZoneCards(card.getOwnerName(), zone).remove(card);
 
-            if (card instanceof PhysicalReportableCard1E reportable) {
-                if (reportable.getAwayTeam() != null) {
-                    reportable.leaveAwayTeam();
+                if (card instanceof PhysicalReportableCard1E reportable) {
+                    if (reportable.getAwayTeam() != null) {
+                        reportable.leaveAwayTeam();
+                    }
                 }
+
+                if (zone.isInPlay())
+                    _inPlay.remove(card);
+                if (zone == Zone.ATTACHED)
+                    card.attachTo(null);
+
+                if (zone == Zone.STACKED)
+                    card.stackOn(null);
             }
-
-            if (zone.isInPlay())
-                _inPlay.remove(card);
-            if (zone == Zone.ATTACHED)
-                card.attachTo(null);
-
-            if (zone == Zone.STACKED)
-                card.stackOn(null);
         }
 
         for (GameStateListener listener : getAllGameStateListeners()) {
@@ -292,7 +292,6 @@ public abstract class GameState {
             if (!removedCardsVisibleByPlayer.isEmpty())
                 listener.sendEvent(new GameEvent(GameEvent.Type.REMOVE_CARD_FROM_PLAY, removedCardsVisibleByPlayer, getPlayer(playerPerforming)));
         }
-
 
         for (PhysicalCard card : cards) {
             card.setZone(null);

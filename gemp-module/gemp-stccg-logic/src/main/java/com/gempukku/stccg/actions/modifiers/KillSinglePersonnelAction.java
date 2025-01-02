@@ -30,8 +30,8 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
+    public int getCardIdForActionSelection() {
+        return _performingCard.getCardId();
     }
 
     @Override
