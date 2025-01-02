@@ -52,7 +52,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
 
 
     @Override
-    public PhysicalCard getPerformingCard() { return (PhysicalCard) _card; }
+    public PhysicalCard getPerformingCard() { return _card; }
 
     @Override
     public PhysicalCard getCardForActionSelection() { return _card; }

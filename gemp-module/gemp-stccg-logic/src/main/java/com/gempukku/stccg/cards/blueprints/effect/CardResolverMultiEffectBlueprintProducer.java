@@ -145,9 +145,9 @@ public class CardResolverMultiEffectBlueprintProducer {
                                                 targetPlayer, Iterables.getOnlyElement(cards));
                                 case DOWNLOAD -> Iterables.getOnlyElement(cards).getPlayCardAction(true);
                                 case PUTCARDSFROMPLAYONBOTTOMOFDECK ->
-                                        new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer, cards, context.getSource());
+                                        new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer, cards);
                                 case REMOVECARDSINDISCARDFROMGAME ->
-                                        new RemoveCardFromPlayAction(targetPlayer, context.getSource(), cards);
+                                        new RemoveCardFromPlayAction(targetPlayer, cards);
                                 case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                                         SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                                         new ShuffleCardsIntoDrawDeckAction(context.getSource(), context.getPerformingPlayer(), Filters.in(cards));

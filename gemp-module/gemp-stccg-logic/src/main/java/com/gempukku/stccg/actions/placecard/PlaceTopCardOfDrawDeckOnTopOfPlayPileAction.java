@@ -11,12 +11,10 @@ import java.util.Collections;
 
 public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
     private final int _count;
-    private final PhysicalCard _performingCard;
 
-    public PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(Player performingPlayer, PhysicalCard performingCard, int count) {
+    public PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(Player performingPlayer, int count) {
         super(performingPlayer, ActionType.PLACE_CARD);
         _count = count;
-        _performingCard = performingCard;
     }
 
     @Override

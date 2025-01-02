@@ -14,9 +14,9 @@ public class ActivateConvertTribblePowerAction extends ActivateTribblePowerActio
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(actionContext.getPerformingPlayer(),
-                List.of(_performingCard), _performingCard));
+                List.of(_performingCard)));
         appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(
-                cardGame.getPlayer(_performingPlayerId), _performingCard, 1));
+                cardGame.getPlayer(_performingPlayerId), 1));
     }
 
 }

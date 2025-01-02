@@ -30,7 +30,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
                         new SelectVisibleCardAction(performingPlayer,
                                 "Select a card to place beneath play pile",
                                 Filters.yourHand(performingPlayer));
-                appendEffect(new PlaceCardOnBottomOfPlayPileAction(performingPlayer, selectAction, performingCard));
+                appendEffect(new PlaceCardOnBottomOfPlayPileAction(performingPlayer, selectAction));
             }
         }
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);

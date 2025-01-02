@@ -26,7 +26,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
         implements TopLevelSelectableAction {
     private final String _playerId;
     private final int _maxCardCount;
-    private List<Action> _playCardActions = new LinkedList<>();
+    private final List<Action> _playCardActions = new LinkedList<>();
     private final Zone _fromZone;
     private final DefaultGame _game;
     private final PhysicalCard _actionSource;
@@ -79,7 +79,6 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Player performingPlayer = cardGame.getPlayer(_playerId);
-        Action thisAction = this;
 
         if (!_cardsToDownloadChosen) {
             cardGame.getUserFeedback().sendAwaitingDecision(

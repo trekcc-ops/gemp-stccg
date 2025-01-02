@@ -9,11 +9,9 @@ import com.gempukku.stccg.game.Player;
 
 public class UseNormalCardPlayAction extends ActionyAction {
     private boolean _wasCarriedOut;
-    private final PhysicalCard _performingCard;
 
-    public UseNormalCardPlayAction(PhysicalCard performingCard, Player performingPlayer) {
+    public UseNormalCardPlayAction(Player performingPlayer) {
         super(performingPlayer, ActionType.USAGE_LIMIT);
-        _performingCard = performingCard;
     }
 
     @Override

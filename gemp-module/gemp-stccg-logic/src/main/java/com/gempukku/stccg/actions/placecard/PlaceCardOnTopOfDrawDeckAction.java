@@ -16,14 +16,11 @@ import java.util.List;
 public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
 
     private final PhysicalCard _cardBeingPlaced;
-    private final PhysicalCard _causingCard;
 
 
-    public PlaceCardOnTopOfDrawDeckAction(Player performingPlayer, PhysicalCard cardBeingPlaced,
-                                          PhysicalCard causingCard) {
+    public PlaceCardOnTopOfDrawDeckAction(Player performingPlayer, PhysicalCard cardBeingPlaced) {
         super(performingPlayer, ActionType.PLACE_CARD);
         _cardBeingPlaced = cardBeingPlaced;
-        _causingCard = causingCard;
     }
 
     @Override

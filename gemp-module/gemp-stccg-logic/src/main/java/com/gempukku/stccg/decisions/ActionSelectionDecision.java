@@ -39,7 +39,7 @@ public abstract class ActionSelectionDecision extends ActionDecision {
         return images;
     }
 
-    protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
+    protected TopLevelSelectableAction getSelectedAction(String result) throws DecisionResultInvalidException {
         if (result.isEmpty())
             throw new DecisionResultInvalidException();
 

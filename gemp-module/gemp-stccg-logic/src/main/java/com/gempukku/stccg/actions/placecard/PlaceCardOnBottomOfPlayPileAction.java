@@ -4,29 +4,23 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.GameState;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
 
     private PhysicalCard _cardBeingPlaced;
-    private final PhysicalCard _causingCard;
     private final SelectCardsAction _selectCardAction;
     private enum Progress { cardSelected, wasCarriedOut }
 
 
-    public PlaceCardOnBottomOfPlayPileAction(Player performingPlayer, SelectCardsAction selectCardAction,
-                                             PhysicalCard causingCard) {
+    public PlaceCardOnBottomOfPlayPileAction(Player performingPlayer, SelectCardsAction selectCardAction) {
         super(performingPlayer, ActionType.PLACE_CARD, Progress.values());
         _selectCardAction = selectCardAction;
-        _causingCard = causingCard;
     }
 
     @Override

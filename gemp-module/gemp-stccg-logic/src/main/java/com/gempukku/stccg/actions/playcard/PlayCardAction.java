@@ -13,7 +13,6 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
     final PhysicalCard _actionSource;
     private boolean _cardWasRemoved, _cardHasEnteredPlay;
-    private boolean _virtualCardAction;
     final PhysicalCard _cardEnteringPlay;
     protected final Zone _fromZone;
     final Zone _toZone;

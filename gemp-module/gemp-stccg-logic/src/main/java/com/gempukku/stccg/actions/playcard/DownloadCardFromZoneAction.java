@@ -25,7 +25,6 @@ public class DownloadCardFromZoneAction extends ActionyAction {
     private Action _playCardAction;
     private final Zone _fromZone;
     private final DefaultGame _game;
-    private final Filterable _destinationFilter;
 
     public DownloadCardFromZoneAction(Zone fromZone, Player player, PhysicalCard actionSource,
                                       Filterable playableCardFilter) {
@@ -36,7 +35,6 @@ public class DownloadCardFromZoneAction extends ActionyAction {
                                       Filterable playableCardFilter, Filterable destinationFilter) {
         super(player, "Download card from " + fromZone.getHumanReadable(),
                 ActionType.DOWNLOAD_CARD);
-        _destinationFilter = destinationFilter;
         _playerId = player.getPlayerId();
 
         // FOR PLAYFROMHANDEFFECT

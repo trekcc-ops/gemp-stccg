@@ -16,7 +16,7 @@ public class STCCGPlayCardAction extends PlayCardAction {
         super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
         setText("Play " + card.getFullName());
         if (!forFree)
-            appendCost(new UseNormalCardPlayAction(card, player));
+            appendCost(new UseNormalCardPlayAction(player));
     }
 
     @Override

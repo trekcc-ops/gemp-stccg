@@ -38,7 +38,7 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
 
                 // Then put that many cards from the top of your draw deck in your play pile
                 appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(game.getPlayer(_performingPlayerId),
-                        _performingCard, cardsInPlayPile));
+                        cardsInPlayPile));
             } else {
                 throw new InvalidGameLogicException("Could not use tribble power Mutate in a non-Tribbles game");
             }

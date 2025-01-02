@@ -11,13 +11,11 @@ import com.gempukku.stccg.modifiers.Modifier;
 public class AddUntilModifierAction extends ActionyAction {
     private final Modifier _modifier;
     private final TimeResolver.Time until;
-    private final PhysicalCard _performingCard;
 
     public AddUntilModifierAction(PhysicalCard performingCard, Modifier modifier, TimeResolver.Time until) {
         super(performingCard.getController(), ActionType.ADD_MODIFIER);
         _modifier = modifier;
         this.until = until;
-        _performingCard = performingCard;
     }
 
     @Override

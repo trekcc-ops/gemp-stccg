@@ -17,19 +17,15 @@ import java.util.Set;
 
 public class RemoveCardFromPlayAction extends ActionyAction {
     private final Collection<PhysicalCard> _cardsToRemove;
-    private final PhysicalCard _cardCausingRemoval;
 
-    public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardRemoving, PhysicalCard cardToRemove) {
+    public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardToRemove) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
         _cardsToRemove = Collections.singleton(cardToRemove);
-        _cardCausingRemoval = cardRemoving;
     }
 
-    public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardRemoving,
-                                    Collection<PhysicalCard> cardsToRemove) {
+    public RemoveCardFromPlayAction(Player performingPlayer, Collection<PhysicalCard> cardsToRemove) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
         _cardsToRemove = cardsToRemove;
-        _cardCausingRemoval = cardRemoving;
     }
 
 
