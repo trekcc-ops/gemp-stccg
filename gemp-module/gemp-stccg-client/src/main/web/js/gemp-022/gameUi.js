@@ -7,6 +7,14 @@ import GameAnimations from './gameAnimations.js';
 import ChatBoxUI from './chat.js';
 import { openSizeDialog } from "./common.js";
 import Cookies from "js-cookie";
+import playImg from "../../images/play.png";
+import pauseImg from "../../images/pause.png";
+import strengthIconImg from "../../images/o_icon_strength.png";
+import vitalityIconImg from "../../images/o_icon_strength.png";
+import compassIconImg from "../../images/o_icon_strength.png";
+import resistanceIconImg from "../../images/o_icon_strength.png";
+import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
+
 
 export default class GameTableUI {
     padding = 5;
@@ -841,10 +849,10 @@ export default class GameTableUI {
                 function () {
                     if (that.replayPlay) {
                         that.replayPlay = false;
-                        $("#replayButton").attr("src", "images/play.png");
+                        $("#replayButton").attr("src", playImg);
                     } else {
                         that.replayPlay = true;
-                        $("#replayButton").attr("src", "images/pause.png");
+                        $("#replayButton").attr("src", pauseImg);
                         that.playNextReplayEvent();
                     }
                 });
@@ -1227,7 +1235,7 @@ export default class GameTableUI {
             if (!this.replayMode)
             {
                 this.smallDialog.dialog("option", "buttons", {});
-                this.PlaySound("awaitAction");
+                this.PlayAwaitActionSound();
             }
         }
 
@@ -1240,7 +1248,7 @@ export default class GameTableUI {
             var tokenOverlay = $(".tokenOverlay", cardDiv);
 
             var cardStrengthBgDiv = $(
-                "<div class='cardStrengthBg'><img src='images/o_icon_strength.png' width='100%' height='100%'></div>"
+                `<div class='cardStrengthBg'><img src='${strengthIconImg}' width='100%' height='100%'></div>`
             );
             tokenOverlay.append(cardStrengthBgDiv);
 
@@ -1248,7 +1256,7 @@ export default class GameTableUI {
             tokenOverlay.append(cardStrengthDiv);
 
             var cardVitalityBgDiv = $(
-                "<div class='cardVitalityBg'><img src='images/o_icon_vitality.png' width='100%' height='100%'></div>"
+                `<div class='cardVitalityBg'><img src='${vitalityIconImg}' width='100%' height='100%'></div>`
             );
             tokenOverlay.append(cardVitalityBgDiv);
 
@@ -1256,7 +1264,7 @@ export default class GameTableUI {
             tokenOverlay.append(cardVitalityDiv);
 
             var cardSiteNumberBgDiv = $(
-                "<div class='cardSiteNumberBg'><img src='images/o_icon_compass.png' width='100%' height='100%'></div>"
+                `<div class='cardSiteNumberBg'><img src='${compassIconImg}' width='100%' height='100%'></div>`
             );
             cardSiteNumberBgDiv.css({display: "none"});
             tokenOverlay.append(cardSiteNumberBgDiv);
@@ -1266,7 +1274,7 @@ export default class GameTableUI {
             tokenOverlay.append(cardSiteNumberDiv);
 
             var cardResistanceBgDiv = $(
-                "<div class='cardResistanceBg'><img src='images/o_icon_resistance.png' width='100%' height='100%'></div>"
+                `<div class='cardResistanceBg'><img src='${resistanceIconImg}' width='100%' height='100%'></div>`
             );
             cardResistanceBgDiv.css({display: "none"});
             tokenOverlay.append(cardResistanceBgDiv);
@@ -1500,7 +1508,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         openSizeDialog(this.cardActionDialog);
@@ -1605,7 +1613,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         openSizeDialog(this.cardActionDialog);
@@ -1753,17 +1761,17 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         $(':button').blur();
     }
 
-    PlaySound(soundObj) {
-        var myAudio = document.getElementById(soundObj);
+    PlayAwaitActionSound() {
+        let audio = new Audio(awaitingActionAudio);
         if(!document.hasFocus() || document.hidden || document.msHidden || document.webkitHidden)
         {
-            myAudio.play();
+		    audio.play();
         }
     }
 
@@ -1898,7 +1906,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         openSizeDialog(this.cardActionDialog);
@@ -1988,7 +1996,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
     }
 

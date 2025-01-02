@@ -1,9 +1,14 @@
 import Cookies from "js-cookie";
+import special01Img from "../../images/boosters/special-01.png";
+import rulesImg from "../../images/rules.png";
+import errataVerticalImg from "../../images/errata-vertical.png";
+import pixelImg from "../../images/pixel.png";
+
 export var cardCache = {};
 export var cardScale = 357 / 497;
 
 export var packBlueprints = {
-    "Special-01": "/gemp-module/images/boosters/special-01.png"
+    "Special-01": special01Img
 };
 
 export default class Card {
@@ -48,7 +53,7 @@ export default class Card {
         }
         this.attachedCards = new Array();
         if (imageBlueprint == "rules") {
-            this.imageUrl = "/gemp-module/images/rules.png";
+            this.imageUrl = rulesImg;
         } else {
             if (cardCache[imageBlueprint] != null) {
                 var cardFromCache = cardCache[imageBlueprint];
@@ -279,7 +284,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     var cardDiv = $("<div class='card'><img class='" + imgClass + "' src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
 
     if (errata) {
-        var errataDiv = $("<div class='errataOverlay'><img src='/gemp-module/images/errata-vertical.png' width='100%' height='100%'></div>");
+        var errataDiv = $(`<div class='errataOverlay'><img src='${errataVerticalImg}' width='100%' height='100%'></div>`);
         cardDiv.append(errataDiv);
     }
 
@@ -295,7 +300,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
         var overlayDiv = $("<div class='tokenOverlay'></div>");
         cardDiv.append(overlayDiv);
     }
-    var borderDiv = $("<div class='borderOverlay'><img class='actionArea' src='/gemp-module/images/pixel.png' width='100%' height='100%'></div>");
+    var borderDiv = $(`<div class='borderOverlay'><img class='actionArea' src='${pixelImg}' width='100%' height='100%'></div>`);
     if (noBorder)
         borderDiv.addClass("noBorder");
     cardDiv.append(borderDiv);
@@ -326,7 +331,7 @@ export function createFullCardDiv(image, foil, horizontal, noBorder) {
     cardDiv.append($("<div class='fullCardWrapper'>" +
         "<img class='fullCardImg" + orientation + "' src='" + image + "'></div>"));
     cardDiv.append($("<div class='" + borderClass + orientation + "'>" +
-        "<img class='actionArea' src='/gemp-module/images/pixel.png' width='100%' height='100%'></div>"));
+        `<img class='actionArea' src='${pixelImg}' width='100%' height='100%'></div>`));
 
     if (foil && getFoilPresentation() !== 'none') {
         var foilImage = (getFoilPresentation() === 'animated') ? "foil.gif" : "holo.jpg";

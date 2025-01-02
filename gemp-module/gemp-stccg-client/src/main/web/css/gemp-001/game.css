@@ -96,7 +96,7 @@ ul {
     -webkit-text-stroke: 0.5px black;
     text-stroke: 0.5px black;
     align-content: start;
-    background-image: url('/gemp-module/images/decipher_card_deck.svg');
+    background-image: url('../../images/decipher_card_deck.svg');
     background-size: 42px 42px;
     height: 42px;
 }
@@ -109,7 +109,7 @@ ul {
     -webkit-text-stroke: 0.5px black;
     text-stroke: 0.5px black;
     align-content: start;
-    background-image: url('/gemp-module/images/decipher_card_hand.svg');
+    background-image: url('../../images/decipher_card_hand.svg');
     background-size: 42px 42px;
     height: 42px;
 }
@@ -122,7 +122,7 @@ ul {
     -webkit-text-stroke: 0.5px black;
     text-stroke: 0.5px black;
     align-content: start;
-    background-image: url('/gemp-module/images/decipher_card_discard.svg');
+    background-image: url('../../images/decipher_card_discard.svg');
     background-size: 42px 42px;
     height: 42px;
 }
@@ -142,7 +142,7 @@ ul {
     font-weight: bolder;
     width: 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/adventureDeck-42.png');
+    background-image: url('../../images/adventureDeck-42.png');
 }
 
 .removedPileSize {
@@ -153,7 +153,7 @@ ul {
     font-weight: bolder;
     width: 42px;
     height: 42px;
-    background-image: url('/gemp-module/images/exiled-42.png');
+    background-image: url('../../images/exiled-42.png');
 }
 
 .showStats {

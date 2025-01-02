@@ -1,6 +1,7 @@
 import GempClientCommunication from './communication.js';
 import { formatPrice, getUrlParam } from './common.js';
 import Cookies from "js-cookie";
+import fanfareAudio from "../../src/assets/fanfare_x.mp3";
 
 export default class GempHallUI {
 	comm;
@@ -289,11 +290,6 @@ export default class GempHallUI {
 		$(rowSelector, this.tablesDiv)
 			.css({borderTopColor:"#000000", borderLeftColor:"#000000", borderBottomColor:"#000000", borderRightColor:"#000000"})
 			.animate({borderTopColor:"#ffffff", borderLeftColor:"#ffffff", borderBottomColor:"#ffffff", borderRightColor:"#ffffff"}, "fast");
-	}
-	
-	PlaySound(soundObj) {
-		var myAudio = document.getElementById(soundObj);
-		myAudio.play();
 	}
 	
 	AddTesterFlag() {
@@ -642,8 +638,9 @@ export default class GempHallUI {
 				window.open("/gemp-module/game.html?gameType=" + gameType + "&gameId=" + waitingGameId + participantIdAppend, "_blank");
 			}
 			if (games.length > 0) {
-			        // Turned off this sound because it was annoying :)
-//				this.PlaySound("gamestart");
+				let audio = new Audio(fanfareAudio);
+				// Turned off this sound because it was annoying :)
+				//audio.play();
 			}
 
 			if (!this.supportedFormatsInitialized) {

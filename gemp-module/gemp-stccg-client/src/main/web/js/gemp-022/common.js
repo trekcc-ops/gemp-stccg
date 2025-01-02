@@ -1,3 +1,6 @@
+import goldImg from '../../images/gold.png';
+import silverImg from '../../images/silver.png';
+
 export var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export var serverDomain = "";
@@ -15,7 +18,7 @@ export function formatDate(date) {
 
 export function formatPrice(price) {
     var silver = (price % 100);
-    return Math.floor(price / 100) + "<img src='images/gold.png'/> " + ((silver < 10) ? ("0" + silver) : silver) + "<img src='images/silver.png'/>";
+    return Math.floor(price / 100) + `<img src='${goldImg}'/>` + ((silver < 10) ? ("0" + silver) : silver) + `<img src='${silverImg}'/>`;
 }
 
 export function getDateString(date) {
