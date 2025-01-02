@@ -211,9 +211,6 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
         return _actionSource;
     }
 
-    public void setVirtualCardAction(boolean virtualCardAction) { _virtualCardAction = virtualCardAction; }
-    public boolean isVirtualCardAction() { return _virtualCardAction; }
-
     public boolean wasCarriedOut() {
         return _wasCarriedOut = true;
     }

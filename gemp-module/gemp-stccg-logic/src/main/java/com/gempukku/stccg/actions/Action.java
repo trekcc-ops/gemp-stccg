@@ -1,10 +1,7 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-
-import java.util.Set;
 
 public interface Action {
     String getCardActionPrefix();
@@ -27,8 +24,7 @@ public interface Action {
 
     ActionType getActionType();
     String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException;
-    void setVirtualCardAction(boolean virtualCardAction);
-    boolean isVirtualCardAction();
+
     String getPerformingPlayerId();
 
     boolean canBeInitiated(DefaultGame cardGame);

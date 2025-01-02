@@ -22,7 +22,6 @@ public abstract class ActionyAction implements Action {
     protected String _text;
 
     protected final String _performingPlayerId;
-    private boolean _virtualCardAction;
     protected final ActionType _actionType;
     public ActionType getActionType() { return _actionType; }
 
@@ -64,16 +63,6 @@ public abstract class ActionyAction implements Action {
         this(game.getActionsEnvironment(), ActionType.OTHER, null);
     }
 
-
-    @Override
-    public void setVirtualCardAction(boolean virtualCardAction) {
-        _virtualCardAction = virtualCardAction;
-    }
-
-    @Override
-    public boolean isVirtualCardAction() {
-        return _virtualCardAction;
-    }
 
     @Override
     public String getPerformingPlayerId() {

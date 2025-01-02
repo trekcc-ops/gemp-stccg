@@ -77,9 +77,6 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
                 " to " + _toZone.getHumanReadable());
     }
 
-    public void setVirtualCardAction(boolean virtualCardAction) { _virtualCardAction = virtualCardAction; }
-    public boolean isVirtualCardAction() { return _virtualCardAction; }
-
     public boolean wasCarriedOut() {
         return _cardHasEnteredPlay;
     }

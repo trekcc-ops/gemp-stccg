@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.Player;
 
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class CardActionSelectionDecision extends ActionDecision {
@@ -36,25 +37,13 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
 
     private String[] getBlueprintIds() {
         String[] result = new String[_actions.size()];
-        for (int i = 0; i < result.length; i++) {
-            TopLevelSelectableAction action = _actions.get(i);
-            if (action.isVirtualCardAction())
-                result[i] = String.valueOf(action.getPerformingCard().getBlueprintId());
-            else
-                result[i] = "inPlay";
-        }
+        Arrays.fill(result, "inPlay");
         return result;
     }
 
     private String[] getImageUrls() {
         String[] result = new String[_actions.size()];
-        for (int i = 0; i < result.length; i++) {
-            TopLevelSelectableAction action = _actions.get(i);
-            if (action.isVirtualCardAction())
-                result[i] = String.valueOf(action.getPerformingCard().getBlueprint().getImageUrl());
-            else
-                result[i] = "inPlay";
-        }
+        Arrays.fill(result, "inPlay");
         return result;
     }
 
