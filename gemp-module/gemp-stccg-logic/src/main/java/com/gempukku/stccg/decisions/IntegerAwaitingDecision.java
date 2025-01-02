@@ -1,7 +1,5 @@
 package com.gempukku.stccg.decisions;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.Player;

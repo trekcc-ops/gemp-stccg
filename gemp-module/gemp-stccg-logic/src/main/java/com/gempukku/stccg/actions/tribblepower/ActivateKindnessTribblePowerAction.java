@@ -27,7 +27,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
             if (cardGame.getGameState().getHand(player).size() >= 4) {
                 Player performingPlayer = cardGame.getPlayer(player);
                 SelectCardsAction selectAction =
-                        new SelectVisibleCardAction(performingCard, performingPlayer,
+                        new SelectVisibleCardAction(performingPlayer,
                                 "Select a card to place beneath play pile",
                                 Filters.yourHand(performingPlayer));
                 appendEffect(new PlaceCardOnBottomOfPlayPileAction(performingPlayer, selectAction, performingCard));

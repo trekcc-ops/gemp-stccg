@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -189,9 +188,7 @@ public class MissionLocation implements Snapshotable<MissionLocation> {
         // TODO - This won't work quite right for shared missions
         Set<Player> playersWithSeeds = _cardsPreSeededUnderneath.keySet();
         for (Player player : playersWithSeeds) {
-            for (PhysicalCard card : _cardsPreSeededUnderneath.get(player)) {
-                _cardsSeededUnderneath.add(card);
-            }
+            _cardsSeededUnderneath.addAll(_cardsPreSeededUnderneath.get(player));
             _cardsPreSeededUnderneath.remove(player);
         }
     }

@@ -94,7 +94,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     private void secondPlayerChosen(String secondPlayerChosen, DefaultGame game) throws InvalidGameLogicException {
         Player discardingPlayer = game.getPlayer(_discardingPlayerId);
         SelectVisibleCardAction discardSelectAction =
-                new SelectVisibleCardAction(_performingCard, discardingPlayer, "Choose a card to discard",
+                new SelectVisibleCardAction(discardingPlayer, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
         appendEffect(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
 

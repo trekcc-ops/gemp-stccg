@@ -1,6 +1,5 @@
 package com.gempukku.stccg.decisions;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;

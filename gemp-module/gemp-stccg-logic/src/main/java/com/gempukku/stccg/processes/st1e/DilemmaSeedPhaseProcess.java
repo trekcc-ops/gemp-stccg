@@ -1,6 +1,5 @@
 package com.gempukku.stccg.processes.st1e;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.AddSeedCardsAction;
 import com.gempukku.stccg.actions.playcard.RemoveSeedCardsAction;

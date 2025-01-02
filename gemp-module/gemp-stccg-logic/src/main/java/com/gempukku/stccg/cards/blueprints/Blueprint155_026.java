@@ -61,7 +61,7 @@ public class Blueprint155_026 extends CardBlueprint {
             // after any use, discard incident OR discard a [TNG] card from hand
             Filter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
             Filter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
-            SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(thisCard, player,
+            SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(player,
                     "Select a card to discard", discardCardFilter);
             Action discardAction = new DiscardCardAction(thisCard, player, selectCardToDiscardAction);
             getItDoneAction.appendEffect(discardAction);
@@ -86,7 +86,7 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     private TopLevelSelectableAction choice2(PhysicalCard thisCard, Player player) {
-        SelectVisibleCardAction targetAction = new SelectVisibleCardAction(thisCard, player, "Select a ship",
+        SelectVisibleCardAction targetAction = new SelectVisibleCardAction(player, "Select a ship",
                 Filters.and(Filters.your(player), Filters.inPlay, CardIcon.TNG_ICON,
                         CardType.SHIP));
 
