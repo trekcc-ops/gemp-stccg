@@ -1,5 +1,7 @@
 import GempClientCommunication from './communication.js';
 import { formatPrice, getUrlParam } from './common.js';
+import Cookies from "js-cookie";
+import fanfareAudio from "../../src/assets/fanfare_x.mp3";
 
 export default class GempHallUI {
 	comm;
@@ -33,14 +35,14 @@ export default class GempHallUI {
 			distance: 20
 		});
 		
-		var storedChatSize = $.cookie("chatResize");
-		if (storedChatSize == null)
-			storedChatSize = 300;
+		var storedChatSizeValue = Cookies.get("chatResize");
+		if (storedChatSizeValue == null)
+			storedChatSizeValue = 300;
 		
-		$("#chat").height(storedChatSize);
+		$("#chat").height(storedChatSizeValue);
 		
 		$("#chat").resize(function() {
-			$.cookie("chatResize", $("#chat").height(), { expires:365 });
+			Cookies.set("chatResize", $("#chat").height(), { expires:365 });
 		});
 		
 		this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
@@ -93,7 +95,7 @@ export default class GempHallUI {
         });
 		
 
-		var hallSettingsStr = $.cookie("hallSettings");
+		var hallSettingsStr = Cookies.get("hallSettings");
 		if (hallSettingsStr == null)
 			hallSettingsStr = "1|1|0|0|0";
 		var hallSettings = hallSettingsStr.split("|");
@@ -170,7 +172,7 @@ export default class GempHallUI {
 
 		var newHallSettings = getSettingValue(0) + "|" + getSettingValue(1) + "|" + getSettingValue(2) + "|" + getSettingValue(3) + "|" + getSettingValue(4);
 		console.log("New settings: " + newHallSettings);
-		$.cookie("hallSettings", newHallSettings, { expires:365 });
+		Cookies.set("hallSettings", newHallSettings, { expires:365 });
 	}
 
 	getHall() {
@@ -288,11 +290,6 @@ export default class GempHallUI {
 		$(rowSelector, this.tablesDiv)
 			.css({borderTopColor:"#000000", borderLeftColor:"#000000", borderBottomColor:"#000000", borderRightColor:"#000000"})
 			.animate({borderTopColor:"#ffffff", borderLeftColor:"#ffffff", borderBottomColor:"#ffffff", borderRightColor:"#ffffff"}, "fast");
-	}
-	
-	PlaySound(soundObj) {
-		var myAudio = document.getElementById(soundObj);
-		myAudio.play();
 	}
 	
 	AddTesterFlag() {
@@ -641,8 +638,9 @@ export default class GempHallUI {
 				window.open("/gemp-module/game.html?gameType=" + gameType + "&gameId=" + waitingGameId + participantIdAppend, "_blank");
 			}
 			if (games.length > 0) {
-			        // Turned off this sound because it was annoying :)
-//				this.PlaySound("gamestart");
+				let audio = new Audio(fanfareAudio);
+				// Turned off this sound because it was annoying :)
+				//audio.play();
 			}
 
 			if (!this.supportedFormatsInitialized) {

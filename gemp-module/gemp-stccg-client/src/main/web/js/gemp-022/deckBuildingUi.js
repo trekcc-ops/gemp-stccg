@@ -1,3 +1,5 @@
+import "../../js/jquery/jquery-3.7.1.js";
+import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
 import GempClientCommunication from "./communication.js";
 import Card from "./jCards.js";
 import { createCardDiv } from "./jCards.js";
@@ -160,19 +162,6 @@ export default class GempLotrDeckBuildingUI {
 
         var width = $(window).width();
         var height = $(window).height();
-
-        var swipeOptions = {
-            threshold:20,
-            swipeUp:function (event) {
-                that.infoDialog.prop({ scrollTop:that.infoDialog.prop("scrollHeight") });
-                return false;
-            },
-            swipeDown:function (event) {
-                that.infoDialog.prop({ scrollTop:0 });
-                return false;
-            }
-        };
-        this.infoDialog.swipe(swipeOptions);
 
         this.cardFilter.setFilter("");
         this.cardFilter.getCollection();

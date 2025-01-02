@@ -15,7 +15,6 @@
         <module>gemp-stccg-logic</module>
         <module>gemp-stccg-common</module>
         <module>gemp-stccg-cards</module>
-        <module>gemp-stccg-client</module>
     </modules>
 
     <properties>

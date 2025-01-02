@@ -1,3 +1,5 @@
+import "../../js/jquery/jquery-3.7.1.js";
+import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
 import GempClientCommunication from "../../js/gemp-022/communication.js";
 
 var comm = new GempClientCommunication("/gemp-stccg-server", function () {

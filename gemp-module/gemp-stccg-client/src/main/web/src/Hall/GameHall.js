@@ -1,3 +1,5 @@
+import "../../js/jquery/jquery-3.7.1.js";
+import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
 import ChatBoxUI from "../../js/gemp-022/chat.js";
 import GempHallUI from "../../js/gemp-022/hallUi.js";
 import GameHistoryUI from "../../js/gemp-022/gameHistoryUi.js";
@@ -260,8 +262,8 @@ $(document).ready(function () {
 									{"<>":"td","html":function() { return new Date(this.end_date).toLocaleString('sv'); }},
 								]};
 								
-									   
-								$("#tblReplays").json2html(json,template);
+								// TODO: BUG: This call will fail because we never load node-json2html.
+								// $("#tblReplays").json2html(json,template);
 							}
 							
 							

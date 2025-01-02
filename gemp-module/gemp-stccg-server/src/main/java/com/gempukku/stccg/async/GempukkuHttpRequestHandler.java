@@ -260,6 +260,10 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             else if (fileName.endsWith(".wav")) {
                 cache = true;
                 contentType = "audio/wav";
+            }
+            else if (fileName.endsWith(".mp3")) {
+                cache = true;
+                contentType = "audio/mpeg";
             } else {
                 contentType = "application/octet-stream";
             }
