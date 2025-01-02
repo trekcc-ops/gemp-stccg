@@ -30,7 +30,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         initializeQuickMissionAttempt("Excavation");
 
         ST1EPhysicalCard ferengiAttack =
-                new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("103_014"));
+                (ST1EPhysicalCard) _game.getGameState().addCardToGame("103_014", _cardLibrary, P1);
         ferengiAttack.setZone(Zone.VOID);
 
         // Seed Maglock

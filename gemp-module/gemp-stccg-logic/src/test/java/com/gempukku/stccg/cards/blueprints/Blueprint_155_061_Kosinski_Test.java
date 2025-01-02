@@ -3,10 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -33,7 +30,8 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         during the dilemma encounter, causing the encounter to fail. */
         initializeQuickMissionAttempt("Excavation");
 
-        PhysicalCard climb = new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("152_002"));
+        PhysicalCard climb = _game.getGameState().addCardToGame("152_002", _cardLibrary, P1);
+
         climb.setZone(Zone.VOID);
 
         // Seed Maglock

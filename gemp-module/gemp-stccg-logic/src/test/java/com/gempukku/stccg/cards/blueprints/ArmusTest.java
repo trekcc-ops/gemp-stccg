@@ -4,10 +4,7 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -54,7 +51,7 @@ public class ArmusTest extends AbstractAtTest {
         assertNotNull(picard);
         assertNotNull(tarses);
 
-        PhysicalCard armus = _cardLibrary.createST1EPhysicalCard(_game, "101_015", 200, P2);
+        PhysicalCard armus = _game.getGameState().addCardToGame("101_015", _cardLibrary, P2);
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation
