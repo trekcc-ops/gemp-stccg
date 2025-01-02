@@ -30,7 +30,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     private PersonnelCard picard;
     private PhysicalShipCard runabout;
     private PhysicalCard cardToDiscard;
-    private List<PhysicalCard> wallaces = new LinkedList<>();
+    private final List<PhysicalCard> wallaces = new LinkedList<>();
 
     @Test
     public void actionOption1() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {

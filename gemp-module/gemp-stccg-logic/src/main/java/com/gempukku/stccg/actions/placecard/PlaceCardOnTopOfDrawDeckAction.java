@@ -10,7 +10,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {

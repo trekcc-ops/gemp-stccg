@@ -20,7 +20,6 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
     public ActivateKindnessTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
-        PhysicalCard performingCard = actionContext.getSource();
         appendEffect(new DrawCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (String player : cardGame.getPlayerIds()) {

@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.*;
 
@@ -186,15 +185,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         return x;
     }
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
-
-    public Set<PhysicalCard> getQuadrantLocationCards(Quadrant quadrant) {
-        Set<PhysicalCard> newCollection = new HashSet<>();
-        for (MissionLocation location : _spacelineLocations)
-            for (PhysicalCard mission : location.getMissions())
-                if (location.getQuadrant() == quadrant)
-                    newCollection.add(mission);
-        return newCollection;
-    }
 
     @Override
     protected void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {

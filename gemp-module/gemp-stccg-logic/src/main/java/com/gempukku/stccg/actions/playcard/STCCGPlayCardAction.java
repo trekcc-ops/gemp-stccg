@@ -8,10 +8,6 @@ import com.gempukku.stccg.game.Player;
 
 public class STCCGPlayCardAction extends PlayCardAction {
 
-    public STCCGPlayCardAction(ST1EPhysicalCard card, Zone zone, Player player) {
-        this(card, zone, player, false);
-    }
-
     public STCCGPlayCardAction(ST1EPhysicalCard card, Zone zone, Player player, boolean forFree) {
         super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
         setText("Play " + card.getFullName());
