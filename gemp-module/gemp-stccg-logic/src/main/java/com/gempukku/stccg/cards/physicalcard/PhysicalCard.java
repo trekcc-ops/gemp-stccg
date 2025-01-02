@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -87,7 +88,7 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     boolean isInPlay();
     boolean hasCharacteristic(Characteristic characteristic);
 
-    boolean isMisSeed(DefaultGame cardGame, MissionLocation mission);
+    boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException;
 
     List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException;
 

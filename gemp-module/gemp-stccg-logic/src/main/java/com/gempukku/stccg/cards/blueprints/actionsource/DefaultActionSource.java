@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints.actionsource;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.AppendableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -98,7 +98,7 @@ public abstract class DefaultActionSource implements ActionSource {
         addCost(
             new DelayedEffectBlueprint() {
                 @Override
-                protected List<Action> createActions(AppendableAction action, ActionContext actionContext) {
+                protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext) {
                     Action usageLimitAction = new UseOncePerTurnAction(
                             action, action.getPerformingCard(), actionContext.getPerformingPlayer());
                     return Collections.singletonList(usageLimitAction);

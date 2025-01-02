@@ -2,8 +2,8 @@ package com.gempukku.stccg.cards.blueprints.resolver;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.AppendableAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
@@ -153,12 +153,11 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(AppendableAction parentAction, ActionContext context) {
-                DefaultGame cardGame = context.getGame();
+            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
                 Action action = switch (selectionType) {
                     case "self", "memory" -> {
                         Collection<PhysicalCard> result = filterCards(context, choiceFilter);
-                        yield new SystemQueueAction(cardGame) {
+                        yield new SubAction(parentAction, context) {
                             @Override
                             public boolean requirementsAreMet(DefaultGame cardGame) {
                                 int min = countSource.getMinimum(context);
@@ -172,14 +171,14 @@ public class CardResolver {
                             }
                         };
                     }
-                    case "all" -> new SystemQueueAction(cardGame) {
+                    case "all" -> new SubAction(parentAction, context) {
                         @Override
                         public Action nextAction(DefaultGame cardGame) {
                             context.setCardMemory(memory, filterCards(context, choiceFilter));
                             return getNextAction();
                         }
                     };
-                    case "random" -> new SystemQueueAction(cardGame) {
+                    case "random" -> new SubAction(parentAction, context) {
                         @Override
                         public Action nextAction(DefaultGame cardGame) {
                             context.setCardMemory(memory,
@@ -231,7 +230,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(AppendableAction action, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
                 Action selectionAction = effectSource.createAction(cards, action, context,
@@ -264,7 +263,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(AppendableAction action, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Action selectionAction = choiceAction.apply(context);
                 result.add(selectionAction);

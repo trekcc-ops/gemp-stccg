@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -182,7 +183,7 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
-    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
+    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException;
 
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType) {

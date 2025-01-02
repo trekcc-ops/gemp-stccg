@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.AppendableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -50,7 +50,7 @@ public class ChooseEffectBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Action> createActions(AppendableAction parentAction, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
                 DefaultGame cardGame = context.getGame();
                 Action action = switch (effectType) {
                     case CHOOSEANUMBER -> new SelectNumberAction(context, choiceText, valueSource, memorize);

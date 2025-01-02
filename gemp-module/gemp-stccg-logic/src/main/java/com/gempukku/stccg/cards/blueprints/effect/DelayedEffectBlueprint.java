@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.AppendableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class DelayedEffectBlueprint implements EffectBlueprint {
 
     @Override
-    public final void addEffectToAction(boolean cost, AppendableAction action, ActionContext actionContext) {
+    public final void addEffectToAction(boolean cost, CardPerformedAction action, ActionContext actionContext) {
         final SystemQueueAction sysAction = new SystemQueueAction(actionContext.getGame()) {
             @Override
             public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
@@ -43,7 +43,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
     }
 
 
-    abstract protected List<Action> createActions(AppendableAction action, ActionContext actionContext)
+    abstract protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException;
 
     @Override

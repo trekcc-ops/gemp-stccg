@@ -3,6 +3,7 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -77,7 +78,7 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             } else {
                 _game.getActionsEnvironment().addActionToStack(nextAction);
             }
-        } catch (InvalidGameLogicException exp) {
+        } catch (InvalidGameLogicException | CardNotFoundException exp) {
             _game.sendErrorMessage(exp);
         }
     }

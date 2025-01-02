@@ -47,7 +47,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) {
+    public boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException {
         if (_blueprint.getCardType() != CardType.DILEMMA && _blueprint.getCardType() != CardType.ARTIFACT)
             return true; // TODO - Sometimes gametext allows them to be seeded
         if (hasIcon(cardGame, CardIcon.AU_ICON))
@@ -61,7 +61,8 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
                 if (_blueprint.getCardType() == CardType.ARTIFACT) {
                     // TODO - Artifact misseeding is a pain
                 } else {
-                    PhysicalCard olderCard = revealAction.getRevealedCard();
+                    int olderCardId = revealAction.getRevealedCardId();
+                    PhysicalCard olderCard = cardGame.getCardFromCardId(olderCardId);
                     if (this.isCopyOf(olderCard) && this != olderCard && _owner == olderCard.getOwner())
                         return true;
                 }

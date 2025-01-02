@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardOnBottomOfPlayPileAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

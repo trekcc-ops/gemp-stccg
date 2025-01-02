@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.usage;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -13,7 +14,8 @@ public class UseOncePerTurnAction extends ActionyAction {
     private final int _limit;
     private final String _prefix;
 
-    public UseOncePerTurnAction(Action limitedAction, PhysicalCard performingCard, Player performingPlayer) {
+    public UseOncePerTurnAction(CardPerformedAction limitedAction, PhysicalCard performingCard,
+                                Player performingPlayer) {
         super(performingPlayer, ActionType.USAGE_LIMIT);
         _card = performingCard;
         _limit = 1;

@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.AppendableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.tribblepower.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -21,7 +21,7 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
     }
 
     @Override
-    protected List<Action> createActions(AppendableAction action, ActionContext context)
+    protected List<Action> createActions(CardPerformedAction action, ActionContext context)
             throws InvalidCardDefinitionException, InvalidGameLogicException {
 
         List<Action> result = new LinkedList<>();

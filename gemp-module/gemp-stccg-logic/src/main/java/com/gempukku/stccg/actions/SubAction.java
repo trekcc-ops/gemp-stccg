@@ -8,14 +8,18 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.List;
 
-public class SubAction extends ActionyAction implements AppendableAction {
+public class SubAction extends ActionyAction implements CardPerformedAction {
 
-    private final AppendableAction _parentAction;
+    private final CardPerformedAction _parentAction;
 
-    public SubAction(AppendableAction action, ActionContext context,
-                     List<EffectBlueprint> costAppenders, List<EffectBlueprint> effectBlueprints) {
+    public SubAction(CardPerformedAction action, ActionContext context) {
         super(context.getGame().getPlayer(action.getPerformingPlayerId()), action.getActionType());
         _parentAction = action;
+    }
+
+    public SubAction(CardPerformedAction action, ActionContext context,
+                     List<EffectBlueprint> costAppenders, List<EffectBlueprint> effectBlueprints) {
+        this(action, context);
 
         for (EffectBlueprint costAppender : costAppenders) {
             costAppender.addEffectToAction(true, this, context);

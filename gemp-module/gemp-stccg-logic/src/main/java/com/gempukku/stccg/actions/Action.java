@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
@@ -11,7 +12,7 @@ public interface Action {
     void appendCost(Action costAction);
     void appendEffect(Action actionEffect);
 
-    Action nextAction(DefaultGame game) throws InvalidGameLogicException;
+    Action nextAction(DefaultGame game) throws InvalidGameLogicException, CardNotFoundException;
 
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, OTHER,
