@@ -118,11 +118,12 @@ function loginScreen() {
     );
 }
 
-$(document).ready(
+document.addEventListener("DOMContentLoaded",
     function () {
         comm.getStatus(
             function (html) {
                 $(".status").append(html);
             });
         loginScreen();
-    });
+    }
+);

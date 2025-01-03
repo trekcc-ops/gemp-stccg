@@ -7,7 +7,7 @@ import { TribblesGameTableUI, ST1EGameTableUI } from "../../js/gemp-022/gameUi.j
 var ui;
 var communication;
 
-$(document).ready(
+document.addEventListener("DOMContentLoaded",
     function () {
         var replay = getUrlParam("replayId");
         var gameType = getUrlParam("gameType");

@@ -14,8 +14,7 @@ import { formatPrice } from "../../js/gemp-022/common.js";
 var chat;
 var hall;
 
-$(document).ready(function () {
-
+document.addEventListener("DOMContentLoaded", function() {
 	$("#main").tabs();
 	
 	let chat = new ChatBoxUI("Game Hall", $("#chat"), "/gemp-stccg-server", true, null, false, null, true);
