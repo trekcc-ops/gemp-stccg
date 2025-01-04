@@ -1,6 +1,27 @@
 import goldImg from '../../images/gold.png';
 import silverImg from '../../images/silver.png';
 
+import { createTheme } from '@mui/material/styles';
+
+export const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      light: '#c4caea',
+      main: '#596ac2',
+      dark: '#2b3ea1',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#f8f2cb',
+      main: '#eadd79',
+      dark: '#c2b159',
+      contrastText: '#000',
+    },
+  },
+});
+
+
 export var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export var serverDomain = "";
