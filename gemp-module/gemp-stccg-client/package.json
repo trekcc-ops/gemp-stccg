@@ -12,12 +12,12 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
-    "vite": "^6.0.6",
-    "vite-babel-plugin": "^0.0.2"
+    "vite": "^6.0.6"
   },
   "scripts": {
     "build": "vite build src/main/web",
     "test": "jest",
+    "dev": "vite dev src/main/web",
     "clean": "rm -r src/main/web/dist"
   },
   "overrides": {
