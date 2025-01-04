@@ -83,7 +83,7 @@ export default function RegistrationForm({ comms }) {
         }
 
         comms.register(
-            login,
+            username,
             password1,
             function (_, status) {
                 if(status == "202") {
