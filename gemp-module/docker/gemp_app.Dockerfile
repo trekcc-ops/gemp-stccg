@@ -54,3 +54,4 @@ RUN mkdir -p /src/gemp-module/gemp-stccg-client/target/
 COPY --from=server-build /gemp-module/gemp-stccg-server/src/main/resources/log4j2.xml /src/gemp-module/gemp-stccg-client/target/log4j2.xml
 COPY --from=server-build /gemp-module/gemp-stccg-server/target/gemp-stccg-server-jar-with-dependencies.jar /src/gemp-module/gemp-stccg-client/target/web.jar
 COPY --from=client-build /gemp-client/src/main/web/dist /src/gemp-module/web
+COPY --from=client-build /gemp-client/src/main/web/includes /src/gemp-module/web/includes

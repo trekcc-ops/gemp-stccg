@@ -10,7 +10,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import LoginForm from './LoginForm.jsx';
 import RegistrationForm from "./RegistrationForm.jsx";
-import { theme } from '../js/gemp-022/common.js';
+import { theme } from '../../js/gemp-022/common.js';
 import { ThemeProvider } from '@mui/material/styles';
 
 export default function LoginRegisterTabs({ comms }) {
