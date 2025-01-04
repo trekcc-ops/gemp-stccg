@@ -2,7 +2,8 @@ import { createRoot } from 'react-dom/client';
 import "../../js/jquery/jquery-3.7.1.js";
 import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
 import GempClientCommunication from "../../js/gemp-022/communication.js";
-import RegistrationForm from "../../includes/RegistrationForm.jsx";
+import LoginRegisterTabs from "../../includes/LoginRegisterTabs.jsx";
+
 
 var comm = new GempClientCommunication("/gemp-stccg-server", function () {
     alert("Unable to contact the server");
@@ -14,80 +15,15 @@ function registrationScreen() {
     root.render(<RegistrationForm comms={comm} />);
 }
 
-function login() {
-    var login = $("#login").val();
-    var password = $("#password").val();
-    comm.login(login, password, function (_, status) {
-            if(status == "202") {
-                registrationScreen();
-                $("#registerButton").html("Update Password");
-                $(".error").html("Your password has been reset.  Please enter a new password.");
-                $("#login").val(login);
-            }
-            else {
-                location.href = "/gemp-module/hall.html";
-            }
-        },
-        {
-            "0": function () {
-                alert("Unable to connect to server, either server is down or there is a problem" +
-                    " with your internet connection");
-            },
-            "401": function () {
-                $(".error").html("Invalid username or password. Try again.");
-                loginScreen();
-            },
-            "403": function () {
-                $(".error").html("You have been permanently banned. If you think it was a mistake please appeal with dmaz or ketura on <a href='https://lotrtcgpc.net/discord>the PC Discord</a>.");
-                $("#interaction").html("");
-            },
-            "409": function () {
-                $(".error").html("You have been temporarily banned. You can try logging in at a later time. If you think it was a mistake please appeal with dmaz or ketura on <a href='https://lotrtcgpc.net/discord>the PC Discord</a>.");
-                $("#interaction").html("");
-            },
-            "503": function () {
-                $(".error").html("Server is down for maintenance. Please come at a later time.");
-            }
-        });
-}
-
-function loginScreen() {
-    $("#interaction").html("");
-    $("#interaction").append("Login below, or ");
-    var registerButton = $("<div>Register</div>").button();
-    registerButton.click(registrationScreen);
-
-    $("#interaction").append(registerButton);
-    $("#interaction").append("<br/>Login: <input id='login' type='text'><br/>Password: <input id='password' type='password'><br/>");
-
-    var loginButton = $("<div>Login</div>").button();
-    loginButton.click(login);
-
-    $("#password").keypress(function (e) {
-        if (e.which == 13) {
-            login();
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    $("#interaction").append(loginButton);
-    
-    $("#interaction").append(
-        "<br/><br/><div style='text-align: center; overflow-wrap: break-word; display: inline-block; max-width:300px'>" +
-        "Forgot your password?<br/>" +
-//        "<a href='https://lotrtcgpc.net/discord'>Forgot your password?  " +
-        "How did you even get one?</div>"
-//        "Contact <span style='color:orange'>ketura</span> on the PC Discord.</a></div>"
-    );
-}
-
 document.addEventListener("DOMContentLoaded",
     function () {
         comm.getStatus(
             function (html) {
-                $(".status").append(html);
+                $("#serverStatus").append(html);
             });
-        loginScreen();
+        //loginScreen();
+        const domNode = document.getElementById('interaction');
+        const root = createRoot(domNode);
+        root.render(<LoginRegisterTabs comms={comm} />);
     }
 );

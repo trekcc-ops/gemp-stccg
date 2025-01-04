@@ -4,18 +4,14 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-export default function RegistrationForm({ comms }) {
-    // TODO: Each of these fields could be broken out to their own components.
+export default function LoginForm({ comms }) {
     // variables, onchange function binds, and default values
     const [username, setUsername] = useState('');
-    const [password1, setPassword1] = useState('');
-    const [password2, setPassword2] = useState('');
     const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
-    const [pw1ErrorMsg, setpw1ErrorMsg] = useState('');
-    const [pw2ErrorMsg, setpw2ErrorMsg] = useState('');
     const [usernameError, setUsernameError] = useState(false);
+    const [password, setPassword] = useState('');
+    const [pw1ErrorMsg, setpw1ErrorMsg] = useState('');
     const [pw1Error, setPw1Error] = useState(false);
-    const [pw2Error, setPw2Error] = useState(false);
     const [statusMsg, setStatusMsg] = useState('');
 
     function handleUsernameChange(e) {
@@ -24,16 +20,10 @@ export default function RegistrationForm({ comms }) {
         setUsername(e.target.value);
     }
 
-    function handlePassword1Change(e) {
+    function handlePasswordChange(e) {
         setPw1Error(false);
         setpw1ErrorMsg("");
-        setPassword1(e.target.value);
-    }
-
-    function handlePassword2Change(e) {
-        setPw2Error(false);
-        setpw2ErrorMsg("");
-        setPassword2(e.target.value);
+        setPassword(e.target.value);
     }
 
     function usernameEmpty(e) {
@@ -46,48 +36,29 @@ export default function RegistrationForm({ comms }) {
         setPw1Error(true);
     }
 
-    function pw2Empty(e) {
-        setpw2ErrorMsg("Password cannot be empty.");
-        setPw2Error(true);
-    }
-
-    function mismatchedPasswords(e) {
-        setpw2ErrorMsg("Passwords do not match! Try again.");
-        setPw1Error(true);
-        setPw2Error(true);
-    }
-
     function checkForEnter(e) {
         if (e.key === "Enter") {
-            handleRegisterButton(e);
+            handleLoginButton(e);
         }
     }
 
-    function handleRegisterButton(e) {
+    function handleLoginButton(e) {
         if (username === '') {
             usernameEmpty(e);
             return;
         }
 
-        if (password1 === '') {
+        if (password === '') {
             pw1Empty(e);
             return;
         }
-        if (password2 === '') {
-            pw2Empty(e);
-            return;
-        }
-        if (password1 != password2) {
-            mismatchedPasswords(e);
-            return;
-        }
 
-        comms.register(
-            login,
-            password1,
+        comms.login(
+            username,
+            password,
             function (_, status) {
-                if(status == "202") {
-                    setStatusMsg("Your password has successfully been reset!  Please refresh the page and log in.");
+                if(status === "202") {
+                    setStatusMsg("Your password has been reset. Please use the registration form to enter a new password.");
                 }
                 else {
                     location.href = "/gemp-module/hall.html";
@@ -98,12 +69,14 @@ export default function RegistrationForm({ comms }) {
                     alert("Unable to connect to server, either server is down or there is a problem" +
                         " with your internet connection");
                 },
-                "400": function () {
-                    setStatusMsg("Login is invalid. Login must be between 2-10 characters long, and contain only<br/>" +
-                        " english letters, numbers or _ (underscore) and - (dash) characters.");
+                "401": function () {
+                    setStatusMsg("Invalid username or password. Try again.");
+                },
+                "403": function () {
+                    setStatusMsg("You have been permanently banned. If you think it was a mistake please appeal with the CC on the forums.");
                 },
                 "409": function () {
-                    setStatusMsg("User with this login already exists in the system. Try a different one.");
+                    setStatusMsg("You have been temporarily banned. You can try logging in at a later time. If you think it was a mistake please with the CC on the forums.");
                 },
                 "503": function () {
                     setStatusMsg("Server is down for maintenance. Please come at a later time.");
@@ -115,7 +88,7 @@ export default function RegistrationForm({ comms }) {
     return(
         <Box>
             <Stack spacing={1}>
-                <TextField 
+                <TextField
                     required
                     variant='filled'
                     id='username'
@@ -133,25 +106,14 @@ export default function RegistrationForm({ comms }) {
                     id='password'
                     label='Password'
                     type='password'
-                    value={password1}
+                    autoComplete="current-password"
+                    value={password}
                     error={pw1Error}
                     helperText={pw1ErrorMsg}
-                    onChange={handlePassword1Change}
+                    onChange={handlePasswordChange}
                     onKeyDown={checkForEnter}
                     />
-                <TextField
-                    required
-                    variant="filled"
-                    id='password'
-                    label='Confirm Password'
-                    type='password'
-                    value={password2}
-                    error={pw2Error}
-                    helperText={pw2ErrorMsg}
-                    onChange={handlePassword2Change}
-                    onKeyDown={checkForEnter}
-                    />
-                <Button variant="contained" onClick={handleRegisterButton} id='registerButton'>Register</Button>
+                <Button variant="contained" onClick={handleLoginButton} id='loginButton'>Login</Button>
                 <Box id="status">{statusMsg}</Box>
             </Stack>
         </Box>
