@@ -9,19 +9,13 @@ var comm = new GempClientCommunication("/gemp-stccg-server", function () {
     alert("Unable to contact the server");
 });
 
-function registrationScreen() {
-    const domNode = document.getElementById('interaction');
-    const root = createRoot(domNode);
-    root.render(<RegistrationForm comms={comm} />);
-}
-
 document.addEventListener("DOMContentLoaded",
     function () {
         comm.getStatus(
             function (html) {
                 $("#serverStatus").append(html);
             });
-        //loginScreen();
+        
         const domNode = document.getElementById('interaction');
         const root = createRoot(domNode);
         root.render(<LoginRegisterTabs comms={comm} />);
