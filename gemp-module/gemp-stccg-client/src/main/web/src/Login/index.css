@@ -3,11 +3,9 @@ shtml {
 }
 body {
     font-size: 100%;
-    height: 100%; 
+    height: 100%;
     background-image: url('../../images/space.jpg');
-    background-size: cover; 
-    background-repeat:no-repeat; 
-    background-position: center center;
+    background-repeat: no-repeat;
     background-color: #000000;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -15,13 +13,8 @@ body {
 }
 
 .centerContainer {
-    margin: 0;
-    height: 100%;
-    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    margin-top: 150px;
 }
 
 .banner {
