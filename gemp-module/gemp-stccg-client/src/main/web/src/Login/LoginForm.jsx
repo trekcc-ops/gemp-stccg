@@ -89,7 +89,6 @@ export default function LoginForm({ comms }) {
         <Box>
             <Stack spacing={1}>
                 <TextField
-                    required
                     variant='filled'
                     id='username'
                     label='Username'
@@ -101,7 +100,6 @@ export default function LoginForm({ comms }) {
                     onKeyDown={checkForEnter}
                     />
                 <TextField
-                    required
                     variant="filled"
                     id='password'
                     label='Password'

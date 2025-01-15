@@ -116,7 +116,6 @@ export default function RegistrationForm({ comms }) {
         <Box>
             <Stack spacing={1}>
                 <TextField 
-                    required
                     variant='filled'
                     id='username'
                     label='Username'
@@ -128,7 +127,6 @@ export default function RegistrationForm({ comms }) {
                     onKeyDown={checkForEnter}
                     />
                 <TextField
-                    required
                     variant="filled"
                     id='password'
                     label='Password'
@@ -140,7 +138,6 @@ export default function RegistrationForm({ comms }) {
                     onKeyDown={checkForEnter}
                     />
                 <TextField
-                    required
                     variant="filled"
                     id='password'
                     label='Confirm Password'
