@@ -1,6 +1,3 @@
-shtml {
-    height: 100%;
-}
 body {
     font-size: 100%;
     height: 100%;
@@ -18,12 +15,9 @@ body {
 }
 
 .banner {
-    display: block;
-    text-align: center; 
+    text-align: center;
     background-color: #222222CC;
     font-family: "Garamond", sans-serif;
-    width: 105vw;
-    left: 0vw;
     padding: 10px;
     color: #63C5DA;
     font-size: 400%;
@@ -31,12 +25,9 @@ body {
 }
 
 .banner-sub {
-    display: block;
     text-align: center;
     background-color: #222222CC;
     font-family: "Verdana", sans-serif;
-    width: 105vw;
-    left: -2.5vw;
     padding: 10px;
     color: #63C5DA;
     font-size: 150%;
@@ -51,8 +42,6 @@ body {
 }
 
 .login {
-    margin: 10px;
-    padding: 10px;
     display: grid;
     grid-row-gap: 10px;
 }
@@ -65,11 +54,11 @@ body {
 
 .status {
     color:white;
-    overflow:visible
+    overflow: visible;
 }
 
 .error {
-    color: #ff0000
+    color: #ff0000;
 }
 
 #interaction {
@@ -80,11 +69,9 @@ body {
 }
 
 .info {
-    text-align: center; 
-    background-color: #222222CC; 
-    margin-bottom: 150px; 
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    text-align: center;
+    background-color: #222222CC;
+    margin-bottom: 150px;
     color: white;
 }
 
