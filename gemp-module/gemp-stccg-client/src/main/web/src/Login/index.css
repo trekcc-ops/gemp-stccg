@@ -4,60 +4,48 @@ body {
     background-image: url('../../images/space.jpg');
     background-repeat: no-repeat;
     background-color: #000000;
-    overflow-x: hidden;
-    overflow-y: hidden;
     margin: 0;
 }
 
-.centerContainer {
+#centerContainer {
     display: flex;
     flex-direction: column;
 }
 
-.banner {
+#banner {
     text-align: center;
     background-color: #222222CC;
     font-family: "Garamond", sans-serif;
     padding: 10px;
     color: #63C5DA;
     font-size: 400%;
-    margin: -5px -5px 0 0;
+    margin: 0;
 }
 
-.banner-sub {
+#banner-sub {
     text-align: center;
     background-color: #222222CC;
     font-family: "Verdana", sans-serif;
     padding: 10px;
     color: #63C5DA;
     font-size: 150%;
-    margin: -5px 0 0 0;
+    margin: 0;
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    align-items: stretch;
-}
-
-.login {
+#login {
+    flex-grow: 4;
     display: grid;
     grid-row-gap: 10px;
 }
 
-.status, .error {
+#status {
     margin: 0;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.status {
     color:white;
     overflow: visible;
 }
 
-.error {
+#error {
+    margin: 0;
     color: #ff0000;
 }
 
@@ -68,10 +56,9 @@ body {
     color: white;
 }
 
-.info {
+#info {
     text-align: center;
     background-color: #222222CC;
-    margin-bottom: 150px;
     color: white;
 }
 
