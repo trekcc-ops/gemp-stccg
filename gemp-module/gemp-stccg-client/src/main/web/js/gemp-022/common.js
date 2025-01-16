@@ -95,3 +95,21 @@ export function openSizeDialog(dialog) {
     }
     dialog.dialog("open");
 }
+
+// All possible zones, per stccg/common/filterable/Zone.java
+export var zones_all = [
+    "DRAW_DECK",
+    "MISSIONS_PILE",
+    "SEED_DECK",
+    "TABLE",
+    "SPACELINE",
+    "AT_LOCATION",
+    "SUPPORT",
+    "ATTACHED",
+    "REMOVED",
+    "PLAY_PILE",
+    "HAND",
+    "DISCARD",
+    "VOID",
+    "VOID_FROM_HAND"
+]

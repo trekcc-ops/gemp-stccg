@@ -1,3 +1,4 @@
+import { zones_all } from "./common.js";
 import Cookies from "js-cookie";
 import special01Img from "../../images/boosters/special-01.png";
 import rulesImg from "../../images/rules.png";
@@ -26,6 +27,34 @@ export default class Card {
     errata;
 
     constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown) {
+        if (typeof(blueprintId) != 'string') {
+            throw new TypeError(`blueprintId '${blueprintId}' must be a string.`);
+        }
+
+        if (zones_all.indexOf(zone) === -1) {
+            throw new TypeError(`zone '${zone}' is not in the zones_all array.`);
+        }
+
+        if (typeof(cardId) != 'string') {
+            throw new TypeError(`cardId '${cardId}' must be a string.`);
+        }
+
+        if (typeof(owner) != 'string') {
+            throw new TypeError(`owner '${owner}' must be a string.`);
+        }
+
+        if (typeof(imageUrl) != 'string') {
+            throw new TypeError(`imageUrl '${imageUrl}' must be a string.`);
+        }
+
+        if (typeof(locationIndex) != 'string') {
+            throw new TypeError(`locationIndex '${locationIndex}' must be a string.`);
+        }
+
+        if (typeof(upsideDown) != 'boolean') {
+            throw new TypeError(`upsideDown '${upsideDown}' must be a boolean.`);
+        }
+        
         this.blueprintId = blueprintId;
         this.imageUrl = imageUrl;
         this.upsideDown = upsideDown;
@@ -205,9 +234,19 @@ export default class Card {
     }
 
     getErrata(setNo, cardNo) {
-        if (this.remadeErratas["" + setNo] != null && $.inArray(cardNo, this.remadeErratas["" + setNo]) != -1)
-            return "/gemp-module/images/erratas/LOTR" + this.formatCardNo(setNo, cardNo) + ".jpg";
-        return null;
+        // no set match
+        if (Object.hasOwn(this.remadeErratas, "" + setNo) === false) {
+            return null;
+        }
+
+        // no card match
+        let set_cards = this.remadeErratas["" + setNo];
+        if (set_cards.indexOf(cardNo) === -1) {
+            return null;
+        }
+
+        // match found
+        return "/gemp-module/images/erratas/LOTR" + this.formatCardNo(setNo, cardNo) + ".jpg";
     }
 
     getHeightForColumnWidth(columnWidth) {
@@ -309,14 +348,10 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
 }
 
 export function getFoilPresentation() {
-    var result = Cookies.get("foilPresentation");
-    if (result === null)
-        result = "static";
-    if (result === "true")
-        result = "animated";
-    if (result === "false")
-        result = "static";
-    return result;
+    if (Cookies.get("foilPresentation") === "true") {
+        return "animated";
+    }
+    return "static";
 }
 
 export function createFullCardDiv(image, foil, horizontal, noBorder) {
@@ -324,8 +359,9 @@ export function createFullCardDiv(image, foil, horizontal, noBorder) {
     if (horizontal) orientation = "Horizontal";
     else orientation = "Vertical";
 
-    if (noBorder) var borderClass = "noBorderOverlay";
-    else var borderClass = "borderOverlay";
+    var borderClass;
+    if (noBorder) borderClass = "noBorderOverlay";
+    else borderClass = "borderOverlay";
 
     var cardDiv = $("<div class='fullCardDiv" + orientation + "'></div>");
     cardDiv.append($("<div class='fullCardWrapper'>" +
@@ -335,7 +371,7 @@ export function createFullCardDiv(image, foil, horizontal, noBorder) {
 
     if (foil && getFoilPresentation() !== 'none') {
         var foilImage = (getFoilPresentation() === 'animated') ? "foil.gif" : "holo.jpg";
-        cardDiv.append($("div class='foilOverlay" + orientation + "'>" +
+        cardDiv.append($("<div class='foilOverlay" + orientation + "'>" +
             "<img src='/gemp-module/images/" + foilImage + "' width='100%' height='100%'></div>"));
     }
 
@@ -349,5 +385,5 @@ export function createSimpleCardDiv(image) {
 }
 
 export function getCardDivFromId(cardId) {
-    return $(".card:cardId(" + cardId + ")");
+    return document.getElementById(cardId);
 }
