@@ -1125,20 +1125,6 @@ export default class GempClientCommunication {
         });
     }
 
-    getRegistrationForm(callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:"/gemp-module/includes/registrationForm.html",
-            cache:false,
-            async:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-
     getDraft(leagueType, callback, errorMap) {
         $.ajax({
             type:"GET",

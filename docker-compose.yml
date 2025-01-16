@@ -24,14 +24,8 @@ services:
         published: 8052
     volumes:
        - type: bind
-         source: gemp-module/gemp-stccg-client/src/main/web
-         target: /etc/gemp-module/web
-       - type: bind
          source: gemp-module
          target: /etc/gemp-module
-       - type: bind
-         source: gemp-module/gemp-stccg-client/src/main/web
-         target: /var/www/localhost/htdocs/gemp-module
        - type: bind
          source: logs
          target: /logs
