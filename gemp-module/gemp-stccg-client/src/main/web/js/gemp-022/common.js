@@ -111,5 +111,17 @@ export var zones_all = [
     "HAND",
     "DISCARD",
     "VOID",
-    "VOID_FROM_HAND"
+    "VOID_FROM_HAND",
+    "SPECIAL", // dialog boxes
+
+
+    // deck builder sub decks not represented in game UI
+    "MISSIONS",
+    "SITES",
+    "QS_TENT",
+    "QS_TENT_REFEREE",
+    "DILEMMA",
+    "Q_FLASH",
+    "BATTLE_BRIDGE",
+    "TRIBBLE"
 ]
