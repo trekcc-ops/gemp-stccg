@@ -307,16 +307,22 @@ export default class Card {
 
 
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
+    let imgClass;
     if (cardId == null) {
-        if (upsideDown)
-            var imgClass = "card_img upside-down";
-        else
-            var imgClass = "card_img";
-    } else {
-        if (upsideDown)
-            var imgClass = "card_img upside-down card_img_" + cardId;
-        else
-            var imgClass = "card_img card_img_" + cardId;
+        if (upsideDown) {
+            imgClass = "card_img upside-down";
+        }
+        else {
+            imgClass = "card_img";
+        }
+    }
+    else {
+        if (upsideDown) {
+            imgClass = "card_img upside-down card_img_" + cardId;
+        }
+        else {
+            imgClass = "card_img card_img_" + cardId;
+        }
     }
 
 
