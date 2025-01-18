@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
@@ -15,27 +16,24 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class StopCardsAction extends ActionyAction {
-    private final Collection<ST1EPhysicalCard> _cardsToStop = new LinkedList<>();
-    private final SelectCardsAction _selectionAction;
-    private boolean _personnelChosen;
+    private final ActionCardResolver _cardTarget;
+    private enum Progress { cardsChosen }
 
     public StopCardsAction(Player performingPlayer, Collection<? extends ST1EPhysicalCard> cardsToStop) {
-        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS);
-        _personnelChosen = true;
-        _cardsToStop.addAll(cardsToStop);
-        _selectionAction = new SelectVisibleCardsAction(performingPlayer, "", cardsToStop,
-                cardsToStop.size());
+        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS, Progress.values());
+        _cardTarget = new ActionCardResolver(cardsToStop);
+        setProgress(Progress.cardsChosen);
     }
 
     public StopCardsAction(Player performingPlayer, SelectCardsAction selectionAction) {
-        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS);
-        _selectionAction = selectionAction;
+        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS, Progress.values());
+        _cardTarget = new ActionCardResolver(selectionAction);
     }
 
     @Override
-    public String getActionSelectionText(DefaultGame game) {
-        if (_personnelChosen && _cardsToStop.size() == 1) {
-            return "Stop " + Iterables.getOnlyElement(_cardsToStop).getTitle();
+    public String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException {
+        if (_cardTarget.isResolved() && _cardTarget.getCards(game).size() == 1) {
+            return "Stop" + Iterables.getOnlyElement(_cardTarget.getCards(game)).getTitle();
         } else {
             return "Stop personnel";
         }
@@ -48,26 +46,37 @@ public class StopCardsAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_personnelChosen) {
-            if (!_selectionAction.wasCarriedOut()) {
-                return _selectionAction;
-            } else {
-                for (PhysicalCard card : _selectionAction.getSelectedCards()) {
-                    if (card instanceof ST1EPhysicalCard stCard) {
-                        _cardsToStop.add(stCard);
+        if (!getProgress(Progress.cardsChosen)) {
+            if (!_cardTarget.isResolved()) {
+                Action selectionAction = _cardTarget.getSelectionAction();
+                if (selectionAction != null) {
+                    if (selectionAction.wasCarriedOut()) {
+                        _cardTarget.resolve(cardGame);
                     } else {
-                        throw new InvalidGameLogicException(
-                                "Tried to \"stop\" a card from a game with no \"stop\" action");
+                        return selectionAction;
                     }
+                } else {
+                    _cardTarget.resolve(cardGame);
                 }
-                _personnelChosen = true;
+            } else {
+                setProgress(Progress.cardsChosen);
             }
         }
 
         if (!_wasCarriedOut) {
-            for (ST1EPhysicalCard card : _cardsToStop) {
+            Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>();
+            for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
+                if (card instanceof ST1EPhysicalCard stCard) {
+                    cardsToStop.add(stCard);
+                } else {
+                    throw new InvalidGameLogicException(
+                            "Tried to \"stop\" a card from a game with no \"stop\" action");
+                }
+            }
+            for (ST1EPhysicalCard card : cardsToStop) {
                 card.stop();
             }
+            _wasCarriedOut = true;
         }
 
         return getNextAction();
