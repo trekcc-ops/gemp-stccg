@@ -12,26 +12,13 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 public class PlaceCardOnMissionAction extends ActionyAction {
 
     private final PhysicalCard _cardBeingPlaced;
-    private final PhysicalCard _performingCard;
     private final MissionLocation _mission;
 
 
-    public PlaceCardOnMissionAction(Player performingPlayer, PhysicalCard performingCard,
-                                    PhysicalCard cardBeingPlaced, MissionLocation mission) {
+    public PlaceCardOnMissionAction(Player performingPlayer, PhysicalCard cardBeingPlaced, MissionLocation mission) {
         super(performingPlayer, ActionType.PLACE_CARD);
         _mission = mission;
         _cardBeingPlaced = cardBeingPlaced;
-        _performingCard = performingCard;
-    }
-
-    @Override
-    public PhysicalCard getActionSource() {
-        return _performingCard;
-    }
-
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _performingCard;
     }
 
     @Override
