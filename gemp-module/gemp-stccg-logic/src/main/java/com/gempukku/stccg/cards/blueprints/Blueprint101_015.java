@@ -28,9 +28,7 @@ public class Blueprint101_015 extends CardBlueprint {
         List<Action> actions = new LinkedList<>();
         SelectCardsAction selectPersonnelAction = new SelectRandomCardAction(thisCard.getOwner(),
                 "Select personnel to be killed", Filters.personnelInAttemptingUnit(attemptingUnit));
-        KillSinglePersonnelAction killAction =
-                new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectPersonnelAction);
-        actions.add(killAction);
+        actions.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectPersonnelAction));
         actions.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
         return actions;
     }

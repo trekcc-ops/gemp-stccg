@@ -45,7 +45,7 @@ public class Blueprint152_003 extends CardBlueprint {
                 new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection, game);
         TopLevelSelectableAction action2 = new DrawCardAction(thisCard, game.getPlayer(opponentId), skillDotEvaluator);
-        Action multipleChoiceDecision = new SelectAndInsertAction(action, thisCard, attemptingUnit.getPlayer(),
+        Action multipleChoiceDecision = new SelectAndInsertAction(action, attemptingUnit.getPlayer(),
                 action1, action2);
 
         result.add(randomSelection);

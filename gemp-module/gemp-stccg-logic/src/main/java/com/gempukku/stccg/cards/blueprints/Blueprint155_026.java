@@ -55,7 +55,7 @@ public class Blueprint155_026 extends CardBlueprint {
             TopLevelSelectableAction choice3 = choice3(thisCard, player);
 
             Action chooseAction =
-                    new SelectAndInsertAction(getItDoneAction, thisCard, player, choice1, choice2, choice3);
+                    new SelectAndInsertAction(getItDoneAction, player, choice1, choice2, choice3);
             getItDoneAction.appendEffect(chooseAction);
 
             // after any use, discard incident OR discard a [TNG] card from hand
