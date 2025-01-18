@@ -42,7 +42,7 @@ public class Blueprint155_010 extends CardBlueprint {
         else {
             Collection<PersonnelCard> personnelToStop = TextUtils.getRandomItemsFromList(attemptingPersonnel, 2);
             result.add(new StopCardsAction(thisCard.getOwner(), personnelToStop));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         }
         return result;
     }

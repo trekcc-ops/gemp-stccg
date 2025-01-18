@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.discard;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -16,16 +17,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RemoveCardFromPlayAction extends ActionyAction {
-    private final Collection<PhysicalCard> _cardsToRemove;
+
+    private final ActionCardResolver _cardTarget;
 
     public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardToRemove) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
-        _cardsToRemove = Collections.singleton(cardToRemove);
+        _cardTarget = new ActionCardResolver(cardToRemove);
     }
 
     public RemoveCardFromPlayAction(Player performingPlayer, Collection<PhysicalCard> cardsToRemove) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
-        _cardsToRemove = cardsToRemove;
+        _cardTarget = new ActionCardResolver(cardsToRemove);
     }
 
 
@@ -36,7 +38,16 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Collection<PhysicalCard> removedCards = new HashSet<>(_cardsToRemove);
+        if (!_cardTarget.isResolved()) {
+            Action selectionAction = _cardTarget.getSelectionAction();
+            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
+                return selectionAction;
+            } else {
+                _cardTarget.resolve(cardGame);
+            }
+        }
+
+        Collection<PhysicalCard> removedCards = new HashSet<>(_cardTarget.getCards(cardGame));
 
         Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
 

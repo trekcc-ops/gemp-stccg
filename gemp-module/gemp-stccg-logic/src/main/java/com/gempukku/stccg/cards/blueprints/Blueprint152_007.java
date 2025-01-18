@@ -34,7 +34,7 @@ public class Blueprint152_007 extends CardBlueprint {
             for (PersonnelCard personnel : cardsToRemove)
                 result.add(new RemoveCardFromPlayAction(thisCard.getOwner(), personnel));
         }
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         return result;
     }
 

@@ -47,7 +47,7 @@ public class RevealSeedCardAction extends ActionyAction {
                     }
                     if (revealedCard instanceof ST1EPhysicalCard stCard) {
                         return new RemoveDilemmaFromGameAction(
-                                cardGame.getPlayer(_performingPlayerId), stCard, location);
+                                cardGame.getPlayer(_performingPlayerId), stCard);
                     } else {
                         throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
                     }

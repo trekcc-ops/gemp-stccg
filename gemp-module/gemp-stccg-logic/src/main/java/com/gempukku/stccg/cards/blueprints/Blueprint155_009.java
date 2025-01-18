@@ -39,7 +39,7 @@ public class Blueprint155_009 extends CardBlueprint {
             if (personnel.getSkillLevel(SkillName.GEOLOGY) >= 3 ||
                     personnel.getSkillLevel(SkillName.EXOBIOLOGY) >= 3) {
                 nullified = true;
-                result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+                result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
             }
         }
 

@@ -18,26 +18,25 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     private final MissionRequirement _conditions;
 
     public OvercomeDilemmaConditionAction(PhysicalCard dilemma, MissionRequirement conditions,
-                                          AttemptingUnit attemptingUnit, Action failDilemmaAction,
-                                          EncounterSeedCardAction encounterAction) {
+                                          AttemptingUnit attemptingUnit, Action failDilemmaAction) {
         super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, failDilemmaAction);
         _failActionId = failAction.getActionId();
-        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma,
-                encounterAction.getLocation());
+        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma
+        );
         _succeedActionId = succeedAction.getActionId();
         _conditions = conditions;
     }
 
     public OvercomeDilemmaConditionAction(PhysicalCard dilemma, MissionRequirement conditions,
-                                          AttemptingUnit attemptingUnit, EncounterSeedCardAction encounterAction) {
+                                          AttemptingUnit attemptingUnit) {
         super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         Action failAction = new FailDilemmaAction(attemptingUnit, dilemma);
         _failActionId = failAction.getActionId();
-        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma,
-                encounterAction.getLocation());
+        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma
+        );
         _succeedActionId = succeedAction.getActionId();
         _conditions = conditions;
     }

@@ -50,7 +50,7 @@ public class Blueprint103_014 extends CardBlueprint {
             result.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction));
         }
 
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         return result;
     }
 

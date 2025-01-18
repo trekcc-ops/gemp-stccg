@@ -39,7 +39,7 @@ public class Blueprint101_014 extends CardBlueprint {
         result.add(selectAction);
         Action killAction = new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction);
         Action overcomeAction =
-                new OvercomeDilemmaConditionAction(thisCard, conditions, attemptingUnit, killAction, action);
+                new OvercomeDilemmaConditionAction(thisCard, conditions, attemptingUnit, killAction);
         result.add(overcomeAction);
         return result;
     }

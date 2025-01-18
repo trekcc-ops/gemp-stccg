@@ -47,7 +47,7 @@ public class Blueprint152_004 extends CardBlueprint {
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2, condition3, condition4);
 
         if (fullCondition.canBeMetBy(attemptingUnit)) {
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         } else {
             result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         }
