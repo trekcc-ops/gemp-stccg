@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -17,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
     @Test
-    public void planetSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void planetSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
+            CardNotFoundException {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost
@@ -25,9 +27,9 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard geordi = new PersonnelCard(_game, 902, _game.getPlayer(P1), _cardLibrary.get("155_060"));
+        PersonnelCard geordi = (PersonnelCard) _game.getGameState().addCardToGame("155_060", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                new PhysicalShipCard(_game, 906, _game.getPlayer(P1), _cardLibrary.get("101_331"));
+                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
 
         geordi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
@@ -51,7 +53,8 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
     }
 
     @Test
-    public void spaceSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void spaceSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
+            CardNotFoundException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         // Seed Federation Outpost
@@ -59,9 +62,9 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard geordi = new PersonnelCard(_game, 902, _game.getPlayer(P1), _cardLibrary.get("155_060"));
+        PersonnelCard geordi = (PersonnelCard) _game.getGameState().addCardToGame("155_060", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                new PhysicalShipCard(_game, 906, _game.getPlayer(P1), _cardLibrary.get("101_331"));
+                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
 
         geordi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);

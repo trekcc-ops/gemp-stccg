@@ -320,6 +320,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
         _allCards.put(_nextCardId, card);
         _nextCardId++;
+        card.setZone(Zone.VOID);
         return card;
     }
 
