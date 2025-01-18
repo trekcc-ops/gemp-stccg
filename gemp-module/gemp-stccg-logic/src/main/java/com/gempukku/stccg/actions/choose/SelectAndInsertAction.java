@@ -16,17 +16,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class SelectAndInsertAction extends ActionyAction {
-    private final PhysicalCard _actionSource;
     private final List<TopLevelSelectableAction> _actionsToChooseFrom = new LinkedList<>();
     private final ActionyAction _parentAction;
     private Action _chosenAction;
     private enum Progress { actionSelected }
 
-    public SelectAndInsertAction(ActionyAction parentAction, PhysicalCard performingCard, Player selectingPlayer,
+    public SelectAndInsertAction(ActionyAction parentAction, Player selectingPlayer,
                                  TopLevelSelectableAction... actions) {
         super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION, Progress.values());
         _actionsToChooseFrom.addAll(Arrays.asList(actions));
-        _actionSource = performingCard;
         _parentAction = parentAction;
     }
 
@@ -75,7 +73,5 @@ public class SelectAndInsertAction extends ActionyAction {
     public boolean wasCarriedOut() {
         return _wasCarriedOut;
     }
-
-    public PhysicalCard getPerformingCard() { return _actionSource; }
 
 }

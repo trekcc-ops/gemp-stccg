@@ -11,8 +11,8 @@ import java.util.Collections;
 
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
 
-    final PhysicalCard _actionSource;
-    private boolean _cardWasRemoved, _cardHasEnteredPlay;
+    final PhysicalCard _performingCard;
+    private boolean _cardHasEnteredPlay;
     final PhysicalCard _cardEnteringPlay;
     protected final Zone _fromZone;
     final Zone _toZone;
@@ -24,7 +24,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerId,
                           Zone toZone, ActionType actionType) {
         super(cardEnteringPlay.getGame().getPlayer(performingPlayerId), actionType);
-        _actionSource = actionSource;
+        _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _fromZone = cardEnteringPlay.getZone();
         _toZone = toZone;
@@ -36,7 +36,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
     @Override
     public PhysicalCard getPerformingCard() {
-        return _actionSource;
+        return _performingCard;
     }
 
     public int getCardIdForActionSelection() {
@@ -50,16 +50,12 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         if (cost != null)
             return cost;
 
-        if (!_cardWasRemoved) {
-            _cardWasRemoved = true;
+        if (!_cardHasEnteredPlay) {
+            _cardHasEnteredPlay = true;
             if (_fromZone == Zone.DRAW_DECK) {
                 cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
                 cardGame.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
             }
-        }
-
-        if (!_cardHasEnteredPlay) {
-            _cardHasEnteredPlay = true;
             putCardIntoPlay(cardGame);
         }
 
