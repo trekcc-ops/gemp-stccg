@@ -29,8 +29,8 @@ public class ST1ERuleSet extends RuleSet {
         if (card1.getCardType() == CardType.EQUIPMENT || card2.getCardType() == CardType.EQUIPMENT)
             return true;
         else if (card1 instanceof AffiliatedCard affiliatedCard1 && card2 instanceof AffiliatedCard affiliatedCard2) {
-            Affiliation affil1 = affiliatedCard1.getAffiliation();
-            Affiliation affil2 = affiliatedCard2.getAffiliation();
+            Affiliation affil1 = affiliatedCard1.getCurrentAffiliation();
+            Affiliation affil2 = affiliatedCard2.getCurrentAffiliation();
             if (affil1 == affil2) {
                 return true;
             } else if (affil1 == Affiliation.BORG || affil2 == Affiliation.BORG) {

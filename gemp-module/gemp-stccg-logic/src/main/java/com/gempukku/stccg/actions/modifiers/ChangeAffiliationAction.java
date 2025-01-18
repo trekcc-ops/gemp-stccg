@@ -28,7 +28,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
         super(player, "Change affiliation", ActionType.OTHER);
         _card = card;
         _card.getAffiliationOptions().forEach(affiliation -> {
-            if (affiliation != _card.getAffiliation())
+            if (affiliation != _card.getCurrentAffiliation())
                 _affiliationOptions.add(affiliation);
         });
         if (card instanceof PersonnelCard personnel) {

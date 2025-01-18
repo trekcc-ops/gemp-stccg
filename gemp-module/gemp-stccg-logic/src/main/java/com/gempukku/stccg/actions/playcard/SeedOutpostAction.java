@@ -36,7 +36,7 @@ public class SeedOutpostAction extends PlayCardAction {
             _affiliationWasChosen = false;
         } else {
             _affiliationWasChosen = true;
-            _selectedAffiliation = cardToSeed.getAffiliation();
+            _selectedAffiliation = cardToSeed.getCurrentAffiliation();
         }
     }
 
@@ -106,7 +106,7 @@ public class SeedOutpostAction extends PlayCardAction {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
             gameState.removeCardFromZone(_cardEnteringPlay);
             gameState.getPlayer(_cardEnteringPlay.getOwnerName())
-                    .addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
+                    .addPlayedAffiliation(_cardEnteringPlay.getCurrentAffiliation());
             gameState.seedFacilityAtLocation(_cardEnteringPlay, _locationZoneIndex);
             cardGame.getActionsEnvironment().emitEffectResult(
                     new PlayCardResult(this, _fromZone, _cardEnteringPlay));

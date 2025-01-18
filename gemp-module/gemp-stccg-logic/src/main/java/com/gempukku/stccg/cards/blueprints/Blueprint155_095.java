@@ -11,6 +11,6 @@ public class Blueprint155_095 extends CardBlueprint {
 
     @Override
     public boolean doesNotWorkWithPerRestrictionBox(PhysicalNounCard1E thisCard, PhysicalNounCard1E otherCard) {
-        return (otherCard.getAffiliation() == Affiliation.FEDERATION && thisCard.getCardId() != otherCard.getCardId());
+        return (otherCard.getCurrentAffiliation() == Affiliation.FEDERATION && thisCard.getCardId() != otherCard.getCardId());
     }
 }
