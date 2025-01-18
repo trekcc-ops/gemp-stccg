@@ -71,4 +71,15 @@ public class ActionCardResolver {
         return _selectAction;
     }
 
+    public boolean willProbablyBeEmpty(DefaultGame cardGame) {
+        try {
+            Collection<PhysicalCard> cards = getCards(cardGame);
+            return cards.isEmpty();
+        } catch(InvalidGameLogicException exp) {
+            if (_selectAction != null)
+                return !_selectAction.canBeInitiated(cardGame);
+            else return false;
+        }
+    }
+
 }
