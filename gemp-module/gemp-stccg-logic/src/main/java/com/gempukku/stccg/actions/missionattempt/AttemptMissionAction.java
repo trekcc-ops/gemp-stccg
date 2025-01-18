@@ -61,8 +61,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-
-            Player player = cardGame.getPlayer(_performingPlayerId);
+        Player player = cardGame.getPlayer(_performingPlayerId);
 
             Action cost = getNextCost();
             if (cost != null)
@@ -90,9 +89,9 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                 }
             }
 
-            if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
-                failMission(cardGame);
-            }
+        if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
+            failMission(cardGame);
+        } else {
 
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt);
@@ -134,6 +133,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                 }
                 setProgress(Progress.endedMissionAttempt);
             }
+        }
         return getNextAction();
     }
 

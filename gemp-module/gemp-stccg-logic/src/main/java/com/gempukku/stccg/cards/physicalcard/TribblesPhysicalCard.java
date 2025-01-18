@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -37,20 +36,6 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
             return true;
         }
         return (cardValue == _game.getGameState().getNextTribbleInSequence());
-    }
-
-    @Override
-    public TribblesPhysicalCard generateSnapshot(SnapshotData snapshotData) {
-
-        // TODO - A lot of repetition here between the various PhysicalCard classes
-
-        TribblesPhysicalCard newCard = new TribblesPhysicalCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
-        newCard.setZone(_zone);
-        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
-        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
-        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        return newCard;
     }
 
 }

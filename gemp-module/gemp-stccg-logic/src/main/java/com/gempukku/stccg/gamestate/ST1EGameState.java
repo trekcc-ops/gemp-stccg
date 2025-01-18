@@ -45,8 +45,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
                 zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE)
             return _cardGroups.get(zone).get(playerId);
-        else if (zone == Zone.STACKED)
-            return _stacked.get(playerId);
         else if (zone == Zone.SEED_DECK)
             return _seedDecks.get(playerId);
         else // This should never be accessed
@@ -211,7 +209,19 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             while (cardIterator.hasNext()) {
                 PhysicalCard physicalCard = cardIterator.next();
                 PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
+                if (physicalCard.isPlacedOnMission()) {
+                    try {
+                        PhysicalCard topMission = physicalCard.getLocation().getTopMission();
+                        if (sentCardsFromPlay.contains(topMission)) {
+                            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                            sentCardsFromPlay.add(physicalCard);
+
+                            cardIterator.remove();
+                        }
+                    } catch(InvalidGameLogicException exp) {
+                        _game.sendErrorMessage(exp);
+                    }
+                } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
                     sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                     sentCardsFromPlay.add(physicalCard);
 
@@ -299,35 +309,10 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             snapshot._players.put(playerId, snapshotData.getDataForSnapshot(_players.get(playerId)));
         }
 
-        for (Zone zone : _cardGroups.keySet())
-            copyCardGroup(_cardGroups.get(zone), snapshot._cardGroups.get(zone), snapshotData);
-
         for (MissionLocation location : _spacelineLocations)
             snapshot._spacelineLocations.add(snapshotData.getDataForSnapshot(location));
 
-        // TODO SNAPSHOT: _awayTeams
-        copyCardGroup(_stacked, snapshot._stacked, snapshotData);
-        copyCardGroup(_seedDecks, snapshot._seedDecks, snapshotData);
-        for (PhysicalCard card : _inPlay) {
-            snapshot._inPlay.add(snapshotData.getDataForSnapshot(card));
-        }
-        for (Integer cardId : _allCards.keySet()) {
-            PhysicalCard card = _allCards.get(cardId);
-            snapshot._allCards.put(cardId, snapshotData.getDataForSnapshot(card));
-        }
         return snapshot;
-    }
-
-    private static void copyCardGroup(Map<String, List<PhysicalCard>> copyFrom,
-                                      Map<? super String, ? super List<PhysicalCard>> copyTo,
-                                      SnapshotData snapshotData) {
-        for (Map.Entry<String, List<PhysicalCard>> entry : copyFrom.entrySet()) {
-            List<PhysicalCard> snapshotList = new LinkedList<>();
-            copyTo.put(entry.getKey(), snapshotList);
-            for (PhysicalCard card : entry.getValue()) {
-                snapshotList.add(snapshotData.getDataForSnapshot(card));
-            }
-        }
     }
 
     public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)

@@ -46,20 +46,6 @@ public class MissionCard extends ST1EPhysicalCard {
 
     public int getPoints() { return _blueprint.getPointsShown(); }
 
-    @Override
-    public MissionCard generateSnapshot(SnapshotData snapshotData) {
-
-        // TODO - A lot of repetition here between the various PhysicalCard classes
-
-        MissionCard newCard = new MissionCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
-        newCard.setZone(_zone);
-        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
-        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
-        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        return newCard;
-    }
-
     public boolean hasAffiliationIconForOwner(Affiliation affiliation) {
         return _blueprint.getOwnerAffiliationIcons().contains(affiliation);
     }

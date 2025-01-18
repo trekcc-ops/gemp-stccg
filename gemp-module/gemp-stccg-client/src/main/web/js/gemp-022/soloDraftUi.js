@@ -69,19 +69,6 @@ export default class GempLotrSoloDraftUI {
             title:"Card information"
         });
 
-        var swipeOptions = {
-            threshold:20,
-            swipeUp:function (event) {
-                that.infoDialog.prop({ scrollTop:that.infoDialog.prop("scrollHeight") });
-                return false;
-            },
-            swipeDown:function (event) {
-                that.infoDialog.prop({ scrollTop:0 });
-                return false;
-            }
-        };
-        this.infoDialog.swipe(swipeOptions);
-
         this.getDraftState();
     }
 

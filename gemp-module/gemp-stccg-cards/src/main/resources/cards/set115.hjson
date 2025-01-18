@@ -13,5 +13,15 @@
             lore: The Chandra is part of an elaborate Wadi game which requires players to advance through several <i>shaps,</i> or levels. To get past this <i>shap,</i> players must precisely mimic the Chandra.
             image-url: https://www.trekcc.org/1e/cardimages/dom/chulathechandra.gif
         }
+        {
+            blueprintId: 115_010
+            title: Friendly Fire
+            type: dilemma
+            mission-type: dual
+            property-logo: ds9-logo
+            java-blueprint: true
+            lore: "Ferengi lack of leadership resulted in the untimely demise of the Vorta Keevan aboard Empok Nor. His death was a major setback in Quark and Rom's mission to rescue their Moogie."
+            image-url: https://www.trekcc.org/1e/cardimages/dom/friendlyfire.gif
+        }
     ]
 }

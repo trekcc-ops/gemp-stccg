@@ -6,6 +6,15 @@ import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup
 import GameAnimations from './gameAnimations.js';
 import ChatBoxUI from './chat.js';
 import { openSizeDialog } from "./common.js";
+import Cookies from "js-cookie";
+import playImg from "../../images/play.png";
+import pauseImg from "../../images/pause.png";
+import strengthIconImg from "../../images/o_icon_strength.png";
+import vitalityIconImg from "../../images/o_icon_strength.png";
+import compassIconImg from "../../images/o_icon_strength.png";
+import resistanceIconImg from "../../images/o_icon_strength.png";
+import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
+
 
 export default class GameTableUI {
     padding = 5;
@@ -371,16 +380,16 @@ export default class GameTableUI {
             var settingName = setting[0];
             if (settingName != "autoPass") { // TODO: currently, autoPass always set to false
                 var optionSelection = $("#" + settingName);
-                var cookie = $.cookie(settingName);
+                var cookieValue = Cookies.get(settingName);
 
                     // Multiple choice settings: foilPresentation
-                if (settingName == "foilPresentation" && cookie != null) {
-                    optionSelection.val(cookie);
-                    that.gameSettings.set(settingName, cookie);
+                if (settingName == "foilPresentation" && cookieValue != null) {
+                    optionSelection.val(cookieValue);
+                    that.gameSettings.set(settingName, cookieValue);
                 }
 
                     // True/false settings: autoAccept, alwaysDropDown
-                if (cookie == "true" || cookie == null) {
+                if (cookieValue == "true" || cookieValue == null) {
                     optionSelection.prop("checked", true);
                     that.gameSettings.set(settingName, true);
                 }
@@ -393,7 +402,7 @@ export default class GameTableUI {
                         userSelection = optionSelection.prop("checked"); // True/false
                     }
                     that.gameSettings.set(settingName, userSelection);
-                    $.cookie(settingName, "" + userSelection, {expires: 365});
+                    Cookies.set(settingName, "" + userSelection, {expires: 365});
                 });
             }
         }
@@ -409,11 +418,11 @@ export default class GameTableUI {
 
         // Load auto-pass settings from cookie, or set to default (current default is all phases auto-pass)
         var currPassedPhases = new Array();
-        var currAutoPassCookie = $.cookie("autoPassPhases");
-        if (currAutoPassCookie == null) {
+        var currAutoPassCookieValue = Cookies.get("autoPassPhases");
+        if (currAutoPassCookieValue == null) {
             currPassedPhases = allPhaseNames;
         } else {
-            currPassedPhases = currAutoPassCookie.split("0");
+            currPassedPhases = currAutoPassCookieValue.split("0");
         }
 
         // Create settings panel for user selection of auto-pass settings
@@ -438,7 +447,7 @@ export default class GameTableUI {
             }
             if (newAutoPassPhases.length > 0)
                 newAutoPassPhases = newAutoPassPhases.substr(1);
-            $.cookie("autoPassPhases", newAutoPassPhases, {expires: 365});
+            Cookies.set("autoPassPhases", newAutoPassPhases, {expires: 365});
         });
 
         var playerListener = function (players) {
@@ -704,19 +713,6 @@ export default class GameTableUI {
                 resizable: false,
                 title: "Card information"
             });
-
-        var swipeOptions = {
-            threshold: 20,
-            swipeUp: function (event) {
-                that.infoDialog.prop({scrollTop: that.infoDialog.prop("scrollHeight")});
-                return false;
-            },
-            swipeDown: function (event) {
-                that.infoDialog.prop({scrollTop: 0});
-                return false;
-            }
-        };
-        this.infoDialog.swipe(swipeOptions);
     }
 
     windowResized() {
@@ -853,10 +849,10 @@ export default class GameTableUI {
                 function () {
                     if (that.replayPlay) {
                         that.replayPlay = false;
-                        $("#replayButton").attr("src", "images/play.png");
+                        $("#replayButton").attr("src", playImg);
                     } else {
                         that.replayPlay = true;
-                        $("#replayButton").attr("src", "images/pause.png");
+                        $("#replayButton").attr("src", pauseImg);
                         that.playNextReplayEvent();
                     }
                 });
@@ -1170,29 +1166,22 @@ export default class GameTableUI {
 
         var that = this;
         this.smallDialog
-            .html(text + "<br /><input id='integerDecision' type='text' value='0'>");
+            .html(text + `<br /><input id='integerDecision' value='${val}'>`);
 
         if (!this.replayMode) {
             this.smallDialog.dialog("option", "buttons",
                 {
                     "OK": function () {
+                        let retval = document.getElementById("integerDecision").value
                         $(this).dialog("close");
-                        that.decisionFunction(id, $("#integerDecision").val());
+                        that.decisionFunction(id, retval);
                     }
                 });
         }
 
-        $("#integerDecision").SpinnerControl({
-            type: 'range',
-            typedata: {
-                min: parseInt(min),
-                max: parseInt(max),
-                interval: 1,
-                decimalplaces: 0
-            },
-            defaultVal: val,
-            width: '50px',
-            backColor: "#000000"
+        $("#integerDecision").spinner({
+            min: parseInt(min),
+            max: parseInt(max)
         });
 
         this.smallDialog.dialog("open");
@@ -1246,7 +1235,7 @@ export default class GameTableUI {
             if (!this.replayMode)
             {
                 this.smallDialog.dialog("option", "buttons", {});
-                this.PlaySound("awaitAction");
+                this.PlayAwaitActionSound();
             }
         }
 
@@ -1259,7 +1248,7 @@ export default class GameTableUI {
             var tokenOverlay = $(".tokenOverlay", cardDiv);
 
             var cardStrengthBgDiv = $(
-                "<div class='cardStrengthBg'><img src='images/o_icon_strength.png' width='100%' height='100%'></div>"
+                `<div class='cardStrengthBg'><img src='${strengthIconImg}' width='100%' height='100%'></div>`
             );
             tokenOverlay.append(cardStrengthBgDiv);
 
@@ -1267,7 +1256,7 @@ export default class GameTableUI {
             tokenOverlay.append(cardStrengthDiv);
 
             var cardVitalityBgDiv = $(
-                "<div class='cardVitalityBg'><img src='images/o_icon_vitality.png' width='100%' height='100%'></div>"
+                `<div class='cardVitalityBg'><img src='${vitalityIconImg}' width='100%' height='100%'></div>`
             );
             tokenOverlay.append(cardVitalityBgDiv);
 
@@ -1275,7 +1264,7 @@ export default class GameTableUI {
             tokenOverlay.append(cardVitalityDiv);
 
             var cardSiteNumberBgDiv = $(
-                "<div class='cardSiteNumberBg'><img src='images/o_icon_compass.png' width='100%' height='100%'></div>"
+                `<div class='cardSiteNumberBg'><img src='${compassIconImg}' width='100%' height='100%'></div>`
             );
             cardSiteNumberBgDiv.css({display: "none"});
             tokenOverlay.append(cardSiteNumberBgDiv);
@@ -1285,7 +1274,7 @@ export default class GameTableUI {
             tokenOverlay.append(cardSiteNumberDiv);
 
             var cardResistanceBgDiv = $(
-                "<div class='cardResistanceBg'><img src='images/o_icon_resistance.png' width='100%' height='100%'></div>"
+                `<div class='cardResistanceBg'><img src='${resistanceIconImg}' width='100%' height='100%'></div>`
             );
             cardResistanceBgDiv.css({display: "none"});
             tokenOverlay.append(cardResistanceBgDiv);
@@ -1396,24 +1385,6 @@ export default class GameTableUI {
         var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
         cardDiv.data("card", card);
-
-        var that = this;
-        var swipeOptions = {
-            threshold: 20,
-            fallbackToMouseEvents: false,
-            swipeUp: function (event) {
-                var tar = $(event.target);
-                if (tar.hasClass("actionArea")) {
-                    var selectedCardElem = tar.closest(".card");
-                    that.displayCardInfo(selectedCardElem.data("card"));
-                }
-                return false;
-            },
-            click: function (event) {
-                return that.clickCardFunction(event);
-            }
-        };
-        cardDiv.swipe(swipeOptions);
 
         return cardDiv;
     }
@@ -1537,7 +1508,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         openSizeDialog(this.cardActionDialog);
@@ -1642,7 +1613,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         openSizeDialog(this.cardActionDialog);
@@ -1790,17 +1761,17 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         $(':button').blur();
     }
 
-    PlaySound(soundObj) {
-        var myAudio = document.getElementById(soundObj);
+    PlayAwaitActionSound() {
+        let audio = new Audio(awaitingActionAudio);
         if(!document.hasFocus() || document.hidden || document.msHidden || document.webkitHidden)
         {
-            myAudio.play();
+		    audio.play();
         }
     }
 
@@ -1935,7 +1906,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
 
         openSizeDialog(this.cardActionDialog);
@@ -2025,7 +1996,7 @@ export default class GameTableUI {
         if (!this.replayMode)
         {
             processButtons();
-            this.PlaySound("awaitAction");
+            this.PlayAwaitActionSound();
         }
     }
 

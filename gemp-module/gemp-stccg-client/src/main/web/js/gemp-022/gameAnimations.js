@@ -240,8 +240,7 @@ export default class GameAnimations {
                     "TABLE",
                     "SPACELINE",
                     "AT_LOCATION",
-                    "ATTACHED",
-                    "STACKED"
+                    "ATTACHED"
                 ];
 
                 if (visible_opponent_zones.includes(zone) &&
@@ -473,7 +472,7 @@ export default class GameAnimations {
 
                     if (card.length > 0) {
                         var cardData = card.data("card");
-                        if (cardData.zone == "ATTACHED" || cardData.zone == "STACKED") {
+                        if (cardData.zone == "ATTACHED") {
                             removeFromAttached(cardId);
                         }
 

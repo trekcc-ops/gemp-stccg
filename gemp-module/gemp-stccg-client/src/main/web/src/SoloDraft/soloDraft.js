@@ -1,6 +1,9 @@
+import "../../js/jquery/jquery-3.7.1.js";
+import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
+import "../../js/jquery/jquery.layout.js";
 import GempLotrSoloDraftUI from "../../js/gemp-022/soloDraftUi.js";
 
-$(document).ready(
+document.addEventListener("DOMContentLoaded",
     function () {
         var ui = new GempLotrSoloDraftUI();
 

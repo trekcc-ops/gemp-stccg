@@ -24,14 +24,8 @@ services:
         published: 8052
     volumes:
        - type: bind
-         source: gemp-module/gemp-stccg-client/src/main/web
-         target: /etc/gemp-module/web
-       - type: bind
          source: gemp-module
          target: /etc/gemp-module
-       - type: bind
-         source: gemp-module/gemp-stccg-client/src/main/web
-         target: /var/www/localhost/htdocs/gemp-module
        - type: bind
          source: logs
          target: /logs
@@ -41,14 +35,11 @@ services:
        - type: bind
          source: .
          target: /gemp-src
-       - type: bind
-         source: logs/nohup.out
-         target: /nohup.out
     networks:
       gemp_net_1:
         ipv4_address: ${APP_IP}
     tty: true
-    command: nohup java -jar /src/gemp-module/gemp-stccg-client/target/web.jar &
+    command: java -jar -Dlog4j2.configurationFile=/src/gemp-module/gemp-stccg-client/target/log4j2.xml /src/gemp-module/gemp-stccg-client/target/web.jar &
 
 
   db:
