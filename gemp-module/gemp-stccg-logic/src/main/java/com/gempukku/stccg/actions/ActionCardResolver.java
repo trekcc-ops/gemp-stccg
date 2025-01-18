@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filter;
@@ -50,8 +51,12 @@ public class ActionCardResolver {
         }
     }
 
+    public boolean isResolved() {
+        return _resolved;
+    }
+
     public Collection<PhysicalCard> getCards(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (_cards != null) {
+        if (_resolved) {
             return _cards;
         } else if (_selectAction != null && _selectAction.wasCarriedOut()) {
             return _selectAction.getSelectedCards();
@@ -60,6 +65,10 @@ public class ActionCardResolver {
         } else {
             throw new InvalidGameLogicException("Unable to identify cards from ActionCardResolver");
         }
+    }
+
+    public SelectCardsAction getSelectionAction() {
+        return _selectAction;
     }
 
 }
