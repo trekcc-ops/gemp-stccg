@@ -18,13 +18,13 @@ import java.util.NoSuchElementException;
 public class SelectAndInsertAction extends ActionyAction {
     private final PhysicalCard _actionSource;
     private final List<TopLevelSelectableAction> _actionsToChooseFrom = new LinkedList<>();
-    private boolean _actionSelected;
     private final ActionyAction _parentAction;
     private Action _chosenAction;
+    private enum Progress { actionSelected }
 
     public SelectAndInsertAction(ActionyAction parentAction, PhysicalCard performingCard, Player selectingPlayer,
                                  TopLevelSelectableAction... actions) {
-        super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
+        super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION, Progress.values());
         _actionsToChooseFrom.addAll(Arrays.asList(actions));
         _actionSource = performingCard;
         _parentAction = parentAction;
@@ -42,7 +42,7 @@ public class SelectAndInsertAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_actionSelected) {
+        if (!getProgress(Progress.actionSelected)) {
             List<Action> performableActions = new LinkedList<>();
             List<String> actionTexts = new LinkedList<>();
             for (Action action : _actionsToChooseFrom) {
@@ -59,7 +59,7 @@ public class SelectAndInsertAction extends ActionyAction {
                     try {
                         _chosenAction = performableActions.get(index);
                         _parentAction.insertAction(_chosenAction);
-                        _actionSelected = true;
+                        setProgress(Progress.actionSelected);
                         _wasCarriedOut = true;
                     } catch(NoSuchElementException exp) {
                         cardGame.sendErrorMessage(exp);
