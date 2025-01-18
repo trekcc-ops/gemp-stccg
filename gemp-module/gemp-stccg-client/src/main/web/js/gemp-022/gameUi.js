@@ -153,41 +153,42 @@ export default class GameTableUI {
         if (cardData.zone == "ATTACHED") {
             return this.getReorganizableCardGroupForCardData(cardData.attachedToCard);
         }
-        for (var i=0; i < this.missionCardGroups.length; i++) {
+        for (let i=0; i < this.missionCardGroups.length; i++) {
             if (this.missionCardGroups[i].cardBelongs(cardData)) {
                 return this.missionCardGroups[i];
             }
         }
-        for (var i=0; i < this.opponentAtLocationCardGroups.length; i++) {
+        for (let i=0; i < this.opponentAtLocationCardGroups.length; i++) {
             if (this.opponentAtLocationCardGroups[i].cardBelongs(cardData)) {
                 return this.opponentAtLocationCardGroups[i];
             }
         }
-        for (var i=0; i < this.playerAtLocationCardGroups.length; i++) {
+        for (let i=0; i < this.playerAtLocationCardGroups.length; i++) {
             if (this.playerAtLocationCardGroups[i].cardBelongs(cardData)) {
                 return this.playerAtLocationCardGroups[i];
             }
         }
-        for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
+        for (let [playerId, cardGroup] of Object.entries(this.playPiles)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
             }
         }
-        for (var [playerId, cardGroup] of Object.entries(this.onTableAreas)) {
+        for (let [playerId, cardGroup] of Object.entries(this.onTableAreas)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
             }
         }
-        if (this.hand != null)
+        if (this.hand != null) {
             if (this.hand.cardBelongs(cardData)) {
                 return this.hand;
             }
+        }
         return null;
     }
 
     layoutGroupWithCard(cardId) {
-        var cardData = getCardDivFromId(cardId).data("card");
-        var tempGroup = this.getReorganizableCardGroupForCardData(cardData);
+        let cardData = getCardDivFromId(cardId).data("card");
+        let tempGroup = this.getReorganizableCardGroupForCardData(cardData);
         if (tempGroup != null) {
             tempGroup.layoutCards();
             return;
@@ -321,8 +322,7 @@ export default class GameTableUI {
         var test = $("body");
         $("body")[0].addEventListener("contextmenu",
             function (event) {
-                if(!that.clickCardFunction(event))
-                {
+                if(!that.clickCardFunction(event)) {
                     event.preventDefault();
                     return false;
                 }
@@ -346,8 +346,9 @@ export default class GameTableUI {
     processGameEnd() {
         $("#currentPhase").text("Game over");
         var that = this;
-        if(this.allPlayerIds == null)
+        if(this.allPlayerIds == null) {
             return;
+        }
 
         $("#deck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
             (function (index) {
@@ -442,18 +443,21 @@ export default class GameTableUI {
         $(autoPassArrHashtag.join(",")).bind("change", function () {
             var newAutoPassPhases = "";
             for (var i = 0; i < allPhaseNames.length; i++) {
-                if ($("#autoPass" + allPhaseNames[i]).prop("checked"))
+                if ($("#autoPass" + allPhaseNames[i]).prop("checked")) {
                     newAutoPassPhases += "0" + allPhaseNames[i];
+                }
             }
-            if (newAutoPassPhases.length > 0)
+            if (newAutoPassPhases.length > 0) {
                 newAutoPassPhases = newAutoPassPhases.substr(1);
+            }
             Cookies.set("autoPassPhases", newAutoPassPhases, {expires: 365});
         });
 
         var playerListener = function (players) {
             var val = "";
-            for (var i = 0; i < players.length; i++)
+            for (var i = 0; i < players.length; i++) {
                 val += players[i] + "<br/>";
+            }
             $("a[href='#playersInRoomBox']").html("Players(" + players.length + ")");
             $("#playersInRoomBox").html(val);
         };
@@ -493,7 +497,7 @@ export default class GameTableUI {
         if (tar.hasClass("cardHint")) {
             var blueprintId = tar.attr("value");
             var imageUrl = tar.attr("card_img_url");
-            var card = new Card(blueprintId, "SPECIAL", "hint", "", imageUrl);
+            var card = new Card(blueprintId, "SPECIAL", "hint", "", imageUrl, "", false);
             this.displayCard(card, false);
             event.stopPropagation();
             return false;
@@ -510,14 +514,16 @@ export default class GameTableUI {
             if (!this.successfulDrag) {
                 if (event.shiftKey || event.which > 1) {
                     this.displayCardInfo(selectedCardElem.data("card"));
-                } else if (
-                        (selectedCardElem.hasClass("selectableCard") || 
-                         selectedCardElem.hasClass("actionableCard") ||
-                         selectedCardElem.hasClass("selectedCard")
-                        ) &&
+                }
+                else if ((selectedCardElem.hasClass("selectableCard") || 
+                          selectedCardElem.hasClass("actionableCard") ||
+                          selectedCardElem.hasClass("selectedCard"))
+                        &&
                         !this.replayMode
-                    )
-                    this.selectionFunction(selectedCardElem.data("card").cardId, event);
+                    ) {
+                        this.selectionFunction(selectedCardElem.data("card").cardId, event);
+                }
+                    
                 event.stopPropagation();
             }
             return false;
@@ -563,12 +569,13 @@ export default class GameTableUI {
                     var cardGroup = this.getReorganizableCardGroupForCardData(cardData);
                     if (cardGroup != null) {
                         var cardsInGroup = cardGroup.getCardElems();
-                        for (var i = 0; i < cardsInGroup.length; i++)
+                        for (var i = 0; i < cardsInGroup.length; i++) {
                             if (cardsInGroup[i].data("card").cardId == this.dragCardId) {
                                 this.dragCardIndex = i;
                                 this.draggedCardIndex = i;
                                 break;
                             }
+                        }
                     }
                 }
             }
@@ -582,22 +589,28 @@ export default class GameTableUI {
                         var cardsInGroup = cardGroup.getCardElems();
                         var width = cardElem.width();
                         var currentIndex;
-                        if (event.clientX < this.dragStartX)
+                        if (event.clientX < this.dragStartX) {
                             currentIndex = this.dragCardIndex - Math.floor((this.dragStartX - event.clientX) / width);
-                        else
+                        }
+                        else {
                             currentIndex = this.dragCardIndex + Math.floor((event.clientX - this.dragStartX) / width);
+                        }
 
-                        if (currentIndex < 0)
+                        if (currentIndex < 0) {
                             currentIndex = 0;
-                        if (currentIndex >= cardsInGroup.length)
+                        }
+                        if (currentIndex >= cardsInGroup.length) {
                             currentIndex = cardsInGroup.length - 1;
+                        }
 
                         var cardIdAtIndex = $(cardsInGroup[currentIndex]).data("card").cardId;
                         if (cardIdAtIndex != this.dragCardId) {
-                            if (currentIndex < this.draggedCardIndex)
+                            if (currentIndex < this.draggedCardIndex) {
                                 $(".card:cardId(" + cardIdAtIndex + ")").before(getCardDivFromId(this.dragCardId));
-                            else
+                            }
+                            else {
                                 $(".card:cardId(" + cardIdAtIndex + ")").after(getCardDivFromId(this.dragCardId));
+                            }
                             cardGroup.layoutCards();
                             this.draggedCardIndex = currentIndex;
                         }
@@ -662,13 +675,15 @@ export default class GameTableUI {
     displayCardInfo(card) {
         var showModifiers = false;
         var cardId = card.cardId;
-        if (!this.replayMode && (cardId.length < 4 || cardId.substring(0, 4) != "temp"))
+        if (!this.replayMode && (cardId.length < 4 || cardId.substring(0, 4) != "temp")) {
             showModifiers = true;
+        }
 
         this.displayCard(card, showModifiers);
 
-        if (showModifiers)
+        if (showModifiers) {
             this.getCardModifiersFunction(cardId, this.setCardModifiers);
+        }
     }
 
     setCardModifiers(html) {
@@ -830,8 +845,9 @@ export default class GameTableUI {
     processXml(xml, animate) {
         log(xml);
         var root = xml.documentElement;
-        if (root.tagName == 'gameState' || root.tagName == 'update')
+        if (root.tagName == 'gameState' || root.tagName == 'update') {
             this.processGameEventsXml(root, animate);
+        }
     }
 
     replayGameEventNextIndex = 0;
@@ -944,8 +960,9 @@ export default class GameTableUI {
                 var gameEvent = gameEvents[i];
                 this.processGameEvent(gameEvent, animate);
                 var eventType = gameEvent.getAttribute("type");
-                if (eventType == "D")
+                if (eventType == "D") {
                     hasDecision = true;
+                }
             }
 
             if (this.allPlayerIds != null) {
@@ -965,17 +982,19 @@ export default class GameTableUI {
                         var minutes = Math.floor(value / 60) % 60;
                         var seconds = value % 60;
 
-                        if (hours > 0)
+                        if (hours > 0) {
                             $("#clock" + index).text(
                                 sign + hours + ":" +
                                 ((minutes < 10) ? ("0" + minutes) : minutes) + ":" +
                                 ((seconds < 10) ? ("0" + seconds) : seconds)
                             );
-                        else
+                        }
+                        else {
                             $("#clock" + index).text(
                                 sign + minutes + ":" +
                                 ((seconds < 10) ? ("0" + seconds) : seconds)
                             );
+                        }
                     }
                 }
             }
@@ -1025,9 +1044,11 @@ export default class GameTableUI {
     }
 
     getPlayerIndex(playerId) {
-        for (var plId = 0; plId < this.allPlayerIds.length; plId++)
-            if (this.allPlayerIds[plId] == playerId)
+        for (var plId = 0; plId < this.allPlayerIds.length; plId++) {
+            if (this.allPlayerIds[plId] == playerId) {
                 return plId;
+            }
+        }
         return -1;
     }
 
@@ -1036,8 +1057,9 @@ export default class GameTableUI {
         for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
             cardGroup.layoutCards();
         }
-        if (!this.spectatorMode)
+        if (!this.spectatorMode) {
             this.hand.layoutCards();
+        }
     }
 
     participant(element) {
@@ -1108,9 +1130,11 @@ export default class GameTableUI {
 
     getDecisionParameter(decision, name) {
         var parameters = decision.getElementsByTagName("parameter");
-        for (var i = 0; i < parameters.length; i++)
-            if (parameters[i].getAttribute("name") == name)
+        for (var i = 0; i < parameters.length; i++) {
+            if (parameters[i].getAttribute("name") == name) {
                 return parameters[i].getAttribute("value");
+            }
+        }
 
         return null;
     }
@@ -1118,9 +1142,11 @@ export default class GameTableUI {
     getDecisionParameters(decision, name) {
         var result = new Array();
         var parameters = decision.getElementsByTagName("parameter");
-        for (var i = 0; i < parameters.length; i++)
-            if (parameters[i].getAttribute("name") == name)
+        for (var i = 0; i < parameters.length; i++) {
+            if (parameters[i].getAttribute("name") == name) {
                 result.push(parameters[i].getAttribute("value"));
+            }
+        }
 
         return result;
     }
@@ -1129,10 +1155,12 @@ export default class GameTableUI {
         this.smallDialog.dialog("close");
         this.cardActionDialog.dialog("close");
         this.clearSelection();
-        if (this.alertText != null)
+        if (this.alertText != null) {
             this.alertText.html("");
-        if (this.alertButtons != null)
+        }
+        if (this.alertButtons != null) {
             this.alertButtons.html("");
+        }
         if (this.alertBox != null) {
             this.alertBox.removeClass("alert-box-highlight");
             this.alertBox.removeClass("alert-box-card-selection");
@@ -1141,11 +1169,13 @@ export default class GameTableUI {
         $(".card").each(
             function () {
                 var card = $(this).data("card");
-                if (card.zone == "EXTRA")
+                if (card.zone == "EXTRA") {
                     $(this).remove();
+                }
             });
-        if (this.hand != null)
+        if (this.hand != null) {
             this.hand.layoutCards();
+        }
     }
 
     integerDecision(decision) {
@@ -1154,19 +1184,21 @@ export default class GameTableUI {
         var val = 0;
 
         var min = this.getDecisionParameter(decision, "min");
-        if (min == null)
+        if (min == null) {
             min = 0;
+        }
         var max = this.getDecisionParameter(decision, "max");
-        if (max == null)
+        if (max == null) {
             max = 1000;
+        }
 
         var defaultValue = this.getDecisionParameter(decision, "defaultValue");
-        if (defaultValue != null)
+        if (defaultValue != null) {
             val = parseInt(defaultValue);
+        }
 
         var that = this;
-        this.smallDialog
-            .html(text + `<br /><input id='integerDecision' value='${val}'>`);
+        this.smallDialog.html(text + `<br /><input id='integerDecision' value='${val}'>`);
 
         if (!this.replayMode) {
             this.smallDialog.dialog("option", "buttons",
@@ -1200,8 +1232,9 @@ export default class GameTableUI {
 
         if (results.length > 2 || this.gameSettings.get("alwaysDropDown")) {
             var html = "<br /><select id='multipleChoiceDecision' selectedIndex='0'>";
-            for (var i = 0; i < results.length; i++)
+            for (var i = 0; i < results.length; i++) {
                 html += "<option value='" + i + "'>" + results[i] + "</option>";
+            }
             html += "</select>";
             this.smallDialog.append(html);
 
@@ -1217,8 +1250,9 @@ export default class GameTableUI {
         } else {
             this.smallDialog.append("<br />");
             for (var i = 0; i < results.length; i++) {
-                if (i > 0)
+                if (i > 0) {
                     this.smallDialog.append(" ");
+                }
 
                 var but = $("<button></button>").html(results[i]).button();
                 if (!this.replayMode) {
@@ -1232,8 +1266,7 @@ export default class GameTableUI {
                 }
                 this.smallDialog.append(but);
             }
-            if (!this.replayMode)
-            {
+            if (!this.replayMode) {
                 this.smallDialog.dialog("option", "buttons", {});
                 this.PlayAwaitActionSound();
             }
@@ -1391,11 +1424,13 @@ export default class GameTableUI {
 
     attachSelectionFunctions(cardIds, selection) {
         if (selection) {
-            if (cardIds.length > 0)
+            if (cardIds.length > 0) {
                 $(".card:cardId(" + cardIds + ")").addClass("selectableCard");
+            }
         } else {
-            if (cardIds.length > 0)
+            if (cardIds.length > 0) {
                 $(".card:cardId(" + cardIds + ")").addClass("actionableCard");
+            }
         }
     }
 
@@ -1427,10 +1462,10 @@ export default class GameTableUI {
             var blueprintId = blueprintIds[i];
             var imageUrl = imageUrls[i];
 
-            if (selectable[i] == "true")
+            if (selectable[i] == "true") {
                 selectableCardIds.push(cardId);
-
-            var card = new Card(blueprintId, "SPECIAL", cardId, null, imageUrl);
+            }
+            var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
 
             var cardDiv = this.createCardDiv(card);
 
@@ -1468,15 +1503,18 @@ export default class GameTableUI {
                     processButtons();
                 }
             }
-            if (selectedCardIds.length > 0)
+            if (selectedCardIds.length > 0) {
                 buttons["Clear selection"] = function () {
                     resetChoice();
                     processButtons();
                 };
-            if (selectedCardIds.length >= min)
+            }
+
+            if (selectedCardIds.length >= min) {
                 buttons["Done"] = function () {
                     finishChoice();
                 };
+            }
             that.cardActionDialog.dialog("option", "buttons", buttons);
         };
 
@@ -1505,8 +1543,7 @@ export default class GameTableUI {
         };
 
         allowSelection();
-        if (!this.replayMode)
-        {
+        if (!this.replayMode) {
             processButtons();
             this.PlayAwaitActionSound();
         }
@@ -1546,10 +1583,11 @@ export default class GameTableUI {
             var blueprintId = blueprintIds[i];
             var imageUrl = imageUrls[i];
 
-            if (selectable[i] == "true")
+            if (selectable[i] == "true") {
                 selectableCardIds.push(cardId);
+            }
 
-            var card = new Card(blueprintId, "SPECIAL", cardId, null, imageUrl);
+            var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
 
             var cardDiv = this.createCardDiv(card);
 
@@ -1572,16 +1610,18 @@ export default class GameTableUI {
 
         var processButtons = function () {
             var buttons = {};
-            if (selectedCardIds.length > 0)
+            if (selectedCardIds.length > 0) {
                 buttons["Clear selection"] = function () {
                     resetChoice();
                     processButtons();
                 };
+            }
             if ((selectedCardIds.length >= min) &&
-                (selectedCardIds.length <= max))
+                (selectedCardIds.length <= max)) {
                 buttons["Done"] = function () {
                     finishChoice();
                 };
+            }
             that.cardActionDialog.dialog("option", "buttons", buttons);
         };
 
@@ -1610,8 +1650,7 @@ export default class GameTableUI {
         };
 
         allowSelection();
-        if (!this.replayMode)
-        {
+        if (!this.replayMode) {
             processButtons();
             this.PlayAwaitActionSound();
         }
@@ -1676,8 +1715,9 @@ export default class GameTableUI {
             $(".card").each(
                 function () {
                     var card = $(this).data("card");
-                    if (card.zone == "EXTRA")
+                    if (card.zone == "EXTRA") {
                         $(this).remove();
+                    }
                 });
             that.hand.layoutCards();
             that.decisionFunction(id, "" + selectedCardIds);
@@ -1758,8 +1798,7 @@ export default class GameTableUI {
         };
 
         allowSelection();
-        if (!this.replayMode)
-        {
+        if (!this.replayMode) {
             processButtons();
             this.PlayAwaitActionSound();
         }
@@ -1848,7 +1887,7 @@ export default class GameTableUI {
             var imageUrl = imageUrls[i];
 
             cardIds.push("temp" + i);
-            var card = new Card(blueprintId, "SPECIAL", "temp" + i, null, imageUrl);
+            var card = new Card(blueprintId, "SPECIAL", "temp" + i, "", imageUrl, "", false);
 
             var cardDiv = this.createCardDiv(card, actionTexts[i]);
 
@@ -1903,8 +1942,7 @@ export default class GameTableUI {
         };
 
         allowSelection();
-        if (!this.replayMode)
-        {
+        if (!this.replayMode) {
             processButtons();
             this.PlayAwaitActionSound();
         }
@@ -1993,8 +2031,7 @@ export default class GameTableUI {
         };
 
         allowSelection();
-        if (!this.replayMode)
-        {
+        if (!this.replayMode) {
             processButtons();
             this.PlayAwaitActionSound();
         }
@@ -2261,10 +2298,12 @@ export class TribblesGameTableUI extends GameTableUI {
 
 
         var heightScales;
-        if (this.spectatorMode)
+        if (this.spectatorMode) {
             heightScales = [6, 10, 10, 10, 6];
-        else
+        }
+        else {
             heightScales = [5, 9, 9, 10, 6, 10];
+        }
         var yScales = new Array();
         var scaleTotal = 0;
         for (var i = 0; i < heightScales.length; i++) {
@@ -2333,14 +2372,16 @@ export class TribblesGameTableUI extends GameTableUI {
 
         var i = 0; // I don't think this is used, but not deleting it for now to avoid breaking anything
 
-        if (!this.spectatorMode)
+        if (!this.spectatorMode) {
             this.hand.setBounds(HAND_LEFT, HAND_TOP, HAND_WIDTH, HAND_HEIGHT);
+        }
 
 
-
-        for (var playerId in this.discardPileGroups)
-            if (this.discardPileGroups.hasOwnProperty(playerId))
+        for (var playerId in this.discardPileGroups) {
+            if (this.discardPileGroups.hasOwnProperty(playerId)) {
                 this.discardPileGroups[playerId].layoutCards();
+            }
+        }
 
         if (this.replayMode) {
             $(".replay").css({
@@ -2505,10 +2546,12 @@ export class ST1EGameTableUI extends GameTableUI {
 
         // Old LotR gemp code for heightScales
         var heightScales;
-        if (this.spectatorMode)
+        if (this.spectatorMode) {
             heightScales = [6, 10, 10, 10, 6];
-        else
+        }
+        else {
             heightScales = [5, 9, 9, 10, 6, 10];
+        }
         var yScales = new Array();
         var scaleTotal = 0;
         for (var i = 0; i < heightScales.length; i++) {
@@ -2673,21 +2716,29 @@ export class ST1EGameTableUI extends GameTableUI {
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
         }
 
-        for (var playerId in this.discardPileGroups)
-            if (this.discardPileGroups.hasOwnProperty(playerId))
+        for (let playerId in this.discardPileGroups) {
+            if (this.discardPileGroups.hasOwnProperty(playerId)) {
                 this.discardPileGroups[playerId].layoutCards();
+            }
+        }
 
-        for (var playerId in this.adventureDeckGroups)
-            if (this.adventureDeckGroups.hasOwnProperty(playerId))
+        for (let playerId in this.adventureDeckGroups) {
+            if (this.adventureDeckGroups.hasOwnProperty(playerId)) {
                 this.adventureDeckGroups[playerId].layoutCards();
+            }
+        }
 
-        for (var playerId in this.removedPileGroups)
-            if (this.removedPileGroups.hasOwnProperty(playerId))
+        for (let playerId in this.removedPileGroups) {
+            if (this.removedPileGroups.hasOwnProperty(playerId)) {
                 this.removedPileGroups[playerId].layoutCards();
+            }
+        }
 
-        for (var playerId in this.miscPileGroups)
-            if (this.miscPileGroups.hasOwnProperty(playerId))
+        for (let playerId in this.miscPileGroups) {
+            if (this.miscPileGroups.hasOwnProperty(playerId)) {
                 this.miscPileGroups[playerId].layoutCards();
+            }
+        }
 
         if (this.replayMode) {
             $(".replay").css({
