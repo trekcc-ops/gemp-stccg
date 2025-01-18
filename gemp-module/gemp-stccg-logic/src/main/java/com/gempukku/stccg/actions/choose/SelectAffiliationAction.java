@@ -38,6 +38,7 @@ public class SelectAffiliationAction extends ActionyAction {
                     @Override
                     protected void validDecisionMade(int index, String result) {
                         _selectedAffiliation = affiliationStringMap.get(result);
+                        _wasCarriedOut = true;
                     }
                 });
         return getNextAction();

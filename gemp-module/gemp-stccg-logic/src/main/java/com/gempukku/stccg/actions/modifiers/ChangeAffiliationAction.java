@@ -17,18 +17,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ChangeAffiliationAction extends ActionyAction implements TopLevelSelectableAction {
-    private final AffiliatedCard _card;
-    private boolean _affiliationWasChosen;
-    private Affiliation _selectedAffiliation;
-    private boolean _actionCompleted;
-    private SelectAffiliationAction _selectAffiliationAction;
-    private final List<Affiliation> _affiliationOptions = new LinkedList<>();
+    private final AffiliatedCard _performingCard;
+    private final SelectAffiliationAction _selectAffiliationAction;
 
     public ChangeAffiliationAction(Player player, AffiliatedCard card) {
         super(player, "Change affiliation", ActionType.OTHER);
-        _card = card;
-        _card.getAffiliationOptions().forEach(affiliation -> {
-            if (affiliation != _card.getAffiliation())
+        _performingCard = card;
+        List<Affiliation> _affiliationOptions = new LinkedList<>();
+        _performingCard.getAffiliationOptions().forEach(affiliation -> {
+            if (affiliation != _performingCard.getAffiliation())
                 _affiliationOptions.add(affiliation);
         });
         if (card instanceof PersonnelCard personnel) {
@@ -44,43 +41,32 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
             // There should be no other types of cards that would get the ChangeAffiliationAction
             _affiliationOptions.clear();
         }
+        _selectAffiliationAction = new SelectAffiliationAction(player, _affiliationOptions);
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_affiliationOptions.isEmpty();
+        return !_selectAffiliationAction.requirementsAreMet(cardGame);
     }
 
 
     @Override
-    public PhysicalCard getPerformingCard() { return _card; }
+    public PhysicalCard getPerformingCard() { return _performingCard; }
 
     @Override
-    public int getCardIdForActionSelection() { return _card.getCardId(); }
+    public int getCardIdForActionSelection() { return _performingCard.getCardId(); }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Player player = cardGame.getPlayer(_performingPlayerId);
 
-        if (!_affiliationWasChosen) {
-            if (_affiliationOptions.size() > 1) {
-                if (_selectAffiliationAction == null) {
-                    _selectAffiliationAction = new SelectAffiliationAction(player, _affiliationOptions);
-                    return _selectAffiliationAction;
-                } else if (_selectAffiliationAction.wasCarriedOut()) {
-                    _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
-                    _affiliationWasChosen = true;
-                }
-            } else {
-                _selectedAffiliation = _affiliationOptions.getFirst();
-                _affiliationWasChosen = true;
-            }
-        }
+        if (!_selectAffiliationAction.wasCarriedOut())
+            return _selectAffiliationAction;
 
-        if (!_actionCompleted) {
+        if (!_wasCarriedOut) {
+            Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
             cardGame.sendMessage(_performingPlayerId + " changed " +
-                    _card.getCardLink() + "'s affiliation to " + _selectedAffiliation.toHTML());
-            _card.changeAffiliation(_selectedAffiliation);
-            _actionCompleted = true;
+                    _performingCard.getCardLink() + "'s affiliation to " + selectedAffiliation.toHTML());
+            _performingCard.changeAffiliation(selectedAffiliation);
+            _wasCarriedOut = true;
         }
 
         return getNextAction();
