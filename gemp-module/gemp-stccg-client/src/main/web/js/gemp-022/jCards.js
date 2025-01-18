@@ -391,5 +391,6 @@ export function createSimpleCardDiv(image) {
 }
 
 export function getCardDivFromId(cardId) {
-    return document.getElementById(cardId);
+    // This depends on the $.expr[':'].cardId variable set in gameUi.js
+    return $(".card:cardId(" + cardId + ")");
 }

@@ -100,6 +100,7 @@ export default class GameTableUI {
             }
         );
 
+        // REQUIRED FOR jCards.getCardDivFromId()
         $.expr[':'].cardId = function (obj, index, meta, stack) {
             var cardIds = meta[3].split(",");
             var cardData = $(obj).data("card");
@@ -1414,7 +1415,7 @@ export default class GameTableUI {
         }
     }
 
-    createCardDiv(card, text) {
+    createCardDivWithData(card, text) {
         var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
         cardDiv.data("card", card);
@@ -1467,7 +1468,7 @@ export default class GameTableUI {
             }
             var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
 
-            var cardDiv = this.createCardDiv(card);
+            var cardDiv = this.createCardDivWithData(card);
 
             $("#arbitraryChoice").append(cardDiv);
         }
@@ -1589,7 +1590,7 @@ export default class GameTableUI {
 
             var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
 
-            var cardDiv = this.createCardDiv(card);
+            var cardDiv = this.createCardDivWithData(card);
 
             $("#cardSelectionFromCombinations").append(cardDiv);
         }
@@ -1748,7 +1749,7 @@ export default class GameTableUI {
                     cardIds[i] = "extra" + cardId;
                     var card = new Card(blueprintId, "EXTRA", "extra" + cardId, null, imageUrl);
 
-                    var cardDiv = that.createCardDiv(card);
+                    var cardDiv = that.createCardDivWithData(card);
                     $(cardDiv).css({opacity: "0.8"});
 
                     $("#main").append(cardDiv);
@@ -1889,7 +1890,7 @@ export default class GameTableUI {
             cardIds.push("temp" + i);
             var card = new Card(blueprintId, "SPECIAL", "temp" + i, "", imageUrl, "", false);
 
-            var cardDiv = this.createCardDiv(card, actionTexts[i]);
+            var cardDiv = this.createCardDivWithData(card, actionTexts[i]);
 
             $("#arbitraryChoice").append(cardDiv);
         }
@@ -2039,7 +2040,8 @@ export default class GameTableUI {
 
     recalculateCardSelectionOrder(cardArray) {
         for (const [index, cardId] of cardArray.entries()) {
-            getCardDivFromId(cardId).attr("selectedOrder", index + 1); // use a 1-index
+            let divToChange = getCardDivFromId(cardId);
+            divToChange.attr("selectedOrder", index + 1); // use a 1-index
         }
     }
 
