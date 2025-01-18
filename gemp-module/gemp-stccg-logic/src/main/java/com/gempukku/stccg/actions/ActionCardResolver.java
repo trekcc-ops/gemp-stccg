@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 public class ActionCardResolver {
 
-    private Collection<PhysicalCard> _cards;
+    protected Collection<PhysicalCard> _cards;
     private SelectCardsAction _selectAction;
     private Filter _cardFilter;
     private boolean _resolved;
