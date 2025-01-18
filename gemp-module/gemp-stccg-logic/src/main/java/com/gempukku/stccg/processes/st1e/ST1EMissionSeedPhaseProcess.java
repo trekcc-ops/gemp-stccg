@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -12,7 +13,7 @@ import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.GameUtils;
+import com.gempukku.stccg.game.GameUtils;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -29,10 +30,11 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         String _currentPlayer = _game.getCurrentPlayerId();
 
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
+        final List<TopLevelSelectableAction> playableActions =
+                _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         ST1EGameState gameState = _game.getGameState();
         Phase currentPhase = gameState.getCurrentPhase();
 
@@ -56,7 +58,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         PlayerOrder playerOrder = _game.getGameState().getPlayerOrder();
 
         // Check if any missions are left to be seeded

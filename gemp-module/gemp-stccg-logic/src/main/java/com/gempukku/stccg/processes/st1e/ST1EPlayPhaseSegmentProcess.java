@@ -1,12 +1,14 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.GameUtils;
+import com.gempukku.stccg.game.GameUtils;
 
 import java.util.List;
 
@@ -17,11 +19,12 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         Phase phase = _game.getCurrentPhase();
         String currentPlayerId = _game.getCurrentPlayerId();
         ST1EGame thisGame = _game; // To avoid conflict when decision calls "_game"
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(currentPlayerId);
+        final List<TopLevelSelectableAction> playableActions =
+                _game.getActionsEnvironment().getPhaseActions(currentPlayerId);
         if (!playableActions.isEmpty() || !_game.shouldAutoPass(phase)) {
             _game.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(_game.getCurrentPlayer(), "Play " + phase + " action or Pass",
@@ -46,7 +49,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         GameProcess result;
         if (_consecutivePasses > 0) {
             Phase phase = _game.getCurrentPhase();

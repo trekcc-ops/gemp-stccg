@@ -2,8 +2,6 @@ package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.gempukku.stccg.actions.ActionsEnvironment;
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
@@ -281,7 +279,6 @@ public abstract class GameState {
                 listener.sendEvent(new GameEvent(GameEvent.Type.REMOVE_CARD_FROM_PLAY, removedCardsVisibleByPlayer, getPlayer(playerPerforming)));
         }
 
-
         for (PhysicalCard card : cards) {
             card.setZone(null);
         }
@@ -315,7 +312,7 @@ public abstract class GameState {
                 zoneCardList.addFirst(card);
         }
 
-        if (card.getZone() != null)
+        if (card.getZone() != null && card.getZone() != Zone.VOID)
             LOGGER.error("Card was in {} when tried to add to zone: {}", card.getZone(), zone);
 
         card.setZone(zone);

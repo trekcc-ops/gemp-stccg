@@ -1,44 +1,46 @@
 package com.gempukku.stccg.decisions;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 import java.util.List;
 
 public abstract class ActionSelectionDecision extends ActionDecision {
 
-    public ActionSelectionDecision(Player player, String text, List<Action> actions) {
+    public ActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions)
+            throws CardNotFoundException {
         super(player, text, actions, AwaitingDecisionType.ACTION_CHOICE);
-        setParam("blueprintId", getBlueprintIds());
-        setParam("imageUrl", getImageUrls());
+        setParam("blueprintId", getBlueprintIds(player.getGame()));
+        setParam("imageUrl", getImageUrls(player.getGame()));
     }
 
 
-    private String[] getBlueprintIds() {
+    private String[] getBlueprintIds(DefaultGame cardGame) throws CardNotFoundException {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++) {
-            PhysicalCard physicalCard = _actions.get(i).getCardForActionSelection();
-            if (physicalCard != null)
-                result[i] = String.valueOf(physicalCard.getBlueprintId());
-            else
-                result[i] = "rules";
+            int cardId = _actions.get(i).getCardIdForActionSelection();
+            PhysicalCard physicalCard = cardGame.getCardFromCardId(cardId);
+            result[i] = (physicalCard == null) ? "rules" : String.valueOf(physicalCard.getBlueprintId());
         }
         return result;
     }
 
-    private String[] getImageUrls() {
+    private String[] getImageUrls(DefaultGame cardGame) throws CardNotFoundException {
         String[] images = new String[_actions.size()];
         for (int i = 0; i < images.length; i++) {
-            PhysicalCard physicalCard = _actions.get(i).getCardForActionSelection();
+            int cardId = _actions.get(i).getCardIdForActionSelection();
+            PhysicalCard physicalCard = cardGame.getCardFromCardId(cardId);
             images[i] = (physicalCard == null) ? "rules" : physicalCard.getImageUrl();
         }
         return images;
     }
 
-    protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
+    protected TopLevelSelectableAction getSelectedAction(String result) throws DecisionResultInvalidException {
         if (result.isEmpty())
             throw new DecisionResultInvalidException();
 

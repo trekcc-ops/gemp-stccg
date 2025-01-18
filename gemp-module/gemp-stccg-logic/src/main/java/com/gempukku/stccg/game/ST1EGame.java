@@ -5,7 +5,6 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;

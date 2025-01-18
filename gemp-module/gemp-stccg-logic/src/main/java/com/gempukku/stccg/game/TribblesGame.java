@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
-import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 

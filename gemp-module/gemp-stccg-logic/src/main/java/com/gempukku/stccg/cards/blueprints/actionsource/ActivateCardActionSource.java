@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
-import com.gempukku.stccg.actions.ActivateCardAction;
+import com.gempukku.stccg.actions.turn.ActivateCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 

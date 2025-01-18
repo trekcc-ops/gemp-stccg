@@ -2,7 +2,8 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -14,12 +15,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FlyShipAction extends ActionyAction {
+public class FlyShipAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalShipCard _flyingCard;
     private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
-    private final SelectCardInPlayAction _selectAction;
+    private SelectVisibleCardAction _selectAction;
 
     public FlyShipAction(Player player, PhysicalShipCard flyingCard) throws InvalidGameLogicException {
         super(player, "Fly", ActionType.MOVE_CARDS);
@@ -43,15 +44,13 @@ public class FlyShipAction extends ActionyAction {
                 }
             }
         }
-        _selectAction =
-                new SelectCardInPlayAction(this, player, "Choose destination", _destinationOptions);
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _flyingCard; }
+    public int getCardIdForActionSelection() { return _flyingCard.getCardId(); }
 
     @Override
-    public PhysicalCard getActionSource() { return _flyingCard; }
+    public PhysicalCard getPerformingCard() { return _flyingCard; }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
@@ -62,6 +61,9 @@ public class FlyShipAction extends ActionyAction {
             return cost;
 
         if (!_destinationChosen) {
+            _selectAction =
+                    new SelectVisibleCardAction(cardGame.getPlayer(_performingPlayerId),
+                            "Choose destination", _destinationOptions);
             if (_selectAction.wasCarriedOut()) {
                 _destinationChosen = true;
                 _destination = _selectAction.getSelectedCard();

@@ -1,8 +1,8 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
@@ -14,13 +14,13 @@ public interface ActionSource {
     void setText(String text);
     void addRequirement(Requirement requirement);
 
-    void appendActionToContext(Action action, ActionContext actionContext);
+    void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext);
     Action createAction(PhysicalCard card);
 
-    Action createActionWithNewContext(PhysicalCard card);
-    Action createActionWithNewContext(PhysicalCard card, EffectResult effectResult);
-    Action createActionWithNewContext(PhysicalCard card, String playerId, Effect effect, EffectResult effectResult);
-    Action createActionWithNewContext(PhysicalCard card, Effect effect, EffectResult effectResult);
+    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card);
+    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult);
+    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult);
+
     void addCost(EffectBlueprint effectBlueprint);
     void addEffect(EffectBlueprint effectBlueprint);
 }

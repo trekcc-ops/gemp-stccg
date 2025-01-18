@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
-import com.gempukku.stccg.actions.OptionalTriggerAction;
+import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.RequiredType;

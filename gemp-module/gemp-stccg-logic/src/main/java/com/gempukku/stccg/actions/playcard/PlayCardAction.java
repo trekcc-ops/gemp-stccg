@@ -9,15 +9,13 @@ import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collections;
 
-public abstract class PlayCardAction extends ActionyAction {
+public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     final PhysicalCard _actionSource;
     private boolean _cardWasRemoved, _cardHasEnteredPlay;
-    private boolean _virtualCardAction;
     final PhysicalCard _cardEnteringPlay;
     protected final Zone _fromZone;
     final Zone _toZone;
-    private Effect _finalEffect;
 
     /**
      * Creates an action for playing the specified card.
@@ -37,18 +35,15 @@ public abstract class PlayCardAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _actionSource;
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return getCardEnteringPlay();
+    public int getCardIdForActionSelection() {
+        return _cardEnteringPlay.getCardId();
     }
 
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
-
-    protected Effect getFinalEffect() { return null; }
 
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Action cost = getNextCost();
@@ -80,9 +75,6 @@ public abstract class PlayCardAction extends ActionyAction {
                 _cardEnteringPlay.getCardLink() +  " from " + _fromZone.getHumanReadable() +
                 " to " + _toZone.getHumanReadable());
     }
-
-    public void setVirtualCardAction(boolean virtualCardAction) { _virtualCardAction = virtualCardAction; }
-    public boolean isVirtualCardAction() { return _virtualCardAction; }
 
     public boolean wasCarriedOut() {
         return _cardHasEnteredPlay;

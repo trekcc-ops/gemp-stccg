@@ -1,11 +1,13 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.RequiredTriggerActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
@@ -423,7 +425,7 @@ public class CardBlueprint {
         // Add in-play modifiers created through JSON definitions
         for (ModifierSource modifierSource : inPlayModifiers) {
             ActionContext context =
-                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null, null);
+                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null);
             result.add(modifierSource.getModifier(context));
         }
 
@@ -445,11 +447,11 @@ public class CardBlueprint {
         _characteristics.add(characteristic);
     }
 
-    public List<Action> getRequiredAfterTriggerActions(EffectResult effectResult, PhysicalCard card) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
-            if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, effectResult);
+            if (actionSource instanceof RequiredTriggerActionSource triggerSource) {
+                RequiredTriggerAction action = triggerSource.createActionWithNewContext(card, actionResult);
                 if (action != null) result.add(action);
             }
         });
@@ -489,21 +491,22 @@ public class CardBlueprint {
         _specialEquipment.addAll(specialEquipment);
     }
 
-    public List<Action> getActionsFromActionSources(String playerId, PhysicalCard card, Effect effect,
-                                                     EffectResult effectResult, List<ActionSource> actionSources) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
+                                                    ActionResult actionResult, List<ActionSource> actionSources) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = actionSource.createActionWithNewContext(card, playerId, effect, effectResult);
+                TopLevelSelectableAction action = actionSource.createActionWithNewContext(card, playerId, actionResult);
                 if (action != null) result.add(action);
             }
         });
         return result;
     }
 
-    public List<? extends Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         return getActionsFromActionSources(
-                player.getPlayerId(), thisCard, null, null, inPlayPhaseActions);
+                player.getPlayerId(), thisCard, null, inPlayPhaseActions);
     }
 
     public void setAnyExceptBorgCanAttempt() {

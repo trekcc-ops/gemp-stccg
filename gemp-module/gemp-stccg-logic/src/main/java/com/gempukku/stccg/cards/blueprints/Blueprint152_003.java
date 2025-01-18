@@ -1,12 +1,12 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.KillSinglePersonnelAction;
-import com.gempukku.stccg.actions.choose.SelectAndAppendAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.choose.*;
+import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.actions.draw.DrawCardAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -37,14 +37,15 @@ public class Blueprint152_003 extends CardBlueprint {
                 uniquePersonnel.add(personnel);
         }
 
-        SelectCardInPlayAction randomSelection =
-                new SelectCardInPlayAction(thisCard, thisCard.getOwner(), "Choose a personnel to be stopped",
-                        uniquePersonnel, true);
+        SelectCardAction randomSelection =
+                new SelectRandomCardAction(thisCard.getOwner(), "Choose a personnel to be stopped",
+                        uniquePersonnel);
         Action stopAction = new StopCardsAction(thisCard.getOwner(), randomSelection);
-        Action action1 = new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);
+        TopLevelSelectableAction action1 =
+                new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection, game);
-        Action action2 = new DrawCardAction(thisCard, game.getPlayer(opponentId), skillDotEvaluator);
-        Action multipleChoiceDecision = new SelectAndAppendAction(action, thisCard, attemptingUnit.getPlayer(),
+        TopLevelSelectableAction action2 = new DrawCardAction(thisCard, game.getPlayer(opponentId), skillDotEvaluator);
+        Action multipleChoiceDecision = new SelectAndInsertAction(action, thisCard, attemptingUnit.getPlayer(),
                 action1, action2);
 
         result.add(randomSelection);

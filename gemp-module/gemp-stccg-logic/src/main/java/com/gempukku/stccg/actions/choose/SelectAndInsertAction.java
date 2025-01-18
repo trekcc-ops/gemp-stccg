@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
@@ -9,26 +10,22 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * An effect that causes the specified player to choose a card on the table.
- */
 public class SelectAndInsertAction extends ActionyAction {
     private final PhysicalCard _actionSource;
-    private final List<Action> _actionsToChooseFrom = new LinkedList<>();
+    private final List<TopLevelSelectableAction> _actionsToChooseFrom = new LinkedList<>();
     private boolean _actionSelected;
     private final ActionyAction _parentAction;
     private Action _chosenAction;
 
     public SelectAndInsertAction(ActionyAction parentAction, PhysicalCard performingCard, Player selectingPlayer,
-                                 Action... actions) {
+                                 TopLevelSelectableAction... actions) {
         super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
-        for (Action action : actions) {
-            _actionsToChooseFrom.add(action);
-        }
+        _actionsToChooseFrom.addAll(Arrays.asList(actions));
         _actionSource = performingCard;
         _parentAction = parentAction;
     }
@@ -70,8 +67,6 @@ public class SelectAndInsertAction extends ActionyAction {
                 }
             };
             cardGame.getUserFeedback().sendAwaitingDecision(decision);
-        } else {
-
         }
         return getNextAction();
     }
@@ -81,8 +76,6 @@ public class SelectAndInsertAction extends ActionyAction {
         return _wasCarriedOut;
     }
 
-    public PhysicalCard getActionSource() { return _actionSource; }
-
-    public PhysicalCard getCardForActionSelection() { return _actionSource; }
+    public PhysicalCard getPerformingCard() { return _actionSource; }
 
 }

@@ -1,10 +1,10 @@
 package com.gempukku.stccg.rules.generic;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -17,21 +17,11 @@ public class ActivateResponseAbilitiesRule extends GenericRule {
     }
 
     @Override
-    public List<? extends Action> getOptionalBeforeActions(String playerId, Effect effect) {
-        List<Action> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, ActionResult actionResult) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(_game, Filters.and(Filters.owner(playerId), Filters.active))) {
             if (!card.hasTextRemoved(_game))
-                result.addAll(card.getOptionalInPlayActions(effect, TriggerTiming.BEFORE));
-        }
-        return result;
-    }
-
-    @Override
-    public List<? extends Action> getOptionalAfterActions(String playerId, EffectResult effectResult) {
-        List<Action> result = new LinkedList<>();
-        for (PhysicalCard card : Filters.filterCardsInPlay(_game, Filters.and(Filters.owner(playerId), Filters.active))) {
-            if (!card.hasTextRemoved(_game))
-                result.addAll(card.getOptionalInPlayActions(effectResult, TriggerTiming.AFTER));
+                result.addAll(card.getOptionalInPlayActions(actionResult, TriggerTiming.AFTER));
         }
         return result;
     }

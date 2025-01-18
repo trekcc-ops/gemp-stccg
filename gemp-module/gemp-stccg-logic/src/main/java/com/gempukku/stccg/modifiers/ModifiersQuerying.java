@@ -1,6 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -42,7 +43,7 @@ public interface ModifiersQuerying {
 
     boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId);
 
-    List<? extends Action> getExtraPhaseActions(DefaultGame game, PhysicalCard target);
+    List<TopLevelSelectableAction> getExtraPhaseActions(DefaultGame game, PhysicalCard target);
 
     void appendExtraCosts(Action action, PhysicalCard target);
 

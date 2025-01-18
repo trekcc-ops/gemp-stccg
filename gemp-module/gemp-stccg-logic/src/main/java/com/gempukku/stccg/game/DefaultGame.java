@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -9,13 +10,9 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.DefaultUserFeedback;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.TurnProcedure;
 
 import java.util.*;
 
@@ -240,6 +237,10 @@ public abstract class DefaultGame {
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
     }
 
+    public Player getOpponent(Player player) {
+        return getPlayer(getOpponent(player.getPlayerId()));
+    }
+
     public void requestRestoreSnapshot(int snapshotId) {
         if (_snapshotToRestore == null) {
             for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
@@ -362,5 +363,10 @@ public abstract class DefaultGame {
     public void sendErrorMessage(Exception exp) {
         String message = "ERROR: " + exp.getMessage();
         sendMessage(message);
+    }
+
+    public Action getActionById(int actionId) {
+        ActionsEnvironment environment = getActionsEnvironment();
+        return environment.getActionById(actionId);
     }
 }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -10,6 +11,7 @@ import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,10 +26,11 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         String _currentPlayer = _game.getCurrentPlayerId();
 
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
+        final List<TopLevelSelectableAction> playableActions =
+                _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {
@@ -51,7 +54,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         PlayerOrder playerOrder = _game.getGameState().getPlayerOrder();
         if (_consecutivePasses >= playerOrder.getPlayerCount()) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
@@ -76,7 +79,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                 }
             }
             gameState.sendMessage("Players drew starting hands");
-            return new ST1EStartOfTurnGameProcess(_game);
+            return new StartOfTurnGameProcess();
         } else {
             playerOrder.advancePlayer();
             return new ST1EFacilitySeedPhaseProcess(_consecutivePasses, _game);

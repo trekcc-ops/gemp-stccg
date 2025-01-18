@@ -2,7 +2,8 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -21,10 +22,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyAction {
+public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyAction
+        implements TopLevelSelectableAction {
     private final String _playerId;
     private final int _maxCardCount;
-    private List<Action> _playCardActions = new LinkedList<>();
+    private final List<Action> _playCardActions = new LinkedList<>();
     private final Zone _fromZone;
     private final DefaultGame _game;
     private final PhysicalCard _actionSource;
@@ -35,7 +37,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     private List<PhysicalCard> _cardsToDownload;
     private boolean _cardsPlayed = false;
     private boolean _cardsToDownloadChosen = false;
-    private SelectCardInPlayAction _selectDestinationAction;
+    private SelectVisibleCardAction _selectDestinationAction;
 
     public DownloadMultipleCardsToSameCompatibleOutpostAction(Zone fromZone, Player player, PhysicalCard actionSource,
                                                               Map<PersonnelCard, List<PersonnelCard>> validCombinations,
@@ -77,7 +79,6 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Player performingPlayer = cardGame.getPlayer(_playerId);
-        Action thisAction = this;
 
         if (!_cardsToDownloadChosen) {
             cardGame.getUserFeedback().sendAwaitingDecision(
@@ -119,7 +120,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
         if (!_destinationChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectCardInPlayAction(thisAction, performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(performingPlayer,
                         "Select outpost to download cards to", _destinationOptions);
                 return _selectDestinationAction;
             } else if (_selectDestinationAction.wasCarriedOut()) {
@@ -145,13 +146,13 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     }
 
     @Override
-    public PhysicalCard getActionSource() {
+    public PhysicalCard getPerformingCard() {
         return _actionSource;
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _actionSource;
+    public int getCardIdForActionSelection() {
+        return _actionSource.getCardId();
     }
 
     public String getPerformingPlayerId() { return _playerId; }

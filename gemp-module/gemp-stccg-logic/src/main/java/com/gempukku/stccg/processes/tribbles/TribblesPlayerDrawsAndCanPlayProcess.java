@@ -1,11 +1,13 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -18,7 +20,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         String playerId = _game.getCurrentPlayerId();
         if (_game.getGameState().getDrawDeck(playerId).isEmpty()) {
             _game.sendMessage(playerId + " can't draw a card");
@@ -29,7 +31,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             _game.sendMessage(playerId + " drew a card");
             List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(playerId);
             PhysicalCard cardDrawn = playerHand.getLast();
-            final List<Action> playableActions = new LinkedList<>();
+            final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
             if (cardDrawn.canBePlayed(_game)) {
                 TribblesPlayCardAction action = new TribblesPlayCardAction((TribblesPhysicalCard) cardDrawn);
                 playableActions.add(action);
@@ -64,7 +66,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         return new TribblesEndOfTurnGameProcess(_game);
     }
 }

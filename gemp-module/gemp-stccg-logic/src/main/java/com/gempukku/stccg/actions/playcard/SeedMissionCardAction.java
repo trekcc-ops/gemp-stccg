@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.PlayOutDecisionEffect;
-import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.actions.choose.MakeDecisionAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
@@ -13,11 +12,8 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.google.common.collect.Iterables;
 
-import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 
 public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
@@ -41,7 +37,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
         Region region = _cardEnteringPlay.getBlueprint().getRegion();
@@ -55,7 +51,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                     _directionChosen = true;
                     _locationZoneIndex = 0;
                 } else {
-                    appendCost(new PlayOutDecisionEffect(cardGame,
+                    appendCost(new MakeDecisionAction(_cardEnteringPlay,
                             new MultipleChoiceAwaitingDecision(performingPlayer,
                                     "Add new quadrant to which end of the table?", directions) {
                                 @Override
@@ -76,7 +72,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 _placementChosen = true;
                 _directionChosen = true;
             } else if (gameState.firstInRegion(region, quadrant) != null) {
-                appendCost(new PlayOutDecisionEffect(cardGame,
+                appendCost(new MakeDecisionAction(_cardEnteringPlay,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
                                 "Insert on which end of the region?", directions) {
                             @Override
@@ -93,19 +89,9 @@ public class SeedMissionCardAction extends PlayCardAction {
                 return getNextCost();
             } else if (_cardEnteringPlay.canInsertIntoSpaceline() && gameState.getQuadrantLocationsSize(quadrant) >= 2) {
                 // TODO: canInsertIntoSpaceline method not defined
-                Set<PhysicalCard> otherCards = gameState.getQuadrantLocationCards(quadrant);
-                appendCost(new ChooseCardsOnTableEffect(this, performingPlayer,
-                        "Choose a location to seed " + _cardEnteringPlay.getCardLink() + " next to", otherCards) {
-                    @Override
-                    protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
-                        assert selectedCards.size() == 1;
-                        _neighborCard = Iterables.getOnlyElement(selectedCards);
-                        _placementChosen = true;
-                    }
-                });
-                return getNextCost();
+                throw new InvalidGameLogicException("No method defined for cards to insert into spaceline");
             } else {
-                appendCost(new PlayOutDecisionEffect(cardGame,
+                appendCost(new MakeDecisionAction(_cardEnteringPlay,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
                                 "Insert on which end of the quadrant?", directions) {
                             @Override
@@ -122,23 +108,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 return getNextCost();
             }
         }
-        if (!_directionChosen) {
-            appendCost(new PlayOutDecisionEffect(cardGame,
-                    new MultipleChoiceAwaitingDecision(performingPlayer,
-                            "Insert on which side of " + _neighborCard.getTitle(), directions) {
-                        @Override
-                        protected void validDecisionMade(int index, String result) {
-                            _directionChosen = true;
-                            if (Objects.equals(result, "LEFT")) {
-                                _locationZoneIndex = _neighborCard.getLocationZoneIndex();
-                            } else {
-                                _locationZoneIndex = _neighborCard.getLocationZoneIndex() + 1;
-                            }
-                        }
-                    }));
-            return getNextCost();
 
-        }
         if (!_cardPlayed) {
             seedCard(cardGame);
         }

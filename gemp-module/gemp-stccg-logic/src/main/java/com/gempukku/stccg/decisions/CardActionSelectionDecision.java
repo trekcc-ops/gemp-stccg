@@ -1,20 +1,22 @@
 package com.gempukku.stccg.decisions;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.Player;
 
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class CardActionSelectionDecision extends ActionDecision {
 
-    public CardActionSelectionDecision(Player player, String text, List<Action> actions) {
+    public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions) {
         this(player, text, actions, false);
     }
 
 
-    public CardActionSelectionDecision(Player player, String text, List<Action> actions, boolean noPass) {
+    public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
+                                       boolean noPass) {
         super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE);
         setParam("cardId", getCardIds());
         setParam("blueprintId", getBlueprintIds()); // done in super
@@ -34,36 +36,24 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
 
     private String[] getBlueprintIds() {
         String[] result = new String[_actions.size()];
-        for (int i = 0; i < result.length; i++) {
-            Action action = _actions.get(i);
-            if (action.isVirtualCardAction())
-                result[i] = String.valueOf(action.getActionSource().getBlueprintId());
-            else
-                result[i] = "inPlay";
-        }
+        Arrays.fill(result, "inPlay");
         return result;
     }
 
     private String[] getImageUrls() {
         String[] result = new String[_actions.size()];
-        for (int i = 0; i < result.length; i++) {
-            Action action = _actions.get(i);
-            if (action.isVirtualCardAction())
-                result[i] = String.valueOf(action.getActionSource().getBlueprint().getImageUrl());
-            else
-                result[i] = "inPlay";
-        }
+        Arrays.fill(result, "inPlay");
         return result;
     }
 
     private String[] getCardIds() {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
-            result[i] = String.valueOf(_actions.get(i).getCardForActionSelection().getCardId());
+            result[i] = String.valueOf(_actions.get(i).getCardIdForActionSelection());
         return result;
     }
 
-    protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
+    protected TopLevelSelectableAction getSelectedAction(String result) throws DecisionResultInvalidException {
         if (result.isEmpty())
             return null;
         try {

@@ -1,12 +1,11 @@
 package com.gempukku.stccg.game;
 
 
-import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.processes.TurnProcedure;
 
 /**
  * Defines a snapshot of a game. Since the DefaultGame class is not a snapshotable,

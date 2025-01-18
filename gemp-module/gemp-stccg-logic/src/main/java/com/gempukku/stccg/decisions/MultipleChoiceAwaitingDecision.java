@@ -2,6 +2,7 @@ package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
@@ -26,7 +27,8 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
     }
 
 
-    protected abstract void validDecisionMade(int index, String result);
+    protected abstract void validDecisionMade(int index, String result)
+            throws InvalidGameLogicException, DecisionResultInvalidException;
 
     @Override
     public final void decisionMade(String result) throws DecisionResultInvalidException {
@@ -39,6 +41,10 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
         } catch (NumberFormatException exp) {
             throw new DecisionResultInvalidException("Unknown response number");
         }
-        validDecisionMade(index, _possibleResults[index]);
+        try {
+            validDecisionMade(index, _possibleResults[index]);
+        } catch(InvalidGameLogicException exp) {
+            throw new DecisionResultInvalidException(exp.getMessage());
+        }
     }
 }

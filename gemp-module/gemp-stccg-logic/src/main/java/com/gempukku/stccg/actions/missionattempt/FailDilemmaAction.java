@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
@@ -18,27 +19,22 @@ public class FailDilemmaAction extends ActionyAction {
     private final AttemptingUnit _attemptingUnit;
     private final PhysicalCard _dilemma;
 
-    public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma,
-                             EncounterSeedCardAction encounterAction) {
-        this(attemptingUnit.getPlayer(), attemptingUnit, dilemma, encounterAction);
+    public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma) {
+        this(attemptingUnit.getPlayer(), attemptingUnit, dilemma);
     }
 
-    public FailDilemmaAction(Player performingPlayer, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
-                             EncounterSeedCardAction encounterAction) {
+    public FailDilemmaAction(Player performingPlayer, AttemptingUnit attemptingUnit, PhysicalCard dilemma) {
         super(performingPlayer, ActionType.FAIL_DILEMMA);
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
     }
 
-    @Override
-    public PhysicalCard getActionSource() {
-        return _dilemma;
+    public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma,
+                             Action additionalEffect) {
+        this(attemptingUnit.getPlayer(), attemptingUnit, dilemma);
+        appendEffect(additionalEffect);
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _dilemma;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -47,6 +43,10 @@ public class FailDilemmaAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        Action nextAction = getNextAction();
+        if (nextAction != null)
+            return nextAction;
+
         if (!_wasCarriedOut) {
             cardGame.sendMessage(_performingPlayerId + " failed to overcome " + _dilemma.getCardLink());
             Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>(_attemptingUnit.getAttemptingPersonnel());

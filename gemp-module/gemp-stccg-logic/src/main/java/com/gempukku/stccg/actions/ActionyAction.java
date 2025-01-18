@@ -1,13 +1,12 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
@@ -18,64 +17,53 @@ public abstract class ActionyAction implements Action {
     private final LinkedList<Action> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Action> _targeting = new LinkedList<>();
     private final LinkedList<Action> _processedCosts = new LinkedList<>();
-    private final LinkedList<Action> _effects = new LinkedList<>();
+    private final LinkedList<Action> _actionEffects = new LinkedList<>();
     private final LinkedList<Action> _processedActions = new LinkedList<>();
     private final LinkedList<Action> _usageCosts = new LinkedList<>();
     protected String _text;
 
     protected final String _performingPlayerId;
-    private boolean _virtualCardAction;
     protected final ActionType _actionType;
     public ActionType getActionType() { return _actionType; }
 
-    protected ActionyAction(Player player, ActionType actionType) {
-        _performingPlayerId = player.getPlayerId();
+    protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
+        _actionId = environment.getNextActionId();
+        environment.logAction(this);
+        environment.incrementActionId();
         _actionType = actionType;
-        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
-        player.getGame().getActionsEnvironment().incrementActionId();
+        _performingPlayerId = performingPlayerId;
+    }
+
+    protected ActionyAction(Player player, ActionType actionType) {
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
     }
 
     protected ActionyAction(Player player, String text, ActionType actionType) {
-        _performingPlayerId = player.getPlayerId();
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
         _text = text;
-        _actionType = actionType;
-        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
-        player.getGame().getActionsEnvironment().incrementActionId();
     }
 
-    protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
-        _performingPlayerId = player.getPlayerId();
-        _text = text;
-        _actionType = actionType;
-        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
-        player.getGame().getActionsEnvironment().incrementActionId();
-        for (Enum<?> progressType : progressTypes) {
+    protected ActionyAction(Player player, ActionType actionType, Enum<?>[] progressValues) {
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+        for (Enum<?> progressType : progressValues) {
             _progressIndicators.put(progressType.name(), false);
         }
     }
 
 
-    // This constructor is only used for automated actions used to pass effects through or perform system actions
+    protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
+        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+        _text = text;
+        for (Enum<?> progressType : progressTypes) {
+            _progressIndicators.put(progressType.name(), false);
+        }
+    }
+
+    // This constructor is only used for system queue actions
     protected ActionyAction(DefaultGame game) {
-        _performingPlayerId = null;
-        _text = null;
-        _actionType = ActionType.OTHER;
-        _actionId = game.getActionsEnvironment().getNextActionId();
-        game.getActionsEnvironment().incrementActionId();
+        this(game.getActionsEnvironment(), ActionType.OTHER, null);
     }
 
-    public Effect nextEffect(DefaultGame game) { return null; }
-
-
-    @Override
-    public void setVirtualCardAction(boolean virtualCardAction) {
-        _virtualCardAction = virtualCardAction;
-    }
-
-    @Override
-    public boolean isVirtualCardAction() {
-        return _virtualCardAction;
-    }
 
     @Override
     public String getPerformingPlayerId() {
@@ -90,8 +78,8 @@ public abstract class ActionyAction implements Action {
         _targeting.add(targeting);
     }
 
-    public final void appendAction(Action action) {
-        _effects.add(action);
+    public final void appendEffect(Action action) {
+        _actionEffects.add(action);
     }
 
     public final void insertCost(Action cost) {
@@ -99,7 +87,7 @@ public abstract class ActionyAction implements Action {
     }
 
     public final void insertAction(Action action) {
-        _effects.addAll(0, Collections.singletonList(action));
+        _actionEffects.addAll(0, Collections.singletonList(action));
     }
 
     /**
@@ -111,7 +99,7 @@ public abstract class ActionyAction implements Action {
     }
 
     @Override
-    public String getActionSelectionText(DefaultGame game) { return _text; }
+    public String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException { return _text; }
 
     protected boolean isCostFailed() {
         for (Action processedCost : _processedCosts) {
@@ -145,7 +133,7 @@ public abstract class ActionyAction implements Action {
     }
 
     protected final Action getNextAction() {
-        final Action effect = _effects.poll();
+        final Action effect = _actionEffects.poll();
         if (effect != null)
             _processedActions.add(effect);
         return effect;
@@ -190,31 +178,24 @@ public abstract class ActionyAction implements Action {
     public String getCardActionPrefix() { return _cardActionPrefix; }
 
     public final void appendUsage(Action cost) {
-        if (!_costs.isEmpty() || !_processedCosts.isEmpty() || !_effects.isEmpty() || !_processedActions.isEmpty())
+        if (!_costs.isEmpty() || !_processedCosts.isEmpty() || !_actionEffects.isEmpty() || !_processedActions.isEmpty())
             throw new UnsupportedOperationException("Called appendUsage() in incorrect order");
         _usageCosts.add(cost);
     }
 
-    public final void appendUsage(Effect effect) {
-        appendUsage(new SubAction(this, effect));
-    }
-    public final void insertEffect(Effect effect) { insertAction(new SubAction(this, effect)); }
+    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException;
 
-    public final void appendEffect(Effect effect) { appendAction(new SubAction(this, effect)); }
-
-    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
-
-    public void insertCost(Effect effect) { insertCost(new SubAction(this, effect)); }
-
-    public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
-    public void appendTargeting(Effect effect) { appendCost(new SubAction(this, effect)); }
     public int getActionId() { return _actionId; }
-    protected void setProgress(Enum<?> progressType, boolean value) {
-        _progressIndicators.put(progressType.name(), value);
+    protected void setProgress(Enum<?> progressType) {
+        _progressIndicators.put(progressType.name(), true);
     }
+
+    protected List<Action> getActions() { return _actionEffects; }
 
     protected boolean getProgress(Enum<?> progressType) {
         return _progressIndicators.get(progressType.name());
     }
+
+    public void insertEffect(Action actionEffect) { insertAction(actionEffect); }
 
 }

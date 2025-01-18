@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -29,10 +30,11 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     private PersonnelCard picard;
     private PhysicalShipCard runabout;
     private PhysicalCard cardToDiscard;
-    private List<PhysicalCard> wallaces = new LinkedList<>();
+    private final List<PhysicalCard> wallaces = new LinkedList<>();
 
     @Test
-    public void actionOption1() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void actionOption1() throws DecisionResultInvalidException, CardNotFoundException,
+            InvalidGameLogicException {
         runGameUntilActionSelection();
         playerDecided(P1, "0");
         selectCard(P1, cardToDiscard);
@@ -50,7 +52,8 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     }
 
     @Test
-    public void actionOption2() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void actionOption2() throws DecisionResultInvalidException, CardNotFoundException,
+            InvalidGameLogicException {
         runGameUntilActionSelection();
         playerDecided(P1, "1");
         selectCard(P1, cardToDiscard);
@@ -66,7 +69,8 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     }
 
     @Test
-    public void actionOption3() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void actionOption3() throws DecisionResultInvalidException, CardNotFoundException,
+            InvalidGameLogicException {
         runGameUntilActionSelection();
         playerDecided(P1, "2");
         selectCard(P1, cardToDiscard);
@@ -158,12 +162,14 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         }
     }
 
-    private boolean canUseCardAgain() {
+    private boolean canUseCardAgain() throws CardNotFoundException {
         boolean result = false;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(P1);
         if (decision instanceof CardActionSelectionDecision actionSelection) {
-            for (Action action : actionSelection.getActions()) {
-                if (Objects.equals(action.getActionSource().getTitle(), "Get It Done")) {
+            for (TopLevelSelectableAction action : actionSelection.getActions()) {
+                int cardId = action.getCardIdForActionSelection();
+                PhysicalCard cardSource = _game.getCardFromCardId(cardId);
+                if (Objects.equals(cardSource.getTitle(), "Get It Done")) {
                     result = true;
                 }
             }

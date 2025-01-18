@@ -1,6 +1,6 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.actions.ActionProxy;
+import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;

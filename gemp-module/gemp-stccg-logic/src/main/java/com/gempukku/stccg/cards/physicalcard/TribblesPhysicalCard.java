@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
@@ -22,7 +22,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public Action getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
+    public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
 
     public boolean canPlayOutOfSequence() {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;

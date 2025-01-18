@@ -3,6 +3,7 @@ package com.gempukku.stccg.processes.tribbles;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.processes.GameProcess;
@@ -17,7 +18,7 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
 
         LinkedList<String> playersInOrder = new LinkedList<>(_game.getPlayerIds());
         Collections.shuffle(playersInOrder, ThreadLocalRandom.current());
@@ -86,7 +87,7 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
     }
     
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess getNextProcess(DefaultGame cardGame) {
         return new TribblesStartOfRoundGameProcess(_game);
     }
 }

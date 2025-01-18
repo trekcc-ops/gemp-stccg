@@ -46,8 +46,8 @@ public class Blueprint116_008 extends CardBlueprint {
         } else {
             // fail
             PhysicalCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel());
-            result.add(new PlaceCardOnTopOfDrawDeckAction(attemptingUnit.getPlayer(), randomCard, thisCard));
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new PlaceCardOnTopOfDrawDeckAction(attemptingUnit.getPlayer(), randomCard));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         }
 
         return result;

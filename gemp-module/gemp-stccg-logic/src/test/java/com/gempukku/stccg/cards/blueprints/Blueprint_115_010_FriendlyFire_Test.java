@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -22,13 +23,13 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
     // Unit tests for card definition of Maglock
 
     @Test
-    public void placeOnMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void placeOnMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException,
+            CardNotFoundException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
         ST1EPhysicalCard friendly =
-                new ST1EPhysicalCard(_game, 901, _game.getPlayer(P1), _cardLibrary.get("115_010"));
-        friendly.setZone(Zone.VOID);
+                (ST1EPhysicalCard) _game.getGameState().addCardToGame("115_010", _cardLibrary, P1);
         _game.getGameState().seedCardsUnder(Collections.singleton(friendly), _mission);
 
         // Seed Federation Outpost
@@ -36,12 +37,12 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = new PersonnelCard(_game, 902, _game.getPlayer(P1), _cardLibrary.get("101_205"));
-        PersonnelCard hobson = new PersonnelCard(_game, 903, _game.getPlayer(P1), _cardLibrary.get("101_202"));
-        PersonnelCard picard = new PersonnelCard(_game, 904, _game.getPlayer(P1), _cardLibrary.get("101_215"));
-        PersonnelCard data = new PersonnelCard(_game, 905, _game.getPlayer(P1), _cardLibrary.get("101_204"));
+        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard hobson = (PersonnelCard) _game.getGameState().addCardToGame("101_202", _cardLibrary, P1);
+        PersonnelCard picard = (PersonnelCard) _game.getGameState().addCardToGame("101_215", _cardLibrary, P1);
+        PersonnelCard data = (PersonnelCard) _game.getGameState().addCardToGame("101_204", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                new PhysicalShipCard(_game, 906, _game.getPlayer(P1), _cardLibrary.get("101_331"));
+                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
 
         troi.reportToFacility(_outpost);
         hobson.reportToFacility(_outpost);

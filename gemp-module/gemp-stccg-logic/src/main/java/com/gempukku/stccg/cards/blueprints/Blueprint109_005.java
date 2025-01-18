@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
-import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -39,7 +39,7 @@ public class Blueprint109_005 extends CardBlueprint {
         }
 
         if (!hasEmpathyOrDiplomacy && targetPersonnel.isEmpty()) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         } else {
             if (targetPersonnel.size() >= 2) {
                 PersonnelCard cardToContinue = TextUtils.getRandomItemFromList(targetPersonnel);

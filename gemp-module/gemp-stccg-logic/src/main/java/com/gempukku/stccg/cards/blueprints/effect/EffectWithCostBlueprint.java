@@ -2,8 +2,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.StackActionEffect;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -11,6 +10,7 @@ import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
@@ -25,20 +25,16 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
         _requirements = RequirementFactory.getRequirements(node);
     }
     @Override
-    protected Effect createEffect(Action action, ActionContext context) {
+    protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
 
-        if(requirementsNotMet(context))
-            return null;
-        SubAction subAction = new SubAction(action);
-
-        for (EffectBlueprint costAppender : _costAppenders) {
-            costAppender.addEffectToAction(true, subAction, context);
+        List<Action> result = new LinkedList<>();
+        if(requirementsNotMet(context)) {
+            SubAction subAction = new SubAction(action, context, _costAppenders, _effectBlueprints);
+            result.add(subAction);
         }
-        for (EffectBlueprint effectBlueprint : _effectBlueprints)
-            effectBlueprint.addEffectToAction(false, subAction, context);
-
-        return new StackActionEffect(context.getGame(), subAction);
+        return result;
     }
+
 
     private boolean requirementsNotMet(ActionContext actionContext) {
         return (!actionContext.acceptsAllRequirements(_requirements));

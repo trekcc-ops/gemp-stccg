@@ -12,12 +12,11 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.condition.RequirementCondition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.CantDiscardFromPlayByPlayerModifier;
-import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
-import com.gempukku.stccg.condition.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 
 import java.util.ArrayList;
@@ -158,11 +157,6 @@ public final class BlueprintUtils {
         final FilterableSource filterableSource;
 
         switch(modifierType) {
-            case CANTPLAYCARDS:
-                filterableSource = getFilterable(node);
-                return (actionContext) -> new CantPlayCardsModifier(actionContext.getSource(),
-                        new RequirementCondition(requirements, actionContext),
-                        filterableSource.getFilterable(actionContext));
             case GAINICON:
                 CardIcon icon = getEnum(CardIcon.class, node, "icon");
                 filterableSource = new FilterFactory().parseSTCCGFilter(node.get("filter").textValue());

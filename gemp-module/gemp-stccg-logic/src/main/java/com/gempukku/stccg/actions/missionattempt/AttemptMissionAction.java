@@ -2,7 +2,8 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -21,10 +22,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AttemptMissionAction extends ActionyAction {
+public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction {
     private AttemptingUnit _attemptingUnit;
     private SelectAttemptingUnitAction _selectAttemptingUnitAction;
     private final MissionCard _missionCard;
+    private final int _missionCardId;
     private final MissionLocation _missionLocation;
     private final Collection<PhysicalCard> _revealedCards = new LinkedList<>();
     private final Collection<PhysicalCard> _encounteredCards = new LinkedList<>();
@@ -37,13 +39,14 @@ public class AttemptMissionAction extends ActionyAction {
         super(player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
         _missionLocation = mission;
         _missionCard = mission.getMissionForPlayer(player.getPlayerId());
+        _missionCardId = _missionCard.getCardId();
     }
 
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _missionCard; }
+    public int getCardIdForActionSelection() { return _missionCard.getCardId(); }
     @Override
-    public PhysicalCard getActionSource() { return _missionCard; }
+    public PhysicalCard getPerformingCard() { return _missionCard; }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -91,9 +94,9 @@ public class AttemptMissionAction extends ActionyAction {
         } else {
 
             if (!getProgress(Progress.startedMissionAttempt)) {
-                setProgress(Progress.startedMissionAttempt, true);
+                setProgress(Progress.startedMissionAttempt);
                 return new AllowResponsesAction(
-                        cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
+                        cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT);
             }
 
             if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
@@ -109,11 +112,11 @@ public class AttemptMissionAction extends ActionyAction {
                     PhysicalCard firstSeedCard = seedCards.getFirst();
                     if (!_revealedCards.contains(firstSeedCard)) {
                         _revealedCards.add(firstSeedCard);
-                        return new RevealSeedCardAction(performingPlayer, firstSeedCard, _missionLocation);
+                        return new RevealSeedCardAction(performingPlayer, firstSeedCard, this);
                     }
                     if (!_encounteredCards.contains(firstSeedCard)) {
                         _encounteredCards.add(firstSeedCard);
-                        return new EncounterSeedCardAction(this, performingPlayer, firstSeedCard,
+                        return new EncounterSeedCardAction(performingPlayer, firstSeedCard,
                                 _missionLocation, _attemptingUnit);
                     }
                 }
@@ -128,14 +131,14 @@ public class AttemptMissionAction extends ActionyAction {
                         }
                     }
                 }
-                setProgress(Progress.endedMissionAttempt, true);
+                setProgress(Progress.endedMissionAttempt);
             }
         }
         return getNextAction();
     }
 
     private void solveMission(DefaultGame cardGame) throws InvalidGameLogicException {
-        setProgress(Progress.solvedMission, true);
+        setProgress(Progress.solvedMission);
         _missionLocation.complete(_performingPlayerId);
         cardGame.sendMessage(_performingPlayerId + " solved " + _missionCard.getCardLink());
     }
@@ -144,14 +147,14 @@ public class AttemptMissionAction extends ActionyAction {
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
         _attemptingUnit = attemptingUnit;
-        _progressIndicators.put(Progress.choseAttemptingUnit.name(), true);
+        setProgress(Progress.choseAttemptingUnit);
     }
 
     public boolean isFailed() { return getProgress(Progress.failedMissionAttempt); }
 
     private void failMission(DefaultGame game) {
-        setProgress(Progress.failedMissionAttempt, true);
-        setProgress(Progress.endedMissionAttempt,true);
+        setProgress(Progress.failedMissionAttempt);
+        setProgress(Progress.endedMissionAttempt);
         game.sendMessage(_performingPlayerId + " failed mission attempt of " + _missionCard.getCardLink());
     }
 

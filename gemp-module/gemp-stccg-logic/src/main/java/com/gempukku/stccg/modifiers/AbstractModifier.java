@@ -136,16 +136,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public List<? extends Action> getExtraPhaseAction(DefaultGame game, PhysicalCard card) {
-        return null;
-    }
-
-    @Override
-    public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, PhysicalCard card) {
-        return null;
-    }
-
-    @Override
     public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
         return true;
     }

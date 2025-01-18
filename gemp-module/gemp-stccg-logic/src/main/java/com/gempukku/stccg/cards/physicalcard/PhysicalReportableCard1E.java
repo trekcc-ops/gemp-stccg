@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardWithCrew;
@@ -49,20 +50,23 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     }
 
     public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
+        _game.getGameState().removeCardFromZone(this);
         setLocation(facility.getLocation());
         _game.getGameState().attachCard(this, facility);
     }
 
     @Override
-    public Action getPlayCardAction() { return createReportCardAction(); }
+    public TopLevelSelectableAction getPlayCardAction() { return createReportCardAction(); }
 
     @Override
-    public Action getPlayCardAction(boolean forFree) { return createReportCardAction(forFree); }
+    public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return createReportCardAction(forFree); }
 
-    public Action createReportCardAction() {
+    public TopLevelSelectableAction createReportCardAction() {
         return new ReportCardAction(this, false);
     }
-    public Action createReportCardAction(boolean forFree) { return new ReportCardAction(this, forFree); }
+    public TopLevelSelectableAction createReportCardAction(boolean forFree) {
+        return new ReportCardAction(this, forFree);
+    }
 
     public void leaveAwayTeam() {
         _awayTeam.remove(this);

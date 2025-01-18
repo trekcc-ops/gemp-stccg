@@ -19,16 +19,19 @@ public class AwayTeam implements AttemptingUnit {
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
     private final ST1EGame _game;
     private final MissionLocation _location;
+    private final int _attemptingUnitId;
 
-    public AwayTeam(ST1EGame game, Player player, MissionLocation location) {
+    public AwayTeam(ST1EGame game, Player player, MissionLocation location, int attemptingUnitId) {
         _player = player;
         _game = game;
         _cardsInAwayTeam = new LinkedList<>();
         _location = location;
+        _attemptingUnitId = attemptingUnitId;
     }
 
-
-    public long getId() { return _game.getGameState().getAwayTeams().indexOf(this); }
+    public int getAttemptingUnitId() {
+        return _attemptingUnitId;
+    }
 
 
     private boolean hasAffiliation(Affiliation affiliation) {

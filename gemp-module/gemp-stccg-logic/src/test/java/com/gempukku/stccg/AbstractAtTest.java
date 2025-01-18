@@ -1,7 +1,7 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.UndockAction;
@@ -9,7 +9,6 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -499,19 +498,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
 
-    protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
-        SystemQueueAction action = new SystemQueueAction(_game);
-        action.appendEffect(effect);
-        carryOutEffectInPhaseActionByPlayer(playerId, action);
-    }
-
-    protected void carryOutEffectInPhaseActionByPlayer(String playerId, Action action) throws DecisionResultInvalidException {
-        CardActionSelectionDecision awaitingDecision = (CardActionSelectionDecision) _userFeedback.getAwaitingDecision(playerId);
-        awaitingDecision.addAction(action);
-
-        playerDecided(playerId, "0");
-    }
-
     protected void autoSeedMissions() throws DecisionResultInvalidException {
         // Both players keep picking option #1 until all missions are seeded
         while (_game.getGameState().getCurrentPhase() == Phase.SEED_MISSION) {
@@ -770,8 +756,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         T choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action.getClass() == clazz && action.getCardForActionSelection() == card)
+            for (TopLevelSelectableAction action : actionDecision.getActions()) {
+                if (action.getClass() == clazz && action.getCardIdForActionSelection() == card.getCardId())
                     choice = (T) action;
             }
             actionDecision.decisionMade(choice);
@@ -813,8 +799,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof CardActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action.getActionSource() == card)
+            for (TopLevelSelectableAction action : actionDecision.getActions()) {
+                if (action.getCardIdForActionSelection() == card.getCardId())
                     choice = action;
             }
             actionDecision.decisionMade(choice);

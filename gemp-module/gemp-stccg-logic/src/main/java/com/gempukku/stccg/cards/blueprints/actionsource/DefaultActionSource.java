@@ -2,9 +2,10 @@ package com.gempukku.stccg.cards.blueprints.actionsource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -16,6 +17,7 @@ import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public abstract class DefaultActionSource implements ActionSource {
     }
 
     @Override
-    public void appendActionToContext(Action action, ActionContext actionContext) {
+    public void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext) {
         if (_text != null)
             action.setText(actionContext.substituteText(_text));
 
@@ -88,7 +90,7 @@ public abstract class DefaultActionSource implements ActionSource {
     }
 
 
-    protected abstract Action createActionAndAppendToContext(PhysicalCard card, ActionContext context);
+    protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 
     public void setTurnLimit(int limitPerTurn) {
         addRequirement((actionContext) ->
@@ -96,30 +98,26 @@ public abstract class DefaultActionSource implements ActionSource {
         addCost(
             new DelayedEffectBlueprint() {
                 @Override
-                protected Effect createEffect(Action action, ActionContext actionContext) {
-                    return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
+                protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext) {
+                    Action usageLimitAction = new UseOncePerTurnAction(
+                            action, action.getPerformingCard(), actionContext.getPerformingPlayer());
+                    return Collections.singletonList(usageLimitAction);
                 }
             });
     }
 
-    public Action createActionWithNewContext(PhysicalCard card) {
+    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card) {
         return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, null, null));
+                new DefaultActionContext(card.getOwnerName(), card, null));
     }
 
-    public Action createActionWithNewContext(PhysicalCard card, EffectResult effectResult) {
+    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
         return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, null, effectResult));
+                new DefaultActionContext(card.getOwnerName(), card, actionResult));
     }
 
 
-    public Action createActionWithNewContext(PhysicalCard card, Effect effect, EffectResult effectResult) {
-        return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, effect, effectResult));
-    }
-
-    public Action createActionWithNewContext(PhysicalCard card, String playerId, Effect effect,
-                                             EffectResult effectResult) {
-        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, effect, effectResult));
+    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult) {
+        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, actionResult));
     }
 }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -29,8 +30,8 @@ public class MissionCard extends ST1EPhysicalCard {
     }
 
     @Override
-    public List<? extends Action> getRulesActionsWhileInPlay(Player player) {
-        List<Action> actions = new LinkedList<>();
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             try {
                 actions.add(new AttemptMissionAction(player, this.getLocation()));

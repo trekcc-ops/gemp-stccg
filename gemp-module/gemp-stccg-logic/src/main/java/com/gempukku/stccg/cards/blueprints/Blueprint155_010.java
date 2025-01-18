@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
-import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -32,7 +32,7 @@ public class Blueprint155_010 extends CardBlueprint {
             Replace dilemma under mission to be encountered again.
          */
         if (attemptingPersonnel.size() < 2) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
         }
 
         /* Randomly select two personnel to be stopped. If any [Q] card in play when dilemma is encountered,

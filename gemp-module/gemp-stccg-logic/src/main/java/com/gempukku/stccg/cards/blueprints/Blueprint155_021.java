@@ -1,11 +1,11 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActivateCardAction;
-import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.turn.OnceEachTurnEffect;
+import com.gempukku.stccg.actions.usage.UseGameTextAction;
+import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -37,27 +37,27 @@ public class Blueprint155_021 extends CardBlueprint {
     }
 
     @Override
-    public List<? extends ActivateCardAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard card) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
         DefaultGame game = player.getGame();
         Phase currentPhase = game.getCurrentPhase();
-        List<ActivateCardAction> actions = new LinkedList<>();
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
 
         if (currentPhase == Phase.CARD_PLAY) {
 
-            ActivateCardAction action1 = new ActivateCardAction(card);
+            UseGameTextAction action1 = new UseGameTextAction(thisCard, player, "Report a card for free");
                 // TODO - This should not be where the Filters.playable filter is included
                 // TODO - Make sure there's a native quadrant requirement here if Modern rules are used
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
-                    Filters.youHaveNoCopiesInPlay(card.getOwner()), Filters.playable,
+                    Filters.youHaveNoCopiesInPlay(thisCard.getOwner()), Filters.playable,
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON));
             action1.setCardActionPrefix("1");
-            action1.appendUsage(new OnceEachTurnEffect(game, action1));
-            action1.appendAction(
-                    new DownloadCardFromZoneAction(Zone.HAND, card.getOwner(), card, playableCardFilter) {
+            action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
+            action1.appendEffect(
+                    new DownloadCardFromZoneAction(Zone.HAND, thisCard.getOwner(), thisCard, playableCardFilter) {
                         @Override
                         protected Collection<PhysicalCard> getPlayableCards() {
                             Collection<PhysicalCard> playableCards = Filters.filter(
-                                    game.getGameState().getHand(card.getOwnerName()), playableCardFilter);
+                                    game.getGameState().getHand(thisCard.getOwnerName()), playableCardFilter);
                             playableCards.removeIf(card -> getDestinationOptionsForCard(card).isEmpty());
                             return playableCards;
                         }
@@ -66,14 +66,9 @@ public class Blueprint155_021 extends CardBlueprint {
                         protected void playCard(final PhysicalCard selectedCard) {
 
                             Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                                    true, Filters.filterYourActive(card.getOwner(),
-                                    Filters.yourMatchingOutposts(card.getOwner(), card)));
+                                    true, Filters.filterYourActive(thisCard.getOwner(),
+                                    Filters.yourMatchingOutposts(thisCard.getOwner(), thisCard)));
                             setPlayCardAction(action);
-                            getPlayCardAction().appendEffect(
-                                    new UnrespondableEffect(card.getGame()) {
-                                        @Override
-                                        protected void doPlayEffect() {}
-                                    });
                             selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
                         }
                     });
@@ -86,8 +81,8 @@ public class Blueprint155_021 extends CardBlueprint {
                     Filters.playable);
             action2.setCardActionPrefix("2");
             action2.appendUsage(new OncePerGameEffect(action2));
-            action2.appendCost(new NormalCardPlayCost());
-            action2.appendEffect(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
+            // append normal card play cost
+            action2.appendAction(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
             actions.add(action2);*/
         }
         return actions;

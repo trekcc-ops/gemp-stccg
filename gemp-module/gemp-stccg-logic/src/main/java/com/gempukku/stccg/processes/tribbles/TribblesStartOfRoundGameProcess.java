@@ -1,8 +1,10 @@
 package com.gempukku.stccg.processes.tribbles;
 
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
 public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
 
@@ -11,7 +13,7 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         TribblesGameState gameState = _game.getGameState();
         gameState.advanceRound();
 
@@ -26,7 +28,7 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
-        return new TribblesStartOfTurnGameProcess(_game);
+    public GameProcess getNextProcess(DefaultGame cardGame) {
+        return new StartOfTurnGameProcess();
     }
 }

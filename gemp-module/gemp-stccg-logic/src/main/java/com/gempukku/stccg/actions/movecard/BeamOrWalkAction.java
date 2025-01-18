@@ -3,8 +3,9 @@ package com.gempukku.stccg.actions.movecard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
-import com.gempukku.stccg.actions.choose.SelectCardsOnTableAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
@@ -21,16 +22,16 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BeamOrWalkAction extends ActionyAction {
+public abstract class BeamOrWalkAction extends ActionyAction implements TopLevelSelectableAction {
     private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
     final PhysicalNounCard1E _cardSource;
     private PhysicalCard _origin, _destination;
     private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen;
     final Player _performingPlayer;
     final Collection<PhysicalCard> _destinationOptions;
-    private SelectCardInPlayAction _selectOriginAction;
-    private SelectCardInPlayAction _selectDestinationAction;
-    private SelectCardsOnTableAction _selectCardsToMoveAction;
+    private SelectVisibleCardAction _selectOriginAction;
+    private SelectVisibleCardAction _selectDestinationAction;
+    private SelectVisibleCardsAction _selectCardsToMoveAction;
 
     /**
      * Creates an action to move cards by beaming or walking.
@@ -62,9 +63,9 @@ public abstract class BeamOrWalkAction extends ActionyAction {
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _cardSource; }
+    public int getCardIdForActionSelection() { return _cardSource.getCardId(); }
     @Override
-    public PhysicalCard getActionSource() { return _cardSource; }
+    public PhysicalCard getPerformingCard() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);
     public abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
 
@@ -79,7 +80,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
 
         if (!_fromCardChosen) {
             if (_selectOriginAction == null) {
-                _selectOriginAction = new SelectCardInPlayAction(this, _performingPlayer,
+                _selectOriginAction = new SelectVisibleCardAction(_performingPlayer,
                         "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
                 appendTargeting(_selectOriginAction);
                 return getNextCost();
@@ -102,7 +103,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
 
         if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectCardInPlayAction(this, _performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(_performingPlayer,
                         "Choose card to " + actionVerb() + " to ", _destinationOptions);
                 appendTargeting(_selectDestinationAction);
                 return getNextCost();
@@ -118,7 +119,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
                 Collection<PhysicalCard> movableCards =
                         Filters.filter(_origin.getAttachedCards(_origin.getGame()),
                                 Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
-                _selectCardsToMoveAction = new SelectCardsOnTableAction(this, _performingPlayer,
+                _selectCardsToMoveAction = new SelectVisibleCardsAction(_performingPlayer,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
                         movableCards, 1);
                 appendTargeting(_selectCardsToMoveAction);

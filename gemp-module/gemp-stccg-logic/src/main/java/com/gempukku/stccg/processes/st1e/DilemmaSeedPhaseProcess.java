@@ -1,8 +1,9 @@
 package com.gempukku.stccg.processes.st1e;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.AddSeedCardsAction;
 import com.gempukku.stccg.actions.playcard.RemoveSeedCardsAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -10,6 +11,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -27,7 +29,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     }
 
     @Override
-    public void process() {
+    public void process(DefaultGame cardGame) {
         Collection<String> playerIds = _game.getPlayerIds();
         for (String playerId : playerIds) {
             if (_playersParticipating.contains(playerId))
@@ -46,18 +48,18 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             _playersParticipating.remove(playerId);
         } else {
             ST1EGameState gameState = _game.getGameState();
-            List<Action> seedActions = new ArrayList<>();
+            List<TopLevelSelectableAction> seedActions = new ArrayList<>();
             Player player = gameState.getPlayer(playerId);
             List<MissionCard> availableMissions = getAvailableMissions(player);
             for (MissionCard mission : availableMissions) {
                 // TODO - These actions are red herrings and are never actually used
                 if (!gameState.getHand(playerId).isEmpty()) {
-                    Action seedCardsAction = new AddSeedCardsAction(player, mission);
+                    TopLevelSelectableAction seedCardsAction = new AddSeedCardsAction(player, mission);
                     seedActions.add(seedCardsAction);
                 }
                 Collection<PhysicalCard> cardsPreSeeded = mission.getLocation().getCardsPreSeeded(player);
                 if (cardsPreSeeded != null && !cardsPreSeeded.isEmpty()) {
-                    Action removeSeedCardsAction = new RemoveSeedCardsAction(player, mission);
+                    TopLevelSelectableAction removeSeedCardsAction = new RemoveSeedCardsAction(player, mission);
                     seedActions.add(removeSeedCardsAction);
                 }
             }
@@ -67,17 +69,22 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             seedActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Action action = getSelectedAction(result);
+                            TopLevelSelectableAction action = getSelectedAction(result);
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {
-                                PhysicalCard topCard = action.getActionSource();
-                                selectCardsToSeed(player, topCard);
-                                if (action instanceof AddSeedCardsAction)
+                                try {
+                                    int cardId = action.getCardIdForActionSelection();
+                                    PhysicalCard topCard = _game.getCardFromCardId(cardId);
                                     selectCardsToSeed(player, topCard);
-                                else if (action instanceof RemoveSeedCardsAction)
-                                    selectCardsToRemove(player, topCard);
-                                else gameState.sendMessage("Game error - invalid action selected");
+                                    if (action instanceof AddSeedCardsAction)
+                                        selectCardsToSeed(player, topCard);
+                                    else if (action instanceof RemoveSeedCardsAction)
+                                        selectCardsToRemove(player, topCard);
+                                    else gameState.sendMessage("Game error - invalid action selected");
+                                } catch(CardNotFoundException exp) {
+                                    throw new DecisionResultInvalidException(exp.getMessage());
+                                }
                             }
                         }
                     });

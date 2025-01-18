@@ -1,5 +1,6 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -15,7 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MisSeedTest extends AbstractAtTest {
 
     @Test
-    public void misSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void misSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
+            CardNotFoundException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
@@ -47,7 +49,8 @@ public class MisSeedTest extends AbstractAtTest {
         assertNotNull(picard);
         assertNotNull(tarses);
 
-        ST1EPhysicalCard maglock = new ST1EPhysicalCard(_game, 99, _game.getPlayer(P1), _cardLibrary.get("109_010"));
+        ST1EPhysicalCard maglock =
+                (ST1EPhysicalCard) _game.getGameState().addCardToGame("109_010", _cardLibrary, P1);
         maglock.setZone(Zone.VOID);
 
         // Seed Simon Tarses and a space dilemma under Excavation

@@ -17,23 +17,17 @@ import java.util.Set;
 
 public class RemoveCardFromPlayAction extends ActionyAction {
     private final Collection<PhysicalCard> _cardsToRemove;
-    private final PhysicalCard _cardCausingRemoval;
 
-    public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardRemoving, PhysicalCard cardToRemove) {
+    public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardToRemove) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
         _cardsToRemove = Collections.singleton(cardToRemove);
-        _cardCausingRemoval = cardRemoving;
     }
 
-    @Override
-    public PhysicalCard getActionSource() {
-        return _cardCausingRemoval;
+    public RemoveCardFromPlayAction(Player performingPlayer, Collection<PhysicalCard> cardsToRemove) {
+        super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+        _cardsToRemove = cardsToRemove;
     }
 
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _cardCausingRemoval;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -44,8 +38,7 @@ public class RemoveCardFromPlayAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Collection<PhysicalCard> removedCards = new HashSet<>(_cardsToRemove);
 
-        Set<PhysicalCard> toRemoveFromZone = new HashSet<>();
-        toRemoveFromZone.addAll(removedCards);
+        Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
 
         cardGame.getGameState().removeCardsFromZone(_performingPlayerId, toRemoveFromZone);
         for (PhysicalCard removedCard : removedCards) {

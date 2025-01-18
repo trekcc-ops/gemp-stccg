@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -17,6 +18,8 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     private final ST1EGame _game;
     final List<AwayTeam> _awayTeams = new ArrayList<>();
+    private int _nextAttemptingUnitId;
+    private final Map<Integer, AttemptingUnit> _attemptingUnits = new HashMap<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
@@ -86,14 +89,13 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     }
 
     public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) throws InvalidGameLogicException {
-        AwayTeam result = new AwayTeam(_game, player, mission.getLocation());
-        _awayTeams.add(result);
-        return result;
+        return createNewAwayTeam(player, mission.getLocation());
     }
 
     public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
-        AwayTeam result = new AwayTeam(_game, player, location);
-        _awayTeams.add(result);
+        AwayTeam result = new AwayTeam(_game, player, location, _nextAttemptingUnitId);
+        _nextAttemptingUnitId++;
+        _attemptingUnits.put(result.getAttemptingUnitId(), result);
         return result;
     }
 
@@ -182,15 +184,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     }
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
-    public Set<PhysicalCard> getQuadrantLocationCards(Quadrant quadrant) {
-        Set<PhysicalCard> newCollection = new HashSet<>();
-        for (MissionLocation location : _spacelineLocations)
-            for (PhysicalCard mission : location.getMissions())
-                if (location.getQuadrant() == quadrant)
-                    newCollection.add(mission);
-        return newCollection;
-    }
-
     @Override
     protected void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
         boolean sharedMission;
@@ -253,7 +246,15 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         }
     }
 
-    public List<AwayTeam> getAwayTeams() { return _awayTeams; }
+    public List<AwayTeam> getAwayTeams() {
+        List<AwayTeam> result = new LinkedList<>();
+        for (AttemptingUnit unit : _attemptingUnits.values()) {
+            if (unit instanceof AwayTeam awayTeam) {
+                result.add(awayTeam);
+            }
+        }
+        return result;
+    }
 
     public void checkVictoryConditions() {
             // TODO - VERY simplistic. Just a straight race to 100.
@@ -271,7 +272,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     }
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {
-        _awayTeams.remove(awayTeam);
+        _attemptingUnits.remove(awayTeam.getAttemptingUnitId());
     }
 
     public void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) throws InvalidGameLogicException {
@@ -319,11 +320,30 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
         _allCards.put(_nextCardId, card);
         _nextCardId++;
+        card.setZone(Zone.VOID);
         return card;
     }
 
     public void sendSerializedGameStateToClient() {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.sendEvent(new GameEvent(GameEvent.Type.SERIALIZED_GAME_STATE, this));
+    }
+
+    public int getAttemptingUnitId(AttemptingUnit unit) throws InvalidGameLogicException {
+        for (Map.Entry<Integer,AttemptingUnit> entry : _attemptingUnits.entrySet()) {
+            if (entry.getValue() == unit) {
+                return entry.getKey();
+            }
+        }
+        throw new InvalidGameLogicException("Unable to find attempting unit ID for attempting unit");
+    }
+
+    public AttemptingUnit getAttemptingUnit(int attemptingUnitId) throws InvalidGameLogicException {
+        AttemptingUnit result = _attemptingUnits.get(attemptingUnitId);
+        if (result == null) {
+            throw new InvalidGameLogicException("Unable to find attempting unit for ID " + attemptingUnitId);
+        } else {
+            return result;
+        }
     }
 }

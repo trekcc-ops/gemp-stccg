@@ -1,8 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,42 +18,36 @@ public class DefaultActionContext implements ActionContext {
     protected final ActionContext _relevantContext;
     protected final String performingPlayer;
     protected final PhysicalCard source;
-    protected final EffectResult effectResult;
-    protected final Effect effect;
+    protected final ActionResult actionResult;
     protected final Multimap<String, PhysicalCard> _cardMemory = HashMultimap.create();
     protected final Map<String, String> _valueMemory = new HashMap<>();
 
     public DefaultActionContext(String performingPlayer, DefaultGame game, PhysicalCard source,
-                                Effect effect, EffectResult effectResult) {
-        this(null, performingPlayer, game, source, effect, effectResult);
+                                ActionResult actionResult) {
+        this(null, performingPlayer, game, source, actionResult);
     }
 
-    public DefaultActionContext(String performingPlayer, PhysicalCard source, Effect effect, EffectResult effectResult) {
-        this(null, performingPlayer, source.getGame(), source, effect, effectResult);
+    public DefaultActionContext(String performingPlayer, PhysicalCard source, ActionResult actionResult) {
+        this(null, performingPlayer, source.getGame(), source, actionResult);
     }
 
 
 
     public DefaultActionContext(ActionContext delegate, String performingPlayer, DefaultGame game,
-                                PhysicalCard source, Effect effect, EffectResult effectResult) {
+                                PhysicalCard source, ActionResult actionResult) {
         this.performingPlayer = performingPlayer;
         this.source = source;
-        this.effectResult = effectResult;
-        this.effect = effect;
+        this.actionResult = actionResult;
         _game = game;
         _relevantContext = Objects.requireNonNullElse(delegate, this);
     }
 
-    public ActionContext createDelegateContext(Effect effect) {
-        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), effect, null);
-    }
-
-    public ActionContext createDelegateContext(EffectResult effectResult) {
-        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), null, effectResult);
+    public ActionContext createDelegateContext(ActionResult actionResult) {
+        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), actionResult);
     }
 
     public ActionContext createDelegateContext(String playerId) {
-        return new DefaultActionContext(this, playerId, getGame(), getSource(), getEffect(), getEffectResult());
+        return new DefaultActionContext(this, playerId, getGame(), getSource(), getEffectResult());
     }
     public Map<String, String> getValueMemory() { return _valueMemory; }
     public Multimap<String, PhysicalCard> getCardMemory() { return _cardMemory; }
@@ -136,14 +129,10 @@ public class DefaultActionContext implements ActionContext {
     public GameState getGameState() { return _game.getGameState(); }
 
 
-    public EffectResult getEffectResult() {
-        return effectResult;
+    public ActionResult getEffectResult() {
+        return actionResult;
     }
 
-
-    public Effect getEffect() {
-        return effect;
-    }
 
     public boolean acceptsAllRequirements(Requirement[] requirementArray) {
         boolean result = true;

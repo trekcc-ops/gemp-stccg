@@ -1,17 +1,17 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
-import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -49,11 +49,11 @@ public class Blueprint155_012 extends CardBlueprint {
                 }
             }
             if (eligiblePersonnelToStop.isEmpty()) {
-                result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+                result.add(new FailDilemmaAction(attemptingUnit, thisCard));
             } else {
-                SelectCardsAction selectAction = new SelectCardInPlayAction(thisCard, thisCard.getOwner(),
-                        "Select personnel to stop", eligiblePersonnelToStop,
-                        AwaitingDecisionType.ARBITRARY_CARDS);
+                SelectCardsAction selectAction = new SelectCardsFromDialogAction(thisCard.getOwner(),
+                        "Select personnel to stop", Filters.in(eligiblePersonnelToStop)
+                );
                 result.add(selectAction);
                 result.add(new StopCardsAction(thisCard.getOwner(), selectAction));
             }

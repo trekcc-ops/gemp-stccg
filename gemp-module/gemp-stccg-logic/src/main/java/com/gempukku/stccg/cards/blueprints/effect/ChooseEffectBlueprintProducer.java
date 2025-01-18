@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -10,6 +10,10 @@ import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.game.DefaultGame;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ChooseEffectBlueprintProducer {
 
@@ -46,15 +50,25 @@ public class ChooseEffectBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected Effect createEffect(Action action, ActionContext context) {
-                return switch (effectType) {
-                    case CHOOSEANUMBER -> new ChooseNumberEffect(context, choiceText, valueSource, memorize);
-                    case CHOOSEOPPONENT -> new ChooseOpponentEffect(context, memorize);
-                    case CHOOSEPLAYER -> new ChoosePlayerEffect(context, memorize);
-                    case CHOOSEPLAYEREXCEPT ->
-                            new ChoosePlayerExceptEffect(context, excludePlayerSource.getPlayerId(context), memorize);
-                    case CHOOSETRIBBLEPOWER -> new ChooseTribblePowerEffect(context, memorize);
+            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
+                DefaultGame cardGame = context.getGame();
+                Action action = switch (effectType) {
+                    case CHOOSEANUMBER -> new SelectNumberAction(context, choiceText, valueSource, memorize);
+                    case CHOOSEOPPONENT -> {
+                        List<String> playerIds = Arrays.asList(cardGame.getAllPlayerIds());
+                        playerIds.remove(context.getPerformingPlayerId());
+                        yield new SelectPlayerAction(context, memorize, playerIds);
+                    }
+                    case CHOOSEPLAYER ->
+                            new SelectPlayerAction(context, memorize, Arrays.asList(cardGame.getAllPlayerIds()));
+                    case CHOOSEPLAYEREXCEPT -> {
+                        List<String> playerIds = Arrays.asList(cardGame.getAllPlayerIds());
+                        playerIds.remove(excludePlayerSource.getPlayerId(context));
+                        yield new SelectPlayerAction(context, memorize, playerIds);
+                    }
+                    case CHOOSETRIBBLEPOWER -> new SelectTribblePowerAction(context, memorize);
                 };
+                return List.of(action);
             }
         };
     }

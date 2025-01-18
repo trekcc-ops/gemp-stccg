@@ -15,30 +15,16 @@ public class EncounterSeedCardAction extends ActionyAction {
     private final PhysicalCard _encounteredCard;
     private final MissionLocation _location;
     private final AttemptingUnit _attemptingUnit;
-    private boolean _effectsAdded;
-    private final AttemptMissionAction _missionAttempt;
+    private enum Progress { effectsAdded }
 
-    public EncounterSeedCardAction(AttemptMissionAction missionAttempt, Player encounteringPlayer,
-                                   PhysicalCard encounteredCard, MissionLocation mission,
+    public EncounterSeedCardAction(Player encounteringPlayer, PhysicalCard encounteredCard, MissionLocation mission,
                                    AttemptingUnit attemptingUnit) throws InvalidGameLogicException {
-        super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD);
+        super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         _encounteredCard = encounteredCard;
         _location = mission;
         _attemptingUnit = attemptingUnit;
-        _missionAttempt = missionAttempt;
     }
 
-
-
-    @Override
-    public PhysicalCard getActionSource() {
-        return _encounteredCard;
-    }
-
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return _encounteredCard;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -47,18 +33,18 @@ public class EncounterSeedCardAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_effectsAdded) {
+        if (!getProgress(Progress.effectsAdded)) {
             List<Action> encounterActions = _encounteredCard.getEncounterActions(
                     cardGame, _attemptingUnit, this, _location);
             for (Action action : encounterActions)
-                appendAction(action);
-            _effectsAdded = true;
+                appendEffect(action);
+            setProgress(Progress.effectsAdded);
         }
         return getNextAction();
     }
 
-    public AttemptMissionAction getMissionAttempt() { return _missionAttempt; }
-
     public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _encounteredCard; }
+
+    public MissionLocation getLocation() { return _location; }
 }

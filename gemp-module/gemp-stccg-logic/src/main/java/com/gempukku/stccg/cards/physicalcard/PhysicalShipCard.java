@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardWithCrew;
@@ -34,8 +34,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     @Override
-    public List<? extends Action> getRulesActionsWhileInPlay(Player player) {
-        List<Action> actions = new LinkedList<>();
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+        List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 // TODO - Implement land, take off, cloak
             if (isControlledBy(player.getPlayerId())) {
@@ -178,6 +178,10 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     public Collection<PersonnelCard> getAllPersonnel() {
         return getPersonnelInCrew();
+    }
+
+    public int getAttemptingUnitId() throws InvalidGameLogicException {
+        return _game.getGameState().getAttemptingUnitId(this);
     }
 
 }

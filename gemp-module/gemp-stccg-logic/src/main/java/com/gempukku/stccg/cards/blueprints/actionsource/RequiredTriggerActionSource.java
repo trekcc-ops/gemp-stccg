@@ -1,7 +1,10 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
-import com.gempukku.stccg.actions.RequiredTriggerAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.common.filterable.RequiredType;
@@ -25,6 +28,13 @@ public class RequiredTriggerActionSource extends TriggerActionSource {
         }
         return null;
     }
+
+    @Override
+    public RequiredTriggerAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
+        return createActionAndAppendToContext(card,
+                new DefaultActionContext(card.getOwnerName(), card, actionResult));
+    }
+
 
     public TriggerTiming getTiming() { return _triggerTiming; }
     public RequiredType getRequiredType() { return _requiredType; }

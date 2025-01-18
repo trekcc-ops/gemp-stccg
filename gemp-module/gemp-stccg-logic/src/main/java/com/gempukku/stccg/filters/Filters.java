@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -8,6 +9,7 @@ import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
@@ -130,12 +132,6 @@ public class Filters {
         return result;
     }
 
-    public static int countActive(DefaultGame game, Filterable... filters) {
-        GetCardsMatchingFilterVisitor matchingFilterVisitor = new GetCardsMatchingFilterVisitor(game, Filters.and(filters));
-        game.getGameState().iterateActiveCards(matchingFilterVisitor);
-        return matchingFilterVisitor.getCounter();
-    }
-
 
     // Filters available
     public static Filter strengthEqual(final Evaluator evaluator) {
@@ -154,9 +150,23 @@ public class Filters {
         return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) < game.getModifiersQuerying().getStrength(card);
     }
 
+    public static Filter topOfPlayPile(Player player) {
+        return (game, physicalCard) -> {
+            if (game instanceof TribblesGame tribblesGame) {
+                return tribblesGame.getGameState().getPlayPile(player.getPlayerId()).getLast() == physicalCard;
+            } else {
+                return false;
+            }
+        };
+    }
+
 
     private static Filter species(final Species species) {
         return (game, physicalCard) -> physicalCard.getBlueprint().isSpecies(species);
+    }
+
+    public static Filter inCards(Collection<PhysicalCard> cards) {
+        return (game, physicalCard) -> cards.contains(physicalCard);
     }
 
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);
@@ -254,31 +264,6 @@ public class Filters {
 
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed(game);
 
-    public static Filter playable(final DefaultGame game) {
-        return playable(0);
-    }
-    public static Filter playable() { return (game, physicalCard) -> physicalCard.canBePlayed(game); }
-
-    public static Filter playable(final int twilightModifier) {
-        return playable(twilightModifier, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty) {
-        return playable(twilightModifier, ignoreRoamingPenalty, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile) {
-        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, ignoreResponseEvents);
-    }
-
-    public static Filter playable(final int withTwilightRemoved, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return (game1, physicalCard) -> physicalCard.canBePlayed(game1);
-    }
-
     public static final Filter any = (game, physicalCard) -> true;
 
     public static final Filter none = (game, physicalCard) -> false;
@@ -287,11 +272,7 @@ public class Filters {
             physicalCard.getBlueprint().getUniqueness() == Uniqueness.UNIQUE;
 
     public static Filter any(Characteristic characteristic) {
-        return (game, physicalCard) -> {
-            if (physicalCard instanceof PhysicalNounCard1E noun)
-                return noun.hasCharacteristic(characteristic);
-            else return false;
-        };
+        return new CharacteristicFilter(characteristic);
     }
 
     public static Filter yourOtherCards(PhysicalCard contextCard, Filterable... filterables) {
@@ -391,8 +372,6 @@ public class Filters {
         return (game, physicalCard) -> cardIds.contains(physicalCard.getCardId());
     }
 
-    public static final Filter onTable = (game, physicalCard) -> physicalCard.getZone() != null && (physicalCard.getZone().isInPlay() || physicalCard.getZone()==Zone.TABLE);
-
     public static Filter zone(final Zone zone) {
         return (game, physicalCard) -> physicalCard.getZone() == zone;
     }
@@ -442,9 +421,7 @@ public class Filters {
 
     public static Filter and(final Filterable... filters) {
         Filter[] filtersInt = convertToFilters(filters);
-        if (filtersInt.length == 1)
-            return filtersInt[0];
-        return andInternal(filtersInt);
+        return new AndFilter(filtersInt);
     }
 
     public static Filter or(final Filterable... filters) {
@@ -533,20 +510,6 @@ public class Filters {
     }
 
 
-    public static Filter attachableTo(final DefaultGame game, final Filterable... filters) {
-        return attachableTo(game, 0, filters);
-    }
-
-    public static Filter attachableTo(final DefaultGame game, final int twilightModifier, final Filterable... filters) {
-        return Filters.and(Filters.playable(twilightModifier),
-                (Filter) (game1, physicalCard) -> {
-                    if (physicalCard.getBlueprint().getValidTargetFilter() == null)
-                        return false;
-                    return physicalCard.canBePlayed(game);
-                });
-    }
-
-
     public static final Filter undocked = (game, physicalCard) -> {
         if (physicalCard instanceof PhysicalShipCard shipCard)
             return !shipCard.isDocked();
@@ -592,30 +555,17 @@ public class Filters {
                 missionCard.getPoints() >= pointValue;
     }
 
-
-    private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {
-        private final DefaultGame game;
-        private final Filter _filter;
-        private PhysicalCard _card;
-
-        private FindFirstActiveCardInPlayVisitor(DefaultGame game, Filter filter) {
-            this.game = game;
-            _filter = filter;
-        }
-
-        @Override
-        public boolean visitPhysicalCard(PhysicalCard physicalCard) {
-            if (_filter.accepts(game, physicalCard)) {
-                _card = physicalCard;
-                return true;
-            }
-            return false;
-        }
-
-        public PhysicalCard getCard() {
-            return _card;
-        }
+    public static Filter yourDiscard(String playerId) {
+        return (game, physicalCard) -> game.getGameState().getDiscard(playerId).contains(physicalCard);
     }
+
+    public static Filter personnelInAttemptingUnit(AttemptingUnit attemptingUnit) {
+        return (game, physicalCard) -> {
+            Collection<PersonnelCard> personnel = attemptingUnit.getAttemptingPersonnel();
+            return physicalCard instanceof PersonnelCard personnelCard && personnel.contains(personnelCard);
+        };
+    }
+
 
     private static class GetCardsMatchingFilterVisitor extends CompletePhysicalCardVisitor {
         private final DefaultGame game;
@@ -632,10 +582,6 @@ public class Filters {
         protected void doVisitPhysicalCard(PhysicalCard physicalCard) {
             if (_filter.accepts(game, physicalCard))
                 _physicalCards.add(physicalCard);
-        }
-
-        public int getCounter() {
-            return _physicalCards.size();
         }
 
         public Set<PhysicalCard> getPhysicalCards() {

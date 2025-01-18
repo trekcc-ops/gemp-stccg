@@ -1,6 +1,7 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
@@ -18,11 +19,11 @@ public class ST1EPhaseActionsRule extends ST1ERule {
     }
 
     @Override
-    public List<? extends Action> getPhaseActions(String playerId) {
+    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
         final GameState gameState = _game.getGameState();
         final Player player = gameState.getPlayer(playerId);
         final Phase currentPhase = gameState.getCurrentPhase();
-        List<Action> result = new LinkedList<>();
+        List<TopLevelSelectableAction> result = new LinkedList<>();
         if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
             Filters.filterActive(gameState.getGame(), CardType.MISSION).forEach(
                     card -> result.addAll(card.getRulesActionsWhileInPlay(player)));

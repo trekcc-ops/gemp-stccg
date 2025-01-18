@@ -4,14 +4,15 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SelectAttemptingUnitAction extends ActionyAction {
     private final List<String> _presentedOptions = new LinkedList<>();
@@ -57,16 +58,6 @@ public class SelectAttemptingUnitAction extends ActionyAction {
                     });
         }
         return getNextAction();
-    }
-
-    @Override
-    public PhysicalCard getActionSource() {
-        return null;
-    }
-
-    @Override
-    public PhysicalCard getCardForActionSelection() {
-        return null;
     }
 
     private void attemptingUnitChosen(AttemptingUnit attemptingUnit) {
