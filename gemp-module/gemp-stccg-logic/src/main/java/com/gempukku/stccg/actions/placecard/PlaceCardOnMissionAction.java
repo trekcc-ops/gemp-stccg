@@ -8,6 +8,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 
 public class PlaceCardOnMissionAction extends ActionyAction {
 
@@ -30,6 +31,13 @@ public class PlaceCardOnMissionAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         GameState gameState = cardGame.getGameState();
         gameState.placeCardOnMission(_cardBeingPlaced, _mission);
+        if (gameState instanceof ST1EGameState stGameState) {
+            for (MissionLocation location : stGameState.getSpacelineLocations()) {
+                if (location.getCardsSeededUnderneath().contains(_cardBeingPlaced)) {
+                    location.removeSeedCard(_cardBeingPlaced);
+                }
+            }
+        }
         gameState.sendMessage(_cardBeingPlaced.getTitle() + " was placed on " + _mission.getLocationName());
         return getNextAction();
     }
