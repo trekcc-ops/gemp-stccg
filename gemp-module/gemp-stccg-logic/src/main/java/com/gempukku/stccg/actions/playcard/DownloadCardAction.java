@@ -13,46 +13,35 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DownloadCardFromZoneAction extends ActionyAction {
-    private final String _playerId;
+public class DownloadCardAction extends ActionyAction {
     private final Filter _filter;
     private Action _playCardAction;
     private final Zone _fromZone;
     private final DefaultGame _game;
 
-    public DownloadCardFromZoneAction(Zone fromZone, Player player, PhysicalCard actionSource,
-                                      Filterable playableCardFilter) {
-        this(fromZone, player, actionSource, playableCardFilter, Filters.any);
-    }
-
-    public DownloadCardFromZoneAction(Zone fromZone, Player player, PhysicalCard actionSource,
-                                      Filterable playableCardFilter, Filterable destinationFilter) {
+    public DownloadCardAction(Zone fromZone, Player player, Filterable playableCardFilter) {
         super(player, "Download card from " + fromZone.getHumanReadable(),
                 ActionType.DOWNLOAD_CARD);
-        _playerId = player.getPlayerId();
-
-        // FOR PLAYFROMHANDEFFECT
-        // Card has to be in hand when you start playing the card (we need to copy the collection)
         _filter = Filters.and(playableCardFilter);
-
         _fromZone = fromZone;
         _game = player.getGame();
     }
 
-    protected Collection<PhysicalCard> getPlayableCards() {
+    protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
         List<PhysicalCard> sourceCards;
         if (_fromZone == Zone.HAND)
-            sourceCards = _game.getGameState().getHand(_playerId);
+            sourceCards = gameState.getHand(_performingPlayerId);
         else if (_fromZone == Zone.DISCARD)
-            sourceCards = _game.getGameState().getDiscard(_playerId);
+            sourceCards = gameState.getDiscard(_performingPlayerId);
         else if (_fromZone == Zone.DRAW_DECK)
-            sourceCards = _game.getGameState().getDrawDeck(_playerId);
+            sourceCards = gameState.getDrawDeck(_performingPlayerId);
         else throw new RuntimeException(
                 "Error in ChooseAndPlayCardFromZoneEffect processing for zone " + _fromZone.getHumanReadable());
 
@@ -77,15 +66,16 @@ public class DownloadCardFromZoneAction extends ActionyAction {
     public boolean requirementsAreMet(DefaultGame cardGame) {
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK)
             return !_game.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
-                    !getPlayableCards().isEmpty();
+                    !getPlayableCards(cardGame.getGameState()).isEmpty();
         else
-            return !getPlayableCards().isEmpty();
+            return !getPlayableCards(cardGame.getGameState()).isEmpty();
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Player performingPlayer = cardGame.getPlayer(_playerId);
-        Collection<PhysicalCard> playableCards = getPlayableCards();
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+        GameState gameState = cardGame.getGameState();
+        Collection<PhysicalCard> playableCards = getPlayableCards(gameState);
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK) {
             int minimum = _fromZone == Zone.DISCARD ? 1 : 0;
             cardGame.getUserFeedback().sendAwaitingDecision(
@@ -118,8 +108,6 @@ public class DownloadCardFromZoneAction extends ActionyAction {
 
     protected Action getPlayCardAction() { return _playCardAction; }
     protected void setPlayCardAction(Action action) { _playCardAction = action; }
-
-    public String getPerformingPlayerId() { return _playerId; }
 
     public DefaultGame getGame() { return _game; }
 }

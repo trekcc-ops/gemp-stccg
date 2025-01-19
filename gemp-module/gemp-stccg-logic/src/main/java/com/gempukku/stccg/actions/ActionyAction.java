@@ -1,6 +1,9 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -24,6 +27,8 @@ public abstract class ActionyAction implements Action {
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
+
+
     public ActionType getActionType() { return _actionType; }
 
     protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {

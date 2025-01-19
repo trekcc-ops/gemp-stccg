@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
+import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -31,7 +31,7 @@ public class Blueprint212_019 extends CardBlueprint {
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult.getType() == ActionResult.Type.START_OF_MISSION_ATTEMPT && card.isControlledBy(player)) {
             UseGameTextAction gameTextAction = new UseGameTextAction(card, player, "Download a card");
-            gameTextAction.appendEffect(new DownloadCardFromZoneAction(Zone.DRAW_DECK, player, card, CardType.PERSONNEL));
+            gameTextAction.appendEffect(new DownloadCardAction(Zone.DRAW_DECK, player, CardType.PERSONNEL));
             actions.add(gameTextAction);
         }
         return actions;

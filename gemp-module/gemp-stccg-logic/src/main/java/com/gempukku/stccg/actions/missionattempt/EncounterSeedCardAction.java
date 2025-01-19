@@ -45,7 +45,7 @@ public class EncounterSeedCardAction extends ActionyAction {
         return getNextAction();
     }
 
-    public AttemptingUnit getAttemptingUnit() { return _parentAction.getAttemptingUnit(); }
+    public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _parentAction.getAttemptingUnit(); }
     public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
 
 }

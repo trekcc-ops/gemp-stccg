@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
+import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -53,9 +54,9 @@ public class Blueprint155_021 extends CardBlueprint {
             action1.setCardActionPrefix("1");
             action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
             action1.appendEffect(
-                    new DownloadCardFromZoneAction(Zone.HAND, thisCard.getOwner(), thisCard, playableCardFilter) {
+                    new DownloadCardAction(Zone.HAND, thisCard.getOwner(), playableCardFilter) {
                         @Override
-                        protected Collection<PhysicalCard> getPlayableCards() {
+                        protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
                             Collection<PhysicalCard> playableCards = Filters.filter(
                                     game.getGameState().getHand(thisCard.getOwnerName()), playableCardFilter);
                             playableCards.removeIf(card -> getDestinationOptionsForCard(card).isEmpty());

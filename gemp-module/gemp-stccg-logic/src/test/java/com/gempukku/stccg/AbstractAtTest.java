@@ -734,7 +734,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void attemptMission(String playerId, MissionLocation mission)
-            throws DecisionResultInvalidException {
+            throws DecisionResultInvalidException, InvalidGameLogicException {
         AttemptMissionAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {

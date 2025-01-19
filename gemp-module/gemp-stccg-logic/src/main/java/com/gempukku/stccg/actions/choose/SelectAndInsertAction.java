@@ -41,9 +41,9 @@ public class SelectAndInsertAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!getProgress(Progress.actionSelected)) {
-            List<Action> performableActions = new LinkedList<>();
+            List<TopLevelSelectableAction> performableActions = new LinkedList<>();
             List<String> actionTexts = new LinkedList<>();
-            for (Action action : _actionsToChooseFrom) {
+            for (TopLevelSelectableAction action : _actionsToChooseFrom) {
                 if (action.canBeInitiated(cardGame)) {
                     performableActions.add(action);
                     actionTexts.add(action.getActionSelectionText(cardGame));
