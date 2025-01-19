@@ -32,4 +32,12 @@ public class RegularSkillMissionRequirement implements MissionRequirement {
         return totalSkillLevel >= _count;
     }
 
+    public String toString() {
+        String result;
+        result = _skill.get_humanReadable();
+        if (_count > 1)
+            result = result + " x" + _count;
+        return result;
+    }
+
 }

@@ -23,4 +23,8 @@ public class PersonnelNameMissionRequirement implements MissionRequirement {
         return personnel.stream().anyMatch(card -> Objects.equals(card.getTitle(), _name.getHumanReadable()));
     }
 
+    public String toString() {
+        return _name.getHumanReadable();
+    }
+
 }

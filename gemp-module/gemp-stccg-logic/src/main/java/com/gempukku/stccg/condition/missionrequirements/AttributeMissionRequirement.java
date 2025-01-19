@@ -27,4 +27,8 @@ public class AttributeMissionRequirement implements MissionRequirement {
         return totalAttribute > _value;
     }
 
+    public String toString() {
+        return _attribute.name() + ">" + _value;
+    }
+
 }
