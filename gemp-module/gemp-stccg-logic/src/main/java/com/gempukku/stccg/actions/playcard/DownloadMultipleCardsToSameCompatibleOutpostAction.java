@@ -3,6 +3,8 @@ package com.gempukku.stccg.actions.playcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.actions.choose.SelectValidCardCombinationFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -38,6 +40,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     private boolean _cardsPlayed = false;
     private boolean _cardsToDownloadChosen = false;
     private SelectVisibleCardAction _selectDestinationAction;
+    private SelectCardsAction _selectCardsToDownloadAction;
 
     public DownloadMultipleCardsToSameCompatibleOutpostAction(Zone fromZone, Player player, PhysicalCard actionSource,
                                                               Map<PersonnelCard, List<PersonnelCard>> validCombinations,
@@ -81,44 +84,46 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
         Player performingPlayer = cardGame.getPlayer(_playerId);
 
         if (!_cardsToDownloadChosen) {
-            cardGame.getUserFeedback().sendAwaitingDecision(
-                    new ArbitraryCardsSelectionDecision(performingPlayer, "Choose card(s) to download",
-                            new LinkedList<>(getPlayableCards()), _validCombinations, 0, _maxCardCount) {
-                        @Override
-                        public void decisionMade(String result) throws DecisionResultInvalidException {
-                            _cardsToDownloadChosen = true;
-                            _cardsToDownload = getSelectedCardsByResponse(result);
-                            if (!_cardsToDownload.isEmpty()) {
+            if (_selectCardsToDownloadAction == null) {
+                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogAction(performingPlayer,
+                        "Choose card(s) to download", getPlayableCards(), _validCombinations, _maxCardCount);
+                return _selectCardsToDownloadAction;
+            } else if (!_selectCardsToDownloadAction.wasCarriedOut()) {
+                return _selectCardsToDownloadAction;
+            } else {
+                _cardsToDownloadChosen = true;
+                _cardsToDownload = _selectCardsToDownloadAction.getSelectedCards().stream().toList();
+            }
+        }
 
-                                for (PhysicalCard card : Filters.yourFacilitiesInPlay(performingPlayer)) {
-                                    if (card instanceof FacilityCard facilityCard &&
-                                            facilityCard.getFacilityType() == FacilityType.OUTPOST) {
-                                        boolean allCompatible = true;
-                                        for (PhysicalCard selectedCard : _cardsToDownload) {
-                                            if (!((PersonnelCard) selectedCard).isCompatibleWith(facilityCard)) {
-                                                allCompatible = false;
-                                            }
-                                        }
-                                        if (allCompatible)
-                                            _destinationOptions.add(facilityCard);
-                                    }
-                                }
-
-                                if (_destinationOptions.isEmpty()) {
-                                    _destinationChosen = true;
-                                    _cardsPlayed = true;
-                                    throw new DecisionResultInvalidException("Could find no compatible outpost to " +
-                                            "download cards to");
-                                } else if (_destinationOptions.size() == 1) {
-                                    _destinationChosen = true;
-                                    _destination = _destinationOptions.getFirst();
-                                }
-                            }
-                        }
-                    });
+        if (_cardsToDownload.isEmpty()) {
+            throw new InvalidGameLogicException("Unable to identify any cards to download");
         }
 
         if (!_destinationChosen) {
+            for (PhysicalCard card : Filters.yourFacilitiesInPlay(performingPlayer)) {
+                if (card instanceof FacilityCard facilityCard &&
+                        facilityCard.getFacilityType() == FacilityType.OUTPOST) {
+                    boolean allCompatible = true;
+                    for (PhysicalCard selectedCard : _cardsToDownload) {
+                        if (!((PersonnelCard) selectedCard).isCompatibleWith(facilityCard)) {
+                            allCompatible = false;
+                        }
+                    }
+                    if (allCompatible)
+                        _destinationOptions.add(facilityCard);
+                }
+            }
+
+            if (_destinationOptions.isEmpty()) {
+                _destinationChosen = true;
+                _cardsPlayed = true;
+                throw new InvalidGameLogicException("Could find no compatible outpost to download cards to");
+            } else if (_destinationOptions.size() == 1) {
+                _destinationChosen = true;
+                _destination = _destinationOptions.getFirst();
+            }
+
             if (_selectDestinationAction == null) {
                 _selectDestinationAction = new SelectVisibleCardAction(performingPlayer,
                         "Select outpost to download cards to", _destinationOptions);
@@ -140,6 +145,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
                     _playCardActions.add(playCardAction);
                 }
             }
+            _cardsPlayed = true;
         }
 
         return null;
