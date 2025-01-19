@@ -13,7 +13,7 @@
             lore: "A male non-corporeal life-form that lives inside a female host which he enchants, as in the case of Dr. Beverly Crusher's late grandmother."
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/anaphasicorganism95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR12.jpg
             rarity: C
         } */
         {
@@ -24,7 +24,7 @@
             lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/archer.gif
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR14.jpg
             rarity: C
         }
         {
@@ -35,7 +35,7 @@
             lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Armus-Skin-of-Evil.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR15.jpg
             rarity: R
         }
     /*    {
@@ -46,7 +46,7 @@
             lore: A genetically-engineered leader. Once romantically involved with Deanna Troi.
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Female_s-Love-Interest.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR24.jpg
             rarity: C
         } */
         {
@@ -57,7 +57,7 @@
             lore: Forcefields across door or hallway openings are commonly used to bar entry.
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/impassabledoor.gif
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR30.jpg
             rarity: C
         }
     /*    {
@@ -68,7 +68,7 @@
             lore: One of the many beautiful women who reside on the paradise planet of Risa.
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Male_s-Love-Interest.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR32.jpg
             rarity: C
         } */
     /*    {
@@ -79,7 +79,7 @@
             lore: Genetic weapon designed to attack humanoids who have specific DNA sequences.
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/microvirus95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR36.jpg
             rarity: C
         } */
         {
@@ -90,7 +90,7 @@
             property-logo: tng-logo
             java-blueprint: true
             lore: Sentry of the Parallax Colony. Only allows those whose hearts are joyous to pass.
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Wind-Dancer.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR54.jpg
             rarity: R
         }
         {
@@ -100,7 +100,7 @@
             property-logo: tng-logo
             java-blueprint: true
             lore: Representative of specialized engineering instruments. Such equipment has been developed by many races.
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/engineeringkit95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR55.jpg
             rarity: C
         }
         {
@@ -109,7 +109,7 @@
             type: equipment
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/federationpadd95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR57.jpg
             rarity: C
         }
         {
@@ -119,7 +119,7 @@
             type: equipment
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/klingondisruptor95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR58.jpg
             rarity: C
         }
         {
@@ -128,7 +128,7 @@
             type: equipment
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/klingonpadd95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR59.jpg
             rarity: C
         }
         {
@@ -138,7 +138,7 @@
             property-logo: tng-logo
             java-blueprint: true
             lore: Representative of specialized medical equipment. Such equipment has been developed by many races.
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/medicalkit95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR60.jpg
             rarity: C
         }
         {
@@ -148,7 +148,7 @@
             property-logo: tng-logo
             java-blueprint: true
             lore: Representative of a specialized tricorder optimized for medical use. Such equipment has been developed by many races.
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/medicaltricorder95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR61.jpg
             rarity: C
         }
         {
@@ -157,7 +157,7 @@
             type: equipment
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/romulandisruptor95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR62.jpg
             rarity: C
         }
         {
@@ -167,7 +167,7 @@
             property-logo: tng-logo
             java-blueprint: true
             rarity: C
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/romulanpadd95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR63.jpg
         }
         {
             blueprintId: 101_064
@@ -175,7 +175,7 @@
             type: equipment
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Starfleet-Type-II-Phaser.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR64.jpg
             rarity: C
         }
         {
@@ -184,7 +184,7 @@
             type: equipment
             property-logo: tng-logo
             java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/tricorder95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg
             lore: Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.
             rarity: C
         }
@@ -198,7 +198,7 @@
             uniqueness: universal
             lore: Earth is a member of the United Federation of Planets. The Federation establishes outposts throughout its territory.
             shields: 30
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Federation-Outpost.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg
             rarity: C
         }
         {
@@ -211,7 +211,7 @@
             uniqueness: universal
             lore: "The Klingon Homeworld is Qo'noS. The Klingon Empire establishes outposts throughout its territory."
             shields: 32
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Klingon-Outpost.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR105.jpg
             rarity: C
        }
         {
@@ -224,7 +224,7 @@
             uniqueness: universal
             lore: Romulus is one of the two homeworlds for the Romulans. The Romulan Star Empire establishes outposts throughout its territory.
             shields: 32
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR106.jpg
             rarity: C
         }
         {
@@ -238,7 +238,7 @@
             mission-requirements: Geology + Honor + INTEGRITY>35
             point-box: 40
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/avertdisaster95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR146.jpg
         }
         {
             blueprintId: 101_147
@@ -252,7 +252,7 @@
             mission-requirements: Navigation + Diplomacy + Honor
             point-box: 30
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Cloaked-Mission.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR147.jpg
         }
         {
             blueprintId: 101_148
@@ -262,11 +262,11 @@
             location: Devora
             affiliation-icons: romulan
             mission-type: planet
-            lore: Build hidden monitoring station in the Neutral Zone.
+            lore: Build hidden listening post in the Neutral Zone.
             mission-requirements: ENGINEER + Leadership + Treachery
             point-box: 35
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Covert-Installation.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR148.jpg
         }
         {
             blueprintId: 101_149
@@ -274,12 +274,12 @@
             type: mission
             mission-type: planet
             location: Galorndon Core
-            lore: Retrieve crashed scoutship in Federation territory.
+            lore: Retrieve crashed scout ship in Federation territory.
             affiliation-icons: romulan
             mission-requirements: Diplomacy + Leadership + CUNNING>35
             point-box: 30
             span: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/covertrescue95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR149.jpg
         }
         {
             blueprintId: 101_150
@@ -292,7 +292,7 @@
             mission-requirements: Anthropology + Leadership + STRENGTH>30
             point-box: 40
             span: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/culturalobservation95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR150.jpg
             rarity: R
         }
         {
@@ -306,7 +306,7 @@
             mission-requirements: Diplomacy + INTEGRITY>30 + CUNNING>30
             point-box: 30
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/diplomacymission.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR151.jpg
         }
         {
             blueprintId: 101_153
@@ -319,7 +319,7 @@
             mission-requirements: MEDICAL + Biology + Exobiology OR Geordi La Forge + MEDICAL x2
             point-box: 35
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/evaluateterraforming95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR153.jpg
         }
         {
             blueprintId: 101_154
@@ -332,7 +332,7 @@
             mission-requirements: Archaeology OR CUNNING>32
             point-box: 25
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/excavation95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR154.jpg
         }
         {
             blueprintId: 101_155
@@ -345,7 +345,7 @@
             mission-requirements: Stellar Cartography + Leadership OR CUNNING>50
             point-box: 35
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/exploreblackcluster95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR155.jpg
         }
         {
             blueprintId: 101_157
@@ -358,7 +358,7 @@
             affiliation-icons: romulan,klingon
             point-box: 35
             span: 5
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Explore-Typhon-Expanse.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR157.jpg
         }
         {
             blueprintId: 101_158
@@ -367,11 +367,11 @@
             location: "Qo'noS"
             affiliation-icons: romulan
             mission-type: planet
-            lore: Uncover covert supply lines supporting rebels on the Klingon Homeworld.
+            lore: Uncover covert supply lines supporting rebels on the Klingon homeworld.
             mission-requirements: Treachery x3 + Navigation
             point-box: 30
             span: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/exposecovertsupply.gif
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR158.jpg
         }
         {
             blueprintId: 101_160
@@ -384,7 +384,7 @@
             mission-requirements: MEDICAL x3 OR Biology + OFFICER
             point-box: 35
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/feveremergency.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR160.jpg
         }
         {
             blueprintId: 101_163
@@ -398,7 +398,7 @@
             mission-requirements: Archaeology + Computer Skill x2
             point-box: 35
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Iconia-Investigation.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR163.jpg
         }
         {
             blueprintId: 101_164
@@ -412,7 +412,7 @@
             mission-requirements: Leadership + Computer Skill + Astrophysics x2 + Stellar Cartography
             point-box: 45
             span: 5
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Investigate-Shattered-Space.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR164.jpg
         }
         {
             blueprintId: 101_165
@@ -425,7 +425,7 @@
             affiliation-icons: klingon
             point-box: 40
             span: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/investigatealienprobe95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR165.jpg
         }
         {
             blueprintId: 101_168
@@ -438,7 +438,7 @@
             mission-requirements: Honor + Leadership + INTEGRITY>30 OR Gowron + Biology
             point-box: 35
             span: 4
-            image-url: https://www.trekcc.org/1e/cardimages/vpromos/264VP.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR168.jpg
         }
         {
             blueprintId: 101_169
@@ -451,7 +451,7 @@
             mission-requirements: Diplomacy + INTEGRITY>35 + CUNNING>35
             point-box: 35
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/investigatemassacre95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR169.jpg
         }
         {
             blueprintId: 101_170
@@ -464,7 +464,7 @@
             mission-requirements: Exobiology + Diplomacy
             point-box: 35
             span: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/investigateraid95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR170.jp
         }
         {
             blueprintId: 101_171
@@ -477,7 +477,7 @@
             mission-requirements: Archaeology + Exobiology + Computer Skill
             point-box: 30
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/investigateroguecomet95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR171.jpg
         }
         {
             blueprintId: 101_174
@@ -490,7 +490,7 @@
             mission-requirements: Honor x3 + Computer Skill + Treachery
             point-box: 35
             span: 4
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Khitomer-Research.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR174.jpg
         }
         {
             blueprintId: 101_175
@@ -503,7 +503,7 @@
             mission-requirements: Honor + Diplomacy + STRENGTH>35
             point-box: 30
             span: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/kriossuppression95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR175.jpg
         }
         {
             blueprintId: 101_176
@@ -516,7 +516,7 @@
             mission-requirements: Biology + Exobiology + MEDICAL
             point-box: 35
             span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/medicalrelief95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR176.jpg
             rarity: R
         }
         {
@@ -530,7 +530,7 @@
             mission-requirements: Diplomacy + Leadership + Empathy + Anthropology
             point-box: 40
             span: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/newcontact95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR177.jpg
         }
         {
             blueprintId: 101_179
@@ -543,7 +543,7 @@
             mission-requirements: Treachery + Archaeology + STRENGTH>30
             point-box: 30
             span: 2
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/plundersite.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR179.jpg
             rarity: U
         }
         {
@@ -557,7 +557,7 @@
             mission-requirements: Diplomacy x5 OR Honor x4 OR Treachery x4
             point-box: 45
             span: 4
-            image-url: https://www.trekcc.org/1e/cardimages/errata/WormholeNegotiations.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR194.jpg
         }
         {
             blueprintId: 101_196
@@ -566,12 +566,12 @@
             affiliation: federation
             property-logo: tng-logo
             classification: CIVILIAN
-            lore: "3/4 Klingon, 1/4 Human male. Born on the 43rd day of Maktag. Son of Lieutenant Worf and K'Ehleyr."
+            lore: "3/4 Klingon, 1/4 human son of Worf and K'Ehleyr. He was born on the 43rd day of Maktag."
             skill-box: "[*] Honor [*] Youth"
             integrity: 6
             cunning: 4
             strength: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/alexanderrozhenko95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR196.jpg
             rarity: U
         }
         {
@@ -588,7 +588,7 @@
             integrity: 7
             cunning: 8
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/alynnanechayev95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR197.jpg
         }
         {
             blueprintId: 101_198
@@ -603,7 +603,7 @@
             integrity: 7
             cunning: 6
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/comingofage/8.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR198.jpg
             rarity: U
         }
         {
@@ -619,7 +619,7 @@
             integrity: 9
             cunning: 7
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/18.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR199.jpg
             rarity: U
         }
         {
@@ -635,7 +635,7 @@
             integrity: 8
             cunning: 8
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/beverlycrusher95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR200.jpg
         }
         {
             blueprintId: 101_201
@@ -650,7 +650,7 @@
             integrity: 7
             cunning: 5
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/calloway.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR201.jpg
         }
         {
             blueprintId: 101_202
@@ -666,7 +666,7 @@
             integrity: 6
             cunning: 7
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/christopherhobson95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR202.jpg
         }
         {
             blueprintId: 101_203
@@ -681,7 +681,7 @@
             integrity: 7
             cunning: 5
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/19.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR203.jpg
         }
         {
             blueprintId: 101_204
@@ -696,7 +696,7 @@
             integrity: 8
             cunning: 12
             strength: 12
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/data95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR204.jpg
         }
         {
             blueprintId: 101_205
@@ -711,7 +711,7 @@
             integrity: 8
             cunning: 7
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/deannatroi95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR205.jpg
         }
         {
             blueprintId: 101_206
@@ -726,7 +726,7 @@
             integrity: 7
             cunning: 7
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/drlaforge.gif
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR206.jpg
             rarity: R
         }
         {
@@ -742,12 +742,12 @@
             integrity: 7
             cunning: 8
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/20.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR208.jpg
             rarity: U
         }
         {
             blueprintId: 101_209
-            title: Eric Pressman
+            title: Erik Pressman
             type: personnel
             affiliation: federation
             property-logo: tng-logo
@@ -758,7 +758,7 @@
             integrity: 5
             cunning: 6
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/ericpressman95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR209.jpg
         }
         {
             blueprintId: 101_211
@@ -774,7 +774,7 @@
             integrity: 9
             cunning: 6
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/TWT-fleetadmiralshanthi.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR211.jpg
             rarity: U
         }
         {
@@ -790,7 +790,7 @@
             integrity: 8
             cunning: 8
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/21.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR212.jpg
             rarity: R
         }
         {
@@ -807,7 +807,7 @@
             integrity: 7
             cunning: 6
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Giusti.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR213.jpg
             rarity: C
         }
         {
@@ -822,7 +822,7 @@
             integrity: 6
             cunning: 8
             strength: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/hannahbates95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR214.jpg
             rarity: U
         }
         {
@@ -838,7 +838,7 @@
             integrity: 9
             cunning: 8
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/vpromos/82VP.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR215.jpg
         }
         {
             blueprintId: 101_216
@@ -853,7 +853,7 @@
             integrity: 7
             cunning: 6
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/jennadsora95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR216.jpg
         }
         {
             blueprintId: 101_217
@@ -869,7 +869,7 @@
             integrity: 8
             cunning: 7
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/kehleyr95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR217.jpg
         }
         {
             blueprintId: 101_218
@@ -883,7 +883,7 @@
             integrity: 9
             cunning: 7
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/kareelodan95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR218.jpg
             rarity: U
         }
         {
@@ -899,7 +899,7 @@
             integrity: 8
             cunning: 9
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/leahbrahms95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR219.jpg
             rarity: U
         }
         {
@@ -916,7 +916,7 @@
             integrity: 7
             cunning: 5
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/lindalarson95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR220.jpg
             rarity: C
         }
         {
@@ -931,7 +931,7 @@
             integrity: 7
             cunning: 8
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Lwaxana-Troi.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR221.jpg
             rarity: U
         }
         {
@@ -948,7 +948,7 @@
             integrity: 5
             cunning: 6
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/mcknight95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR222.jpg
             rarity: U
         }
         {
@@ -965,7 +965,7 @@
             integrity: 7
             cunning: 5
             strength: 2
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Mendon.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR223.jpg
             rarity: C
         }
         {
@@ -980,22 +980,22 @@
             integrity: 6
             cunning: 4
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/motthebarber95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR225.jpg
         }
         {
             blueprintId: 101_226
-            title: Neela Daren
+            title: Nella Daren
             type: personnel
             affiliation: federation
             property-logo: tng-logo
             classification: SCIENCE
             icons: staff
-            lore: Lt. Commander Neela Daren is a specialist in stellar cartography. Accomplished pianist. Romantically involved with Captain Jean-Luc Picard.
+            lore: Human specializing in stellar cartography. She is an accomplished pianist. Lieutenant commander who became romantically involved with Jean-Luc Picard.
             skill-box: "[*] Astrophysics [*] Stellar Cartography [*] Music"
             integrity: 8
             cunning: 8
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/neeladaren95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR226.jpg
         }
         {
             blueprintId: 101_229
@@ -1010,7 +1010,7 @@
             integrity: 7
             cunning: 7
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/reginaldbarclay95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR229.jpg
         }
         {
             blueprintId: 101_232
@@ -1025,7 +1025,7 @@
             integrity: 4
             cunning: 7
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/rolaren95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR232.jpg
         }
         {
             blueprintId: 101_233
@@ -1040,7 +1040,7 @@
             integrity: 9
             cunning: 10
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/vpromos/252VP.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR233.jpg
         }
         {
             blueprintId: 101_234
@@ -1055,7 +1055,7 @@
             integrity: 8
             cunning: 9
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/satelk95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR234.jpg
         }
         {
             blueprintId: 101_235
@@ -1070,7 +1070,7 @@
             integrity: 6
             cunning: 7
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/21V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR235.jpg
         }
         {
             blueprintId: 101_236
@@ -1085,7 +1085,7 @@
             integrity: 6
             cunning: 5
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/simontarses95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR236.jpg
         }
         {
             blueprintId: 101_239
@@ -1101,7 +1101,7 @@
             integrity: 8
             cunning: 6
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/22V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR239.jpg
         }
         {
             blueprintId: 101_242
@@ -1117,7 +1117,7 @@
             integrity: 6
             cunning: 7
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/22.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR242.jpg
             rarity: C
         }
         {
@@ -1134,7 +1134,7 @@
             integrity: 7
             cunning: 7
             strength: 8
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/taurik95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR245.jpg
             rarity: C
         }
         {
@@ -1150,7 +1150,7 @@
             integrity: 8
             cunning: 7
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/thomasriker95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR246.jpg
         }
         {
             blueprintId: 101_247
@@ -1165,7 +1165,7 @@
             integrity: 6
             cunning: 7
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/23.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR247.jpg
         }
         {
             blueprintId: 101_249
@@ -1180,7 +1180,7 @@
             integrity: 6
             cunning: 8
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/errata/Wesley-Crusher.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR249.jpg
         }
         {
             blueprintId: 101_251
@@ -1195,7 +1195,7 @@
             integrity: 8
             cunning: 6
             strength: 10
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/25V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR251.jpg
         }
         {
             blueprintId: 101_252
@@ -1210,7 +1210,7 @@
             integrity: 2
             cunning: 8
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/betor95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR252.jpg
         }
         {
             blueprintId: 101_253
@@ -1226,22 +1226,32 @@
             integrity: 4
             cunning: 6
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/bijik95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR253.jpg
             rarity: C
         }
         {
             blueprintId: 101_254
             title: "Ba'el"
             type: personnel
-            affiliation: klingon
+            affiliation: klingon,romulan
             property-logo: tng-logo
             classification: CIVILIAN
-            lore: 1/2 Klingon, 1/2 Romulan. Romantically involved with Lieutenant Worf. Born in Romulan prison camp in Carraya system.
+            lore: 1/2 Klingon, 1/2 Romulan. Briefly romantically involved with Worf. She was born in a Romulan prison camp on Carraya IV.
             skill-box: "[*] Anthropology [*] Youth"
             integrity: 6
             cunning: 6
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/bael95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
+            image-options: [
+                {
+                    affiliation: klingon
+                    image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
+                }
+                {
+                    affiliation: romulan
+                    image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
+                }
+            ]
             rarity: U
         }
         {
@@ -1258,7 +1268,7 @@
             integrity: 7
             cunning: 3
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/batrell95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR255.jpg
         }
         {
             blueprintId: 101_256
@@ -1274,7 +1284,7 @@
             integrity: 6
             cunning: 6
             strength: 8
-            image-url: https://www.trekcc.org/1e/cardimages/comingofage/14.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR256.jpg
             rarity: C
         }
         {
@@ -1291,7 +1301,7 @@
             integrity: 5
             cunning: 6
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/dukath.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR257.jpg
             rarity: C
         }
         {
@@ -1307,7 +1317,7 @@
             integrity: 4
             cunning: 6
             strength: 8
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/duras95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR258.jpg
             rarity: R
         }
         {
@@ -1324,7 +1334,7 @@
             integrity: 6
             cunning: 4
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/gorath95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR260.jpg
             rarity: C
         }
         {
@@ -1340,12 +1350,12 @@
             integrity: 8
             cunning: 7
             strength: 9
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/28V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR261.jpg
             rarity: R
         }
         {
             blueprintId: 101_262
-            title: "J'Ddan"
+            title: "J'Dan"
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
@@ -1357,7 +1367,7 @@
             integrity: 2
             cunning: 6
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/comingofage/15.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR262.jpg
             rarity: C
         }
         {
@@ -1373,7 +1383,7 @@
             integrity: 7
             cunning: 8
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/kmpec95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR263.jpg
             rarity: U
         }
         {
@@ -1389,7 +1399,7 @@
             integrity: 7
             cunning: 5
             strength: 9
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/30V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR268.jpg
             rarity: R
         }
         {
@@ -1404,7 +1414,7 @@
             integrity: 2
             cunning: 6
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/kell95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR269.jpg
             rarity: U
         }
         {
@@ -1421,7 +1431,7 @@
             integrity: 6
             cunning: 5
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/klag95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR270.jpg
             rarity: C
         }
         {
@@ -1438,7 +1448,7 @@
             integrity: 6
             cunning: 4
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/kleeg95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR271.jpg
             rarity: C
         }
         {
@@ -1455,7 +1465,7 @@
             integrity: 5
             cunning: 6
             strength: 8
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/kromm.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR276.jpg
             rarity: C
         }
         {
@@ -1471,7 +1481,7 @@
             integrity: 6
             cunning: 7
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/31V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR277.jpg
         }
         {
             blueprintId: 101_284
@@ -1485,7 +1495,7 @@
             integrity: 5
             cunning: 4
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/torak95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR284.jpg
         }
         {
             blueprintId: 101_286
@@ -1500,7 +1510,7 @@
             integrity: 7
             cunning: 6
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/torin95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR286.jpg
             rarity: C
         }
         {
@@ -1517,7 +1527,7 @@
             integrity: 6
             cunning: 5
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/32V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR288.jpg
             rarity: C
         }
         {
@@ -1532,7 +1542,7 @@
             integrity: 5
             cunning: 9
             strength: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/amarie95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR289.jpg
         }
         {
             blueprintId: 101_290
@@ -1547,7 +1557,7 @@
             integrity: 3
             cunning: 8
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/33V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR290.jpg
         }
         {
             blueprintId: 101_292
@@ -1561,7 +1571,7 @@
             integrity: 3
             cunning: 9
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/devinoniral.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR292.jpg
         }
         {
             blueprintId: 101_293
@@ -1577,7 +1587,7 @@
             integrity: 2
             cunning: 8
             strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/drfarek95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR293.jpg
             rarity: C
         }
         {
@@ -1593,7 +1603,7 @@
             integrity: 3
             cunning: 7
             strength: 4
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/gorta.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR297.jpg
         }
         {
             blueprintId: 101_299
@@ -1608,7 +1618,7 @@
             integrity: 3
             cunning: 8
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/34V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR299.jpg
         }
         {
             blueprintId: 101_300
@@ -1624,7 +1634,7 @@
             integrity: 2
             cunning: 7
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/narik95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg
             rarity: C
         }
         {
@@ -1641,7 +1651,7 @@
             integrity: 2
             cunning: 7
             strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/37V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR303.jpg
         }
         {
             blueprintId: 101_304
@@ -1656,7 +1666,7 @@
             integrity: 2
             cunning: 8
             strength: 8
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/alidarjarok95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR304.jpg
         }
         {
             blueprintId: 101_310
@@ -1671,7 +1681,7 @@
             integrity: 3
             cunning: 8
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/mirok95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR310.jpg
         }
         {
             blueprintId: 101_312
@@ -1686,7 +1696,7 @@
             integrity: 6
             cunning: 8
             strength: 8
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR312.jpg
         }
         {
             blueprintId: 101_314
@@ -1702,7 +1712,7 @@
             integrity: 3
             cunning: 8
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/palteth95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR314.jpg
         }
         {
             blueprintId: 101_320
@@ -1718,7 +1728,7 @@
             integrity: 4
             cunning: 7
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/takket95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg
         }
         {
             blueprintId: 101_329
@@ -1733,7 +1743,7 @@
             integrity: 5
             cunning: 8
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/toreth95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR329.jpg
         }
         {
             blueprintId: 101_330
@@ -1749,7 +1759,7 @@
             integrity: 4
             cunning: 7
             strength: 5
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/varel95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg
         }
         {
             blueprintId: 101_331
@@ -1763,7 +1773,7 @@
             range: 7
             weapons: 5
             shields: 5
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/runabout.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR331.jpg
         }
         {
             blueprintId: 101_332
@@ -1777,7 +1787,7 @@
             range: 6
             weapons: 2
             shields: 2
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/25.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR332.jpg
         }
         {
             blueprintId: 101_334
@@ -1793,7 +1803,7 @@
             range: 9
             weapons: 8
             shields: 9
-            image-url: https://www.trekcc.org/1e/cardimages/sfls/26.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR334.jpg
         }
         {
             blueprintId: 101_336
@@ -1809,7 +1819,7 @@
             range: 8
             weapons: 7
             shields: 9
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ussgalaxy.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR336.jpg
         }
         {
             blueprintId: 101_339
@@ -1825,7 +1835,7 @@
             range: 8
             weapons: 7
             shields: 8
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ussnebula.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR339.jpg
         }
         {
             blueprintId: 101_340
@@ -1841,7 +1851,7 @@
             range: 6
             weapons: 4
             shields: 7
-            image-url: https://www.trekcc.org/1e/cardimages/errata/USS-Oberth.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR340.jpg
         }
         {
             blueprintId: 101_344
@@ -1856,7 +1866,7 @@
             range: 9
             weapons: 9
             shields: 7
-            image-url: https://www.trekcc.org/1e/cardimages/errata/IKC-Bortas.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR344.jpg
         }
         {
             blueprintId: 101_347
@@ -1872,7 +1882,7 @@
             range: 8
             weapons: 6
             shields: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/43V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR347.jpg
         }
         {
             blueprintId: 101_350
@@ -1888,7 +1898,7 @@
             range: 9
             weapons: 8
             shields: 7
-            image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ikcvorcha.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR350.jpg
         }
         {
             blueprintId: 101_353
@@ -1904,7 +1914,7 @@
             range: 6
             weapons: 9
             shields: 12
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/husnockship95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR353.jpg
         }
         {
             blueprintId: 101_354
@@ -1920,7 +1930,7 @@
             range: 7
             weapons: 7
             shields: 7
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/44V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR354.jpg
         }
         {
             blueprintId: 101_355
@@ -1934,7 +1944,7 @@
             range: 6
             weapons: 1
             shields: 3
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/yridianshuttle95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR355.jpg
         }
         {
             blueprintId: 101_356
@@ -1948,7 +1958,7 @@
             range: 6
             weapons: 2
             shields: 4
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/zibaliantransport95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR356.jpg
         }
         {
             blueprintId: 101_357
@@ -1964,7 +1974,7 @@
             range: 8
             weapons: 9
             shields: 7
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/dderidex95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR357.jpg
         }
         {
             blueprintId: 101_358
@@ -1979,7 +1989,7 @@
             range: 9
             weapons: 8
             shields: 8
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/devoras95.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR358.jpg
         }
         {
             blueprintId: 101_362
@@ -1993,7 +2003,7 @@
             range: 8
             weapons: 5
             shields: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tngsup/45V.jpg
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR362.jpg
         }
     ]
 }
