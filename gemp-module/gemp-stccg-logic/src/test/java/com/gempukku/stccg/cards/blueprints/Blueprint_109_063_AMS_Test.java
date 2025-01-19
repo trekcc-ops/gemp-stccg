@@ -56,7 +56,6 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
             assertTrue(specialist.isInPlay());
             assertTrue(fedOutpost.getCrew().contains(specialist));
         }
-//        assertNotNull(_userFeedback.getAwaitingDecision(P1));
     }
 
 }
