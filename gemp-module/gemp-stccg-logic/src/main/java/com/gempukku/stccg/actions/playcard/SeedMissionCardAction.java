@@ -18,10 +18,10 @@ import java.util.Objects;
 public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
     private final MissionCard _cardEnteringPlay;
-    private boolean _cardPlayed, _placementChosen, _directionChosen;
+    private boolean _cardPlayed;
+    private boolean _placementChosen;
     private int _locationZoneIndex;
     private final boolean _sharedMission;
-    private PhysicalCard _neighborCard;
     private final String _missionLocation;
     private boolean _actionCarriedOut;
 
@@ -48,7 +48,6 @@ public class SeedMissionCardAction extends PlayCardAction {
             if (!gameState.hasLocationsInQuadrant(quadrant)) {
                 if (gameState.getSpacelineLocationsSize() == 0) {
                     _placementChosen = true;
-                    _directionChosen = true;
                     _locationZoneIndex = 0;
                 } else {
                     appendCost(new MakeDecisionAction(_cardEnteringPlay,
@@ -57,7 +56,6 @@ public class SeedMissionCardAction extends PlayCardAction {
                                 @Override
                                 protected void validDecisionMade(int index, String result) {
                                     _placementChosen = true;
-                                    _directionChosen = true;
                                     if (Objects.equals(result, "LEFT")) {
                                         _locationZoneIndex = 0;
                                     } else {
@@ -70,7 +68,6 @@ public class SeedMissionCardAction extends PlayCardAction {
             } else if (_sharedMission) {
                 _locationZoneIndex = gameState.indexOfLocation(_missionLocation, quadrant);
                 _placementChosen = true;
-                _directionChosen = true;
             } else if (gameState.firstInRegion(region, quadrant) != null) {
                 appendCost(new MakeDecisionAction(_cardEnteringPlay,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
@@ -78,7 +75,6 @@ public class SeedMissionCardAction extends PlayCardAction {
                             @Override
                             protected void validDecisionMade(int index, String result) {
                                 _placementChosen = true;
-                                _directionChosen = true;
                                 if (Objects.equals(result, "LEFT")) {
                                     _locationZoneIndex = gameState.firstInRegion(region, quadrant);
                                 } else {
@@ -97,7 +93,6 @@ public class SeedMissionCardAction extends PlayCardAction {
                             @Override
                             protected void validDecisionMade(int index, String result) {
                                 _placementChosen = true;
-                                _directionChosen = true;
                                 if (Objects.equals(result, "LEFT")) {
                                     _locationZoneIndex = gameState.firstInQuadrant(quadrant);
                                 } else {
@@ -118,6 +113,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     private void seedCard(DefaultGame game) {
         if (game.getGameState() instanceof ST1EGameState gameState) {
 
+            Zone originalZone = _cardEnteringPlay.getZone();
             game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
 
             gameState.removeCardFromZone(_cardEnteringPlay);
@@ -128,7 +124,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 else
                     gameState.addMissionLocationToSpaceline(_cardEnteringPlay, _locationZoneIndex);
                 game.getActionsEnvironment().emitEffectResult(
-                        new PlayCardResult(this, _fromZone, _cardEnteringPlay));
+                        new PlayCardResult(this, originalZone, _cardEnteringPlay));
                 _actionCarriedOut = true;
                 _cardPlayed = true;
             } catch (InvalidGameLogicException exp) {

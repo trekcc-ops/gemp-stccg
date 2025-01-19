@@ -7,6 +7,8 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.evaluator.ConstantEvaluator;
+import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SkillDotCountEvaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -17,12 +19,8 @@ import java.util.List;
 public class DrawCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
-    private final boolean _optional;
-    private int _cardDrawCount;
-    private int _cardsDrawnCount;
-    private SkillDotCountEvaluator _cardDrawCountEvaluator;
-    private boolean _cardDrawCountResolved = false;
-    private boolean _optionalDecisionResolved;
+    private int _cardsAlreadyDrawnCount;
+    private final Evaluator _cardDrawCountEvaluator;
 
     public DrawCardAction(PhysicalCard performingCard, Player performingPlayer) {
         this(performingCard, performingPlayer, false, 1);
@@ -31,7 +29,6 @@ public class DrawCardAction extends ActionyAction implements TopLevelSelectableA
     public DrawCardAction(PhysicalCard performingCard, Player performingPlayer,
                           SkillDotCountEvaluator drawCountEvaluator) {
         super(performingPlayer, "Draw a card", ActionType.DRAW_CARD);
-        _optional = false;
         _cardDrawCountEvaluator = drawCountEvaluator;
         _performingCard = performingCard;
     }
@@ -43,26 +40,19 @@ public class DrawCardAction extends ActionyAction implements TopLevelSelectableA
     public DrawCardAction(PhysicalCard performingCard, Player performingPlayer, boolean optional, int count) {
         super(performingPlayer, "Draw a card", ActionType.DRAW_CARD);
         _performingCard = performingCard;
-        _optional = optional;
-        _cardDrawCount = count;
-        _cardDrawCountResolved = true;
+        _cardDrawCountEvaluator = new ConstantEvaluator(performingPlayer.getGame(), count);
     }
 
     @Override
     public String getActionSelectionText(DefaultGame cardGame) {
-        int drawCount;
-        if (_cardDrawCountResolved) {
-            drawCount = _cardDrawCount;
-        } else {
-            try {
-                drawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame);
-            } catch(Exception exp) {
-                return "Draw card(s)";
-            }
+        try {
+            int drawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
             if (drawCount == 0)
-                return "Draw card(s)";
+                return "Draw " + TextUtils.plural(drawCount, "card");
+            else return "Draw card(s)";
+        } catch(Exception exp) {
+            return "Draw card(s)";
         }
-        return "Draw " + TextUtils.plural(drawCount, "card");
     }
 
 
@@ -79,19 +69,15 @@ public class DrawCardAction extends ActionyAction implements TopLevelSelectableA
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         List<PhysicalCard> drawDeck = cardGame.getGameState().getDrawDeck(_performingPlayerId);
-        return drawDeck.size() >= _cardDrawCount;
+        return drawDeck.size() >= _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_cardDrawCountResolved) {
-            _cardDrawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame);
-            _cardDrawCountResolved = true;
-        }
-
-        if (_cardsDrawnCount < _cardDrawCount) {
+        int totalDrawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
+        if (_cardsAlreadyDrawnCount < totalDrawCount) {
             cardGame.getGameState().playerDrawsCard(_performingPlayerId);
-            _cardsDrawnCount++;
+            _cardsAlreadyDrawnCount++;
             return new AllowResponsesAction(cardGame, ActionResult.Type.DRAW_CARD);
         }
         return null;

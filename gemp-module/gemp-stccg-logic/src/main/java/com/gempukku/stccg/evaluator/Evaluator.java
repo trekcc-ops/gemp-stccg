@@ -10,6 +10,7 @@ public abstract class Evaluator implements ValueSource {
     protected Evaluator(DefaultGame game) { _game = game; }
     protected Evaluator(ActionContext actionContext) { _game = actionContext.getGame(); }
     public abstract int evaluateExpression(DefaultGame game, PhysicalCard cardAffected);
+
     @Override
     public Evaluator getEvaluator(ActionContext actionContext) { return this; }
 }

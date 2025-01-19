@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filter;

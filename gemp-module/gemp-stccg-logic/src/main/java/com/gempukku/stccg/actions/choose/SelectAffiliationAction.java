@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.google.common.collect.Iterables;
 
 import java.util.*;
 
@@ -16,6 +17,10 @@ public class SelectAffiliationAction extends ActionyAction {
     public SelectAffiliationAction(Player player, Collection<Affiliation> affiliationOptions) {
         super(player, ActionType.SELECT_AFFILIATION);
         _affiliationOptions = affiliationOptions;
+        if (_affiliationOptions.size() == 1) {
+            _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
+            _wasCarriedOut = true;
+        }
     }
 
 
@@ -26,21 +31,24 @@ public class SelectAffiliationAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
-        Map<String, Affiliation> affiliationStringMap = new HashMap<>();
-        List<String> affiliationStrings = new ArrayList<>();
-        for (Affiliation affiliation : _affiliationOptions) {
-            affiliationStringMap.put(affiliation.getHumanReadable(), affiliation);
-            affiliationStrings.add(affiliation.getHumanReadable());
+        if (_affiliationOptions.size() > 1) {
+            Map<String, Affiliation> affiliationStringMap = new HashMap<>();
+            List<String> affiliationStrings = new ArrayList<>();
+            for (Affiliation affiliation : _affiliationOptions) {
+                affiliationStringMap.put(affiliation.getHumanReadable(), affiliation);
+                affiliationStrings.add(affiliation.getHumanReadable());
+            }
+            cardGame.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose an affiliation",
+                            affiliationStrings) {
+                        @Override
+                        protected void validDecisionMade(int index, String result) {
+                            _selectedAffiliation = affiliationStringMap.get(result);
+                            _wasCarriedOut = true;
+                        }
+                    });
         }
-        cardGame.getUserFeedback().sendAwaitingDecision(
-                new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose an affiliation",
-                        affiliationStrings) {
-                    @Override
-                    protected void validDecisionMade(int index, String result) {
-                        _selectedAffiliation = affiliationStringMap.get(result);
-                        _wasCarriedOut = true;
-                    }
-                });
+
         return getNextAction();
     }
 
@@ -48,4 +56,6 @@ public class SelectAffiliationAction extends ActionyAction {
     public Affiliation getSelectedAffiliation() {
         return _selectedAffiliation;
     }
+
+    public boolean wasCarriedOut() { return _wasCarriedOut; }
 }

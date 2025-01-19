@@ -11,11 +11,9 @@ import java.util.Objects;
 public class ScorePointsAction extends ActionyAction {
     private final PhysicalCard _performingCard;
     private final int _points;
-    private enum Progress { wasCarriedOut }
     public ScorePointsAction(DefaultGame game, PhysicalCard source, String scoringPlayer, int points)
             throws InvalidGameLogicException {
-        super(game.getPlayer(scoringPlayer), "Score " + points + " points",
-                ActionType.SCORE_POINTS, Progress.values());
+        super(game.getPlayer(scoringPlayer), "Score " + points + " points", ActionType.SCORE_POINTS);
         try {
             _performingCard = Objects.requireNonNull(source);
         } catch(NullPointerException npe) {

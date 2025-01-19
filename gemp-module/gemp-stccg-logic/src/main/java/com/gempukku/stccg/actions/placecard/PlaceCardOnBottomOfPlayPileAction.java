@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.placecard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -8,19 +9,17 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.google.common.collect.Iterables;
 
 import java.util.List;
 
 public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
 
-    private PhysicalCard _cardBeingPlaced;
-    private final SelectCardsAction _selectCardAction;
-    private enum Progress { cardSelected, wasCarriedOut }
-
+    private final ActionCardResolver _cardTarget;
 
     public PlaceCardOnBottomOfPlayPileAction(Player performingPlayer, SelectCardsAction selectCardAction) {
-        super(performingPlayer, ActionType.PLACE_CARD, Progress.values());
-        _selectCardAction = selectCardAction;
+        super(performingPlayer, ActionType.PLACE_CARD);
+        _cardTarget = new ActionCardResolver(selectCardAction);
     }
 
     @Override
@@ -30,21 +29,23 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!getProgress(Progress.cardSelected)) {
-            if (_selectCardAction.wasCarriedOut()) {
-                _cardBeingPlaced = _selectCardAction.getSelectedCards().stream().toList().getFirst();
-                setProgress(Progress.cardSelected);
+        if (!_cardTarget.isResolved()) {
+            Action selectionAction = _cardTarget.getSelectionAction();
+            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
+                return selectionAction;
             } else {
-                return _selectCardAction;
+                _cardTarget.resolve(cardGame);
             }
         }
 
-        if (!getProgress(Progress.wasCarriedOut)) {
-            cardGame.getGameState().removeCardsFromZone(_performingPlayerId, List.of(_cardBeingPlaced));
-            cardGame.sendMessage(_performingPlayerId + " puts " +
-                    _cardBeingPlaced.getCardLink() + " from hand on bottom of their play pile");
-            cardGame.getGameState().addCardToZone(_cardBeingPlaced, Zone.PLAY_PILE, false);
-            setProgress(Progress.wasCarriedOut);
+        if (!_wasCarriedOut) {
+            for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
+                cardGame.getGameState().removeCardsFromZone(_performingPlayerId, List.of(card));
+                cardGame.sendMessage(_performingPlayerId + " puts " + card.getCardLink() +
+                        " from hand on bottom of their play pile");
+                cardGame.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);
+                _wasCarriedOut = true;
+            }
         }
 
         return getNextAction();

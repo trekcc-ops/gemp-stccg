@@ -12,10 +12,8 @@ import java.util.Collections;
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     final PhysicalCard _performingCard;
-    private boolean _cardHasEnteredPlay;
-    final PhysicalCard _cardEnteringPlay;
-    protected final Zone _fromZone;
-    final Zone _toZone;
+    protected final PhysicalCard _cardEnteringPlay;
+    final Zone _destinationZone;
 
     /**
      * Creates an action for playing the specified card.
@@ -26,9 +24,17 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         super(cardEnteringPlay.getGame().getPlayer(performingPlayerId), actionType);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
-        _fromZone = cardEnteringPlay.getZone();
-        _toZone = toZone;
+        _destinationZone = toZone;
     }
+
+    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerId,
+                          Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
+        super(cardEnteringPlay.getGame().getPlayer(performingPlayerId), actionType, progressValues);
+        _performingCard = actionSource;
+        _cardEnteringPlay = cardEnteringPlay;
+        _destinationZone = toZone;
+    }
+
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return _cardEnteringPlay.canBePlayed(cardGame);
@@ -50,30 +56,30 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         if (cost != null)
             return cost;
 
-        if (!_cardHasEnteredPlay) {
-            _cardHasEnteredPlay = true;
-            if (_fromZone == Zone.DRAW_DECK) {
-                cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-                cardGame.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
-            }
-            putCardIntoPlay(cardGame);
-        }
+        Zone currentZone = _cardEnteringPlay.getZone();
 
-        return getNextAction();
+        if (currentZone == Zone.DRAW_DECK) {
+            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
+            cardGame.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
+        }
+        putCardIntoPlay(cardGame);
+        _wasCarriedOut = true;
+        return null;
     }
     
     protected void putCardIntoPlay(DefaultGame game) {
+        Zone originalZone = _cardEnteringPlay.getZone();
         GameState gameState = game.getGameState();
         gameState.removeCardsFromZone(_cardEnteringPlay.getOwnerName(), Collections.singleton(_cardEnteringPlay));
-        gameState.addCardToZone(_cardEnteringPlay, _toZone);
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardEnteringPlay));
+        gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
+        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, originalZone, _cardEnteringPlay));
         game.sendMessage(_cardEnteringPlay.getOwnerName() + " played " +
-                _cardEnteringPlay.getCardLink() +  " from " + _fromZone.getHumanReadable() +
-                " to " + _toZone.getHumanReadable());
+                _cardEnteringPlay.getCardLink() +  " from " + originalZone.getHumanReadable() +
+                " to " + _destinationZone.getHumanReadable());
     }
 
     public boolean wasCarriedOut() {
-        return _cardHasEnteredPlay;
+        return _wasCarriedOut;
     }
 
 }

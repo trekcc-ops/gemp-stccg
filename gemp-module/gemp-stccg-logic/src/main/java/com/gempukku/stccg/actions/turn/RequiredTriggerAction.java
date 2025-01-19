@@ -7,39 +7,33 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class RequiredTriggerAction extends ActionyAction implements TopLevelSelectableAction {
-    private final PhysicalCard _physicalCard;
-
-    private boolean _sentMessage;
-    private String _message;
+    private final PhysicalCard _performingCard;
+    private enum Progress { sentMessage }
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(), ActionType.OTHER);
-        _physicalCard = physicalCard;
-        _message = _physicalCard.getCardLink() + " required triggered effect is used";
+        super(physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(), ActionType.OTHER,
+                Progress.values());
+        _performingCard = physicalCard;
     }
 
     @Override
     public PhysicalCard getPerformingCard() {
-        return _physicalCard;
+        return _performingCard;
     }
 
     @Override
     public int getCardIdForActionSelection() {
-        return _physicalCard.getCardId();
-    }
-
-    public void setMessage(String message) {
-        _message = message;
+        return _performingCard.getCardId();
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
-        if (!_sentMessage) {
-            _sentMessage = true;
-            if (_physicalCard != null)
-                cardGame.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
-            if (_message != null)
-                cardGame.sendMessage(_message);
+        if (!getProgress(Progress.sentMessage)) {
+            setProgress(Progress.sentMessage);
+            if (_performingCard != null) {
+                cardGame.getGameState().activatedCard(getPerformingPlayerId(), _performingCard);
+                cardGame.sendMessage(_performingCard.getCardLink() + " required triggered effect is used");
+            }
         }
 
         if (isCostFailed()) {

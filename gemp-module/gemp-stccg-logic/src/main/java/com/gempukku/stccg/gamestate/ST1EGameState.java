@@ -281,6 +281,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
             topCard.getLocation().addCardToSeededUnder(card);
+            card.setLocation(topCard.getLocation());
         }
     }
 

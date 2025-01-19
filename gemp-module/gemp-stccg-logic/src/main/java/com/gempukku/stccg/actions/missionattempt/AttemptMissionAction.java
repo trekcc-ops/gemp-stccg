@@ -26,7 +26,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     private AttemptingUnit _attemptingUnit;
     private SelectAttemptingUnitAction _selectAttemptingUnitAction;
     private final MissionCard _missionCard;
-    private final int _missionCardId;
     private final MissionLocation _missionLocation;
     private final Collection<PhysicalCard> _revealedCards = new LinkedList<>();
     private final Collection<PhysicalCard> _encounteredCards = new LinkedList<>();
@@ -39,7 +38,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         super(player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
         _missionLocation = mission;
         _missionCard = mission.getMissionForPlayer(player.getPlayerId());
-        _missionCardId = _missionCard.getCardId();
     }
 
 
@@ -116,8 +114,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                     }
                     if (!_encounteredCards.contains(firstSeedCard)) {
                         _encounteredCards.add(firstSeedCard);
-                        return new EncounterSeedCardAction(performingPlayer, firstSeedCard,
-                                _missionLocation, _attemptingUnit);
+                        return new EncounterSeedCardAction(performingPlayer, firstSeedCard, this);
                     }
                 }
 
@@ -157,6 +154,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         setProgress(Progress.endedMissionAttempt);
         game.sendMessage(_performingPlayerId + " failed mission attempt of " + _missionCard.getCardLink());
     }
+
+    public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
 
 
 }

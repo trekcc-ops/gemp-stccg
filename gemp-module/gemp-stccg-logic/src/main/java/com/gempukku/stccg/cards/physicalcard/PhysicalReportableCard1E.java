@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
@@ -62,7 +61,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return createReportCardAction(forFree); }
 
     public TopLevelSelectableAction createReportCardAction() {
-        return new ReportCardAction(this, false);
+        return createReportCardAction(false);
     }
     public TopLevelSelectableAction createReportCardAction(boolean forFree) {
         return new ReportCardAction(this, forFree);

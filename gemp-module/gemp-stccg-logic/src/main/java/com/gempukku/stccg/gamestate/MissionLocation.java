@@ -188,7 +188,10 @@ public class MissionLocation implements Snapshotable<MissionLocation> {
         // TODO - This won't work quite right for shared missions
         Set<Player> playersWithSeeds = _cardsPreSeededUnderneath.keySet();
         for (Player player : playersWithSeeds) {
-            _cardsSeededUnderneath.addAll(_cardsPreSeededUnderneath.get(player));
+            for (PhysicalCard card : _cardsPreSeededUnderneath.get(player)) {
+                _cardsSeededUnderneath.add(card);
+                card.setLocation(this);
+            }
             _cardsPreSeededUnderneath.remove(player);
         }
     }

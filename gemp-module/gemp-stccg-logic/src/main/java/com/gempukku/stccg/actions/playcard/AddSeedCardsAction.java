@@ -12,22 +12,22 @@ import java.util.Objects;
 
 public class AddSeedCardsAction extends ActionyAction implements TopLevelSelectableAction {
 
-    private final PhysicalCard _topCard;
+    private final PhysicalCard _performingCard;
 
     public AddSeedCardsAction(Player player, PhysicalCard topCard) {
         super(player, "Seed cards under " + topCard.getFullName(), ActionType.OTHER);
-        _topCard = Objects.requireNonNull(topCard);
+        _performingCard = Objects.requireNonNull(topCard);
     }
 
     public boolean requirementsAreMet(DefaultGame game) { return true; }
     @Override
     public PhysicalCard getPerformingCard() {
-        return _topCard;
+        return _performingCard;
     }
 
     @Override
     public int getCardIdForActionSelection() {
-        return _topCard.getCardId();
+        return _performingCard.getCardId();
     }
 
     @Override

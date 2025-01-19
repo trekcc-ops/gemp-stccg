@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
@@ -18,108 +19,120 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SeedOutpostAction extends PlayCardAction {
-    private boolean _cardWasSeeded, _placementWasChosen, _affiliationWasChosen;
-    private int _locationZoneIndex;
-    private final Set<Affiliation> _affiliationOptions = new HashSet<>();
-    private Affiliation _selectedAffiliation;
-    private final FacilityCard _cardEnteringPlay;
+    private ActionCardResolver _destinationTarget;
     private SelectAffiliationAction _selectAffiliationAction;
-    private SelectCardsAction _selectDestinationAction;
+    private enum Progress { cardWasSeeded, placementChosen, affiliationSelected }
+
     public SeedOutpostAction(FacilityCard cardToSeed) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION, ActionType.SEED_CARD);
-        _cardEnteringPlay = cardToSeed;
+        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
+                ActionType.SEED_CARD, Progress.values());
         setText("Seed " + _cardEnteringPlay.getFullName());
-        if (cardToSeed.isMultiAffiliation()) {
-            _affiliationWasChosen = false;
-        } else {
-            _affiliationWasChosen = true;
-            _selectedAffiliation = cardToSeed.getAffiliation();
+        if (!cardToSeed.isMultiAffiliation()) {
+            setProgress(Progress.affiliationSelected);
+            _selectAffiliationAction =
+                    new SelectAffiliationAction(cardToSeed.getOwner(), cardToSeed.getAffiliationOptions());
         }
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
+        if (_cardEnteringPlay instanceof FacilityCard facility) {
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+            ST1EGameState gameState = facility.getGame().getGameState();
 
-        Set<PhysicalCard> availableMissions = new HashSet<>();
-        for (MissionLocation location : gameState.getSpacelineLocations()) {
-            MissionCard missionCard = location.getMissionForPlayer(_performingPlayerId);
-            if (_cardEnteringPlay.canSeedAtMission(location)) {
-                availableMissions.add(missionCard);
+            Set<PhysicalCard> availableMissions = new HashSet<>();
+            for (MissionLocation location : gameState.getSpacelineLocations()) {
+                MissionCard missionCard = location.getMissionForPlayer(_performingPlayerId);
+                if (facility.canSeedAtMission(location)) {
+                    availableMissions.add(missionCard);
+                }
             }
-        }
 
-        if (!_placementWasChosen) {
+            if (!getProgress(Progress.placementChosen)) {
 
-            if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardsAction(performingPlayer,
-                        "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
-                        Filters.in(availableMissions), 1, 1);
-                return _selectDestinationAction;
-            } else if (_selectDestinationAction.wasCarriedOut()) {
+                if (_destinationTarget == null) {
+                    _destinationTarget = new ActionCardResolver(new SelectVisibleCardsAction(performingPlayer,
+                            "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
+                            Filters.in(availableMissions), 1, 1));
+                }
+
+                if (!_destinationTarget.getSelectionAction().wasCarriedOut()) {
+                    return _destinationTarget.getSelectionAction();
+                } else {
+                    _destinationTarget.resolve(cardGame);
+                    setProgress(Progress.placementChosen);
+                }
+            }
+
+            if (!getProgress(Progress.affiliationSelected)) {
+
+                Set<Affiliation> affiliationOptions = new HashSet<>();
+
                 MissionCard selectedMission =
-                        (MissionCard) Iterables.getOnlyElement(_selectDestinationAction.getSelectedCards());
-                _locationZoneIndex = selectedMission.getLocationZoneIndex();
-                _placementWasChosen = true;
-                if (!_affiliationWasChosen) {
-                    for (Affiliation affiliation : _cardEnteringPlay.getAffiliationOptions()) {
+                        (MissionCard) Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
+                if (!getProgress(Progress.affiliationSelected)) {
+                    for (Affiliation affiliation : facility.getAffiliationOptions()) {
                         try {
-                            if (_cardEnteringPlay.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
+                            if (facility.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
                                     affiliation))
-                                _affiliationOptions.add(affiliation);
-                        } catch(InvalidGameLogicException exp) {
+                                affiliationOptions.add(affiliation);
+                        } catch (InvalidGameLogicException exp) {
                             cardGame.sendErrorMessage(exp);
                         }
                     }
-                    if (_affiliationOptions.size() == 1) {
-                        _affiliationWasChosen = true;
-                        _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
+                }
+
+                if (affiliationOptions.size() > 1) {
+                    if (_selectAffiliationAction == null) {
+                        _selectAffiliationAction =
+                                new SelectAffiliationAction(performingPlayer, affiliationOptions);
                     }
-                }
-            }
-        }
 
-        if (!_affiliationWasChosen) {
+                    if (!_selectAffiliationAction.wasCarriedOut()) {
+                        setProgress(Progress.affiliationSelected);
+                        return _selectAffiliationAction;
+                    }
 
-            if (_affiliationOptions.size() > 1) {
-                if (_selectAffiliationAction == null) {
+                } else {
                     _selectAffiliationAction =
-                            new SelectAffiliationAction(performingPlayer, _affiliationOptions);
-                    return _selectAffiliationAction;
-                } else if (_selectAffiliationAction.wasCarriedOut()) {
-                    _selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
-                    _affiliationWasChosen = true;
+                            new SelectAffiliationAction(performingPlayer, affiliationOptions);
+                    setProgress(Progress.affiliationSelected);
                 }
-            } else {
-                _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
-                _affiliationWasChosen = true;
             }
-        }
 
-        if (!_cardWasSeeded) {
-            _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
+            if (!getProgress(Progress.cardWasSeeded)) {
+                Zone originalZone = _cardEnteringPlay.getZone();
+                Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
+                facility.changeAffiliation(selectedAffiliation);
 
-            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
-            gameState.removeCardFromZone(_cardEnteringPlay);
-            gameState.getPlayer(_cardEnteringPlay.getOwnerName())
-                    .addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
-            gameState.seedFacilityAtLocation(_cardEnteringPlay, _locationZoneIndex);
-            cardGame.getActionsEnvironment().emitEffectResult(
-                    new PlayCardResult(this, _fromZone, _cardEnteringPlay));
-            _cardWasSeeded = true;
-            return getNextAction();
+                cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
+                gameState.removeCardFromZone(_cardEnteringPlay);
+                gameState.getPlayer(_cardEnteringPlay.getOwnerName())
+                        .addPlayedAffiliation(facility.getAffiliation());
+                gameState.seedFacilityAtLocation(facility,
+                        Iterables.getOnlyElement(_destinationTarget.getCards(cardGame)).getLocationZoneIndex());
+                cardGame.getActionsEnvironment().emitEffectResult(
+                        new PlayCardResult(this, originalZone, _cardEnteringPlay));
+                setProgress(Progress.cardWasSeeded);
+                return getNextAction();
+            }
+            return null;
+        } else {
+            throw new InvalidGameLogicException("Tried to process SeedOutpostAction with a non-facility card");
         }
-        return null;
     }
 
     public void setDestination(MissionLocation location) {
-        _locationZoneIndex = location.getLocationZoneIndex();
-        _placementWasChosen = true;
+        _destinationTarget = new ActionCardResolver(location.getTopMission());
+        setProgress(Progress.placementChosen);
     }
 
     public PhysicalCard getCardToSeed() { return _cardEnteringPlay; }
+
+    @Override
+    public boolean wasCarriedOut() { return getProgress(Progress.cardWasSeeded);}
 }
