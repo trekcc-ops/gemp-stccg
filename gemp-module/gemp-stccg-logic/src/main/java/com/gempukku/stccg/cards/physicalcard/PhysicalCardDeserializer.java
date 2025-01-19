@@ -17,7 +17,7 @@ public class PhysicalCardDeserializer {
         Zone zone = Zone.valueOf(node.get("zone").textValue());
         card.setZone(zone);
 
-        if (card instanceof AffiliatedCard affiliatedCard) {
+        if (card instanceof AffiliatedCard affiliatedCard && node.has("affiliation")) {
             Affiliation affiliation = Affiliation.valueOf(node.get("affiliation").textValue());
             affiliatedCard.setCurrentAffiliation(affiliation);
         }
