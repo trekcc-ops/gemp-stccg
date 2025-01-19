@@ -7,7 +7,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 public class UseNormalCardPlayAction extends ActionyAction {
-    private boolean _wasCarriedOut;
 
     public UseNormalCardPlayAction(Player performingPlayer) {
         super(performingPlayer, ActionType.USAGE_LIMIT);

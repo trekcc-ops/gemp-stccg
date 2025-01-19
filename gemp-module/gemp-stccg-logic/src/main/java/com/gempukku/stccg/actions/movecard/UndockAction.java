@@ -9,17 +9,17 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
-    private final PhysicalShipCard _cardToMove;
+    private final PhysicalShipCard _performingCard;
 
     public UndockAction(Player player, PhysicalShipCard cardUndocking) {
         super(player, "Undock", ActionType.MOVE_CARDS);
-        _cardToMove = cardUndocking;
+        _performingCard = cardUndocking;
     }
 
     @Override
-    public int getCardIdForActionSelection() { return _cardToMove.getCardId(); }
+    public int getCardIdForActionSelection() { return _performingCard.getCardId(); }
     @Override
-    public PhysicalCard getPerformingCard() { return _cardToMove; }
+    public PhysicalCard getPerformingCard() { return _performingCard; }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
@@ -30,14 +30,14 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
             return cost;
 
         if (!_wasCarriedOut) {
-            _cardToMove.undockFromFacility();
+            _performingCard.undockFromFacility();
             _wasCarriedOut = true;
         }
 
         return getNextAction();
     }
 
-    public boolean requirementsAreMet(DefaultGame cardGame) { return _cardToMove.isDocked(); }
-    public PhysicalShipCard getCardToMove() { return _cardToMove; }
+    public boolean requirementsAreMet(DefaultGame cardGame) { return _performingCard.isDocked(); }
+    public PhysicalShipCard getCardToMove() { return _performingCard; }
 
 }
