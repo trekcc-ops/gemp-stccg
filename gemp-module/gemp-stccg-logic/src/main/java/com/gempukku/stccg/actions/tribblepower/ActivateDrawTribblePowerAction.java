@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
@@ -38,7 +38,7 @@ public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
     }
 
     private void playerChosen(String playerId, DefaultGame game) {
-        appendEffect(new DrawCardAction(_performingCard, game.getPlayer(playerId)));
+        appendEffect(new DrawCardsAction(_performingCard, game.getPlayer(playerId)));
     }
 
 }

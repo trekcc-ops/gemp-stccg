@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.Player;
@@ -22,7 +22,7 @@ public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction
                 cardGame.getGameState().getHand(_performingPlayerId)));
 
         // Draw that many cards
-        appendEffect(new DrawCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), cardsInHand));
+        appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId), cardsInHand));
     }
 
 }

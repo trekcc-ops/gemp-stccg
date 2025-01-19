@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -44,7 +44,7 @@ public class Blueprint152_003 extends CardBlueprint {
         TopLevelSelectableAction action1 =
                 new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection, game);
-        TopLevelSelectableAction action2 = new DrawCardAction(thisCard, game.getPlayer(opponentId), skillDotEvaluator);
+        TopLevelSelectableAction action2 = new DrawCardsAction(thisCard, game.getPlayer(opponentId), skillDotEvaluator);
         Action multipleChoiceDecision = new SelectAndInsertAction(action, attemptingUnit.getPlayer(),
                 action1, action2);
 

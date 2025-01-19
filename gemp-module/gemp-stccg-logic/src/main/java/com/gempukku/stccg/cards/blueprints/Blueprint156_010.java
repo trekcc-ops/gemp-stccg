@@ -1,9 +1,8 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -27,7 +26,7 @@ public class Blueprint156_010 extends CardBlueprint {
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 Objects.equals(thisCard.getGame().getOpponent(thisCard.getOwnerName()), player.getPlayerId())) {
-            actions.add(new DrawCardAction(thisCard, player, 2));
+            actions.add(new DrawCardsAction(thisCard, player, 2));
         }
         return actions;
     }
@@ -38,7 +37,7 @@ public class Blueprint156_010 extends CardBlueprint {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         Phase currentPhase = game.getCurrentPhase();
         if (currentPhase == Phase.END_OF_TURN && card.isControlledBy(player)) {
-            actions.add(new DrawCardAction(card, player));
+            actions.add(new DrawCardsAction(card, player));
         }
         return actions;
     }

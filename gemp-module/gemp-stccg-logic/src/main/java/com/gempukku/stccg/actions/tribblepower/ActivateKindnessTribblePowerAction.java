@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardOnBottomOfPlayPileAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -19,7 +19,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
     public ActivateKindnessTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
-        appendEffect(new DrawCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
+        appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (String player : cardGame.getPlayerIds()) {
             if (cardGame.getGameState().getHand(player).size() >= 4) {

@@ -16,28 +16,28 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.List;
 
-public class DrawCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class DrawCardsAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
     private int _cardsAlreadyDrawnCount;
     private final Evaluator _cardDrawCountEvaluator;
 
-    public DrawCardAction(PhysicalCard performingCard, Player performingPlayer) {
+    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer) {
         this(performingCard, performingPlayer, false, 1);
     }
 
-    public DrawCardAction(PhysicalCard performingCard, Player performingPlayer,
-                          SkillDotCountEvaluator drawCountEvaluator) {
+    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer,
+                           SkillDotCountEvaluator drawCountEvaluator) {
         super(performingPlayer, "Draw a card", ActionType.DRAW_CARD);
         _cardDrawCountEvaluator = drawCountEvaluator;
         _performingCard = performingCard;
     }
 
-    public DrawCardAction(PhysicalCard performingCard, Player performingPlayer, int count) {
+    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, int count) {
         this(performingCard, performingPlayer, false, count);
     }
 
-    public DrawCardAction(PhysicalCard performingCard, Player performingPlayer, boolean optional, int count) {
+    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, boolean optional, int count) {
         super(performingPlayer, "Draw a card", ActionType.DRAW_CARD);
         _performingCard = performingCard;
         _cardDrawCountEvaluator = new ConstantEvaluator(performingPlayer.getGame(), count);
@@ -82,4 +82,5 @@ public class DrawCardAction extends ActionyAction implements TopLevelSelectableA
         }
         return null;
     }
+
 }

@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
@@ -38,7 +38,7 @@ public class DrawActionBlueprintProducer {
                 List<Action> result = new LinkedList<>();
                 int numberOfEffects = 1;
                 for (int i = 0; i < numberOfEffects; i++) {
-                    result.add(new DrawCardAction(context.getSource(), targetPlayer, count));
+                    result.add(new DrawCardsAction(context.getSource(), targetPlayer, count));
                 }
                 return result;
             }

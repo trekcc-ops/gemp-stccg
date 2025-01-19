@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
@@ -53,7 +53,7 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
         cardGame.getGameState().addToPlayerScore(chosenPlayer, BONUS_POINTS);
 
         // Draw a card.
-        appendEffect(new DrawCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
+        appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
     }
 
 

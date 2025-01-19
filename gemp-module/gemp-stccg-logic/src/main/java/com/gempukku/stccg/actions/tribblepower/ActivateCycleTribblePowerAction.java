@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
@@ -19,7 +19,7 @@ public class ActivateCycleTribblePowerAction extends ActivateTribblePowerAction 
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 1, 1);
         appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction));
-        appendEffect(new DrawCardAction(_performingCard, performingPlayer));
+        appendEffect(new DrawCardsAction(_performingCard, performingPlayer));
     }
 
 }
