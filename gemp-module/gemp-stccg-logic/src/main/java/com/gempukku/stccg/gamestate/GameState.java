@@ -385,6 +385,7 @@ public abstract class GameState {
         return _allCards.get(cardId);
     }
 
+    @JsonProperty("cardsInGame")
     public Iterable<PhysicalCard> getAllCardsInGame() { return Collections.unmodifiableCollection(_allCards.values()); }
     public List<PhysicalCard> getAllCardsInPlay() {
         return Collections.unmodifiableList(_inPlay);
