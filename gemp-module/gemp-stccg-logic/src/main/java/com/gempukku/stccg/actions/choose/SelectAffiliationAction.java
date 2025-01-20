@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.choose;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
@@ -16,7 +17,10 @@ import java.util.*;
 public class SelectAffiliationAction extends ActionyAction {
     @JsonProperty("affiliationOptions")
     private final Collection<Affiliation> _affiliationOptions;
+    @JsonProperty("selectedAffiliation")
     private Affiliation _selectedAffiliation;
+    @JsonProperty("decisionId")
+    @JsonIdentityReference(alwaysAsId=true)
     private AwaitingDecision _decision;
 
     public SelectAffiliationAction(Player player, Collection<Affiliation> affiliationOptions) {
@@ -68,13 +72,4 @@ public class SelectAffiliationAction extends ActionyAction {
 
     public boolean wasCarriedOut() { return wasCompleted(); }
 
-    @JsonProperty("decisionId")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer getDecisionId() {
-        if (_decision == null) {
-            return null;
-        } else {
-            return _decision.getAwaitingDecisionId();
-        }
-    }
 }
