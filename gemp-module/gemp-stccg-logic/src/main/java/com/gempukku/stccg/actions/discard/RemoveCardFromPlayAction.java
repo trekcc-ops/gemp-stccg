@@ -1,9 +1,8 @@
 package com.gempukku.stccg.actions.discard;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -22,12 +21,12 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
     public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardToRemove) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
-        _cardTarget = new ActionCardResolver(cardToRemove);
+        _cardTarget = new FixedCardResolver(cardToRemove);
     }
 
     public RemoveCardFromPlayAction(Player performingPlayer, Collection<PhysicalCard> cardsToRemove) {
         super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
-        _cardTarget = new ActionCardResolver(cardsToRemove);
+        _cardTarget = new FixedCardsResolver(cardsToRemove);
     }
 
 

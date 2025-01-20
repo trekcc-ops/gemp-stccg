@@ -1,11 +1,9 @@
 package com.gempukku.stccg.actions.discard;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -25,25 +23,25 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, SelectVisibleCardAction selectAction) {
         super(performingPlayer, "Discard", ActionType.DISCARD);
         _performingCard = performingCard;
-        _cardTarget = new ActionCardResolver(selectAction);
+        _cardTarget = new SelectCardsResolver(selectAction);
     }
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, PhysicalCard cardToDiscard) {
         super(performingPlayer, "Discard", ActionType.DISCARD);
-        _cardTarget = new ActionCardResolver(cardToDiscard);
+        _cardTarget = new FixedCardResolver(cardToDiscard);
         _performingCard = performingCard;
     }
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer,
                              Collection<PhysicalCard> cardsToDiscard) {
         super(performingPlayer, "Discard", ActionType.DISCARD);
-        _cardTarget = new ActionCardResolver(cardsToDiscard);
+        _cardTarget = new FixedCardsResolver(cardsToDiscard);
         _performingCard = performingCard;
     }
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, Filter cardFilter) {
         super(performingPlayer, "Discard", ActionType.DISCARD);
-        _cardTarget = new ActionCardResolver(cardFilter);
+        _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
     }
 

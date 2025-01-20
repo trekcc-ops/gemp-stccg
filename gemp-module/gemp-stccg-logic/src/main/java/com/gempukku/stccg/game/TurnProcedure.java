@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
@@ -84,6 +85,9 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             } else if (currentAction instanceof SelectAndInsertAction) {
                     addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
                     removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
+            } else if (currentAction instanceof StopCardsAction) {
+                addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
+                removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
             } else {
                 addSubAction = nextAction != null;
                 removeFromStack = nextAction == null;

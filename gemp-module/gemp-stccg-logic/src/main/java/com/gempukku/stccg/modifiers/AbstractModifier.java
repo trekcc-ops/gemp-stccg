@@ -2,6 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.CardFilterResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -27,7 +28,7 @@ public abstract class AbstractModifier implements Modifier {
     protected AbstractModifier(DefaultGame game, ModifierEffect effect) {
         _cardSource = null;
         _text = null;
-        _cardResolver = new ActionCardResolver(Filters.any);
+        _cardResolver = new CardFilterResolver(Filters.any);
         _condition = null;
         _effect = effect;
         _game = game;
@@ -58,7 +59,7 @@ public abstract class AbstractModifier implements Modifier {
         _cardSource = source;
         _text = text;
         Filter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
-        _cardResolver = new ActionCardResolver(affectedFilter);
+        _cardResolver = new CardFilterResolver(affectedFilter);
         _condition = condition;
         _effect = effect;
         _game = source.getGame();

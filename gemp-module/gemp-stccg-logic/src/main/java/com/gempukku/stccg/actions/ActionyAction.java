@@ -232,7 +232,7 @@ public abstract class ActionyAction implements Action {
     }
 
     protected void assignCardLabel(Enum<?> cardLabelType, SelectCardsAction selectAction) {
-        _cards.put(cardLabelType.name(), new ActionCardResolver(selectAction));
+        _cards.put(cardLabelType.name(), new SelectCardsResolver(selectAction));
     }
 
     protected ActionCardResolver getCardTarget(Enum<?> cardLabelType) {

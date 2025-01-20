@@ -1,11 +1,10 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.AffiliationResolver;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -50,7 +49,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardToPlay.getOwner(),
                 "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                 Filters.inCards(destinationOptions), 1, 1);
-        _destinationTarget = new ActionCardResolver(selectDestinationAction);
+        _destinationTarget = new SelectCardsResolver(selectDestinationAction);
     }
 
 
@@ -106,7 +105,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(performingPlayer,
                             "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                             Filters.inCards(getDestinationOptions(cardGame)), 1, 1);
-                    _destinationTarget = new ActionCardResolver(selectDestinationAction);
+                    _destinationTarget = new SelectCardsResolver(selectDestinationAction);
                     return selectDestinationAction;
                 } else if (_destinationTarget.isResolved()) {
                     try {
@@ -179,7 +178,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
     public void setDestination(FacilityCard card) {
         setProgress(Progress.destinationSelected);
-        _destinationTarget = new ActionCardResolver(card);
+        _destinationTarget = new FixedCardResolver(card);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
                                      SelectCardsAction selectVictimAction) {
         super(performingPlayer, "Kill", ActionType.KILL);
         _performingCard = performingCard;
-        _cardTarget = new ActionCardResolver(selectVictimAction);
+        _cardTarget = new SelectCardsResolver(selectVictimAction);
     }
 
     @Override

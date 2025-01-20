@@ -71,4 +71,11 @@ public class SelectValidCardCombinationFromDialogAction extends ActionyAction im
     public Collection<PhysicalCard> getSelectedCards() {
         return _selectedCards;
     }
+
+    @Override
+    public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) { return _selectableCards; }
+
+    public int getMinimum() { return MINIMUM; }
+    public int getMaximum() { return _maximum; }
+
 }

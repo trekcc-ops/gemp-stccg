@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
@@ -77,7 +78,7 @@ public class Blueprint155_026 extends CardBlueprint {
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
                         CardType.PERSONNEL));
 
-        ActionCardResolver resolver = new ActionCardResolver(targetAction);
+        ActionCardResolver resolver = new SelectCardsResolver(targetAction);
         Modifier modifier = new AllAttributeModifier(thisCard, resolver, 2);
 
         TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
@@ -90,7 +91,7 @@ public class Blueprint155_026 extends CardBlueprint {
                 Filters.and(Filters.your(player), Filters.inPlay, CardIcon.TNG_ICON,
                         CardType.SHIP));
 
-        ActionCardResolver resolver = new ActionCardResolver(targetAction);
+        ActionCardResolver resolver = new SelectCardsResolver(targetAction);
         Modifier modifier = new RangeModifier(thisCard, resolver, 2);
 
         TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);

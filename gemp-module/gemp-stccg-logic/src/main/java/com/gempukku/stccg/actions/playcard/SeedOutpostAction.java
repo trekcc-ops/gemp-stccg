@@ -1,11 +1,10 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.AffiliationResolver;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -19,6 +18,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
 
+import javax.naming.spi.Resolver;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +56,7 @@ public class SeedOutpostAction extends PlayCardAction {
             if (!getProgress(Progress.placementChosen)) {
 
                 if (_destinationTarget == null) {
-                    _destinationTarget = new ActionCardResolver(new SelectVisibleCardsAction(performingPlayer,
+                    _destinationTarget = new SelectCardsResolver(new SelectVisibleCardsAction(performingPlayer,
                             "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
                             Filters.in(availableMissions), 1, 1));
                 }
@@ -129,7 +129,7 @@ public class SeedOutpostAction extends PlayCardAction {
     }
 
     public void setDestination(MissionLocation location) {
-        _destinationTarget = new ActionCardResolver(location.getTopMission());
+        _destinationTarget = new FixedCardResolver(location.getTopMission());
         setProgress(Progress.placementChosen);
     }
 

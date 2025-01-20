@@ -1,10 +1,8 @@
 package com.gempukku.stccg.actions.modifiers;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
-import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,18 +14,17 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class StopCardsAction extends ActionyAction {
+    @JsonIdentityReference(alwaysAsId=true)
     private final ActionCardResolver _cardTarget;
-    private enum Progress { cardsChosen }
 
     public StopCardsAction(Player performingPlayer, Collection<? extends ST1EPhysicalCard> cardsToStop) {
-        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS, Progress.values());
-        _cardTarget = new ActionCardResolver(cardsToStop);
-        setProgress(Progress.cardsChosen);
+        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS);
+        _cardTarget = new FixedCardsResolver(cardsToStop);
     }
 
     public StopCardsAction(Player performingPlayer, SelectCardsAction selectionAction) {
-        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS, Progress.values());
-        _cardTarget = new ActionCardResolver(selectionAction);
+        super(performingPlayer, "Stop cards", ActionType.STOP_CARDS);
+        _cardTarget = new SelectCardsResolver(selectionAction);
     }
 
     @Override
@@ -46,29 +43,26 @@ public class StopCardsAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!getProgress(Progress.cardsChosen)) {
-            if (!_cardTarget.isResolved()) {
-                Action selectionAction = _cardTarget.getSelectionAction();
-                if (selectionAction != null) {
-                    if (selectionAction.wasCarriedOut()) {
-                        _cardTarget.resolve(cardGame);
-                    } else {
-                        return selectionAction;
-                    }
-                } else {
+        if (!_cardTarget.isResolved()) {
+            Action selectionAction = _cardTarget.getSelectionAction();
+            if (selectionAction != null) {
+                if (selectionAction.wasCarriedOut()) {
                     _cardTarget.resolve(cardGame);
+                } else {
+                    return selectionAction;
                 }
             } else {
-                setProgress(Progress.cardsChosen);
+                _cardTarget.resolve(cardGame);
             }
         }
 
-        if (!_wasCarriedOut) {
+        if (!wasCompleted()) {
             Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>();
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
                 if (card instanceof ST1EPhysicalCard stCard) {
                     cardsToStop.add(stCard);
                 } else {
+                    setAsFailed();
                     throw new InvalidGameLogicException(
                             "Tried to \"stop\" a card from a game with no \"stop\" action");
                 }
@@ -76,7 +70,7 @@ public class StopCardsAction extends ActionyAction {
             for (ST1EPhysicalCard card : cardsToStop) {
                 card.stop();
             }
-            _wasCarriedOut = true;
+            setAsSuccessful();
         }
 
         return getNextAction();

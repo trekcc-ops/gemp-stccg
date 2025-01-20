@@ -1,10 +1,7 @@
 package com.gempukku.stccg.actions.placecard;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
@@ -21,7 +18,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, Player performingPlayer,
                                           Filter cardFilter) {
         super(performingPlayer, "Shuffle cards into draw deck", ActionType.PLACE_CARD);
-        _cardTarget = new ActionCardResolver(cardFilter);
+        _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
     }
 

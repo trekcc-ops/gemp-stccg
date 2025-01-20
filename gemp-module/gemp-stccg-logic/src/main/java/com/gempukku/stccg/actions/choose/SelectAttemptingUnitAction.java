@@ -19,7 +19,6 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     private final List<AttemptingUnit> _eligibleUnits;
     private AttemptingUnit _selectedResponse;
 
-
     public SelectAttemptingUnitAction(Player player, Collection<AttemptingUnit> attemptingUnits)
             throws InvalidGameLogicException {
         super(player, "Choose an Away Team", ActionType.SELECT_AWAY_TEAM);

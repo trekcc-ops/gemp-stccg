@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.placecard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,7 +20,7 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
 
     public PlaceCardOnBottomOfPlayPileAction(Player performingPlayer, SelectCardsAction selectCardAction) {
         super(performingPlayer, ActionType.PLACE_CARD);
-        _cardTarget = new ActionCardResolver(selectCardAction);
+        _cardTarget = new SelectCardsResolver(selectCardAction);
     }
 
     @Override

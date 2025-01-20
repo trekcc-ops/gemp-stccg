@@ -1,8 +1,6 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -30,14 +28,14 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     public SelectVisibleCardsAction(Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCardsResolver = new ActionCardResolver(cards);
+        _selectableCardsResolver = new FixedCardsResolver(cards);
         _minimum = minimum;
     }
 
     public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCardsResolver = new ActionCardResolver(selectionFilter);
+        _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;
     }
@@ -45,7 +43,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum, ActionContext context, String memory) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCardsResolver = new ActionCardResolver(selectionFilter);
+        _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;
         _actionContext = context;
@@ -100,5 +98,17 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     }
 
     public Collection<PhysicalCard> getSelectedCards() { return _selectedCards; }
+
+    @Override
+    public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) {
+        try {
+            return _selectableCardsResolver.getCards(cardGame);
+        } catch(InvalidGameLogicException exp) {
+            return new LinkedList<>();
+        }
+    }
+
+    public int getMinimum() { return _minimum; }
+    public int getMaximum() { return _maximum; }
 
 }

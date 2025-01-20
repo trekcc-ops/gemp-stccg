@@ -1,8 +1,6 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -14,6 +12,7 @@ import com.gempukku.stccg.game.Player;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * An effect that causes the specified player to choose a card on the table.
@@ -23,14 +22,14 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
     private PhysicalCard _selectedCard;
 
     public SelectVisibleCardAction(Player selectingPlayer, String choiceText,
-                                   Collection<? extends PhysicalCard> cards) {
+                                   Collection<PhysicalCard> cards) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCards = new ActionCardResolver(cards);
+        _selectableCards = new FixedCardsResolver(cards);
     }
 
     public SelectVisibleCardAction(Player selectingPlayer, String choiceText, Filter cardFilter) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCards = new ActionCardResolver(cardFilter);
+        _selectableCards = new CardFilterResolver(cardFilter);
     }
 
 
@@ -73,5 +72,14 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
 
     public PhysicalCard getSelectedCard() {
         return _selectedCard;
+    }
+
+    @Override
+    public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) {
+        try {
+            return _selectableCards.getCards(cardGame);
+        } catch(InvalidGameLogicException exp) {
+            return new LinkedList<>();
+        }
     }
 }
