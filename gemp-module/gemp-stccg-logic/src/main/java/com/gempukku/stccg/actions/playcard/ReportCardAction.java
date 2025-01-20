@@ -2,9 +2,11 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.AffiliationResolver;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
+import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -26,7 +28,7 @@ import java.util.Set;
 
 public class ReportCardAction extends STCCGPlayCardAction {
     private ActionCardResolver _destinationTarget;
-    private SelectAffiliationAction _selectAffiliationAction;
+    private AffiliationResolver _affiliationTarget;
     private enum Progress { destinationOptionsIdentified, destinationSelected, affiliationSelected, cardPlayed }
 
     public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree) {
@@ -35,9 +37,8 @@ public class ReportCardAction extends STCCGPlayCardAction {
         setText("Play " + _cardEnteringPlay.getFullName());
         if (cardToPlay.getAffiliationOptions().size() == 1) {
             setProgress(Progress.affiliationSelected);
-            _selectAffiliationAction =
-                    new SelectAffiliationAction(_cardEnteringPlay.getOwner(), List.of(cardToPlay.getAffiliation()));
-        } else if (cardToPlay.getAffiliationOptions().isEmpty()) {
+            _affiliationTarget = new AffiliationResolver(cardToPlay.getAffiliation());
+        } else if (cardToPlay.getAffiliationOptions().isEmpty() && !(cardToPlay instanceof AffiliatedCard)) {
             setProgress(Progress.affiliationSelected);
         }
     }
@@ -112,21 +113,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
                         PhysicalCard result = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                         if (result instanceof FacilityCard facility) {
                             setProgress(Progress.destinationSelected);
-                            if (!getProgress(Progress.affiliationSelected)) {
-                                Set<Affiliation> affiliationOptions = new HashSet<>();
-                                for (Affiliation affiliation : reportable.getAffiliationOptions()) {
-                                    if (reportable.canReportToFacilityAsAffiliation(facility, affiliation))
-                                        affiliationOptions.add(affiliation);
-                                }
-                                if (affiliationOptions.size() == 1) {
-                                    setProgress(Progress.affiliationSelected);
-                                    _selectAffiliationAction = new SelectAffiliationAction(
-                                            performingPlayer, affiliationOptions);
-                                } else if (!affiliationOptions.isEmpty()) {
-                                    _selectAffiliationAction = new SelectAffiliationAction(
-                                            performingPlayer, affiliationOptions);
-                                }
-                            }
                         } else
                             throw new InvalidGameLogicException("Cards for report card action did not match expected classes");
                     } catch (IllegalArgumentException exp) {
@@ -139,17 +125,40 @@ public class ReportCardAction extends STCCGPlayCardAction {
             if (nextCost != null)
                 return nextCost;
 
-            if (!getProgress(Progress.affiliationSelected)) {
-                if (_selectAffiliationAction.wasCarriedOut()) {
+            if (_cardEnteringPlay instanceof AffiliatedCard && _affiliationTarget == null) {
+                PhysicalCard result = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
+                FacilityCard facility = (FacilityCard) result;
+                Set<Affiliation> affiliationOptions = new HashSet<>();
+                for (Affiliation affiliation : reportable.getAffiliationOptions()) {
+                    if (reportable.canReportToFacilityAsAffiliation(facility, affiliation))
+                        affiliationOptions.add(affiliation);
+                }
+                if (affiliationOptions.size() == 1) {
                     setProgress(Progress.affiliationSelected);
+                    _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
+                } else if (!affiliationOptions.isEmpty()) {
+                    _affiliationTarget = new AffiliationResolver(new SelectAffiliationAction(
+                            performingPlayer, affiliationOptions));
                 } else {
-                    return _selectAffiliationAction;
+                    setAsFailed();
+                    throw new InvalidGameLogicException("Unable to report card. No valid affiliations to report as.");
+                }
+            }
+
+            if (!getProgress(Progress.affiliationSelected)) {
+                if (_affiliationTarget.isResolved()) {
+                    setProgress(Progress.affiliationSelected);
+                } else if (_affiliationTarget.getSelectionAction().wasCarriedOut()) {
+                    setProgress(Progress.affiliationSelected);
+                    _affiliationTarget.resolve();
+                } else {
+                    return _affiliationTarget.getSelectionAction();
                 }
             }
 
             if (!getProgress(Progress.cardPlayed)) {
-                if (!reportable.getAffiliationOptions().isEmpty()) {
-                    reportable.changeAffiliation(_selectAffiliationAction.getSelectedAffiliation());
+                if (reportable instanceof AffiliatedCard) {
+                    reportable.changeAffiliation(_affiliationTarget.getAffiliation());
                 }
                 setProgress(Progress.cardPlayed);
 

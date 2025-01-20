@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
@@ -70,13 +71,29 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
 
     private void executeNextSubaction() {
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
-        Action action = actionsEnvironment.getCurrentAction();
+        Action currentAction = actionsEnvironment.getCurrentAction();
+
         try {
-            Action nextAction = action.nextAction(_game);
-            if (nextAction == null) {
-                actionsEnvironment.removeCompletedActionFromStack(action);
+            Action nextAction = currentAction.nextAction(_game);
+            boolean addSubAction;
+            boolean removeFromStack;
+            if (currentAction instanceof SelectAffiliationAction) {
+                addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
+                removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
             } else {
+                addSubAction = nextAction != null;
+                removeFromStack = nextAction == null;
+            }
+
+            if (addSubAction) {
+                if (nextAction == null) {
+                    System.out.println("Wait a tick");
+                }
                 _game.getActionsEnvironment().addActionToStack(nextAction);
+            } else if (removeFromStack) {
+                actionsEnvironment.removeCompletedActionFromStack(currentAction);
+            } else if (!_game.isCarryingOutEffects()) {
+                throw new InvalidGameLogicException("Unable to process action");
             }
         } catch (InvalidGameLogicException | CardNotFoundException exp) {
             _game.sendErrorMessage(exp);

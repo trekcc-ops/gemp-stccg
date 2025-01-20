@@ -1,7 +1,9 @@
 package com.gempukku.stccg.actions;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -32,6 +34,8 @@ public abstract class ActionyAction implements Action {
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
     protected final Map<String, ActionCardResolver> _cards = new HashMap<>();
+
+    @JsonProperty("status")
     private ActionStatus _actionStatus;
 
     // ActionStatus is intended to be used by serialization
@@ -244,6 +248,7 @@ public abstract class ActionyAction implements Action {
         return _progressIndicators;
     }
 
+    @JsonIgnore
     public boolean isBeingInitiated() { return _actionStatus == ActionStatus.initiation_started; }
 
     public void startPerforming() throws InvalidGameLogicException {
@@ -254,12 +259,43 @@ public abstract class ActionyAction implements Action {
         }
     }
 
-    public void setAsFailed() {
+    protected void setAsFailed() {
         if (_actionStatus == ActionStatus.initiation_started) {
             _actionStatus = ActionStatus.initiation_failed;
         } else {
             _actionStatus = ActionStatus.completed_failure;
         }
     }
+
+    protected void setAsSuccessful() {
+        _actionStatus = ActionStatus.completed_success;
+    }
+
+    protected void setAsInitiated() {
+        _actionStatus = ActionStatus.initiation_complete;
+    }
+
+    @JsonIgnore
+    public boolean isInProgress() {
+        return switch(_actionStatus) {
+            case initiation_started, initiation_complete -> true;
+            case virtual, initiation_failed, cancelled, completed_success, completed_failure -> false;
+        };
+    }
+
+    public boolean wasCompleted() {
+        return switch(_actionStatus) {
+            case completed_success, completed_failure -> true;
+            case virtual, initiation_failed, cancelled, initiation_started, initiation_complete -> false;
+        };
+    }
+
+    public boolean wasFailed() {
+        return switch(_actionStatus) {
+            case initiation_failed, cancelled, completed_failure -> true;
+            case virtual, completed_success, initiation_started, initiation_complete -> false;
+        };
+    }
+
 
 }

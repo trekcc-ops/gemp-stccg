@@ -15,8 +15,10 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
@@ -39,6 +41,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected static final String P2 = "player2";
     private FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
     protected FacilityCard _outpost;
+    protected FacilityCard _klingonOutpost;
     protected MissionCard _mission;
     protected MissionCard _rogueComet;
 
@@ -297,6 +300,60 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
+    protected void initializeMissionAttemptWithDrawCards(String missionTitle, String... blueprintIds)
+            throws DecisionResultInvalidException, CardNotFoundException {
+        Map<String, CardDeck> decks = new HashMap<>();
+
+        CardDeck fedDeck = new CardDeck("Federation");
+        fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
+        fedDeck.addCard(SubDeck.MISSIONS, "101_171"); // Investigate Rogue Comet
+        fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
+        decks.put(P1, fedDeck);
+
+        CardDeck klingonDeck = new CardDeck("Klingon");
+        klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
+        for (int i = 0; i < 35; i++)
+            klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+        decks.put(P2, klingonDeck);
+
+
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.getFormat("debug1e");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+
+        _klingonOutpost = (FacilityCard) _game.getGameState().addCardToGame("101_105", _cardLibrary, P1);
+        _game.getGameState().addCardToZone(_klingonOutpost, Zone.SEED_DECK);
+
+        for (String blueprintId : blueprintIds) {
+            PhysicalCard card = _game.getGameState().addCardToGame(blueprintId, _cardLibrary, P1);
+            _game.getGameState().addCardToZone(card, Zone.DRAW_DECK, EndOfPile.TOP);
+        }
+
+        autoSeedMissions();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
+            skipDilemma();
+        }
+
+        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
+            if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
+                _outpost = facility;
+            if (Objects.equals(card.getTitle(), missionTitle) && card instanceof MissionCard mission)
+                _mission = mission;
+            if (Objects.equals(card.getTitle(), "Investigate Rogue Comet") && card instanceof MissionCard mission) {
+                _rogueComet = mission;
+            }
+        }
+    }
+
+
     protected void initializeGameToTestAMS() {
         Map<String, CardDeck> decks = new HashMap<>();
 
@@ -446,10 +503,12 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void skipExecuteOrders() throws DecisionResultInvalidException {
-        String playerId = _game.getCurrentPlayerId();
-        while (_game.getCurrentPhase() == Phase.EXECUTE_ORDERS) {
-            if (_userFeedback.getAwaitingDecision(playerId) != null)
-                playerDecided(playerId, "");
+        String currentPlayerId = _game.getCurrentPlayerId();
+        while (_game.getCurrentPhase() == Phase.EXECUTE_ORDERS && _game.getCurrentPlayerId().equals(currentPlayerId)) {
+            for (Player player : _game.getPlayers()) {
+                if (_userFeedback.getAwaitingDecision(player.getPlayerId()) != null)
+                    playerDecided(player.getPlayerId(), "");
+            }
         }
     }
 

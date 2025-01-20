@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.AffiliationResolver;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
@@ -24,7 +25,8 @@ import java.util.Set;
 
 public class SeedOutpostAction extends PlayCardAction {
     private ActionCardResolver _destinationTarget;
-    private SelectAffiliationAction _selectAffiliationAction;
+    private AffiliationResolver _affiliationTarget;
+
     private enum Progress { cardWasSeeded, placementChosen, affiliationSelected }
 
     public SeedOutpostAction(FacilityCard cardToSeed) {
@@ -33,8 +35,7 @@ public class SeedOutpostAction extends PlayCardAction {
         setText("Seed " + _cardEnteringPlay.getFullName());
         if (!cardToSeed.isMultiAffiliation()) {
             setProgress(Progress.affiliationSelected);
-            _selectAffiliationAction =
-                    new SelectAffiliationAction(cardToSeed.getOwner(), cardToSeed.getAffiliationOptions());
+            _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(cardToSeed.getAffiliationOptions()));
         }
     }
 
@@ -87,26 +88,27 @@ public class SeedOutpostAction extends PlayCardAction {
                 }
 
                 if (affiliationOptions.size() > 1) {
-                    if (_selectAffiliationAction == null) {
-                        _selectAffiliationAction =
-                                new SelectAffiliationAction(performingPlayer, affiliationOptions);
+                    if (_affiliationTarget == null) {
+                        _affiliationTarget = new AffiliationResolver(
+                                new SelectAffiliationAction(performingPlayer, affiliationOptions));
                     }
 
-                    if (!_selectAffiliationAction.wasCarriedOut()) {
+                    if (!_affiliationTarget.getSelectionAction().wasCarriedOut()) {
+                        return _affiliationTarget.getSelectionAction();
+                    } else {
+                        _affiliationTarget.resolve();
                         setProgress(Progress.affiliationSelected);
-                        return _selectAffiliationAction;
                     }
 
-                } else {
-                    _selectAffiliationAction =
-                            new SelectAffiliationAction(performingPlayer, affiliationOptions);
+                } else if (_affiliationTarget == null) {
+                    _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
                     setProgress(Progress.affiliationSelected);
                 }
             }
 
             if (!getProgress(Progress.cardWasSeeded)) {
                 Zone originalZone = _cardEnteringPlay.getZone();
-                Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
+                Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
                 facility.changeAffiliation(selectedAffiliation);
 
                 cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());

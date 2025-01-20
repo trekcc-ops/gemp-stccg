@@ -14,6 +14,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -46,7 +47,7 @@ public class ActionSerializerTest extends AbstractAtTest {
 
     @Test
     public void missionAttemptSerializerTest() throws Exception {
-        initializeQuickMissionAttempt("Investigate Rogue Comet");
+        initializeMissionAttemptWithDrawCards("Investigate Rogue Comet", "172_040"); // with M'Vil
         assertNotNull(_mission);
 
         ST1EPhysicalCard maglock =
@@ -59,6 +60,19 @@ public class ActionSerializerTest extends AbstractAtTest {
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());
         assertEquals(_outpost.getLocation(), _mission.getLocation());
+
+        MissionLocation gault = null;
+        for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
+            if (location.getLocationName().equals("Gault")) {
+                gault = location;
+            }
+        }
+        assertNotNull(gault);
+
+        // Seed Klingon Outpost
+        seedFacility(P1, _klingonOutpost, gault);
+        assertEquals(gault, _klingonOutpost.getLocation());
+
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
@@ -68,16 +82,26 @@ public class ActionSerializerTest extends AbstractAtTest {
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
 
+        PersonnelCard mvil = null;
+        for (PhysicalCard card : _game.getGameState().getHand(P1)) {
+            if (card.getBlueprintId().equals("172_040")) {
+                mvil = (PersonnelCard) card;
+            }
+        }
+        assertNotNull(mvil);
         troi.reportToFacility(_outpost);
         hobson.reportToFacility(_outpost);
         picard.reportToFacility(_outpost);
         data.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
+        reportCard(P1, mvil, _klingonOutpost);
+        playerDecided(P1, "0"); // pick affiliation
 
         assertTrue(_outpost.getCrew().contains(troi));
         assertTrue(_outpost.getCrew().contains(hobson));
         assertTrue(_outpost.getCrew().contains(picard));
         assertTrue(_outpost.getCrew().contains(data));
+        assertTrue(_klingonOutpost.getCrew().contains(mvil));
         assertFalse(_outpost.getCrew().contains(runabout));
         assertEquals(_outpost, runabout.getDockedAtCard());
         skipCardPlay();

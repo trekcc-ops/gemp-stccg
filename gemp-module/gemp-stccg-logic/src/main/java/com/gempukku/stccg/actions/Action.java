@@ -41,4 +41,10 @@ public interface Action {
 
     void startPerforming() throws InvalidGameLogicException;
 
+    boolean isInProgress();
+
+    boolean wasCompleted();
+
+    boolean wasFailed();
+
 }

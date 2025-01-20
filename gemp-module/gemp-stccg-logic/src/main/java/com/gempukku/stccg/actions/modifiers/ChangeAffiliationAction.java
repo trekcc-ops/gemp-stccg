@@ -18,34 +18,15 @@ import java.util.List;
 
 public class ChangeAffiliationAction extends ActionyAction implements TopLevelSelectableAction {
     private final AffiliatedCard _performingCard;
-    private final SelectAffiliationAction _selectAffiliationAction;
+    private SelectAffiliationAction _selectAffiliationAction;
 
     public ChangeAffiliationAction(Player player, AffiliatedCard card) {
         super(player, "Change affiliation", ActionType.OTHER);
         _performingCard = card;
-        List<Affiliation> _affiliationOptions = new LinkedList<>();
-        _performingCard.getAffiliationOptions().forEach(affiliation -> {
-            if (affiliation != _performingCard.getAffiliation())
-                _affiliationOptions.add(affiliation);
-        });
-        if (card instanceof PersonnelCard personnel) {
-            if (personnel.getAttachedTo() != null && personnel.getAttachedTo() instanceof CardWithCrew cardWithCrew) {
-                _affiliationOptions.removeIf(affiliation ->
-                        !personnel.isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, affiliation));
-            }
-        } else if (card instanceof CardWithCrew cardWithCrew) {
-                // TODO - Ignores carried ship interactions
-            _affiliationOptions.removeIf(affiliation -> cardWithCrew.getPersonnelInCrew().stream().anyMatch(
-                    personnel -> !personnel.isCompatibleWith(affiliation)));
-        } else {
-            // There should be no other types of cards that would get the ChangeAffiliationAction
-            _affiliationOptions.clear();
-        }
-        _selectAffiliationAction = new SelectAffiliationAction(player, _affiliationOptions);
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_selectAffiliationAction.requirementsAreMet(cardGame);
+        return !getAffiliationOptions().isEmpty();
     }
 
 
@@ -55,8 +36,35 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     @Override
     public int getCardIdForActionSelection() { return _performingCard.getCardId(); }
 
+    private List<Affiliation> getAffiliationOptions() {
+        List<Affiliation> _affiliationOptions = new LinkedList<>();
+        _performingCard.getAffiliationOptions().forEach(affiliation -> {
+            if (affiliation != _performingCard.getAffiliation())
+                _affiliationOptions.add(affiliation);
+        });
+        if (_performingCard instanceof PersonnelCard personnel) {
+            if (personnel.getAttachedTo() != null && personnel.getAttachedTo() instanceof CardWithCrew cardWithCrew) {
+                _affiliationOptions.removeIf(affiliation ->
+                        !personnel.isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, affiliation));
+            }
+        } else if (_performingCard instanceof CardWithCrew cardWithCrew) {
+            // TODO - Ignores carried ship interactions
+            _affiliationOptions.removeIf(affiliation -> cardWithCrew.getPersonnelInCrew().stream().anyMatch(
+                    personnel -> !personnel.isCompatibleWith(affiliation)));
+        } else {
+            // There should be no other types of cards that would get the ChangeAffiliationAction
+            _affiliationOptions.clear();
+        }
+        return _affiliationOptions;
+    }
+
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        if (_selectAffiliationAction == null) {
+            _selectAffiliationAction =
+                    new SelectAffiliationAction(cardGame.getPlayer(_performingPlayerId), getAffiliationOptions());
+        }
+
 
         if (!_selectAffiliationAction.wasCarriedOut())
             return _selectAffiliationAction;
