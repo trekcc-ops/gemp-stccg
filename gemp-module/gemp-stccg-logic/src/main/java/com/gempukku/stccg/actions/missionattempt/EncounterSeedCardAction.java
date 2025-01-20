@@ -11,17 +11,25 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EncounterSeedCardAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
     private enum Progress { effectsAdded }
+    private final AttemptingUnit _attemptingUnit;
 
     public EncounterSeedCardAction(Player encounteringPlayer, PhysicalCard encounteredCard,
-                                   AttemptMissionAction attemptAction) throws InvalidGameLogicException {
+                                   AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction)
+            throws InvalidGameLogicException {
         super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
-        _parentAction = attemptAction;
-        _cardTarget = new FixedCardResolver(encounteredCard);
+        try {
+            _parentAction = Objects.requireNonNull(attemptAction);
+            _cardTarget = new FixedCardResolver(encounteredCard);
+            _attemptingUnit = Objects.requireNonNull(attemptingUnit);
+        } catch(NullPointerException npe) {
+            throw new InvalidGameLogicException(npe.getMessage());
+        }
     }
 
 
@@ -34,10 +42,9 @@ public class EncounterSeedCardAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!getProgress(Progress.effectsAdded)) {
             PhysicalCard encounteredCard = getEncounteredCard();
-            AttemptingUnit attemptingUnit = _parentAction.getAttemptingUnit();
             MissionLocation location = encounteredCard.getLocation();
             List<Action> encounterActions =
-                    encounteredCard.getEncounterActions(cardGame, attemptingUnit, this, location);
+                    encounteredCard.getEncounterActions(cardGame, _attemptingUnit, this, location);
             for (Action action : encounterActions)
                 appendEffect(action);
             setProgress(Progress.effectsAdded);
@@ -45,7 +52,7 @@ public class EncounterSeedCardAction extends ActionyAction {
         return getNextAction();
     }
 
-    public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _parentAction.getAttemptingUnit(); }
+    public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
 
 }

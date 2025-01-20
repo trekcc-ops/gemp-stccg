@@ -98,8 +98,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt);
-                return new AllowResponsesAction(
-                        cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT);
+                return new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT);
             }
 
             if (attemptingUnit.getAttemptingPersonnel().isEmpty()) {
@@ -118,7 +117,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         return new RevealSeedCardAction(performingPlayer, firstSeedCard, this);
                     } else if (_lastCardEncountered != firstSeedCard) {
                         _lastCardEncountered = firstSeedCard;
-                        return new EncounterSeedCardAction(performingPlayer, firstSeedCard, this);
+                        return new EncounterSeedCardAction(
+                                performingPlayer, firstSeedCard, attemptingUnit, this);
                     } else {
                         throw new InvalidGameLogicException(firstSeedCard.getTitle() + " has already been encountered, but has not been removed");
                     }
@@ -158,14 +158,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         setProgress(Progress.failedMissionAttempt);
         setProgress(Progress.endedMissionAttempt);
         game.sendMessage(_performingPlayerId + " failed mission attempt of " + _missionCard.getCardLink());
-    }
-
-    public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException {
-        if (_attemptingUnitTarget == null || !_attemptingUnitTarget.isResolved()) {
-            throw new InvalidGameLogicException("Attempting unit for mission attempt not yet resolved");
-        } else {
-            return _attemptingUnitTarget.getAttemptingUnit();
-        }
     }
 
 
