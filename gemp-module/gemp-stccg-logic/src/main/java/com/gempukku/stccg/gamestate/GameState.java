@@ -55,7 +55,6 @@ public abstract class GameState {
         cardGroupList.add(Zone.DRAW_DECK);
         cardGroupList.add(Zone.HAND);
         cardGroupList.add(Zone.VOID);
-        cardGroupList.add(Zone.VOID_FROM_HAND);
         cardGroupList.add(Zone.DISCARD);
         cardGroupList.add(Zone.REMOVED);
 

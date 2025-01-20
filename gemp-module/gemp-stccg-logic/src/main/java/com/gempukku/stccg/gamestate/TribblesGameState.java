@@ -39,7 +39,7 @@ public final class TribblesGameState extends GameState {
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD ||
-                zone == Zone.VOID || zone == Zone.VOID_FROM_HAND)
+                zone == Zone.VOID)
             return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.PLAY_PILE)
             return _playPiles.get(playerId);
