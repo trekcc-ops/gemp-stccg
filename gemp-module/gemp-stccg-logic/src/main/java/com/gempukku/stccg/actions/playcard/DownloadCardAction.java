@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -23,17 +25,18 @@ import java.util.List;
 public class DownloadCardAction extends ActionyAction {
     private final Filter _filter;
     private Action _playCardAction;
+
+    @JsonProperty("originZone")
     private final Zone _fromZone;
-    private final DefaultGame _game;
 
     public DownloadCardAction(Zone fromZone, Player player, Filterable playableCardFilter) {
         super(player, "Download card from " + fromZone.getHumanReadable(),
                 ActionType.DOWNLOAD_CARD);
         _filter = Filters.and(playableCardFilter);
         _fromZone = fromZone;
-        _game = player.getGame();
     }
 
+    @JsonIgnore
     protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
         List<PhysicalCard> sourceCards;
         if (_fromZone == Zone.HAND)
@@ -45,12 +48,12 @@ public class DownloadCardAction extends ActionyAction {
         else throw new RuntimeException(
                 "Error in ChooseAndPlayCardFromZoneEffect processing for zone " + _fromZone.getHumanReadable());
 
-        return Filters.filter(sourceCards, _game, _filter, Filters.playable);
+        return Filters.filter(sourceCards, gameState.getGame(), _filter, Filters.playable);
     }
 
     protected void playCard(final PhysicalCard selectedCard) {
         _playCardAction = selectedCard.getPlayCardAction(true);
-        _game.getActionsEnvironment().addActionToStack(_playCardAction);
+        selectedCard.getGame().getActionsEnvironment().addActionToStack(_playCardAction);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class DownloadCardAction extends ActionyAction {
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK)
-            return !_game.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
+            return !cardGame.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
                     !getPlayableCards(cardGame.getGameState()).isEmpty();
         else
             return !getPlayableCards(cardGame.getGameState()).isEmpty();
@@ -109,5 +112,4 @@ public class DownloadCardAction extends ActionyAction {
     protected Action getPlayCardAction() { return _playCardAction; }
     protected void setPlayCardAction(Action action) { _playCardAction = action; }
 
-    public DefaultGame getGame() { return _game; }
 }
