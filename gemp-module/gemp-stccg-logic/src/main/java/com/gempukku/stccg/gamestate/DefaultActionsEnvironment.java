@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.*;
 
@@ -151,7 +152,12 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     @Override
     public void addActionToStack(Action action) {
-        _actionStack.add(action);
+        try {
+            action.startPerforming(); // Set action status
+            _actionStack.add(action);
+        } catch(InvalidGameLogicException exp) {
+            _game.sendErrorMessage(exp);
+        }
     }
 
     public Stack<Action> getActionStack() { return _actionStack; }

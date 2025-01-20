@@ -39,4 +39,6 @@ public interface Action {
 
     void insertEffect(Action actionEffect);
 
+    void startPerforming() throws InvalidGameLogicException;
+
 }

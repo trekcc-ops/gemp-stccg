@@ -32,8 +32,18 @@ public abstract class ActionyAction implements Action {
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
     protected final Map<String, ActionCardResolver> _cards = new HashMap<>();
+    private ActionStatus _actionStatus;
 
-    public ActionType getActionType() { return _actionType; }
+    // ActionStatus is intended to be used by serialization
+    private enum ActionStatus {
+        virtual, // Selectable actions that haven't been selected, or unperformed subactions of other actions
+        initiation_started, // Actions in progress that haven't been fully initiated
+        initiation_failed, // Actions that have ended because they couldn't be fully initiated
+        initiation_complete, // Actions that have been fully initiated and are being processed
+        cancelled, // Actions that were cancelled after being initiated
+        completed_success, // Actions that were successfully completed
+        completed_failure // Actions that were completed but failed
+    }
 
     protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
         _actionId = environment.getNextActionId();
@@ -41,6 +51,7 @@ public abstract class ActionyAction implements Action {
         environment.incrementActionId();
         _actionType = actionType;
         _performingPlayerId = performingPlayerId;
+        _actionStatus = ActionStatus.virtual;
     }
 
     protected ActionyAction(Player player, ActionType actionType) {
@@ -78,6 +89,7 @@ public abstract class ActionyAction implements Action {
     public String getPerformingPlayerId() {
         return _performingPlayerId;
     }
+    public ActionType getActionType() { return _actionType; }
 
     public final void appendCost(Action cost) {
         _costs.add(cost);
@@ -230,6 +242,24 @@ public abstract class ActionyAction implements Action {
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
     public Map<String, Boolean> getProgressIndicators() {
         return _progressIndicators;
+    }
+
+    public boolean isBeingInitiated() { return _actionStatus == ActionStatus.initiation_started; }
+
+    public void startPerforming() throws InvalidGameLogicException {
+        if (_actionStatus == ActionStatus.virtual) {
+            _actionStatus = ActionStatus.initiation_started;
+        } else {
+            throw new InvalidGameLogicException("Tried to start performing an action already in progress");
+        }
+    }
+
+    public void setAsFailed() {
+        if (_actionStatus == ActionStatus.initiation_started) {
+            _actionStatus = ActionStatus.initiation_failed;
+        } else {
+            _actionStatus = ActionStatus.completed_failure;
+        }
     }
 
 }
