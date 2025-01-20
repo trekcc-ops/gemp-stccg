@@ -223,7 +223,7 @@ public abstract class CardGameMediator {
             AwaitingDecision awaitingDecision = game.getAwaitingDecision(playerName);
 
             if (awaitingDecision != null) {
-                if (awaitingDecision.getAwaitingDecisionId() == decisionId && !game.isFinished()) {
+                if (awaitingDecision.getDecisionId() == decisionId && !game.isFinished()) {
                     GameState gameState = game.getGameState();
                     try {
                         gameState.playerDecisionFinished(playerName);

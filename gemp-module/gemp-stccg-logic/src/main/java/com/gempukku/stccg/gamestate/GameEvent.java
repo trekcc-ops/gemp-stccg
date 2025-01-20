@@ -119,7 +119,7 @@ public class GameEvent {
     public GameEvent(Type type, AwaitingDecision decision, Player player) {
         this(type, player);
         _awaitingDecision = decision;
-        _eventAttributes.put(Attribute.id, String.valueOf(decision.getAwaitingDecisionId()));
+        _eventAttributes.put(Attribute.id, String.valueOf(decision.getDecisionId()));
         _eventAttributes.put(Attribute.decisionType, decision.getDecisionType().name());
         if (decision.getText() != null)
             _eventAttributes.put(Attribute.text, decision.getText());
