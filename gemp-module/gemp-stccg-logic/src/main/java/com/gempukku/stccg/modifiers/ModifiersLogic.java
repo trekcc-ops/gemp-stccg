@@ -24,7 +24,6 @@ import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 
 import java.util.*;
 
-@JsonSerialize(using = ModifiersLogicSerializer.class)
 public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, Snapshotable<ModifiersLogic> {
 
     private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);

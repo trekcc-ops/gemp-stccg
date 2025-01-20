@@ -168,8 +168,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
         }
     }
 
-    public PhysicalCard getCardReporting() { return _cardEnteringPlay; }
-
     public void setDestination(FacilityCard card) {
         setProgress(Progress.destinationSelected);
         _destinationTarget = new ActionCardResolver(card);

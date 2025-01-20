@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -18,7 +18,12 @@ import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import java.util.Collection;
 import java.util.List;
 
-@JsonSerialize(using = PhysicalCardSerializer.class)
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="cardId")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "zone", "locationZoneIndex",
+        "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
+@JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "zone", "locationZoneIndex",
+        "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
 public interface PhysicalCard extends Filterable {
     DefaultGame getGame();
     Zone getZone();
@@ -27,6 +32,7 @@ public interface PhysicalCard extends Filterable {
     String getImageUrl();
     int getCardId();
     Player getOwner();
+    @JsonProperty("owner")
     String getOwnerName();
 
     void startAffectingGame(DefaultGame game);
@@ -36,12 +42,17 @@ public interface PhysicalCard extends Filterable {
     CardBlueprint getBlueprint();
     void attachTo(PhysicalCard physicalCard);
     void detach();
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("attachedToCardId")
     PhysicalCard getAttachedTo();
     void stackOn(PhysicalCard physicalCard);
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("stackedOnCardId")
     PhysicalCard getStackedOn();
 
     String getTitle();
     boolean canInsertIntoSpaceline();
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = PositiveIntegerFilter.class)
     int getLocationZoneIndex();
 
     boolean canBeSeeded(DefaultGame game);

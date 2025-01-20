@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
@@ -93,4 +95,11 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
 
 
     public AwayTeam getAwayTeam() { return _awayTeam; }
+
+    @Override
+    @JsonProperty("isStopped")
+    public boolean isStopped() {
+        return _isStopped;
+    }
+
 }

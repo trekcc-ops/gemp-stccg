@@ -580,7 +580,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof ReportCardAction reportAction &&
-                        reportAction.getCardReporting() == cardToReport) {
+                        reportAction.getCardEnteringPlay() == cardToReport) {
                     choice = reportAction;
                 }
             }

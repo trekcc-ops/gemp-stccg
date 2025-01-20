@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -17,6 +18,7 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
+import com.gempukku.stccg.processes.GameProcess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +26,9 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@JsonSerialize(using = GameStateSerializer.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIncludeProperties({ "currentPhase", "players", "spacelineLocations", "awayTeams", "playerOrder",
+        "currentProcess", "cardsInGame" })
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
 
@@ -584,5 +588,13 @@ public abstract class GameState {
             addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
             cardBeingPlaced.setLocation(mission);
         }
+    }
+
+    public GameProcess getCurrentProcess() {
+        return getGame().getTurnProcedure().getCurrentProcess();
+    }
+
+    public Map<Zone, Map<String, List<PhysicalCard>>> getCardGroups() {
+        return _cardGroups;
     }
 }

@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@JsonSerialize(using = ActionContextSerializer.class)
 public interface ActionContext {
     Map<String, String> getValueMemory();
     Multimap<String, PhysicalCard> getCardMemory();

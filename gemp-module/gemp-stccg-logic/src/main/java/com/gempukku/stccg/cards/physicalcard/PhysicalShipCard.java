@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -86,6 +88,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         _game.getGameState().detachCard(this, Zone.AT_LOCATION);
     }
 
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("dockedAtCardId")
     public PhysicalCard getDockedAtCard() {
         return _dockedAtCard;
     }

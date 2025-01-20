@@ -1,12 +1,19 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
+import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -14,6 +21,28 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ActionSerializerTest extends AbstractAtTest {
+
+//    @Test
+    public void killAttemptSerializerTest() throws CardNotFoundException, DecisionResultInvalidException, JsonProcessingException, InvalidGameLogicException {
+        initializeQuickMissionAttempt("Investigate Rogue Comet");
+        KillSinglePersonnelAction action = new KillSinglePersonnelAction(_game.getPlayer(P1), _game.getCardFromCardId(1),
+                new SelectCardsFromDialogAction(_game.getPlayer(P1), "Select a card", Filters.any));
+        KillSinglePersonnelAction action2 = new KillSinglePersonnelAction(_game.getPlayer(P1), _game.getCardFromCardId(1),
+                new SelectCardsFromDialogAction(_game.getPlayer(P1), "Select a card", Filters.any));
+        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
+        PhysicalShipCard runabout =
+                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+        action.appendCost(action2);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(action);
+        System.out.println(jsonString);
+        System.out.println(mapper.writeValueAsString(_mission));
+        System.out.println(mapper.writeValueAsString(_mission.getLocation()));
+        System.out.println(mapper.writeValueAsString(_game.getCardFromCardId(1)));
+        System.out.println(mapper.writeValueAsString(troi));
+        System.out.println(mapper.writeValueAsString(runabout));
+        System.out.println(mapper.writeValueAsString(_game.getGameState()));
+    }
 
     @Test
     public void missionAttemptSerializerTest() throws Exception {

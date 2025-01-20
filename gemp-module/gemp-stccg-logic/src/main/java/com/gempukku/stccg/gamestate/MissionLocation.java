@@ -1,11 +1,10 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
@@ -14,7 +13,10 @@ import com.gempukku.stccg.game.*;
 import java.util.*;
 import java.util.stream.Stream;
 
-@JsonSerialize(using = MissionLocationSerializer.class)
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationZoneIndex")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIncludeProperties({ "quadrant", "region", "locationName", "locationZoneIndex", "isCompleted",
+        "cardsSeededUnderneath" })
 public class MissionLocation implements Snapshotable<MissionLocation> {
     private final Quadrant _quadrant;
     private final Region _region;
@@ -22,6 +24,7 @@ public class MissionLocation implements Snapshotable<MissionLocation> {
     private final ST1EGame _game;
     private boolean _isCompleted;
     protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
+
     private final List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
     public MissionLocation(MissionCard mission) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
@@ -79,6 +82,8 @@ public class MissionLocation implements Snapshotable<MissionLocation> {
         return !cards.isEmpty();
     }
 
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
     public List<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
 
     public int getDistanceToLocation(MissionLocation location, Player player) throws InvalidGameLogicException {

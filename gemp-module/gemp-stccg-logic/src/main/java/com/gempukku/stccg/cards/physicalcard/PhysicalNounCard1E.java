@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -21,6 +22,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
 
     protected Quadrant getNativeQuadrant() { return _blueprint.getQuadrant(); }
     public boolean isMultiAffiliation() { return getAffiliationOptions().size() > 1; }
+
     public Affiliation getAffiliation() { return _currentAffiliation; }
 
     public void setCurrentAffiliation(Affiliation affiliation) {

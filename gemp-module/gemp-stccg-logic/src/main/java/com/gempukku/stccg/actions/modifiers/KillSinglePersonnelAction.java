@@ -1,9 +1,9 @@
 package com.gempukku.stccg.actions.modifiers;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -24,6 +24,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
         _performingCard = performingCard;
         _cardTarget = new ActionCardResolver(selectVictimAction);
     }
+
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
@@ -31,7 +32,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
 
     @Override
     public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
+        return getPerformingCard().getCardId();
     }
 
     @Override
@@ -83,5 +84,4 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
 
         return getNextAction();
     }
-
 }

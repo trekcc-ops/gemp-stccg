@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
-    private boolean _isStopped;
+    protected boolean _isStopped;
     public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
         _game = game;

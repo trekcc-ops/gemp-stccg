@@ -306,10 +306,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         snapshot._turnNumbers.putAll(_turnNumbers);
         snapshot._playerScores.putAll(_playerScores);
 
-        for (String playerId : _players.keySet()) {
-            snapshot._players.put(playerId, snapshotData.getDataForSnapshot(_players.get(playerId)));
-        }
-
         for (MissionLocation location : _spacelineLocations)
             snapshot._spacelineLocations.add(snapshotData.getDataForSnapshot(location));
 

@@ -1,9 +1,14 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
     String getCardActionPrefix();
 

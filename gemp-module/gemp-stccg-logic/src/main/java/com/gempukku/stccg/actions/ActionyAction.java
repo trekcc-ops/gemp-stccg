@@ -1,8 +1,12 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -27,7 +31,7 @@ public abstract class ActionyAction implements Action {
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
-
+    protected final Map<String, ActionCardResolver> _cards = new HashMap<>();
 
     public ActionType getActionType() { return _actionType; }
 
@@ -202,5 +206,30 @@ public abstract class ActionyAction implements Action {
     }
 
     public void insertEffect(Action actionEffect) { insertAction(actionEffect); }
+
+    protected void assignCardLabel(Enum<?> cardLabelType, ActionCardResolver cardTarget) {
+        _cards.put(cardLabelType.name(), cardTarget);
+    }
+
+    protected void assignCardLabel(Enum<?> cardLabelType, PhysicalCard card) {
+        _cards.put(cardLabelType.name(), new FixedCardResolver(card));
+    }
+
+    protected void assignCardLabel(Enum<?> cardLabelType, SelectCardsAction selectAction) {
+        _cards.put(cardLabelType.name(), new ActionCardResolver(selectAction));
+    }
+
+    protected ActionCardResolver getCardTarget(Enum<?> cardLabelType) {
+        return _cards.get(cardLabelType.name());
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
+    @JsonIdentityReference(alwaysAsId=true)
+    public List<Action> getCosts() { return _costs; }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
+    public Map<String, Boolean> getProgressIndicators() {
+        return _progressIndicators;
+    }
 
 }
