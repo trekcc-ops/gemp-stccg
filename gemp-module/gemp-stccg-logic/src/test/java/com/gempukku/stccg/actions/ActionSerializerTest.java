@@ -128,56 +128,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
         assertTrue(_mission.getLocation().getCardsSeededUnderneath().contains(maglock));
-
-        int maxActionId = _game.getActionsEnvironment().getNextActionId() - 1;
-        for (int i = 1; i <= maxActionId; i++) {
-            Action action = _game.getActionsEnvironment().getActionById(i);
-            String message = i + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
-                    " (" + action.getActionType().name() + ")";
-            String actionType = action.getClass().getSimpleName();
-            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
-                if (action.getActionSelectionText(_game) != null)
-                    message = message + " - " + action.getActionSelectionText(_game);
-                if (action instanceof SubAction)
-                    message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
-                System.out.println(message);
-                String serialized = new ObjectMapper().writeValueAsString(action);
-                System.out.println(serialized);
-            } else {
-                System.out.println(message);
-                String serialized = new ObjectMapper().writeValueAsString(action);
-                System.out.println(serialized);
-            }
-        };
-
-        System.out.println();
-        System.out.println();
-        for (Action action : _game.getActionsEnvironment().getActionStack()) {
-            String message = action.getActionId() + " - " + action.getClass().getSimpleName() +
-                    " (" + action.getActionType().name() + ")";
-            String actionType = action.getClass().getSimpleName();
-            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
-                if (action.getActionSelectionText(_game) != null)
-                    message = message + " - " + action.getActionSelectionText(_game);
-                if (action instanceof SubAction)
-                    message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
-                System.out.println(message);
-                if (action instanceof RevealSeedCardAction revealAction) {
-                    String serialized = new ObjectMapper().writeValueAsString(revealAction);
-                    System.out.println(serialized);
-                }
-            } else {
-                System.out.println(message);
-            }
-        }
-
-/*        ObjectMapper mapper = new ObjectMapper();
-        String serialized4 = mapper.writeValueAsString(_game.getGameState());
-        System.out.println(serialized4.replace(",",",\n"));*/
+        showSerializedActions();
     }
 
 }

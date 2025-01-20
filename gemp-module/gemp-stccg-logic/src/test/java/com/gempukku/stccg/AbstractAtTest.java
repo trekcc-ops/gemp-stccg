@@ -1,6 +1,9 @@
 package com.gempukku.stccg;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
@@ -9,6 +12,7 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
+import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -871,5 +875,30 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
+    protected void showSerializedActions() throws InvalidGameLogicException, JsonProcessingException {
+
+        int maxActionId = _game.getActionsEnvironment().getNextActionId() - 1;
+        for (int i = 1; i <= maxActionId; i++) {
+            Action action = _game.getActionsEnvironment().getActionById(i);
+            String message = i + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
+                    " (" + action.getActionType().name() + ")";
+            String actionType = action.getClass().getSimpleName();
+            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
+                if (action.getActionSelectionText(_game) != null)
+                    message = message + " - " + action.getActionSelectionText(_game);
+                if (action instanceof SubAction)
+                    message = message + " (SubAction)";
+                if (action instanceof PlayOutOptionalResponsesAction response)
+                    message = message + " [ EffectResult = " + response.getEffectResults();
+                System.out.println(message);
+                String serialized = new ObjectMapper().writeValueAsString(action);
+                System.out.println(serialized);
+            } else {
+                System.out.println(message);
+                String serialized = new ObjectMapper().writeValueAsString(action);
+                System.out.println(serialized);
+            }
+        }
+    }
 
 }

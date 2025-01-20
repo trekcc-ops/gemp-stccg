@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -34,7 +35,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption1() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException {
+            InvalidGameLogicException, JsonProcessingException {
         runGameUntilActionSelection();
         playerDecided(P1, "0");
         selectCard(P1, cardToDiscard);
@@ -49,11 +50,12 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
         assertTrue(canUseCardAgain());
+        showSerializedActions();
     }
 
     @Test
     public void actionOption2() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException {
+            InvalidGameLogicException, JsonProcessingException {
         runGameUntilActionSelection();
         playerDecided(P1, "1");
         selectCard(P1, cardToDiscard);
@@ -66,11 +68,12 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
         assertTrue(canUseCardAgain());
+        showSerializedActions();
     }
 
     @Test
     public void actionOption3() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException {
+            InvalidGameLogicException, JsonProcessingException {
         runGameUntilActionSelection();
         playerDecided(P1, "2");
         selectCard(P1, cardToDiscard);
@@ -85,6 +88,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
         assertTrue(canUseCardAgain());
+        showSerializedActions();
     }
 
 
