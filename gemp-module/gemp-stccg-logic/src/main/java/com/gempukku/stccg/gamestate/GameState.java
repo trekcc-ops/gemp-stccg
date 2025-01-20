@@ -267,7 +267,7 @@ public abstract class GameState {
             if (zone.isInPlay())
                 _inPlay.remove(card);
             if (zone == Zone.ATTACHED)
-                card.attachTo(null);
+                card.detach();
         }
 
         for (GameStateListener listener : getAllGameStateListeners()) {

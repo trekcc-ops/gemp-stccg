@@ -31,7 +31,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException {
         setCurrentAffiliation(affiliation);
         if (getAffiliationOptions().size() > 1) {
-            if (_attachedTo instanceof MissionCard mission &&
+            if (getAttachedTo() instanceof MissionCard mission &&
                     this instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam().canBeDisbanded()) {
                     reportable.getAwayTeam().disband();

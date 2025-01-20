@@ -9,6 +9,7 @@ import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
@@ -36,8 +37,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected final Player _owner;
     protected final int _cardId;
     protected Zone _zone;
-    protected PhysicalCard _attachedTo;
-    protected PhysicalCard _stackedOn;
+    private Integer _attachedToCardId;
+    private Integer _stackedOnCardId;
     protected MissionLocation _currentLocation;
     private boolean _placedOnMission = false;
 
@@ -92,24 +93,42 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public void attachTo(PhysicalCard physicalCard) {
-        _attachedTo = physicalCard;
+        _attachedToCardId = physicalCard.getCardId();
     }
 
     public void detach() {
-        _attachedTo = null;
+        _attachedToCardId = null;
     }
 
     public PhysicalCard getAttachedTo() {
-        return _attachedTo;
+        if (_attachedToCardId == null) {
+            return null;
+        } else {
+            try {
+                return getGame().getCardFromCardId(_attachedToCardId);
+            } catch(CardNotFoundException exp) {
+                getGame().sendErrorMessage(exp);
+                return null;
+            }
+        }
     }
 
     public void stackOn(PhysicalCard physicalCard) {
-        _stackedOn = physicalCard;
+        _stackedOnCardId = physicalCard.getCardId();
     }
 
 
     public PhysicalCard getStackedOn() {
-        return _stackedOn;
+        if (_stackedOnCardId == null) {
+            return null;
+        } else {
+            try {
+                return getGame().getCardFromCardId(_stackedOnCardId);
+            } catch(CardNotFoundException exp) {
+                getGame().sendErrorMessage(exp);
+                return null;
+            }
+        }
     }
 
 
