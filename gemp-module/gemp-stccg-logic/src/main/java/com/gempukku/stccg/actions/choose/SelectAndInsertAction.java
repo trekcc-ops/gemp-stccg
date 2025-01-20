@@ -1,9 +1,10 @@
 package com.gempukku.stccg.actions.choose;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,21 +17,29 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class SelectAndInsertAction extends ActionyAction {
-    private final List<TopLevelSelectableAction> _actionsToChooseFrom = new LinkedList<>();
+    @JsonProperty("selectableActions")
+    @JsonIdentityReference(alwaysAsId=true)
+    private final List<TopLevelSelectableAction> _selectableActions = new LinkedList<>();
+    @JsonProperty("parentAction")
+    @JsonIdentityReference(alwaysAsId=true)
     private final ActionyAction _parentAction;
-    private Action _chosenAction;
-    private enum Progress { actionSelected }
+    @JsonProperty("selectedAction")
+    @JsonIdentityReference(alwaysAsId=true)
+    private Action _selectedAction;
+    @JsonProperty("decisionId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private AwaitingDecision _decision;
 
     public SelectAndInsertAction(ActionyAction parentAction, Player selectingPlayer,
                                  TopLevelSelectableAction... actions) {
-        super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION, Progress.values());
-        _actionsToChooseFrom.addAll(Arrays.asList(actions));
+        super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
+        _selectableActions.addAll(Arrays.asList(actions));
         _parentAction = parentAction;
     }
 
     public boolean requirementsAreMet(DefaultGame game) {
         boolean result = false;
-        for (Action action : _actionsToChooseFrom) {
+        for (Action action : _selectableActions) {
             if (action.canBeInitiated(game)) {
                 result = true;
             }
@@ -40,38 +49,39 @@ public class SelectAndInsertAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!getProgress(Progress.actionSelected)) {
+        if (_decision == null) {
             List<TopLevelSelectableAction> performableActions = new LinkedList<>();
             List<String> actionTexts = new LinkedList<>();
-            for (TopLevelSelectableAction action : _actionsToChooseFrom) {
+            for (TopLevelSelectableAction action : _selectableActions) {
                 if (action.canBeInitiated(cardGame)) {
                     performableActions.add(action);
                     actionTexts.add(action.getActionSelectionText(cardGame));
                 }
             }
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            AwaitingDecision decision = new MultipleChoiceAwaitingDecision(performingPlayer, "Choose an action",
+            _decision = new MultipleChoiceAwaitingDecision(performingPlayer, "Choose an action",
                     actionTexts) {
                 @Override
                 protected void validDecisionMade(int index, String result) {
                     try {
-                        _chosenAction = performableActions.get(index);
-                        _parentAction.insertAction(_chosenAction);
-                        setProgress(Progress.actionSelected);
+                        _selectedAction = performableActions.get(index);
+                        _parentAction.insertAction(_selectedAction);
+                        setAsSuccessful();
                         _wasCarriedOut = true;
                     } catch(NoSuchElementException exp) {
+                        setAsFailed();
                         cardGame.sendErrorMessage(exp);
                     }
                 }
             };
-            cardGame.getUserFeedback().sendAwaitingDecision(decision);
+            cardGame.getUserFeedback().sendAwaitingDecision(_decision);
         }
         return getNextAction();
     }
 
     @Override
     public boolean wasCarriedOut() {
-        return _wasCarriedOut;
+        return wasCompleted();
     }
 
 }
