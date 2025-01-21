@@ -23,11 +23,12 @@ public class ST1EGameStateDeserializer {
     public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException,
             InvalidGameLogicException, JsonProcessingException {
 
-        ST1EGameState gameState = new ST1EGameState(game);
-        gameState.setCurrentPhase(Phase.valueOf(node.get("currentPhase").textValue()));
+        ObjectMapper mapper = new ObjectMapper();
 
-        PlayerOrder playerOrder = new ObjectMapper().treeToValue(node.get("playerOrder"), PlayerOrder.class);
-        gameState.loadPlayerOrder(playerOrder);
+        ST1EGameState gameState = new ST1EGameState(game);
+
+        gameState.setCurrentPhase(mapper.treeToValue(node.get("currentPhase"), Phase.class));
+        gameState.loadPlayerOrder(mapper.treeToValue(node.get("playerOrder"), PlayerOrder.class));
 
         Map<MissionLocation, List<Integer>> seededUnderMap = new HashMap<>();
 
