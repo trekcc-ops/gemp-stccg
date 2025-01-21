@@ -14,15 +14,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-public class TurnProcedure implements Snapshotable<TurnProcedure> {
+public class TurnProcedure {
     private static final int MAXIMUM_LOOPS = 5000; // Max number of loops allowed before throwing error
     private final DefaultGame _game;
     private GameProcess _currentGameProcess;
-
-    @Override
-    public TurnProcedure generateSnapshot(SnapshotData snapshotData) {
-        return new TurnProcedure(_game, _currentGameProcess);
-    }
 
 
     public TurnProcedure(DefaultGame game, GameProcess currentProcess) {

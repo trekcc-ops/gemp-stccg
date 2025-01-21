@@ -36,20 +36,6 @@ public class ST1EGame extends DefaultGame {
 
     public TurnProcedure getTurnProcedure() { return _turnProcedure; }
 
-    protected void restoreSnapshot() {
-        if (_snapshotToRestore != null) {
-            if (_snapshotToRestore.getGameState() instanceof ST1EGameState st1estate) {
-                _gameState = st1estate;
-                _gameState.setModifiersLogic(_snapshotToRestore.getModifiersLogic());
-                _gameState.setActionsEnvironment(_snapshotToRestore.getActionsEnvironment());
-                _turnProcedure = _snapshotToRestore.getTurnProcedure();
-                sendMessage("Reverted to previous game state");
-                _snapshotToRestore = null;
-                sendStateToAllListeners();
-            } else throw new RuntimeException("Tried to restore a snapshot with an invalid game state");
-        }
-    }
-
     public void setAffiliationAttackRestrictions(AffiliationAttackRestrictions restrictions) {
     }
 

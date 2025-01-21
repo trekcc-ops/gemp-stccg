@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "quadrant", "region", "locationName", "locationZoneIndex", "isCompleted",
         "cardsSeededUnderneath" })
-public class MissionLocation implements Snapshotable<MissionLocation> {
+public class MissionLocation {
     private final Quadrant _quadrant;
     private final Region _region;
     private final String _locationName;
@@ -120,11 +120,6 @@ public class MissionLocation implements Snapshotable<MissionLocation> {
         if (card.getOwner() == player)
             return card.getBlueprint().getOwnerSpan();
         else return card.getBlueprint().getOpponentSpan();
-    }
-
-    @Override
-    public MissionLocation generateSnapshot(SnapshotData snapshotData) {
-        return new MissionLocation(_quadrant, _region, _locationName, _game);
     }
 
     public boolean mayBeAttemptedByPlayer(Player player) throws InvalidGameLogicException {

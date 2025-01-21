@@ -209,7 +209,7 @@ public abstract class DefaultGame {
             getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
 
             while (_snapshotToRestore != null) {
-                restoreSnapshot();
+//                restoreSnapshot();
                 carryOutPendingActionsUntilDecisionNeeded();
             }
         }
@@ -266,11 +266,6 @@ public abstract class DefaultGame {
     }
 
     /**
-     * Restores the snapshot as the current state of the game.
-     */
-    protected abstract void restoreSnapshot();
-
-    /**
      * Creates a snapshot of the current state of the game.
      * @param description the description
      */
@@ -279,8 +274,7 @@ public abstract class DefaultGame {
         pruneSnapshots();
         // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
         ++_nextSnapshotId;
-        _snapshots.add(GameSnapshot.createGameSnapshot(_nextSnapshotId, description, getGameState(),
-                getGameState().getModifiersLogic(), getTurnProcedure()));
+        _snapshots.add(new GameSnapshot(_nextSnapshotId, description, getGameState()));
     }
 
     /**

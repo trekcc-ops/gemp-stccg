@@ -13,7 +13,7 @@ import com.gempukku.stccg.game.*;
 
 import java.util.*;
 
-public class ST1EGameState extends GameState implements Snapshotable<ST1EGameState> {
+public class ST1EGameState extends GameState {
     final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     private final ST1EGame _game;
@@ -293,23 +293,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             addCardToZone(card, Zone.VOID);
             topCard.getLocation().addCardToPreSeeds(card, player);
         }
-    }
-
-    @Override
-    public ST1EGameState generateSnapshot(SnapshotData snapshotData) {
-        ST1EGameState snapshot = new ST1EGameState(_game);
-
-        snapshot._playerOrder = _playerOrder;
-        snapshot.setCurrentPhase(_currentPhase);
-        snapshot._playerDecisions.putAll(_playerDecisions);
-        snapshot._nextCardId = _nextCardId;
-        snapshot._turnNumbers.putAll(_turnNumbers);
-        snapshot._playerScores.putAll(_playerScores);
-
-        for (MissionLocation location : _spacelineLocations)
-            snapshot._spacelineLocations.add(snapshotData.getDataForSnapshot(location));
-
-        return snapshot;
     }
 
     public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)

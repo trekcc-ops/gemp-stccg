@@ -1,75 +1,27 @@
 package com.gempukku.stccg.game;
 
 
-import com.gempukku.stccg.gamestate.ActionsEnvironment;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.modifiers.ModifiersLogic;
 
 /**
  * Defines a snapshot of a game. Since the DefaultGame class is not a snapshotable,
  * this class is used as a starting point to snapshot of all the elements of the game.
  */
-public class GameSnapshot implements Snapshotable<GameSnapshot> {
-    private int _id;
-    private String _description;
-    private GameState _gameState;
-    private ModifiersLogic _modifiersLogic;
-    private ActionsEnvironment _actionsEnvironment;
-    private TurnProcedure _turnProcedure;
-
-    /**
-     * Creates a game snapshot of the game.
-     * @param id the snapshot ID
-     * @param description the description
-     * @param gameState the game state to snapshot
-     * @param modifiersLogic the modifiers logic to snapshot
-     * @param turnProcedure the turn procedure to snapshot
-     * @return the game snapshot
-     */
-    public static GameSnapshot createGameSnapshot(int id, String description, GameState gameState,
-                                                  ModifiersLogic modifiersLogic,
-                                                  TurnProcedure turnProcedure) {
-        GameSnapshot gameSnapshot =
-                new GameSnapshot(id, description, gameState, modifiersLogic, turnProcedure);
-        SnapshotData snapshotMetadata = new SnapshotData();
-        return snapshotMetadata.getDataForSnapshot(gameSnapshot);
-    }
-
-    @Override
-    public GameSnapshot generateSnapshot(SnapshotData snapshotData) {
-        GameState newGameState;
-
-        if (_gameState instanceof ST1EGameState st1eGameState)
-            newGameState = snapshotData.getDataForSnapshot(st1eGameState);
-        else
-            throw new RuntimeException("blork"); // TODO SNAPSHOT - Get rid of this
-
-        ModifiersLogic newModifiersLogic = snapshotData.getDataForSnapshot(_modifiersLogic);
-        TurnProcedure newProcedure = snapshotData.getDataForSnapshot(_turnProcedure);
+public class GameSnapshot {
+    private final int _id;
+    private final String _description;
+    private final JsonNode _gameState;
 
 
-        return new GameSnapshot(_id, _description, newGameState, newModifiersLogic, newProcedure);
-    }
-
-
-    /**
-     * Constructs a game snapshot object that will be used to snapshot all the elements of the game.
-     * @param id the snapshot ID
-     * @param description the description
-     * @param gameState the game state to snapshot
-     * @param modifiersLogic the modifiers logic to snapshot
-     * @param turnProcedure the turn procedure to snapshot
-     */
-    private GameSnapshot(int id, String description, GameState gameState, ModifiersLogic modifiersLogic,
-                         TurnProcedure turnProcedure) {
+    public GameSnapshot(int id, String description, GameState gameState) {
         _id = id;
         _description = description;
-        _gameState = gameState;
-        _modifiersLogic = modifiersLogic;
-        _turnProcedure = turnProcedure;
+        _gameState = new ObjectMapper().valueToTree(gameState);
     }
+
 
     /**
      * Gets the snapshot ID.
@@ -92,7 +44,7 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
      * @return the current player at time of snapshot
      */
     public String getCurrentPlayerId() {
-        return _gameState.getCurrentPlayerId();
+        return _gameState.get("playerOrder").get("currentPlayer").textValue();
     }
 
     /**
@@ -100,7 +52,12 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
      * @return the turn number at time of snapshot
      */
     public int getCurrentTurnNumber() {
-        return _gameState.getPlayersLatestTurnNumber(getCurrentPlayerId());
+        for (JsonNode playerNode : _gameState.get("players")) {
+            if (playerNode.get("playerId").textValue().equals(getCurrentPlayerId())) {
+                return playerNode.get("turnNumber").intValue();
+            }
+        }
+        return 0;
     }
 
     /**
@@ -108,38 +65,7 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
      * @return the phase at time of snapshot
      */
     public Phase getCurrentPhase() {
-        return _gameState.getCurrentPhase();
+        return Phase.valueOf(_gameState.get("currentPhase").textValue());
     }
 
-    /**
-     * Gets the game state.
-     * @return the game state
-     */
-    public GameState getGameState() {
-        return _gameState;
-    }
-
-    /**
-     * Gets the modifiers logic.
-     * @return the modifiers logic
-     */
-    public ModifiersLogic getModifiersLogic() {
-        return _modifiersLogic;
-    }
-
-    /**
-     * Gets the actions environment
-     * @return the actions environement
-     */
-    public ActionsEnvironment getActionsEnvironment() {
-        return _actionsEnvironment;
-    }
-
-    /**
-     * Gets the turn procedure.
-     * @return the turn procedure
-     */
-    public TurnProcedure getTurnProcedure() {
-        return _turnProcedure;
-    }
 }

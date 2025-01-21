@@ -29,20 +29,4 @@ public class TribblesGame extends DefaultGame {
     }
     public TurnProcedure getTurnProcedure() { return _turnProcedure; }
 
-    protected void restoreSnapshot() {
-        if (_snapshotToRestore != null) {
-            if (!(_snapshotToRestore.getGameState() instanceof TribblesGameState))
-                throw new RuntimeException("Tried to restore a snapshot with an invalid gamestate");
-            else {
-                _gameState = (TribblesGameState) _snapshotToRestore.getGameState();
-                _gameState.setModifiersLogic(_snapshotToRestore.getModifiersLogic());
-                _gameState.setActionsEnvironment(_snapshotToRestore.getActionsEnvironment());
-                _turnProcedure = _snapshotToRestore.getTurnProcedure();
-                sendMessage("Reverted to previous game state");
-                _snapshotToRestore = null;
-                sendStateToAllListeners();
-            }
-        }
-    }
-
 }

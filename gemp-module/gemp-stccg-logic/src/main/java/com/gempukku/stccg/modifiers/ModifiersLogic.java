@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.RegularSkill;
@@ -17,14 +16,12 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.SnapshotData;
-import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 
 import java.util.*;
 
-public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, Snapshotable<ModifiersLogic> {
+public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);
     private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new EnumMap<>(Phase.class);
@@ -457,12 +454,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return getModifiers(ModifierEffect.SPECIAL_FLAG_MODIFIER).stream()
                 .anyMatch(modifier -> modifier.hasFlagActive(modifierFlag));
-    }
-
-    @Override
-    public ModifiersLogic generateSnapshot(SnapshotData snapshotData) {
-        // TODO SNAPSHOT - Basically need to copy everything here
-        return this;
     }
 
     final class ModifierHookImpl implements ModifierHook {
