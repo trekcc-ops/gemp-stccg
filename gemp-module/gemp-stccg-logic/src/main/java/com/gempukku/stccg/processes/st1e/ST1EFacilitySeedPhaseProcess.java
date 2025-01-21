@@ -38,7 +38,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(cardGame.getPlayer(_currentPlayer), "Play " +
                             cardGame.getGameState().getCurrentPhase() + " action or Pass",
-                            playableActions) {
+                            playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);

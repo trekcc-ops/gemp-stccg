@@ -47,7 +47,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
                     userMessage = "Play card that was just drawn or click 'Pass' to end your turn.";
                 }
                 _game.getUserFeedback().sendAwaitingDecision(
-                        new CardActionSelectionDecision(_game.getPlayer(playerId), userMessage, playableActions) {
+                        new CardActionSelectionDecision(_game.getPlayer(playerId), userMessage, playableActions, _game) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);

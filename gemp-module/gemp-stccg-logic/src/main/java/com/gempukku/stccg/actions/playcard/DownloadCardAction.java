@@ -87,7 +87,7 @@ public class DownloadCardAction extends ActionyAction {
             int minimum = _fromZone == Zone.DISCARD ? 1 : 0;
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new ArbitraryCardsSelectionDecision(performingPlayer, "Choose a card to play",
-                            new LinkedList<>(playableCards), minimum, 1) {
+                            new LinkedList<>(playableCards), minimum, 1, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
@@ -102,7 +102,7 @@ public class DownloadCardAction extends ActionyAction {
         } else if (playableCards.size() > 1) {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardsSelectionDecision(performingPlayer, "Choose a card to play", playableCards,
-                            1, 1) {
+                            1, 1, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             final PhysicalCard selectedCard = getSelectedCardsByResponse(result).iterator().next();

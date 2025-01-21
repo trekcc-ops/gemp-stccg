@@ -22,18 +22,18 @@ public class Blueprint156_010 extends CardBlueprint {
     }
 
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
-                                                            ActionResult actionResult) {
+                                                            ActionResult actionResult, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
-                Objects.equals(thisCard.getGame().getOpponent(thisCard.getOwnerName()), player.getPlayerId())) {
-            actions.add(new DrawCardsAction(thisCard, player, 2));
+                Objects.equals(cardGame.getOpponent(thisCard.getOwnerName()), player.getPlayerId())) {
+            actions.add(new DrawCardsAction(thisCard, player, 2, cardGame));
         }
         return actions;
     }
 
     @Override
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard card) {
-        DefaultGame game = player.getGame();
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard card,
+                                                                        DefaultGame game) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         Phase currentPhase = game.getCurrentPhase();
         if (currentPhase == Phase.END_OF_TURN && card.isControlledBy(player)) {

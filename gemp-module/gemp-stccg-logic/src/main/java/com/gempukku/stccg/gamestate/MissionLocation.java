@@ -78,7 +78,7 @@ public class MissionLocation {
             // TODO - Is this accurately capturing "owned by" as necessary?
         GameState gameState = _game.getGameState();
         Player player = gameState.getPlayer(playerId);
-        Collection<PhysicalCard> cards = Filters.filterYourActive(player, CardType.FACILITY, Filters.atLocation(this));
+        Collection<PhysicalCard> cards = Filters.filterYourActive(_game, player, CardType.FACILITY, Filters.atLocation(this));
         return !cards.isEmpty();
     }
 
@@ -136,7 +136,7 @@ public class MissionLocation {
                 return getYourAwayTeamsOnSurface(player).anyMatch(
                         awayTeam -> awayTeam.canAttemptMission(this));
             if (missionType == MissionType.SPACE)
-                return Filters.filterYourActive(player, Filters.ship, Filters.atLocation(this))
+                return Filters.filterYourActive(_game, player, Filters.ship, Filters.atLocation(this))
                         .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(this));
         }
         return false;

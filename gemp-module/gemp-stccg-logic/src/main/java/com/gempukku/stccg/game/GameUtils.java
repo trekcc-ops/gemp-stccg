@@ -29,7 +29,7 @@ public class GameUtils {
         // Ask player to choose snapshot to revert back to
         _game.getUserFeedback().sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(_game.getPlayer(playerId), "Choose game state to revert prior to",
-                        snapshotDescriptions.toArray(new String[0]), snapshotDescriptions.size() - 1) {
+                        snapshotDescriptions.toArray(new String[0]), snapshotDescriptions.size() - 1, _game) {
                     @Override
                     public void validDecisionMade(int index, String result) {
                         final int snapshotIdChosen = snapshotIds.get(index);
@@ -62,7 +62,7 @@ public class GameUtils {
                         _game.getUserFeedback().sendAwaitingDecision(
                                 new YesNoDecision(_game.getPlayer(opponent),
                                         "Do you want to allow game to be reverted to the following game state?" +
-                                                snapshotDescMsg) {
+                                                snapshotDescMsg, _game) {
                                     @Override
                                     protected void yes() {
                                         _game.sendMessage(opponent + " allows game to revert to a previous state");

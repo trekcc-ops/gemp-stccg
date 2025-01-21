@@ -88,7 +88,7 @@ public class FilterFactory {
                         return Filters.and(
                                 sourceFilterable, Filters.strengthEqual(
                                         new SingleMemoryEvaluator(actionContext,
-                                                new Evaluator(actionContext) {
+                                                new Evaluator() {
                                                     @Override
                                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                                                         int minStrength = Integer.MAX_VALUE;

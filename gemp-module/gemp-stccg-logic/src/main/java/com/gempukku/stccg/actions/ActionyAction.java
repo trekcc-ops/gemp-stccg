@@ -62,6 +62,11 @@ public abstract class ActionyAction implements Action {
         this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
     }
 
+    protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
+    }
+
+
     protected ActionyAction(Player player, String text, ActionType actionType) {
         this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
         _text = text;

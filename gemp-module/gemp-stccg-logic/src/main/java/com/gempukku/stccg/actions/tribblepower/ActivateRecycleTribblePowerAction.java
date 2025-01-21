@@ -31,7 +31,7 @@ public class ActivateRecycleTribblePowerAction extends ActivateTribblePowerActio
         else
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a player",
-                            playersWithCards) {
+                            playersWithCards, cardGame) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             playerChosen(result, cardGame);

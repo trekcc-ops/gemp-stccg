@@ -53,7 +53,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         } else {
             AwaitingDecision decision = new CardsSelectionDecision(
                                 cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
-                                1, 1) {
+                                1, 1, cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 _selectedCard = getSelectedCardByResponse(result);

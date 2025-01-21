@@ -28,19 +28,20 @@ public class Blueprint155_021 extends CardBlueprint {
     public SeedCardActionSource getSeedCardActionSource() {
         SeedCardActionSource actionSource = new SeedCardActionSource();
         actionSource.addRequirement((actionContext) -> actionContext.getSource()
-                .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer()) < 1);
+                .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer(), actionContext.getGame()) < 1);
         actionSource.setSeedZone(Zone.TABLE);
         return actionSource;
     }
 
     private Collection<PhysicalCard> getDestinationOptionsForCard(PhysicalCard card) {
-        return Filters.filterYourActive(card.getOwner(), Filters.yourMatchingOutposts(card.getOwner(), card));
+        return Filters.filterYourActive(card.getGame(), card.getOwner(),
+                Filters.yourMatchingOutposts(card.getOwner(), card));
     }
 
     @Override
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
-        DefaultGame game = player.getGame();
-        Phase currentPhase = game.getCurrentPhase();
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+                                                                        DefaultGame cardGame) {
+        Phase currentPhase = cardGame.getCurrentPhase();
         List<TopLevelSelectableAction> actions = new LinkedList<>();
 
         if (currentPhase == Phase.CARD_PLAY) {
@@ -58,7 +59,7 @@ public class Blueprint155_021 extends CardBlueprint {
                         @Override
                         protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
                             Collection<PhysicalCard> playableCards = Filters.filter(
-                                    game.getGameState().getHand(thisCard.getOwnerName()), playableCardFilter);
+                                    cardGame.getGameState().getHand(thisCard.getOwnerName()), playableCardFilter);
                             playableCards.removeIf(card -> getDestinationOptionsForCard(card).isEmpty());
                             return playableCards;
                         }
@@ -67,14 +68,14 @@ public class Blueprint155_021 extends CardBlueprint {
                         protected void playCard(final PhysicalCard selectedCard) {
 
                             Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                                    true, Filters.filterYourActive(thisCard.getOwner(),
+                                    true, Filters.filterYourActive(cardGame, thisCard.getOwner(),
                                     Filters.yourMatchingOutposts(thisCard.getOwner(), thisCard)));
                             setPlayCardAction(action);
                             selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
                         }
                     });
             action1.setText("Report a personnel for free");
-            if (action1.canBeInitiated(game))
+            if (action1.canBeInitiated(cardGame))
                 actions.add(action1);
 
 /*            ActivateCardAction action2 = new ActivateCardAction(card);

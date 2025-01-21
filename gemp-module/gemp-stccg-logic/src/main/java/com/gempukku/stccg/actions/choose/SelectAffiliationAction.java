@@ -48,7 +48,8 @@ public class SelectAffiliationAction extends ActionyAction {
                 affiliationStrings.add(affiliation.getHumanReadable());
             }
             _decision = new MultipleChoiceAwaitingDecision(
-                    cardGame.getPlayer(_performingPlayerId), "Choose an affiliation", affiliationStrings) {
+                    cardGame.getPlayer(_performingPlayerId), "Choose an affiliation", affiliationStrings,
+                    cardGame) {
                 @Override
                 protected void validDecisionMade(int index, String result) {
                     _selectedAffiliation = affiliationStringMap.get(result);

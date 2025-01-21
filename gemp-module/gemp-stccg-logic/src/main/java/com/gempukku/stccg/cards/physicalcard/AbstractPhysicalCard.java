@@ -210,12 +210,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         return new LinkedList<>();
     }
 
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player) {
-        return _blueprint.getGameTextActionsWhileInPlay(player, this);
+        return _blueprint.getGameTextActionsWhileInPlay(player, this, getGame());
     }
 
     public List<PhysicalCard> getStackedCards(DefaultGame game) {
@@ -277,10 +277,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) {
         return switch (_blueprint) {
-            case Blueprint212_019 riskBlueprint -> riskBlueprint.getValidResponses(this, player, actionResult);
-            case Blueprint156_010 surpriseBlueprint -> surpriseBlueprint.getValidResponses(this, player, actionResult);
+            case Blueprint212_019 riskBlueprint ->
+                    riskBlueprint.getValidResponses(this, player, actionResult, getGame());
+            case Blueprint156_010 surpriseBlueprint ->
+                    surpriseBlueprint.getValidResponses(this, player, actionResult, getGame());
             case Blueprint109_063 missionSpecBlueprint ->
-                    missionSpecBlueprint.getValidResponses(this, player, actionResult);
+                    missionSpecBlueprint.getValidResponses(this, player, actionResult, getGame());
             case null, default -> {
                 assert _blueprint != null;
                 yield getActionsFromActionSources(player.getPlayerId(), this, actionResult,
@@ -302,9 +304,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.isUnique();
     }
 
-    public Integer getNumberOfCopiesSeededByPlayer(Player player) {
+    public Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame) {
         int total = 0;
-        Collection<Action> performedActions = player.getGame().getActionsEnvironment().getPerformedActions();
+        Collection<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
         for (Action action : performedActions) {
             if (action instanceof SeedCardAction seedCardAction) {
                 if (Objects.equals(seedCardAction.getPerformingPlayerId(), player.getPlayerId()) &&
@@ -314,6 +316,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
         return total;
     }
+
 
     public boolean isCopyOf(PhysicalCard card) {
         return card.getBlueprint() == _blueprint;

@@ -37,7 +37,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(cardGame.getCurrentPlayer(),
-                            "Play " + phase + " action or Pass", playableActions) {
+                            "Play " + phase + " action or Pass", playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);

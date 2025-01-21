@@ -33,8 +33,8 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
-        DefaultGame game = player.getGame();
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+                                                                        DefaultGame game) {
         Phase currentPhase = game.getCurrentPhase();
         List<TopLevelSelectableAction> actions = new LinkedList<>();
 

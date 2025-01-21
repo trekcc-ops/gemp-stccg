@@ -9,7 +9,8 @@ public class SelectNumberAction extends MakeDecisionAction {
 
     public SelectNumberAction(ActionContext context, String choiceText, ValueSource valueSource, String memoryId) {
         super(context.getSource(), new IntegerAwaitingDecision(context.getPerformingPlayer(),
-                context.substituteText(choiceText), valueSource.getMinimum(context), valueSource.getMaximum(context)) {
+                context.substituteText(choiceText), valueSource.getMinimum(context), valueSource.getMaximum(context),
+                context.getGame()) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 context.setValueToMemory(memoryId, String.valueOf(getValidatedResult(result)));

@@ -49,7 +49,7 @@ public class SelectValidCardCombinationFromDialogAction extends ActionyAction im
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         AwaitingDecision decision = new ArbitraryCardsSelectionDecision(performingPlayer, _choiceText,
-                _selectableCards, _validCombinations, MINIMUM, _maximum) {
+                _selectableCards, _validCombinations, MINIMUM, _maximum, cardGame) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 _selectedCards = getSelectedCardsByResponse(result);

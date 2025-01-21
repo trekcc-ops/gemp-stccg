@@ -22,7 +22,8 @@ public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction
                 cardGame.getGameState().getHand(_performingPlayerId)));
 
         // Draw that many cards
-        appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId), cardsInHand));
+        appendEffect(
+                new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId), cardsInHand, cardGame));
     }
 
 }

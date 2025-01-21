@@ -40,8 +40,8 @@ public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhasePr
 
 
     @Override
-    protected String getDecisionText(Player player) {
-        String opponentId = player.getGame().getOpponent(player.getPlayerId());
+    protected String getDecisionText(DefaultGame cardGame, Player player) {
+        String opponentId = cardGame.getOpponent(player.getPlayerId());
         return "Select a mission of " + opponentId + "'s to seed cards under or remove cards from";
     }
 

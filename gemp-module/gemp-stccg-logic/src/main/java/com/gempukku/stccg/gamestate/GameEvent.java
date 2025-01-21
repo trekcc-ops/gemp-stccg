@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import org.apache.logging.log4j.LogManager;
@@ -116,14 +117,14 @@ public class GameEvent {
         _eventAttributes.put(Attribute.discardPublic, String.valueOf(gameState.getGame().getFormat().discardPileIsPublic()));
     }
 
-    public GameEvent(Type type, AwaitingDecision decision, Player player) {
+    public GameEvent(DefaultGame cardGame, Type type, AwaitingDecision decision, Player player) {
         this(type, player);
         _awaitingDecision = decision;
         _eventAttributes.put(Attribute.id, String.valueOf(decision.getDecisionId()));
         _eventAttributes.put(Attribute.decisionType, decision.getDecisionType().name());
         if (decision.getText() != null)
             _eventAttributes.put(Attribute.text, decision.getText());
-        _eventAttributes.put(Attribute.phase, player.getGame().getCurrentPhase().name());
+        _eventAttributes.put(Attribute.phase, cardGame.getCurrentPhase().name());
     }
 
     public GameEvent(Type type, PhysicalCard card, Collection<PhysicalCard> cards, Player player) {

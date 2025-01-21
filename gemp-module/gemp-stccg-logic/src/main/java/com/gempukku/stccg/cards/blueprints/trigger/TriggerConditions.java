@@ -98,11 +98,11 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean played(Player player, ActionResult actionResult, Filterable... filters) {
+    public static boolean played(DefaultGame game, Player player, ActionResult actionResult, Filterable... filters) {
         if (actionResult.getType() == ActionResult.Type.PLAY_CARD) {
             if (actionResult.getPerformingPlayerId().equals(player.getPlayerId())) {
                 PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();
-                return Filters.and(filters).accepts(player.getGame(), playedCard);
+                return Filters.and(filters).accepts(game, playedCard);
             }
         }
         return false;

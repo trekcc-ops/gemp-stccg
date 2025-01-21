@@ -9,15 +9,14 @@ public class SingleMemoryEvaluator extends Evaluator {
     private final Evaluator _evaluator;
 
     public SingleMemoryEvaluator(ActionContext actionContext, Evaluator evaluator) {
-        super(actionContext);
+        super();
         _evaluator = evaluator;
     }
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         if (_rememberedValue == null)
-            _rememberedValue = _evaluator.evaluateExpression(_game, cardAffected);
+            _rememberedValue = _evaluator.evaluateExpression(game, cardAffected);
         return _rememberedValue;
     }
 }
-

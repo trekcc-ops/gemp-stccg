@@ -30,7 +30,7 @@ public class MissionCard extends ST1EPhysicalCard {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             try {
@@ -40,7 +40,7 @@ public class MissionCard extends ST1EPhysicalCard {
                 _game.sendErrorMessage(exp);
             }
         }
-        actions.removeIf(action -> !action.canBeInitiated(player.getGame()));
+        actions.removeIf(action -> !action.canBeInitiated(cardGame));
         return actions;
     }
 

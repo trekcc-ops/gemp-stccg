@@ -7,14 +7,17 @@ import com.gempukku.stccg.game.DefaultGame;
 public class ConstantEvaluator extends Evaluator {
     private final int _value;
 
-    public ConstantEvaluator(DefaultGame game, int value) {
-        super(game);
+    public ConstantEvaluator(int value) {
+        super();
         _value = value;
     }
 
+    public ConstantEvaluator(DefaultGame game, int value) {
+        this(value);
+    }
+
     public ConstantEvaluator(ActionContext context, int value) {
-        super(context);
-        _value = value;
+        this(value);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class SubAction extends ActionyAction implements CardPerformedAction {
     private final CardPerformedAction _parentAction;
 
     public SubAction(CardPerformedAction action, ActionContext context) {
-        super(context.getGame().getPlayer(action.getPerformingPlayerId()), action.getActionType());
+        super(context.getGame(), context.getGame().getPlayer(action.getPerformingPlayerId()), action.getActionType());
         _parentAction = action;
     }
 

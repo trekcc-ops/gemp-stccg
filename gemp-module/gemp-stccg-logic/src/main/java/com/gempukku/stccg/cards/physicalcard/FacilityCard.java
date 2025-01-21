@@ -76,7 +76,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {
@@ -86,7 +86,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
                 actions.add(new WalkCardsAction(player, this));
             }
         }
-        actions.removeIf(action -> !action.canBeInitiated(player.getGame()));
+        actions.removeIf(action -> !action.canBeInitiated(_game));
         return actions;
     }
 

@@ -41,7 +41,8 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
             if (!doorwaySeeds.isEmpty()) {
                 String message = "Select cards to seed during doorway phase";
                 cardGame.getUserFeedback().sendAwaitingDecision(
-                        new ArbitraryCardsSelectionDecision(cardGame.getPlayer(playerId), message, doorwaySeeds) {
+                        new ArbitraryCardsSelectionDecision(cardGame.getPlayer(playerId), message, doorwaySeeds,
+                                cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 List<PhysicalCard> cards = getSelectedCardsByResponse(result);

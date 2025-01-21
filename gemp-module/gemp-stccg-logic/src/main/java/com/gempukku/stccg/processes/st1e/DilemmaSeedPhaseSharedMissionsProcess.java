@@ -39,7 +39,7 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
     }
 
     @Override
-    protected String getDecisionText(Player player) {
+    protected String getDecisionText(DefaultGame cardGame, Player player) {
         return "Select a shared mission to seed cards under or remove cards from";
     }
 

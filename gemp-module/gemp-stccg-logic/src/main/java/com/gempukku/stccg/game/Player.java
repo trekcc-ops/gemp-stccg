@@ -110,17 +110,10 @@ public class Player {
 
     public Map<Zone, List<Integer>> getCardsInZones() {
         Map<Zone, List<Integer>> result = new HashMap<>();
-        GameState gameState = _game.getGameState();
         for (Zone zone : _cardGroups.keySet()) {
             result.put(zone, new LinkedList<>());
-            for (PhysicalCard card : gameState.getZoneCards(_playerId, zone)) {
+            for (PhysicalCard card : _cardGroups.get(zone)) {
                 result.get(zone).add(card.getCardId());
-            }
-        }
-        if (gameState instanceof ST1EGameState gameState1e) {
-            result.put(Zone.SEED_DECK, new LinkedList<>());
-            for (PhysicalCard card : gameState1e.getSeedDeck(_playerId)) {
-                result.get(Zone.SEED_DECK).add(card.getCardId());
             }
         }
         return result;

@@ -3,6 +3,7 @@ package com.gempukku.stccg.decisions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 import java.util.*;
@@ -12,13 +13,14 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
     private final int _minimum;
     private final int _maximum;
 
-    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards) {
-        this(player, text, physicalCards, 0, physicalCards.size());
+    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
+                                  DefaultGame cardGame) {
+        this(player, text, physicalCards, 0, physicalCards.size(), cardGame);
     }
 
     public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
-                                  int minimum, int maximum) {
-        super(player, text, AwaitingDecisionType.CARD_SELECTION);
+                                  int minimum, int maximum, DefaultGame cardGame) {
+        super(player, text, AwaitingDecisionType.CARD_SELECTION, cardGame);
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;

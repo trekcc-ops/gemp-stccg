@@ -15,7 +15,7 @@ public class SelectPlayerAction extends MakeDecisionAction {
 
     public SelectPlayerAction(ActionContext actionContext, String memoryId, List<String> playerIds) {
         super(actionContext.getSource(), new MultipleChoiceAwaitingDecision(actionContext.getPerformingPlayer(),
-                "Choose a player", playerIds) {
+                "Choose a player", playerIds, actionContext.getGame()) {
             @Override
             protected void validDecisionMade(int index, String result) {
                 actionContext.setValueToMemory(memoryId, result);

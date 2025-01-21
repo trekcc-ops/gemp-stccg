@@ -46,7 +46,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             } else {
                 cardGame.getUserFeedback().sendAwaitingDecision(
                         new CardsSelectionDecision(cardGame.getPlayer(player), "Choose a card to discard", hand,
-                                1, 1) {
+                                1, 1, cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Set<PhysicalCard> cards = getSelectedCardsByResponse(result);

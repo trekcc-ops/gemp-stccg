@@ -44,7 +44,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             String message = "Play " + currentPhase + " action";
             Player player = cardGame.getCurrentPlayer();
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(player, message, playableActions, true) {
+                    new CardActionSelectionDecision(player, message, playableActions, true, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result))

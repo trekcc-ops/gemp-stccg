@@ -30,7 +30,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(cardGame.getCurrentPlayer(), "Play " + phase + " action or Pass",
-                            playableActions) {
+                            playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result)) {

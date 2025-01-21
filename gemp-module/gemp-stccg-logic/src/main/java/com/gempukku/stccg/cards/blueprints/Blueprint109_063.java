@@ -34,21 +34,20 @@ public class Blueprint109_063 extends CardBlueprint {
     }
 
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
-                                                            ActionResult actionResult) {
-        DefaultGame game = player.getGame();
+                                                            ActionResult actionResult, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 thisCard.isControlledBy(player)) {
 
             List<FacilityCard> yourOutposts = new LinkedList<>();
-            for (PhysicalCard card : Filters.yourFacilitiesInPlay(player)) {
+            for (PhysicalCard card : Filters.yourFacilitiesInPlay(cardGame, player)) {
                 if (card instanceof FacilityCard facilityCard && facilityCard.getFacilityType() == FacilityType.OUTPOST)
                     yourOutposts.add(facilityCard);
             }
 
             List<PersonnelCard> specialistsNotInPlay = new LinkedList<>();
-            for (PhysicalCard card : game.getGameState().getDrawDeck(player.getPlayerId())) {
-                Collection<PhysicalCard> ownedCopiesInPlay = Filters.filterCardsInPlay(game,
+            for (PhysicalCard card : cardGame.getGameState().getDrawDeck(player.getPlayerId())) {
+                Collection<PhysicalCard> ownedCopiesInPlay = Filters.filterCardsInPlay(cardGame,
                         Filters.copyOfCard(card), Filters.owner(player.getPlayerId()));
                 if (card instanceof PersonnelCard personnel && personnel.getSkills().size() == 1 &&
                         personnel.getSkills().getFirst() instanceof RegularSkill && ownedCopiesInPlay.isEmpty()) {
@@ -89,7 +88,7 @@ public class Blueprint109_063 extends CardBlueprint {
          */
 
         if (actionResult.getType() == ActionResult.Type.START_OF_TURN && player == thisCard.getOwner() &&
-                player == game.getCurrentPlayer()) {
+                player == cardGame.getCurrentPlayer()) {
             actions.add(new DiscardCardAction(thisCard, player, thisCard));
         }
 

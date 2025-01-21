@@ -38,7 +38,7 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
         else
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
-                            "Choose a player to score 25,000 points", opponentsArray) {
+                            "Choose a player to score 25,000 points", opponentsArray, cardGame) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             playerChosen(result, cardGame);

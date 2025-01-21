@@ -26,9 +26,9 @@ public class ST1EPhaseActionsRule extends ST1ERule {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
             Filters.filterActive(gameState.getGame(), CardType.MISSION).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
-            Filters.filterYourActive(player, Filters.not(CardType.MISSION)).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+            Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
         }
         Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;

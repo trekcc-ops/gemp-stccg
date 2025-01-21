@@ -45,7 +45,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
             else
                 cardGame.getUserFeedback().sendAwaitingDecision(
                         new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a player",
-                                playersWithCardsArr) {
+                                playersWithCardsArr, cardGame) {
                             @Override
                             protected void validDecisionMade(int index, String result) throws InvalidGameLogicException {
                                 playerChosen(result, cardGame);

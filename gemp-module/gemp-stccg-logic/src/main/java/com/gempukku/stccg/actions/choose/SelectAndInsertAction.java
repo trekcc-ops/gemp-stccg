@@ -60,7 +60,7 @@ public class SelectAndInsertAction extends ActionyAction {
             }
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             _decision = new MultipleChoiceAwaitingDecision(performingPlayer, "Choose an action",
-                    actionTexts) {
+                    actionTexts, cardGame) {
                 @Override
                 protected void validDecisionMade(int index, String result) {
                     try {

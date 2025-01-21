@@ -99,7 +99,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(GameEvent.Type.DECISION, awaitingDecision,
+            appendEvent(new GameEvent(_game, GameEvent.Type.DECISION, awaitingDecision,
                     _game.getGameState().getPlayer(playerId)));
     }
 

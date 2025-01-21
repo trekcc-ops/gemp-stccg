@@ -90,7 +90,7 @@ public class ValueResolver {
                 BlueprintUtils.validateAllowedFields(object, "owner");
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(BlueprintUtils.getString(object, "owner", "you"));
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         return actionContext.getZoneCards(player, Zone.PLAY_PILE).size();
@@ -101,7 +101,7 @@ public class ValueResolver {
                 final Requirement[] conditions = RequirementFactory.getRequirements(object);
                 ValueSource trueValue = resolveEvaluator(object.get("true"));
                 ValueSource falseValue = resolveEvaluator(object.get("false"));
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         if (actionContext.acceptsAllRequirements(conditions)) {
@@ -140,8 +140,8 @@ public class ValueResolver {
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
                 final FilterableSource onFilter =
                         new FilterFactory().generateFilter(object.get("on").textValue());
-                return (actionContext) -> new CountStackedEvaluator(actionContext.getGame(),
-                        onFilter.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
+                return (actionContext) ->
+                        new CountStackedEvaluator(onFilter.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "multiplier", "limit", "player");
                 final int multiplier = BlueprintUtils.getInteger(object, "multiplier", 1);
@@ -149,7 +149,7 @@ public class ValueResolver {
                 final String playerInput = BlueprintUtils.getString(object, "player", "you");
                 final PlayerSource playerSrc = PlayerResolver.resolvePlayer(playerInput);
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                return actionContext -> new MultiplyEvaluator(actionContext, multiplier, new Evaluator(actionContext) {
+                return actionContext -> new MultiplyEvaluator(actionContext, multiplier, new Evaluator() {
                     final String player = playerSrc.getPlayerId(actionContext);
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -164,7 +164,7 @@ public class ValueResolver {
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(BlueprintUtils.getString(object, "hand", "you"));
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         return Filters.filter(actionContext.getGame().getGameState().getHand(player.getPlayerId(actionContext)),
@@ -176,7 +176,7 @@ public class ValueResolver {
                 final String owner = BlueprintUtils.getString(object, "owner", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(owner);
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                return actionContext -> new Evaluator(actionContext) {
+                return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         return Filters.filter(
@@ -210,7 +210,7 @@ public class ValueResolver {
                 return (actionContext) -> {
                     if (filter.equals("any")) {
                         return new MultiplyEvaluator(actionContext, multiplier,
-                                new Evaluator(actionContext) {
+                                new Evaluator() {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                                         return Math.max(0, actionContext.getGame().getModifiersQuerying().getStrength(cardAffected) - over);
@@ -218,7 +218,7 @@ public class ValueResolver {
                                 });
                     } else {
                         return new MultiplyEvaluator(actionContext, multiplier,
-                                new Evaluator(actionContext) {
+                                new Evaluator() {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                                         final Filterable filterable = strengthSource.getFilterable(actionContext);
@@ -235,7 +235,7 @@ public class ValueResolver {
             } else if (type.equalsIgnoreCase("printedStrengthFromMemory")) {
                 BlueprintUtils.validateAllowedFields(object, "memory");
 
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
@@ -250,7 +250,7 @@ public class ValueResolver {
                 BlueprintUtils.validateAllowedFields(object, "memory");
                 final String memory = object.get("memory").textValue();
 
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
@@ -264,7 +264,7 @@ public class ValueResolver {
                 BlueprintUtils.validateAllowedFields(object, "memory");
                 final String memory = object.get("memory").textValue();
 
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
@@ -281,7 +281,7 @@ public class ValueResolver {
                         ValueResolver.resolveEvaluator(object.get("firstNumber"), 0);
                 final ValueSource secondNumber =
                         ValueResolver.resolveEvaluator(object.get("secondNumber"), 0);
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         final int first = firstNumber.evaluateExpression(actionContext, null);
@@ -294,7 +294,7 @@ public class ValueResolver {
                 ValueSource first = resolveEvaluator(object.get("first"));
                 ValueSource second = resolveEvaluator(object.get("second"));
 
-                return actionContext -> new Evaluator(actionContext) {
+                return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         return Math.max(
@@ -308,7 +308,7 @@ public class ValueResolver {
                 ValueSource first = resolveEvaluator(object.get("first"));
                 ValueSource second = resolveEvaluator(object.get("second"));
 
-                return actionContext -> new Evaluator(actionContext) {
+                return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         return Math.min(

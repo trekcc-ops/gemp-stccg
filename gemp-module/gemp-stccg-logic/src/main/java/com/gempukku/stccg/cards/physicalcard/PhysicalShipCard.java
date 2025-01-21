@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -36,7 +37,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 // TODO - Implement land, take off, cloak
@@ -51,9 +52,9 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                     if (!isDocked())
                         actions.add(new DockAction(player, this, _game));
                     try {
-                        actions.add(new FlyShipAction(player, this));
+                        actions.add(new FlyShipAction(player, this, _game));
                     } catch(InvalidGameLogicException exp) {
-                        player.getGame().sendErrorMessage(exp);
+                        _game.sendErrorMessage(exp);
                     }
                 }
             }

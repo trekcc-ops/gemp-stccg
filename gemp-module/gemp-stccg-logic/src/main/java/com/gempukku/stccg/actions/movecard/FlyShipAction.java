@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -22,7 +23,8 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
     private final Collection<PhysicalCard> _destinationOptions;
     private SelectVisibleCardAction _selectAction;
 
-    public FlyShipAction(Player player, PhysicalShipCard flyingCard) throws InvalidGameLogicException {
+    public FlyShipAction(Player player, PhysicalShipCard flyingCard, ST1EGame cardGame)
+            throws InvalidGameLogicException {
         super(player, "Fly", ActionType.MOVE_CARDS);
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
@@ -40,7 +42,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
                         _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
                     }
                 } catch(InvalidGameLogicException exp) {
-                    player.getGame().sendMessage(exp.getMessage());
+                    cardGame.sendMessage(exp.getMessage());
                 }
             }
         }

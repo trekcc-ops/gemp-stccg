@@ -504,10 +504,12 @@ public class CardBlueprint {
     }
 
 
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+                                                                        DefaultGame cardGame) {
         return getActionsFromActionSources(
                 player.getPlayerId(), thisCard, null, inPlayPhaseActions);
     }
+
 
     public void setAnyExceptBorgCanAttempt() {
         _anyExceptBorgCanAttempt = true;

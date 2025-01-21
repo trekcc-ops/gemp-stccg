@@ -52,7 +52,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 } else {
                     appendCost(new MakeDecisionAction(_cardEnteringPlay,
                             new MultipleChoiceAwaitingDecision(performingPlayer,
-                                    "Add new quadrant to which end of the table?", directions) {
+                                    "Add new quadrant to which end of the table?", directions, cardGame) {
                                 @Override
                                 protected void validDecisionMade(int index, String result) {
                                     _placementChosen = true;
@@ -71,7 +71,7 @@ public class SeedMissionCardAction extends PlayCardAction {
             } else if (gameState.firstInRegion(region, quadrant) != null) {
                 appendCost(new MakeDecisionAction(_cardEnteringPlay,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
-                                "Insert on which end of the region?", directions) {
+                                "Insert on which end of the region?", directions, cardGame) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
                                 _placementChosen = true;
@@ -89,7 +89,7 @@ public class SeedMissionCardAction extends PlayCardAction {
             } else {
                 appendCost(new MakeDecisionAction(_cardEnteringPlay,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
-                                "Insert on which end of the quadrant?", directions) {
+                                "Insert on which end of the quadrant?", directions, cardGame) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
                                 _placementChosen = true;

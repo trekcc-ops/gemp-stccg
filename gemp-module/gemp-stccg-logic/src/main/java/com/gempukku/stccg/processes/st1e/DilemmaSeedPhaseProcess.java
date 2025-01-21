@@ -17,7 +17,6 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
-import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -68,7 +67,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
 
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(cardGame.getPlayer(playerId),
-                            getDecisionText(cardGame.getPlayer(playerId)), seedActions) {
+                            getDecisionText(cardGame, cardGame.getPlayer(playerId)), seedActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             TopLevelSelectableAction action = getSelectedAction(result);
@@ -93,13 +92,13 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
         }
     }
 
-    protected abstract String getDecisionText(Player player);
+    protected abstract String getDecisionText(DefaultGame cardGame, Player player);
 
     private void selectCardsToSeed(Player player, ST1EGame cardGame, PhysicalCard topCard) {
         Collection<PhysicalCard> availableCards = cardGame.getGameState().getHand(player.getPlayerId());
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new CardsSelectionDecision(player, "Select cards to seed under " + topCard.getTitle(),
-                        availableCards) {
+                        availableCards, cardGame) {
                     @Override
                     public void decisionMade (String result) throws DecisionResultInvalidException {
                         try {
@@ -123,7 +122,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
         }
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new ArbitraryCardsSelectionDecision(player, "Select cards to remove from " + topCard.getTitle(),
-                        availableCards) {
+                        availableCards, cardGame) {
                     @Override
                     public void decisionMade (String result) throws DecisionResultInvalidException {
                         Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);

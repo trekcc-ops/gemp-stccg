@@ -49,7 +49,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
         } else {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new MultipleChoiceAwaitingDecision(performingPlayer, _text, _presentedOptions) {
+                    new MultipleChoiceAwaitingDecision(performingPlayer, _text, _presentedOptions, cardGame) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             attemptingUnitChosen(_eligibleUnits.get(index));

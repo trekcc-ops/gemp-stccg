@@ -77,7 +77,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
-                            _minimum, _maximum) {
+                            _minimum, _maximum, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             _selectedCards = getSelectedCardsByResponse(result);

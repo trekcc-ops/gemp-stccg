@@ -37,10 +37,14 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         this(performingCard, performingPlayer, false, count);
     }
 
+    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, int count, DefaultGame cardGame) {
+        this(performingCard, performingPlayer, false, count);
+    }
+
     public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, boolean optional, int count) {
         super(performingPlayer, "Draw a card", ActionType.DRAW_CARD);
         _performingCard = performingCard;
-        _cardDrawCountEvaluator = new ConstantEvaluator(performingPlayer.getGame(), count);
+        _cardDrawCountEvaluator = new ConstantEvaluator(count);
     }
 
     @Override

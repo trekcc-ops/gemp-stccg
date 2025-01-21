@@ -33,7 +33,8 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
             _action.insertEffect(new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new ActionSelectionDecision(cardGame.getCurrentPlayer(), "Required responses", _responses) {
+                    new ActionSelectionDecision(cardGame.getCurrentPlayer(), "Required responses", _responses,
+                            cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);

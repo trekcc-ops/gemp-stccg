@@ -50,7 +50,8 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
         } else {
             Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayer);
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(decidingPlayer, "Optional responses", possibleActions) {
+                    new CardActionSelectionDecision(decidingPlayer, "Optional responses", possibleActions,
+                            cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             final int nextPassCount;

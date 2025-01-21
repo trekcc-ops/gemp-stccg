@@ -14,8 +14,9 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
     private final Map<String, String[]> _params = new HashMap<>();
     private final String _decidingPlayerId;
 
-    public AbstractAwaitingDecision(Player player, String text, AwaitingDecisionType decisionType) {
-        _decisionId = player.getGame().getUserFeedback().getNextDecisionIdAndIncrement();
+    public AbstractAwaitingDecision(Player player, String text, AwaitingDecisionType decisionType,
+                                    DefaultGame cardGame) {
+        _decisionId = cardGame.getUserFeedback().getNextDecisionIdAndIncrement();
         _text = text;
         _decisionType = decisionType;
         _decidingPlayerId = player.getPlayerId();

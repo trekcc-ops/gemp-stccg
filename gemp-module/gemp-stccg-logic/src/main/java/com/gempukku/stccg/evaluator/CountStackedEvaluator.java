@@ -9,8 +9,8 @@ public class CountStackedEvaluator extends Evaluator {
     private final Filterable _stackedOn;
     private final Filterable[] _stackedCard;
 
-    public CountStackedEvaluator(DefaultGame game, Filterable stackedOn, Filterable... stackedCard) {
-        super(game);
+    public CountStackedEvaluator(Filterable stackedOn, Filterable... stackedCard) {
+        super();
         _stackedOn = stackedOn;
         _stackedCard = stackedCard;
     }

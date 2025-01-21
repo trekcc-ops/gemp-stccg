@@ -71,7 +71,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         .forEach(eligibleUnits::add);
 
                 // Get ships that can attempt mission
-                for (PhysicalCard card : Filters.filterYourActive(player,
+                for (PhysicalCard card : Filters.filterYourActive(cardGame, player,
                         Filters.ship, Filters.atLocation(missionLocation))) {
                     if (card instanceof PhysicalShipCard ship)
                         if (ship.canAttemptMission(missionLocation))

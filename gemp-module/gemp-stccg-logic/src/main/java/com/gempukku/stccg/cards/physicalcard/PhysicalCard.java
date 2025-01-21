@@ -70,7 +70,7 @@ public interface PhysicalCard extends Filterable {
 
     boolean hasTextRemoved(DefaultGame game);
     CardType getCardType();
-    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player);
+    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame);
     List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player);
 
     List<PhysicalCard> getStackedCards(DefaultGame game);
@@ -86,7 +86,9 @@ public interface PhysicalCard extends Filterable {
     List<TopLevelSelectableAction> getRequiredResponseActions(ActionResult actionResult);
 
     boolean isUnique();
-    Integer getNumberOfCopiesSeededByPlayer(Player player);
+
+    Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame);
+
     boolean isCopyOf(PhysicalCard card);
     TopLevelSelectableAction createSeedCardAction();
 

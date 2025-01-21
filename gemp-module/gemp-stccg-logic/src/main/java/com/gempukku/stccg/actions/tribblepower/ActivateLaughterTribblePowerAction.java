@@ -51,7 +51,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         players.removeIf(player -> cardGame.getGameState().getHand(player).isEmpty());
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
-                        "Choose a player to discard a card", players) {
+                        "Choose a player to discard a card", players, cardGame) {
                     @Override
                     protected void validDecisionMade(int index, String result)
                             throws DecisionResultInvalidException {
@@ -77,7 +77,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             game.getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(game.getPlayer(_performingPlayerId),
                             "Choose a player to place a card from hand on the bottom of their deck",
-                            newSelectablePlayers) {
+                            newSelectablePlayers, game) {
                         @Override
                         protected void validDecisionMade(int index, String result)
                                 throws DecisionResultInvalidException {

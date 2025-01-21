@@ -9,7 +9,7 @@ public class ConstantValueSource implements ValueSource {
     private final int _value;
     public ConstantValueSource(int value) { _value = value; }
     public Evaluator getEvaluator(ActionContext actionContext) {
-        return new Evaluator(actionContext) {
+        return new Evaluator() {
             @Override
             public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                 return _value;
