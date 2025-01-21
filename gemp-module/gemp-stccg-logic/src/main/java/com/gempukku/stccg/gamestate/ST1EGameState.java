@@ -14,7 +14,6 @@ import com.gempukku.stccg.game.*;
 import java.util.*;
 
 public class ST1EGameState extends GameState {
-    final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     private final ST1EGame _game;
     final List<AwayTeam> _awayTeams = new ArrayList<>();
@@ -28,7 +27,7 @@ public class ST1EGameState extends GameState {
         for (Player player : _players.values()) {
             player.addCardGroup(Zone.TABLE);
             player.addCardGroup(Zone.MISSIONS_PILE);
-            _seedDecks.put(player.getPlayerId(), new LinkedList<>());
+            player.addCardGroup(Zone.SEED_DECK);
         }
     }
 
@@ -43,10 +42,8 @@ public class ST1EGameState extends GameState {
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
         Player player = getPlayer(playerId);
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE)
+                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
             return player.getCardGroup(zone);
-        else if (zone == Zone.SEED_DECK)
-            return _seedDecks.get(playerId);
         else // This should never be accessed
             return _inPlay; // TODO - Should this just be an exception?
     }
@@ -71,7 +68,7 @@ public class ST1EGameState extends GameState {
                     for (PhysicalCard card : subDeck)
                         card.setZone(Zone.DRAW_DECK);
                 } else if (entry.getKey() == SubDeck.SEED_DECK) {
-                    _seedDecks.put(playerId, subDeck);
+                    player.setCardGroup(Zone.SEED_DECK, subDeck);
                     for (PhysicalCard card : subDeck)
                         card.setZone(Zone.SEED_DECK);
                 } else if (entry.getKey() == SubDeck.MISSIONS) {
@@ -80,12 +77,12 @@ public class ST1EGameState extends GameState {
                         card.setZone(Zone.MISSIONS_PILE);
                 }
             }
-            _seedDecks.computeIfAbsent(playerId, k -> new LinkedList<>());
         }
     }
 
     public List<PhysicalCard> getSeedDeck(String playerId) {
-        return Collections.unmodifiableList(_seedDecks.get(playerId));
+        Player player = getPlayer(playerId);
+        return player.getCardsInGroup(Zone.SEED_DECK);
     }
 
     public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) throws InvalidGameLogicException {

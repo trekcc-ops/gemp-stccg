@@ -66,9 +66,6 @@ public class ST1EGameStateDeserializer {
             player.setScore(playerNode.get("score").asInt());
             if (playerNode.has("decked"))
                 player.setDecked(playerNode.get("decked").asBoolean());
-
-            readCardIdList(Zone.SEED_DECK, playerId, playerNode, gameState, gameState._seedDecks);
-
             for (Zone zone : player.getCardGroupZones())
                 readCardIdList(zone, player, playerNode, gameState);
         }
@@ -93,17 +90,6 @@ public class ST1EGameStateDeserializer {
         }
 
         return gameState;
-    }
-
-    private static void readCardIdList(Zone zone, String playerId, JsonNode playerNode, GameState gameState,
-                                       Map<String, ? extends List<PhysicalCard>> cardGroups) {
-        if (playerNode.has(zone.name()) && !playerNode.get(zone.name()).isEmpty()) {
-            for (JsonNode cardNode : playerNode.get(zone.name())) {
-                int cardId = cardNode.asInt();
-                PhysicalCard card = gameState._allCards.get(cardId);
-                cardGroups.get(playerId).add(card);
-            }
-        }
     }
 
     private static void readCardIdList(Zone zone, Player player, JsonNode playerNode, GameState gameState) {
