@@ -19,7 +19,6 @@ import java.util.Set;
 
 public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
 
-    private int _consecutivePasses;
     public ST1EFacilitySeedPhaseProcess(int consecutivePasses, ST1EGame game) {
         super(game);
         _consecutivePasses = consecutivePasses;
@@ -85,7 +84,5 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             return new ST1EFacilitySeedPhaseProcess(_consecutivePasses, _game);
         }
     }
-
-    public int getConsecutivePasses() { return _consecutivePasses; }
 
 }
