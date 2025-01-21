@@ -231,4 +231,7 @@ public class MissionLocation {
 
     public MissionCard getTopMission() { return getMissions().getLast(); }
 
+    @JsonIgnore
+    public ST1EGame getGame() { return _game; }
+
 }

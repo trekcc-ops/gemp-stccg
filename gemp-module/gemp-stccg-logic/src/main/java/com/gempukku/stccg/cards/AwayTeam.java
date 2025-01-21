@@ -1,5 +1,9 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -13,22 +17,21 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-@JsonSerialize(using = AwayTeamSerializer.class)
+@JsonPropertyOrder({ "attemptingUnitId", "locationZoneIndex", "playerId", "cardsInAwayTeam" })
 public class AwayTeam implements AttemptingUnit {
     private final Player _player;
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
-    private final ST1EGame _game;
     private final MissionLocation _location;
     private final int _attemptingUnitId;
 
-    public AwayTeam(ST1EGame game, Player player, MissionLocation location, int attemptingUnitId) {
+    public AwayTeam(Player player, MissionLocation location, int attemptingUnitId) {
         _player = player;
-        _game = game;
         _cardsInAwayTeam = new LinkedList<>();
         _location = location;
         _attemptingUnitId = attemptingUnitId;
     }
 
+    @JsonProperty("attemptingUnitId")
     public int getAttemptingUnitId() {
         return _attemptingUnitId;
     }
@@ -50,10 +53,14 @@ public class AwayTeam implements AttemptingUnit {
         return _location == location;
     }
 
-
+    @JsonProperty("locationZoneIndex")
     public int getLocationZoneIndex() { return _location.getLocationZoneIndex(); }
+    @JsonIgnore
     public Player getPlayer() { return _player; }
+    @JsonProperty("playerId")
     public String getPlayerId() { return _player.getPlayerId(); }
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("cardsInAwayTeam")
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
     public boolean canAttemptMission(MissionLocation mission) {
         if (!isOnSurface(mission))
@@ -66,7 +73,7 @@ public class AwayTeam implements AttemptingUnit {
                 return true;
             return hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_player));
         } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
+            mission.getGame().sendErrorMessage(exp);
             return false;
         }
     }
@@ -80,6 +87,7 @@ public class AwayTeam implements AttemptingUnit {
         return TextUtils.concatenateStrings(_cardsInAwayTeam.stream().map(PhysicalCard::getFullName).toList());
     }
 
+    @JsonIgnore
     public Collection<PersonnelCard> getAllPersonnel() {
         List<PersonnelCard> result = new LinkedList<>();
         for (PhysicalCard card : getCards()) {
@@ -101,7 +109,7 @@ public class AwayTeam implements AttemptingUnit {
     public void remove(PhysicalReportableCard1E card) {
         _cardsInAwayTeam.remove(card);
         if (_cardsInAwayTeam.isEmpty())
-            _game.getGameState().removeAwayTeamFromGame(this);
+            card.getGame().getGameState().removeAwayTeamFromGame(this);
     }
 
     public boolean canBeDisbanded() {
