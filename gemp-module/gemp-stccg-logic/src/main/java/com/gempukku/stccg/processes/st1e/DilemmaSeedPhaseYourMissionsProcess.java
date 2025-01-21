@@ -1,35 +1,41 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.processes.GameProcess;
 
+import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@JsonTypeName("DilemmaSeedPhaseYourMissionsProcess")
 public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess {
 
     DilemmaSeedPhaseYourMissionsProcess(ST1EGame game) {
-        super(game.getPlayerIds(), game);
+        super(game.getPlayerIds());
     }
-    public DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
-        super(playersSelecting, game);
+    @ConstructorProperties({"playersParticipating"})
+    public DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting) {
+        super(playersSelecting);
     }
 
     @Override
-    List<MissionCard> getAvailableMissions(Player player) {
+    List<MissionCard> getAvailableMissions(ST1EGame stGame, String playerId) {
         List<MissionCard> result = new ArrayList<>();
-        for (MissionLocation location: _game.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location: stGame.getGameState().getSpacelineLocations()) {
             MissionCard mission = location.getMissions().getFirst();
-            if (location.getMissions().size() == 1 && mission.getOwner() == player)
+            if (location.getMissions().size() == 1 && mission.getOwner() == stGame.getPlayer(playerId))
                 result.add(mission);
         }
         return result;
     }
+
 
     @Override
     protected String getDecisionText(Player player) {
@@ -37,13 +43,14 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
     }
 
     @Override
-    public GameProcess getNextProcess(DefaultGame cardGame) {
+    public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
+        ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
-            for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
+            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
                 location.seedPreSeeds();
             }
-            return new DilemmaSeedPhaseSharedMissionsProcess(_game);
+            return new DilemmaSeedPhaseSharedMissionsProcess(stGame);
         }
-        else return new DilemmaSeedPhaseYourMissionsProcess(_playersParticipating, _game);
+        else return new DilemmaSeedPhaseYourMissionsProcess(_playersParticipating);
     }
 }

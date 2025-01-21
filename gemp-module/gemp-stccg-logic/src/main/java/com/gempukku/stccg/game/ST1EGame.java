@@ -26,7 +26,7 @@ public class ST1EGame extends DefaultGame {
 
         _gameState.createPhysicalCards(library, decks);
         _turnProcedure =
-                new TurnProcedure(this, new ST1EPlayerOrderProcess(this));
+                new TurnProcedure(this, new ST1EPlayerOrderProcess());
     }
 
     @Override

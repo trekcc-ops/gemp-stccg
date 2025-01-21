@@ -1,32 +1,31 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
+@JsonTypeName("ST1EPlayerOrderProcess")
 public class ST1EPlayerOrderProcess extends ST1EGameProcess {
-
-    public ST1EPlayerOrderProcess(ST1EGame game) {
-        super(game);
-    }
 
     @Override
     public void process(DefaultGame cardGame) {
         List<String> playerOrder;
-        if (_game.getFormat().hasFixedPlayerOrder()) {
-            playerOrder = Arrays.asList(_game.getAllPlayerIds());
+        if (cardGame.getFormat().hasFixedPlayerOrder()) {
+            playerOrder = Arrays.asList(cardGame.getAllPlayerIds());
         } else {
-            playerOrder = getPlayerOrderByRollingDice();
+            playerOrder = getPlayerOrderByRollingDice(cardGame);
         }
-        _game.sendMessage(playerOrder.getFirst() + " will go first");
-        _game.getGameState().initializePlayerOrder(new PlayerOrder(playerOrder));
+        cardGame.sendMessage(playerOrder.getFirst() + " will go first");
+        cardGame.getGameState().initializePlayerOrder(new PlayerOrder(playerOrder));
     }
 
-    private List<String> getPlayerOrderByRollingDice() {
-        String[] players = _game.getAllPlayerIds();
+    private List<String> getPlayerOrderByRollingDice(DefaultGame cardGame) {
+        String[] players = cardGame.getAllPlayerIds();
         Map<String, Integer> diceResults = new HashMap<>();
         for (String player: players) diceResults.put(player, 0);
 
@@ -34,7 +33,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
             for (String player : players) {
                 Random rand = new Random();
                 int diceRoll = rand.nextInt(6) + 1;
-                _game.sendMessage(player + " rolled a " + diceRoll);
+                cardGame.sendMessage(player + " rolled a " + diceRoll);
                 diceResults.put(player, diceRoll);
             }
             int highestRoll = Collections.max(diceResults.values());
@@ -61,8 +60,9 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess(DefaultGame cardGame) {
-        _game.takeSnapshot("Start of game");
-        return new DoorwaySeedPhaseProcess(_game);
+    public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
+        ST1EGame stGame = getST1EGame(cardGame);
+        cardGame.takeSnapshot("Start of game");
+        return new DoorwaySeedPhaseProcess(stGame.getPlayerIds());
     }
 }

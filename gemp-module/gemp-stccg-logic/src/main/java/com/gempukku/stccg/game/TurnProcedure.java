@@ -62,7 +62,7 @@ public class TurnProcedure {
             // TODO - This implementation seems to assume that game stats will never change during a process
             _currentGameProcess.process(_game);
             _game.getGameState().updateGameStatsAndSendIfChanged();
-            _currentGameProcess.finish();
+            _currentGameProcess.setFinished(true);
         }
     }
 

@@ -1,42 +1,44 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.game.GameUtils;
 
 import java.util.List;
 
+@JsonTypeName("ST1EPlayPhaseSegmentProcess")
 public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
 
-    public ST1EPlayPhaseSegmentProcess(ST1EGame game) {
-        super(game);
+    public ST1EPlayPhaseSegmentProcess() {
+        super();
     }
 
     @Override
     public void process(DefaultGame cardGame) {
-        Phase phase = _game.getCurrentPhase();
-        String currentPlayerId = _game.getCurrentPlayerId();
-        ST1EGame thisGame = _game; // To avoid conflict when decision calls "_game"
+        Phase phase = cardGame.getCurrentPhase();
+        String currentPlayerId = cardGame.getCurrentPlayerId();
         final List<TopLevelSelectableAction> playableActions =
-                _game.getActionsEnvironment().getPhaseActions(currentPlayerId);
-        if (!playableActions.isEmpty() || !_game.shouldAutoPass(phase)) {
-            _game.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(_game.getCurrentPlayer(), "Play " + phase + " action or Pass",
+                cardGame.getActionsEnvironment().getPhaseActions(currentPlayerId);
+        if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
+            cardGame.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(cardGame.getCurrentPlayer(), "Play " + phase + " action or Pass",
                             playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result)) {
-                                GameUtils.performRevert(thisGame, currentPlayerId);
+                                GameUtils.performRevert(cardGame, currentPlayerId);
                             } else {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
-                                    thisGame.getActionsEnvironment().addActionToStack(action);
+                                    cardGame.getActionsEnvironment().addActionToStack(action);
                                 } else {
                                     _consecutivePasses++;
                                 }
@@ -49,28 +51,29 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess(DefaultGame cardGame) {
+    public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
         GameProcess result;
+        ST1EGame stGame = getST1EGame(cardGame);
         if (_consecutivePasses > 0) {
-            Phase phase = _game.getCurrentPhase();
+            Phase phase = cardGame.getCurrentPhase();
             String message = "End of " + phase + " phase";
-            _game.sendMessage(message);
+            cardGame.sendMessage(message);
             result = switch (phase) {
                 case CARD_PLAY -> {
-                    _game.getGameState().setCurrentPhase(Phase.EXECUTE_ORDERS);
+                    cardGame.getGameState().setCurrentPhase(Phase.EXECUTE_ORDERS);
                     message = "Start of " + Phase.EXECUTE_ORDERS + " phase";
-                    _game.sendMessage("\n" + message);
-                    yield new ST1EPlayPhaseSegmentProcess(_game);
+                    cardGame.sendMessage("\n" + message);
+                    yield new ST1EPlayPhaseSegmentProcess();
                 }
                 case EXECUTE_ORDERS -> {
-                    _game.getGameState().setCurrentPhase(Phase.END_OF_TURN);
-                    yield new ST1EEndOfTurnProcess(_game);
+                    cardGame.getGameState().setCurrentPhase(Phase.END_OF_TURN);
+                    yield new ST1EEndOfTurnProcess();
                 }
                 case null, default -> throw new RuntimeException(
                         "End of play phase segment process reached without being in a valid play phase segment");
             };
         } else {
-            result = new ST1EPlayPhaseSegmentProcess(_game);
+            result = new ST1EPlayPhaseSegmentProcess();
         }
         return result;
     }

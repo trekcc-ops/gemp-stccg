@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -16,31 +17,32 @@ import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
 import java.util.List;
 
+@JsonTypeName("ST1EEndOfTurnProcess")
 public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
-    public ST1EEndOfTurnProcess(ST1EGame game) {
-        super(game);
+    public ST1EEndOfTurnProcess() {
+        super();
     }
 
     @Override
     public void process(DefaultGame cardGame) {
-        DefaultGame thisGame = _game;
-        String playerId = _game.getCurrentPlayerId();
-        for (PhysicalCard card : Filters.filterActive(_game, Filters.ship))
+        String playerId = cardGame.getCurrentPlayerId();
+        for (PhysicalCard card : Filters.filterActive(cardGame, Filters.ship))
             ((PhysicalShipCard) card).restoreRange();
-        _game.getGameState().playerDrawsCard(playerId);
-        _game.sendMessage(playerId + " drew their normal end-of-turn card draw");
-        final List<TopLevelSelectableAction> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
-        Phase phase = thisGame.getCurrentPhase();
-        if (!playableActions.isEmpty() || !_game.shouldAutoPass(phase)) {
-            thisGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(thisGame.getCurrentPlayer(),
+        cardGame.getGameState().playerDrawsCard(playerId);
+        cardGame.sendMessage(playerId + " drew their normal end-of-turn card draw");
+        final List<TopLevelSelectableAction> playableActions =
+                cardGame.getActionsEnvironment().getPhaseActions(playerId);
+        Phase phase = cardGame.getCurrentPhase();
+        if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
+            cardGame.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(cardGame.getCurrentPlayer(),
                             "Play " + phase + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
-                                    thisGame.getActionsEnvironment().addActionToStack(action);
+                                    cardGame.getActionsEnvironment().addActionToStack(action);
                                 } else {
                                     _consecutivePasses++;
                                 }
@@ -51,16 +53,16 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) {
-        _game.getModifiersEnvironment().signalEndOfTurn(); // Remove "until end of turn" modifiers
-        _game.getActionsEnvironment().signalEndOfTurn(); // Remove "until end of turn" permitted actions
-        _game.getGameState().sendMessage(_game.getCurrentPlayerId() + " ended their turn");
-        _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
-        String playerId = _game.getGameState().getCurrentPlayerId();
-        ActionOrder actionOrder = _game.getGameState().getPlayerOrder().getClockwisePlayOrder(playerId, false);
+        cardGame.getModifiersEnvironment().signalEndOfTurn(); // Remove "until end of turn" modifiers
+        cardGame.getActionsEnvironment().signalEndOfTurn(); // Remove "until end of turn" permitted actions
+        cardGame.getGameState().sendMessage(cardGame.getCurrentPlayerId() + " ended their turn");
+        cardGame.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
+        String playerId = cardGame.getGameState().getCurrentPlayerId();
+        ActionOrder actionOrder = cardGame.getGameState().getPlayerOrder().getClockwisePlayOrder(playerId, false);
         actionOrder.getNextPlayer();
 
         String nextPlayer = actionOrder.getNextPlayer();
-        _game.getGameState().startPlayerTurn(nextPlayer);
+        cardGame.getGameState().startPlayerTurn(nextPlayer);
         return new StartOfTurnGameProcess();
     }
 }

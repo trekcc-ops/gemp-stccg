@@ -81,7 +81,8 @@ public class GameUtils {
     /**
      * This method if the same player should be asked again to choose an action or pass.
      */
-    private static GameProcess checkPlayerAgain(DefaultGame _game) { // TODO SNAPSHOT - The SWCCG code is incompatible with the structure of this process
+    private static GameProcess checkPlayerAgain(DefaultGame _game) {
+        // TODO SNAPSHOT - The SWCCG code is incompatible with the structure of this process
 /*        _playOrder.getNextPlayer();
         return new PlayersPlayPhaseActionsInOrderGameProcess(
                 _game.getGameState().getPlayerOrder().getPlayOrder(

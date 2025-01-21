@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
@@ -14,9 +17,12 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.processes.GameProcessDeserializer;
+import com.gempukku.stccg.processes.GameProcess;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ST1EGameStateDeserializer {
 
@@ -67,7 +73,8 @@ public class ST1EGameStateDeserializer {
                 readCardIdList(zone, playerId, playerNode, gameState, gameState._cardGroups.get(zone));
         }
 
-        game.setCurrentProcess(GameProcessDeserializer.deserialize(game, node.get("currentProcess")));
+        GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
+        game.setCurrentProcess(currentProcess);
 
         gameState.setModifiersLogic(node.get("modifiers"));
 

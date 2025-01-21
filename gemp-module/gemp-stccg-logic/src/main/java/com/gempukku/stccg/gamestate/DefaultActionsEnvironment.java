@@ -27,19 +27,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _actionStack = actionStack;
     }
 
-    private DefaultActionsEnvironment(DefaultGame game, Stack<Action> actionStack,
-                                      Collection<? extends ActionProxy> actionProxies,
-                                      Collection<? extends ActionProxy> untilEndOfTurnActionProxies,
-                                      Iterable<? extends Action> performedActions) {
-        _game = game;
-        _actionStack = actionStack;
-        _actionProxies.addAll(actionProxies);
-        _untilEndOfTurnActionProxies.addAll(untilEndOfTurnActionProxies);
-        for (Action action : performedActions) {
-            _performedActions.add(action);
-        }
-    }
-
     public DefaultGame getGame() { return _game; }
 
     @Override
