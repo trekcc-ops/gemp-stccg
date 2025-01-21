@@ -1,7 +1,8 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.st1e.ST1EEndOfTurnProcess;

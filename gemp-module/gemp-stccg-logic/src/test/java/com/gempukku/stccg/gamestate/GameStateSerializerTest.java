@@ -1,6 +1,7 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
