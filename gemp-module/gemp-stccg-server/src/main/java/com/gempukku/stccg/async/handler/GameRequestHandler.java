@@ -59,7 +59,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         } else if (uri.startsWith("/") && uri.endsWith("/cancel") && request.method() == HttpMethod.POST) {
             cancel(request, uri.substring(1, uri.length() - 7), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
-            getGameState(request, uri.substring(1), responseWriter);
+            startGameSession(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             updateGameState(request, uri.substring(1), responseWriter);
         } else {
@@ -67,7 +67,8 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void updateGameState(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
+    private void updateGameState(HttpRequest request, String gameId, ResponseWriter responseWriter)
+            throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
@@ -201,7 +202,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void getGameState(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
+    private void startGameSession(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
 
