@@ -1,10 +1,12 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.beans.ConstructorProperties;
 import java.util.*;
 
 public class PlayerOrder {
@@ -22,12 +24,12 @@ public class PlayerOrder {
         _currentPlayer = turnOrder.getFirst();
     }
 
-    public PlayerOrder(JsonNode node) {
-        _isReversed = node.get("isReversed").booleanValue();
-        _firstPlayer = node.get("firstPlayer").textValue();
-        _currentPlayer = node.get("currentPlayer").textValue();
-        for (JsonNode playerNode : node.get("turnOrder"))
-            _turnOrder.add(playerNode.textValue());
+    @ConstructorProperties({"isReversed", "firstPlayer", "currentPlayer", "turnOrder"})
+    public PlayerOrder(boolean isReversed, String firstPlayer, String currentPlayer, List<String> turnOrder) {
+        _isReversed = isReversed;
+        _firstPlayer = firstPlayer;
+        _currentPlayer = currentPlayer;
+        _turnOrder.addAll(turnOrder);
     }
 
     public String getFirstPlayer() {

@@ -1,6 +1,8 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -18,12 +20,13 @@ import java.util.*;
 
 public class ST1EGameStateDeserializer {
 
-    public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException, InvalidGameLogicException {
+    public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException,
+            InvalidGameLogicException, JsonProcessingException {
 
         ST1EGameState gameState = new ST1EGameState(game);
         gameState.setCurrentPhase(Phase.valueOf(node.get("currentPhase").textValue()));
 
-        PlayerOrder playerOrder = new PlayerOrder(node.get("playerOrder"));
+        PlayerOrder playerOrder = new ObjectMapper().treeToValue(node.get("playerOrder"), PlayerOrder.class);
         gameState.loadPlayerOrder(playerOrder);
 
         Map<MissionLocation, List<Integer>> seededUnderMap = new HashMap<>();
