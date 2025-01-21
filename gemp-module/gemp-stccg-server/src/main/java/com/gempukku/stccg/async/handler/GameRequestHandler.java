@@ -1,5 +1,7 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
@@ -13,6 +15,7 @@ import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameCommunicationChannel;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
+import com.gempukku.stccg.gamestate.GameState;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
@@ -58,6 +61,8 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             concede(request, uri.substring(1, uri.length() - 8), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/cancel") && request.method() == HttpMethod.POST) {
             cancel(request, uri.substring(1, uri.length() - 7), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameState") && request.method() == HttpMethod.GET) {
+            getGameState(uri.substring(1, uri.length() - 10), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             startGameSession(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
@@ -66,6 +71,25 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
+
+    private void getGameState(String gameId, ResponseWriter responseWriter)
+            throws HttpProcessingException {
+
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
+
+        if (gameMediator == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+
+        GameState gameState = gameMediator.getGame().getGameState();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String gameStateString = mapper.writeValueAsString(gameState);
+            responseWriter.writeJsonResponse(gameStateString);
+        } catch(JsonProcessingException exp) {
+            gameMediator.getGame().sendMessage("ERROR: Unable to create serialized game state");
+        }
+    }
+
 
     private void updateGameState(HttpRequest request, String gameId, ResponseWriter responseWriter)
             throws Exception {

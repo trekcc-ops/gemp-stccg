@@ -197,6 +197,46 @@ export default class GempClientCommunication {
         });
     }
 
+    getGameStateOld(callback, errorMap) {
+        $.ajax({
+            type:"GET",
+            url:this.url + "/game/" + getUrlParam("gameId") + "/gameState",
+            cache:false,
+            success:this.deliveryCheck(callback),
+            error:this.errorCheck(errorMap),
+            dataType:"json"
+        });
+    }
+
+    async getGameStateNew() {
+        const url = this.url + "/game/" + getUrlParam("gameId") + "/gameState";
+        try {
+            let response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status == 404) {
+                    alert("Could not load game state for this game.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                let retval = await response.json();
+                return retval;
+            }
+        }
+        catch(error) {
+            console.error({"getGameState fetch error": error.message});
+        }
+    }
+
+
     startGameSession(callback, errorMap) {
         $.ajax({
             type:"GET",
