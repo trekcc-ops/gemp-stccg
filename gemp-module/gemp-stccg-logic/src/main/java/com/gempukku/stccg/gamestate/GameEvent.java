@@ -221,7 +221,7 @@ public class GameEvent {
     }
 
     private void serializeGameStats(Document doc, Element eventElem) {
-        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _gameState.getZoneSizes().entrySet()) {
+        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _gameState.getGame().getZoneSizes().entrySet()) {
             final Element playerZonesElem = doc.createElement("playerZones");
 
             playerZonesElem.setAttribute("name", playerZoneSizes.getKey());

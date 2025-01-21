@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -18,6 +19,7 @@ import java.util.*;
 
 public abstract class DefaultGame {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
+    private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
 
     // Game parameters
     protected final GameFormat _format;
@@ -69,7 +71,7 @@ public abstract class DefaultGame {
     }
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
         _gameStateListeners.add(gameStateListener);
-        getGameState().sendGameStateToClient(playerId, gameStateListener, false);
+        sendGameStateToClient(playerId, gameStateListener, false);
     }
 
     public Collection<GameStateListener> getAllGameStateListeners() {
@@ -78,7 +80,7 @@ public abstract class DefaultGame {
 
     public void sendStateToAllListeners() {
         for (GameStateListener gameStateListener : _gameStateListeners)
-            getGameState().sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
+            sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
     }
 
     public void requestCancel(String playerId) {
@@ -130,6 +132,43 @@ public abstract class DefaultGame {
         }
     }
 
+    public void finish() {
+        for (GameStateListener listener : getAllGameStateListeners()) {
+            listener.sendEvent(GameEvent.Type.GAME_ENDED);
+        }
+
+        if (getPlayers() == null || getPlayers().isEmpty())
+            return;
+
+        for (String playerId : getAllPlayerIds()) {
+            for(PhysicalCard card : getPlayer(playerId).getCardsInDrawDeck()) {
+                for (GameStateListener listener : getAllGameStateListeners()) {
+                    getGameState().sendCreatedCardToListener(
+                            card, false, listener, true, true);
+                }
+            }
+        }
+    }
+
+    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+        GameState gameState = getGameState();
+        PlayerOrder playerOrder = gameState.getPlayerOrder();
+        if (playerOrder != null) {
+            listener.initializeBoard();
+            if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
+            if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
+
+            gameState.sendCardsToClient(playerId, listener, restoreSnapshot);
+        }
+        for (String lastMessage : getMessages())
+            listener.sendMessage(lastMessage);
+
+        final AwaitingDecision awaitingDecision = gameState.getDecision(playerId);
+        gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
+    }
+
+
+
     public void playerWon(String playerId, String reason) {
         if (!_finished) {
             // Any remaining players have lost
@@ -150,7 +189,7 @@ public abstract class DefaultGame {
             sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
 
         assert getGameState() != null;
-        getGameState().finish();
+        finish();
 
         for (GameResultListener gameResultListener : _gameResultListeners)
             gameResultListener.gameFinished(_winnerPlayerId, reason, _losers);
@@ -362,4 +401,39 @@ public abstract class DefaultGame {
         ActionsEnvironment environment = getActionsEnvironment();
         return environment.getActionById(actionId);
     }
+
+    public void updateGameStatsAndSendIfChanged() {
+        boolean changed = false;
+
+        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
+
+        if (getPlayers() != null) {
+            for (Player player : getPlayers()) {
+                if (player.getScore() != player.getLastSyncedScore()) {
+                    changed = true;
+                }
+                player.syncScore();
+
+                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
+                playerZoneSizes.put(Zone.HAND, player.getCardsInHand().size());
+                playerZoneSizes.put(Zone.DRAW_DECK, player.getCardsInDrawDeck().size());
+                playerZoneSizes.put(Zone.DISCARD, player.getDiscardPile().size());
+                playerZoneSizes.put(Zone.REMOVED, player.getRemovedPile().size());
+                newZoneSizes.put(player.getPlayerId(), playerZoneSizes);
+            }
+        }
+
+        if (!newZoneSizes.equals(_previousZoneSizes)) {
+            changed = true;
+            _previousZoneSizes = newZoneSizes;
+        }
+
+        if (changed) getGameState().sendGameStats();
+    }
+
+    public Map<String, Map<Zone, Integer>> getZoneSizes() {
+        return Collections.unmodifiableMap(_previousZoneSizes);
+    }
+
+
 }

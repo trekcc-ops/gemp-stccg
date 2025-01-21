@@ -39,7 +39,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         cardGame.getGameState().addCardToZone(_cardEnteringPlay, Zone.PLAY_PILE);
         if (playedFromZone == Zone.DRAW_DECK) {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            gameState.shuffleDeck(_cardEnteringPlay.getOwnerName());
+            _cardEnteringPlay.getOwner().shuffleDrawDeck(cardGame);
         }
 
         int tribbleValue = _cardEnteringPlay.getBlueprint().getTribbleValue();

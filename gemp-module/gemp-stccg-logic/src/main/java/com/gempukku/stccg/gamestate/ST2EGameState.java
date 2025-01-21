@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST2EGame;
 
 import java.util.HashMap;
@@ -28,8 +29,9 @@ public class ST2EGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
+        Player player = getPlayer(playerId);
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.DISCARD || zone == Zone.REMOVED || zone == Zone.VOID)
-            return _cardGroups.get(zone).get(playerId);
+            return player.getCardGroup(zone);
         else if (zone == Zone.TABLE)
             return _tableCards.get(playerId);
         else // This should never be accessed

@@ -26,7 +26,7 @@ public class SeedCardAction extends PlayCardAction {
         gameState.removeCardFromZone(_cardEnteringPlay);
         if (originalZone == Zone.DRAW_DECK) {
             game.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            gameState.shuffleDeck(_cardEnteringPlay.getOwnerName());
+            _cardEnteringPlay.getOwner().shuffleDrawDeck(game);
         }
         gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, originalZone, _cardEnteringPlay));

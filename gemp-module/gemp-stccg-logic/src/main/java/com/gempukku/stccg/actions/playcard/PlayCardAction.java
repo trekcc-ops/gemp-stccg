@@ -62,7 +62,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
         if (currentZone == Zone.DRAW_DECK) {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            cardGame.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
+            _cardEnteringPlay.getOwner().shuffleDrawDeck(cardGame);
         }
         putCardIntoPlay(cardGame);
         _wasCarriedOut = true;

@@ -34,7 +34,7 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
                 for (PhysicalCard physicalCard : playPile) {
                     gameState.putCardOnBottomOfDeck(physicalCard);
                 }
-                gameState.shuffleDeck(_performingPlayerId);
+                cardGame.getPlayer(_performingPlayerId).shuffleDrawDeck(cardGame);
 
                 // Then put that many cards from the top of your draw deck in your play pile
                 appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(game.getPlayer(_performingPlayerId),

@@ -33,6 +33,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();
             if (selectionAction != null && !selectionAction.wasCarriedOut()) {
@@ -44,7 +45,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
         Collection<PhysicalCard> cards = _cardTarget.getCards(cardGame);
         cardGame.getGameState().removeCardsFromZone(_performingCard.getOwnerName(), cards);
-        cardGame.getGameState().shuffleCardsIntoDeck(cards, _performingPlayerId);
+        cardGame.getGameState().shuffleCardsIntoDeck(cards, performingPlayer);
         cardGame.sendMessage(TextUtils.concatenateStrings(
                 cards.stream().map(PhysicalCard::getCardLink)) + " " +
                 TextUtils.be(cards) + " shuffled into " + _performingPlayerId + " deck");

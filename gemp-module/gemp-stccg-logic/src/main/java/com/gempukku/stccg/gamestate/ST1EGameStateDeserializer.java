@@ -69,8 +69,8 @@ public class ST1EGameStateDeserializer {
 
             readCardIdList(Zone.SEED_DECK, playerId, playerNode, gameState, gameState._seedDecks);
 
-            for (Zone zone : gameState._cardGroups.keySet())
-                readCardIdList(zone, playerId, playerNode, gameState, gameState._cardGroups.get(zone));
+            for (Zone zone : player.getCardGroupZones())
+                readCardIdList(zone, player, playerNode, gameState);
         }
 
         GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
@@ -105,6 +105,17 @@ public class ST1EGameStateDeserializer {
             }
         }
     }
+
+    private static void readCardIdList(Zone zone, Player player, JsonNode playerNode, GameState gameState) {
+        if (playerNode.has(zone.name()) && !playerNode.get(zone.name()).isEmpty()) {
+            for (JsonNode cardNode : playerNode.get(zone.name())) {
+                int cardId = cardNode.asInt();
+                PhysicalCard card = gameState._allCards.get(cardId);
+                player.addCardToGroup(zone, card);
+            }
+        }
+    }
+
 
     private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState) throws CardNotFoundException {
         ST1EGame game = gameState.getGame();

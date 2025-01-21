@@ -13,6 +13,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "playerId", "score", "turnNumber", "cardsInZones", "decked" })
@@ -25,6 +26,7 @@ public class Player {
     private int _currentScore;
     private int _lastSyncedScore;
     private int _turnNumber;
+    Map<Zone, List<PhysicalCard>> _cardGroups = new HashMap<>();
 
     public Player(DefaultGame game, String playerId) {
         _playerId = playerId;
@@ -59,9 +61,9 @@ public class Player {
 
     public boolean hasCardInZone(Zone zone, int count, Filterable... cardFilter) {
         if (zone == Zone.HAND)
-            return Filters.filter(_game.getGameState().getHand(_playerId), _game, cardFilter).size() >= count;
+            return Filters.filter(getCardsInGroup(Zone.HAND), _game, cardFilter).size() >= count;
         else if (zone == Zone.DISCARD)
-            return Filters.filter(_game.getGameState().getDiscard(_playerId), _game, cardFilter).size() >= count;
+            return Filters.filter(getCardsInGroup(Zone.DISCARD), _game, cardFilter).size() >= count;
         else
             return false;
     }
@@ -86,12 +88,12 @@ public class Player {
         return _currentScore;
     }
 
-    public Collection<PhysicalCard> getHand() {
-        return _game.getGameState().getHand(_playerId);
+    public Collection<PhysicalCard> getCardsInHand() {
+        return getCardsInGroup(Zone.HAND);
     }
 
-    public Collection<PhysicalCard> getDrawDeck() {
-        return _game.getGameState().getDrawDeck(_playerId);
+    public Collection<PhysicalCard> getCardsInDrawDeck() {
+        return getCardsInGroup(Zone.DRAW_DECK);
     }
 
     public Collection<PhysicalCard> getDiscardPile() {
@@ -99,7 +101,7 @@ public class Player {
     }
 
     public Collection<PhysicalCard> getRemovedPile() {
-        return _game.getGameState().getRemoved(_playerId);
+        return getCardsInGroup(Zone.REMOVED);
     }
 
     public int getTurnNumber() {
@@ -109,7 +111,7 @@ public class Player {
     public Map<Zone, List<Integer>> getCardsInZones() {
         Map<Zone, List<Integer>> result = new HashMap<>();
         GameState gameState = _game.getGameState();
-        for (Zone zone : gameState.getCardGroups().keySet()) {
+        for (Zone zone : _cardGroups.keySet()) {
             result.put(zone, new LinkedList<>());
             for (PhysicalCard card : gameState.getZoneCards(_playerId, zone)) {
                 result.get(zone).add(card.getCardId());
@@ -142,5 +144,34 @@ public class Player {
 
     public void setScore(int score) {
         _currentScore = score;
+    }
+
+    public void addCardGroup(Zone zone) {
+        _cardGroups.put(zone, new LinkedList<>());
+    }
+
+    public List<PhysicalCard> getCardGroup(Zone zone) {
+        return _cardGroups.get(zone);
+    }
+
+    public void addCardToGroup(Zone zone, PhysicalCard card) {
+        _cardGroups.get(zone).add(card);
+    }
+
+    public List<PhysicalCard> getCardsInGroup(Zone zone) {
+        return Collections.unmodifiableList(_cardGroups.get(zone));
+    }
+
+    public void shuffleDrawDeck(DefaultGame cardGame) {
+        if (!cardGame.getFormat().isNoShuffle())
+            Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK), ThreadLocalRandom.current());
+    }
+
+    public void setCardGroup(Zone zone, List<PhysicalCard> subDeck) {
+        _cardGroups.put(zone, subDeck);
+    }
+
+    public Set<Zone> getCardGroupZones() {
+        return _cardGroups.keySet();
     }
 }

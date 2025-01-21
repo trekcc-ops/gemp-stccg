@@ -7,10 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.StartOfTurnGameProcess;
@@ -77,7 +74,8 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             }
 
             for (String playerId : playerIds) {
-                gameState.shuffleDeck(playerId);
+                Player player = cardGame.getPlayer(playerId);
+                player.shuffleDrawDeck(cardGame);
                 for (int i = 0; i < cardGame.getFormat().getHandSize(); i++) {
                     gameState.playerDrawsCard(playerId);
                 }

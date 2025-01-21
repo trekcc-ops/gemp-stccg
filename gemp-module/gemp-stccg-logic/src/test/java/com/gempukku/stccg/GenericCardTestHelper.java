@@ -104,12 +104,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public Phase GetCurrentPhase() { return _game.getGameState().getCurrentPhase(); }
 
 
-
-    public void ShuffleDeck(String player) {
-        _game.getGameState().shuffleDeck(player);
-    }
-
-
     public void SkipToPhase(Phase target) throws DecisionResultInvalidException {
         for(int attempts = 1; attempts <= 20; attempts++)
         {

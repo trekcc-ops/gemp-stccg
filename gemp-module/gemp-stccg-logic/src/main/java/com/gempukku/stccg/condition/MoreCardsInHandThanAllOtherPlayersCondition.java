@@ -16,7 +16,7 @@ public class MoreCardsInHandThanAllOtherPlayersCondition implements Condition {
     public boolean isFulfilled(DefaultGame cardGame) {
         Player targetPlayer = _playerResolver.getPlayer();
         for (Player player : cardGame.getPlayers()) {
-            if (player.getHand().size() >= targetPlayer.getHand().size() && targetPlayer != player) {
+            if (player.getCardsInHand().size() >= targetPlayer.getCardsInHand().size() && targetPlayer != player) {
                 return false;
             }
         }

@@ -38,9 +38,10 @@ public final class TribblesGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
+        Player player = getPlayer(playerId);
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD ||
                 zone == Zone.VOID)
-            return _cardGroups.get(zone).get(playerId);
+            return player.getCardGroup(zone);
         else if (zone == Zone.PLAY_PILE)
             return _playPiles.get(playerId);
         else // This should never be accessed
@@ -63,7 +64,7 @@ public final class TribblesGameState extends GameState {
                     }
                 }
                 if (Objects.equals(entry.getKey().name(), "DRAW_DECK")) {
-                    _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
+                    player.setCardGroup(Zone.DRAW_DECK, subDeck);
                     subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
                 }
             }
@@ -72,13 +73,14 @@ public final class TribblesGameState extends GameState {
     }
 
 
-    public void shufflePlayPileIntoDeck(String playerId) {
+    public void shufflePlayPileIntoDeck(Player player) {
+        String playerId = player.getPlayerId();
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
         removeCardsFromZone(playerId, playPile);
         for (PhysicalCard card : playPile) {
             addCardToZone(card, Zone.DRAW_DECK);
         }
-        shuffleDeck(playerId);
+        player.shuffleDrawDeck(getGame());
     }
 
     public List<PhysicalCard> getPlayPile(String playerId) {

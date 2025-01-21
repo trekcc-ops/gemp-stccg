@@ -37,7 +37,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
             gameState.discardHand(playerId);
 
             // Each player then shuffles their play pile into their decks.
-            gameState.shufflePlayPileIntoDeck(playerId);
+            gameState.shufflePlayPileIntoDeck(cardGame.getPlayer(playerId));
         }
 
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfRound();

@@ -25,11 +25,10 @@ public class ST1EGameState extends GameState {
         super(game, playerIds);
         _game = game;
         _currentPhase = Phase.SEED_DOORWAY;
-        _cardGroups.put(Zone.TABLE, new HashMap<>());
-        _cardGroups.put(Zone.MISSIONS_PILE, new HashMap<>());
-        for (String playerId : playerIds) {
-            _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
-            _cardGroups.get(Zone.MISSIONS_PILE).put(playerId, new LinkedList<>());
+        for (Player player : _players.values()) {
+            player.addCardGroup(Zone.TABLE);
+            player.addCardGroup(Zone.MISSIONS_PILE);
+            _seedDecks.put(player.getPlayerId(), new LinkedList<>());
         }
     }
 
@@ -42,9 +41,10 @@ public class ST1EGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
+        Player player = getPlayer(playerId);
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
                 zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE)
-            return _cardGroups.get(zone).get(playerId);
+            return player.getCardGroup(zone);
         else if (zone == Zone.SEED_DECK)
             return _seedDecks.get(playerId);
         else // This should never be accessed
@@ -67,7 +67,7 @@ public class ST1EGameState extends GameState {
                     }
                 }
                 if (entry.getKey() == SubDeck.DRAW_DECK) {
-                    _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
+                    player.setCardGroup(Zone.DRAW_DECK, subDeck);
                     for (PhysicalCard card : subDeck)
                         card.setZone(Zone.DRAW_DECK);
                 } else if (entry.getKey() == SubDeck.SEED_DECK) {
@@ -75,7 +75,7 @@ public class ST1EGameState extends GameState {
                     for (PhysicalCard card : subDeck)
                         card.setZone(Zone.SEED_DECK);
                 } else if (entry.getKey() == SubDeck.MISSIONS) {
-                    _cardGroups.get(Zone.MISSIONS_PILE).put(playerId, subDeck);
+                    player.setCardGroup(Zone.MISSIONS_PILE, subDeck);
                     for (PhysicalCard card : subDeck)
                         card.setZone(Zone.MISSIONS_PILE);
                 }
@@ -185,7 +185,8 @@ public class ST1EGameState extends GameState {
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
     @Override
-    protected void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+        Player player = getPlayer(playerId);
         boolean sharedMission;
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
         Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
@@ -230,18 +231,18 @@ public class ST1EGameState extends GameState {
             }
         } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
-        for (PhysicalCard physicalCard : _cardGroups.get(Zone.HAND).get(playerId)) {
+        for (PhysicalCard physicalCard : player.getCardGroup(Zone.HAND)) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        List<PhysicalCard> missionPile = _cardGroups.get(Zone.MISSIONS_PILE).get(playerId);
+        List<PhysicalCard> missionPile = player.getCardGroup(Zone.MISSIONS_PILE);
         if (missionPile != null) {
             for (PhysicalCard physicalCard : missionPile) {
                 sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
             }
         }
 
-        for (PhysicalCard physicalCard : _cardGroups.get(Zone.DISCARD).get(playerId)) {
+        for (PhysicalCard physicalCard : player.getCardGroup(Zone.DISCARD)) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
     }

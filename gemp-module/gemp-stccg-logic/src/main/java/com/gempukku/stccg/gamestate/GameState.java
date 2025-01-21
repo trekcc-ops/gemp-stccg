@@ -30,19 +30,14 @@ import java.util.concurrent.ThreadLocalRandom;
         "currentProcess", "cardsInGame" })
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
-
-    // previousZoneSizes and previousPlayerScores are only used for GameStats comparisons and event sending
-    private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
-
-    PlayerOrder _playerOrder;
-    private ModifiersLogic _modifiersLogic;
-    protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new EnumMap<>(Zone.class);
-    final List<PhysicalCard> _inPlay = new LinkedList<>();
-    protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
     Phase _currentPhase;
+    Map<String, Player> _players = new HashMap<>();
+    PlayerOrder _playerOrder;
+    protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
+    private ModifiersLogic _modifiersLogic;
+    final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
-    Map<String, Player> _players = new HashMap<>();
     private ActionsEnvironment _actionsEnvironment;
 
     protected GameState(DefaultGame game, Iterable<String> playerIds) {
@@ -53,10 +48,12 @@ public abstract class GameState {
         cardGroupList.add(Zone.DISCARD);
         cardGroupList.add(Zone.REMOVED);
 
-        cardGroupList.forEach(cardGroup -> _cardGroups.put(cardGroup, new HashMap<>()));
         for (String playerId : playerIds) {
-            cardGroupList.forEach(cardGroup -> _cardGroups.get(cardGroup).put(playerId, new LinkedList<>()));
-            _players.put(playerId, new Player(game, playerId));
+            Player player = new Player(game, playerId);
+            for (Zone zone : cardGroupList) {
+                player.addCardGroup(zone);
+            }
+            _players.put(playerId, player);
         }
         _modifiersLogic = new ModifiersLogic(game);
         _actionsEnvironment = new DefaultActionsEnvironment(game);
@@ -77,23 +74,6 @@ public abstract class GameState {
     }
     public ActionsEnvironment getActionsEnvironment() { return _actionsEnvironment; }
 
-    public void finish() {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.sendEvent(GameEvent.Type.GAME_ENDED);
-        }
-
-        if(_playerOrder == null || _playerOrder.getAllPlayers() == null)
-            return;
-
-        for (String playerId : _playerOrder.getAllPlayers()) {
-            for(var card : getDrawDeck(playerId)) {
-                for (GameStateListener listener : getAllGameStateListeners()) {
-                    sendCreatedCardToListener(card, false, listener, true, true);
-                }
-            }
-        }
-    }
-
     public PlayerOrder getPlayerOrder() {
         return _playerOrder;
     }
@@ -102,23 +82,9 @@ public abstract class GameState {
         return getGame().getAllGameStateListeners();
     }
 
-    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
-        if (_playerOrder != null) {
-            listener.initializeBoard();
-            if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
-            if (_currentPhase != null) listener.setCurrentPhase(_currentPhase);
+    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
 
-            sendCardsToClient(playerId, listener, restoreSnapshot);
-        }
-        for (String lastMessage : getMessages())
-            listener.sendMessage(lastMessage);
-
-        final AwaitingDecision awaitingDecision = _playerDecisions.get(playerId);
-        sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
-    }
-
-    protected void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
-
+        Player player = getPlayer(playerId);
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
         Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
 
@@ -137,8 +103,8 @@ public abstract class GameState {
 
         Collection<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
 
-        cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
-        cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
+        cardsPutIntoPlay.addAll(player.getCardGroup(Zone.HAND));
+        cardsPutIntoPlay.addAll(player.getCardGroup(Zone.DISCARD));
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
@@ -158,7 +124,11 @@ public abstract class GameState {
             sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
     }
 
-    private void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) {
+    public AwaitingDecision getDecision(String playerId) {
+        return _playerDecisions.get(playerId);
+    }
+
+    public void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) {
         if (decision != null)
             listener.decisionRequired(playerId, decision);
     }
@@ -210,11 +180,9 @@ public abstract class GameState {
     }
 
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        List<PhysicalCard> zoneCards = _cardGroups.get(zone).get(playerId);
-        if (zoneCards != null)
-            return zoneCards;
-        else
-            return _inPlay;
+        Player player = getPlayer(playerId);
+        List<PhysicalCard> zoneCards = player.getCardGroup(zone);
+        return Objects.requireNonNullElse(zoneCards, _inPlay);
     }
 
     public void removeCardFromZone(PhysicalCard card) {
@@ -317,7 +285,7 @@ public abstract class GameState {
         sendCreatedCardToListener(card, sharedMission, listener, animate, false);
     }
 
-    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
+    public void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
                                              boolean animate, boolean overrideOwnerVisibility) {
         GameEvent.Type eventType;
 
@@ -338,14 +306,12 @@ public abstract class GameState {
             listener.sendEvent(new GameEvent(eventType, card));
     }
 
-    public void shuffleCardsIntoDeck(Iterable<? extends PhysicalCard> cards, String playerId) {
-
+    public void shuffleCardsIntoDeck(Iterable<? extends PhysicalCard> cards, Player performingPlayer) {
         for (PhysicalCard card : cards) {
-            _cardGroups.get(Zone.DRAW_DECK).get(playerId).add(card);
+            performingPlayer.addCardToGroup(Zone.DRAW_DECK, card);
             card.setZone(Zone.DRAW_DECK);
         }
-
-        shuffleDeck(playerId);
+        performingPlayer.shuffleDrawDeck(getGame());
     }
 
     public void putCardOnBottomOfDeck(PhysicalCard card) {
@@ -374,15 +340,20 @@ public abstract class GameState {
     public List<PhysicalCard> getAllCardsInPlay() {
         return Collections.unmodifiableList(_inPlay);
     }
-    public List<PhysicalCard> getHand(String playerId) { return getCardGroup(Zone.HAND, playerId); }
-
-    public List<PhysicalCard> getRemoved(String playerId) { return getCardGroup(Zone.REMOVED, playerId); }
-    public List<PhysicalCard> getDrawDeck(String playerId) { return getCardGroup(Zone.DRAW_DECK, playerId); }
-
-    protected List<PhysicalCard> getCardGroup(Zone zone, String playerId) {
-        return Collections.unmodifiableList(_cardGroups.get(zone).get(playerId));
+    public List<PhysicalCard> getHand(String playerId) {
+        Player player = getPlayer(playerId);
+        return player.getCardsInGroup(Zone.HAND);
     }
-    public List<PhysicalCard> getDiscard(String playerId) { return getCardGroup(Zone.DISCARD, playerId); }
+
+    public List<PhysicalCard> getDrawDeck(String playerId) {
+        Player player = getPlayer(playerId);
+        return player.getCardsInGroup(Zone.DRAW_DECK);
+    }
+
+    public List<PhysicalCard> getDiscard(String playerId) {
+        Player player = getPlayer(playerId);
+        return player.getCardsInGroup(Zone.DISCARD);
+    }
 
     public String getCurrentPlayerId() {
         return _playerOrder.getCurrentPlayer();
@@ -445,17 +416,13 @@ public abstract class GameState {
     }
 
     public void playerDrawsCard(String playerId) {
-        List<PhysicalCard> deck = _cardGroups.get(Zone.DRAW_DECK).get(playerId);
+        Player player = getPlayer(playerId);
+        List<PhysicalCard> deck = player.getCardGroup(Zone.DRAW_DECK);
         if (!deck.isEmpty()) {
             PhysicalCard card = deck.getFirst();
             removeCardsFromZone(playerId, Collections.singleton(card));
             addCardToZone(card, Zone.HAND);
         }
-    }
-
-    public void shuffleDeck(String playerId) {
-        if (!getGame().getFormat().isNoShuffle())
-            Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK).get(playerId), ThreadLocalRandom.current());
     }
 
     public void sendGameStats() {
@@ -494,39 +461,6 @@ public abstract class GameState {
     }
 
 
-    public void updateGameStatsAndSendIfChanged() {
-        boolean changed = false;
-
-        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
-
-        if (_playerOrder != null) {
-            for (Player player : getPlayers()) {
-                if (player.getScore() != player.getLastSyncedScore()) {
-                    changed = true;
-                }
-                player.syncScore();
-
-                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
-                playerZoneSizes.put(Zone.HAND, player.getHand().size());
-                playerZoneSizes.put(Zone.DRAW_DECK, player.getDrawDeck().size());
-                playerZoneSizes.put(Zone.DISCARD, player.getDiscardPile().size());
-                playerZoneSizes.put(Zone.REMOVED, player.getRemovedPile().size());
-                newZoneSizes.put(player.getPlayerId(), playerZoneSizes);
-            }
-        }
-
-        if (!newZoneSizes.equals(_previousZoneSizes)) {
-            changed = true;
-            _previousZoneSizes = newZoneSizes;
-        }
-
-        if (changed) sendGameStats();
-    }
-
-    public Map<String, Map<Zone, Integer>> getZoneSizes() {
-        return Collections.unmodifiableMap(_previousZoneSizes);
-    }
-
     public ModifiersLogic getModifiersLogic() { return _modifiersLogic; }
     public void setModifiersLogic(ModifiersLogic modifiers) { _modifiersLogic = modifiers; }
     public void setNextCardId(int nextCardId) { _nextCardId = nextCardId; }
@@ -543,7 +477,6 @@ public abstract class GameState {
         return card;
     }
 
-    public List<String> getMessages() { return getGame().getMessages(); }
     int getNextCardId() { return _nextCardId; }
 
     public void placeCardOnMission(PhysicalCard cardBeingPlaced, MissionLocation mission)
@@ -564,7 +497,4 @@ public abstract class GameState {
         return getGame().getTurnProcedure().getCurrentProcess();
     }
 
-    public Map<Zone, Map<String, List<PhysicalCard>>> getCardGroups() {
-        return _cardGroups;
-    }
 }
