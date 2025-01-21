@@ -2,7 +2,6 @@ package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
@@ -34,7 +33,6 @@ public abstract class GameState {
 
     // previousZoneSizes and previousPlayerScores are only used for GameStats comparisons and event sending
     private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
-    private Map<String, Integer> _previousPlayerScores = new HashMap<>();
 
     PlayerOrder _playerOrder;
     private ModifiersLogic _modifiersLogic;
@@ -42,11 +40,8 @@ public abstract class GameState {
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
     Phase _currentPhase;
-    private boolean _consecutiveAction;
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
-    final Map<String, Integer> _turnNumbers = new HashMap<>();
-    Map<String, Integer> _playerScores = new HashMap<>();
     Map<String, Player> _players = new HashMap<>();
     private ActionsEnvironment _actionsEnvironment;
 
@@ -61,8 +56,6 @@ public abstract class GameState {
         cardGroupList.forEach(cardGroup -> _cardGroups.put(cardGroup, new HashMap<>()));
         for (String playerId : playerIds) {
             cardGroupList.forEach(cardGroup -> _cardGroups.get(cardGroup).put(playerId, new LinkedList<>()));
-            _turnNumbers.put(playerId, 0);
-            _playerScores.put(playerId, 0);
             _players.put(playerId, new Player(game, playerId));
         }
         _modifiersLogic = new ModifiersLogic(game);
@@ -99,14 +92,6 @@ public abstract class GameState {
                 }
             }
         }
-    }
-
-    public boolean isConsecutiveAction() {
-        return _consecutiveAction;
-    }
-
-    public void setConsecutiveAction(boolean consecutiveAction) {
-        _consecutiveAction = consecutiveAction;
     }
 
     public PlayerOrder getPlayerOrder() {
@@ -418,7 +403,7 @@ public abstract class GameState {
 
     public void startPlayerTurn(String playerId) {
         _playerOrder.setCurrentPlayer(playerId);
-        incrementCurrentTurnNumber();
+        getPlayer(playerId).incrementTurnNumber();
         getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(playerId));
     }
 
@@ -484,14 +469,9 @@ public abstract class GameState {
     }
 
     public void addToPlayerScore(String playerId, int points) {
-        int currentScore = _playerScores.get(playerId);
-        _playerScores.put(playerId, currentScore + points);
+        getPlayer(playerId).scorePoints(points);
         for (GameStateListener listener : getAllGameStateListeners())
             listener.setPlayerScore(playerId);
-    }
-
-    public int getPlayerScore(String playerId) {
-        return _playerScores.get(playerId);
     }
 
     public Player getPlayer(String playerId) { return _players.get(playerId); }
@@ -507,14 +487,6 @@ public abstract class GameState {
 
     public Player getCurrentPlayer() { return getPlayer(getCurrentPlayerId()); }
 
-    public void incrementCurrentTurnNumber() {
-        _turnNumbers.put(getCurrentPlayerId(), _turnNumbers.get(getCurrentPlayerId())+1);
-    }
-
-    public int getPlayersLatestTurnNumber(String playerId) {
-        return _turnNumbers.get(playerId);
-    }
-
     public int getAndIncrementNextCardId() {
         int cardId = _nextCardId;
         _nextCardId++;
@@ -526,17 +498,20 @@ public abstract class GameState {
         boolean changed = false;
 
         Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
-        Map<String, Integer> newPlayerScores = new HashMap<>();
 
         if (_playerOrder != null) {
-            for (String player : _playerOrder.getAllPlayers()) {
+            for (Player player : getPlayers()) {
+                if (player.getScore() != player.getLastSyncedScore()) {
+                    changed = true;
+                }
+                player.syncScore();
+
                 final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
-                playerZoneSizes.put(Zone.HAND, getHand(player).size());
-                playerZoneSizes.put(Zone.DRAW_DECK, getDrawDeck(player).size());
-                playerZoneSizes.put(Zone.DISCARD, getDiscard(player).size());
-                playerZoneSizes.put(Zone.REMOVED, getRemoved(player).size());
-                newZoneSizes.put(player, playerZoneSizes);
-                newPlayerScores.put(player, getPlayerScore(player));
+                playerZoneSizes.put(Zone.HAND, player.getHand().size());
+                playerZoneSizes.put(Zone.DRAW_DECK, player.getDrawDeck().size());
+                playerZoneSizes.put(Zone.DISCARD, player.getDiscardPile().size());
+                playerZoneSizes.put(Zone.REMOVED, player.getRemovedPile().size());
+                newZoneSizes.put(player.getPlayerId(), playerZoneSizes);
             }
         }
 
@@ -545,18 +520,13 @@ public abstract class GameState {
             _previousZoneSizes = newZoneSizes;
         }
 
-        if (!newPlayerScores.equals(_previousPlayerScores)) {
-            changed = true;
-            _previousPlayerScores = newPlayerScores;
-        }
-
         if (changed) sendGameStats();
     }
 
     public Map<String, Map<Zone, Integer>> getZoneSizes() {
         return Collections.unmodifiableMap(_previousZoneSizes);
     }
-    public Map<String, Integer> getPlayerScores() { return Collections.unmodifiableMap(_previousPlayerScores); }
+
     public ModifiersLogic getModifiersLogic() { return _modifiersLogic; }
     public void setModifiersLogic(ModifiersLogic modifiers) { _modifiersLogic = modifiers; }
     public void setNextCardId(int nextCardId) { _nextCardId = nextCardId; }

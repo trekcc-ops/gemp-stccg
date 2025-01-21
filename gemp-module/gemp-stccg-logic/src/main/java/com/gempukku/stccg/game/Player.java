@@ -22,6 +22,9 @@ public class Player {
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     private final DefaultGame _game;
+    private int _currentScore;
+    private int _lastSyncedScore;
+    private int _turnNumber;
 
     public Player(DefaultGame game, String playerId) {
         _playerId = playerId;
@@ -43,8 +46,7 @@ public class Player {
     }
 
     public void scorePoints(int points) {
-        GameState gameState = _game.getGameState();
-        gameState.addToPlayerScore(_playerId, points);
+        _currentScore = _currentScore + points;
     }
 
     public boolean isPlayingAffiliation(Affiliation affiliation) {
@@ -81,15 +83,27 @@ public class Player {
     }
 
     public int getScore() {
-        return _game.getGameState().getPlayerScore(_playerId);
+        return _currentScore;
     }
 
     public Collection<PhysicalCard> getHand() {
         return _game.getGameState().getHand(_playerId);
     }
 
+    public Collection<PhysicalCard> getDrawDeck() {
+        return _game.getGameState().getDrawDeck(_playerId);
+    }
+
+    public Collection<PhysicalCard> getDiscardPile() {
+        return _game.getGameState().getDiscard(_playerId);
+    }
+
+    public Collection<PhysicalCard> getRemovedPile() {
+        return _game.getGameState().getRemoved(_playerId);
+    }
+
     public int getTurnNumber() {
-        return _game.getGameState().getPlayersLatestTurnNumber(_playerId);
+        return _turnNumber;
     }
 
     public Map<Zone, List<Integer>> getCardsInZones() {
@@ -108,5 +122,25 @@ public class Player {
             }
         }
         return result;
+    }
+
+    public int getLastSyncedScore() {
+        return _lastSyncedScore;
+    }
+
+    public void syncScore() {
+        _lastSyncedScore = _currentScore;
+    }
+
+    public void incrementTurnNumber() {
+        _turnNumber++;
+    }
+
+    public void setTurnNumber(int turnNumber) {
+        _turnNumber = turnNumber;
+    }
+
+    public void setScore(int score) {
+        _currentScore = score;
     }
 }

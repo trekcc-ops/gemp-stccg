@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
@@ -43,8 +44,8 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
 
         if (gameState.isLastRound()) {
             Map<String, Integer> finalPoints = new HashMap<>();
-            for (String playerId : _game.getPlayerIds()) {
-                finalPoints.put(playerId, _game.getGameState().getPlayerScore(playerId));
+            for (Player player : _game.getPlayers()) {
+                finalPoints.put(player.getPlayerId(), player.getScore());
             }
             int highestScore = Collections.max(finalPoints.values());
             finalPoints.entrySet().removeIf(entry -> entry.getValue() < highestScore);

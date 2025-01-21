@@ -66,7 +66,7 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Confirm that mission was solved and player earned points
         assertTrue(excavation.getLocation().isCompleted());
-        assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
+        assertEquals(excavation.getPoints(), _game.getPlayer(P1).getScore());
     }
 
     @Test
@@ -121,6 +121,6 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Confirm that mission was solved and player earned points
         assertTrue(excavationLocation.isCompleted());
-        assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
+        assertEquals(excavation.getPoints(), _game.getPlayer(P1).getScore());
     }
 }

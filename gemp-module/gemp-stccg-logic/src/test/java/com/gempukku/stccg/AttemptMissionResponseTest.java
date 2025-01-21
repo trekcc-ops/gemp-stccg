@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
     @Test
     public void attemptMissionResponseTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeQuickMissionAttemptWithRisk();
+        Player player1 = _game.getPlayer(P1);
 
         // Figure out which player is going first
         assertEquals(P1, _game.getCurrentPlayerId());
@@ -91,7 +93,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Confirm that mission was solved and player earned points
         assertTrue(excavation.getLocation().isCompleted());
-        assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
+        assertEquals(excavation.getPoints(), player1.getScore());
 
         // Initiate a beam action from the outpost using all the decisions involved
         BeamCardsAction beamAction = selectAction(BeamCardsAction.class, outpost, P1);

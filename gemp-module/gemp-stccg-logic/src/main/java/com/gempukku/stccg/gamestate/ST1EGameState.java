@@ -260,7 +260,7 @@ public class ST1EGameState extends GameState {
             // TODO - VERY simplistic. Just a straight race to 100.
             // TODO - Does not account for possible scenario where both players go over 100 simultaneously
         for (Player player : getPlayers()) {
-            int score = _playerScores.get(player.getPlayerId());
+            int score = player.getScore();
             if (score >= 100)
                 _game.playerWon(player.getPlayerId(), score + " points");
         }

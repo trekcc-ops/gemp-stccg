@@ -232,10 +232,10 @@ public class GameEvent {
             eventElem.appendChild(playerZonesElem);
         }
 
-        for (Map.Entry<String, Integer> playerScore : _gameState.getPlayerScores().entrySet()) {
+        for (Player player : _gameState.getPlayers()) {
             final Element playerScoreElem = doc.createElement("playerScores");
-            playerScoreElem.setAttribute("name", playerScore.getKey());
-            playerScoreElem.setAttribute("score", playerScore.getValue().toString());
+            playerScoreElem.setAttribute("name", player.getPlayerId());
+            playerScoreElem.setAttribute("score", String.valueOf(player.getScore()));
             eventElem.appendChild(playerScoreElem);
         }
 

@@ -286,12 +286,11 @@ public abstract class DefaultGame {
             GameSnapshot gameSnapshot = iterator.next();
             String snapshotCurrentPlayer = gameSnapshot.getCurrentPlayerId();
             int snapshotCurrentTurnNumber = gameSnapshot.getCurrentTurnNumber();
-            if (snapshotCurrentTurnNumber <= 1 &&
-                    getGameState().getPlayersLatestTurnNumber(snapshotCurrentPlayer) <= 1) {
+            int currentTurnNumber = getPlayer(snapshotCurrentPlayer).getTurnNumber();
+            if (snapshotCurrentTurnNumber <= 1 && currentTurnNumber <= 1) {
                 break;
             }
-            int pruneOlderThanTurn = getGameState().getPlayersLatestTurnNumber(snapshotCurrentPlayer) -
-                    (NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS / 2);
+            int pruneOlderThanTurn = currentTurnNumber - (NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS / 2);
             if (snapshotCurrentTurnNumber >= pruneOlderThanTurn) {
                 break;
             }
