@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.modifiers;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 
 public class StopCardsAction extends ActionyAction {
     @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("cardTarget")
     private final ActionCardResolver _cardTarget;
 
     public StopCardsAction(Player performingPlayer, Collection<? extends ST1EPhysicalCard> cardsToStop) {

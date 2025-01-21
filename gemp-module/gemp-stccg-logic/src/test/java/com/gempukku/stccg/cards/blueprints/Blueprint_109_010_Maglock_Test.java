@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -24,7 +25,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
 
     @Test
     public void maglockFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, JsonProcessingException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
@@ -83,6 +84,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
         assertTrue(_mission.getLocation().getCardsSeededUnderneath().contains(maglock));
+        showSerializedActions();
     }
 
     @Test

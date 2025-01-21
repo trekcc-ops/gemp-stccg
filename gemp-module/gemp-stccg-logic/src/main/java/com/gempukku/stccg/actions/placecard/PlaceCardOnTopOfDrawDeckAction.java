@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.placecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.FixedCardResolver;
@@ -15,6 +17,8 @@ import java.util.List;
 
 public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
 
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("cardTarget")
     private final FixedCardResolver _cardTarget;
 
     public PlaceCardOnTopOfDrawDeckAction(Player performingPlayer, PhysicalCard cardBeingPlaced) {

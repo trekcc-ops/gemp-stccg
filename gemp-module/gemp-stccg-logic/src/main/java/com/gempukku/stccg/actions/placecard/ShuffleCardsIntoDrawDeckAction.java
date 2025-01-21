@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.placecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -13,6 +15,8 @@ import java.util.Collection;
 
 public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("cardTarget")
     private final ActionCardResolver _cardTarget;
 
     public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, Player performingPlayer,

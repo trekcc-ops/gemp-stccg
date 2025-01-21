@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.placecard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -10,6 +11,8 @@ import com.gempukku.stccg.game.Player;
 import java.util.Collections;
 
 public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
+
+    @JsonProperty("count")
     private final int _count;
 
     public PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(Player performingPlayer, int count) {

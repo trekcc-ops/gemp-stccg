@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
@@ -24,6 +25,9 @@ import java.util.List;
 
 public class DownloadCardAction extends ActionyAction {
     private final Filter _filter;
+
+    @JsonProperty("playCardAction")
+    @JsonIdentityReference(alwaysAsId = true)
     private Action _playCardAction;
 
     @JsonProperty("originZone")
