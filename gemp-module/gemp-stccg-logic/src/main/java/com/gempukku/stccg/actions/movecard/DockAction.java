@@ -11,6 +11,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collection;
 
@@ -22,7 +23,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     private final Collection<FacilityCard> _dockingTargetOptions;
     private SelectVisibleCardAction _selectAction;
 
-    public DockAction(Player player, PhysicalShipCard cardToDock) {
+    public DockAction(Player player, PhysicalShipCard cardToDock, ST1EGame cardGame) {
         super(player, "Dock", ActionType.MOVE_CARDS);
         _cardToDock = cardToDock;
 
@@ -31,7 +32,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
                     try {
                         return card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation();
                     } catch (InvalidGameLogicException e) {
-                        player.getGame().sendErrorMessage(e);
+                        cardGame.sendErrorMessage(e);
                         return false;
                     }
                 })

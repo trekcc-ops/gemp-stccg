@@ -49,7 +49,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                     if (isDocked())
                         actions.add(new UndockAction(player, this));
                     if (!isDocked())
-                        actions.add(new DockAction(player, this));
+                        actions.add(new DockAction(player, this, _game));
                     try {
                         actions.add(new FlyShipAction(player, this));
                     } catch(InvalidGameLogicException exp) {
