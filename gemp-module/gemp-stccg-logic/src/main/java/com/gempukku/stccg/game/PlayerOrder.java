@@ -1,15 +1,19 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.*;
 
-@JsonSerialize(using = PlayerOrderSerializer.class)
 public class PlayerOrder {
+    @JsonProperty("isReversed")
     private boolean _isReversed;
     private final List<String> _turnOrder = new LinkedList<>();
+    @JsonProperty("firstPlayer")
     private final String _firstPlayer;
+    @JsonProperty("currentPlayer")
     private String _currentPlayer;
     public PlayerOrder(List<String> turnOrder) {
         _turnOrder.addAll(turnOrder);
@@ -32,10 +36,12 @@ public class PlayerOrder {
     public String getCurrentPlayer() { return _currentPlayer; }
     public void setCurrentPlayer(String player) { _currentPlayer = player; }
 
+    @JsonProperty("turnOrder")
     public List<String> getAllPlayers() {
         return Collections.unmodifiableList(_turnOrder);
     }
 
+    @JsonIgnore
     public ActionOrder getCounterClockwisePlayOrder(String startingPlayerId, boolean looped) {
         int currentPlayerIndex = _turnOrder.indexOf(startingPlayerId);
         List<String> playOrder = new ArrayList<>();
@@ -49,6 +55,7 @@ public class PlayerOrder {
         return new ActionOrder(playOrder, looped);
     }
 
+    @JsonIgnore
     public ActionOrder getClockwisePlayOrder(String startingPlayerId, boolean looped) {
         int currentPlayerIndex = _turnOrder.indexOf(startingPlayerId);
         List<String> playOrder = new ArrayList<>();
@@ -62,6 +69,7 @@ public class PlayerOrder {
         return new ActionOrder(playOrder, looped);
     }
 
+    @JsonIgnore
     public ActionOrder getStandardPlayOrder(String startingPlayerId, boolean looped) {
         if (!_isReversed) {
             return getClockwisePlayOrder(startingPlayerId, looped);
@@ -70,6 +78,7 @@ public class PlayerOrder {
         }
     }
 
+    @JsonIgnore
     public int getPlayerCount() {
         return _turnOrder.size();
     }
