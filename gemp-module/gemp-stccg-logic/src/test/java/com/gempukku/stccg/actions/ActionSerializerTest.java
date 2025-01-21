@@ -103,7 +103,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         assertTrue(_outpost.getCrew().contains(data));
         assertTrue(_klingonOutpost.getCrew().contains(mvil));
         assertFalse(_outpost.getCrew().contains(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard());
+        assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

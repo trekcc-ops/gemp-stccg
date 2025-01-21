@@ -36,7 +36,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
         assertTrue(_outpost.getCrew().contains(geordi));
         assertFalse(_outpost.getCrew().contains(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard());
+        assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
@@ -71,7 +71,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
         assertTrue(_outpost.getCrew().contains(geordi));
         assertFalse(_outpost.getCrew().contains(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard());
+        assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

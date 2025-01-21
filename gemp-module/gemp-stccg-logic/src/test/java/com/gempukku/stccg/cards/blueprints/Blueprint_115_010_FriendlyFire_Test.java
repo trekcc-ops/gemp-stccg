@@ -55,7 +55,7 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
         assertTrue(_outpost.getCrew().contains(picard));
         assertTrue(_outpost.getCrew().contains(data));
         assertFalse(_outpost.getCrew().contains(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard());
+        assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

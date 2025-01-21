@@ -28,7 +28,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         implements AffiliatedCard, AttemptingUnit, CardWithCrew {
 
     private boolean _docked = false;
-    private FacilityCard _dockedAtCard = null;
+    @JsonProperty("dockedAtCardId")
+    private Integer _dockedAtCardId;
     int _rangeAvailable;
     int _usedRange;
 
@@ -70,12 +71,12 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         setLocation(facility.getLocation()); // TODO - What happens if the facility doesn't allow docking?
         _game.getGameState().attachCard(this, facility);
         _docked = true;
-        _dockedAtCard = facility;
+        _dockedAtCardId = facility.getCardId();
     }
 
     public void dockAtFacility(FacilityCard facilityCard) {
         _docked = true;
-        _dockedAtCard = facilityCard;
+        _dockedAtCardId = facilityCard.getCardId();
     }
 
     public Player getPlayer() {
@@ -85,14 +86,16 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     public void undockFromFacility() {
         _docked = false;
-        _dockedAtCard = null;
+        _dockedAtCardId = null;
         _game.getGameState().detachCard(this, Zone.AT_LOCATION);
     }
 
-    @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("dockedAtCardId")
-    public PhysicalCard getDockedAtCard() {
-        return _dockedAtCard;
+    public PhysicalCard getDockedAtCard(DefaultGame cardGame) {
+        try {
+            return cardGame.getCardFromCardId(_dockedAtCardId);
+        } catch(Exception exp) {
+            return null;
+        }
     }
 
     public Collection<PhysicalCard> getCrew() {

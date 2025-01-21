@@ -32,12 +32,12 @@ public class MissionCard extends ST1EPhysicalCard {
     @Override
     public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
-        if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
+        if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             try {
                 actions.add(new AttemptMissionAction(player, this.getLocation()));
                 actions.add(new ShipBattleAction(this, player, this.getLocation()));
             } catch(InvalidGameLogicException exp) {
-                _game.sendErrorMessage(exp);
+                cardGame.sendErrorMessage(exp);
             }
         }
         actions.removeIf(action -> !action.canBeInitiated(cardGame));
