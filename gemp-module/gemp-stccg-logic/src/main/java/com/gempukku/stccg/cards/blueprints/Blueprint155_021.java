@@ -55,7 +55,7 @@ public class Blueprint155_021 extends CardBlueprint {
             action1.setCardActionPrefix("1");
             action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
             action1.appendEffect(
-                    new DownloadCardAction(Zone.HAND, thisCard.getOwner(), playableCardFilter) {
+                    new DownloadCardAction(cardGame, Zone.HAND, thisCard.getOwner(), playableCardFilter) {
                         @Override
                         protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
                             Collection<PhysicalCard> playableCards = Filters.filter(

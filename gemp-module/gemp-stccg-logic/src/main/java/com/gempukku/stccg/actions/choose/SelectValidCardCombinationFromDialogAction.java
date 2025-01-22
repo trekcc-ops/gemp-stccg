@@ -30,11 +30,11 @@ public class SelectValidCardCombinationFromDialogAction extends ActionyAction im
     private final String _choiceText;
     private Collection<PhysicalCard> _selectedCards;
 
-    public SelectValidCardCombinationFromDialogAction(Player performingPlayer, String choiceText,
+    public SelectValidCardCombinationFromDialogAction(DefaultGame cardGame, Player performingPlayer, String choiceText,
                                                       Collection<PhysicalCard> selectableCards,
                                                       Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                       int maximum) {
-        super(performingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(cardGame, performingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCards = selectableCards;
         _maximum = maximum;
         _validCombinations = validCombinations;

@@ -23,7 +23,7 @@ public class EncounterSeedCardAction extends ActionyAction {
     public EncounterSeedCardAction(Player encounteringPlayer, PhysicalCard encounteredCard,
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction)
             throws InvalidGameLogicException {
-        super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        super(encounteredCard.getGame(), encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);

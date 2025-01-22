@@ -34,12 +34,13 @@ public class DownloadCardAction extends ActionyAction {
     @JsonProperty("originZone")
     private final Zone _fromZone;
 
-    public DownloadCardAction(Zone fromZone, Player player, Filterable playableCardFilter) {
-        super(player, "Download card from " + fromZone.getHumanReadable(),
+    public DownloadCardAction(DefaultGame cardGame, Zone fromZone, Player player, Filterable playableCardFilter) {
+        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(),
                 ActionType.DOWNLOAD_CARD);
         _filter = Filters.and(playableCardFilter);
         _fromZone = fromZone;
     }
+
 
     @JsonIgnore
     protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {

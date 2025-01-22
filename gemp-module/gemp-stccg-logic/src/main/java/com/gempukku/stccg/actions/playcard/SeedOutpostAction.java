@@ -53,7 +53,7 @@ public class SeedOutpostAction extends PlayCardAction {
             if (!getProgress(Progress.placementChosen)) {
 
                 if (_destinationTarget == null) {
-                    _destinationTarget = new SelectCardsResolver(new SelectVisibleCardsAction(performingPlayer,
+                    _destinationTarget = new SelectCardsResolver(new SelectVisibleCardsAction(cardGame, performingPlayer,
                             "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
                             Filters.in(availableMissions), 1, 1));
                 }
@@ -87,7 +87,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 if (affiliationOptions.size() > 1) {
                     if (_affiliationTarget == null) {
                         _affiliationTarget = new AffiliationResolver(
-                                new SelectAffiliationAction(performingPlayer, affiliationOptions));
+                                new SelectAffiliationAction(cardGame, performingPlayer, affiliationOptions));
                     }
 
                     if (!_affiliationTarget.getSelectionAction().wasCarriedOut()) {

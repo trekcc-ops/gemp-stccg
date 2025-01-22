@@ -22,7 +22,7 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
 
     public PlaceCardOnTopOfDrawDeckAction(Player performingPlayer, PhysicalCard cardBeingPlaced) {
-        super(performingPlayer, ActionType.PLACE_CARD);
+        super(cardBeingPlaced.getGame(), performingPlayer, ActionType.PLACE_CARD);
         _cardTarget = new FixedCardResolver(cardBeingPlaced);
     }
 

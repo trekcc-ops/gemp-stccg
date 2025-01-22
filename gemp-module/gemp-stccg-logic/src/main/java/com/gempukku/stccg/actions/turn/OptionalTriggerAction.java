@@ -13,7 +13,7 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
     private ActionSource _actionSource;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(), ActionType.OTHER,
+        super(physicalCard.getGame(), physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(), ActionType.OTHER,
                 Progress.values());
         _performingCard = physicalCard;
     }

@@ -26,24 +26,25 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     private ActionContext _actionContext;
     private String _memory;
 
-    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText,
+    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsResolver = new FixedCardsResolver(cards);
         _minimum = minimum;
     }
 
-    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
+    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;
     }
 
+
     public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum, ActionContext context, String memory) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;

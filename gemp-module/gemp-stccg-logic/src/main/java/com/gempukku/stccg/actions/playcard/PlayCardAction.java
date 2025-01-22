@@ -20,7 +20,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
     public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
                           Zone toZone, ActionType actionType) {
-        super(performingPlayer, actionType);
+        super(actionSource.getGame(), performingPlayer, actionType);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
@@ -29,7 +29,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
     public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
                           Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
-        super(performingPlayer, actionType, progressValues);
+        super(actionSource.getGame(), performingPlayer, actionType, progressValues);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;

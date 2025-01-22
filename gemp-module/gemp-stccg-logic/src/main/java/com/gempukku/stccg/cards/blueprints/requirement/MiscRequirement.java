@@ -74,7 +74,7 @@ public class MiscRequirement implements Requirement {
                 case CARDSINDECKCOUNT -> gameState.getDrawDeck(playerId).size() == count;
                 case CARDSINHANDMORETHAN -> gameState.getHand(playerId).size() > count;
                 case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE ->
-                        gameState.getPlayer(playerId).hasCardInZone(_requirementType.zone, count, filterable);
+                        gameState.getPlayer(playerId).hasCardInZone(actionContext.getGame(), _requirementType.zone, count, filterable);
                 case LASTTRIBBLEPLAYED -> actionContext instanceof TribblesActionContext context &&
                         context.getGameState().getLastTribblePlayed() == count;
                 case NEXTTRIBBLEINSEQUENCE -> actionContext instanceof TribblesActionContext context &&

@@ -96,15 +96,15 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             throws InvalidGameLogicException, PlayerNotFoundException {
         Player discardingPlayer = game.getPlayer(_discardingPlayerId);
         SelectVisibleCardAction discardSelectAction =
-                new SelectVisibleCardAction(discardingPlayer, "Choose a card to discard",
+                new SelectVisibleCardAction(game, discardingPlayer, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
         appendEffect(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
 
         Player performingPlayer = game.getPlayer(_performingPlayerId);
-        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(performingPlayer,
+        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 2, 2);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(game, performingPlayer, selectAction));
 
         if (!(Objects.equals(_discardingPlayerId, _performingPlayerId) ||
                 Objects.equals(secondPlayerChosen, _performingPlayerId))) {

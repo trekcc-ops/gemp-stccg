@@ -32,7 +32,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     }
 
     public AttemptMissionAction(Player player, MissionLocation mission) throws InvalidGameLogicException {
-        super(player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
+        super(mission.getGame(), player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
         _missionCard = mission.getMissionForPlayer(player.getPlayerId());
     }
 
@@ -80,7 +80,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                 }
                 if (eligibleUnits.size() > 1) {
                     _attemptingUnitTarget =
-                            new AttemptingUnitResolver(new SelectAttemptingUnitAction(player, eligibleUnits));
+                            new AttemptingUnitResolver(new SelectAttemptingUnitAction(cardGame, player, eligibleUnits));
                     return _attemptingUnitTarget.getSelectionAction();
                 } else {
                     _attemptingUnitTarget = new AttemptingUnitResolver(Iterables.getOnlyElement(eligibleUnits));

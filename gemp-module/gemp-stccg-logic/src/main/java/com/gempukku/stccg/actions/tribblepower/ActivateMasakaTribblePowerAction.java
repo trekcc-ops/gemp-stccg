@@ -19,10 +19,10 @@ public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction
         TribblesGame cardGame = actionContext.getGame();
         for (Player player : cardGame.getPlayers()) {
             int handSize = player.getCardsInHand().size();
-            SelectCardsAction selectAction = new SelectVisibleCardsAction(
+            SelectCardsAction selectAction = new SelectVisibleCardsAction(cardGame,
                     player, "Choose cards in order to put beneath draw deck", Filters.yourHand(player),
                     handSize, handSize);
-            appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(player, selectAction));
+            appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, player, selectAction));
             appendEffect(
                     new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId), 3, cardGame));
         }

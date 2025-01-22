@@ -26,17 +26,17 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
             if (cardGame.getGameState().getHand(player).size() >= 4) {
                 Player performingPlayer = cardGame.getPlayer(player);
                 SelectCardsAction selectAction =
-                        new SelectVisibleCardAction(performingPlayer,
+                        new SelectVisibleCardAction(cardGame, performingPlayer,
                                 "Select a card to place beneath play pile",
                                 Filters.yourHand(performingPlayer));
-                appendEffect(new PlaceCardOnBottomOfPlayPileAction(performingPlayer, selectAction));
+                appendEffect(new PlaceCardOnBottomOfPlayPileAction(cardGame, performingPlayer, selectAction));
             }
         }
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        SelectVisibleCardsAction selectionAction = new SelectVisibleCardsAction(performingPlayer,
+        SelectVisibleCardsAction selectionAction = new SelectVisibleCardsAction(cardGame, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 1, 1);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectionAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayer, selectionAction));
     }
 
     @Override

@@ -20,12 +20,13 @@ public class RemoveCardFromPlayAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
 
     public RemoveCardFromPlayAction(Player performingPlayer, PhysicalCard cardToRemove) {
-        super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+        super(cardToRemove.getGame(), performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
         _cardTarget = new FixedCardResolver(cardToRemove);
     }
 
-    public RemoveCardFromPlayAction(Player performingPlayer, Collection<PhysicalCard> cardsToRemove) {
-        super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+    public RemoveCardFromPlayAction(DefaultGame cardGame, Player performingPlayer,
+                                    Collection<PhysicalCard> cardsToRemove) {
+        super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
         _cardTarget = new FixedCardsResolver(cardsToRemove);
     }
 

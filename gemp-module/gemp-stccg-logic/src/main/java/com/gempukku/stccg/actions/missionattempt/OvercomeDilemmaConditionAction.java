@@ -19,7 +19,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     public OvercomeDilemmaConditionAction(PhysicalCard dilemma, MissionRequirement conditions,
                                           AttemptingUnit attemptingUnit, Action failDilemmaAction) {
-        super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
+        super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, failDilemmaAction);
         _failActionId = failAction.getActionId();
@@ -31,7 +31,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     public OvercomeDilemmaConditionAction(PhysicalCard dilemma, MissionRequirement conditions,
                                           AttemptingUnit attemptingUnit) {
-        super(attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
+        super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         Action failAction = new FailDilemmaAction(attemptingUnit, dilemma);
         _failActionId = failAction.getActionId();

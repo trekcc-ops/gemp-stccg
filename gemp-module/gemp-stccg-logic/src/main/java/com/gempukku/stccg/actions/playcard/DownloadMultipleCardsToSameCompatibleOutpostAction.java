@@ -38,10 +38,11 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
     private enum Progress { cardsToDownloadSelected, destinationSelected }
 
-    public DownloadMultipleCardsToSameCompatibleOutpostAction(Zone fromZone, Player player, PhysicalCard actionSource,
+    public DownloadMultipleCardsToSameCompatibleOutpostAction(DefaultGame cardGame, Zone fromZone, Player player,
+                                                              PhysicalCard actionSource,
                                                               Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                               int maxCardCount) {
-        super(player, "Download card from " + fromZone.getHumanReadable(), ActionType.DOWNLOAD_CARD,
+        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(), ActionType.DOWNLOAD_CARD,
                 Progress.values());
         _performingCard = actionSource;
         _validCombinations = validCombinations;
@@ -80,7 +81,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
         if (!getProgress(Progress.cardsToDownloadSelected)) {
             if (_selectCardsToDownloadAction == null) {
-                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogAction(performingPlayer,
+                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogAction(cardGame, performingPlayer,
                         "Choose card(s) to download", getPlayableCards(), _validCombinations, _maxCardCount);
                 return _selectCardsToDownloadAction;
             } else if (!_selectCardsToDownloadAction.wasCarriedOut()) {
@@ -120,7 +121,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
             }
 
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(cardGame, performingPlayer,
                         "Select outpost to download cards to", _destinationOptions);
                 return _selectDestinationAction;
             } else if (_selectDestinationAction.wasCarriedOut()) {

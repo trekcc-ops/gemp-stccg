@@ -16,7 +16,7 @@ public class UseOncePerTurnAction extends ActionyAction {
 
     public UseOncePerTurnAction(CardPerformedAction limitedAction, PhysicalCard performingCard,
                                 Player performingPlayer) {
-        super(performingPlayer, ActionType.USAGE_LIMIT);
+        super(performingCard.getGame(), performingPlayer, ActionType.USAGE_LIMIT);
         _card = performingCard;
         _prefix = limitedAction.getCardActionPrefix();
     }

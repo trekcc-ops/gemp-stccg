@@ -9,8 +9,8 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 
 public class UseNormalCardPlayAction extends ActionyAction {
 
-    public UseNormalCardPlayAction(Player performingPlayer) {
-        super(performingPlayer, ActionType.USAGE_LIMIT);
+    public UseNormalCardPlayAction(DefaultGame cardGame, Player performingPlayer) {
+        super(cardGame, performingPlayer, ActionType.USAGE_LIMIT);
     }
 
     @Override

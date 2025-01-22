@@ -12,7 +12,7 @@ public class STCCGPlayCardAction extends PlayCardAction {
         super(card, card, player, zone, ActionType.PLAY_CARD);
         setText("Play " + card.getFullName());
         if (!forFree)
-            appendCost(new UseNormalCardPlayAction(player));
+            appendCost(new UseNormalCardPlayAction(card.getGame(), player));
     }
 
     public STCCGPlayCardAction(PhysicalCard card, Zone zone, Player player, boolean forFree,
@@ -20,7 +20,7 @@ public class STCCGPlayCardAction extends PlayCardAction {
         super(card, card, player, zone, ActionType.PLAY_CARD, progressValues);
         setText("Play " + card.getFullName());
         if (!forFree)
-            appendCost(new UseNormalCardPlayAction(player));
+            appendCost(new UseNormalCardPlayAction(card.getGame(), player));
     }
 
 

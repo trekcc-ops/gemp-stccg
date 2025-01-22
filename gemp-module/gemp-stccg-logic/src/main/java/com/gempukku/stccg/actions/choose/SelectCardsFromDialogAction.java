@@ -30,16 +30,18 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     private AwaitingDecision _decision;
     private final ActionCardResolver _selectableCardsTarget;
 
-    public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, Filter cardFilter) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+    public SelectCardsFromDialogAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
+                                       Filter cardFilter) {
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsTarget = new CardFilterResolver(cardFilter);
         _minimum = 1;
         _maximum = 1;
     }
 
+
     public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, Filter cardFilter, int minimum,
                                        int maximum, ActionContext context, String memory) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCardsTarget = new CardFilterResolver(cardFilter);
         _minimum = minimum;
         _maximum = maximum;

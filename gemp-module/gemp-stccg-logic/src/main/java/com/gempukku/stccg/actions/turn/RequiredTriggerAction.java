@@ -11,7 +11,7 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
     private enum Progress { sentMessage }
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(), ActionType.OTHER,
+        super(physicalCard.getGame(), physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(), ActionType.OTHER,
                 Progress.values());
         _performingCard = physicalCard;
     }

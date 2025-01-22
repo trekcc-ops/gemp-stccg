@@ -15,10 +15,11 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
     @JsonProperty("count")
     private final int _count;
 
-    public PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(Player performingPlayer, int count) {
-        super(performingPlayer, ActionType.PLACE_CARD);
+    public PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(DefaultGame cardGame, Player performingPlayer, int count) {
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
         _count = count;
     }
+
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

@@ -25,7 +25,7 @@ public class FailDilemmaAction extends ActionyAction {
     }
 
     public FailDilemmaAction(Player performingPlayer, AttemptingUnit attemptingUnit, PhysicalCard dilemma) {
-        super(performingPlayer, ActionType.FAIL_DILEMMA);
+        super(dilemma.getGame(), performingPlayer, ActionType.FAIL_DILEMMA);
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
     }
@@ -55,7 +55,7 @@ public class FailDilemmaAction extends ActionyAction {
                 cardsToStop.add(ship);
             }
             _wasCarriedOut = true;
-            return new StopCardsAction(cardGame.getPlayer(_performingPlayerId), cardsToStop);
+            return new StopCardsAction(cardGame, cardGame.getPlayer(_performingPlayerId), cardsToStop);
         } else {
             return getNextAction();
         }

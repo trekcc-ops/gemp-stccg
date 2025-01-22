@@ -21,8 +21,9 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
     @JsonProperty("cardTarget")
     private final ActionCardResolver _cardTarget;
 
-    public PlaceCardOnBottomOfPlayPileAction(Player performingPlayer, SelectCardsAction selectCardAction) {
-        super(performingPlayer, ActionType.PLACE_CARD);
+    public PlaceCardOnBottomOfPlayPileAction(DefaultGame cardGame, Player performingPlayer,
+                                             SelectCardsAction selectCardAction) {
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
         _cardTarget = new SelectCardsResolver(selectCardAction);
     }
 

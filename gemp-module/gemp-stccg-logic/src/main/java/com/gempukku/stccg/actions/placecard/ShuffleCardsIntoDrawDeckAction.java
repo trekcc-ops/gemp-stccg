@@ -22,7 +22,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
     public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, Player performingPlayer,
                                           Filter cardFilter) {
-        super(performingPlayer, "Shuffle cards into draw deck", ActionType.PLACE_CARD);
+        super(performingCard.getGame(), performingPlayer, "Shuffle cards into draw deck", ActionType.PLACE_CARD);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
     }

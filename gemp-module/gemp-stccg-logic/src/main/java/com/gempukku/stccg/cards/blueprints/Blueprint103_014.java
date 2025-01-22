@@ -45,7 +45,7 @@ public class Blueprint103_014 extends CardBlueprint {
         if ((totalCunning + totalStrength <= 68) && !condition.canBeMetBy(attemptingUnit)) {
             String opponentId = game.getOpponent(attemptingUnit.getPlayer().getPlayerId());
             SelectCardsAction selectAction =
-                    new SelectCardsFromDialogAction(game.getPlayer(opponentId),
+                    new SelectCardsFromDialogAction(game, game.getPlayer(opponentId),
                             "Select a personnel to kill",
                             Filters.personnelInAttemptingUnit(attemptingUnit));
             result.add(selectAction);

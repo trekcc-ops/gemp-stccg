@@ -21,26 +21,26 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
     private final ActionCardResolver _cardTarget;
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, SelectVisibleCardAction selectAction) {
-        super(performingPlayer, "Discard", ActionType.DISCARD);
+        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _performingCard = performingCard;
         _cardTarget = new SelectCardsResolver(selectAction);
     }
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, PhysicalCard cardToDiscard) {
-        super(performingPlayer, "Discard", ActionType.DISCARD);
+        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new FixedCardResolver(cardToDiscard);
         _performingCard = performingCard;
     }
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer,
                              Collection<PhysicalCard> cardsToDiscard) {
-        super(performingPlayer, "Discard", ActionType.DISCARD);
+        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new FixedCardsResolver(cardsToDiscard);
         _performingCard = performingCard;
     }
 
     public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, Filter cardFilter) {
-        super(performingPlayer, "Discard", ActionType.DISCARD);
+        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
     }

@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "cardsInZones", "decked" })
+@JsonIncludeProperties({ "playerId", "score", "turnNumber", "cardGroups", "decked" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class Player {
     @JsonProperty("playerId")
@@ -20,21 +20,18 @@ public class Player {
     @JsonProperty("decked")
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
+    @JsonProperty("cardGroups")
     Map<Zone, CardGroup> _cardGroups = new HashMap<>();
-    private final DefaultGame _game;
     @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
     @JsonProperty("turnNumber")
     private int _turnNumber;
 
-    public Player(DefaultGame game, String playerId) {
+    public Player(String playerId) {
         _playerId = playerId;
         _decked = false;
-        _game = game;
     }
-
-    public DefaultGame getGame() { return _game; }
 
     public String getPlayerId() {
         return _playerId;
@@ -59,29 +56,22 @@ public class Player {
         _playedAffiliations.add(affiliation);
     }
 
-    public boolean hasCardInZone(Zone zone, int count, Filterable... cardFilter) {
+    public boolean hasCardInZone(DefaultGame cardGame, Zone zone, int count, Filterable... cardFilter) {
         if (zone == Zone.HAND)
-            return Filters.filter(getCardsInGroup(Zone.HAND), _game, cardFilter).size() >= count;
+            return Filters.filter(getCardsInGroup(Zone.HAND), cardGame, cardFilter).size() >= count;
         else if (zone == Zone.DISCARD)
-            return Filters.filter(getCardsInGroup(Zone.DISCARD), _game, cardFilter).size() >= count;
+            return Filters.filter(getCardsInGroup(Zone.DISCARD), cardGame, cardFilter).size() >= count;
         else
             return false;
     }
 
-    public boolean canDiscardFromHand(int count, Filterable... cardFilter) {
-        return hasCardInZone(Zone.HAND, count, cardFilter);
-    }
 
-    public boolean hasACopyOfCardInPlay(PhysicalCard card) {
-        for (PhysicalCard cardInPlay : _game.getGameState().getAllCardsInPlay()) {
+    public boolean hasACopyOfCardInPlay(DefaultGame cardGame, PhysicalCard card) {
+        for (PhysicalCard cardInPlay : cardGame.getGameState().getAllCardsInPlay()) {
             if (cardInPlay.isCopyOf(card) && cardInPlay.getOwner() == this)
                 return true;
         }
         return false;
-    }
-
-    public boolean canLookOrRevealCardsInHandOfPlayer(String targetPlayerId) {
-        return _game.getModifiersQuerying().canLookOrRevealCardsInHand(targetPlayerId, _playerId);
     }
 
     public int getScore() {
@@ -97,7 +87,7 @@ public class Player {
     }
 
     public Collection<PhysicalCard> getDiscardPile() {
-        return _game.getGameState().getDiscard(_playerId);
+        return getCardsInGroup(Zone.DISCARD);
     }
 
     public Collection<PhysicalCard> getRemovedPile() {

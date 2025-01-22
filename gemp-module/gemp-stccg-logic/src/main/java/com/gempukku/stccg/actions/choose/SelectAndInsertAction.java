@@ -31,12 +31,13 @@ public class SelectAndInsertAction extends ActionyAction {
     @JsonIdentityReference(alwaysAsId=true)
     private AwaitingDecision _decision;
 
-    public SelectAndInsertAction(ActionyAction parentAction, Player selectingPlayer,
+    public SelectAndInsertAction(DefaultGame cardGame, ActionyAction parentAction, Player selectingPlayer,
                                  TopLevelSelectableAction... actions) {
-        super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
+        super(cardGame, selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
         _selectableActions.addAll(Arrays.asList(actions));
         _parentAction = parentAction;
     }
+
 
     public boolean requirementsAreMet(DefaultGame game) {
         boolean result = false;

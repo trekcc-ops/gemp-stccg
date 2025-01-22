@@ -29,9 +29,9 @@ public class ActionSerializerTest extends AbstractAtTest {
             JsonProcessingException, InvalidGameLogicException, PlayerNotFoundException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         KillSinglePersonnelAction action = new KillSinglePersonnelAction(_game.getPlayer(P1), _game.getCardFromCardId(1),
-                new SelectCardsFromDialogAction(_game.getPlayer(P1), "Select a card", Filters.any));
+                new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
         KillSinglePersonnelAction action2 = new KillSinglePersonnelAction(_game.getPlayer(P1), _game.getCardFromCardId(1),
-                new SelectCardsFromDialogAction(_game.getPlayer(P1), "Select a card", Filters.any));
+                new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
         PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);

@@ -17,7 +17,7 @@ public class MakeDecisionAction extends ActionyAction {
 
     public MakeDecisionAction(PhysicalCard performingCard, AwaitingDecision decision)
             throws PlayerNotFoundException {
-        super(decision.getDecidingPlayer(performingCard.getGame()), decision.getText(), ActionType.MAKE_DECISION);
+        super(performingCard.getGame(), decision.getDecidingPlayer(performingCard.getGame()), decision.getText(), ActionType.MAKE_DECISION);
         _decision = decision;
     }
 

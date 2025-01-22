@@ -47,7 +47,8 @@ public class ReportCardAction extends STCCGPlayCardAction {
                             Collection<PhysicalCard> destinationOptions) {
         this(cardToPlay, forFree);
         setProgress(Progress.destinationOptionsIdentified);
-        SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardToPlay.getOwner(),
+        SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardToPlay.getGame(),
+                cardToPlay.getOwner(),
                 "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                 Filters.inCards(destinationOptions), 1, 1);
         _destinationTarget = new SelectCardsResolver(selectDestinationAction);
@@ -103,7 +104,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
             if (!getProgress(Progress.destinationSelected)) {
                 if (_destinationTarget == null) {
-                    SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(performingPlayer,
+                    SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardGame, performingPlayer,
                             "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                             Filters.inCards(getDestinationOptions(cardGame)), 1, 1);
                     _destinationTarget = new SelectCardsResolver(selectDestinationAction);
@@ -138,7 +139,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
                 } else if (!affiliationOptions.isEmpty()) {
                     _affiliationTarget = new AffiliationResolver(new SelectAffiliationAction(
-                            performingPlayer, affiliationOptions));
+                            cardGame, performingPlayer, affiliationOptions));
                 } else {
                     setAsFailed();
                     throw new InvalidGameLogicException("Unable to report card. No valid affiliations to report as.");

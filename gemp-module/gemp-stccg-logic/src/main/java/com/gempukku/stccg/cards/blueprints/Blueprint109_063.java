@@ -82,7 +82,7 @@ public class Blueprint109_063 extends CardBlueprint {
                 validCombinations.put(specialist, validPairings);
             }
 
-            actions.add(new DownloadMultipleCardsToSameCompatibleOutpostAction(
+            actions.add(new DownloadMultipleCardsToSameCompatibleOutpostAction(cardGame,
                     Zone.DRAW_DECK, player, thisCard, validCombinations, 2));
         }
         /* once each mission, your mission specialist may score 5 points when they use their skill to meet a mission

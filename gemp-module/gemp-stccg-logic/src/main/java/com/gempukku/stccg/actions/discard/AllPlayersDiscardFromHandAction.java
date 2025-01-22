@@ -25,7 +25,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     public AllPlayersDiscardFromHandAction(DefaultGame game, Action action, PhysicalCard performingCard,
                                            boolean allPlayersMustBeAble, boolean forced)
             throws PlayerNotFoundException {
-        super(game.getPlayer(action.getPerformingPlayerId()), ActionType.DISCARD);
+        super(game, game.getPlayer(action.getPerformingPlayerId()), ActionType.DISCARD);
         _performingCard = performingCard;
         _allPlayersMustBeAble = allPlayersMustBeAble;
         _forced = forced;

@@ -13,7 +13,7 @@ public class RemoveSeedCardsAction extends ActionyAction implements TopLevelSele
     private final PhysicalCard _performingCard;
 
     public RemoveSeedCardsAction(Player player, PhysicalCard topCard) {
-        super(player, "Remove seed cards from " + topCard.getFullName(), ActionType.OTHER);
+        super(topCard.getGame(), player, "Remove seed cards from " + topCard.getFullName(), ActionType.OTHER);
         _performingCard = topCard;
     }
 

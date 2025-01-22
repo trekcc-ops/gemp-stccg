@@ -153,7 +153,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     protected boolean cannotEnterPlayPerUniqueness() {
-        return isUnique() && (_owner.hasACopyOfCardInPlay(this));
+        return isUnique() && (_owner.hasACopyOfCardInPlay(getGame(), this));
     }
 
     public boolean canBeSeeded(DefaultGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }

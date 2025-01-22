@@ -24,8 +24,8 @@ public class SelectAffiliationAction extends ActionyAction {
     @JsonIdentityReference(alwaysAsId=true)
     private AwaitingDecision _decision;
 
-    public SelectAffiliationAction(Player player, Collection<Affiliation> affiliationOptions) {
-        super(player, ActionType.SELECT_AFFILIATION);
+    public SelectAffiliationAction(DefaultGame cardGame, Player player, Collection<Affiliation> affiliationOptions) {
+        super(cardGame, player, ActionType.SELECT_AFFILIATION);
         _affiliationOptions = affiliationOptions;
         if (_affiliationOptions.size() == 1) {
             _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);

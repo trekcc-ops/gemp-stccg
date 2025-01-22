@@ -12,8 +12,8 @@ public class AddUntilEndOfTurnActionProxyAction extends ActionyAction {
     // TODO - This class not fully fleshed out
     private final ActionProxy _actionProxy;
 
-    public AddUntilEndOfTurnActionProxyAction(Player performingPlayer, ActionProxy actionProxy) {
-        super(performingPlayer, ActionType.OTHER);
+    public AddUntilEndOfTurnActionProxyAction(DefaultGame cardGame, Player performingPlayer, ActionProxy actionProxy) {
+        super(cardGame, performingPlayer, ActionType.OTHER);
         _actionProxy = actionProxy;
     }
 

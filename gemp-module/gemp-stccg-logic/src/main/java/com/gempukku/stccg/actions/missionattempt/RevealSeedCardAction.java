@@ -20,7 +20,7 @@ public class RevealSeedCardAction extends ActionyAction {
     private enum Progress { misSeedResolved }
 
     public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, AttemptMissionAction attemptAction) {
-        super(revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
+        super(revealedCard.getGame(), revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCardId = revealedCard.getCardId();
         _missionAttemptActionId = attemptAction.getActionId();
     }

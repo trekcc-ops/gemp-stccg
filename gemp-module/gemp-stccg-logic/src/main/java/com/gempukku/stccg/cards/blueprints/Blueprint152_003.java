@@ -40,15 +40,15 @@ public class Blueprint152_003 extends CardBlueprint {
         }
 
         SelectCardAction randomSelection =
-                new SelectRandomCardAction(thisCard.getOwner(), "Choose a personnel to be stopped",
+                new SelectRandomCardAction(game, thisCard.getOwner(), "Choose a personnel to be stopped",
                         uniquePersonnel);
-        Action stopAction = new StopCardsAction(thisCard.getOwner(), randomSelection);
+        Action stopAction = new StopCardsAction(game, thisCard.getOwner(), randomSelection);
         TopLevelSelectableAction action1 =
                 new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection);
         TopLevelSelectableAction action2 =
-                new DrawCardsAction(thisCard, game.getPlayer(opponentId), skillDotEvaluator);
-        Action multipleChoiceDecision = new SelectAndInsertAction(action, attemptingUnit.getPlayer(),
+                new DrawCardsAction(game, thisCard, game.getPlayer(opponentId), skillDotEvaluator);
+        Action multipleChoiceDecision = new SelectAndInsertAction(game, action, attemptingUnit.getPlayer(),
                 action1, action2);
 
         result.add(randomSelection);

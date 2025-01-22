@@ -40,7 +40,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
     BeamOrWalkAction(Player player, PhysicalNounCard1E cardSource) {
-        super(player, ActionType.MOVE_CARDS);
+        super(cardSource.getGame(), player, ActionType.MOVE_CARDS);
         _performingPlayer = player;
         _cardSource = cardSource;
         _destinationOptions = getDestinationOptions(cardSource.getGame());
@@ -80,7 +80,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
         if (!_fromCardChosen) {
             if (_selectOriginAction == null) {
-                _selectOriginAction = new SelectVisibleCardAction(_performingPlayer,
+                _selectOriginAction = new SelectVisibleCardAction(cardGame, _performingPlayer,
                         "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
                 appendTargeting(_selectOriginAction);
                 return getNextCost();
@@ -103,7 +103,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
         if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(_performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(cardGame, _performingPlayer,
                         "Choose card to " + actionVerb() + " to ", _destinationOptions);
                 appendTargeting(_selectDestinationAction);
                 return getNextCost();
@@ -119,7 +119,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                 Collection<PhysicalCard> movableCards =
                         Filters.filter(_origin.getAttachedCards(_origin.getGame()),
                                 Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
-                _selectCardsToMoveAction = new SelectVisibleCardsAction(_performingPlayer,
+                _selectCardsToMoveAction = new SelectVisibleCardsAction(cardGame, _performingPlayer,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
                         movableCards, 1);
                 appendTargeting(_selectCardsToMoveAction);

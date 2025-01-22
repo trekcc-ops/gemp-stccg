@@ -59,30 +59,27 @@ public abstract class ActionyAction implements Action {
         _actionStatus = ActionStatus.virtual;
     }
 
-    protected ActionyAction(Player player, ActionType actionType) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
-    }
-
     protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType) {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
     }
 
 
-    protected ActionyAction(Player player, String text, ActionType actionType) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
         _text = text;
     }
 
-    protected ActionyAction(Player player, ActionType actionType, Enum<?>[] progressValues) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+
+    protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType, Enum<?>[] progressValues) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
         for (Enum<?> progressType : progressValues) {
             _progressIndicators.put(progressType.name(), false);
         }
     }
 
-
-    protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType,
+                            Enum<?>[] progressTypes) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
         _text = text;
         for (Enum<?> progressType : progressTypes) {
             _progressIndicators.put(progressType.name(), false);

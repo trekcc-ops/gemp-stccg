@@ -17,7 +17,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
 
     public RemoveDilemmaFromGameAction(Player performingPlayer, PhysicalCard cardToRemove) {
-        super(performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+        super(cardToRemove.getGame(), performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
         _cardTarget = new FixedCardResolver(cardToRemove);
     }
 

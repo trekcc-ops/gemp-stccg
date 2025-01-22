@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "currentPhase", "players", "spacelineLocations", "awayTeams", "playerOrder",
@@ -46,7 +45,7 @@ public abstract class GameState {
         cardGroupList.add(Zone.REMOVED);
 
         for (String playerId : playerIds) {
-            Player player = new Player(game, playerId);
+            Player player = new Player(playerId);
             for (Zone zone : cardGroupList) {
                 player.addCardGroup(zone);
             }

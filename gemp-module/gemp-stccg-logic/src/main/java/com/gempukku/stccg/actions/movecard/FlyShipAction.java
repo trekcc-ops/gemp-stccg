@@ -22,7 +22,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
 
     public FlyShipAction(Player player, PhysicalShipCard flyingCard, ST1EGame cardGame)
             throws InvalidGameLogicException {
-        super(player, "Fly", ActionType.MOVE_CARDS);
+        super(cardGame, player, "Fly", ActionType.MOVE_CARDS);
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
@@ -62,7 +62,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
 
         if (!_destinationChosen) {
             _selectAction =
-                    new SelectVisibleCardAction(performingPlayer,
+                    new SelectVisibleCardAction(cardGame, performingPlayer,
                             "Choose destination", _destinationOptions);
             if (_selectAction.wasCarriedOut()) {
                 _destinationChosen = true;

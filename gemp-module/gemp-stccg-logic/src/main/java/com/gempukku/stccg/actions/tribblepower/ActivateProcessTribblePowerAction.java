@@ -17,10 +17,10 @@ public class ActivateProcessTribblePowerAction extends ActivateTribblePowerActio
         TribblesGame game = actionContext.getGame();
         Player performingPlayer = game.getPlayer(_performingPlayerId);
         appendEffect(new DrawCardsAction(_performingCard, performingPlayer, 3, game));
-        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(performingPlayer,
+        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 2, 2);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(game, performingPlayer, selectAction));
     }
 
 }

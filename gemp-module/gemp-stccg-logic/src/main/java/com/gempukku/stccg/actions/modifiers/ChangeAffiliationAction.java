@@ -9,10 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,8 +18,8 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     private final AffiliatedCard _performingCard;
     private SelectAffiliationAction _selectAffiliationAction;
 
-    public ChangeAffiliationAction(Player player, AffiliatedCard card) {
-        super(player, "Change affiliation", ActionType.OTHER);
+    public ChangeAffiliationAction(ST1EGame cardGame, Player player, AffiliatedCard card) {
+        super(cardGame, player, "Change affiliation", ActionType.OTHER);
         _performingCard = card;
     }
 
@@ -63,7 +60,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (_selectAffiliationAction == null) {
             _selectAffiliationAction =
-                    new SelectAffiliationAction(cardGame.getPlayer(_performingPlayerId), getAffiliationOptions());
+                    new SelectAffiliationAction(cardGame, cardGame.getPlayer(_performingPlayerId), getAffiliationOptions());
         }
 
 

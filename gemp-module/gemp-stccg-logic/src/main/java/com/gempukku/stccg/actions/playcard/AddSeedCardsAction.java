@@ -15,7 +15,7 @@ public class AddSeedCardsAction extends ActionyAction implements TopLevelSelecta
     private final PhysicalCard _performingCard;
 
     public AddSeedCardsAction(Player player, PhysicalCard topCard) {
-        super(player, "Seed cards under " + topCard.getFullName(), ActionType.OTHER);
+        super(topCard.getGame(), player, "Seed cards under " + topCard.getFullName(), ActionType.OTHER);
         _performingCard = Objects.requireNonNull(topCard);
     }
 
