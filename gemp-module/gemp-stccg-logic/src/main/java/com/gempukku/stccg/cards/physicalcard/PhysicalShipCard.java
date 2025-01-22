@@ -68,8 +68,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     @Override
     public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
-        setLocation(facility.getLocation()); // TODO - What happens if the facility doesn't allow docking?
-        _game.getGameState().attachCard(this, facility);
+        super.reportToFacility(facility);
         _docked = true;
         _dockedAtCardId = facility.getCardId();
     }
