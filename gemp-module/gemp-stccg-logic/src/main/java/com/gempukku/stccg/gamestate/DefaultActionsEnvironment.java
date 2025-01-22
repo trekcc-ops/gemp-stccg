@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -77,18 +78,22 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
                                                               Collection<? extends ActionResult> effectResults) {
         final Map<TopLevelSelectableAction, ActionResult> gatheredActions = new HashMap<>();
 
-        if (effectResults != null) {
-            for (ActionResult actionResult : effectResults) {
-                List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(
-                        _game.getGameState().getPlayer(playerId));
-                if (actions != null) {
-                    for (TopLevelSelectableAction action : actions) {
-                        if (!actionResult.wasOptionalTriggerUsed(action)) {
-                            gatheredActions.put(action, actionResult);
+        try {
+            if (effectResults != null) {
+                for (ActionResult actionResult : effectResults) {
+                    List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(
+                            _game.getGameState().getPlayer(playerId));
+                    if (actions != null) {
+                        for (TopLevelSelectableAction action : actions) {
+                            if (!actionResult.wasOptionalTriggerUsed(action)) {
+                                gatheredActions.put(action, actionResult);
+                            }
                         }
                     }
                 }
             }
+        } catch(PlayerNotFoundException exp) {
+            _game.sendErrorMessage(exp);
         }
 
         return gatheredActions;

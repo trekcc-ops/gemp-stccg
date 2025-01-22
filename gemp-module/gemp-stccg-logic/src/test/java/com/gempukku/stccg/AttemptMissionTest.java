@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AttemptMissionTest extends AbstractAtTest {
 
     @Test
-    public void attemptMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void attemptMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
@@ -70,7 +71,7 @@ public class AttemptMissionTest extends AbstractAtTest {
     }
 
     @Test
-    public void selectAwayTeamTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void selectAwayTeamTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first

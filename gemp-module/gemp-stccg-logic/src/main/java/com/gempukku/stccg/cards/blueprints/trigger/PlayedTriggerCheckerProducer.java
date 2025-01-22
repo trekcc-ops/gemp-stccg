@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
     @Override
@@ -28,22 +29,27 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
         return new TriggerChecker() {
             @Override
             public boolean accepts(ActionContext actionContext) {
-                final Filterable filterable = filter.getFilterable(actionContext);
-                final String playingPlayerId = playingPlayer.getPlayerId(actionContext);
-                final ActionResult actionResult = actionContext.getEffectResult();
-                final boolean played;
+                try {
+                    final Filterable filterable = filter.getFilterable(actionContext);
+                    final String playingPlayerId = playingPlayer.getPlayerId(actionContext);
+                    final ActionResult actionResult = actionContext.getEffectResult();
+                    final boolean played;
 
-                if (onFilter != null) {
-                    final Filterable onFilterable = onFilter.getFilterable(actionContext);
-                    played = TriggerConditions.playedOn(actionContext.getGame(), actionResult, onFilterable, filterable);
-                } else {
-                    played = TriggerConditions.played(actionContext.getGame(),
-                            actionContext.getGame().getPlayer(playingPlayerId), actionResult, filterable);
+                    if (onFilter != null) {
+                        final Filterable onFilterable = onFilter.getFilterable(actionContext);
+                        played = TriggerConditions.playedOn(actionContext.getGame(), actionResult, onFilterable, filterable);
+                    } else {
+                        played = TriggerConditions.played(actionContext.getGame(),
+                                actionContext.getGame().getPlayer(playingPlayerId), actionResult, filterable);
+                    }
+
+                    if (played && memorize != null)
+                        actionContext.setCardMemory(memorize, ((PlayCardResult) actionResult).getPlayedCard());
+                    return played;
+                } catch(PlayerNotFoundException exp) {
+                    actionContext.getGame().sendErrorMessage(exp);
+                    return false;
                 }
-
-                if (played && memorize != null)
-                    actionContext.setCardMemory(memorize, ((PlayCardResult) actionResult).getPlayedCard());
-                return played;
             }
 
             @Override

@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.List;
 
@@ -12,13 +13,13 @@ public class SubAction extends ActionyAction implements CardPerformedAction {
 
     private final CardPerformedAction _parentAction;
 
-    public SubAction(CardPerformedAction action, ActionContext context) {
+    public SubAction(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
         super(context.getGame(), context.getGame().getPlayer(action.getPerformingPlayerId()), action.getActionType());
         _parentAction = action;
     }
 
     public SubAction(CardPerformedAction action, ActionContext context,
-                     List<EffectBlueprint> costAppenders, List<EffectBlueprint> effectBlueprints) {
+                     List<EffectBlueprint> costAppenders, List<EffectBlueprint> effectBlueprints) throws PlayerNotFoundException {
         this(action, context);
 
         for (EffectBlueprint costAppender : costAppenders) {

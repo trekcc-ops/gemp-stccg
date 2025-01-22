@@ -22,7 +22,7 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
     private final TribblesActionContext _actionContext;
 
     public ActivateKillTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
-            throws InvalidGameLogicException {
+            throws InvalidGameLogicException, PlayerNotFoundException {
         super(actionContext, power, Progress.values());
         _actionContext = actionContext;
     }

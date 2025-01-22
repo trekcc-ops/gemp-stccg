@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 
@@ -15,12 +16,12 @@ import java.util.LinkedList;
 
 
 public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMutateTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateMutateTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
         super(actionContext, power);
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!_wasCarriedOut) {
             if (cardGame instanceof TribblesGame game) {
                 TribblesGameState gameState = game.getGameState();

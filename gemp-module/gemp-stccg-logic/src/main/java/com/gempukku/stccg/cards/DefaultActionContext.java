@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -51,7 +52,15 @@ public class DefaultActionContext implements ActionContext {
     }
     public Map<String, String> getValueMemory() { return _valueMemory; }
     public Multimap<String, PhysicalCard> getCardMemory() { return _cardMemory; }
-    public Player getPerformingPlayer() { return _game.getGameState().getPlayer(performingPlayer); }
+    public Player getPerformingPlayer() {
+        try {
+            return _game.getGameState().getPlayer(performingPlayer);
+        } catch(PlayerNotFoundException exp) {
+            _game.sendErrorMessage(exp);
+            _game.cancelGame();
+            return null;
+        }
+    }
     public String getPerformingPlayerId() { return performingPlayer; }
     public PhysicalCard getSource() {
         return source;

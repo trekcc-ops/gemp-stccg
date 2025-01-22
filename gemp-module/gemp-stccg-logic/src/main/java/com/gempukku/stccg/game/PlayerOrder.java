@@ -16,12 +16,12 @@ public class PlayerOrder {
     @JsonProperty("firstPlayer")
     private final String _firstPlayer;
     @JsonProperty("currentPlayer")
-    private String _currentPlayer;
+    private String _currentPlayerId;
     @ConstructorProperties({"isReversed", "currentPlayer", "turnOrder"})
     public PlayerOrder(boolean isReversed, String currentPlayer, List<String> turnOrder) {
         _isReversed = isReversed;
         _firstPlayer = turnOrder.getFirst();
-        _currentPlayer = currentPlayer;
+        _currentPlayerId = currentPlayer;
         _turnOrder.addAll(turnOrder);
     }
 
@@ -32,8 +32,8 @@ public class PlayerOrder {
     public String getFirstPlayer() {
         return _firstPlayer;
     }
-    public String getCurrentPlayer() { return _currentPlayer; }
-    public void setCurrentPlayer(String player) { _currentPlayer = player; }
+    public String getCurrentPlayer() { return _currentPlayerId; }
+    public void setCurrentPlayer(String player) { _currentPlayerId = player; }
 
     @JsonProperty("turnOrder")
     public List<String> getAllPlayers() {
@@ -88,13 +88,13 @@ public class PlayerOrder {
         return _turnOrder.size();
     }
     public void advancePlayer() {
-        int currentPlayerIndex = _turnOrder.indexOf(_currentPlayer);
+        int currentPlayerIndex = _turnOrder.indexOf(_currentPlayerId);
         if (currentPlayerIndex == _turnOrder.size() - 1) {
             currentPlayerIndex = 0;
         } else {
             currentPlayerIndex++;
         }
-        _currentPlayer = _turnOrder.get(currentPlayerIndex);
+        _currentPlayerId = _turnOrder.get(currentPlayerIndex);
     }
 
     public void setReversed(boolean isReversed) { _isReversed = isReversed; }

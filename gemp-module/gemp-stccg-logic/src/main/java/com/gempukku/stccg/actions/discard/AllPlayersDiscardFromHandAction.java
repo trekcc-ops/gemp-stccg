@@ -9,6 +9,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
@@ -21,7 +23,8 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     private final boolean _forced;
 
     public AllPlayersDiscardFromHandAction(DefaultGame game, Action action, PhysicalCard performingCard,
-                                           boolean allPlayersMustBeAble, boolean forced) {
+                                           boolean allPlayersMustBeAble, boolean forced)
+            throws PlayerNotFoundException {
         super(game.getPlayer(action.getPerformingPlayerId()), ActionType.DISCARD);
         _performingCard = performingCard;
         _allPlayersMustBeAble = allPlayersMustBeAble;
@@ -39,18 +42,18 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) {
 
-        for (String player : cardGame.getAllPlayerIds()) {
-            Collection<PhysicalCard> hand = Filters.filter(cardGame.getGameState().getHand(player), cardGame, Filters.any);
+        for (Player player : cardGame.getPlayers()) {
+            Collection<PhysicalCard> hand = Filters.filter(player.getCardsInHand(), cardGame, Filters.any);
             if (hand.size() == 1) {
-                discardCards(cardGame, player, cardGame.getGameState().getHand(player));
+                discardCards(cardGame, player.getPlayerId(), player.getCardsInHand());
             } else {
                 cardGame.getUserFeedback().sendAwaitingDecision(
-                        new CardsSelectionDecision(cardGame.getPlayer(player), "Choose a card to discard", hand,
+                        new CardsSelectionDecision(player, "Choose a card to discard", hand,
                                 1, 1, cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
-                                discardCards(cardGame, player, cards);
+                                discardCards(cardGame, player.getPlayerId(), cards);
                             }
                         });
             }

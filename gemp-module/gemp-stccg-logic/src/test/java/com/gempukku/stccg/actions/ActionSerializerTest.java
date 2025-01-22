@@ -14,6 +14,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ActionSerializerTest extends AbstractAtTest {
 
 //    @Test
-    public void killAttemptSerializerTest() throws CardNotFoundException, DecisionResultInvalidException, JsonProcessingException, InvalidGameLogicException {
+    public void killAttemptSerializerTest() throws CardNotFoundException, DecisionResultInvalidException,
+            JsonProcessingException, InvalidGameLogicException, PlayerNotFoundException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         KillSinglePersonnelAction action = new KillSinglePersonnelAction(_game.getPlayer(P1), _game.getCardFromCardId(1),
                 new SelectCardsFromDialogAction(_game.getPlayer(P1), "Select a card", Filters.any));

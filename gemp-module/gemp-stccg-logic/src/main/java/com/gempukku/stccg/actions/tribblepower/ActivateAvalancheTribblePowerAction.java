@@ -8,11 +8,13 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateAvalancheTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateAvalancheTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateAvalancheTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+            throws PlayerNotFoundException {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);

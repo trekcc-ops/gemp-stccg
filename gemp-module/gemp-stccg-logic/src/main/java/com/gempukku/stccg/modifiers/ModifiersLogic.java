@@ -16,6 +16,7 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 
@@ -219,9 +220,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
 
-    public void signalStartOfTurn() { signalStartOfTurn(_game.getCurrentPlayer().getPlayerId()); }
-
-    public void signalStartOfTurn(String playerId) {
+    public void signalStartOfTurn(String playerId) throws PlayerNotFoundException {
         List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
         if (list != null) {
             for (Modifier modifier : list) {
@@ -239,6 +238,27 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             }
         }
     }
+
+    public void signalStartOfTurn(Player player) {
+        String playerId = player.getPlayerId();
+        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
+        if (list != null) {
+            for (Modifier modifier : list) {
+                list.remove(modifier);
+                _untilEndOfTurnModifiers.add(modifier);
+            }
+        }
+        _normalCardPlaysAvailable.put(player, _normalCardPlaysPerTurn);
+
+        // Unstop all "stopped" cards
+        // TODO - Does not account for cards that can be stopped for multiple turns
+        for (PhysicalCard card : _game.getGameState().getAllCardsInPlay()) {
+            if (card instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
+                stCard.unstop();
+            }
+        }
+    }
+
 
     public void signalEndOfTurn() {
         removeModifiers(_untilEndOfTurnModifiers);

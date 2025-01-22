@@ -9,11 +9,12 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMasakaTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateMasakaTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         for (Player player : cardGame.getPlayers()) {

@@ -4,6 +4,7 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ST1EGameStateTest extends AbstractAtTest {
 
     @Test
-    public void seedFacilityTest() {
+    public void seedFacilityTest() throws PlayerNotFoundException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
 

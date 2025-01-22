@@ -5,6 +5,7 @@ import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -17,7 +18,7 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         String playerId = _game.getCurrentPlayerId();
         final List<TopLevelSelectableAction> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
 

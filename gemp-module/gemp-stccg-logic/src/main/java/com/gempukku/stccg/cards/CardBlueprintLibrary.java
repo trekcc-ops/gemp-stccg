@@ -17,6 +17,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.game.ICallback;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,13 +63,14 @@ public class CardBlueprintLibrary {
     }
 
     public PhysicalCard createST1EPhysicalCard(ST1EGame game, String blueprintId, int cardId, String playerId)
-            throws CardNotFoundException {
+            throws CardNotFoundException, PlayerNotFoundException {
         CardBlueprint cardBlueprint = getCardBlueprint(blueprintId);
         Player owner = game.getPlayer(playerId);
         return cardBlueprint.createPhysicalCard(game, cardId, owner);
     }
 
-    public PhysicalCard createST1EPhysicalCard(ST1EGame game, JsonNode node) throws CardNotFoundException {
+    public PhysicalCard createST1EPhysicalCard(ST1EGame game, JsonNode node)
+            throws CardNotFoundException, PlayerNotFoundException {
         String blueprintId = node.get("blueprintId").textValue();
         int cardId = node.get("cardId").intValue();
         String playerId = node.get("owner").textValue();

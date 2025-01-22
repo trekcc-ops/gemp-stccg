@@ -12,14 +12,14 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
     protected final PhysicalCard _performingCard;
     protected final TribblePower _tribblePower;
 
-    public ActivateTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
         super(actionContext.getPerformingPlayer(), ActionType.ACTIVATE_TRIBBLE_POWER);
         _performingCard = actionContext.getSource();
         _tribblePower = power;
     }
 
     public ActivateTribblePowerAction(TribblesActionContext actionContext, TribblePower power,
-                                      Enum<?>[] progressNames) throws InvalidGameLogicException {
+                                      Enum<?>[] progressNames) throws InvalidGameLogicException, PlayerNotFoundException {
         super(actionContext.getPerformingPlayer(), "Activate tribble power", ActionType.ACTIVATE_TRIBBLE_POWER, progressNames);
         _performingCard = actionContext.getSource();
         _tribblePower = power;

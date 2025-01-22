@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void tricorderTest() throws CardNotFoundException, InvalidGameLogicException {
+    public void tricorderTest() throws CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();

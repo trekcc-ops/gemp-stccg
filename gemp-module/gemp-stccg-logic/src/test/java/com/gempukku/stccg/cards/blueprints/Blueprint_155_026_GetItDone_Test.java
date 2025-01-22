@@ -16,6 +16,7 @@ import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption1() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException {
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
         runGameUntilActionSelection();
         playerDecided(P1, "0");
         selectCard(P1, cardToDiscard);
@@ -55,7 +56,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption2() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException {
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
         runGameUntilActionSelection();
         playerDecided(P1, "1");
         selectCard(P1, cardToDiscard);
@@ -73,7 +74,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption3() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException {
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
         runGameUntilActionSelection();
         playerDecided(P1, "2");
         selectCard(P1, cardToDiscard);
@@ -94,7 +95,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
 
     @SuppressWarnings("SpellCheckingInspection")
-    public void runGameUntilActionSelection() throws CardNotFoundException, DecisionResultInvalidException, InvalidGameLogicException {
+    public void runGameUntilActionSelection() throws CardNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException {
 
         initializeGameWithAttentionAllHands();
         ST1EGameState gameState = _game.getGameState();

@@ -157,10 +157,10 @@ public class ValueResolver {
                     final String player = playerSrc.getPlayerId(actionContext);
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        int count = Filters.filter(actionContext.getGame().getGameState().getDiscard(player),
-                                actionContext.getGame(), filterable).size();
-                        return Math.min(limit, count);
+                            final Filterable filterable = filterableSource.getFilterable(actionContext);
+                            int count = Filters.filter(actionContext.getGame().getGameState().getDiscard(player),
+                                    actionContext.getGame(), filterable).size();
+                            return Math.min(limit, count);
                     }
                 });
             } else if (type.equalsIgnoreCase("forEachInHand")) {
@@ -171,8 +171,8 @@ public class ValueResolver {
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        return Filters.filter(actionContext.getGame().getGameState().getHand(player.getPlayerId(actionContext)),
-                                actionContext.getGame(), filterableSource.getFilterable(actionContext)).size();
+                            return Filters.filter(actionContext.getGame().getGameState().getHand(player.getPlayerId(actionContext)),
+                                    actionContext.getGame(), filterableSource.getFilterable(actionContext)).size();
                     }
                 };
             } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
@@ -232,13 +232,13 @@ public class ValueResolver {
                                 new Evaluator() {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                        final Filterable filterable = strengthSource.getFilterable(actionContext);
-                                        int strength = 0;
-                                        for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
-                                            strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
-                                        }
+                                            final Filterable filterable = strengthSource.getFilterable(actionContext);
+                                            int strength = 0;
+                                            for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
+                                                strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
+                                            }
 
-                                        return Math.max(0, strength - over);
+                                            return Math.max(0, strength - over);
                                     }
                                 });
                     }

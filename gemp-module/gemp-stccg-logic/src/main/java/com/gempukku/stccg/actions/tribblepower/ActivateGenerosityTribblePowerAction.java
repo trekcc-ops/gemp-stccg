@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAction {
     private final static int BONUS_POINTS = 25000;
 
-    public ActivateGenerosityTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateGenerosityTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
         super(actionContext, power);
     }
 

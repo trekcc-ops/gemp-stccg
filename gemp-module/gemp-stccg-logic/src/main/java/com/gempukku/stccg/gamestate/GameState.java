@@ -300,7 +300,8 @@ public abstract class GameState {
             listener.sendEvent(new GameEvent(eventType, card));
     }
 
-    public void shuffleCardsIntoDeck(Iterable<? extends PhysicalCard> cards, Player performingPlayer) {
+    public void shuffleCardsIntoDeck(Iterable<? extends PhysicalCard> cards, Player performingPlayer)
+            throws InvalidGameLogicException {
         for (PhysicalCard card : cards) {
             performingPlayer.addCardToGroup(Zone.DRAW_DECK, card);
             card.setZone(Zone.DRAW_DECK);

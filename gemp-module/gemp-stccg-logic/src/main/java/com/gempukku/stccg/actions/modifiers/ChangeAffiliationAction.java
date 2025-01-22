@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (_selectAffiliationAction == null) {
             _selectAffiliationAction =
                     new SelectAffiliationAction(cardGame.getPlayer(_performingPlayerId), getAffiliationOptions());

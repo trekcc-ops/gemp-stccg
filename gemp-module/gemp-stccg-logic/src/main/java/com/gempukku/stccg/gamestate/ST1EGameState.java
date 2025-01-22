@@ -64,7 +64,7 @@ public class ST1EGameState extends GameState {
                         subDeck.add(card);
                         _allCards.put(_nextCardId, card);
                         _nextCardId++;
-                    } catch (CardNotFoundException e) {
+                    } catch (CardNotFoundException | PlayerNotFoundException e) {
                         _game.sendErrorMessage(e);
                     }
                 }
@@ -296,11 +296,15 @@ public class ST1EGameState extends GameState {
 
     public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)
             throws CardNotFoundException {
-        PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
-        _allCards.put(_nextCardId, card);
-        _nextCardId++;
-        card.setZone(Zone.VOID);
-        return card;
+        try {
+            PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+            _allCards.put(_nextCardId, card);
+            _nextCardId++;
+            card.setZone(Zone.VOID);
+            return card;
+        } catch(PlayerNotFoundException exp) {
+            throw new CardNotFoundException(exp.getMessage());
+        }
     }
 
     public void sendSerializedGameStateToClient() {

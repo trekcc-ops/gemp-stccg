@@ -5,11 +5,13 @@ import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateEvolveTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateEvolveTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+            throws PlayerNotFoundException {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);

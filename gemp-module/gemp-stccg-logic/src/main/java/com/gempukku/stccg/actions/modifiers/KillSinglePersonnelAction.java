@@ -11,6 +11,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 public class KillSinglePersonnelAction extends ActionyAction implements TopLevelSelectableAction {
@@ -54,7 +55,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();
             if (selectionAction != null && !selectionAction.wasCarriedOut()) {

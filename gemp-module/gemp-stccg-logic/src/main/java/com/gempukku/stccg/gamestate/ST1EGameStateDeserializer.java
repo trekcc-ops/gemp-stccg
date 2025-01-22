@@ -13,10 +13,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.ArrayList;
@@ -27,7 +24,7 @@ import java.util.Map;
 public class ST1EGameStateDeserializer {
 
     public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException {
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -92,7 +89,7 @@ public class ST1EGameStateDeserializer {
         return gameState;
     }
 
-    private static void readCardIdList(Zone zone, Player player, JsonNode playerNode, GameState gameState) {
+    private static void readCardIdList(Zone zone, Player player, JsonNode playerNode, GameState gameState) throws InvalidGameLogicException {
         if (playerNode.has(zone.name()) && !playerNode.get(zone.name()).isEmpty()) {
             for (JsonNode cardNode : playerNode.get(zone.name())) {
                 int cardId = cardNode.asInt();
@@ -103,7 +100,8 @@ public class ST1EGameStateDeserializer {
     }
 
 
-    private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState) throws CardNotFoundException {
+    private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState)
+            throws CardNotFoundException, PlayerNotFoundException {
         ST1EGame game = gameState.getGame();
         int maxCardId = 0;
         Map<PhysicalCard, Integer> attachedMap = new HashMap<>();

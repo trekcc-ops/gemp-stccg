@@ -13,4 +13,9 @@ public class CardGroup {
         _zone = zone;
     }
 
+    public void addCard(PhysicalCard card) { _cards.add(card); }
+
+    public List<? extends PhysicalCard> getCards() {
+        return _cards;
+    }
 }

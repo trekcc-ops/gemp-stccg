@@ -12,6 +12,7 @@ import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class DrawActionBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
                 final String targetPlayerId = targetPlayerSource.getPlayerId(context);
                 DefaultGame cardGame = context.getGame();
                 Player targetPlayer = cardGame.getPlayer(targetPlayerId);

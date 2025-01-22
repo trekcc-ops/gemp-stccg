@@ -9,6 +9,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -47,7 +48,7 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
      * @param actionSource the card to initiate the deployment
      */
     public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, MissionLocation location)
-            throws InvalidGameLogicException {
+            throws InvalidGameLogicException, PlayerNotFoundException {
         super(performingPlayer, "Initiate battle", ActionType.BATTLE);
         DefaultGame game = actionSource.getGame();
         _actionSource = actionSource;

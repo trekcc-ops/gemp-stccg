@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.LinkedList;
@@ -19,16 +20,20 @@ public class ST1EChangeAffiliationRule extends ST1ERule {
     }
     @Override
     public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
-        Player player = _game.getGameState().getPlayer(playerId);
         LinkedList<TopLevelSelectableAction> result = new LinkedList<>();
-        if (playerId.equals(_game.getCurrentPlayerId())) {
-            for (PhysicalCard card : Filters.filterYourActive(_game, player)) {
-                if (card instanceof AffiliatedCard affiliatedCard && affiliatedCard.getAffiliationOptions().size() > 1) {
-                    ChangeAffiliationAction action = new ChangeAffiliationAction(player, affiliatedCard);
-                    if (action.canBeInitiated(_game))
-                        result.add(action);
+        try {
+            Player player = _game.getGameState().getPlayer(playerId);
+            if (playerId.equals(_game.getCurrentPlayerId())) {
+                for (PhysicalCard card : Filters.filterYourActive(_game, player)) {
+                    if (card instanceof AffiliatedCard affiliatedCard && affiliatedCard.getAffiliationOptions().size() > 1) {
+                        ChangeAffiliationAction action = new ChangeAffiliationAction(player, affiliatedCard);
+                        if (action.canBeInitiated(_game))
+                            result.add(action);
+                    }
                 }
             }
+        } catch(PlayerNotFoundException exp) {
+            _game.sendErrorMessage(exp);
         }
         return result;
     }

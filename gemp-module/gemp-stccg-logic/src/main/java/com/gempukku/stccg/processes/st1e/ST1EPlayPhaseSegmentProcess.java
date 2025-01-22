@@ -6,11 +6,8 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.game.GameUtils;
 
 import java.util.List;
 
@@ -22,9 +19,10 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Phase phase = cardGame.getCurrentPhase();
         String currentPlayerId = cardGame.getCurrentPlayerId();
+        Player currentPlayer = cardGame.getCurrentPlayer();
         final List<TopLevelSelectableAction> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(currentPlayerId);
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
@@ -34,7 +32,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result)) {
-                                GameUtils.performRevert(cardGame, currentPlayerId);
+                                GameUtils.performRevert(cardGame, currentPlayer);
                             } else {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {

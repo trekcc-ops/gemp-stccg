@@ -16,6 +16,7 @@ import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -98,7 +99,8 @@ public abstract class DefaultActionSource implements ActionSource {
         addCost(
             new DelayedEffectBlueprint() {
                 @Override
-                protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext) {
+                protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
+                        throws PlayerNotFoundException {
                     Action usageLimitAction = new UseOncePerTurnAction(
                             action, action.getPerformingCard(), actionContext.getPerformingPlayer());
                     return Collections.singletonList(usageLimitAction);

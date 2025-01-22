@@ -137,12 +137,22 @@ public class Player {
         return _cardGroups.get(zone);
     }
 
-    public void addCardToGroup(Zone zone, PhysicalCard card) {
-        _cardGroups.get(zone).add(card);
+    public void addCardToGroup(Zone zone, PhysicalCard card) throws InvalidGameLogicException {
+        CardGroup group = _cardZoneGroups.get(zone);
+        if (group != null) {
+            group.addCard(card);
+        } else {
+            throw new InvalidGameLogicException("Cannot add card to zone " + zone);
+        }
     }
 
     public List<PhysicalCard> getCardsInGroup(Zone zone) {
-        return Collections.unmodifiableList(_cardGroups.get(zone));
+        CardGroup group = _cardZoneGroups.get(zone);
+        if (group == null) {
+            return new LinkedList<>();
+        } else {
+            return Collections.unmodifiableList(group.getCards());
+        }
     }
 
     public void shuffleDrawDeck(DefaultGame cardGame) {

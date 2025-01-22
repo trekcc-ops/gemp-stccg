@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
         _requirements = RequirementFactory.getRequirements(node);
     }
     @Override
-    protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
+    protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
 
         List<Action> result = new LinkedList<>();
         if(requirementsNotMet(context)) {

@@ -27,7 +27,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     private final static int BONUS_POINTS = 25000;
     private String _discardingPlayerId;
 
-    public ActivateLaughterTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateLaughterTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
         super(actionContext, power);
     }
 

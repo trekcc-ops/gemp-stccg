@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 
@@ -20,17 +21,21 @@ public class ST1EPhaseActionsRule extends ST1ERule {
 
     @Override
     public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
-        final GameState gameState = _game.getGameState();
-        final Player player = gameState.getPlayer(playerId);
-        final Phase currentPhase = gameState.getCurrentPhase();
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
-            Filters.filterActive(gameState.getGame(), CardType.MISSION).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
-            Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+        try {
+            final GameState gameState = _game.getGameState();
+            final Player player = gameState.getPlayer(playerId);
+            final Phase currentPhase = gameState.getCurrentPhase();
+            if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
+                Filters.filterActive(gameState.getGame(), CardType.MISSION).forEach(
+                        card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+                Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
+                        card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+            }
+            Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
+        } catch(PlayerNotFoundException exp) {
+            _game.sendErrorMessage(exp);
         }
-        Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }
 }

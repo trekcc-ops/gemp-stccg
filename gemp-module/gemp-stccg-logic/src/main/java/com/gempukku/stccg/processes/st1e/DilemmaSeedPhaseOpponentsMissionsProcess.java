@@ -2,16 +2,14 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 @JsonTypeName("DilemmaSeedPhaseOpponentsMissionsProcess")
@@ -28,14 +26,19 @@ public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhasePr
 
     @Override
     List<MissionCard> getAvailableMissions(ST1EGame stGame, String playerId) {
-        Player player = stGame.getPlayer(playerId);
-        List<MissionCard> result = new ArrayList<>();
-        for (MissionLocation location: stGame.getGameState().getSpacelineLocations()) {
-            MissionCard mission = location.getMissions().getFirst();
-            if (location.getMissions().size() == 1 && mission.getOwner() != player)
-                result.add(mission);
+        try {
+            Player player = stGame.getPlayer(playerId);
+            List<MissionCard> result = new ArrayList<>();
+            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+                MissionCard mission = location.getMissions().getFirst();
+                if (location.getMissions().size() == 1 && mission.getOwner() != player)
+                    result.add(mission);
+            }
+            return result;
+        } catch(PlayerNotFoundException exp) {
+            stGame.sendErrorMessage(exp);
+            return new LinkedList<>();
         }
-        return result;
     }
 
 
