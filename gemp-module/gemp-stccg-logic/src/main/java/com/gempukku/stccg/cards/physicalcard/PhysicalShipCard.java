@@ -69,8 +69,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     @Override
     public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
         super.reportToFacility(facility);
-        _docked = true;
-        _dockedAtCardId = facility.getCardId();
+        dockAtFacility(facility);
     }
 
     public void dockAtFacility(FacilityCard facilityCard) {
