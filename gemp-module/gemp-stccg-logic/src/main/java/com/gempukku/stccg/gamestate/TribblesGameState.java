@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
@@ -55,26 +56,30 @@ public final class TribblesGameState extends GameState {
     }
 
     public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
-        for (Player player : getPlayers()) {
-            String playerId = player.getPlayerId();
-            for (Map.Entry<SubDeck,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
-                List<PhysicalCard> subDeck = new LinkedList<>();
-                for (String blueprintId : entry.getValue()) {
-                    try {
-                        CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
-                        PhysicalCard card = new TribblesPhysicalCard(_game, _nextCardId, player, blueprint);
-                        subDeck.add(card);
-                        _nextCardId++;
-                    } catch (CardNotFoundException e) {
-                        _game.sendErrorMessage(e);
+        try {
+            for (Player player : getPlayers()) {
+                String playerId = player.getPlayerId();
+                for (Map.Entry<SubDeck, List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
+                    List<PhysicalCard> subDeck = new LinkedList<>();
+                    for (String blueprintId : entry.getValue()) {
+                        try {
+                            CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
+                            PhysicalCard card = new TribblesPhysicalCard(_game, _nextCardId, player, blueprint);
+                            subDeck.add(card);
+                            _nextCardId++;
+                        } catch (CardNotFoundException e) {
+                            _game.sendErrorMessage(e);
+                        }
+                    }
+                    if (Objects.equals(entry.getKey().name(), "DRAW_DECK")) {
+                        player.setCardGroup(Zone.DRAW_DECK, subDeck);
+                        subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
                     }
                 }
-                if (Objects.equals(entry.getKey().name(), "DRAW_DECK")) {
-                    player.setCardGroup(Zone.DRAW_DECK, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
-                }
+                _playPiles.put(playerId, new LinkedList<>());
             }
-            _playPiles.put(playerId, new LinkedList<>());
+        } catch(InvalidGameLogicException exp) {
+            _game.sendErrorMessage(exp);
         }
     }
 

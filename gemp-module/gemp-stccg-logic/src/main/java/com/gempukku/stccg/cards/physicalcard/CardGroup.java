@@ -15,7 +15,12 @@ public class CardGroup {
 
     public void addCard(PhysicalCard card) { _cards.add(card); }
 
-    public List<? extends PhysicalCard> getCards() {
+    public List<PhysicalCard> getCards() {
         return _cards;
+    }
+
+    public void setCards(List<PhysicalCard> subDeck) {
+        _cards.clear();
+        _cards.addAll(subDeck);
     }
 }

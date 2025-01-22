@@ -58,7 +58,7 @@ public abstract class GameState {
 
     public abstract DefaultGame getGame();
 
-    public void initializePlayerOrder(PlayerOrder playerOrder) {
+    public void initializePlayerOrder(PlayerOrder playerOrder) throws PlayerNotFoundException {
         _playerOrder = playerOrder;
         setCurrentPlayerId(playerOrder.getFirstPlayer());
         for (GameStateListener listener : getAllGameStateListeners()) {
@@ -116,7 +116,7 @@ public abstract class GameState {
             listener.sendMessage(message);
     }
 
-    public void playerDecisionStarted(String playerId, AwaitingDecision awaitingDecision) {
+    public void playerDecisionStarted(String playerId, AwaitingDecision awaitingDecision) throws PlayerNotFoundException {
         _playerDecisions.put(playerId, awaitingDecision);
         for (GameStateListener listener : getAllGameStateListeners())
             sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
@@ -126,7 +126,7 @@ public abstract class GameState {
         return _playerDecisions.get(playerId);
     }
 
-    public void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) {
+    public void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) throws PlayerNotFoundException {
         if (decision != null)
             listener.decisionRequired(playerId, decision);
     }

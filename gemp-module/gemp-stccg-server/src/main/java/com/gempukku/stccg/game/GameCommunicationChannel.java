@@ -31,7 +31,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         return _channelNumber;
     }
 
-    public final void initializeBoard() {
+    public final void initializeBoard() throws PlayerNotFoundException {
         appendEvent(new GameEvent(GameEvent.Type.PARTICIPANTS, _game.getGameState(),
                 _game.getGameState().getPlayer(_playerId)));
     }
@@ -97,7 +97,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         appendEvent(new GameEvent(GameEvent.Type.SEND_MESSAGE, message));
     }
 
-    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) {
+    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) throws PlayerNotFoundException {
         if (playerId.equals(_playerId))
             appendEvent(new GameEvent(_game, GameEvent.Type.DECISION, awaitingDecision,
                     _game.getGameState().getPlayer(playerId)));

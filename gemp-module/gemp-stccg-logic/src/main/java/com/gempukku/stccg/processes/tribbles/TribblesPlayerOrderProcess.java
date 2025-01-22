@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.processes.GameProcess;
@@ -18,7 +19,7 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
 
         LinkedList<String> playersInOrder = new LinkedList<>(_game.getPlayerIds());
         Collections.shuffle(playersInOrder, ThreadLocalRandom.current());

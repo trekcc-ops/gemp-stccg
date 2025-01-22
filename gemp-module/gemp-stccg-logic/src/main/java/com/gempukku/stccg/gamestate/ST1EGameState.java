@@ -54,34 +54,38 @@ public class ST1EGameState extends GameState {
     }
 
     public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
-        for (Player player : getPlayers()) {
-            String playerId = player.getPlayerId();
-            for (Map.Entry<SubDeck,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
-                List<PhysicalCard> subDeck = new LinkedList<>();
-                for (String blueprintId : entry.getValue()) {
-                    try {
-                        PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
-                        subDeck.add(card);
-                        _allCards.put(_nextCardId, card);
-                        _nextCardId++;
-                    } catch (CardNotFoundException | PlayerNotFoundException e) {
-                        _game.sendErrorMessage(e);
+        try {
+            for (Player player : getPlayers()) {
+                String playerId = player.getPlayerId();
+                for (Map.Entry<SubDeck, List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
+                    List<PhysicalCard> subDeck = new LinkedList<>();
+                    for (String blueprintId : entry.getValue()) {
+                        try {
+                            PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+                            subDeck.add(card);
+                            _allCards.put(_nextCardId, card);
+                            _nextCardId++;
+                        } catch (CardNotFoundException | PlayerNotFoundException e) {
+                            _game.sendErrorMessage(e);
+                        }
+                    }
+                    if (entry.getKey() == SubDeck.DRAW_DECK) {
+                        player.setCardGroup(Zone.DRAW_DECK, subDeck);
+                        for (PhysicalCard card : subDeck)
+                            card.setZone(Zone.DRAW_DECK);
+                    } else if (entry.getKey() == SubDeck.SEED_DECK) {
+                        player.setCardGroup(Zone.SEED_DECK, subDeck);
+                        for (PhysicalCard card : subDeck)
+                            card.setZone(Zone.SEED_DECK);
+                    } else if (entry.getKey() == SubDeck.MISSIONS) {
+                        player.setCardGroup(Zone.MISSIONS_PILE, subDeck);
+                        for (PhysicalCard card : subDeck)
+                            card.setZone(Zone.MISSIONS_PILE);
                     }
                 }
-                if (entry.getKey() == SubDeck.DRAW_DECK) {
-                    player.setCardGroup(Zone.DRAW_DECK, subDeck);
-                    for (PhysicalCard card : subDeck)
-                        card.setZone(Zone.DRAW_DECK);
-                } else if (entry.getKey() == SubDeck.SEED_DECK) {
-                    player.setCardGroup(Zone.SEED_DECK, subDeck);
-                    for (PhysicalCard card : subDeck)
-                        card.setZone(Zone.SEED_DECK);
-                } else if (entry.getKey() == SubDeck.MISSIONS) {
-                    player.setCardGroup(Zone.MISSIONS_PILE, subDeck);
-                    for (PhysicalCard card : subDeck)
-                        card.setZone(Zone.MISSIONS_PILE);
-                }
             }
+        } catch(InvalidGameLogicException exp) {
+            _game.sendErrorMessage(exp);
         }
     }
 

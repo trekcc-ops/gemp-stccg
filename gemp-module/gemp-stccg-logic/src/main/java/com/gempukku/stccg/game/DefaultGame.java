@@ -151,24 +151,28 @@ public abstract class DefaultGame {
     }
 
     public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
-        GameState gameState = getGameState();
-        PlayerOrder playerOrder = gameState.getPlayerOrder();
-        if (playerOrder != null) {
-            listener.initializeBoard();
-            if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
-            if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
+        try {
+            GameState gameState = getGameState();
+            PlayerOrder playerOrder = gameState.getPlayerOrder();
+            if (playerOrder != null) {
+                listener.initializeBoard();
+                if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
+                if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
 
-            try {
-                gameState.sendCardsToClient(playerId, listener, restoreSnapshot);
-            } catch(PlayerNotFoundException exp) {
-                sendErrorMessage(exp);
+                try {
+                    gameState.sendCardsToClient(playerId, listener, restoreSnapshot);
+                } catch (PlayerNotFoundException exp) {
+                    sendErrorMessage(exp);
+                }
             }
-        }
-        for (String lastMessage : getMessages())
-            listener.sendMessage(lastMessage);
+            for (String lastMessage : getMessages())
+                listener.sendMessage(lastMessage);
 
-        final AwaitingDecision awaitingDecision = gameState.getDecision(playerId);
-        gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
+            final AwaitingDecision awaitingDecision = gameState.getDecision(playerId);
+            gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+        }
     }
 
 

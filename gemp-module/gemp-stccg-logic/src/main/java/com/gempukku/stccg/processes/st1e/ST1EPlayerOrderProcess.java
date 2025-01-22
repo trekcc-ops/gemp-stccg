@@ -1,10 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
@@ -13,7 +10,7 @@ import java.util.*;
 public class ST1EPlayerOrderProcess extends ST1EGameProcess {
 
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         List<String> playerOrder;
         if (cardGame.getFormat().hasFixedPlayerOrder()) {
             playerOrder = Arrays.asList(cardGame.getAllPlayerIds());

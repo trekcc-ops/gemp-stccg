@@ -20,14 +20,13 @@ public class Player {
     @JsonProperty("decked")
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
-    Map<Zone, CardGroup> _cardZoneGroups = new HashMap<>();
+    Map<Zone, CardGroup> _cardGroups = new HashMap<>();
     private final DefaultGame _game;
     @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
     @JsonProperty("turnNumber")
     private int _turnNumber;
-    Map<Zone, List<PhysicalCard>> _cardGroups = new HashMap<>();
 
     public Player(DefaultGame game, String playerId) {
         _playerId = playerId;
@@ -130,15 +129,15 @@ public class Player {
     }
 
     public void addCardGroup(Zone zone) {
-        _cardZoneGroups.put(zone, new CardGroup(zone));
+        _cardGroups.put(zone, new CardGroup(zone));
     }
 
     public List<PhysicalCard> getCardGroup(Zone zone) {
-        return _cardGroups.get(zone);
+        return _cardGroups.get(zone).getCards();
     }
 
     public void addCardToGroup(Zone zone, PhysicalCard card) throws InvalidGameLogicException {
-        CardGroup group = _cardZoneGroups.get(zone);
+        CardGroup group = _cardGroups.get(zone);
         if (group != null) {
             group.addCard(card);
         } else {
@@ -147,7 +146,7 @@ public class Player {
     }
 
     public List<PhysicalCard> getCardsInGroup(Zone zone) {
-        CardGroup group = _cardZoneGroups.get(zone);
+        CardGroup group = _cardGroups.get(zone);
         if (group == null) {
             return new LinkedList<>();
         } else {
@@ -157,11 +156,16 @@ public class Player {
 
     public void shuffleDrawDeck(DefaultGame cardGame) {
         if (!cardGame.getFormat().isNoShuffle())
-            Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK), ThreadLocalRandom.current());
+            Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK).getCards(), ThreadLocalRandom.current());
     }
 
-    public void setCardGroup(Zone zone, List<PhysicalCard> subDeck) {
-        _cardGroups.put(zone, subDeck);
+    public void setCardGroup(Zone zone, List<PhysicalCard> subDeck) throws InvalidGameLogicException {
+        CardGroup group = _cardGroups.get(zone);
+        if (group != null) {
+            group.setCards(subDeck);
+        } else {
+            throw new InvalidGameLogicException("Unable to set cards for " + zone);
+        }
     }
 
     public Set<Zone> getCardGroupZones() {
