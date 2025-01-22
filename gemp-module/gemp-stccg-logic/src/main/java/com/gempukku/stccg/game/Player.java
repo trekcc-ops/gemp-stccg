@@ -1,16 +1,12 @@
 package com.gempukku.stccg.game;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.cards.physicalcard.CardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,12 +15,17 @@ import java.util.concurrent.ThreadLocalRandom;
 @JsonIncludeProperties({ "playerId", "score", "turnNumber", "cardsInZones", "decked" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class Player {
+    @JsonProperty("playerId")
     private final String _playerId;
+    @JsonProperty("decked")
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
+    Map<Zone, CardGroup> _cardZoneGroups = new HashMap<>();
     private final DefaultGame _game;
+    @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
+    @JsonProperty("turnNumber")
     private int _turnNumber;
     Map<Zone, List<PhysicalCard>> _cardGroups = new HashMap<>();
 
@@ -40,7 +41,7 @@ public class Player {
         return _playerId;
     }
 
-    public boolean getDecked() {
+    public boolean isDecked() {
         return _decked;
     }
     public void setDecked(boolean decked) {
@@ -88,11 +89,11 @@ public class Player {
         return _currentScore;
     }
 
-    public Collection<PhysicalCard> getCardsInHand() {
+    public List<PhysicalCard> getCardsInHand() {
         return getCardsInGroup(Zone.HAND);
     }
 
-    public Collection<PhysicalCard> getCardsInDrawDeck() {
+    public List<PhysicalCard> getCardsInDrawDeck() {
         return getCardsInGroup(Zone.DRAW_DECK);
     }
 
@@ -106,17 +107,6 @@ public class Player {
 
     public int getTurnNumber() {
         return _turnNumber;
-    }
-
-    public Map<Zone, List<Integer>> getCardsInZones() {
-        Map<Zone, List<Integer>> result = new HashMap<>();
-        for (Zone zone : _cardGroups.keySet()) {
-            result.put(zone, new LinkedList<>());
-            for (PhysicalCard card : _cardGroups.get(zone)) {
-                result.get(zone).add(card.getCardId());
-            }
-        }
-        return result;
     }
 
     public int getLastSyncedScore() {
@@ -140,7 +130,7 @@ public class Player {
     }
 
     public void addCardGroup(Zone zone) {
-        _cardGroups.put(zone, new LinkedList<>());
+        _cardZoneGroups.put(zone, new CardGroup(zone));
     }
 
     public List<PhysicalCard> getCardGroup(Zone zone) {
@@ -167,4 +157,5 @@ public class Player {
     public Set<Zone> getCardGroupZones() {
         return _cardGroups.keySet();
     }
+
 }

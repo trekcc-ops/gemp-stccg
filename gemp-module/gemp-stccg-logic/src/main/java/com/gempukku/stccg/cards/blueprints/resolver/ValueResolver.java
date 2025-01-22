@@ -17,6 +17,10 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
+
+import java.util.Collection;
 
 public class ValueResolver {
 
@@ -174,16 +178,23 @@ public class ValueResolver {
             } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "owner");
                 final String owner = BlueprintUtils.getString(object, "owner", "you");
-                final PlayerSource player = PlayerResolver.resolvePlayer(owner);
+                final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
                 return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        return Filters.filter(
-                                actionContext.getGame().getGameState()
-                                        .getZoneCards(player.getPlayerId(actionContext),
-                                                Zone.PLAY_PILE),
-                                actionContext.getGame(), filterableSource.getFilterable(actionContext)).size();
+                        try {
+                            String playerId = playerSource.getPlayerId(actionContext);
+                            Player player = game.getPlayer(playerId);
+                            Collection<PhysicalCard> cards = Filters.filter(
+                                    player.getCardsInGroup(Zone.PLAY_PILE), game,
+                                    filterableSource.getFilterable(actionContext)
+                            );
+                            return cards.size();
+                        } catch(PlayerNotFoundException exp) {
+                            game.sendErrorMessage(exp);
+                            return 0;
+                        }
                     }
                 };
             } else if (type.equalsIgnoreCase("fromMemory")) {

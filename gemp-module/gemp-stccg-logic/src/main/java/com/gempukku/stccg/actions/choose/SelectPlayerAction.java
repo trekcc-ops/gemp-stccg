@@ -8,12 +8,14 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.List;
 
 public class SelectPlayerAction extends MakeDecisionAction {
 
-    public SelectPlayerAction(ActionContext actionContext, String memoryId, List<String> playerIds) {
+    public SelectPlayerAction(ActionContext actionContext, String memoryId, List<String> playerIds)
+            throws PlayerNotFoundException {
         super(actionContext.getSource(), new MultipleChoiceAwaitingDecision(actionContext.getPerformingPlayer(),
                 "Choose a player", playerIds, actionContext.getGame()) {
             @Override

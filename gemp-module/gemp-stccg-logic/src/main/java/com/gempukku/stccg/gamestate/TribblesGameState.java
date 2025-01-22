@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.text.DecimalFormat;
@@ -38,14 +39,19 @@ public final class TribblesGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        Player player = getPlayer(playerId);
-        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD ||
-                zone == Zone.VOID)
-            return player.getCardGroup(zone);
-        else if (zone == Zone.PLAY_PILE)
-            return _playPiles.get(playerId);
-        else // This should never be accessed
-            return _inPlay;
+        try {
+            Player player = getPlayer(playerId);
+            if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD ||
+                    zone == Zone.VOID)
+                return player.getCardGroup(zone);
+            else if (zone == Zone.PLAY_PILE)
+                return _playPiles.get(playerId);
+            else // This should never be accessed
+                return _inPlay;
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
     }
 
     public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
@@ -87,15 +93,10 @@ public final class TribblesGameState extends GameState {
         return Collections.unmodifiableList(_playPiles.get(playerId));
     }
 
-    public void setPlayerDecked(String playerId, boolean bool) {
-        Player player = getPlayer(playerId);
+    public void setPlayerDecked(Player player, boolean bool) {
         player.setDecked(bool);
         for (GameStateListener listener : getAllGameStateListeners())
             listener.setPlayerDecked(player);
-    }
-
-    public boolean getPlayerDecked(String playerId) {
-        return getPlayer(playerId).getDecked();
     }
 
     public void setNextTribbleInSequence(int num) {

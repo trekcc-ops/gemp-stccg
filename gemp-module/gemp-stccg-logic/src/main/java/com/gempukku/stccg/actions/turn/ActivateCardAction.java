@@ -42,7 +42,7 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
             setProgress(Progress.sentMessage);
             if (_performingCard != null && _performingCard.getZone().isInPlay()) {
                 DefaultGame game = _performingCard.getGame();
-                game.getGameState().activatedCard(getPerformingPlayerId(), _performingCard);
+                game.activatedCard(getPerformingPlayerId(), _performingCard);
                 game.sendMessage(_performingCard.getCardLink() + " is used");
             }
         }

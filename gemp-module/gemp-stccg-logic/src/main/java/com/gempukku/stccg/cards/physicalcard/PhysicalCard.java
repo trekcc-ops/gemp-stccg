@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 
@@ -81,7 +82,7 @@ public interface PhysicalCard extends Filterable {
 
     List<TopLevelSelectableAction> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing);
     TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
-    List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult);
+    List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) throws PlayerNotFoundException;
 
     List<TopLevelSelectableAction> getRequiredResponseActions(ActionResult actionResult);
 
@@ -102,7 +103,7 @@ public interface PhysicalCard extends Filterable {
 
     boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException;
 
-    List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException;
+    List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException;
 
     boolean isAtSpaceLocation();
 

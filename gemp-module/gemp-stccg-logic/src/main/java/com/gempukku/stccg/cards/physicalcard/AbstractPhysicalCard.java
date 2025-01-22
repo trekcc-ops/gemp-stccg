@@ -21,6 +21,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -275,7 +276,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult)
+            throws PlayerNotFoundException {
         return switch (_blueprint) {
             case Blueprint212_019 riskBlueprint ->
                     riskBlueprint.getValidResponses(this, player, actionResult, getGame());
@@ -365,7 +367,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action, MissionLocation missionLocation)
-            throws InvalidGameLogicException {
+            throws InvalidGameLogicException, PlayerNotFoundException {
         throw new InvalidGameLogicException(
                 "Tried to call getEncounterActions for a card that does not have an encounter action");
     }

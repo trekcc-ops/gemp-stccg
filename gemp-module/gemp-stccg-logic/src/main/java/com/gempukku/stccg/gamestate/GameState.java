@@ -11,10 +11,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerOrder;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.processes.GameProcess;
@@ -82,7 +79,8 @@ public abstract class GameState {
         return getGame().getAllGameStateListeners();
     }
 
-    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
+            throws PlayerNotFoundException {
 
         Player player = getPlayer(playerId);
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
@@ -103,8 +101,8 @@ public abstract class GameState {
 
         Collection<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
 
-        cardsPutIntoPlay.addAll(player.getCardGroup(Zone.HAND));
-        cardsPutIntoPlay.addAll(player.getCardGroup(Zone.DISCARD));
+        cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.HAND));
+        cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.DISCARD));
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
@@ -167,22 +165,15 @@ public abstract class GameState {
         addCardToZone(card, Zone.ATTACHED);
     }
 
-    public void cardAffectsCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.CARD_AFFECTED_BY_CARD, card, affectedCards, getPlayer(playerPerforming)));
-    }
-
-    public void activatedCard(String playerPerforming, PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            GameEvent event = new GameEvent(GameEvent.Type.FLASH_CARD_IN_PLAY, card, getPlayer(playerPerforming));
-            listener.sendEvent(event);
-        }
-    }
-
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        Player player = getPlayer(playerId);
-        List<PhysicalCard> zoneCards = player.getCardGroup(zone);
-        return Objects.requireNonNullElse(zoneCards, _inPlay);
+        try {
+            Player player = getPlayer(playerId);
+            List<PhysicalCard> zoneCards = player.getCardGroup(zone);
+            return Objects.requireNonNullElse(zoneCards, _inPlay);
+        } catch(PlayerNotFoundException exp) {
+            getGame().sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
     }
 
     public void removeCardFromZone(PhysicalCard card) {
@@ -231,8 +222,11 @@ public abstract class GameState {
                         (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(listener.getPlayerId())))
                     removedCardsVisibleByPlayer.add(card);
             }
-            if (!removedCardsVisibleByPlayer.isEmpty())
-                listener.sendEvent(new GameEvent(GameEvent.Type.REMOVE_CARD_FROM_PLAY, removedCardsVisibleByPlayer, getPlayer(playerPerforming)));
+            if (!removedCardsVisibleByPlayer.isEmpty()) {
+                GameEvent event = new GameEvent(GameEvent.Type.REMOVE_CARD_FROM_PLAY,
+                        removedCardsVisibleByPlayer, playerPerforming);
+                listener.sendEvent(event);
+            }
         }
 
         for (PhysicalCard card : cards) {
@@ -341,18 +335,37 @@ public abstract class GameState {
         return Collections.unmodifiableList(_inPlay);
     }
     public List<PhysicalCard> getHand(String playerId) {
-        Player player = getPlayer(playerId);
-        return player.getCardsInGroup(Zone.HAND);
+        try {
+            Player player = getPlayer(playerId);
+            return player.getCardsInGroup(Zone.HAND);
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
+    }
+
+    public void sendErrorMessage(Exception exp) {
+        getGame().sendErrorMessage(exp);
     }
 
     public List<PhysicalCard> getDrawDeck(String playerId) {
-        Player player = getPlayer(playerId);
-        return player.getCardsInGroup(Zone.DRAW_DECK);
+        try {
+            Player player = getPlayer(playerId);
+            return player.getCardsInGroup(Zone.DRAW_DECK);
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
     }
 
     public List<PhysicalCard> getDiscard(String playerId) {
-        Player player = getPlayer(playerId);
-        return player.getCardsInGroup(Zone.DISCARD);
+        try {
+            Player player = getPlayer(playerId);
+            return player.getCardsInGroup(Zone.DISCARD);
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
     }
 
     public String getCurrentPlayerId() {
@@ -373,10 +386,22 @@ public abstract class GameState {
     }
 
     public void startPlayerTurn(String playerId) {
+        try {
+            _playerOrder.setCurrentPlayer(playerId);
+            getPlayer(playerId).incrementTurnNumber();
+            getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(playerId));
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+        }
+    }
+
+    public void startPlayerTurn(Player player) {
+        String playerId = player.getPlayerId();
         _playerOrder.setCurrentPlayer(playerId);
-        getPlayer(playerId).incrementTurnNumber();
+        player.incrementTurnNumber();
         getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(playerId));
     }
+
 
     public boolean isCardInPlayActive(PhysicalCard card) {
         if (card.getAttachedTo() != null) return isCardInPlayActive(card.getAttachedTo());
@@ -415,15 +440,25 @@ public abstract class GameState {
         }
     }
 
-    public void playerDrawsCard(String playerId) {
+    public void playerDrawsCard(String playerId) throws PlayerNotFoundException {
         Player player = getPlayer(playerId);
-        List<PhysicalCard> deck = player.getCardGroup(Zone.DRAW_DECK);
+        List<PhysicalCard> deck = player.getCardsInDrawDeck();
         if (!deck.isEmpty()) {
             PhysicalCard card = deck.getFirst();
             removeCardsFromZone(playerId, Collections.singleton(card));
             addCardToZone(card, Zone.HAND);
         }
     }
+
+    public void playerDrawsCard(Player player) {
+        List<PhysicalCard> deck = player.getCardsInDrawDeck();
+        if (!deck.isEmpty()) {
+            PhysicalCard card = deck.getFirst();
+            removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
+            addCardToZone(card, Zone.HAND);
+        }
+    }
+
 
     public void sendGameStats() {
         for (GameStateListener listener : getAllGameStateListeners())
@@ -435,13 +470,27 @@ public abstract class GameState {
             listener.sendWarning(player, warning);
     }
 
-    public void addToPlayerScore(String playerId, int points) {
+    public void addToPlayerScore(String playerId, int points) throws PlayerNotFoundException {
         getPlayer(playerId).scorePoints(points);
         for (GameStateListener listener : getAllGameStateListeners())
             listener.setPlayerScore(playerId);
     }
 
-    public Player getPlayer(String playerId) { return _players.get(playerId); }
+    public void addToPlayerScore(Player player, int points) {
+        player.scorePoints(points);
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.setPlayerScore(player.getPlayerId());
+    }
+
+
+    public Player getPlayer(String playerId) throws PlayerNotFoundException {
+        Player player = _players.get(playerId);
+        if (player != null) {
+            return player;
+        } else {
+            throw new PlayerNotFoundException("Player " + playerId + " not found");
+        }
+    }
     public Collection<Player> getPlayers() { return _players.values(); }
 
     public void discardHand(String playerId) {
@@ -452,7 +501,9 @@ public abstract class GameState {
         }
     }
 
-    public Player getCurrentPlayer() { return getPlayer(getCurrentPlayerId()); }
+    public Player getCurrentPlayer() throws PlayerNotFoundException {
+        return getPlayer(getCurrentPlayerId());
+    }
 
     public int getAndIncrementNextCardId() {
         int cardId = _nextCardId;

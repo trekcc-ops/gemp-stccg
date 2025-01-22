@@ -69,6 +69,12 @@ public class PlayerOrder {
     }
 
     @JsonIgnore
+    public ActionOrder getClockwisePlayOrder(Player startingPlayer, boolean looped) {
+        return getClockwisePlayOrder(startingPlayer.getPlayerId(), looped);
+    }
+
+
+    @JsonIgnore
     public ActionOrder getStandardPlayOrder(String startingPlayerId, boolean looped) {
         if (!_isReversed) {
             return getClockwisePlayOrder(startingPlayerId, looped);

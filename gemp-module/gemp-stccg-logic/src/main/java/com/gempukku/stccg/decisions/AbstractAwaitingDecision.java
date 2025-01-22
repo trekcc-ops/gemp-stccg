@@ -3,6 +3,7 @@ package com.gempukku.stccg.decisions;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,7 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
         return _params;
     }
 
-    public Player getDecidingPlayer(DefaultGame game) { return game.getPlayer(_decidingPlayerId); }
+    public Player getDecidingPlayer(DefaultGame game) throws PlayerNotFoundException {
+        return game.getPlayer(_decidingPlayerId); }
     public String getDecidingPlayerId() { return _decidingPlayerId; }
 }

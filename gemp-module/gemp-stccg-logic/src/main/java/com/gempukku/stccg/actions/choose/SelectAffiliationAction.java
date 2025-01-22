@@ -10,6 +10,7 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.*;
@@ -39,7 +40,7 @@ public class SelectAffiliationAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
         if (_affiliationOptions.size() > 1 && _decision == null) {
             Map<String, Affiliation> affiliationStringMap = new HashMap<>();
             List<String> affiliationStrings = new ArrayList<>();

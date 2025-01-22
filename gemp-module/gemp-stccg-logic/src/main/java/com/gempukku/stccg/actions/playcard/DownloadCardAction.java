@@ -16,6 +16,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 
@@ -42,17 +43,23 @@ public class DownloadCardAction extends ActionyAction {
 
     @JsonIgnore
     protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
-        List<PhysicalCard> sourceCards;
-        if (_fromZone == Zone.HAND)
-            sourceCards = gameState.getHand(_performingPlayerId);
-        else if (_fromZone == Zone.DISCARD)
-            sourceCards = gameState.getDiscard(_performingPlayerId);
-        else if (_fromZone == Zone.DRAW_DECK)
-            sourceCards = gameState.getDrawDeck(_performingPlayerId);
-        else throw new RuntimeException(
-                "Error in ChooseAndPlayCardFromZoneEffect processing for zone " + _fromZone.getHumanReadable());
+        try {
+            List<PhysicalCard> sourceCards;
+            Player performingPlayer = gameState.getPlayer(_performingPlayerId);
+            if (_fromZone == Zone.HAND)
+                sourceCards = performingPlayer.getCardsInHand();
+            else if (_fromZone == Zone.DISCARD)
+                sourceCards = performingPlayer.getCardsInGroup(Zone.DISCARD);
+            else if (_fromZone == Zone.DRAW_DECK)
+                sourceCards = performingPlayer.getCardsInDrawDeck();
+            else throw new RuntimeException(
+                        "Error in ChooseAndPlayCardFromZoneEffect processing for zone " + _fromZone.getHumanReadable());
 
-        return Filters.filter(sourceCards, gameState.getGame(), _filter, Filters.playable);
+            return Filters.filter(sourceCards, gameState.getGame(), _filter, Filters.playable);
+        } catch(PlayerNotFoundException exp) {
+            gameState.sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
     }
 
     protected void playCard(final PhysicalCard selectedCard) {
@@ -79,7 +86,7 @@ public class DownloadCardAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         GameState gameState = cardGame.getGameState();
         Collection<PhysicalCard> playableCards = getPlayableCards(gameState);

@@ -9,9 +9,8 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.ActionOrder;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
@@ -25,11 +24,12 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         String playerId = cardGame.getCurrentPlayerId();
+        Player player = cardGame.getCurrentPlayer();
         for (PhysicalCard card : Filters.filterActive(cardGame, Filters.ship))
             ((PhysicalShipCard) card).restoreRange();
-        cardGame.getGameState().playerDrawsCard(playerId);
+        cardGame.getGameState().playerDrawsCard(player);
         cardGame.sendMessage(playerId + " drew their normal end-of-turn card draw");
         final List<TopLevelSelectableAction> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(playerId);
@@ -52,13 +52,15 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess(DefaultGame cardGame) {
+    public GameProcess getNextProcess(DefaultGame cardGame) throws PlayerNotFoundException {
+        GameState gameState = cardGame.getGameState();
         cardGame.getModifiersEnvironment().signalEndOfTurn(); // Remove "until end of turn" modifiers
         cardGame.getActionsEnvironment().signalEndOfTurn(); // Remove "until end of turn" permitted actions
-        cardGame.getGameState().sendMessage(cardGame.getCurrentPlayerId() + " ended their turn");
-        cardGame.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
-        String playerId = cardGame.getGameState().getCurrentPlayerId();
-        ActionOrder actionOrder = cardGame.getGameState().getPlayerOrder().getClockwisePlayOrder(playerId, false);
+        cardGame.sendMessage(cardGame.getCurrentPlayerId() + " ended their turn");
+        gameState.setCurrentPhase(Phase.BETWEEN_TURNS);
+        Player currentPlayer = cardGame.getCurrentPlayer();
+        ActionOrder actionOrder =
+                cardGame.getGameState().getPlayerOrder().getClockwisePlayOrder(currentPlayer, false);
         actionOrder.getNextPlayer();
 
         String nextPlayer = actionOrder.getNextPlayer();

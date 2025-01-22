@@ -12,7 +12,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.google.common.collect.Iterables;
 
 import java.util.List;
 

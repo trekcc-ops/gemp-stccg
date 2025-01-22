@@ -3,6 +3,7 @@ package com.gempukku.stccg.processes.tribbles;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.processes.GameProcess;
@@ -13,7 +14,7 @@ public class TribblesBetweenTurnsProcess extends TribblesGameProcess {
         super(game);
     }
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         TribblesGameState gameState = _game.getGameState();
         _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
         ActionOrder actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(gameState.getCurrentPlayerId(), false);
@@ -21,7 +22,7 @@ public class TribblesBetweenTurnsProcess extends TribblesGameProcess {
         actionOrder.getNextPlayer(); // TODO: This call is necessary but not logical
         String currentPlayer = actionOrder.getNextPlayer();
 
-        while (_game.getGameState().getPlayerDecked(currentPlayer)) {
+        while (_game.getPlayer(currentPlayer).isDecked()) {
             _game.sendMessage(currentPlayer + " is decked. Skipping their turn.");
             actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(currentPlayer, false);
             currentPlayer = actionOrder.getNextPlayer();

@@ -14,6 +14,7 @@ import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -86,7 +87,8 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     @Override
     public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+            throws PlayerNotFoundException {
         return _blueprint.getEncounterActions(this, game, attemptingUnit, action, missionLocation);
     }
 

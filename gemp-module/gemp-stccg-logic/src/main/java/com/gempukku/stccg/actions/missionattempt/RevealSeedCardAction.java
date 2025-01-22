@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.PlayerCannotSolveMissionModifier;
@@ -31,7 +32,8 @@ public class RevealSeedCardAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException,
+            PlayerNotFoundException {
         if (!getProgress(Progress.misSeedResolved)) {
             PhysicalCard revealedCard = cardGame.getCardFromCardId(_revealedCardId);
             Action attemptAction = cardGame.getActionById(_missionAttemptActionId);

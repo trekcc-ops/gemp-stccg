@@ -9,7 +9,7 @@ import com.gempukku.stccg.game.Player;
 public class STCCGPlayCardAction extends PlayCardAction {
 
     public STCCGPlayCardAction(ST1EPhysicalCard card, Zone zone, Player player, boolean forFree) {
-        super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
+        super(card, card, player, zone, ActionType.PLAY_CARD);
         setText("Play " + card.getFullName());
         if (!forFree)
             appendCost(new UseNormalCardPlayAction(player));
@@ -17,7 +17,7 @@ public class STCCGPlayCardAction extends PlayCardAction {
 
     public STCCGPlayCardAction(PhysicalCard card, Zone zone, Player player, boolean forFree,
                                Enum<?>[] progressValues) {
-        super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD, progressValues);
+        super(card, card, player, zone, ActionType.PLAY_CARD, progressValues);
         setText("Play " + card.getFullName());
         if (!forFree)
             appendCost(new UseNormalCardPlayAction(player));

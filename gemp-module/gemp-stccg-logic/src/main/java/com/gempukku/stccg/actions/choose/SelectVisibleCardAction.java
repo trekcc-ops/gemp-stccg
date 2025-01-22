@@ -9,6 +9,7 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -44,7 +45,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         _selectableCards.resolve(cardGame);
         Collection<PhysicalCard> selectableCards = _selectableCards.getCards(cardGame);
         if (selectableCards.size() == 1) {

@@ -12,6 +12,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
@@ -47,14 +48,14 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             MissionLocation missionLocation = _missionCard.getLocation();
             Player player = cardGame.getPlayer(_performingPlayerId);
             return missionLocation.mayBeAttemptedByPlayer(player);
-        } catch(InvalidGameLogicException exp) {
+        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
         }
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         MissionLocation missionLocation = _missionCard.getLocation();
         Player player = cardGame.getPlayer(_performingPlayerId);
 
@@ -138,7 +139,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         return getNextAction();
     }
 
-    private void solveMission(DefaultGame cardGame) throws InvalidGameLogicException {
+    private void solveMission(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         setProgress(Progress.solvedMission);
         MissionLocation missionLocation = _missionCard.getLocation();
         missionLocation.complete(_performingPlayerId);

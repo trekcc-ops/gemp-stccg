@@ -8,13 +8,15 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
 
 public class MakeDecisionAction extends ActionyAction {
     private final AwaitingDecision _decision;
 
-    public MakeDecisionAction(PhysicalCard performingCard, AwaitingDecision decision) {
+    public MakeDecisionAction(PhysicalCard performingCard, AwaitingDecision decision)
+            throws PlayerNotFoundException {
         super(decision.getDecidingPlayer(performingCard.getGame()), decision.getText(), ActionType.MAKE_DECISION);
         _decision = decision;
     }

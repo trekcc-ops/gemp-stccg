@@ -140,8 +140,8 @@ public abstract class DefaultGame {
         if (getPlayers() == null || getPlayers().isEmpty())
             return;
 
-        for (String playerId : getAllPlayerIds()) {
-            for(PhysicalCard card : getPlayer(playerId).getCardsInDrawDeck()) {
+        for (Player player : getPlayers()) {
+            for(PhysicalCard card : player.getCardsInDrawDeck()) {
                 for (GameStateListener listener : getAllGameStateListeners()) {
                     getGameState().sendCreatedCardToListener(
                             card, false, listener, true, true);
@@ -158,7 +158,11 @@ public abstract class DefaultGame {
             if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
             if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
 
-            gameState.sendCardsToClient(playerId, listener, restoreSnapshot);
+            try {
+                gameState.sendCardsToClient(playerId, listener, restoreSnapshot);
+            } catch(PlayerNotFoundException exp) {
+                sendErrorMessage(exp);
+            }
         }
         for (String lastMessage : getMessages())
             listener.sendMessage(lastMessage);
@@ -239,29 +243,41 @@ public abstract class DefaultGame {
     public abstract TurnProcedure getTurnProcedure();
 
     public void startGame() {
-        if (!_cancelled)
-            getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
-    }
-
-    public void carryOutPendingActionsUntilDecisionNeeded() {
-        if (!_cancelled) {
-            getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
-
-            while (_snapshotToRestore != null) {
-//                restoreSnapshot();
-                carryOutPendingActionsUntilDecisionNeeded();
-            }
+        try {
+            if (!_cancelled)
+                getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
+        } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
+            sendErrorMessage(exp);
         }
     }
 
-    public Player getPlayer(int index) { return getGameState().getPlayer(getAllPlayerIds()[index-1]); }
-    public Player getPlayer(String playerId) { return getGameState().getPlayer(playerId); }
+    public void carryOutPendingActionsUntilDecisionNeeded() {
+        try {
+            if (!_cancelled) {
+                getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
+
+                while (_snapshotToRestore != null) {
+//                restoreSnapshot();
+                    carryOutPendingActionsUntilDecisionNeeded();
+                }
+            }
+        } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
+            sendErrorMessage(exp);
+        }
+    }
+
+    public Player getPlayer(int index) throws PlayerNotFoundException {
+        return getGameState().getPlayer(getAllPlayerIds()[index-1]);
+    }
+    public Player getPlayer(String playerId) throws PlayerNotFoundException {
+        return getGameState().getPlayer(playerId);
+    }
 
     public String[] getAllPlayerIds() {
         return _allPlayerIds.toArray(new String[0]);
     }
 
-    public Player getCurrentPlayer() {
+    public Player getCurrentPlayer() throws PlayerNotFoundException {
         GameState gameState = getGameState();
         return gameState.getCurrentPlayer();
     }
@@ -276,7 +292,7 @@ public abstract class DefaultGame {
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
     }
 
-    public Player getOpponent(Player player) {
+    public Player getOpponent(Player player) throws PlayerNotFoundException {
         return getPlayer(getOpponent(player.getPlayerId()));
     }
 
@@ -310,7 +326,12 @@ public abstract class DefaultGame {
      */
     public void takeSnapshot(String description) {
         // TODO - Star Wars code used PlayCardStates here
-        pruneSnapshots();
+        try {
+            pruneSnapshots();
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+            sendErrorMessage("Unable to prune game state snapshots");
+        }
         // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
         ++_nextSnapshotId;
         _snapshots.add(new GameSnapshot(_nextSnapshotId, description, getGameState()));
@@ -319,13 +340,14 @@ public abstract class DefaultGame {
     /**
      * Prunes older snapshots.
      */
-    private void pruneSnapshots() {
+    private void pruneSnapshots() throws PlayerNotFoundException {
         // Remove old snapshots until reaching snapshots to keep
         for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
             GameSnapshot gameSnapshot = iterator.next();
-            String snapshotCurrentPlayer = gameSnapshot.getCurrentPlayerId();
+            String snapshotCurrentPlayerId = gameSnapshot.getCurrentPlayerId();
+            Player snapshotCurrentPlayer = getPlayer(snapshotCurrentPlayerId);
             int snapshotCurrentTurnNumber = gameSnapshot.getCurrentTurnNumber();
-            int currentTurnNumber = getPlayer(snapshotCurrentPlayer).getTurnNumber();
+            int currentTurnNumber = snapshotCurrentPlayer.getTurnNumber();
             if (snapshotCurrentTurnNumber <= 1 && currentTurnNumber <= 1) {
                 break;
             }
@@ -397,6 +419,10 @@ public abstract class DefaultGame {
         sendMessage(message);
     }
 
+    public void sendErrorMessage(String message) {
+        sendMessage("ERROR: " + message);
+    }
+
     public Action getActionById(int actionId) {
         ActionsEnvironment environment = getActionsEnvironment();
         return environment.getActionById(actionId);
@@ -435,5 +461,15 @@ public abstract class DefaultGame {
         return Collections.unmodifiableMap(_previousZoneSizes);
     }
 
+    public void activatedCard(String playerPerforming, PhysicalCard card) {
+        for (GameStateListener listener : getAllGameStateListeners()) {
+            try {
+                GameEvent event = new GameEvent(GameEvent.Type.FLASH_CARD_IN_PLAY, card, getPlayer(playerPerforming));
+                listener.sendEvent(event);
+            } catch(PlayerNotFoundException exp) {
+                sendErrorMessage(exp);
+            }
+        }
+    }
 
 }

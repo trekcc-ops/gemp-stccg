@@ -13,6 +13,7 @@ import com.gempukku.stccg.evaluator.SkillDotCountEvaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         int totalDrawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
         if (_cardsAlreadyDrawnCount < totalDrawCount) {
             cardGame.getGameState().playerDrawsCard(_performingPlayerId);

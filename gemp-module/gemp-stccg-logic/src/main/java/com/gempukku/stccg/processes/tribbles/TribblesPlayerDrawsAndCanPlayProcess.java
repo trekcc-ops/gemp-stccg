@@ -8,6 +8,8 @@ import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -20,16 +22,17 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
-        String playerId = _game.getCurrentPlayerId();
-        if (_game.getGameState().getDrawDeck(playerId).isEmpty()) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
+        Player currentPlayer = _game.getCurrentPlayer();
+        String playerId = currentPlayer.getPlayerId();
+        if (currentPlayer.getCardsInDrawDeck().isEmpty()) {
             _game.sendMessage(playerId + " can't draw a card");
-            _game.getGameState().setPlayerDecked(playerId, true);
+            _game.getGameState().setPlayerDecked(currentPlayer, true);
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            _game.getGameState().playerDrawsCard(playerId);
+            _game.getGameState().playerDrawsCard(currentPlayer);
             _game.sendMessage(playerId + " drew a card");
-            List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(playerId);
+            List<? extends PhysicalCard> playerHand = currentPlayer.getCardsInHand();
             PhysicalCard cardDrawn = playerHand.getLast();
             final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
             if (cardDrawn.canBePlayed(_game)) {
@@ -47,7 +50,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
                     userMessage = "Play card that was just drawn or click 'Pass' to end your turn.";
                 }
                 _game.getUserFeedback().sendAwaitingDecision(
-                        new CardActionSelectionDecision(_game.getPlayer(playerId), userMessage, playableActions, _game) {
+                        new CardActionSelectionDecision(currentPlayer, userMessage, playableActions, _game) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);

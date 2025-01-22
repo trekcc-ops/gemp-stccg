@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
     public final void addEffectToAction(boolean cost, CardPerformedAction action, ActionContext actionContext) {
         final SystemQueueAction sysAction = new SystemQueueAction(actionContext.getGame()) {
             @Override
-            public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+            public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
                 try {
                     // Need to insert them, but in the reverse order
                     final List<Action> actions = createActions(action, actionContext);
@@ -44,7 +45,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
 
 
     abstract protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
-            throws InvalidGameLogicException, InvalidCardDefinitionException;
+            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException;
 
     @Override
     public boolean isPlayableInFull(ActionContext actionContext) {

@@ -14,6 +14,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Action cost = getNextCost();
         if (cost != null)
             return cost;
@@ -57,7 +58,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
                             throws DecisionResultInvalidException {
                         try {
                             firstPlayerChosen(players, result, cardGame);
-                        } catch(InvalidGameLogicException exp) {
+                        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             throw new DecisionResultInvalidException(exp.getMessage());
                         }
                     }
@@ -67,7 +68,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     }
 
     private void firstPlayerChosen(List<String> allPlayers, String chosenPlayer, DefaultGame game)
-            throws InvalidGameLogicException {
+            throws InvalidGameLogicException, PlayerNotFoundException {
         _discardingPlayerId = chosenPlayer;
         List<String> newSelectablePlayers = new ArrayList<>(allPlayers);
         newSelectablePlayers.remove(chosenPlayer);
@@ -83,7 +84,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
                                 throws DecisionResultInvalidException {
                             try {
                                 secondPlayerChosen(result, game);
-                            } catch(InvalidGameLogicException exp) {
+                            } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }
                         }
@@ -91,7 +92,8 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         }
     }
 
-    private void secondPlayerChosen(String secondPlayerChosen, DefaultGame game) throws InvalidGameLogicException {
+    private void secondPlayerChosen(String secondPlayerChosen, DefaultGame game)
+            throws InvalidGameLogicException, PlayerNotFoundException {
         Player discardingPlayer = game.getPlayer(_discardingPlayerId);
         SelectVisibleCardAction discardSelectAction =
                 new SelectVisibleCardAction(discardingPlayer, "Choose a card to discard",
@@ -106,7 +108,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
 
         if (!(Objects.equals(_discardingPlayerId, _performingPlayerId) ||
                 Objects.equals(secondPlayerChosen, _performingPlayerId))) {
-            appendEffect(new ScorePointsAction(game, _performingCard, _performingPlayerId, BONUS_POINTS));
+            appendEffect(new ScorePointsAction(_performingCard, discardingPlayer, BONUS_POINTS));
         }
     }
 

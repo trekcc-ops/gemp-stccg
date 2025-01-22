@@ -9,6 +9,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -43,7 +44,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
         if (_presentedOptions.size() == 1) {
             attemptingUnitChosen(_eligibleUnits.getFirst());
         } else {

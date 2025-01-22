@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.turn;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 
 public class EndTurnAction extends SystemQueueAction {
@@ -22,8 +23,8 @@ public class EndTurnAction extends SystemQueueAction {
 
         if (cardGame instanceof TribblesGame tribblesGame) {
             boolean playerWentOut = false;
-            for (String playerId : cardGame.getPlayerIds()) {
-                if (cardGame.getGameState().getHand(playerId).isEmpty()) {
+            for (Player player : cardGame.getPlayers()) {
+                if (player.getCardsInHand().isEmpty()) {
                     playerWentOut = true;
                 }
             }

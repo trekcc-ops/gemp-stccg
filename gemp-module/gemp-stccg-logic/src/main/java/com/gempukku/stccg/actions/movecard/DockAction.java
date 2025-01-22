@@ -8,10 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 
 import java.util.Collection;
 
@@ -45,7 +42,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     public PhysicalCard getPerformingCard() { return _cardToDock; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
 //        if (!isAnyCostFailed()) {
 
         Action cost = getNextCost();

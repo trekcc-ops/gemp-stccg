@@ -21,14 +21,15 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
         Map<String, Integer> pointsScored = new HashMap<>();
         TribblesGameState gameState = _game.getGameState();
 
-        for (String playerId : _game.getPlayerIds()) {
+        for (Player player : _game.getPlayers()) {
+            String playerId = player.getPlayerId();
 
             // Count the total number of Tribbles in the play piles of the players who "went out" and score points.
             if (gameState.getHand(playerId).isEmpty()) {
                 gameState.playerWentOut(); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 pointsScored.put(playerId, score);
-                gameState.addToPlayerScore(playerId, score);
+                gameState.addToPlayerScore(player, score);
                 _game.sendMessage(playerId + " went out with " + score + " points");
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
@@ -37,7 +38,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
             gameState.discardHand(playerId);
 
             // Each player then shuffles their play pile into their decks.
-            gameState.shufflePlayPileIntoDeck(cardGame.getPlayer(playerId));
+            gameState.shufflePlayPileIntoDeck(player);
         }
 
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfRound();

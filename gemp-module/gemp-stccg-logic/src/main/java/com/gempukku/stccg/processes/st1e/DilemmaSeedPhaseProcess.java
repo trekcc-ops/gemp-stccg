@@ -11,10 +11,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             if (_playersParticipating.contains(playerId))
                 try {
                     selectMissionToSeedUnder(playerId, stGame);
-                } catch(InvalidGameLogicException exp) {
+                } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                     cardGame.sendErrorMessage(exp);
                 }
         }
@@ -44,7 +41,8 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
 
     abstract List<MissionCard> getAvailableMissions(ST1EGame stGame, String playerId);
 
-    protected void selectMissionToSeedUnder(String playerId, ST1EGame cardGame) throws InvalidGameLogicException {
+    protected void selectMissionToSeedUnder(String playerId, ST1EGame cardGame)
+            throws InvalidGameLogicException, PlayerNotFoundException {
         if (getAvailableMissions(cardGame, playerId).isEmpty()) {
             _playersParticipating.remove(playerId);
         } else {
@@ -105,7 +103,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             cardGame.getGameState().preSeedCardsUnder(selectedCards, topCard, player);
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
-                        } catch(InvalidGameLogicException exp) {
+                        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             throw new DecisionResultInvalidException(exp.getMessage());
                         }
                     }
@@ -133,7 +131,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                                 cardGame.getGameState().addCardToZone(card, Zone.HAND);
                             }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
-                        } catch(InvalidGameLogicException exp) {
+                        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             cardGame.sendErrorMessage(exp);
                         }
                     }

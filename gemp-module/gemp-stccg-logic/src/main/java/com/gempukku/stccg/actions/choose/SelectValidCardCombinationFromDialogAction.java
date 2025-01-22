@@ -15,6 +15,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -46,7 +47,7 @@ public class SelectValidCardCombinationFromDialogAction extends ActionyAction im
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         AwaitingDecision decision = new ArbitraryCardsSelectionDecision(performingPlayer, _choiceText,
                 _selectableCards, _validCombinations, MINIMUM, _maximum, cardGame) {

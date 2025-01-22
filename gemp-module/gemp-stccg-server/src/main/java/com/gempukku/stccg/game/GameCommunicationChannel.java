@@ -79,7 +79,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     @Override
     public final void setPlayerScore(String playerId) {
-        appendEvent(new GameEvent(GameEvent.Type.PLAYER_SCORE, _game.getGameState().getPlayer(playerId)));
+        appendEvent(new GameEvent(GameEvent.Type.PLAYER_SCORE, playerId));
     }
 
     @Override
@@ -89,7 +89,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     @Override
     public final void setCurrentPlayerId(String playerId) {
-        appendEvent(new GameEvent(GameEvent.Type.TURN_CHANGE, _game.getGameState().getPlayer(playerId)));
+        appendEvent(new GameEvent(GameEvent.Type.TURN_CHANGE, playerId));
     }
 
     @Override

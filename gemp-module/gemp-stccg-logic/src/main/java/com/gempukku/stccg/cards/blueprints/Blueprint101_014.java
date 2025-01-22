@@ -13,6 +13,7 @@ import com.gempukku.stccg.condition.missionrequirements.AndMissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -27,7 +28,8 @@ public class Blueprint101_014 extends CardBlueprint {
 
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+            throws PlayerNotFoundException {
         List<Action> result = new LinkedList<>();
         MissionRequirement conditions = new AndMissionRequirement(SkillName.MEDICAL, SkillName.SECURITY);
 

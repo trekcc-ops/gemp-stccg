@@ -10,6 +10,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -63,7 +64,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         _selectableCardsResolver.resolve(cardGame);
         Collection<PhysicalCard> selectableCards = _selectableCardsResolver.getCards(cardGame);
 

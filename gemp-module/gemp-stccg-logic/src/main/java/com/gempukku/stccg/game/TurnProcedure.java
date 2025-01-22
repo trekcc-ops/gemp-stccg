@@ -26,7 +26,8 @@ public class TurnProcedure {
     }
 
 
-    public void carryOutPendingActionsUntilDecisionNeeded() {
+    public void carryOutPendingActionsUntilDecisionNeeded() throws PlayerNotFoundException, InvalidGameLogicException,
+            CardNotFoundException {
         int numSinceDecision = 0;
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
 
@@ -34,7 +35,9 @@ public class TurnProcedure {
             numSinceDecision++;
             // First check for any "state-based" effects
             Set<ActionResult> actionResults = actionsEnvironment.consumeEffectResults();
-            actionResults.forEach(effectResult -> effectResult.createOptionalAfterTriggerActions(_game));
+            for (ActionResult result : actionResults) {
+                result.createOptionalAfterTriggerActions(_game);
+            }
             if (actionResults.isEmpty()) {
                 if (actionsEnvironment.hasNoActionsInProgress())
                     try {
@@ -55,7 +58,7 @@ public class TurnProcedure {
         }
     }
 
-    private void continueCurrentProcess() throws InvalidGameLogicException {
+    private void continueCurrentProcess() throws InvalidGameLogicException, PlayerNotFoundException {
         if (_currentGameProcess.isFinished()) {
             _currentGameProcess = _currentGameProcess.getNextProcess(_game);
         } else {
@@ -66,40 +69,37 @@ public class TurnProcedure {
         }
     }
 
-    private void executeNextSubaction() {
+    private void executeNextSubaction() throws PlayerNotFoundException, InvalidGameLogicException,
+            CardNotFoundException {
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
         Action currentAction = actionsEnvironment.getCurrentAction();
 
-        try {
-            Action nextAction = currentAction.nextAction(_game);
-            boolean addSubAction;
-            boolean removeFromStack;
-            if (currentAction instanceof SelectAffiliationAction) {
+        Action nextAction = currentAction.nextAction(_game);
+        boolean addSubAction;
+        boolean removeFromStack;
+        if (currentAction instanceof SelectAffiliationAction) {
+            addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
+            removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
+        } else if (currentAction instanceof SelectAndInsertAction) {
                 addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
                 removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
-            } else if (currentAction instanceof SelectAndInsertAction) {
-                    addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
-                    removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
-            } else if (currentAction instanceof StopCardsAction) {
-                addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
-                removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
-            } else {
-                addSubAction = nextAction != null;
-                removeFromStack = nextAction == null;
-            }
+        } else if (currentAction instanceof StopCardsAction) {
+            addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
+            removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
+        } else {
+            addSubAction = nextAction != null;
+            removeFromStack = nextAction == null;
+        }
 
-            if (addSubAction) {
-                if (nextAction == null) {
-                    System.out.println("Wait a tick");
-                }
-                _game.getActionsEnvironment().addActionToStack(nextAction);
-            } else if (removeFromStack) {
-                actionsEnvironment.removeCompletedActionFromStack(currentAction);
-            } else if (!_game.isCarryingOutEffects()) {
-                throw new InvalidGameLogicException("Unable to process action");
+        if (addSubAction) {
+            if (nextAction == null) {
+                System.out.println("Wait a tick");
             }
-        } catch (InvalidGameLogicException | CardNotFoundException exp) {
-            _game.sendErrorMessage(exp);
+            _game.getActionsEnvironment().addActionToStack(nextAction);
+        } else if (removeFromStack) {
+            actionsEnvironment.removeCompletedActionFromStack(currentAction);
+        } else if (!_game.isCarryingOutEffects()) {
+            throw new InvalidGameLogicException("Unable to process action");
         }
     }
 

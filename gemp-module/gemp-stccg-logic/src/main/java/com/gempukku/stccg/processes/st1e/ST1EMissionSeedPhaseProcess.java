@@ -30,7 +30,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) throws InvalidGameLogicException {
+    public void process(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         String _currentPlayer = cardGame.getCurrentPlayerId();
 
         final List<TopLevelSelectableAction> playableActions =
@@ -72,10 +72,10 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
             ST1EGameState gameState = getST1EGame(cardGame).getGameState();
             gameState.setCurrentPhase(Phase.SEED_DILEMMA);
-            for (String player : cardGame.getPlayerIds()) {
-                List<PhysicalCard> remainingSeeds = new LinkedList<>(gameState.getSeedDeck(player));
+            for (Player player : cardGame.getPlayers()) {
+                List<PhysicalCard> remainingSeeds = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeeds) {
-                    gameState.removeCardsFromZone(player, Collections.singleton(card));
+                    gameState.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
                     gameState.addCardToZone(card, Zone.HAND);
                 }
             }

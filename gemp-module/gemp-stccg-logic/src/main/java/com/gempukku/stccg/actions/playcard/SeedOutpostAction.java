@@ -2,9 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
-import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -14,13 +12,12 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
 
-import javax.naming.spi.Resolver;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class SeedOutpostAction extends PlayCardAction {
@@ -30,7 +27,7 @@ public class SeedOutpostAction extends PlayCardAction {
     private enum Progress { cardWasSeeded, placementChosen, affiliationSelected }
 
     public SeedOutpostAction(FacilityCard cardToSeed) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
+        super(cardToSeed, cardToSeed, cardToSeed.getOwner(), Zone.AT_LOCATION,
                 ActionType.SEED_CARD, Progress.values());
         setText("Seed " + _cardEnteringPlay.getFullName());
         if (!cardToSeed.isMultiAffiliation()) {
@@ -40,7 +37,7 @@ public class SeedOutpostAction extends PlayCardAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (_cardEnteringPlay instanceof FacilityCard facility) {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             ST1EGameState gameState = facility.getGame().getGameState();
@@ -113,8 +110,7 @@ public class SeedOutpostAction extends PlayCardAction {
 
                 cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
                 gameState.removeCardFromZone(_cardEnteringPlay);
-                gameState.getPlayer(_cardEnteringPlay.getOwnerName())
-                        .addPlayedAffiliation(facility.getAffiliation());
+                performingPlayer.addPlayedAffiliation(facility.getAffiliation());
                 gameState.seedFacilityAtLocation(facility,
                         Iterables.getOnlyElement(_destinationTarget.getCards(cardGame)).getLocationZoneIndex());
                 cardGame.getActionsEnvironment().emitEffectResult(

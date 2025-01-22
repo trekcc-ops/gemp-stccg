@@ -10,6 +10,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -48,7 +49,7 @@ public class SelectAndInsertAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (_decision == null) {
             List<TopLevelSelectableAction> performableActions = new LinkedList<>();
             List<String> actionTexts = new LinkedList<>();

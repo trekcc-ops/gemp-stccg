@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     }
 
 
-    public void doPlayEffect(DefaultGame cardGame) throws CardNotFoundException {
+    public void doPlayEffect(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException {
         ActionsEnvironment environment = cardGame.getActionsEnvironment();
         if (_responses.size() == 1) {
             environment.addActionToStack(_responses.getFirst());
@@ -62,7 +63,7 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws CardNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException {
         if (!_initialized) {
             _initialized = true;
             doPlayEffect(cardGame);

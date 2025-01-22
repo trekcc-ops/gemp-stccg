@@ -73,6 +73,7 @@ public class GameEvent {
         _eventAttributes.put(Attribute.timestamp,
                 ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS")));
     }
+
     public GameEvent(Type type, Player player) {
         this(type);
         _eventAttributes.put(Attribute.participantId, player.getPlayerId());
@@ -85,6 +86,12 @@ public class GameEvent {
     public GameEvent(Type type, PhysicalCard card) {
         this(type, card.getOwner());
         setCardData(card);
+    }
+
+    public GameEvent(Type type, Collection<PhysicalCard> cards, String playerId) {
+        this(type);
+        setOtherCards(cards);
+        _eventAttributes.put(Attribute.participantId, playerId);
     }
 
     public GameEvent(Type type, Collection<PhysicalCard> cards, Player player) {

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.processes.st1e.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "className")
@@ -36,10 +37,10 @@ public abstract class GameProcess {
         _isFinished = isFinished;
     }
 
-    public abstract void process(DefaultGame cardGame) throws InvalidGameLogicException;
+    public abstract void process(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException;
 
     @JsonIgnore
-    public abstract GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException;
+    public abstract GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException;
 
     @JsonProperty("isFinished")
     public boolean isFinished() { return _isFinished; }

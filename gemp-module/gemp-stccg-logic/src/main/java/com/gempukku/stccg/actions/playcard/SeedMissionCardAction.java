@@ -11,6 +11,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.Objects;
@@ -26,7 +27,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     private boolean _actionCarriedOut;
 
     public SeedMissionCardAction(MissionCard cardToPlay) {
-        super(cardToPlay, cardToPlay, cardToPlay.getOwnerName(), Zone.SPACELINE, ActionType.SEED_CARD);
+        super(cardToPlay, cardToPlay, cardToPlay.getOwner(), Zone.SPACELINE, ActionType.SEED_CARD);
         _cardEnteringPlay = cardToPlay;
         setText("Seed " + _cardEnteringPlay.getFullName());
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
@@ -37,7 +38,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
         Region region = _cardEnteringPlay.getBlueprint().getRegion();

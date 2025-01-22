@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.processes.GameProcess;
@@ -14,7 +15,7 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         TribblesGameState gameState = _game.getGameState();
         gameState.advanceRound();
 

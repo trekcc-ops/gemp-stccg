@@ -74,11 +74,10 @@ public class MissionLocation {
         throw new InvalidGameLogicException("Could not find valid mission properties for player " + playerId + " at " + _locationName);
     }
 
-    public boolean hasFacilityOwnedByPlayer(String playerId) {
+    public boolean hasFacilityOwnedByPlayer(Player player) {
             // TODO - Is this accurately capturing "owned by" as necessary?
-        GameState gameState = _game.getGameState();
-        Player player = gameState.getPlayer(playerId);
-        Collection<PhysicalCard> cards = Filters.filterYourActive(_game, player, CardType.FACILITY, Filters.atLocation(this));
+        Collection<PhysicalCard> cards =
+                Filters.filterYourActive(_game, player, CardType.FACILITY, Filters.atLocation(this));
         return !cards.isEmpty();
     }
 
@@ -168,7 +167,7 @@ public class MissionLocation {
         return card.getBlueprint().getMissionRequirements();
     }
 
-    public void complete(String completingPlayerId) throws InvalidGameLogicException {
+    public void complete(String completingPlayerId) throws InvalidGameLogicException, PlayerNotFoundException {
         MissionCard missionCard = getMissionForPlayer(completingPlayerId);
         _isCompleted = true;
         _game.getGameState().getPlayer(completingPlayerId).scorePoints(missionCard.getPoints());

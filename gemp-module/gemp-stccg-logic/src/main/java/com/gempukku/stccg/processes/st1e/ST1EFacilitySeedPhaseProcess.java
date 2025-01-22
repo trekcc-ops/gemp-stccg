@@ -13,6 +13,7 @@ import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
 import java.beans.ConstructorProperties;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -27,16 +28,16 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
-        String _currentPlayer = cardGame.getCurrentPlayerId();
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
+        Player currentPlayer = cardGame.getCurrentPlayer();
 
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(_currentPlayer);
+                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer.getPlayerId());
         if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(cardGame.getPlayer(_currentPlayer), "Play " +
+                    new CardActionSelectionDecision(currentPlayer, "Play " +
                             cardGame.getGameState().getCurrentPhase() + " action or Pass",
                             playableActions, cardGame) {
                         @Override
@@ -60,24 +61,23 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
         if (_consecutivePasses >= playerOrder.getPlayerCount()) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
 
-            Set<String> playerIds = cardGame.getPlayerIds();
+            Collection<Player> players = cardGame.getPlayers();
 
             ST1EGameState gameState = stGame.getGameState();
             cardGame.takeSnapshot("Start of play phase");
 
-            for (String playerId : playerIds) {
-                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(gameState.getHand(playerId));
+            for (Player player : players) {
+                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInHand());
                 for (PhysicalCard card : remainingSeedCards) {
                     gameState.removeCardFromZone(card);
                     gameState.addCardToZone(card, Zone.REMOVED);
                 }
             }
 
-            for (String playerId : playerIds) {
-                Player player = cardGame.getPlayer(playerId);
+            for (Player player : players) {
                 player.shuffleDrawDeck(cardGame);
                 for (int i = 0; i < cardGame.getFormat().getHandSize(); i++) {
-                    gameState.playerDrawsCard(playerId);
+                    gameState.playerDrawsCard(player);
                 }
             }
             gameState.sendMessage("Players drew starting hands");

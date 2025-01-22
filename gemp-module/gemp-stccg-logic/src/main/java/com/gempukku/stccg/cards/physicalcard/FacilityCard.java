@@ -11,10 +11,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -40,7 +37,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         try {
             if (mission.isHomeworld())
                 return false;
-            if (mission.hasFacilityOwnedByPlayer(_owner.getPlayerId()))
+            if (mission.hasFacilityOwnedByPlayer(_owner))
                 return false;
             return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) &&
                     mission.getQuadrant() == getNativeQuadrant();
@@ -62,13 +59,18 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
 
     @Override
     public boolean isControlledBy(String playerId) {
-        // TODO - Need to set modifiers for when cards get temporary control
-        if (!_zone.isInPlay())
+        try {
+            // TODO - Need to set modifiers for when cards get temporary control
+            if (!_zone.isInPlay())
+                return false;
+            if (playerId.equals(_owner.getPlayerId()))
+                return true;
+            return getFacilityType() == FacilityType.HEADQUARTERS &&
+                    _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getAffiliation());
+        } catch(PlayerNotFoundException exp) {
+            _game.sendErrorMessage(exp);
             return false;
-        if (playerId.equals(_owner.getPlayerId()))
-            return true;
-        return getFacilityType() == FacilityType.HEADQUARTERS &&
-                _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getAffiliation());
+        }
     }
 
     public boolean isUsableBy(String playerId) {

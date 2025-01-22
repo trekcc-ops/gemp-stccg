@@ -6,6 +6,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collections;
@@ -16,25 +18,23 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     protected final PhysicalCard _cardEnteringPlay;
     final Zone _destinationZone;
 
-    /**
-     * Creates an action for playing the specified card.
-     * @param actionSource the card to initiate the deployment
-     */
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerId,
+    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
                           Zone toZone, ActionType actionType) {
-        super(cardEnteringPlay.getGame().getPlayer(performingPlayerId), actionType);
+        super(performingPlayer, actionType);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
     }
 
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerId,
+
+    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
                           Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
-        super(cardEnteringPlay.getGame().getPlayer(performingPlayerId), actionType, progressValues);
+        super(performingPlayer, actionType, progressValues);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
     }
+
 
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -53,7 +53,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Action cost = getNextCost();
         if (cost != null)
             return cost;

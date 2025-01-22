@@ -31,7 +31,7 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
         if (!getProgress(Progress.sentMessage)) {
             setProgress(Progress.sentMessage);
             if (_performingCard != null) {
-                cardGame.getGameState().activatedCard(getPerformingPlayerId(), _performingCard);
+                cardGame.activatedCard(getPerformingPlayerId(), _performingCard);
                 cardGame.sendMessage(_performingCard.getCardLink() + " required triggered effect is used");
             }
         }

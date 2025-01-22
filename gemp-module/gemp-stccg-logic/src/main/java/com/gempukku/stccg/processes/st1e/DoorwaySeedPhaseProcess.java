@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.processes.GameProcess;
@@ -30,18 +31,18 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
     @Override
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
         ST1EGame stGame = getST1EGame(cardGame);
-        List<String> playerIds = new LinkedList<>(cardGame.getPlayerIds());
-        for (String playerId : playerIds) {
+        for (Player player : cardGame.getPlayers()) {
+            String playerId = player.getPlayerId();
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
             // TODO - Doorway seeding is a bit more complicated for cards like Bajoran Wormhole, or non-seedable doors
-            for (PhysicalCard seedCard : stGame.getGameState().getSeedDeck(playerId)) {
+            for (PhysicalCard seedCard : player.getCardsInGroup(Zone.SEED_DECK)) {
                 if (seedCard.getCardType() == CardType.DOORWAY)
                     doorwaySeeds.add(seedCard);
             }
             if (!doorwaySeeds.isEmpty()) {
                 String message = "Select cards to seed during doorway phase";
                 cardGame.getUserFeedback().sendAwaitingDecision(
-                        new ArbitraryCardsSelectionDecision(cardGame.getPlayer(playerId), message, doorwaySeeds,
+                        new ArbitraryCardsSelectionDecision(player, message, doorwaySeeds,
                                 cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {

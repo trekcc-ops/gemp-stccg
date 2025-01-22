@@ -15,6 +15,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.Collection;
@@ -56,7 +57,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         _selectableCardsTarget.resolve(cardGame);
         Collection<PhysicalCard> selectableCards = _selectableCardsTarget.getCards(cardGame);
         if (selectableCards.size() == _minimum) {

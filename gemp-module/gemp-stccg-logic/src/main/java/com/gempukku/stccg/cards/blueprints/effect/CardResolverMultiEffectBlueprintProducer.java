@@ -20,6 +20,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.google.common.collect.Iterables;
@@ -120,7 +121,8 @@ public class CardResolverMultiEffectBlueprintProducer {
         result.addEffectBlueprint(
                 new DelayedEffectBlueprint() {
                     @Override
-                    protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
+                    protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context)
+                            throws PlayerNotFoundException {
                         final Collection<PhysicalCard> cardsFromMemory = context.getCardsFromMemory(memory);
                         final List<Collection<PhysicalCard>> effectCardLists = new LinkedList<>();
 

@@ -3,10 +3,12 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Action cost = getNextCost();
         if (cost != null)
             return cost;
@@ -40,14 +42,19 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                             "Choose a player to score 25,000 points", opponentsArray, cardGame) {
                         @Override
-                        protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, cardGame);
+                        protected void validDecisionMade(int index, String result)
+                                throws DecisionResultInvalidException {
+                            try {
+                                playerChosen(result, cardGame);
+                            } catch(PlayerNotFoundException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         return getNextAction();
     }
 
-    private void playerChosen(String chosenPlayer, DefaultGame cardGame) {
+    private void playerChosen(String chosenPlayer, DefaultGame cardGame) throws PlayerNotFoundException {
         // You and one other player (your choice) each score 25,000 points.
         cardGame.getGameState().addToPlayerScore(_performingPlayerId, BONUS_POINTS);
         cardGame.getGameState().addToPlayerScore(chosenPlayer, BONUS_POINTS);

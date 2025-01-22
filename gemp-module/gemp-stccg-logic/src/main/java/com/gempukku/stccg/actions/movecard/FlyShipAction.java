@@ -6,10 +6,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -55,16 +52,17 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
     public PhysicalCard getPerformingCard() { return _flyingCard; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
 //        if (!isAnyCostFailed()) {
 
         Action cost = getNextCost();
         if (cost != null)
             return cost;
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (!_destinationChosen) {
             _selectAction =
-                    new SelectVisibleCardAction(cardGame.getPlayer(_performingPlayerId),
+                    new SelectVisibleCardAction(performingPlayer,
                             "Choose destination", _destinationOptions);
             if (_selectAction.wasCarriedOut()) {
                 _destinationChosen = true;
@@ -76,10 +74,9 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         }
 
         if (!_cardMoved) {
-            DefaultGame game = _flyingCard.getGame();
             int rangeNeeded =
                     _flyingCard.getLocation().getDistanceToLocation(_destination.getLocation(),
-                            game.getPlayer(_performingPlayerId));
+                            performingPlayer);
             _cardMoved = true;
             _flyingCard.useRange(rangeNeeded);
             _flyingCard.setLocation(_destination.getLocation());

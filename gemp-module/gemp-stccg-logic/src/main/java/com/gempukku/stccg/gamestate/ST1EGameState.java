@@ -40,12 +40,17 @@ public class ST1EGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        Player player = getPlayer(playerId);
-        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
-            return player.getCardGroup(zone);
-        else // This should never be accessed
-            return _inPlay; // TODO - Should this just be an exception?
+        try {
+            Player player = getPlayer(playerId);
+            if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
+                    zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
+                return player.getCardGroup(zone);
+            else // This should never be accessed
+                return _inPlay; // TODO - Should this just be an exception?
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
+            return new LinkedList<>();
+        }
     }
 
     public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
@@ -78,11 +83,6 @@ public class ST1EGameState extends GameState {
                 }
             }
         }
-    }
-
-    public List<PhysicalCard> getSeedDeck(String playerId) {
-        Player player = getPlayer(playerId);
-        return player.getCardsInGroup(Zone.SEED_DECK);
     }
 
     public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) throws InvalidGameLogicException {
@@ -182,7 +182,8 @@ public class ST1EGameState extends GameState {
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
     @Override
-    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
+            throws PlayerNotFoundException {
         Player player = getPlayer(playerId);
         boolean sharedMission;
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);

@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public class SelectSkillAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a skill",
                         _skillOptions.keySet(), cardGame) {

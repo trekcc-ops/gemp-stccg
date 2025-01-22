@@ -16,6 +16,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -34,7 +35,8 @@ public class Blueprint109_063 extends CardBlueprint {
     }
 
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
-                                                            ActionResult actionResult, DefaultGame cardGame) {
+                                                            ActionResult actionResult, DefaultGame cardGame)
+            throws PlayerNotFoundException {
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 thisCard.isControlledBy(player)) {
