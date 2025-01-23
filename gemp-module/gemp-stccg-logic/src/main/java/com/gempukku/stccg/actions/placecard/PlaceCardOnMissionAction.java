@@ -16,8 +16,9 @@ public class PlaceCardOnMissionAction extends ActionyAction {
     private final MissionLocation _mission;
 
 
-    public PlaceCardOnMissionAction(Player performingPlayer, PhysicalCard cardBeingPlaced, MissionLocation mission) {
-        super(mission.getGame(), performingPlayer, ActionType.PLACE_CARD);
+    public PlaceCardOnMissionAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard cardBeingPlaced,
+                                    MissionLocation mission) {
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
         _mission = mission;
         _cardBeingPlaced = cardBeingPlaced;
     }

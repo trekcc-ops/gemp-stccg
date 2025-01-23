@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "cardGroups", "decked" })
+@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class Player {
     @JsonProperty("playerId")

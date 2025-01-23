@@ -20,6 +20,16 @@ public class ST2EGameState extends GameState {
         _currentPhase = Phase.SEED_DOORWAY;
     }
 
+    public void checkVictoryConditions() {
+        // TODO - VERY simplistic. Just a straight race to 100.
+        // TODO - Does not account for possible scenario where both players go over 100 simultaneously
+        for (Player player : getPlayers()) {
+            int score = player.getScore();
+            if (score >= 100)
+                _game.playerWon(player.getPlayerId(), score + " points");
+        }
+    }
+
     @Override
     public ST2EGame getGame() { return _game; }
 }

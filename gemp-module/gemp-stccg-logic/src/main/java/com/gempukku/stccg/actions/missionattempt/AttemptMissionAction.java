@@ -9,10 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
@@ -31,8 +28,9 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         choseAttemptingUnit, startedMissionAttempt, solvedMission, failedMissionAttempt, endedMissionAttempt
     }
 
-    public AttemptMissionAction(Player player, MissionLocation mission) throws InvalidGameLogicException {
-        super(mission.getGame(), player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
+    public AttemptMissionAction(DefaultGame cardGame, Player player, MissionLocation mission)
+            throws InvalidGameLogicException {
+        super(cardGame, player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
         _missionCard = mission.getMissionForPlayer(player.getPlayerId());
     }
 
@@ -47,7 +45,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         try {
             MissionLocation missionLocation = _missionCard.getLocation();
             Player player = cardGame.getPlayer(_performingPlayerId);
-            return missionLocation.mayBeAttemptedByPlayer(player);
+            return missionLocation.mayBeAttemptedByPlayer(player, cardGame);
         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
@@ -67,8 +65,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             if (_attemptingUnitTarget == null) {
 
                 List<AttemptingUnit> eligibleUnits = new ArrayList<>();
-                missionLocation.getYourAwayTeamsOnSurface(player)
-                        .filter(awayTeam -> awayTeam.canAttemptMission(missionLocation))
+                missionLocation.getYourAwayTeamsOnSurface((ST1EGame) cardGame, player)
+                        .filter(awayTeam -> awayTeam.canAttemptMission(cardGame, missionLocation))
                         .forEach(eligibleUnits::add);
 
                 // Get ships that can attempt mission
@@ -142,7 +140,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     private void solveMission(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         setProgress(Progress.solvedMission);
         MissionLocation missionLocation = _missionCard.getLocation();
-        missionLocation.complete(_performingPlayerId);
+        missionLocation.complete(_performingPlayerId, cardGame);
         cardGame.sendMessage(_performingPlayerId + " solved " + _missionCard.getCardLink());
     }
 

@@ -32,7 +32,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         for (MissionLocation location : allLocations) {
             if (location.getQuadrant() == _currentLocation.getQuadrant() && location != _currentLocation) {
                 try {
-                    int rangeNeeded = _currentLocation.getDistanceToLocation(location, player);
+                    int rangeNeeded = _currentLocation.getDistanceToLocation(cardGame, location, player);
                     if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
                         PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
                         _destinationOptions.add(destination);
@@ -75,7 +75,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
 
         if (!_cardMoved) {
             int rangeNeeded =
-                    _flyingCard.getLocation().getDistanceToLocation(_destination.getLocation(),
+                    _flyingCard.getLocation().getDistanceToLocation(cardGame, _destination.getLocation(),
                             performingPlayer);
             _cardMoved = true;
             _flyingCard.useRange(rangeNeeded);

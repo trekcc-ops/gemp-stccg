@@ -30,8 +30,8 @@ public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhasePr
             Player player = stGame.getPlayer(playerId);
             List<MissionCard> result = new ArrayList<>();
             for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                MissionCard mission = location.getMissions().getFirst();
-                if (location.getMissions().size() == 1 && mission.getOwner() != player)
+                MissionCard mission = location.getMissionCards().getFirst();
+                if (location.getMissionCards().size() == 1 && mission.getOwner() != player)
                     result.add(mission);
             }
             return result;

@@ -149,6 +149,10 @@ public final class TribblesGameState extends GameState {
         return (_currentRound == 5);
     }
 
+    public void checkVictoryConditions() {
+        // TODO - nothing to do here for now
+    }
+
     public void advanceRound() {
         // Each new round begins with a new "chain" (starting with a card worth 1 Tribble) and play proceeds clockwise.
         _chainBroken = false;

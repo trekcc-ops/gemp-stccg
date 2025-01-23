@@ -27,8 +27,8 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
         List<MissionCard> result = new ArrayList<>();
         try {
             for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                MissionCard mission = location.getMissions().getFirst();
-                if (location.getMissions().size() == 1 && mission.getOwner() == stGame.getPlayer(playerId))
+                MissionCard mission = location.getMissionCards().getFirst();
+                if (location.getMissionCards().size() == 1 && mission.getOwner() == stGame.getPlayer(playerId))
                     result.add(mission);
             }
         } catch(PlayerNotFoundException exp) {

@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
@@ -26,32 +27,39 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return getBlueprint().getFacilityType();
     }
 
-    public boolean canSeedAtMission(MissionLocation mission) {
+    public boolean canSeedAtMission(DefaultGame cardGame, MissionLocation mission) {
         for (Affiliation affiliation : getAffiliationOptions())
-            if (canSeedAtMissionAsAffiliation(mission, affiliation))
+            if (canSeedAtMissionAsAffiliation(cardGame, mission, affiliation))
                 return true;
         return false;
     }
 
-    public boolean canSeedAtMissionAsAffiliation(MissionLocation mission, Affiliation affiliation) {
+
+    public boolean canSeedAtMissionAsAffiliation(DefaultGame cardGame, MissionLocation mission,
+                                                 Affiliation affiliation) {
         try {
             if (mission.isHomeworld())
                 return false;
-            if (mission.hasFacilityOwnedByPlayer(_owner))
+
+            Collection<PhysicalCard> facilitiesOwnedByPlayerHere =
+                    Filters.filterYourActive(cardGame, _owner, CardType.FACILITY, Filters.atLocation(mission));
+
+            if (!facilitiesOwnedByPlayerHere.isEmpty())
                 return false;
             return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) &&
                     mission.getQuadrant() == getNativeQuadrant();
         } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return false;
         }
     }
 
 
+
     @Override
     public boolean canBeSeeded(DefaultGame game) {
         for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
-            if (canSeedAtMission(location))
+            if (canSeedAtMission(game, location))
                 return true;
         }
         return false;

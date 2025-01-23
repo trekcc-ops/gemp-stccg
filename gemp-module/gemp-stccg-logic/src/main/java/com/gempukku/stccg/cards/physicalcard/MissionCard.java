@@ -35,8 +35,8 @@ public class MissionCard extends ST1EPhysicalCard {
         try {
             if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 try {
-                    actions.add(new AttemptMissionAction(player, this.getLocation()));
-                    actions.add(new ShipBattleAction(this, player, this.getLocation()));
+                    actions.add(new AttemptMissionAction(cardGame, player, this.getLocation()));
+                    actions.add(new ShipBattleAction(cardGame, this, player, this.getLocation()));
                 } catch (InvalidGameLogicException exp) {
                     cardGame.sendErrorMessage(exp);
                 }

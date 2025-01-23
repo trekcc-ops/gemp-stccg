@@ -47,9 +47,10 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
      * Creates an action for playing the specified card.
      * @param actionSource the card to initiate the deployment
      */
-    public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, MissionLocation location)
+    public ShipBattleAction(DefaultGame cardGame, PhysicalCard actionSource, Player performingPlayer,
+                            MissionLocation location)
             throws InvalidGameLogicException, PlayerNotFoundException {
-        super(location.getGame(), performingPlayer, "Initiate battle", ActionType.BATTLE);
+        super(cardGame, performingPlayer, "Initiate battle", ActionType.BATTLE);
         DefaultGame game = actionSource.getGame();
         _actionSource = actionSource;
         _location = location;

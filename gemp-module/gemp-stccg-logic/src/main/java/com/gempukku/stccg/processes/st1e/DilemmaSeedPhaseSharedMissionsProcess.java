@@ -31,8 +31,8 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
     List<MissionCard> getAvailableMissions(ST1EGame stGame, String playerId) {
         List<MissionCard> result = new ArrayList<>();
         for (MissionLocation location: stGame.getGameState().getSpacelineLocations()) {
-            MissionCard mission = location.getMissions().getFirst();
-            if (location.getMissions().size() == 2)
+            MissionCard mission = location.getMissionCards().getFirst();
+            if (location.getMissionCards().size() == 2)
                 result.add(mission);
         }
         return result;

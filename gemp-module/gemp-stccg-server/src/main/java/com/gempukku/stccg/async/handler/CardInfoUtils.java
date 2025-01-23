@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 
@@ -138,15 +139,16 @@ public class CardInfoUtils {
 
     static String getMissionCardInfo(MissionCard mission) {
         StringBuilder sb = new StringBuilder();
+        ST1EGame cardGame = mission.getGame();
         try {
             if (mission.getBlueprint().getMissionType() == MissionType.PLANET && mission.getZone().isInPlay()) {
                 MissionLocation location = mission.getLocation();
-                long awayTeamCount = location.getAwayTeamsOnSurface().count();
+                long awayTeamCount = location.getAwayTeamsOnSurface(cardGame).count();
                 sb.append(HTMLUtils.NEWLINE);
                 sb.append(HTMLUtils.makeBold("Away Teams on Planet: "));
                 sb.append(awayTeamCount);
                 if (awayTeamCount > 0) {
-                    location.getAwayTeamsOnSurface().forEach(awayTeam -> {
+                    location.getAwayTeamsOnSurface(cardGame).forEach(awayTeam -> {
                                 sb.append(HTMLUtils.NEWLINE);
                                 sb.append(HTMLUtils.makeBold("Away Team: "));
                                 sb.append("(").append(awayTeam.getPlayerId()).append(") ");

@@ -53,7 +53,7 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
+    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks, ST1EGame cardGame) {
         try {
             for (Player player : getPlayers()) {
                 String playerId = player.getPlayerId();
@@ -61,12 +61,13 @@ public class ST1EGameState extends GameState {
                     List<PhysicalCard> subDeck = new LinkedList<>();
                     for (String blueprintId : entry.getValue()) {
                         try {
-                            PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+                            PhysicalCard card =
+                                    library.createST1EPhysicalCard(cardGame, blueprintId, _nextCardId, playerId);
                             subDeck.add(card);
                             _allCards.put(_nextCardId, card);
                             _nextCardId++;
                         } catch (CardNotFoundException | PlayerNotFoundException e) {
-                            _game.sendErrorMessage(e);
+                            sendErrorMessage(e);
                         }
                     }
                     if (entry.getKey() == SubDeck.DRAW_DECK) {
@@ -85,7 +86,7 @@ public class ST1EGameState extends GameState {
                 }
             }
         } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
+            sendErrorMessage(exp);
         }
     }
 
@@ -116,14 +117,13 @@ public class ST1EGameState extends GameState {
     public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
             throws InvalidGameLogicException {
         MissionLocation location = _spacelineLocations.get(indexNumber);
-        List<MissionCard> missionsAtLocation = location.getMissions();
+        List<MissionCard> missionsAtLocation = location.getMissionCards();
         if (missionsAtLocation.size() != 1 ||
                 Objects.equals(missionsAtLocation.getFirst().getOwnerName(), newMission.getOwnerName()))
             throw new InvalidGameLogicException("Cannot seed " + newMission.getTitle() + " because " +
                     newMission.getOwnerName() + " already has a mission at " +
                     newMission.getBlueprint().getLocation());
-        newMission.stackOn(location.getMissions().getFirst());
-        newMission.setLocation(location);
+        location.addMission(newMission);
         addCardToZone(newMission, Zone.SPACELINE, true, true);
     }
 
@@ -195,10 +195,10 @@ public class ST1EGameState extends GameState {
 
         // Send missions in order
         for (MissionLocation location : _spacelineLocations) {
-            for (int i = 0; i < location.getMissions().size(); i++) {
+            for (int i = 0; i < location.getMissionCards().size(); i++) {
                 sharedMission = i != 0;
                 // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
-                PhysicalCard mission = location.getMissions().get(i);
+                PhysicalCard mission = location.getMissionCards().get(i);
                 sendCreatedCardToListener(mission, sharedMission, listener, !restoreSnapshot);
                 cardsLeftToSend.remove(mission);
                 sentCardsFromPlay.add(mission);
@@ -222,7 +222,7 @@ public class ST1EGameState extends GameState {
                             cardIterator.remove();
                         }
                     } catch(InvalidGameLogicException exp) {
-                        _game.sendErrorMessage(exp);
+                        sendErrorMessage(exp);
                     }
                 } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
                     sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);

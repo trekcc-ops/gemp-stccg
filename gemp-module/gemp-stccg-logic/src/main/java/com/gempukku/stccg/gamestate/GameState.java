@@ -548,4 +548,6 @@ public abstract class GameState {
         return getGame().getTurnProcedure().getCurrentProcess();
     }
 
+    public abstract void checkVictoryConditions();
+
 }

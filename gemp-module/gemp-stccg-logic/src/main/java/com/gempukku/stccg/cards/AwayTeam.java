@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -62,7 +63,8 @@ public class AwayTeam implements AttemptingUnit {
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("cardsInAwayTeam")
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
-    public boolean canAttemptMission(MissionLocation mission) {
+
+    public boolean canAttemptMission(DefaultGame cardGame, MissionLocation mission) {
         if (!isOnSurface(mission))
             return false;
         try {
@@ -73,10 +75,11 @@ public class AwayTeam implements AttemptingUnit {
                 return true;
             return hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_player));
         } catch(InvalidGameLogicException exp) {
-            mission.getGame().sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return false;
         }
     }
+
 
 
     public void add(PhysicalReportableCard1E card) {
