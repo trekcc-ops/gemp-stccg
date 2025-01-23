@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.cardgroup.MissionCardGroup;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;

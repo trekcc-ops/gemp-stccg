@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -42,16 +43,20 @@ public abstract class GameState {
         Collection<Zone> cardGroupList = new LinkedList<>();
         cardGroupList.add(Zone.DRAW_DECK);
         cardGroupList.add(Zone.HAND);
-        cardGroupList.add(Zone.VOID);
         cardGroupList.add(Zone.DISCARD);
         cardGroupList.add(Zone.REMOVED);
 
-        for (String playerId : playerIds) {
-            Player player = new Player(playerId);
-            for (Zone zone : cardGroupList) {
-                player.addCardGroup(zone);
+        try {
+            for (String playerId : playerIds) {
+                Player player = new Player(playerId);
+                for (Zone zone : cardGroupList) {
+                    player.addCardGroup(zone);
+                }
+                _players.put(playerId, player);
             }
-            _players.put(playerId, player);
+        } catch(InvalidGameLogicException exp) {
+            game.sendErrorMessage(exp);
+            game.cancelGame();
         }
         _modifiersLogic = new ModifiersLogic(game);
         _actionsEnvironment = new DefaultActionsEnvironment(game);
@@ -348,9 +353,9 @@ public abstract class GameState {
     }
 
     public void playerDrawsCard(DefaultGame game, Player player) {
-        List<PhysicalCard> deck = player.getCardsInDrawDeck();
-        if (!deck.isEmpty()) {
-            PhysicalCard card = deck.getFirst();
+        CardPile drawDeck = player.getDrawDeck();
+        if (!drawDeck.isEmpty()) {
+            PhysicalCard card = drawDeck.getTopCard();
             removeCardsFromZone(game, player.getPlayerId(), Collections.singleton(card));
             addCardToZone(card, Zone.HAND);
         }

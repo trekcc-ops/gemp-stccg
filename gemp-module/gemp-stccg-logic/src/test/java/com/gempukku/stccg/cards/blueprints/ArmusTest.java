@@ -29,6 +29,7 @@ public class ArmusTest extends AbstractAtTest {
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
             skipDilemma();
         }
+        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
 
         FacilityCard outpost = null;
         MissionCard excavation = null;

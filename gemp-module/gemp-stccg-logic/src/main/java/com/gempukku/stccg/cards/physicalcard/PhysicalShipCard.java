@@ -150,7 +150,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public boolean canAttemptMission(MissionLocation mission) {
-        try {
             if (_currentLocation != mission)
                 return false;
             if (_docked)
@@ -175,10 +174,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                     matchesMission = true;
             }
             return matchesShip && matchesMission;
-        } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
-            return false;
-        }
     }
 
 

@@ -1,7 +1,8 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardGroup;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
+import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -27,6 +28,7 @@ public class Player {
     private int _lastSyncedScore;
     @JsonProperty("turnNumber")
     private int _turnNumber;
+    CardPile _drawDeck;
 
     public Player(String playerId) {
         _playerId = playerId;
@@ -118,8 +120,17 @@ public class Player {
         _currentScore = score;
     }
 
-    public void addCardGroup(Zone zone) {
-        _cardGroups.put(zone, new PhysicalCardGroup(zone));
+    public void addCardGroup(Zone zone) throws InvalidGameLogicException {
+        PhysicalCardGroup group = switch(zone) {
+            case SEED_DECK, TABLE, HAND -> new PhysicalCardGroup();
+            case DRAW_DECK -> {
+                _drawDeck = new CardPile();
+                yield _drawDeck;
+            }
+            case DISCARD, MISSIONS_PILE, PLAY_PILE, REMOVED -> new CardPile();
+            default -> throw new InvalidGameLogicException("Unable to create a card group for zone " + zone);
+        };
+        _cardGroups.put(zone, group);
     }
 
     public List<PhysicalCard> getCardGroupCards(Zone zone) {
@@ -172,5 +183,14 @@ public class Player {
         for (PhysicalCard card : getCardsInHand()) {
             cardGame.getGameState().addCardToZone(card, Zone.DISCARD);
         }
+    }
+
+    public void shuffleCardsIntoDrawDeck(Collection<PhysicalCard> cards) {
+        _drawDeck.addCards(cards);
+        _drawDeck.shuffle();
+    }
+
+    public CardPile getDrawDeck() {
+        return _drawDeck;
     }
 }

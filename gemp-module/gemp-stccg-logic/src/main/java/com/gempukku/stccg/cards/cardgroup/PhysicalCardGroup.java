@@ -1,6 +1,7 @@
-package com.gempukku.stccg.cards.physicalcard;
+package com.gempukku.stccg.cards.cardgroup;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.LinkedList;
@@ -10,11 +11,9 @@ import java.util.List;
 @JsonIncludeProperties({ "cards" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class PhysicalCardGroup {
-    private final Zone _zone;
     private final List<PhysicalCard> _cards = new LinkedList<>();
 
-    public PhysicalCardGroup(Zone zone) {
-        _zone = zone;
+    public PhysicalCardGroup() {
     }
 
     public void addCard(PhysicalCard card) { _cards.add(card); }

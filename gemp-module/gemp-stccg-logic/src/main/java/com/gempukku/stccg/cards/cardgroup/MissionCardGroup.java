@@ -1,6 +1,7 @@
-package com.gempukku.stccg.cards.physicalcard;
+package com.gempukku.stccg.cards.cardgroup;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.LinkedList;

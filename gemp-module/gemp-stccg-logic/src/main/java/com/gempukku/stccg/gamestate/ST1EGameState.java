@@ -23,10 +23,15 @@ public class ST1EGameState extends GameState {
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
         _currentPhase = Phase.SEED_DOORWAY;
-        for (Player player : _players.values()) {
-            player.addCardGroup(Zone.TABLE);
-            player.addCardGroup(Zone.MISSIONS_PILE);
-            player.addCardGroup(Zone.SEED_DECK);
+        try {
+            for (Player player : _players.values()) {
+                player.addCardGroup(Zone.TABLE);
+                player.addCardGroup(Zone.MISSIONS_PILE);
+                player.addCardGroup(Zone.SEED_DECK);
+            }
+        } catch(InvalidGameLogicException exp) {
+            game.sendErrorMessage(exp);
+            game.cancelGame();
         }
     }
 

@@ -22,7 +22,7 @@ public class PlayCardDestinationRules {
             Collection<Affiliation> affiliationOptions
     ) throws UndefinedRuleException {
 
-        final boolean isSeeding = actionClass.isInstance(SeedCardAction.class);
+        final boolean isSeeding = SeedCardAction.class.isAssignableFrom(actionClass);
 
         // Each facility must be seeded in its native quadrant
         if (isSeeding && location.getQuadrant() != facilityEnteringPlay.getNativeQuadrant()) {
