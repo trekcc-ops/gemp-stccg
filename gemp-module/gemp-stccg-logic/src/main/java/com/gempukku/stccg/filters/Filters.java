@@ -53,6 +53,12 @@ public class Filters {
         return filterActive(cardGame, your(player), and(filters));
     }
 
+    public static Collection<PhysicalCard> filteredCardsYouOwnInPlay(DefaultGame cardGame, Player player,
+                                                            Filterable... filters) {
+        return filterActive(cardGame, your(player), and(filters));
+    }
+
+
     public static Collection<PhysicalCard> filterYourCardsPresentWith(Player player, PhysicalCard card,
                                                                       Filterable... filters) {
         return filterYourActive(card.getGame(), player, presentWith(card), and(filters));

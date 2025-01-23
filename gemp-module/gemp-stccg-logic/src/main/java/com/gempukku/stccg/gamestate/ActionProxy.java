@@ -5,11 +5,14 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.Player;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public interface ActionProxy {
 
-    List<TopLevelSelectableAction> getPhaseActions(Player player);
+    default List<TopLevelSelectableAction> getPhaseActions(Player player) {
+        return new LinkedList<>();
+    }
 
     List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, ActionResult actionResult);
 

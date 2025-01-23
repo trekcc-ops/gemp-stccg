@@ -17,12 +17,12 @@ public abstract class AbstractActionProxy implements ActionProxy {
 
     @Override
     public List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, ActionResult actionResult) {
-        return null;
+        return new LinkedList<>();
     }
 
     @Override
     public List<TopLevelSelectableAction> getRequiredAfterTriggers(ActionResult actionResult) {
-        return null;
+        return new LinkedList<>();
     }
 
 }

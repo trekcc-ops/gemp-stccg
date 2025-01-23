@@ -42,7 +42,7 @@ public class SeedOutpostAction extends PlayCardAction {
             Set<PhysicalCard> availableMissions = new HashSet<>();
             for (MissionLocation location : gameState.getSpacelineLocations()) {
                 MissionCard missionCard = location.getMissionForPlayer(_performingPlayerId);
-                if (facility.canSeedAtMission(cardGame, location)) {
+                if (facility.canSeedAtMission(location)) {
                     availableMissions.add(missionCard);
                 }
             }
@@ -72,7 +72,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 if (!getProgress(Progress.affiliationSelected)) {
                     for (Affiliation affiliation : facility.getAffiliationOptions()) {
                         try {
-                            if (facility.canSeedAtMissionAsAffiliation(cardGame, selectedMission.getLocation(),
+                            if (facility.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
                                     affiliation))
                                 affiliationOptions.add(affiliation);
                         } catch (InvalidGameLogicException exp) {

@@ -16,7 +16,7 @@ public class ST1ERuleSetTest extends AbstractAtTest {
     @Test
     public void CompatibilityTest() throws CardNotFoundException, PlayerNotFoundException {
         initializeSimple1EGame(30);
-        final ST1ERuleSet _rules = new ST1ERuleSet(_game);
+        final ST1ERuleSet _rules = new ST1ERuleSet();
         Player player = _game.getCurrentPlayer();
         final PersonnelCard picard = new PersonnelCard(_game, 101, player, _cardLibrary.getCardBlueprint("101_215"));
         final PersonnelCard sarek = new PersonnelCard(_game, 102, player, _cardLibrary.getCardBlueprint("101_233"));

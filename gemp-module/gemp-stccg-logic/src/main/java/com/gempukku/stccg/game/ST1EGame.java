@@ -26,7 +26,7 @@ public class ST1EGame extends DefaultGame {
         super(format, decks, library);
 
         _gameState = new ST1EGameState(decks.keySet(), this);
-        _rules = new ST1ERuleSet(this);
+        _rules = new ST1ERuleSet();
         _rules.applyRuleSet(this);
 
         _gameState.createPhysicalCards(library, decks, this);

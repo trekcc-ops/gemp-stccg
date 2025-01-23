@@ -4,15 +4,11 @@ import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class RuleSet {
-    private final ActionsEnvironment _actionsEnvironment;
-    public RuleSet(DefaultGame game) {
-        _actionsEnvironment = game.getActionsEnvironment();
-    }
+public class RuleSet<T extends DefaultGame> {
 
-    private void applyGenericRules(DefaultGame cardGame) {
+    private void applyGenericRules(T cardGame) {
         // TODO - I see these less as "rules" and more as basic turn loop mechanisms
-        applyActionProxiesAsRules(
+        applyActionProxiesAsRules(cardGame,
                 new RequiredTriggersRule(cardGame),
                 new DiscardedCardRule(cardGame),
                 new OptionalTriggersRule(cardGame),
@@ -21,16 +17,17 @@ public class RuleSet {
         );
     }
 
-    protected void applySpecificRules() { }
+    protected void applySpecificRules(T cardGame) { }
 
-    public void applyRuleSet(DefaultGame cardGame) {
+
+    public void applyRuleSet(T cardGame) {
         applyGenericRules(cardGame);
-        applySpecificRules();
+        applySpecificRules(cardGame);
     }
 
-    protected void applyActionProxiesAsRules(ActionProxy... rules) {
+    protected void applyActionProxiesAsRules(T cardGame, ActionProxy... rules) {
         for (ActionProxy rule : rules) {
-            _actionsEnvironment.addAlwaysOnActionProxy(rule);
+            cardGame.getActionsEnvironment().addAlwaysOnActionProxy(rule);
         }
     }
 }

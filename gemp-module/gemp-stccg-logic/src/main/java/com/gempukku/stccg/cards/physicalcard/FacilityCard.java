@@ -1,18 +1,18 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.FacilityType;
-import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -27,39 +27,29 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return getBlueprint().getFacilityType();
     }
 
-    public boolean canSeedAtMission(DefaultGame cardGame, MissionLocation mission) {
-        for (Affiliation affiliation : getAffiliationOptions())
-            if (canSeedAtMissionAsAffiliation(cardGame, mission, affiliation))
-                return true;
-        return false;
+    public boolean canSeedAtMission(MissionLocation mission) {
+        // Checks if the mission is a legal reporting destination for seeding this facility
+        // Assumes no affiliation has been selected for a multi-affiliation card
+        return _game.getRules().isLocationValidPlayCardDestinationPerRules(
+                _game, this, mission, SeedCardAction.class, _owner, getAffiliationOptions());
     }
 
-
-    public boolean canSeedAtMissionAsAffiliation(DefaultGame cardGame, MissionLocation mission,
-                                                 Affiliation affiliation) {
-        try {
-            if (mission.isHomeworld())
-                return false;
-
-            Collection<PhysicalCard> facilitiesOwnedByPlayerHere =
-                    Filters.filterYourActive(cardGame, _owner, CardType.FACILITY, Filters.atLocation(mission));
-
-            if (!facilitiesOwnedByPlayerHere.isEmpty())
-                return false;
-            return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) &&
-                    mission.getQuadrant() == getNativeQuadrant();
-        } catch(InvalidGameLogicException exp) {
-            cardGame.sendErrorMessage(exp);
-            return false;
-        }
+    public boolean canSeedAtMissionAsAffiliation(MissionLocation mission, Affiliation affiliation) {
+        // Checks if the mission is a legal reporting destination for seeding this facility
+        // Assumes an affiliation has already been selected
+        return _game.getRules().isLocationValidPlayCardDestinationPerRules(
+                _game, this, mission, SeedCardAction.class, _owner, List.of(affiliation));
     }
 
+    public Quadrant getNativeQuadrant() {
+        return _blueprint.getQuadrant();
+    }
 
 
     @Override
     public boolean canBeSeeded(DefaultGame game) {
         for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
-            if (canSeedAtMission(game, location))
+            if (canSeedAtMission(location))
                 return true;
         }
         return false;
@@ -113,4 +103,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return Filters.filter(getAttachedCards(_game), Filters.or(Filters.personnel, Filters.equipment));
     }
 
+    public boolean isOutpost() {
+        return getFacilityType() == FacilityType.OUTPOST;
+    }
 }

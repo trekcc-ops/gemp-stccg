@@ -149,19 +149,23 @@ public class MissionLocation {
         return false;
     }
 
-    public Set<Affiliation> getAffiliationIcons(String playerId) throws InvalidGameLogicException {
-        MissionCard card = getMissionForPlayer(playerId);
-        CardBlueprint blueprint = card.getBlueprint();
-        if (Objects.equals(playerId, card.getOwnerName())) {
-            return blueprint.getOwnerAffiliationIcons();
-        } else if (blueprint.getOpponentAffiliationIcons() == null) {
-            return blueprint.getOwnerAffiliationIcons();
-        } else {
-            return blueprint.getOwnerAffiliationIcons();
+    public Set<Affiliation> getAffiliationIcons(String playerId) {
+        try {
+            MissionCard card = getMissionForPlayer(playerId);
+            CardBlueprint blueprint = card.getBlueprint();
+            if (Objects.equals(playerId, card.getOwnerName())) {
+                return blueprint.getOwnerAffiliationIcons();
+            } else if (blueprint.getOpponentAffiliationIcons() == null) {
+                return blueprint.getOwnerAffiliationIcons();
+            } else {
+                return blueprint.getOwnerAffiliationIcons();
+            }
+        } catch(InvalidGameLogicException exp) {
+            return new HashSet<>();
         }
     }
 
-    public Set<Affiliation> getAffiliationIconsForPlayer(Player player) throws InvalidGameLogicException {
+    public Set<Affiliation> getAffiliationIconsForPlayer(Player player) {
         return getAffiliationIcons(player.getPlayerId());
     }
 
@@ -243,5 +247,13 @@ public class MissionLocation {
         newMission.stackOn(_missionCards.getCards().getFirst());
         _missionCards.addCard(newMission);
         newMission.setLocation(this);
+    }
+
+    public boolean hasMatchingAffiliationIcon(Player contextPlayer, Collection<Affiliation> affiliationOptions) {
+        for (Affiliation affiliation : getAffiliationIconsForPlayer(contextPlayer)) {
+            if (affiliationOptions.contains(affiliation))
+                return true;
+        }
+        return false;
     }
 }
