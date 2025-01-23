@@ -23,16 +23,15 @@ public abstract class AbstractModifier implements Modifier {
     protected final ActionCardResolver _cardResolver;
     protected final Condition _condition;
     private final ModifierEffect _effect;
-    protected final DefaultGame _game;
 
-    protected AbstractModifier(DefaultGame game, ModifierEffect effect) {
+    protected AbstractModifier(ModifierEffect effect) {
         _cardSource = null;
         _text = null;
         _cardResolver = new CardFilterResolver(Filters.any);
         _condition = null;
         _effect = effect;
-        _game = game;
     }
+
 
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
         this(source, text, affectFilter, null, effect);
@@ -50,7 +49,6 @@ public abstract class AbstractModifier implements Modifier {
         _cardResolver = affectedCards;
         _condition = condition;
         _effect = effect;
-        _game = source.getGame();
     }
 
 
@@ -62,7 +60,6 @@ public abstract class AbstractModifier implements Modifier {
         _cardResolver = new CardFilterResolver(affectedFilter);
         _condition = condition;
         _effect = effect;
-        _game = source.getGame();
     }
 
     @Override
@@ -91,14 +88,15 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean affectsCard(PhysicalCard physicalCard) {
+    public boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard) {
         try {
-            return _cardResolver.getCards(_game).contains(physicalCard);
+            return _cardResolver.getCards(cardGame).contains(physicalCard);
         } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return false;
         }
     }
+
 
     @Override
     public boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard) {

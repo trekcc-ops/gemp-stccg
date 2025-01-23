@@ -33,8 +33,8 @@ public class Blueprint155_021 extends CardBlueprint {
         return actionSource;
     }
 
-    private Collection<PhysicalCard> getDestinationOptionsForCard(PhysicalCard card) {
-        return Filters.filterYourActive(card.getGame(), card.getOwner(),
+    private Collection<PhysicalCard> getDestinationOptionsForCard(DefaultGame cardGame, PhysicalCard card) {
+        return Filters.filterYourActive(cardGame, card.getOwner(),
                 Filters.yourMatchingOutposts(card.getOwner(), card));
     }
 
@@ -57,10 +57,10 @@ public class Blueprint155_021 extends CardBlueprint {
             action1.appendEffect(
                     new DownloadCardAction(cardGame, Zone.HAND, thisCard.getOwner(), playableCardFilter) {
                         @Override
-                        protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
+                        protected Collection<PhysicalCard> getPlayableCards(DefaultGame cardGame, GameState gameState) {
                             Collection<PhysicalCard> playableCards = Filters.filter(
                                     cardGame.getGameState().getHand(thisCard.getOwnerName()), playableCardFilter);
-                            playableCards.removeIf(card -> getDestinationOptionsForCard(card).isEmpty());
+                            playableCards.removeIf(card -> getDestinationOptionsForCard(cardGame, card).isEmpty());
                             return playableCards;
                         }
 

@@ -8,7 +8,7 @@ public class YouCanPlayAUIconCardsModifier extends AbstractModifier {
     private PhysicalCard _performingCard;
 
     public YouCanPlayAUIconCardsModifier(PhysicalCard performingCard) {
-        super(performingCard.getGame(), ModifierEffect.AU_CARDS_ENTER_PLAY);
+        super(ModifierEffect.AU_CARDS_ENTER_PLAY);
     }
 
 

@@ -30,7 +30,7 @@ public class DefaultUserFeedback implements UserFeedback {
         try {
             String decidingPlayerId = awaitingDecision.getDecidingPlayerId();
             _awaitingDecisionMap.put(decidingPlayerId, awaitingDecision);
-            _game.getGameState().playerDecisionStarted(decidingPlayerId, awaitingDecision);
+            _game.getGameState().playerDecisionStarted(_game, decidingPlayerId, awaitingDecision);
         } catch(PlayerNotFoundException exp) {
             _game.sendErrorMessage(exp);
             _game.cancelGame();

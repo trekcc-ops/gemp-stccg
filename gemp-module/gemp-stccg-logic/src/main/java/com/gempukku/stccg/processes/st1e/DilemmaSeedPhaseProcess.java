@@ -80,7 +80,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                                         selectCardsToSeed(player, cardGame, topCard);
                                     else if (action instanceof RemoveSeedCardsAction)
                                         selectCardsToRemove(player, cardGame, topCard);
-                                    else gameState.sendMessage("Game error - invalid action selected");
+                                    else cardGame.sendMessage("Game error - invalid action selected");
                                 } catch(CardNotFoundException exp) {
                                     throw new DecisionResultInvalidException(exp.getMessage());
                                 }

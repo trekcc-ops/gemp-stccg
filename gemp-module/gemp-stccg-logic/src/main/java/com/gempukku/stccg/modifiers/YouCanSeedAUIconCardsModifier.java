@@ -8,7 +8,7 @@ public class YouCanSeedAUIconCardsModifier extends AbstractModifier {
     private final PhysicalCard _modifierSourceCard;
 
     public YouCanSeedAUIconCardsModifier(PhysicalCard performingCard) {
-        super(performingCard.getGame(), ModifierEffect.AU_CARDS_ENTER_PLAY);
+        super(ModifierEffect.AU_CARDS_ENTER_PLAY);
         _modifierSourceCard = performingCard;
     }
 

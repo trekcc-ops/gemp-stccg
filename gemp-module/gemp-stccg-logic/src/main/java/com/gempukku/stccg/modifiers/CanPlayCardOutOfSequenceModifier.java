@@ -5,6 +5,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class CanPlayCardOutOfSequenceModifier extends AbstractModifier {
 
@@ -20,8 +21,9 @@ public class CanPlayCardOutOfSequenceModifier extends AbstractModifier {
     }
 
     @Override
-    public boolean affectsCard(PhysicalCard physicalCard) {
-        return (_filters != null && _filters.accepts(_game, physicalCard));
+    public boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard) {
+        return (_filters != null && _filters.accepts(cardGame, physicalCard));
     }
+
 
 }

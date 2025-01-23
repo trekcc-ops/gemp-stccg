@@ -38,7 +38,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
             gameState.discardHand(playerId);
 
             // Each player then shuffles their play pile into their decks.
-            gameState.shufflePlayPileIntoDeck(player);
+            gameState.shufflePlayPileIntoDeck(cardGame, player);
         }
 
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfRound();
@@ -70,7 +70,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                     first player. Tribbles rules are inconclusive about what should happen in this case.
                  */
             String firstPlayer = firstPlayerList.get(new Random().nextInt(firstPlayerList.size()));
-            gameState.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
+            cardGame.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
 
             gameState.setCurrentPlayerId(firstPlayer);
         }

@@ -36,7 +36,7 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
             startingTribbles.clear();
 
             for (String player : playersSelecting) {
-                List<PhysicalCard> deckCards = _game.getGameState().getZoneCards(player, Zone.DRAW_DECK);
+                List<PhysicalCard> deckCards = _game.getGameState().getZoneCards(cardGame.getPlayer(player), Zone.DRAW_DECK);
                 PhysicalCard randomCard = deckCards.get(new Random().nextInt(deckCards.size()));
                 CardBlueprint randomBlueprint = randomCard.getBlueprint();
                 _game.sendMessage(player + " drew " + randomBlueprint.getTitle());
@@ -69,10 +69,7 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
                 playersSelecting.subList(1, playersSelecting.size()).clear();
             }
         }
-
-        String _firstPlayer = playersSelecting.getFirst();
-
-        _game.getGameState().initializePlayerOrder(new PlayerOrder(playersInOrder));
+        _game.initializePlayerOrder(new PlayerOrder(playersInOrder));
     }
     
     private Integer playerOnlyHasOneTribbleValue(String playerId) {

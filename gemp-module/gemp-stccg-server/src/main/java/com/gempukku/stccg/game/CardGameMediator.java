@@ -226,7 +226,7 @@ public abstract class CardGameMediator {
                 if (awaitingDecision.getDecisionId() == decisionId && !game.isFinished()) {
                     GameState gameState = game.getGameState();
                     try {
-                        gameState.playerDecisionFinished(playerName);
+                        gameState.playerDecisionFinished(playerName, game.getUserFeedback());
                         awaitingDecision.decisionMade(answer);
 
                         // Decision successfully made, add the time to user clock

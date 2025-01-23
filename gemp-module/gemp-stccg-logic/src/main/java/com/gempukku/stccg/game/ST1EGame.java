@@ -22,11 +22,11 @@ public class ST1EGame extends DefaultGame {
 
         _gameState = new ST1EGameState(decks.keySet(), this);
         _rules = new ST1ERuleSet(this);
-        _rules.applyRuleSet();
+        _rules.applyRuleSet(this);
 
         _gameState.createPhysicalCards(library, decks, this);
-        _turnProcedure =
-                new TurnProcedure(this, new ST1EPlayerOrderProcess());
+        _turnProcedure = new TurnProcedure(this);
+        setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
     @Override

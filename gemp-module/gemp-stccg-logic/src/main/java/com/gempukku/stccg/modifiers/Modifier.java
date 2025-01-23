@@ -26,7 +26,7 @@ public interface Modifier {
     Condition getCondition();
     boolean isCumulative();
 
-    boolean affectsCard(PhysicalCard physicalCard);
+    boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard);
 
     boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard);
 

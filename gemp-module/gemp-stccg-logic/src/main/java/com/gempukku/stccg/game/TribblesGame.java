@@ -11,16 +11,16 @@ import java.util.Map;
 
 public class TribblesGame extends DefaultGame {
     private TribblesGameState _gameState;
-    private TurnProcedure _turnProcedure;
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         super(format, decks, library);
 
         _gameState = new TribblesGameState(decks.keySet(), this);
-        new TribblesRuleSet(this).applyRuleSet();
+        new TribblesRuleSet(this).applyRuleSet(this);
 
         _gameState.createPhysicalCards(library, decks);
-        _turnProcedure = new TurnProcedure(this, new TribblesPlayerOrderProcess(this));
+        _turnProcedure = new TurnProcedure(this);
+        setCurrentProcess(new TribblesPlayerOrderProcess(this));
     }
 
     @Override

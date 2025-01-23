@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 
 import java.util.*;
@@ -54,6 +55,16 @@ public class ST1EGameState extends GameState {
         }
     }
 
+    @Override
+    public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
+        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
+                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
+            return player.getCardGroup(zone);
+        else // This should never be accessed
+            return _inPlay; // TODO - Should this just be an exception?
+    }
+
+
     public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks, ST1EGame cardGame) {
         try {
             for (Player player : getPlayers()) {
@@ -63,7 +74,7 @@ public class ST1EGameState extends GameState {
                     for (String blueprintId : entry.getValue()) {
                         try {
                             PhysicalCard card =
-                                    library.createST1EPhysicalCard(cardGame, blueprintId, _nextCardId, playerId);
+                                    library.createST1EPhysicalCard(cardGame, blueprintId, _nextCardId, player);
                             subDeck.add(card);
                             _allCards.put(_nextCardId, card);
                             _nextCardId++;
@@ -261,13 +272,13 @@ public class ST1EGameState extends GameState {
         return result;
     }
 
-    public void checkVictoryConditions() {
+    public void checkVictoryConditions(DefaultGame cardGame) {
             // TODO - VERY simplistic. Just a straight race to 100.
             // TODO - Does not account for possible scenario where both players go over 100 simultaneously
         for (Player player : getPlayers()) {
             int score = player.getScore();
             if (score >= 100)
-                _game.playerWon(player.getPlayerId(), score + " points");
+                cardGame.playerWon(player.getPlayerId(), score + " points");
         }
     }
 
@@ -315,7 +326,7 @@ public class ST1EGameState extends GameState {
 
     public void sendSerializedGameStateToClient() {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.SERIALIZED_GAME_STATE, this));
+            listener.sendEvent(new GameEvent(listener.getGame(), GameEvent.Type.SERIALIZED_GAME_STATE, this));
     }
 
     public int getAttemptingUnitId(AttemptingUnit unit) throws InvalidGameLogicException {

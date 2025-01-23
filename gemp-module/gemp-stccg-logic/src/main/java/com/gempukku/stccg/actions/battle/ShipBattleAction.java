@@ -51,11 +51,10 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
                             MissionLocation location)
             throws InvalidGameLogicException, PlayerNotFoundException {
         super(cardGame, performingPlayer, "Initiate battle", ActionType.BATTLE);
-        DefaultGame game = actionSource.getGame();
         _actionSource = actionSource;
         _location = location;
         _attackingPlayer = performingPlayer;
-        _defendingPlayer = game.getPlayer(game.getOpponent(_performingPlayerId));
+        _defendingPlayer = cardGame.getPlayer(cardGame.getOpponent(_performingPlayerId));
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {

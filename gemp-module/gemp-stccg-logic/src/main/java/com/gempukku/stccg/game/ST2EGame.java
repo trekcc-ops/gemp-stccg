@@ -16,9 +16,10 @@ public class ST2EGame extends DefaultGame {
         super(format, decks, library);
 
         _gameState = new ST2EGameState(decks.keySet(), this);
-        new RuleSet(this).applyRuleSet();
+        new RuleSet(this).applyRuleSet(this);
 
-        _turnProcedure = new TurnProcedure(this, null);
+        _turnProcedure = new TurnProcedure(this);
+        setCurrentProcess(null);
     }
 
 

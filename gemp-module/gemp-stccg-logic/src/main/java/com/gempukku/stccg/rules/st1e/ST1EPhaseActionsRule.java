@@ -27,7 +27,7 @@ public class ST1EPhaseActionsRule extends ST1ERule {
             final Player player = gameState.getPlayer(playerId);
             final Phase currentPhase = gameState.getCurrentPhase();
             if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
-                Filters.filterActive(gameState.getGame(), CardType.MISSION).forEach(
+                Filters.filterActive(_game, CardType.MISSION).forEach(
                         card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
                 Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
                         card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));

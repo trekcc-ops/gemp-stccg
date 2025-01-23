@@ -8,10 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -55,6 +52,18 @@ public final class TribblesGameState extends GameState {
         }
     }
 
+    @Override
+    public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
+        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD ||
+                zone == Zone.VOID)
+            return player.getCardGroup(zone);
+        else if (zone == Zone.PLAY_PILE)
+            return _playPiles.get(player.getPlayerId());
+        else // This should never be accessed
+            return _inPlay;
+    }
+
+
     public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
         try {
             for (Player player : getPlayers()) {
@@ -84,24 +93,24 @@ public final class TribblesGameState extends GameState {
     }
 
 
-    public void shufflePlayPileIntoDeck(Player player) {
+    public void shufflePlayPileIntoDeck(DefaultGame game, Player player) {
         String playerId = player.getPlayerId();
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
         removeCardsFromZone(playerId, playPile);
         for (PhysicalCard card : playPile) {
             addCardToZone(card, Zone.DRAW_DECK);
         }
-        player.shuffleDrawDeck(getGame());
+        player.shuffleDrawDeck(game);
     }
 
     public List<PhysicalCard> getPlayPile(String playerId) {
         return Collections.unmodifiableList(_playPiles.get(playerId));
     }
 
-    public void setPlayerDecked(Player player, boolean bool) {
+    public void setPlayerDecked(DefaultGame cardGame, Player player, boolean bool) {
         player.setDecked(bool);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerDecked(player);
+            listener.setPlayerDecked(cardGame, player);
     }
 
     public void setNextTribbleInSequence(int num) {
@@ -120,17 +129,18 @@ public final class TribblesGameState extends GameState {
 
     public int getNextTribbleInSequence() { return _nextTribbleInSequence; }
 
-    public void breakChain() {
+    public void breakChain(TribblesGame cardGame) {
         _chainBroken = true;
-        sendMessage("The chain has been broken.");
+        cardGame.sendMessage("The chain has been broken.");
         for (GameStateListener listener : getAllGameStateListeners()) {
             DecimalFormat df = new DecimalFormat("#,###");
             listener.setTribbleSequence("1 or " + df.format(_nextTribbleInSequence));
         }
     }
 
+
     public void setChainBroken(boolean chainBroken) {
-        if (chainBroken) breakChain();
+        if (chainBroken) breakChain(_game);
         else _chainBroken = false;
     }
 
@@ -149,11 +159,11 @@ public final class TribblesGameState extends GameState {
         return (_currentRound == 5);
     }
 
-    public void checkVictoryConditions() {
+    public void checkVictoryConditions(DefaultGame cardGame) {
         // TODO - nothing to do here for now
     }
 
-    public void advanceRound() {
+    public void advanceRound(TribblesGame cardGame) {
         // Each new round begins with a new "chain" (starting with a card worth 1 Tribble) and play proceeds clockwise.
         _chainBroken = false;
         setNextTribbleInSequence(1);
@@ -164,7 +174,7 @@ public final class TribblesGameState extends GameState {
         // Increment round number
         _currentRound++;
         _currentRoundIsOver = false;
-        sendMessage("Beginning Round " + _currentRound);
+        cardGame.sendMessage("Beginning Round " + _currentRound);
     }
 
     public void endRound() {

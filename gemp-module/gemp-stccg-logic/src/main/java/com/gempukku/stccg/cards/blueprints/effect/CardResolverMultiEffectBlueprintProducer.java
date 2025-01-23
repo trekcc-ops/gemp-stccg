@@ -19,6 +19,7 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.modifiers.ModifierFlag;
@@ -221,10 +222,21 @@ public class CardResolverMultiEffectBlueprintProducer {
                     actionContext.getCardFromMemory(sourceMemory)).stream().toList();
         } else {
             return switch (fromZone) {
-                case HAND, DISCARD, DRAW_DECK -> actionContext -> Filters.filter(
-                        actionContext.getGameState().getZoneCards(targetPlayer.getPlayerId(actionContext), fromZone),
-                        sourceMemory == null ?
-                                Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+                case HAND, DISCARD, DRAW_DECK -> actionContext -> {
+                    try {
+                        String playerId = targetPlayer.getPlayerId(actionContext);
+                        Player target = actionContext.getGame().getPlayer(playerId);
+                        return Filters.filter(
+                                actionContext.getGameState().getZoneCards(target, fromZone),
+                                sourceMemory == null ?
+                                        Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+                    } catch(PlayerNotFoundException exp) {
+                        DefaultGame cardGame = actionContext.getGame();
+                        cardGame.sendErrorMessage(exp);
+                        cardGame.cancelGame();
+                        return null;
+                    }
+                };
                 default -> throw new InvalidCardDefinitionException(
                         "getCardSource function not defined for zone " + fromZone.getHumanReadable());
             };

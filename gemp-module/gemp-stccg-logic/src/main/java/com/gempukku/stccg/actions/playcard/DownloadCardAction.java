@@ -43,7 +43,7 @@ public class DownloadCardAction extends ActionyAction {
 
 
     @JsonIgnore
-    protected Collection<PhysicalCard> getPlayableCards(GameState gameState) {
+    protected Collection<PhysicalCard> getPlayableCards(DefaultGame cardGame, GameState gameState) {
         try {
             List<PhysicalCard> sourceCards;
             Player performingPlayer = gameState.getPlayer(_performingPlayerId);
@@ -56,12 +56,13 @@ public class DownloadCardAction extends ActionyAction {
             else throw new RuntimeException(
                         "Error in ChooseAndPlayCardFromZoneEffect processing for zone " + _fromZone.getHumanReadable());
 
-            return Filters.filter(sourceCards, gameState.getGame(), _filter, Filters.playable);
+            return Filters.filter(sourceCards, cardGame, _filter, Filters.playable);
         } catch(PlayerNotFoundException exp) {
-            gameState.sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return new LinkedList<>();
         }
     }
+
 
     protected void playCard(final PhysicalCard selectedCard) {
         _playCardAction = selectedCard.getPlayCardAction(true);
@@ -81,16 +82,16 @@ public class DownloadCardAction extends ActionyAction {
     public boolean requirementsAreMet(DefaultGame cardGame) {
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK)
             return !cardGame.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
-                    !getPlayableCards(cardGame.getGameState()).isEmpty();
+                    !getPlayableCards(cardGame, cardGame.getGameState()).isEmpty();
         else
-            return !getPlayableCards(cardGame.getGameState()).isEmpty();
+            return !getPlayableCards(cardGame, cardGame.getGameState()).isEmpty();
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         GameState gameState = cardGame.getGameState();
-        Collection<PhysicalCard> playableCards = getPlayableCards(gameState);
+        Collection<PhysicalCard> playableCards = getPlayableCards(cardGame, gameState);
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK) {
             int minimum = _fromZone == Zone.DISCARD ? 1 : 0;
             cardGame.getUserFeedback().sendAwaitingDecision(

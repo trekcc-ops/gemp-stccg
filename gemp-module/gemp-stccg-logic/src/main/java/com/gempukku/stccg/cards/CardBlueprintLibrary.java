@@ -69,6 +69,13 @@ public class CardBlueprintLibrary {
         return cardBlueprint.createPhysicalCard(game, cardId, owner);
     }
 
+    public PhysicalCard createST1EPhysicalCard(ST1EGame game, String blueprintId, int cardId, Player player)
+            throws CardNotFoundException, PlayerNotFoundException {
+        CardBlueprint cardBlueprint = getCardBlueprint(blueprintId);
+        return cardBlueprint.createPhysicalCard(game, cardId, player);
+    }
+
+
     public PhysicalCard createST1EPhysicalCard(ST1EGame game, JsonNode node)
             throws CardNotFoundException, PlayerNotFoundException {
         String blueprintId = node.get("blueprintId").textValue();

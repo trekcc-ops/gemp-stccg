@@ -12,7 +12,7 @@ public interface ActionsEnvironment {
 
     List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
 
-    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(String playerId,
+    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, String playerId,
                                                        Collection<? extends ActionResult> effectResults);
 
     List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults);
@@ -28,7 +28,7 @@ public interface ActionsEnvironment {
     Set<ActionResult> consumeEffectResults();
     void signalEndOfTurn();
     void addAlwaysOnActionProxy(ActionProxy actionProxy);
-    DefaultGame getGame();
+
     Stack<Action> getActionStack();
 
     List<Action> getPerformedActions();

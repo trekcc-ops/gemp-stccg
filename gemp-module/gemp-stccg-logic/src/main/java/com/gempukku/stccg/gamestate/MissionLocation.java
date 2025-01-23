@@ -180,7 +180,7 @@ public class MissionLocation {
         MissionCard missionCard = getMissionForPlayer(completingPlayerId);
         _isCompleted = true;
         cardGame.getGameState().getPlayer(completingPlayerId).scorePoints(missionCard.getPoints());
-        cardGame.getGameState().checkVictoryConditions();
+        cardGame.getGameState().checkVictoryConditions(cardGame);
     }
 
     public void removeSeedCard(PhysicalCard cardToRemove) {

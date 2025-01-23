@@ -78,6 +78,14 @@ public abstract class DefaultGame {
         return Collections.unmodifiableSet(_gameStateListeners);
     }
 
+    public void initializePlayerOrder(PlayerOrder playerOrder) throws PlayerNotFoundException {
+        getGameState().initializePlayerOrder(playerOrder);
+        for (GameStateListener listener : _gameStateListeners) {
+            listener.initializeBoard();
+        }
+    }
+
+
     public void sendStateToAllListeners() {
         for (GameStateListener gameStateListener : _gameStateListeners)
             sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
@@ -364,7 +372,12 @@ public abstract class DefaultGame {
         }
     }
     
-    public void sendMessage(String message) { getGameState().sendMessage(message); }
+    public void sendMessage(String message) {
+        addMessage(message);
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendMessage(message);
+    }
+
     public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
 
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
@@ -415,7 +428,7 @@ public abstract class DefaultGame {
     }
 
     public void setCurrentProcess(GameProcess process) {
-        getTurnProcedure().setCurrentProcess(process);
+        getGameState().setCurrentProcess(process);
     }
 
     public void sendErrorMessage(Exception exp) {
@@ -458,7 +471,7 @@ public abstract class DefaultGame {
             _previousZoneSizes = newZoneSizes;
         }
 
-        if (changed) getGameState().sendGameStats();
+        if (changed) getGameState().sendGameStats(this);
     }
 
     public Map<String, Map<Zone, Integer>> getZoneSizes() {

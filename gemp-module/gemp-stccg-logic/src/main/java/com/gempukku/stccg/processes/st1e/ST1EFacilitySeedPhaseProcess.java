@@ -80,7 +80,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                     gameState.playerDrawsCard(player);
                 }
             }
-            gameState.sendMessage("Players drew starting hands");
+            cardGame.sendMessage("Players drew starting hands");
             return new StartOfTurnGameProcess();
         } else {
             playerOrder.advancePlayer();

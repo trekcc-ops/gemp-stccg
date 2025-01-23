@@ -78,7 +78,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             }
 
             if (!discardedCards.isEmpty())
-                gameState.sendMessage(playerId + " discarded " + TextUtils.getConcatenatedCardLinks(discardedCards) +
+                game.sendMessage(playerId + " discarded " + TextUtils.getConcatenatedCardLinks(discardedCards) +
                         " from " + Zone.HAND.getHumanReadable());
         }
     }

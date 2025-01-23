@@ -32,7 +32,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     public final void initializeBoard() throws PlayerNotFoundException {
-        appendEvent(new GameEvent(GameEvent.Type.PARTICIPANTS, _game.getGameState(),
+        appendEvent(new GameEvent(_game, GameEvent.Type.PARTICIPANTS, _game.getGameState(),
                 _game.getGameState().getPlayer(_playerId)));
     }
 
@@ -64,37 +64,42 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         appendEvent(gameEvent);
     }
     public final void sendEvent(GameEvent.Type eventType) {
-        appendEvent(new GameEvent(eventType));
+        appendEvent(new GameEvent(_game, eventType));
     }
 
     @Override
     public final void setCurrentPhase(Phase phase) {
-        appendEvent(new GameEvent(GameEvent.Type.GAME_PHASE_CHANGE, phase));
+        appendEvent(new GameEvent(_game, GameEvent.Type.GAME_PHASE_CHANGE, phase));
     }
 
     @Override
-    public final void setPlayerDecked(Player player) {
-        appendEvent(new GameEvent(GameEvent.Type.PLAYER_DECKED, player));
+    public final void setPlayerDecked(DefaultGame cardGame, Player player) {
+        appendEvent(new GameEvent(cardGame, GameEvent.Type.PLAYER_DECKED, player));
     }
 
     @Override
     public final void setPlayerScore(String playerId) {
-        appendEvent(new GameEvent(GameEvent.Type.PLAYER_SCORE, playerId));
+        appendEvent(new GameEvent(_game, GameEvent.Type.PLAYER_SCORE, playerId));
     }
 
     @Override
     public final void setTribbleSequence(String tribbleSequence) {
-        appendEvent(new GameEvent(GameEvent.Type.TRIBBLE_SEQUENCE_UPDATE, tribbleSequence));
+        appendEvent(new GameEvent(_game, GameEvent.Type.TRIBBLE_SEQUENCE_UPDATE, tribbleSequence));
     }
 
     @Override
     public final void setCurrentPlayerId(String playerId) {
-        appendEvent(new GameEvent(GameEvent.Type.TURN_CHANGE, playerId));
+        try {
+            appendEvent(new GameEvent(_game, GameEvent.Type.TURN_CHANGE, _game.getPlayer(playerId)));
+        } catch(PlayerNotFoundException exp) {
+            _game.sendErrorMessage(exp);
+            _game.cancelGame();
+        }
     }
 
     @Override
     public final void sendMessage(String message) {
-        appendEvent(new GameEvent(GameEvent.Type.SEND_MESSAGE, message));
+        appendEvent(new GameEvent(_game, GameEvent.Type.SEND_MESSAGE, message));
     }
 
     public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) throws PlayerNotFoundException {
@@ -106,7 +111,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public final void sendWarning(String playerId, String warning) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(GameEvent.Type.SEND_WARNING, warning));
+            appendEvent(new GameEvent(_game, GameEvent.Type.SEND_WARNING, warning));
     }
 
     public final List<GameEvent> consumeGameEvents() {
@@ -128,5 +133,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         for (GameEvent event : consumeGameEvents())
             element.appendChild(event.serialize(doc));
     }
+
+    public DefaultGame getGame() { return _game; }
 
 }

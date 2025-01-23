@@ -64,7 +64,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         // Check if any missions are left to be seeded
         boolean areAllMissionsSeeded = true;
         for (Player player : cardGame.getPlayers()) {
-            if (!cardGame.getGameState().getZoneCards(player.getPlayerId(), Zone.HAND).isEmpty())
+            if (!cardGame.getGameState().getZoneCards(player, Zone.HAND).isEmpty())
                 areAllMissionsSeeded = false;
         }
 

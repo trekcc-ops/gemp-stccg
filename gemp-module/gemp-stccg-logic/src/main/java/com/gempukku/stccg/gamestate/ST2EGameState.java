@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST2EGame;
 
@@ -20,7 +21,7 @@ public class ST2EGameState extends GameState {
         _currentPhase = Phase.SEED_DOORWAY;
     }
 
-    public void checkVictoryConditions() {
+    public void checkVictoryConditions(DefaultGame cardGame) {
         // TODO - VERY simplistic. Just a straight race to 100.
         // TODO - Does not account for possible scenario where both players go over 100 simultaneously
         for (Player player : getPlayers()) {

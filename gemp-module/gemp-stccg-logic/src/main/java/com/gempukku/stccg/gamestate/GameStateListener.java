@@ -2,6 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
@@ -14,7 +15,7 @@ public interface GameStateListener {
 
     void setCurrentPhase(Phase phase);
 
-    void setPlayerDecked(Player player);
+    void setPlayerDecked(DefaultGame cardGame, Player player);
     void setPlayerScore(String playerId);
 
     void setTribbleSequence(String tribbleSequence);
@@ -28,4 +29,5 @@ public interface GameStateListener {
     void sendWarning(String playerId, String warning);
     long getLastAccessed();
     int getChannelNumber();
+    DefaultGame getGame();
 }

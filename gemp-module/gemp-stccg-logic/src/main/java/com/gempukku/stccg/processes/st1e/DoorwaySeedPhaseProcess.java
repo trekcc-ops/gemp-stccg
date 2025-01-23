@@ -60,12 +60,12 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
         GameState cardGameState = cardGame.getGameState();
         cardGameState.setCurrentPhase(Phase.SEED_MISSION);
-        for (String player : cardGame.getPlayerIds()) {
+        for (Player player : cardGame.getPlayers()) {
             List<PhysicalCard> missionSeeds = new LinkedList<>(cardGameState.getZoneCards(player, Zone.MISSIONS_PILE));
             if (!cardGame.getFormat().isNoShuffle())
                 Collections.shuffle(missionSeeds);
             for (PhysicalCard card : missionSeeds) {
-                cardGameState.removeCardsFromZone(player, Collections.singleton(card));
+                cardGameState.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
                 cardGameState.addCardToZone(card, Zone.HAND);
             }
         }

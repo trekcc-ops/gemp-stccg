@@ -27,7 +27,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
         String playerId = currentPlayer.getPlayerId();
         if (currentPlayer.getCardsInDrawDeck().isEmpty()) {
             _game.sendMessage(playerId + " can't draw a card");
-            _game.getGameState().setPlayerDecked(currentPlayer, true);
+            _game.getGameState().setPlayerDecked(cardGame, currentPlayer, true);
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
             _game.getGameState().playerDrawsCard(currentPlayer);
@@ -65,7 +65,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     private void playerPassed() {
-        _game.getGameState().breakChain();
+        _game.getGameState().breakChain(_game);
     }
 
     @Override

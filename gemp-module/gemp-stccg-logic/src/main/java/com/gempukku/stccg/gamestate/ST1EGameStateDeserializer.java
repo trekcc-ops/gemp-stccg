@@ -54,7 +54,7 @@ public class ST1EGameStateDeserializer {
             }
         }
 
-        deserializeCardsInGame(node, gameState);
+        deserializeCardsInGame(node, gameState, game);
 
         JsonNode players = node.get("players");
         for (JsonNode playerNode : players) {
@@ -71,7 +71,7 @@ public class ST1EGameStateDeserializer {
         GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
         game.setCurrentProcess(currentProcess);
 
-        gameState.setModifiersLogic(node.get("modifiers"));
+        gameState.setModifiersLogic(node.get("modifiers"), game);
 
         for (JsonNode awayTeamNode : node.get("awayTeams")) {
             PhysicalCard parentCard = game.getCardFromCardId(awayTeamNode.get("parentCard").intValue());
@@ -101,16 +101,15 @@ public class ST1EGameStateDeserializer {
     }
 
 
-    private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState)
+    private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState, ST1EGame game)
             throws CardNotFoundException, PlayerNotFoundException {
-        ST1EGame game = gameState.getGame();
         int maxCardId = 0;
         Map<PhysicalCard, Integer> attachedMap = new HashMap<>();
         Map<PhysicalCard, Integer> stackedMap = new HashMap<>();
         Map<PhysicalShipCard, Integer> dockedMap = new HashMap<>();
 
         for (JsonNode cardNode : node.get("cardsInGame")) {
-            PhysicalCard card = gameState.getGame().getBlueprintLibrary().createST1EPhysicalCard(game, cardNode);
+            PhysicalCard card = game.getBlueprintLibrary().createST1EPhysicalCard(game, cardNode);
             gameState._allCards.put(card.getCardId(), card);
             if (card.getZone().isInPlay())
                 gameState._inPlay.add(card);

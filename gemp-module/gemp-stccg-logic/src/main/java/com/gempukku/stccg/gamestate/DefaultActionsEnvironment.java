@@ -28,8 +28,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _actionStack = actionStack;
     }
 
-    public DefaultGame getGame() { return _game; }
-
     @Override
     public void emitEffectResult(ActionResult actionResult) {
         _actionResults.add(actionResult);
@@ -74,7 +72,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(String playerId,
+    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, String playerId,
                                                               Collection<? extends ActionResult> effectResults) {
         final Map<TopLevelSelectableAction, ActionResult> gatheredActions = new HashMap<>();
 
@@ -82,7 +80,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
             if (effectResults != null) {
                 for (ActionResult actionResult : effectResults) {
                     List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(
-                            _game.getGameState().getPlayer(playerId));
+                            cardGame.getGameState().getPlayer(playerId));
                     if (actions != null) {
                         for (TopLevelSelectableAction action : actions) {
                             if (!actionResult.wasOptionalTriggerUsed(action)) {
@@ -93,7 +91,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
                 }
             }
         } catch(PlayerNotFoundException exp) {
-            _game.sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
         }
 
         return gatheredActions;

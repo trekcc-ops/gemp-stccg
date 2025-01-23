@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
@@ -17,12 +18,10 @@ import java.util.Stack;
 public class TurnProcedure {
     private static final int MAXIMUM_LOOPS = 5000; // Max number of loops allowed before throwing error
     private final DefaultGame _game;
-    private GameProcess _currentGameProcess;
 
 
-    public TurnProcedure(DefaultGame game, GameProcess currentProcess) {
+    public TurnProcedure(DefaultGame game) {
         _game = game;
-        _currentGameProcess = currentProcess;
     }
 
 
@@ -59,13 +58,15 @@ public class TurnProcedure {
     }
 
     private void continueCurrentProcess() throws InvalidGameLogicException, PlayerNotFoundException {
-        if (_currentGameProcess.isFinished()) {
-            _currentGameProcess = _currentGameProcess.getNextProcess(_game);
+        GameState gameState = _game.getGameState();
+        GameProcess originalProcess = gameState.getCurrentProcess();
+        if (originalProcess.isFinished()) {
+            gameState.setCurrentProcess(originalProcess.getNextProcess(_game));
         } else {
             // TODO - This implementation seems to assume that game stats will never change during a process
-            _currentGameProcess.process(_game);
+            originalProcess.process(_game);
             _game.updateGameStatsAndSendIfChanged();
-            _currentGameProcess.setFinished(true);
+            originalProcess.setFinished(true);
         }
     }
 
@@ -123,7 +124,5 @@ public class TurnProcedure {
     private void sendMessage(String message) {
         _game.sendMessage(message);
     }
-    public GameProcess getCurrentProcess() { return _currentGameProcess; }
-    public void setCurrentProcess(GameProcess process) { _currentGameProcess = process; }
 
 }

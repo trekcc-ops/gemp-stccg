@@ -5,6 +5,7 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1EGameStateDeserializer;
@@ -100,9 +101,10 @@ public class GameStateSerializerTest extends AbstractAtTest {
 
     }
 
-    private void compareUsingGetZoneCards(GameState oldGameState, GameState newGameState, Zone zone) {
-        List<PhysicalCard> oldCards = oldGameState.getZoneCards(P1, zone);
-        List<PhysicalCard> newCards = newGameState.getZoneCards(P1, zone);
+    private void compareUsingGetZoneCards(GameState oldGameState, GameState newGameState, Zone zone)
+            throws PlayerNotFoundException {
+        List<PhysicalCard> oldCards = oldGameState.getZoneCards(_game.getPlayer(P1), zone);
+        List<PhysicalCard> newCards = newGameState.getZoneCards(_game.getPlayer(P1), zone);
 
         String oldCount = (oldCards == null) ? "null" : String.valueOf(oldCards.size());
         String newCount = (newCards == null) ? "null" : String.valueOf(newCards.size());

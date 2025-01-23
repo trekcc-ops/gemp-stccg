@@ -49,7 +49,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
 
     private PhysicalCard getCardInGame(String cardTitle, Player cardOwner, Zone zone) {
         Collection<PhysicalCard> possibleCandidates = Filters.filter(
-                _game.getGameState().getZoneCards(cardOwner.getPlayerId(), zone),
+                _game.getGameState().getZoneCards(cardOwner, zone),
                 Filters.name(cardTitle)
         );
         assertEquals(1, possibleCandidates.size());
