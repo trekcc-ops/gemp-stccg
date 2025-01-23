@@ -53,9 +53,8 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
         for (PhysicalCard card : _cardsToPlace) {
             GameState gameState = cardGame.getGameState();
-            cardGame.removeCardsFromZone(card.getOwnerName(), List.of(card));
+            gameState.placeCardOnBottomOfDrawDeck(cardGame, card.getOwner(), card);
             cardGame.sendMessage(_performingPlayerId + " placed " + card + " beneath their draw deck");
-            gameState.addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
         }
         return getNextAction();
     }

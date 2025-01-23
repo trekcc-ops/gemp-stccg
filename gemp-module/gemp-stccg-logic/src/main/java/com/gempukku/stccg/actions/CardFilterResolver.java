@@ -33,6 +33,11 @@ public class CardFilterResolver implements ActionCardResolver {
     }
 
     public Collection<PhysicalCard> getCards(DefaultGame cardGame) {
+        for (PhysicalCard card : cardGame.getGameState().getAllCardsInGame()) {
+            if (card.getZone() == null) {
+                System.out.println(card);
+            }
+        }
         if (_resolved) {
             return _cards;
         } else {

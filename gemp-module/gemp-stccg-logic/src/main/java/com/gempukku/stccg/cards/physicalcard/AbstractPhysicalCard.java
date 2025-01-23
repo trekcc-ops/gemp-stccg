@@ -46,7 +46,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _blueprint = blueprint;
     }
 
-    public Zone getZone() { return _zone; }
+    public Zone getZone() {
+        return _zone;
+    }
 
     public void setZone(Zone zone) { _zone = zone; }
 

@@ -212,7 +212,7 @@ public abstract class GameState {
         }
 
         for (PhysicalCard card : cards) {
-            card.setZone(null);
+            card.setZone(Zone.VOID);
         }
     }
 
@@ -436,5 +436,10 @@ public abstract class GameState {
 
     public void setCurrentPhaseNew(Phase phase) {
         _currentPhase = phase;
+    }
+
+    public void placeCardOnBottomOfDrawDeck(DefaultGame cardGame, Player owner, PhysicalCard card) {
+        removeCardsFromZone(cardGame, owner.getPlayerId(), List.of(card));
+        addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
     }
 }

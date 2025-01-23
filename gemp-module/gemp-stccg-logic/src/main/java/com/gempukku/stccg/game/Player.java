@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.gamestate.GameStateListener;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,6 +30,7 @@ public class Player {
     @JsonProperty("turnNumber")
     private int _turnNumber;
     CardPile _drawDeck;
+    CardPile _discardPile;
 
     public Player(String playerId) {
         _playerId = playerId;
@@ -127,7 +129,11 @@ public class Player {
                 _drawDeck = new CardPile();
                 yield _drawDeck;
             }
-            case DISCARD, MISSIONS_PILE, PLAY_PILE, REMOVED -> new CardPile();
+            case DISCARD -> {
+                _discardPile = new CardPile();
+                yield _discardPile;
+            }
+            case MISSIONS_PILE, PLAY_PILE, REMOVED -> new CardPile();
             default -> throw new InvalidGameLogicException("Unable to create a card group for zone " + zone);
         };
         _cardGroups.put(zone, group);
@@ -185,8 +191,11 @@ public class Player {
         }
     }
 
-    public void shuffleCardsIntoDrawDeck(Collection<PhysicalCard> cards) {
-        _drawDeck.addCards(cards);
+    public void shuffleCardsIntoDrawDeck(DefaultGame cardGame, Collection<PhysicalCard> cards) {
+        cardGame.removeCardsFromZone(_playerId, cards);
+        for (PhysicalCard card : cards) {
+            cardGame.getGameState().addCardToZone(card, Zone.DRAW_DECK);
+        }
         _drawDeck.shuffle();
     }
 
