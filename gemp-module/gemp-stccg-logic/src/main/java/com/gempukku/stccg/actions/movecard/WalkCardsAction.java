@@ -16,8 +16,8 @@ import java.util.List;
 
 public class WalkCardsAction extends BeamOrWalkAction {
 
-    public WalkCardsAction(Player player, PhysicalNounCard1E cardWalkingFrom) {
-        super(player, cardWalkingFrom);
+    public WalkCardsAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardWalkingFrom) {
+        super(cardGame, player, cardWalkingFrom);
     }
 
     @Override

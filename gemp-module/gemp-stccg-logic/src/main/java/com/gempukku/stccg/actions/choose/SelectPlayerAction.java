@@ -11,7 +11,8 @@ public class SelectPlayerAction extends MakeDecisionAction {
 
     public SelectPlayerAction(ActionContext actionContext, String memoryId, List<String> playerIds)
             throws PlayerNotFoundException {
-        super(actionContext.getSource(), new MultipleChoiceAwaitingDecision(actionContext.getPerformingPlayer(),
+        super(actionContext.getGame(),
+                new MultipleChoiceAwaitingDecision(actionContext.getPerformingPlayer(),
                 "Choose a player", playerIds, actionContext.getGame()) {
             @Override
             protected void validDecisionMade(int index, String result) {

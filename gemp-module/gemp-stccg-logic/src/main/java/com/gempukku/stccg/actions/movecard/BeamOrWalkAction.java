@@ -39,11 +39,11 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param player              the player
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
-    BeamOrWalkAction(Player player, PhysicalNounCard1E cardSource) {
-        super(cardSource.getGame(), player, ActionType.MOVE_CARDS);
+    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource) {
+        super(cardGame, player, ActionType.MOVE_CARDS);
         _performingPlayer = player;
         _cardSource = cardSource;
-        _destinationOptions = getDestinationOptions(cardSource.getGame());
+        _destinationOptions = getDestinationOptions((ST1EGame) cardGame);
     }
 
     protected abstract String actionVerb();

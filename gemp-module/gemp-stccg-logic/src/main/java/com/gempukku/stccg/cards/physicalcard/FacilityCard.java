@@ -80,10 +80,10 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {
-                actions.add(new BeamCardsAction(player, this));
+                actions.add(new BeamCardsAction(cardGame, player, this));
             }
             if (!Filters.filter(getAttachedCards(_game), Filters.your(player), Filters.personnel).isEmpty()) {
-                actions.add(new WalkCardsAction(player, this));
+                actions.add(new WalkCardsAction(cardGame, player, this));
             }
         }
         actions.removeIf(action -> !action.canBeInitiated(_game));

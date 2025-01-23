@@ -3,15 +3,11 @@ package com.gempukku.stccg.actions.playcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.MakeDecisionAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.Objects;
@@ -40,7 +36,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
-        ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
+        ST1EGameState gameState = ((ST1EGame) cardGame).getGameState();
         Region region = _cardEnteringPlay.getBlueprint().getRegion();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         String[] directions = {"LEFT", "RIGHT"};
@@ -51,7 +47,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                     _placementChosen = true;
                     _locationZoneIndex = 0;
                 } else {
-                    appendCost(new MakeDecisionAction(_cardEnteringPlay,
+                    appendCost(new MakeDecisionAction(cardGame,
                             new MultipleChoiceAwaitingDecision(performingPlayer,
                                     "Add new quadrant to which end of the table?", directions, cardGame) {
                                 @Override
@@ -70,7 +66,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 _locationZoneIndex = gameState.indexOfLocation(_missionLocation, quadrant);
                 _placementChosen = true;
             } else if (gameState.firstInRegion(region, quadrant) != null) {
-                appendCost(new MakeDecisionAction(_cardEnteringPlay,
+                appendCost(new MakeDecisionAction(cardGame,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
                                 "Insert on which end of the region?", directions, cardGame) {
                             @Override
@@ -88,7 +84,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 // TODO: canInsertIntoSpaceline method not defined
                 throw new InvalidGameLogicException("No method defined for cards to insert into spaceline");
             } else {
-                appendCost(new MakeDecisionAction(_cardEnteringPlay,
+                appendCost(new MakeDecisionAction(cardGame,
                         new MultipleChoiceAwaitingDecision(performingPlayer,
                                 "Insert on which end of the quadrant?", directions, cardGame) {
                             @Override

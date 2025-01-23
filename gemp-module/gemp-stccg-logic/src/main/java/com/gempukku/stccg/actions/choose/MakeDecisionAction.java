@@ -15,11 +15,12 @@ import java.util.Collection;
 public class MakeDecisionAction extends ActionyAction {
     private final AwaitingDecision _decision;
 
-    public MakeDecisionAction(PhysicalCard performingCard, AwaitingDecision decision)
+    public MakeDecisionAction(DefaultGame cardGame, AwaitingDecision decision)
             throws PlayerNotFoundException {
-        super(performingCard.getGame(), decision.getDecidingPlayer(performingCard.getGame()), decision.getText(), ActionType.MAKE_DECISION);
+        super(cardGame, decision.getDecidingPlayer(cardGame), decision.getText(), ActionType.MAKE_DECISION);
         _decision = decision;
     }
+
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

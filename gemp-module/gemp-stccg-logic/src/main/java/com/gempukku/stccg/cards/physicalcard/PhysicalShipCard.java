@@ -44,9 +44,9 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                 // TODO - Implement land, take off, cloak
             if (isControlledBy(player.getPlayerId())) {
                 if (hasTransporters())
-                    actions.add(new BeamCardsAction(player, this));
+                    actions.add(new BeamCardsAction(cardGame, player, this));
                 if (isDocked())
-                    actions.add(new WalkCardsAction(player, this));
+                    actions.add(new WalkCardsAction(cardGame, player, this));
                 if (isStaffed()) {
                     if (isDocked())
                         actions.add(new UndockAction(player, this));
