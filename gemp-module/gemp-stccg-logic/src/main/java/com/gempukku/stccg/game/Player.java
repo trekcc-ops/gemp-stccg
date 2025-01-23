@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.cards.physicalcard.CardGroup;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -21,7 +21,7 @@ public class Player {
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     @JsonProperty("cardGroups")
-    Map<Zone, CardGroup> _cardGroups = new HashMap<>();
+    Map<Zone, PhysicalCardGroup> _cardGroups = new HashMap<>();
     @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
@@ -119,7 +119,7 @@ public class Player {
     }
 
     public void addCardGroup(Zone zone) {
-        _cardGroups.put(zone, new CardGroup(zone));
+        _cardGroups.put(zone, new PhysicalCardGroup(zone));
     }
 
     public List<PhysicalCard> getCardGroup(Zone zone) {
@@ -127,7 +127,7 @@ public class Player {
     }
 
     public void addCardToGroup(Zone zone, PhysicalCard card) throws InvalidGameLogicException {
-        CardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup group = _cardGroups.get(zone);
         if (group != null) {
             group.addCard(card);
         } else {
@@ -136,7 +136,7 @@ public class Player {
     }
 
     public List<PhysicalCard> getCardsInGroup(Zone zone) {
-        CardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup group = _cardGroups.get(zone);
         if (group == null) {
             return new LinkedList<>();
         } else {
@@ -150,7 +150,7 @@ public class Player {
     }
 
     public void setCardGroup(Zone zone, List<PhysicalCard> subDeck) throws InvalidGameLogicException {
-        CardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup group = _cardGroups.get(zone);
         if (group != null) {
             group.setCards(subDeck);
         } else {

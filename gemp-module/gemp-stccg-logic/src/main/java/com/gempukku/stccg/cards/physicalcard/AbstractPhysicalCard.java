@@ -18,10 +18,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -140,7 +137,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public int getLocationZoneIndex() {
         if (_currentLocation == null)
             return -1;
-        else return _currentLocation.getLocationZoneIndex();
+        else return _currentLocation.getLocationZoneIndex((ST1EGame) getGame());
     }
 
     private boolean canEnterPlay(DefaultGame game, List<Requirement> requirements) {

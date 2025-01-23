@@ -82,7 +82,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     public void joinEligibleAwayTeam(MissionLocation mission) {
         // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
         // TODO - When there are multiple eligible away teams, there should be a player decision
-        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_owner).toList()) {
+        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_game, _owner).toList()) {
             if (awayTeam.isCompatibleWith(this) && _awayTeam == null) {
                 addToAwayTeam(awayTeam);
             }

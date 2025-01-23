@@ -33,7 +33,7 @@ public class GameStateSerializerTest extends AbstractAtTest {
         // There should now be 12 missions seeded
         assertEquals(12, _game.getGameState().getSpacelineLocations().size());
         for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
-            System.out.println((location.getLocationZoneIndex() + 1) + " - " + location.getLocationName());
+            System.out.println((location.getLocationZoneIndex(_game) + 1) + " - " + location.getLocationName());
         }
 
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());

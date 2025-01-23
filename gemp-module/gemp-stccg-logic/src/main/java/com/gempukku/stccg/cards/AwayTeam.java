@@ -54,8 +54,6 @@ public class AwayTeam implements AttemptingUnit {
         return _location == location;
     }
 
-    @JsonProperty("locationZoneIndex")
-    public int getLocationZoneIndex() { return _location.getLocationZoneIndex(); }
     @JsonIgnore
     public Player getPlayer() { return _player; }
     @JsonProperty("playerId")
@@ -115,10 +113,10 @@ public class AwayTeam implements AttemptingUnit {
             card.getGame().getGameState().removeAwayTeamFromGame(this);
     }
 
-    public boolean canBeDisbanded() {
+    public boolean canBeDisbanded(ST1EGame game) {
         /* TODO - Away Teams may also be eligible to be disbanded if they're not on a mission,
             this should check presence instead. Check not sufficient in complex situations */
-        List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(_player).toList();
+        List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _player).toList();
         for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {
             boolean canJoinAnother = false;
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
@@ -131,10 +129,10 @@ public class AwayTeam implements AttemptingUnit {
         return true;
     }
 
-    public void disband() {
+    public void disband(ST1EGame game) {
         for (PhysicalReportableCard1E card : _cardsInAwayTeam) {
             card.leaveAwayTeam();
-            List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(_player).toList();
+            List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _player).toList();
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
                 if (awayTeam != this && card.getAwayTeam() == null && awayTeam.isCompatibleWith(card))
                     card.addToAwayTeam(awayTeam);

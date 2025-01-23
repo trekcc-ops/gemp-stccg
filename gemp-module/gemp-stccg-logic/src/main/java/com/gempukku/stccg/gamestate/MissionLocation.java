@@ -13,38 +13,33 @@ import com.google.common.collect.Iterables;
 import java.util.*;
 import java.util.stream.Stream;
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationZoneIndex")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "quadrant", "region", "locationName", "locationZoneIndex", "isCompleted",
+@JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted",
         "cardsSeededUnderneath" })
 public class MissionLocation {
     private final Quadrant _quadrant;
     private final Region _region;
     private final String _locationName;
-    private final ST1EGame _game;
     private boolean _isCompleted;
-    private final CardGroup _missionCards = new CardGroup(Zone.SPACELINE);
+    @JsonProperty("locationId")
+    private final int _locationId;
+    private final MissionCardGroup _missionCards = new MissionCardGroup(Zone.SPACELINE);
     protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
 
     private final List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
-    public MissionLocation(MissionCard mission) {
+    public MissionLocation(MissionCard mission, int locationId) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
-                mission.getBlueprint().getLocation(), mission.getGame());
+                mission.getBlueprint().getLocation(), locationId);
         _missionCards.addCard(mission);
         mission.setLocation(this);
     }
 
-    public MissionLocation(Quadrant quadrant, Region region, String locationName, ST1EGame game) {
+    public MissionLocation(Quadrant quadrant, Region region, String locationName, int locationId) {
         _quadrant = quadrant;
         _region = region;
         _locationName = locationName;
-        _game = game;
-    }
-
-    public Stream<AwayTeam> getYourAwayTeamsOnSurface(Player player) {
-        Stream<AwayTeam> teamsOnSurface =
-                _game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
-        return teamsOnSurface.filter(awayTeam -> awayTeam.getPlayer() == player);
+        _locationId = locationId;
     }
 
     public Stream<AwayTeam> getYourAwayTeamsOnSurface(ST1EGame game, Player player) {
@@ -60,17 +55,6 @@ public class MissionLocation {
 
 
     public List<MissionCard> getMissionCards() {
-        List<MissionCard> result = new ArrayList<>();
-        Collection<PhysicalCard> missions = Filters.filterActive(_game, CardType.MISSION, Filters.atLocation(this));
-        for (PhysicalCard card : missions) {
-            if (card instanceof MissionCard missionCard)
-                result.add(missionCard);
-            else _game.sendMessage("Error - card of type MISSION that is not MissionCard class type");
-        }
-        return result;
-    }
-
-    public List<PhysicalCard> getMissionCardsNew() {
         return _missionCards.getCards();
     }
 
@@ -80,7 +64,7 @@ public class MissionLocation {
 
     public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
         PhysicalCard result = null;
-        Collection<PhysicalCard> missionCards = getMissionCardsNew();
+        Collection<? extends PhysicalCard> missionCards = getMissionCards();
         if (missionCards.size() == 1) {
             result = Iterables.getOnlyElement(missionCards);
         }
@@ -132,9 +116,10 @@ public class MissionLocation {
         }
     }
 
-    public int getLocationZoneIndex() {
-        return _game.getGameState().getSpacelineLocations().indexOf(this);
+    public int getLocationZoneIndex(ST1EGame cardGame) {
+        return cardGame.getGameState().getSpacelineLocations().indexOf(this);
     }
+
 
 
     private int getSpan(Player player) throws InvalidGameLogicException {
@@ -144,7 +129,7 @@ public class MissionLocation {
         else return card.getBlueprint().getOpponentSpan();
     }
 
-    public boolean mayBeAttemptedByPlayer(Player player, DefaultGame cardGame) throws InvalidGameLogicException {
+    public boolean mayBeAttemptedByPlayer(Player player, ST1EGame cardGame) throws InvalidGameLogicException {
         // Rule 7.2.1, Paragraph 1
         // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
         MissionCard missionCard = getMissionForPlayer(player.getPlayerId());
@@ -155,7 +140,7 @@ public class MissionLocation {
             return false;
         if (missionCard.wasSeededBy(player) || missionCard.getPointsShown() >= 40) {
             if (missionType == MissionType.PLANET)
-                return getYourAwayTeamsOnSurface(player).anyMatch(
+                return getYourAwayTeamsOnSurface(cardGame, player).anyMatch(
                         awayTeam -> awayTeam.canAttemptMission(cardGame, this));
             if (missionType == MissionType.SPACE)
                 return Filters.filterYourActive(cardGame, player, Filters.ship, Filters.atLocation(this))
@@ -181,7 +166,7 @@ public class MissionLocation {
     }
 
     public MissionType getMissionType() {
-        MissionCard missionCard = getMissionCards().getFirst();
+        PhysicalCard missionCard = getMissionCards().getFirst();
         return missionCard.getBlueprint().getMissionType();
     }
 

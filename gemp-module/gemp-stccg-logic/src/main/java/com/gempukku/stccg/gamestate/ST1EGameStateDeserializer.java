@@ -40,7 +40,8 @@ public class ST1EGameStateDeserializer {
             JsonNode regionNode = locationNode.get("region");
             Region region = (regionNode == null) ? null : Region.valueOf(regionNode.textValue());
             String locationName = locationNode.get("locationName").textValue();
-            MissionLocation location = new MissionLocation(quadrant, region, locationName, game);
+            int locationId = locationNode.get("locationId").intValue();
+            MissionLocation location = new MissionLocation(quadrant, region, locationName, locationId);
             gameState._spacelineLocations.add(location);
             if (locationNode.has("cardsSeededUnderneath")) {
                 seededUnderMap.put(location, new ArrayList<>());

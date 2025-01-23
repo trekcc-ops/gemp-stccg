@@ -9,11 +9,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "cards" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
-public class CardGroup {
+public class PhysicalCardGroup {
     private final Zone _zone;
     private final List<PhysicalCard> _cards = new LinkedList<>();
 
-    public CardGroup(Zone zone) {
+    public PhysicalCardGroup(Zone zone) {
         _zone = zone;
     }
 

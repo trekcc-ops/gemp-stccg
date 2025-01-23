@@ -18,6 +18,7 @@ public class ST1EGameState extends GameState {
     private final ST1EGame _game;
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId;
+    private int _nextLocationId;
     private final Map<Integer, AttemptingUnit> _attemptingUnits = new HashMap<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
@@ -110,7 +111,8 @@ public class ST1EGameState extends GameState {
     }
 
     public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
-        _spacelineLocations.add(indexNumber, new MissionLocation(newMission));
+        _spacelineLocations.add(indexNumber, new MissionLocation(newMission, _nextLocationId));
+        _nextLocationId++;
         addCardToZone(newMission, Zone.SPACELINE, true, false);
     }
 

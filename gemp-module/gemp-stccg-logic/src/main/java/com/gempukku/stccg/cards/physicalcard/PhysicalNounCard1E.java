@@ -33,8 +33,8 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         if (getAffiliationOptions().size() > 1) {
             if (getAttachedTo() instanceof MissionCard mission &&
                     this instanceof PhysicalReportableCard1E reportable) {
-                if (reportable.getAwayTeam().canBeDisbanded()) {
-                    reportable.getAwayTeam().disband();
+                if (reportable.getAwayTeam().canBeDisbanded(_game)) {
+                    reportable.getAwayTeam().disband(_game);
                 } else {
                     if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(reportable))
                         reportable.leaveAwayTeam();
