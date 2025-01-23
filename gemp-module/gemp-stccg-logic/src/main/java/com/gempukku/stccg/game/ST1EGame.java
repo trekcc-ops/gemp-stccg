@@ -1,9 +1,14 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.gamestate.GameEvent;
+import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
@@ -53,5 +58,23 @@ public class ST1EGame extends DefaultGame {
     }
 
     public ST1ERuleSet getRules() { return _rules; }
+
+    public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)
+            throws CardNotFoundException {
+        try {
+            int cardId = _gameState.getAndIncrementNextCardId();
+            PhysicalCard card = library.createST1EPhysicalCard(this, blueprintId, cardId, playerId);
+            _gameState.addCardToAllCards(card);
+            card.setZone(Zone.VOID);
+            return card;
+        } catch(PlayerNotFoundException exp) {
+            throw new CardNotFoundException(exp.getMessage());
+        }
+    }
+
+    public void sendUpdatedCardImageToClient(PhysicalCard card) {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(GameEvent.Type.UPDATE_CARD_IMAGE, card));
+    }
 
 }

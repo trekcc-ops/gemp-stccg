@@ -38,7 +38,9 @@ public interface ActionContext {
     ActionContext createDelegateContext(ActionResult actionResult);
     ActionContext createDelegateContext(String playerId);
     String substituteText(String text);
-    List<PhysicalCard> getZoneCards(PlayerSource playerSource, Zone zone);
+
+    List<PhysicalCard> getZoneCards(Player player, Zone zone);
+
 
     ActionContext getParentContext();
 }

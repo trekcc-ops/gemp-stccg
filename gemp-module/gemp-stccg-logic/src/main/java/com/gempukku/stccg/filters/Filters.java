@@ -245,12 +245,12 @@ public class Filters {
     }
 
     public static Filter yourHand(Player player) {
-        return (game, physicalCard) -> game.getGameState().getHand(player.getPlayerId()).contains(physicalCard);
+        return (game, physicalCard) -> player.getCardsInHand().contains(physicalCard);
     }
 
     public static Filter bottomCardsOfDiscard(Player player, int cardCount, Filterable... filterables) {
         return (game, physicalCard) -> {
-            List<PhysicalCard> discardCards = game.getGameState().getDiscard(player.getPlayerId());
+            List<PhysicalCard> discardCards = player.getCardGroupCards(Zone.DISCARD);
             int cardsIdentified = 0;
             for (int i = discardCards.size() - 1; i >= 0; i--) {
                 if (and(filterables).accepts(game, discardCards.get(i)) && cardsIdentified < cardCount) {
@@ -559,8 +559,8 @@ public class Filters {
                 missionCard.getPoints() >= pointValue;
     }
 
-    public static Filter yourDiscard(String playerId) {
-        return (game, physicalCard) -> game.getGameState().getDiscard(playerId).contains(physicalCard);
+    public static Filter yourDiscard(Player player) {
+        return (game, physicalCard) -> player.getCardGroupCards(Zone.DISCARD).contains(physicalCard);
     }
 
     public static Filter personnelInAttemptingUnit(AttemptingUnit attemptingUnit) {

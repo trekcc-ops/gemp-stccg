@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 
 import java.util.Collections;
@@ -34,7 +35,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
                 _cardEnteringPlay.getCardLink() +  " from " + playedFromZone.getHumanReadable() +
                 " to " + _destinationZone.getHumanReadable());
-        gameState.removeCardsFromZone(_cardEnteringPlay.getOwnerName(),
+        gameState.removeCardsFromZone(cardGame, _cardEnteringPlay.getOwnerName(),
                 Collections.singleton(_cardEnteringPlay));
         cardGame.getGameState().addCardToZone(_cardEnteringPlay, Zone.PLAY_PILE);
         if (playedFromZone == Zone.DRAW_DECK) {
@@ -46,9 +47,9 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setLastTribblePlayed(tribbleValue);
 
         int nextTribble = (tribbleValue == 100000) ? 1 : (tribbleValue * 10);
-        gameState.setNextTribbleInSequence(nextTribble);
+        gameState.setNextTribbleInSequence(cardGame, nextTribble);
 
-        gameState.setChainBroken(false);
+        gameState.setChainBroken((TribblesGame) cardGame, false);
         cardGame.getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, playedFromZone, _cardEnteringPlay));
         _wasCarriedOut = true;

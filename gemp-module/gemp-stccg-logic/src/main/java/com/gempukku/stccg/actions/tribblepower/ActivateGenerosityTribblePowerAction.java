@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.ArrayList;
@@ -55,9 +56,11 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
     }
 
     private void playerChosen(String chosenPlayer, DefaultGame cardGame) throws PlayerNotFoundException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+        Player chosenPlayerObj = cardGame.getPlayer(chosenPlayer);
         // You and one other player (your choice) each score 25,000 points.
-        cardGame.getGameState().addToPlayerScore(_performingPlayerId, BONUS_POINTS);
-        cardGame.getGameState().addToPlayerScore(chosenPlayer, BONUS_POINTS);
+        cardGame.addToPlayerScore(performingPlayer, BONUS_POINTS);
+        cardGame.addToPlayerScore(chosenPlayerObj, BONUS_POINTS);
 
         // Draw a card.
         appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));

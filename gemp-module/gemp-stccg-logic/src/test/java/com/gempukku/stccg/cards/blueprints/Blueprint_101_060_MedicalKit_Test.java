@@ -22,11 +22,11 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();
-
-        gameState.addCardToGame("101_174", _cardLibrary, P1);
-        gameState.addCardToGame("101_060", _cardLibrary, P1);
-        gameState.addCardToGame("101_215", _cardLibrary, P1);
-        gameState.addCardToGame("105_085", _cardLibrary, P1);
+        
+        _game.addCardToGame("101_174", _cardLibrary, P1);
+        _game.addCardToGame("101_060", _cardLibrary, P1);
+        _game.addCardToGame("101_215", _cardLibrary, P1);
+        _game.addCardToGame("105_085", _cardLibrary, P1);
 
         MissionCard mission = null;
         PhysicalReportableCard1E medicalKit = null;

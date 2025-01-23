@@ -32,9 +32,9 @@ public class ActionSerializerTest extends AbstractAtTest {
                 new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
         KillSinglePersonnelAction action2 = new KillSinglePersonnelAction(_game.getPlayer(P1), _game.getCardFromCardId(1),
                 new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
-        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
         action.appendCost(action2);
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = mapper.writeValueAsString(action);
@@ -53,7 +53,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         assertNotNull(_mission);
 
         ST1EPhysicalCard maglock =
-                (ST1EPhysicalCard) _game.getGameState().addCardToGame("109_010", _cardLibrary, P1);
+                (ST1EPhysicalCard) _game.addCardToGame("109_010", _cardLibrary, P1);
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
@@ -77,15 +77,15 @@ public class ActionSerializerTest extends AbstractAtTest {
 
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
-        PersonnelCard hobson = (PersonnelCard) _game.getGameState().addCardToGame("101_202", _cardLibrary, P1);
-        PersonnelCard picard = (PersonnelCard) _game.getGameState().addCardToGame("101_215", _cardLibrary, P1);
-        PersonnelCard data = (PersonnelCard) _game.getGameState().addCardToGame("101_204", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", _cardLibrary, P1);
+        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", _cardLibrary, P1);
+        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         PersonnelCard mvil = null;
-        for (PhysicalCard card : _game.getGameState().getHand(P1)) {
+        for (PhysicalCard card : _game.getPlayer(P1).getCardsInHand()) {
             if (card.getBlueprintId().equals("172_040")) {
                 mvil = (PersonnelCard) card;
             }

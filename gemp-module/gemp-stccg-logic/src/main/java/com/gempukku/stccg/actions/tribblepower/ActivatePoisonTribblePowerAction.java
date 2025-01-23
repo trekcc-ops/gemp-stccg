@@ -38,9 +38,9 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
 
             // Choose any opponent who still has card(s) in their draw deck.
             List<String> playersWithCards = new ArrayList<>();
-            for (String player : cardGame.getAllPlayerIds()) {
-                if ((!cardGame.getGameState().getDrawDeck(player).isEmpty()) && !Objects.equals(player, _performingPlayerId))
-                    playersWithCards.add(player);
+            for (Player player : cardGame.getPlayers()) {
+                if ((!player.getCardsInDrawDeck().isEmpty()) && !Objects.equals(player.getPlayerId(), _performingPlayerId))
+                    playersWithCards.add(player.getPlayerId());
             }
             String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);
             if (playersWithCardsArr.length == 1)
@@ -70,7 +70,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
         // That opponent must discard the top card
         Player chosenPlayer = game.getPlayer(chosenPlayerId);
         Player performingPlayer = game.getPlayer(_performingPlayerId);
-        PhysicalCard discardingCard = game.getGameState().getDrawDeck(chosenPlayerId).getLast();
+        PhysicalCard discardingCard = chosenPlayer.getCardsInDrawDeck().getLast();
         DiscardCardAction discardAction = new DiscardCardAction(_performingCard, chosenPlayer, discardingCard);
         appendEffect(discardAction);
         appendEffect(new ScorePointsAction(_performingCard, performingPlayer,

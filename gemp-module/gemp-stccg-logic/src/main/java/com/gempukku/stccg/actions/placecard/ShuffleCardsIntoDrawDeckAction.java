@@ -45,7 +45,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         }
 
         Collection<PhysicalCard> cards = _cardTarget.getCards(cardGame);
-        cardGame.getGameState().removeCardsFromZone(_performingCard.getOwnerName(), cards);
+        cardGame.removeCardsFromZone(_performingCard.getOwnerName(), cards);
         cardGame.getGameState().shuffleCardsIntoDeck(cardGame, cards, performingPlayer);
         cardGame.sendMessage(TextUtils.concatenateStrings(
                 cards.stream().map(PhysicalCard::getCardLink)) + " " +

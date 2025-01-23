@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.*;
@@ -128,17 +129,18 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
+    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<TopLevelSelectableAction> actions = actionProxy.getPhaseActions(playerId);
-            List<TopLevelSelectableAction> playableActions = getPlayableActions(playerId, actions);
+            List<TopLevelSelectableAction> actions = actionProxy.getPhaseActions(player);
+            List<TopLevelSelectableAction> playableActions = getPlayableActions(player.getPlayerId(), actions);
             result.addAll(playableActions);
         }
 
         return result;
     }
+
 
     @Override
     public void addActionToStack(Action action) {

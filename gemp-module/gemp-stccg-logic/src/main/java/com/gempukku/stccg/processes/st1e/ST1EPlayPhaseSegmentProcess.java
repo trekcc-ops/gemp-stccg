@@ -21,10 +21,9 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Phase phase = cardGame.getCurrentPhase();
-        String currentPlayerId = cardGame.getCurrentPlayerId();
         Player currentPlayer = cardGame.getCurrentPlayer();
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(currentPlayerId);
+                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer);
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(cardGame.getCurrentPlayer(), "Play " + phase + " action or Pass",
@@ -58,13 +57,13 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
             cardGame.sendMessage(message);
             result = switch (phase) {
                 case CARD_PLAY -> {
-                    cardGame.getGameState().setCurrentPhase(Phase.EXECUTE_ORDERS);
+                    cardGame.setCurrentPhase(Phase.EXECUTE_ORDERS);
                     message = "Start of " + Phase.EXECUTE_ORDERS + " phase";
                     cardGame.sendMessage("\n" + message);
                     yield new ST1EPlayPhaseSegmentProcess();
                 }
                 case EXECUTE_ORDERS -> {
-                    cardGame.getGameState().setCurrentPhase(Phase.END_OF_TURN);
+                    cardGame.setCurrentPhase(Phase.END_OF_TURN);
                     yield new ST1EEndOfTurnProcess();
                 }
                 case null, default -> throw new RuntimeException(

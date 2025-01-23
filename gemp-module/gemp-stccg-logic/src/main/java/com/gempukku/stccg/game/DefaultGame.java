@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -181,6 +182,12 @@ public abstract class DefaultGame {
         } catch(PlayerNotFoundException exp) {
             sendErrorMessage(exp);
         }
+    }
+
+    public void setCurrentPhase(Phase phase) {
+        getGameState().setCurrentPhaseNew(phase);
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.setCurrentPhase(phase);
     }
 
 
@@ -487,6 +494,25 @@ public abstract class DefaultGame {
                 sendErrorMessage(exp);
             }
         }
+    }
+
+    public void sendWarning(String player, String warning) {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendWarning(player, warning);
+    }
+
+    public void addToPlayerScore(Player player, int points) {
+        player.scorePoints(points);
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.setPlayerScore(player.getPlayerId());
+    }
+    public void sendSerializedGameStateToClient() {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(this, GameEvent.Type.SERIALIZED_GAME_STATE, getGameState()));
+    }
+
+    public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
+        getGameState().removeCardsFromZone(this, playerPerforming, cards);
     }
 
 }

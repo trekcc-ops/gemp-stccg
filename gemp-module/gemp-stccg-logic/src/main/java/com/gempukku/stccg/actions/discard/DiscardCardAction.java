@@ -69,7 +69,7 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
 
         Collection<PhysicalCard> cardsToDiscard = _cardTarget.getCards(cardGame);
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(_performingPlayerId, cardsToDiscard);
+        gameState.removeCardsFromZone(cardGame, _performingPlayerId, cardsToDiscard);
         for (PhysicalCard cardToDiscard : cardsToDiscard) {
             if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();

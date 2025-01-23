@@ -42,7 +42,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
                         reportable.joinEligibleAwayTeam(mission.getLocation());
                 }
             }
-            _game.getGameState().sendUpdatedCardImageToClient(this);
+            _game.sendUpdatedCardImageToClient(this);
         }
     }
 

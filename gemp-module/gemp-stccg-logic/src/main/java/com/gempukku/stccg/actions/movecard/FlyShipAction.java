@@ -80,7 +80,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             _cardMoved = true;
             _flyingCard.useRange(rangeNeeded);
             _flyingCard.setLocation(_destination.getLocation());
-            _flyingCard.getGame().getGameState().moveCard(_flyingCard);
+            _flyingCard.getGame().getGameState().moveCard(cardGame, _flyingCard);
             _flyingCard.getGame().sendMessage(
                     _flyingCard.getCardLink() + " flew to " + _destination.getLocation().getLocationName() +
                             " (using " + rangeNeeded + " RANGE)"

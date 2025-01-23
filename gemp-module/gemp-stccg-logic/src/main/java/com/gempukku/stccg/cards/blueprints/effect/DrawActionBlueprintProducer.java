@@ -46,9 +46,15 @@ public class DrawActionBlueprintProducer {
             
             @Override
             public boolean isPlayableInFull(ActionContext context) {
-                final int count = countSource.evaluateExpression(context, null);
-                final String targetPlayerId = targetPlayerSource.getPlayerId(context);
-                return context.getGameState().getDrawDeck(targetPlayerId).size() >= count;
+                try {
+                    final int count = countSource.evaluateExpression(context, null);
+                    final String targetPlayerId = targetPlayerSource.getPlayerId(context);
+                    Player targetPlayer = context.getGame().getPlayer(targetPlayerId);
+                    return targetPlayer.getCardsInDrawDeck().size() >= count;
+                } catch(PlayerNotFoundException exp) {
+                    context.getGame().sendErrorMessage(exp);
+                    return false;
+                }
             }
         };
     }

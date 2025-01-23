@@ -238,8 +238,7 @@ public abstract class CardGameMediator {
                     } catch (DecisionResultInvalidException exp) {
                         /* Participant provided wrong answer - send a warning message,
                         and ask again for the same decision */
-                        String warningMessage = exp.getWarningMessage();
-                        gameState.sendWarning(playerName, warningMessage);
+                        game.sendWarning(playerName, exp.getWarningMessage());
                         game.sendAwaitingDecision(awaitingDecision);
                     } catch (RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);

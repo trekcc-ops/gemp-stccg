@@ -9,14 +9,12 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 
 import java.util.*;
 
 public class ST1EGameState extends GameState {
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
-    private final ST1EGame _game;
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId;
     private int _nextLocationId;
@@ -24,7 +22,6 @@ public class ST1EGameState extends GameState {
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
-        _game = game;
         _currentPhase = Phase.SEED_DOORWAY;
         for (Player player : _players.values()) {
             player.addCardGroup(Zone.TABLE);
@@ -38,28 +35,10 @@ public class ST1EGameState extends GameState {
     }
 
     @Override
-    public ST1EGame getGame() { return _game; }
-
-    @Override
-    public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        try {
-            Player player = getPlayer(playerId);
-            if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                    zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
-                return player.getCardGroup(zone);
-            else // This should never be accessed
-                return _inPlay; // TODO - Should this just be an exception?
-        } catch(PlayerNotFoundException exp) {
-            sendErrorMessage(exp);
-            return new LinkedList<>();
-        }
-    }
-
-    @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
                 zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
-            return player.getCardGroup(zone);
+            return player.getCardGroupCards(zone);
         else // This should never be accessed
             return _inPlay; // TODO - Should this just be an exception?
     }
@@ -79,7 +58,7 @@ public class ST1EGameState extends GameState {
                             _allCards.put(_nextCardId, card);
                             _nextCardId++;
                         } catch (CardNotFoundException | PlayerNotFoundException e) {
-                            sendErrorMessage(e);
+                            cardGame.sendErrorMessage(e);
                         }
                     }
                     if (entry.getKey() == SubDeck.DRAW_DECK) {
@@ -98,7 +77,7 @@ public class ST1EGameState extends GameState {
                 }
             }
         } catch(InvalidGameLogicException exp) {
-            sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
         }
     }
 
@@ -235,7 +214,7 @@ public class ST1EGameState extends GameState {
                             cardIterator.remove();
                         }
                     } catch(InvalidGameLogicException exp) {
-                        sendErrorMessage(exp);
+                        listener.getGame().sendErrorMessage(exp);
                     }
                 } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
                     sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
@@ -246,18 +225,18 @@ public class ST1EGameState extends GameState {
             }
         } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
-        for (PhysicalCard physicalCard : player.getCardGroup(Zone.HAND)) {
+        for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.HAND)) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        List<PhysicalCard> missionPile = player.getCardGroup(Zone.MISSIONS_PILE);
+        List<PhysicalCard> missionPile = player.getCardGroupCards(Zone.MISSIONS_PILE);
         if (missionPile != null) {
             for (PhysicalCard physicalCard : missionPile) {
                 sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
             }
         }
 
-        for (PhysicalCard physicalCard : player.getCardGroup(Zone.DISCARD)) {
+        for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.DISCARD)) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
     }
@@ -280,11 +259,6 @@ public class ST1EGameState extends GameState {
             if (score >= 100)
                 cardGame.playerWon(player.getPlayerId(), score + " points");
         }
-    }
-
-    public void sendUpdatedCardImageToClient(PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.UPDATE_CARD_IMAGE, card));
     }
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {
@@ -311,24 +285,6 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)
-            throws CardNotFoundException {
-        try {
-            PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
-            _allCards.put(_nextCardId, card);
-            _nextCardId++;
-            card.setZone(Zone.VOID);
-            return card;
-        } catch(PlayerNotFoundException exp) {
-            throw new CardNotFoundException(exp.getMessage());
-        }
-    }
-
-    public void sendSerializedGameStateToClient() {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(listener.getGame(), GameEvent.Type.SERIALIZED_GAME_STATE, this));
-    }
-
     public int getAttemptingUnitId(AttemptingUnit unit) throws InvalidGameLogicException {
         for (Map.Entry<Integer,AttemptingUnit> entry : _attemptingUnits.entrySet()) {
             if (entry.getValue() == unit) {
@@ -345,5 +301,9 @@ public class ST1EGameState extends GameState {
         } else {
             return result;
         }
+    }
+
+    public void addCardToAllCards(PhysicalCard card) {
+        _allCards.put(card.getCardId(), card);
     }
 }

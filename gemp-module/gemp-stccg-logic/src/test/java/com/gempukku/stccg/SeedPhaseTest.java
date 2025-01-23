@@ -7,6 +7,8 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.GameSnapshot;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -17,12 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeedPhaseTest extends AbstractAtTest {
 
     @Test
-    public void autoSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void autoSeedTest() throws DecisionResultInvalidException, PlayerNotFoundException {
         initializeIntroductoryTwoPlayerGame();
 
         // Figure out which player is going first
-        String player1 = _game.getGameState().getPlayerOrder().getFirstPlayer();
-        String player2 = _game.getOpponent(player1);
+        String playerId1 = _game.getGameState().getPlayerOrder().getFirstPlayer();
+        String playerId2 = _game.getOpponent(playerId1);
+        Player player1 = _game.getPlayer(playerId1);
+        Player player2 = _game.getPlayer(playerId2);
 
         autoSeedMissions();
 
@@ -44,8 +48,8 @@ public class SeedPhaseTest extends AbstractAtTest {
 
         // Verify that the seed phase is over and both players have drawn starting hands
         assertEquals(Phase.CARD_PLAY, _game.getGameState().getCurrentPhase());
-        assertEquals(7, _game.getGameState().getHand(player1).size());
-        assertEquals(7, _game.getGameState().getHand(player2).size());
+        assertEquals(7, player1.getCardsInHand().size());
+        assertEquals(7, player2.getCardsInHand().size());
     }
 
     @Test

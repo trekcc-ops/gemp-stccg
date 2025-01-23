@@ -20,13 +20,12 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
         gameState.advanceRound(_game);
 
         // Draw new hands. Shuffle only on first round, since shuffling is already done at end of every round.
-        for (String playerId : gameState.getPlayerOrder().getAllPlayers()) {
-            Player player = cardGame.getPlayer(playerId);
+        for (Player player : cardGame.getPlayers()) {
             if (gameState.getRoundNum() == 1) {
                 player.shuffleDrawDeck(cardGame);
             }
             for (int i = 0; i < _game.getFormat().getHandSize(); i++)
-                gameState.playerDrawsCard(playerId);
+                gameState.playerDrawsCard(cardGame, player);
         }
     }
 

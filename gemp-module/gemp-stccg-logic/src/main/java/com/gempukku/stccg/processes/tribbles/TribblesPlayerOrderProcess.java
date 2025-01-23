@@ -3,10 +3,7 @@ package com.gempukku.stccg.processes.tribbles;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayerNotFoundException;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
@@ -28,8 +25,9 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
         LinkedList<String> playersSelecting = new LinkedList<>(playersInOrder);
         Map<String, Integer> playersWithOneValue = new LinkedHashMap<>();
 
-        for (String player: playersSelecting) {
-            playersWithOneValue.put(player, playerOnlyHasOneTribbleValue(player));
+        for (String playerId : playersSelecting) {
+            Player player = cardGame.getPlayer(playerId);
+            playersWithOneValue.put(playerId, playerOnlyHasOneTribbleValue(player));
         }
 
         while (playersSelecting.size() > 1) {
@@ -72,9 +70,9 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
         _game.initializePlayerOrder(new PlayerOrder(playersInOrder));
     }
     
-    private Integer playerOnlyHasOneTribbleValue(String playerId) {
+    private Integer playerOnlyHasOneTribbleValue(Player player) {
         ArrayList<Integer> uniqueValues = new ArrayList<>();
-        for (PhysicalCard card : _game.getGameState().getDrawDeck(playerId)) {
+        for (PhysicalCard card : player.getCardsInDrawDeck()) {
             int value = card.getBlueprint().getTribbleValue();
             if (!uniqueValues.contains(value))
                 uniqueValues.add(value);

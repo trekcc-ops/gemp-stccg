@@ -31,10 +31,10 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
 
     @Override
     public void process(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        String _currentPlayer = cardGame.getCurrentPlayerId();
+        Player currentPlayer = cardGame.getCurrentPlayer();
 
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(_currentPlayer);
+                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer);
         ST1EGameState gameState = getST1EGame(cardGame).getGameState();
         Phase currentPhase = gameState.getCurrentPhase();
 
@@ -42,13 +42,12 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             _consecutivePasses++;
         } else {
             String message = "Play " + currentPhase + " action";
-            Player player = cardGame.getCurrentPlayer();
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(player, message, playableActions, true, cardGame) {
+                    new CardActionSelectionDecision(currentPlayer, message, playableActions, true, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result))
-                                GameUtils.performRevert(cardGame, player);
+                                GameUtils.performRevert(cardGame, currentPlayer);
                             Action action = getSelectedAction(result);
                             cardGame.getActionsEnvironment().addActionToStack(action);
                         }
@@ -71,11 +70,11 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         if (areAllMissionsSeeded) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
             ST1EGameState gameState = getST1EGame(cardGame).getGameState();
-            gameState.setCurrentPhase(Phase.SEED_DILEMMA);
+            cardGame.setCurrentPhase(Phase.SEED_DILEMMA);
             for (Player player : cardGame.getPlayers()) {
                 List<PhysicalCard> remainingSeeds = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeeds) {
-                    gameState.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
+                    cardGame.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
                     gameState.addCardToZone(card, Zone.HAND);
                 }
             }

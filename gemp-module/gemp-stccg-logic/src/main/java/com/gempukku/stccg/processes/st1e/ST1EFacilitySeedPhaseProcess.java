@@ -32,7 +32,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
         Player currentPlayer = cardGame.getCurrentPlayer();
 
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer.getPlayerId());
+                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer);
         if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {
@@ -77,7 +77,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             for (Player player : players) {
                 player.shuffleDrawDeck(cardGame);
                 for (int i = 0; i < cardGame.getFormat().getHandSize(); i++) {
-                    gameState.playerDrawsCard(player);
+                    gameState.playerDrawsCard(cardGame, player);
                 }
             }
             cardGame.sendMessage("Players drew starting hands");

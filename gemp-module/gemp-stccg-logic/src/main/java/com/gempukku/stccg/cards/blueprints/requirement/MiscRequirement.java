@@ -13,6 +13,7 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 
@@ -67,12 +68,13 @@ public class MiscRequirement implements Requirement {
 
         try {
             final String playerId = _playerSource.getPlayerId(actionContext);
+            Player player = actionContext.getGame().getPlayer(playerId);
             final int count = _valueSource.evaluateExpression(actionContext, null);
             final GameState gameState = actionContext.getGameState();
             final Filterable filterable = _filterableSource.getFilterable(actionContext);
             return switch (_requirementType) {
-                case CARDSINDECKCOUNT -> gameState.getDrawDeck(playerId).size() == count;
-                case CARDSINHANDMORETHAN -> gameState.getHand(playerId).size() > count;
+                case CARDSINDECKCOUNT -> player.getCardsInDrawDeck().size() == count;
+                case CARDSINHANDMORETHAN -> player.getCardsInHand().size() > count;
                 case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE ->
                         gameState.getPlayer(playerId).hasCardInZone(actionContext.getGame(), _requirementType.zone, count, filterable);
                 case LASTTRIBBLEPLAYED -> actionContext instanceof TribblesActionContext context &&

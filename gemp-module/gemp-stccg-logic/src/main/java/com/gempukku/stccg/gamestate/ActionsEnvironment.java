@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.*;
 
@@ -17,9 +18,9 @@ public interface ActionsEnvironment {
 
     List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults);
 
-    List<TopLevelSelectableAction> getPhaseActions(String playerId);
-
     void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);
+
+    List<TopLevelSelectableAction> getPhaseActions(Player player);
 
     void addActionToStack(Action action);
 

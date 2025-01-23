@@ -27,9 +27,9 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard geordi = (PersonnelCard) _game.getGameState().addCardToGame("155_060", _cardLibrary, P1);
+        PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         geordi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
@@ -62,9 +62,9 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard geordi = (PersonnelCard) _game.getGameState().addCardToGame("155_060", _cardLibrary, P1);
+        PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         geordi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);

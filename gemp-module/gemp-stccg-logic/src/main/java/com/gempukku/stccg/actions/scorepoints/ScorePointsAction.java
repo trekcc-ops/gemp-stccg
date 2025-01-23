@@ -38,7 +38,8 @@ public class ScorePointsAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        cardGame.getGameState().addToPlayerScore(_performingPlayerId, _points);
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+        cardGame.addToPlayerScore(performingPlayer, _points);
         return getNextAction();
     }
 }

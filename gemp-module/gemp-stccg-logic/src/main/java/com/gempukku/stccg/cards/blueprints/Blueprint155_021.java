@@ -59,7 +59,7 @@ public class Blueprint155_021 extends CardBlueprint {
                         @Override
                         protected Collection<PhysicalCard> getPlayableCards(DefaultGame cardGame, GameState gameState) {
                             Collection<PhysicalCard> playableCards = Filters.filter(
-                                    cardGame.getGameState().getHand(thisCard.getOwnerName()), playableCardFilter);
+                                    thisCard.getOwner().getCardsInHand(), playableCardFilter);
                             playableCards.removeIf(card -> getDestinationOptionsForCard(cardGame, card).isEmpty());
                             return playableCards;
                         }

@@ -35,8 +35,8 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return _allPlayersMustBeAble ?
-                cardGame.getPlayerIds().stream().noneMatch(player -> cardGame.getGameState().getHand(player).isEmpty()) :
-                cardGame.getPlayerIds().stream().anyMatch(player -> !cardGame.getGameState().getHand(player).isEmpty());
+                cardGame.getPlayers().stream().noneMatch(player -> player.getCardsInHand().isEmpty()) :
+                cardGame.getPlayers().stream().anyMatch(player -> !player.getCardsInHand().isEmpty());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             GameState gameState = game.getGameState();
             Set<PhysicalCard> discardedCards = new HashSet<>(cards);
 
-            gameState.removeCardsFromZone(playerId, discardedCards);
+            gameState.removeCardsFromZone(game, playerId, discardedCards);
             for (PhysicalCard card : discardedCards) {
                 gameState.addCardToZone(card, Zone.DISCARD);
                 game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_performingCard, card));

@@ -122,9 +122,14 @@ public class Player {
         _cardGroups.put(zone, new PhysicalCardGroup(zone));
     }
 
-    public List<PhysicalCard> getCardGroup(Zone zone) {
+    public List<PhysicalCard> getCardGroupCards(Zone zone) {
         return _cardGroups.get(zone).getCards();
     }
+
+    public PhysicalCardGroup getCardGroup(Zone zone) {
+        return _cardGroups.get(zone);
+    }
+
 
     public void addCardToGroup(Zone zone, PhysicalCard card) throws InvalidGameLogicException {
         PhysicalCardGroup group = _cardGroups.get(zone);
@@ -162,4 +167,10 @@ public class Player {
         return _cardGroups.keySet();
     }
 
+    public void discardHand(DefaultGame cardGame) {
+        cardGame.getGameState().removeCardsFromZone(cardGame, _playerId, getCardsInHand());
+        for (PhysicalCard card : getCardsInHand()) {
+            cardGame.getGameState().addCardToZone(card, Zone.DISCARD);
+        }
+    }
 }

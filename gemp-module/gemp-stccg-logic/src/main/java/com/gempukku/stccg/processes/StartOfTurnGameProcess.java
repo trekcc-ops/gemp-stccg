@@ -23,7 +23,7 @@ public class StartOfTurnGameProcess extends GameProcess {
         if (cardGame instanceof TribblesGame tribblesGame) {
             return new TribblesPlayerPlaysOrDraws(tribblesGame);
         } else if (cardGame instanceof ST1EGame firstEditionGame) {
-            firstEditionGame.getGameState().setCurrentPhase(Phase.CARD_PLAY);
+            firstEditionGame.setCurrentPhase(Phase.CARD_PLAY);
             String message = "Start of " + Phase.CARD_PLAY + " phase";
             firstEditionGame.sendMessage("\n" + message);
             return new ST1EPlayPhaseSegmentProcess();

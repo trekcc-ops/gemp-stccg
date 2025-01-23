@@ -52,7 +52,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             List<MissionCard> availableMissions = getAvailableMissions(cardGame, playerId);
             for (MissionCard mission : availableMissions) {
                 // TODO - These actions are red herrings and are never actually used
-                if (!gameState.getHand(playerId).isEmpty()) {
+                if (!player.getCardsInHand().isEmpty()) {
                     TopLevelSelectableAction seedCardsAction = new AddSeedCardsAction(player, mission);
                     seedActions.add(seedCardsAction);
                 }
@@ -93,7 +93,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     protected abstract String getDecisionText(DefaultGame cardGame, Player player);
 
     private void selectCardsToSeed(Player player, ST1EGame cardGame, PhysicalCard topCard) {
-        Collection<PhysicalCard> availableCards = cardGame.getGameState().getHand(player.getPlayerId());
+        Collection<PhysicalCard> availableCards = player.getCardsInHand();
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new CardsSelectionDecision(player, "Select cards to seed under " + topCard.getTitle(),
                         availableCards, cardGame) {

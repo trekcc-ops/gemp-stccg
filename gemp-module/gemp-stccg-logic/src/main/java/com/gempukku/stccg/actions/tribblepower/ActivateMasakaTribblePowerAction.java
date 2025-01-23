@@ -30,7 +30,7 @@ public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return (cardGame.getGameState().getHand(_performingPlayerId).size() >= 4);
+        return _performingPlayer.getCardsInHand().size() >= 4;
     }
 
 }

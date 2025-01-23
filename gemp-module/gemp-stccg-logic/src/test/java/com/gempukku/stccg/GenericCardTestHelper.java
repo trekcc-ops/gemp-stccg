@@ -73,34 +73,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         return decision.getDecisionParameters();
     }
 
-    public List<? extends PhysicalCard> GetPlayerHand(String player)
-    {
-        return _game.getGameState().getHand(player);
-    }
-
-    public int GetPlayerDeckCount(String player)
-    {
-        return _game.getGameState().getDrawDeck(player).size();
-    }
-
-    public PhysicalCard GetPlayerBottomOfDeck(String player) { return GetFromBottomOfPlayerDeck(player, 1); }
-    public PhysicalCard GetFromBottomOfPlayerDeck(String player, int index)
-    {
-        var deck = _game.getGameState().getDrawDeck(player);
-        return deck.get(deck.size() - index);
-    }
-
-    public PhysicalCard GetPlayerTopOfDeck(String player) { return GetFromTopOfPlayerDeck(player, 1); }
-
-    /**
-     * Index is 1-based (1 is first, 2 is second, etc.)
-     */
-    public PhysicalCard GetFromTopOfPlayerDeck(String player, int index)
-    {
-        var deck = _game.getGameState().getDrawDeck(player);
-        return deck.get(index - 1);
-    }
-
     public Phase GetCurrentPhase() { return _game.getGameState().getCurrentPhase(); }
 
 

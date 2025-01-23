@@ -50,7 +50,7 @@ public class MisSeedTest extends AbstractAtTest {
         assertNotNull(tarses);
 
         ST1EPhysicalCard maglock =
-                (ST1EPhysicalCard) _game.getGameState().addCardToGame("109_010", _cardLibrary, P1);
+                (ST1EPhysicalCard) _game.addCardToGame("109_010", _cardLibrary, P1);
         maglock.setZone(Zone.VOID);
 
         // Seed Simon Tarses and a space dilemma under Excavation

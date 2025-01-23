@@ -22,14 +22,13 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
         TribblesGame cardGame = actionContext.getGame();
         appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
-        for (String player : cardGame.getPlayerIds()) {
-            if (cardGame.getGameState().getHand(player).size() >= 4) {
-                Player performingPlayer = cardGame.getPlayer(player);
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardsInHand().size() >= 4) {
                 SelectCardsAction selectAction =
-                        new SelectVisibleCardAction(cardGame, performingPlayer,
+                        new SelectVisibleCardAction(cardGame, player,
                                 "Select a card to place beneath play pile",
-                                Filters.yourHand(performingPlayer));
-                appendEffect(new PlaceCardOnBottomOfPlayPileAction(cardGame, performingPlayer, selectAction));
+                                Filters.yourHand(player));
+                appendEffect(new PlaceCardOnBottomOfPlayPileAction(cardGame, player, selectAction));
             }
         }
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
@@ -41,7 +40,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return (cardGame.getGameState().getHand(_performingPlayerId).size() >= 4);
+        return (_performingPlayer.getCardsInHand().size() >= 4);
     }
 
 }

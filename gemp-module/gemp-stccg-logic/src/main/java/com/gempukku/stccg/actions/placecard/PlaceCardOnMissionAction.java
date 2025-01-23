@@ -31,7 +31,7 @@ public class PlaceCardOnMissionAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         GameState gameState = cardGame.getGameState();
-        gameState.placeCardOnMission(_cardBeingPlaced, _mission);
+        gameState.placeCardOnMission(cardGame, _cardBeingPlaced, _mission);
         if (gameState instanceof ST1EGameState stGameState) {
             for (MissionLocation location : stGameState.getSpacelineLocations()) {
                 if (location.getCardsSeededUnderneath().contains(_cardBeingPlaced)) {

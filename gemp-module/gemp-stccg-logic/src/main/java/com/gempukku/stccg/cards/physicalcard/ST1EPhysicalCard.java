@@ -73,12 +73,12 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     public void stop() {
         _isStopped = true;
-        _game.getGameState().sendSerializedGameStateToClient();
+        _game.sendSerializedGameStateToClient();
     }
 
     public void unstop() {
         _isStopped = false;
-        _game.getGameState().sendSerializedGameStateToClient();
+        _game.sendSerializedGameStateToClient();
     }
 
     public boolean isStopped() {

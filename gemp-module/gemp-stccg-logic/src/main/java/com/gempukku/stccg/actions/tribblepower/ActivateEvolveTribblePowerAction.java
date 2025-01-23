@@ -17,15 +17,13 @@ public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         // Count the number of cards in your hand
-        int cardsInHand = cardGame.getGameState().getHand(_performingPlayerId).size();
+        int cardsInHand = performingPlayer.getCardsInHand().size();
 
         // Place your hand in your discard pile
-        appendEffect(new DiscardCardAction(_performingCard, performingPlayer,
-                cardGame.getGameState().getHand(_performingPlayerId)));
+        appendEffect(new DiscardCardAction(_performingCard, performingPlayer, performingPlayer.getCardsInHand()));
 
         // Draw that many cards
-        appendEffect(
-                new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId), cardsInHand, cardGame));
+        appendEffect(new DrawCardsAction(_performingCard, performingPlayer, cardsInHand, cardGame));
     }
 
 }

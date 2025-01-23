@@ -30,7 +30,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         during the dilemma encounter, causing the encounter to fail. */
         initializeQuickMissionAttempt("Excavation");
 
-        PhysicalCard climb = _game.getGameState().addCardToGame("152_002", _cardLibrary, P1);
+        PhysicalCard climb = _game.addCardToGame("152_002", _cardLibrary, P1);
 
         climb.setZone(Zone.VOID);
 

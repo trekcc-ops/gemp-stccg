@@ -48,7 +48,7 @@ public class Blueprint109_063 extends CardBlueprint {
             }
 
             List<PersonnelCard> specialistsNotInPlay = new LinkedList<>();
-            for (PhysicalCard card : cardGame.getGameState().getDrawDeck(player.getPlayerId())) {
+            for (PhysicalCard card : player.getCardsInDrawDeck()) {
                 Collection<PhysicalCard> ownedCopiesInPlay = Filters.filterCardsInPlay(cardGame,
                         Filters.copyOfCard(card), Filters.owner(player.getPlayerId()));
                 if (card instanceof PersonnelCard personnel && personnel.getSkills().size() == 1 &&

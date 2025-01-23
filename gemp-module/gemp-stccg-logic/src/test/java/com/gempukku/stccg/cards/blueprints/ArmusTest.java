@@ -51,7 +51,7 @@ public class ArmusTest extends AbstractAtTest {
         assertNotNull(picard);
         assertNotNull(tarses);
 
-        PhysicalCard armus = _game.getGameState().addCardToGame("101_015", _cardLibrary, P2);
+        PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation

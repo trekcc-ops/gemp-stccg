@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -98,6 +97,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     public void runGameUntilActionSelection() throws CardNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException {
 
         initializeGameWithAttentionAllHands();
+        Player player1 = _game.getPlayer(P1);
         ST1EGameState gameState = _game.getGameState();
         autoSeedMissions();
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
@@ -124,7 +124,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         gameState.addCardToZone(newCardForGame("101_236", P1), Zone.DISCARD, EndOfPile.TOP); // Simon Tarses
         gameState.addCardToZone(newCardForGame("101_236", P1), Zone.DISCARD, EndOfPile.TOP); // Simon Tarses
 
-        assertEquals(9, gameState.getDiscard(P1).size());
+        assertEquals(9, player1.getCardGroupCards(Zone.DISCARD).size());
 
         _outpost = null;
         for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
@@ -147,7 +147,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         useGameText(getItDone, P1);
 
         List<PhysicalCard> cardsToPlace = new LinkedList<>();
-        for (PhysicalCard card : gameState.getHand(P1)) {
+        for (PhysicalCard card : player1.getCardsInHand()) {
             if (card.hasIcon(_game, CardIcon.TNG_ICON) && cardsToPlace.size() < 2) {
                 cardsToPlace.add(card);
             }
@@ -160,7 +160,6 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         }
 
         assertNotNull(_userFeedback.getAwaitingDecision(P1));
-        Player player1 = _game.getPlayer(P1);
         Collection<PhysicalCard> discardable = Filters.filter(_game, Filters.yourHand(player1), CardIcon.TNG_ICON);
         for (PhysicalCard card : discardable) {
             cardToDiscard = card;

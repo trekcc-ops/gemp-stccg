@@ -29,10 +29,10 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
         Player player = cardGame.getCurrentPlayer();
         for (PhysicalCard card : Filters.filterActive(cardGame, Filters.ship))
             ((PhysicalShipCard) card).restoreRange();
-        cardGame.getGameState().playerDrawsCard(player);
+        cardGame.getGameState().playerDrawsCard(cardGame, player);
         cardGame.sendMessage(playerId + " drew their normal end-of-turn card draw");
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(playerId);
+                cardGame.getActionsEnvironment().getPhaseActions(player);
         Phase phase = cardGame.getCurrentPhase();
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(
@@ -53,18 +53,18 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws PlayerNotFoundException {
-        GameState gameState = cardGame.getGameState();
         cardGame.getModifiersEnvironment().signalEndOfTurn(); // Remove "until end of turn" modifiers
         cardGame.getActionsEnvironment().signalEndOfTurn(); // Remove "until end of turn" permitted actions
         cardGame.sendMessage(cardGame.getCurrentPlayerId() + " ended their turn");
-        gameState.setCurrentPhase(Phase.BETWEEN_TURNS);
+        cardGame.setCurrentPhase(Phase.BETWEEN_TURNS);
         Player currentPlayer = cardGame.getCurrentPlayer();
         ActionOrder actionOrder =
                 cardGame.getGameState().getPlayerOrder().getClockwisePlayOrder(currentPlayer, false);
         actionOrder.getNextPlayer();
 
-        String nextPlayer = actionOrder.getNextPlayer();
-        cardGame.getGameState().startPlayerTurn(nextPlayer);
+        String nextPlayerId = actionOrder.getNextPlayer();
+        Player nextPlayer = cardGame.getPlayer(nextPlayerId);
+        cardGame.getGameState().startPlayerTurn(cardGame, nextPlayer);
         return new StartOfTurnGameProcess();
     }
 }

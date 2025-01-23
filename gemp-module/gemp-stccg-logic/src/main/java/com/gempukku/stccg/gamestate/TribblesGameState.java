@@ -20,43 +20,21 @@ public final class TribblesGameState extends GameState {
     private boolean _chainBroken;
     private int _currentRound;
     private boolean _currentRoundIsOver;
-    private final TribblesGame _game;
 
     public TribblesGameState(Iterable<String> playerIds, TribblesGame game) {
         super(game, playerIds);
         _currentRound = 0;
         _chainBroken = false;
-        _game = game;
-        setNextTribbleInSequence(1);
+        setNextTribbleInSequence(game, 1);
         for (String player : playerIds)
             _playPiles.put(player, new LinkedList<>());
-    }
-
-    @Override
-    public TribblesGame getGame() { return _game; }
-
-    @Override
-    public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        try {
-            Player player = getPlayer(playerId);
-            if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD ||
-                    zone == Zone.VOID)
-                return player.getCardGroup(zone);
-            else if (zone == Zone.PLAY_PILE)
-                return _playPiles.get(playerId);
-            else // This should never be accessed
-                return _inPlay;
-        } catch(PlayerNotFoundException exp) {
-            sendErrorMessage(exp);
-            return new LinkedList<>();
-        }
     }
 
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD ||
                 zone == Zone.VOID)
-            return player.getCardGroup(zone);
+            return player.getCardGroupCards(zone);
         else if (zone == Zone.PLAY_PILE)
             return _playPiles.get(player.getPlayerId());
         else // This should never be accessed
@@ -64,7 +42,7 @@ public final class TribblesGameState extends GameState {
     }
 
 
-    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
+    public void createPhysicalCards(TribblesGame game, CardBlueprintLibrary library, Map<String, CardDeck> decks) {
         try {
             for (Player player : getPlayers()) {
                 String playerId = player.getPlayerId();
@@ -73,11 +51,11 @@ public final class TribblesGameState extends GameState {
                     for (String blueprintId : entry.getValue()) {
                         try {
                             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
-                            PhysicalCard card = new TribblesPhysicalCard(_game, _nextCardId, player, blueprint);
+                            PhysicalCard card = new TribblesPhysicalCard(game, _nextCardId, player, blueprint);
                             subDeck.add(card);
                             _nextCardId++;
                         } catch (CardNotFoundException e) {
-                            _game.sendErrorMessage(e);
+                            game.sendErrorMessage(e);
                         }
                     }
                     if (Objects.equals(entry.getKey().name(), "DRAW_DECK")) {
@@ -88,7 +66,7 @@ public final class TribblesGameState extends GameState {
                 _playPiles.put(playerId, new LinkedList<>());
             }
         } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
+            game.sendErrorMessage(exp);
         }
     }
 
@@ -96,7 +74,7 @@ public final class TribblesGameState extends GameState {
     public void shufflePlayPileIntoDeck(DefaultGame game, Player player) {
         String playerId = player.getPlayerId();
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
-        removeCardsFromZone(playerId, playPile);
+        removeCardsFromZone(game, playerId, playPile);
         for (PhysicalCard card : playPile) {
             addCardToZone(card, Zone.DRAW_DECK);
         }
@@ -109,17 +87,18 @@ public final class TribblesGameState extends GameState {
 
     public void setPlayerDecked(DefaultGame cardGame, Player player, boolean bool) {
         player.setDecked(bool);
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
             listener.setPlayerDecked(cardGame, player);
     }
 
-    public void setNextTribbleInSequence(int num) {
+    public void setNextTribbleInSequence(DefaultGame cardGame, int num) {
         _nextTribbleInSequence = num;
-        for (GameStateListener listener : getAllGameStateListeners()) {
+        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
             DecimalFormat df = new DecimalFormat("#,###");
             listener.setTribbleSequence(df.format(num));
         }
     }
+
 
     public void setLastTribblePlayed(int num) {
         _lastTribblePlayed = num;
@@ -132,17 +111,18 @@ public final class TribblesGameState extends GameState {
     public void breakChain(TribblesGame cardGame) {
         _chainBroken = true;
         cardGame.sendMessage("The chain has been broken.");
-        for (GameStateListener listener : getAllGameStateListeners()) {
+        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
             DecimalFormat df = new DecimalFormat("#,###");
             listener.setTribbleSequence("1 or " + df.format(_nextTribbleInSequence));
         }
     }
 
 
-    public void setChainBroken(boolean chainBroken) {
-        if (chainBroken) breakChain(_game);
+    public void setChainBroken(TribblesGame game, boolean chainBroken) {
+        if (chainBroken) breakChain(game);
         else _chainBroken = false;
     }
+
 
     public boolean isChainBroken() {
         return _chainBroken;
@@ -166,7 +146,7 @@ public final class TribblesGameState extends GameState {
     public void advanceRound(TribblesGame cardGame) {
         // Each new round begins with a new "chain" (starting with a card worth 1 Tribble) and play proceeds clockwise.
         _chainBroken = false;
-        setNextTribbleInSequence(1);
+        setNextTribbleInSequence(cardGame, 1);
         _playerOrder.setReversed(false);
 
         // TODO: Handle "decked" players

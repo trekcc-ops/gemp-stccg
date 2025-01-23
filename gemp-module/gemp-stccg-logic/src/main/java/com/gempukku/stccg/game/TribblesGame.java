@@ -18,7 +18,7 @@ public class TribblesGame extends DefaultGame {
         _gameState = new TribblesGameState(decks.keySet(), this);
         new TribblesRuleSet(this).applyRuleSet(this);
 
-        _gameState.createPhysicalCards(library, decks);
+        _gameState.createPhysicalCards(this, library, decks);
         _turnProcedure = new TurnProcedure(this);
         setCurrentProcess(new TribblesPlayerOrderProcess(this));
     }

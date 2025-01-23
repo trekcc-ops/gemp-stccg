@@ -35,8 +35,8 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     public boolean requirementsAreMet(DefaultGame cardGame) {
         // There must be at least two players with cards in their hands
         int playersWithHands = 0;
-        for (String player : cardGame.getAllPlayerIds()) {
-            if (!cardGame.getGameState().getHand(player).isEmpty())
+        for (Player player : cardGame.getPlayers()) {
+            if (!player.getCardsInHand().isEmpty())
                 playersWithHands++;
         }
         return playersWithHands >= 2;
@@ -49,7 +49,13 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             return cost;
 
         List<String> players = Arrays.asList(cardGame.getAllPlayerIds());
-        players.removeIf(player -> cardGame.getGameState().getHand(player).isEmpty());
+
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardsInHand().isEmpty()) {
+                players.remove(player.getPlayerId());
+            }
+        }
+
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                         "Choose a player to discard a card", players, cardGame) {

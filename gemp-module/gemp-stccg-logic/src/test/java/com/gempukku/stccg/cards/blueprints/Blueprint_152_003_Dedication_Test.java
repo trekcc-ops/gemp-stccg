@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertNotNull(_mission);
 
         ST1EPhysicalCard dedication =
-                (ST1EPhysicalCard) _game.getGameState().addCardToGame("152_003", _cardLibrary, P1);
+                (ST1EPhysicalCard) _game.addCardToGame("152_003", _cardLibrary, P1);
         dedication.setZone(Zone.VOID);
         assertEquals("Dedication to Duty", dedication.getTitle());
 
@@ -41,9 +42,9 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         troi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
@@ -77,12 +78,12 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
     @Test
     public void dedicationToDutyTest2() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, PlayerNotFoundException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
         ST1EPhysicalCard dedication =
-                (ST1EPhysicalCard) _game.getGameState().addCardToGame("152_003", _cardLibrary, P1);
+                (ST1EPhysicalCard) _game.addCardToGame("152_003", _cardLibrary, P1);
         dedication.setZone(Zone.VOID);
         assertEquals("Dedication to Duty", dedication.getTitle());
 
@@ -94,9 +95,9 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         troi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
@@ -121,10 +122,10 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
         attemptMission(P1, runabout, _mission);
         assertTrue(troi.isStopped());
-        int handSizeBefore = _game.getGameState().getHand(P2).size();
+        int handSizeBefore = _game.getPlayer(P2).getCardsInHand().size();
 
         playerDecided(P1, "1");
-        int handSizeAfter = _game.getGameState().getHand(P2).size();
+        int handSizeAfter = _game.getPlayer(P2).getCardsInHand().size();
 
         assertTrue(runabout.getCrew().contains(troi));
         assertEquals(handSizeBefore, handSizeAfter - 2);

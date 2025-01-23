@@ -10,6 +10,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.Collections;
 
@@ -30,16 +31,17 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (cardGame instanceof ST1EGame stGame) {
+            ST1EGameState gameState = stGame.getGameState();
             PhysicalCard cardToRemove = _cardTarget.getCard();
 
-            for (MissionLocation mission : stGame.getGameState().getSpacelineLocations()) {
+            for (MissionLocation mission : gameState.getSpacelineLocations()) {
                 if (mission.getCardsSeededUnderneath().contains(cardToRemove)) {
                     mission.removeSeedCard(cardToRemove);
                 }
             }
 
-            cardGame.getGameState().removeCardsFromZone(_performingPlayerId, Collections.singleton(cardToRemove));
-            cardGame.getGameState().addCardToZone(cardToRemove, Zone.REMOVED);
+            gameState.removeCardsFromZone(cardGame, _performingPlayerId, Collections.singleton(cardToRemove));
+            gameState.addCardToZone(cardToRemove, Zone.REMOVED);
 
             cardGame.sendMessage(_performingPlayerId + " removed " + cardToRemove.getCardLink() + " from the game");
 

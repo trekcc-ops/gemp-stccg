@@ -21,7 +21,7 @@ public class ActivateFamineTribblePowerAction extends ActivateTribblePowerAction
             return cost;
 
         if (cardGame instanceof TribblesGame game) {
-            game.getGameState().setNextTribbleInSequence(1);
+            game.getGameState().setNextTribbleInSequence(cardGame, 1);
         } else {
             throw new InvalidGameLogicException("Could not set tribble sequence in a non-Tribbles game");
         }

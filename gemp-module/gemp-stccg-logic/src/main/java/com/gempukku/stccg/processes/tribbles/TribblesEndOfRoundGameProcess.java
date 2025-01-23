@@ -25,17 +25,17 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
             String playerId = player.getPlayerId();
 
             // Count the total number of Tribbles in the play piles of the players who "went out" and score points.
-            if (gameState.getHand(playerId).isEmpty()) {
+            if (player.getCardsInHand().isEmpty()) {
                 gameState.playerWentOut(); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 pointsScored.put(playerId, score);
-                gameState.addToPlayerScore(player, score);
+                cardGame.addToPlayerScore(player, score);
                 _game.sendMessage(playerId + " went out with " + score + " points");
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
 
             // Each player places the cards remaining in their hand into their discard pile.
-            gameState.discardHand(playerId);
+            player.discardHand(cardGame);
 
             // Each player then shuffles their play pile into their decks.
             gameState.shufflePlayPileIntoDeck(cardGame, player);

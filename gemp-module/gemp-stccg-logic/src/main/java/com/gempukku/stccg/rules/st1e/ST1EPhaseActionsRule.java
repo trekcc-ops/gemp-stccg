@@ -1,12 +1,10 @@
 package com.gempukku.stccg.rules.st1e;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 
@@ -20,22 +18,18 @@ public class ST1EPhaseActionsRule extends ST1ERule {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
+    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        try {
-            final GameState gameState = _game.getGameState();
-            final Player player = gameState.getPlayer(playerId);
-            final Phase currentPhase = gameState.getCurrentPhase();
-            if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
-                Filters.filterActive(_game, CardType.MISSION).forEach(
-                        card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
-                Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
-                        card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
-            }
-            Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
-        } catch(PlayerNotFoundException exp) {
-            _game.sendErrorMessage(exp);
+        final GameState gameState = _game.getGameState();
+        final Phase currentPhase = gameState.getCurrentPhase();
+        if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
+            Filters.filterActive(_game, CardType.MISSION).forEach(
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+            Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
         }
+        Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }
+
 }

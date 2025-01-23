@@ -333,11 +333,11 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
-        _klingonOutpost = (FacilityCard) _game.getGameState().addCardToGame("101_105", _cardLibrary, P1);
+        _klingonOutpost = (FacilityCard) _game.addCardToGame("101_105", _cardLibrary, P1);
         _game.getGameState().addCardToZone(_klingonOutpost, Zone.SEED_DECK);
 
         for (String blueprintId : blueprintIds) {
-            PhysicalCard card = _game.getGameState().addCardToGame(blueprintId, _cardLibrary, P1);
+            PhysicalCard card = _game.addCardToGame(blueprintId, _cardLibrary, P1);
             _game.getGameState().addCardToZone(card, Zone.DRAW_DECK, EndOfPile.TOP);
         }
 
@@ -417,7 +417,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected PhysicalCard newCardForGame(String blueprintId, String playerId) throws CardNotFoundException {
-        return _game.getGameState().addCardToGame(blueprintId, _cardLibrary, playerId);
+        return _game.addCardToGame(blueprintId, _cardLibrary, playerId);
     }
 
     protected void initializeQuickMissionAttemptWithRisk() {

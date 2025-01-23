@@ -31,7 +31,7 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
                 int cardsInPlayPile = playPile.size();
 
                 // Shuffle your play pile into your draw deck
-                gameState.removeCardsFromZone(_performingPlayerId, playPile);
+                cardGame.removeCardsFromZone(_performingPlayerId, playPile);
                 for (PhysicalCard physicalCard : playPile) {
                     gameState.putCardOnBottomOfDeck(physicalCard);
                 }

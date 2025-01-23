@@ -23,11 +23,11 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();
 
-        gameState.addCardToGame("101_174", _cardLibrary, P1);
-        gameState.addCardToGame("101_065", _cardLibrary, P1);
-        gameState.addCardToGame("101_212", _cardLibrary, P1);
-        gameState.addCardToGame("172_031", _cardLibrary, P1);
-        gameState.addCardToGame("101_205", _cardLibrary, P1);
+        _game.addCardToGame("101_174", _cardLibrary, P1);
+        _game.addCardToGame("101_065", _cardLibrary, P1);
+        _game.addCardToGame("101_212", _cardLibrary, P1);
+        _game.addCardToGame("172_031", _cardLibrary, P1);
+        _game.addCardToGame("101_205", _cardLibrary, P1);
 
         MissionCard mission = null;
         PhysicalReportableCard1E tricorder = null;

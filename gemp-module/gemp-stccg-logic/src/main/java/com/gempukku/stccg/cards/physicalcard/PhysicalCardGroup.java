@@ -27,4 +27,12 @@ public class PhysicalCardGroup {
         _cards.clear();
         _cards.addAll(subDeck);
     }
+
+    public int size() {
+        return _cards.size();
+    }
+
+    public PhysicalCard getFirst() {
+        return _cards.getFirst();
+    }
 }

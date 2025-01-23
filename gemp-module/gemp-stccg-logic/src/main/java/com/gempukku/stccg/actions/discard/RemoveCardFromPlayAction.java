@@ -51,7 +51,7 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
         Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
 
-        cardGame.getGameState().removeCardsFromZone(_performingPlayerId, toRemoveFromZone);
+        cardGame.removeCardsFromZone(_performingPlayerId, toRemoveFromZone);
         for (PhysicalCard removedCard : removedCards) {
             cardGame.getGameState().addCardToZone(removedCard, Zone.REMOVED);
             if (removedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
