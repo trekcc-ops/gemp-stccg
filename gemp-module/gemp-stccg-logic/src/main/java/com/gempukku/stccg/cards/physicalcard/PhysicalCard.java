@@ -25,8 +25,8 @@ import java.util.List;
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "zone", "locationZoneIndex",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
-public interface PhysicalCard extends Filterable {
-    DefaultGame getGame();
+public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterable {
+    GenericGame getGame();
     Zone getZone();
     void setZone(Zone zone);
     String getBlueprintId();
@@ -36,12 +36,12 @@ public interface PhysicalCard extends Filterable {
     @JsonProperty("owner")
     String getOwnerName();
 
-    void startAffectingGame(DefaultGame game);
+    void startAffectingGame(GenericGame game);
 
-    void stopAffectingGame(DefaultGame game);
+    void stopAffectingGame(GenericGame game);
 
     CardBlueprint getBlueprint();
-    void attachTo(PhysicalCard physicalCard);
+    void attachTo(PhysicalCard<? extends GenericGame> physicalCard);
     void detach();
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("attachedToCardId")
@@ -56,9 +56,9 @@ public interface PhysicalCard extends Filterable {
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = PositiveIntegerFilter.class)
     int getLocationZoneIndex();
 
-    boolean canBeSeeded(DefaultGame game);
+    boolean canBeSeeded(GenericGame game);
 
-    boolean canBePlayed(DefaultGame game);
+    boolean canBePlayed(GenericGame game);
 
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
@@ -69,16 +69,16 @@ public interface PhysicalCard extends Filterable {
     TopLevelSelectableAction getPlayCardAction();
     Action getPlayCardAction(boolean forFree);
 
-    boolean hasTextRemoved(DefaultGame game);
+    boolean hasTextRemoved(GenericGame game);
     CardType getCardType();
-    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame);
+    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, GenericGame cardGame);
     List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player);
 
-    List<PhysicalCard> getStackedCards(DefaultGame game);
+    List<PhysicalCard> getStackedCards(GenericGame game);
 
-    Collection<PhysicalCard> getAttachedCards(DefaultGame game);
+    Collection<PhysicalCard> getAttachedCards(GenericGame game);
 
-    List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame _game);
+    List<? extends ExtraPlayCost> getExtraCostToPlay(GenericGame game);
 
     List<TopLevelSelectableAction> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing);
     TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
@@ -88,22 +88,22 @@ public interface PhysicalCard extends Filterable {
 
     boolean isUnique();
 
-    Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame);
+    Integer getNumberOfCopiesSeededByPlayer(Player player, GenericGame cardGame);
 
     boolean isCopyOf(PhysicalCard card);
     TopLevelSelectableAction createSeedCardAction();
 
-    boolean hasIcon(DefaultGame game, CardIcon icon);
+    boolean hasIcon(GenericGame game, CardIcon icon);
     boolean isPresentWith(PhysicalCard card);
     boolean hasSkill(SkillName skillName);
 
-    boolean checkTurnLimit(DefaultGame game, int max);
+    boolean checkTurnLimit(GenericGame game, int max);
     boolean isInPlay();
     boolean hasCharacteristic(Characteristic characteristic);
 
-    boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException;
+    boolean isMisSeed(GenericGame cardGame, MissionLocation mission) throws CardNotFoundException;
 
-    List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException;
+    List<Action> getEncounterActions(GenericGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException;
 
     boolean isAtSpaceLocation();
 

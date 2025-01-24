@@ -59,9 +59,10 @@ public class Filters {
     }
 
 
-    public static Collection<PhysicalCard> filterYourCardsPresentWith(Player player, PhysicalCard card,
+    public static Collection<PhysicalCard> filterYourCardsPresentWith(DefaultGame cardGame,
+                                                                      Player player, PhysicalCard card,
                                                                       Filterable... filters) {
-        return filterYourActive(card.getGame(), player, presentWith(card), and(filters));
+        return filterYourActive(cardGame, player, presentWith(card), and(filters));
     }
 
     public static List<FacilityCard> yourFacilitiesInPlay(DefaultGame cardGame, Player player) {

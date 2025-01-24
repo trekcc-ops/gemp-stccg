@@ -128,12 +128,12 @@ public abstract class GameState {
         _playerDecisions.remove(playerId);
     }
 
-    public void transferCard(PhysicalCard card, PhysicalCard transferTo) {
+    public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) {
         if (card.getZone() != Zone.ATTACHED)
             card.setZone(Zone.ATTACHED);
 
         card.attachTo(transferTo);
-        for (GameStateListener listener : card.getGame().getAllGameStateListeners())
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
             listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY,card));
     }
 
@@ -185,7 +185,7 @@ public abstract class GameState {
 
             if (card instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam() != null) {
-                    reportable.leaveAwayTeam();
+                    reportable.leaveAwayTeam((ST1EGame) cardGame);
                 }
             }
 

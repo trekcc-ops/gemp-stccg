@@ -107,11 +107,12 @@ public class AwayTeam implements AttemptingUnit {
         return true;
     }
 
-    public void remove(PhysicalReportableCard1E card) {
+    public void remove(ST1EGame cardGame, PhysicalReportableCard1E card) {
         _cardsInAwayTeam.remove(card);
         if (_cardsInAwayTeam.isEmpty())
-            card.getGame().getGameState().removeAwayTeamFromGame(this);
+            cardGame.getGameState().removeAwayTeamFromGame(this);
     }
+
 
     public boolean canBeDisbanded(ST1EGame game) {
         /* TODO - Away Teams may also be eligible to be disbanded if they're not on a mission,
@@ -131,7 +132,7 @@ public class AwayTeam implements AttemptingUnit {
 
     public void disband(ST1EGame game) {
         for (PhysicalReportableCard1E card : _cardsInAwayTeam) {
-            card.leaveAwayTeam();
+            card.leaveAwayTeam(game);
             List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _player).toList();
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
                 if (awayTeam != this && card.getAwayTeam() == null && awayTeam.isCompatibleWith(card))

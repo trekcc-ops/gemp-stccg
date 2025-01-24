@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -37,7 +36,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
                     reportable.getAwayTeam().disband(_game);
                 } else {
                     if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(reportable))
-                        reportable.leaveAwayTeam();
+                        reportable.leaveAwayTeam(_game);
                     if (reportable.getAwayTeam() == null)
                         reportable.joinEligibleAwayTeam(mission.getLocation());
                 }

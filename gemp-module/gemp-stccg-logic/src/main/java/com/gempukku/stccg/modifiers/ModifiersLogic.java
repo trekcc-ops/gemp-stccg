@@ -462,14 +462,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return true;
     }
 
-    public boolean canPlayOutOfSequence(PhysicalCard source) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.PLAY_OUT_OF_SEQUENCE, source))
-            if (modifier.canPlayCardOutOfSequence(source)) {
-                return true;
-            }
-        return false;
-    }
-
     @Override
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return getModifiers(ModifierEffect.SPECIAL_FLAG_MODIFIER).stream()
@@ -539,6 +531,17 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
     }
+
+    @Override
+    public void addModifierHooks(DefaultGame cardGame, PhysicalCard card) {
+        CardBlueprint blueprint = card.getBlueprint();
+        _modifierHooks.computeIfAbsent(card, cardModifiers -> new LinkedList<>());
+        Iterable<Modifier> modifiers =
+                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
+        for (Modifier modifier : modifiers)
+            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+    }
+
 
     public List<Modifier> getModifiers() {
         List<Modifier> result = new LinkedList<>();

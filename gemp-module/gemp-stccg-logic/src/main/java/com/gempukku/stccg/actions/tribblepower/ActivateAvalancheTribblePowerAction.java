@@ -22,7 +22,7 @@ public class ActivateAvalancheTribblePowerAction extends ActivateTribblePowerAct
         SelectVisibleCardAction selectAction =
                 new SelectVisibleCardAction(cardGame, performingPlayer, "select",
                         Filters.yourHand(performingPlayer));
-        appendEffect(new DiscardCardAction(_performingCard, performingPlayer, selectAction));
+        appendEffect(new DiscardCardAction(cardGame, _performingCard, performingPlayer, selectAction));
     }
 
     @Override

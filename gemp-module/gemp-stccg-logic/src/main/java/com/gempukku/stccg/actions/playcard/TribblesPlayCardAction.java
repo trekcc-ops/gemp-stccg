@@ -18,10 +18,11 @@ public class TribblesPlayCardAction extends PlayCardAction {
 
     @Override
     public boolean canBeInitiated(DefaultGame cardGame) {
+        TribblesGame tribblesGame = (TribblesGame) cardGame;
         if (_cardEnteringPlay instanceof TribblesPhysicalCard tribblesCard) {
-            if (!tribblesCard.canBePlayed(cardGame))
+            if (!tribblesCard.canBePlayed(tribblesGame))
                 return false;
-            else return (tribblesCard.isNextInSequence() || tribblesCard.canPlayOutOfSequence());
+            else return (tribblesCard.isNextInSequence(tribblesGame) || tribblesCard.canPlayOutOfSequence(tribblesGame));
         } else {
             return false;
         }

@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.cardgroup;
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class PhysicalCardGroup {
     public PhysicalCardGroup() {
     }
 
-    public void addCard(PhysicalCard card) { _cards.add(card); }
+    public void addCard(PhysicalCard<? extends DefaultGame> card) { _cards.add(card); }
 
     @JsonIdentityReference(alwaysAsId=true)
     public List<PhysicalCard> getCards() {

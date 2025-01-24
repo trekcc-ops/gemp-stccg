@@ -64,7 +64,7 @@ public class Blueprint155_026 extends CardBlueprint {
             Filter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
             SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(game, player,
                     "Select a card to discard", discardCardFilter);
-            Action discardAction = new DiscardCardAction(thisCard, player, selectCardToDiscardAction);
+            Action discardAction = new DiscardCardAction(game, thisCard, player, selectCardToDiscardAction);
             getItDoneAction.appendEffect(discardAction);
 
             actions.add(getItDoneAction);

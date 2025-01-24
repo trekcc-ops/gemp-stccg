@@ -20,7 +20,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
 
-public class ST1EPhysicalCard extends AbstractPhysicalCard {
+public class ST1EPhysicalCard extends AbstractPhysicalCard<ST1EGame> {
     protected final ST1EGame _game;
     protected boolean _isStopped;
     public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
@@ -47,7 +47,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException {
+    public boolean isMisSeed(ST1EGame cardGame, MissionLocation mission) throws CardNotFoundException {
         if (_blueprint.getCardType() != CardType.DILEMMA && _blueprint.getCardType() != CardType.ARTIFACT)
             return true; // TODO - Sometimes gametext allows them to be seeded
         if (hasIcon(cardGame, CardIcon.AU_ICON))
@@ -86,10 +86,10 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
+    public List<Action> getEncounterActions(ST1EGame cardGame, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action, MissionLocation missionLocation)
             throws PlayerNotFoundException {
-        return _blueprint.getEncounterActions(this, game, attemptingUnit, action, missionLocation);
+        return _blueprint.getEncounterActions(this, cardGame, attemptingUnit, action, missionLocation);
     }
 
 }

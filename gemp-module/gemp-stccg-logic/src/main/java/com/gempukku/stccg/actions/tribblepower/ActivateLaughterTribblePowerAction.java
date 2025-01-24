@@ -104,7 +104,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         SelectVisibleCardAction discardSelectAction =
                 new SelectVisibleCardAction(game, discardingPlayer, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
-        appendEffect(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
+        appendEffect(new DiscardCardAction(game, _performingCard, discardingPlayer, discardSelectAction));
 
         Player performingPlayer = game.getPlayer(_performingPlayerId);
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, performingPlayer,

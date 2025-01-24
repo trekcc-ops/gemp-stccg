@@ -21,7 +21,7 @@ public class MissionCard extends ST1EPhysicalCard {
 
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
     @Override
-    public boolean canBeSeeded(DefaultGame game) { return true; }
+    public boolean canBeSeeded(ST1EGame game) { return true; }
 
     public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
 
@@ -30,7 +30,7 @@ public class MissionCard extends ST1EPhysicalCard {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         try {
             if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {

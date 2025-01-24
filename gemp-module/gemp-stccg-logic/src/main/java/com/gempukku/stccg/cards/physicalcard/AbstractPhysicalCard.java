@@ -1,7 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -29,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPhysicalCard implements PhysicalCard {
+public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> implements PhysicalCard<GenericGame> {
 
     protected final CardBlueprint _blueprint;
     protected final Player _owner;
@@ -79,11 +77,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
     }
 
-    public void startAffectingGame(DefaultGame game) {
-        game.getModifiersEnvironment().addModifierHooks(this);
+    public void startAffectingGame(GenericGame game) {
+        game.getModifiersEnvironment().addModifierHooks(game, this);
     }
 
-    public void stopAffectingGame(DefaultGame game) {
+    public void stopAffectingGame(GenericGame game) {
         game.getModifiersEnvironment().removeModifierHooks(this);
     }
 
@@ -92,7 +90,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint;
     }
 
-    public void attachTo(PhysicalCard physicalCard) {
+    public void attachTo(PhysicalCard<? extends GenericGame> physicalCard) {
         _attachedToCardId = physicalCard.getCardId();
     }
 
@@ -142,7 +140,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         else return _currentLocation.getLocationZoneIndex((ST1EGame) getGame());
     }
 
-    private boolean canEnterPlay(DefaultGame game, List<Requirement> requirements) {
+    private boolean canEnterPlay(GenericGame game, List<Requirement> requirements) {
         if (cannotEnterPlayPerUniqueness())
             return false;
         if (requirements != null && !createActionContext(game).acceptsAllRequirements(requirements))
@@ -155,9 +153,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return isUnique() && (_owner.hasACopyOfCardInPlay(getGame(), this));
     }
 
-    public boolean canBeSeeded(DefaultGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }
+    public boolean canBeSeeded(GenericGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }
 
-    public boolean canBePlayed(DefaultGame game) { return canEnterPlay(game, _blueprint.getPlayRequirements()); }
+    public boolean canBePlayed(GenericGame game) { return canEnterPlay(game, _blueprint.getPlayRequirements()); }
 
 
     public boolean isControlledBy(String playerId) {
@@ -194,7 +192,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public abstract TopLevelSelectableAction getPlayCardAction(boolean forFree);
 
 
-    public boolean hasTextRemoved(DefaultGame game) {
+    public boolean hasTextRemoved(GenericGame game) {
         for (Modifier modifier :
                 game.getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
             if (modifier.hasRemovedText(game, this))
@@ -210,7 +208,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, GenericGame cardGame) {
         return new LinkedList<>();
     }
 
@@ -218,7 +216,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.getGameTextActionsWhileInPlay(player, this, getGame());
     }
 
-    public List<PhysicalCard> getStackedCards(DefaultGame game) {
+    public List<PhysicalCard> getStackedCards(GenericGame game) {
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard card : game.getGameState().getAllCardsInGame()) {
             if (card.getStackedOn() == this)
@@ -227,9 +225,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public Collection<PhysicalCard> getAttachedCards(DefaultGame game) { return game.getGameState().getAttachedCards(this); }
+    public Collection<PhysicalCard> getAttachedCards(GenericGame game) { return game.getGameState().getAttachedCards(this); }
 
-    public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game) {
+    public List<? extends ExtraPlayCost> getExtraCostToPlay(GenericGame game) {
         if (_blueprint.getExtraPlayCosts() == null)
             return null;
 
@@ -296,7 +294,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
     }
 
-    ActionContext createActionContext(DefaultGame game) {
+    ActionContext createActionContext(GenericGame game) {
         return new DefaultActionContext(getOwnerName(), game, this, null);
     }
 
@@ -305,7 +303,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.isUnique();
     }
 
-    public Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame) {
+    public Integer getNumberOfCopiesSeededByPlayer(Player player, GenericGame cardGame) {
         int total = 0;
         Collection<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
         for (Action action : performedActions) {
@@ -330,7 +328,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
     }
 
-    public boolean hasIcon(DefaultGame game, CardIcon icon) {
+    public boolean hasIcon(GenericGame game, CardIcon icon) {
         return game.getModifiersQuerying().hasIcon(this, icon);
     }
 
@@ -347,7 +345,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean hasSkill(SkillName skillName) { return false; }
     // TODO May need to implement something here for weird non-personnel cards that have skills
 
-    public boolean checkTurnLimit(DefaultGame game, int max) {
+    public boolean checkTurnLimit(GenericGame game, int max) {
         // TODO This isn't right since it checks against the card instead of the action
         return game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
     }
@@ -364,7 +362,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
 
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
+    public List<Action> getEncounterActions(GenericGame game, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action, MissionLocation missionLocation)
             throws InvalidGameLogicException, PlayerNotFoundException {
         throw new InvalidGameLogicException(

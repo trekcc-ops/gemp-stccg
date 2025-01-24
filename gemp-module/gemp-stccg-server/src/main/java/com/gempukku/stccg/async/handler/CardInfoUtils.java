@@ -20,7 +20,7 @@ import java.util.Map;
 public class CardInfoUtils {
 
     public static String getCardInfoHTML(DefaultGame game, PhysicalCard card) {
-        String info = getBasicCardInfoHTML(card);
+        String info = getBasicCardInfoHTML(game, card);
         return switch (card) {
             case PersonnelCard personnel -> info + getPersonnelInfo(game, personnel);
             case PhysicalShipCard ship -> info + getShipCardInfo(game, ship);
@@ -31,11 +31,11 @@ public class CardInfoUtils {
     }
 
 
-    public static String getBasicCardInfoHTML(PhysicalCard card) {
+    public static String getBasicCardInfoHTML(DefaultGame cardGame, PhysicalCard card) {
         if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
             StringBuilder sb = new StringBuilder();
 
-            Collection<Modifier> modifiers = card.getGame().getModifiersQuerying().getModifiersAffecting(card);
+            Collection<Modifier> modifiers = cardGame.getModifiersQuerying().getModifiersAffecting(card);
             if (!modifiers.isEmpty()) {
                 sb.append(HTMLUtils.makeBold("Active modifiers:")).append(HTMLUtils.NEWLINE);
                 for (Modifier modifier : modifiers) {
@@ -43,7 +43,7 @@ public class CardInfoUtils {
                 }
             }
 
-            List<PhysicalCard> stackedCards = card.getStackedCards(card.getGame());
+            List<PhysicalCard<? extends DefaultGame>> stackedCards = card.getStackedCards(card.getGame());
             if (!stackedCards.isEmpty()) {
                 sb.append("<br><b>Stacked cards:</b>");
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));

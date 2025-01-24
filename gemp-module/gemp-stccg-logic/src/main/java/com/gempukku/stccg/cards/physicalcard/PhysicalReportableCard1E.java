@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -69,10 +70,11 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return new ReportCardAction(this, forFree);
     }
 
-    public void leaveAwayTeam() {
-        _awayTeam.remove(this);
+    public void leaveAwayTeam(ST1EGame cardGame) {
+        _awayTeam.remove(cardGame, this);
         _awayTeam = null;
     }
+
 
     public void addToAwayTeam(AwayTeam awayTeam) {
         _awayTeam = awayTeam;
