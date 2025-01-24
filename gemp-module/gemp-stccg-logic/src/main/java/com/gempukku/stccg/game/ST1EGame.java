@@ -64,7 +64,7 @@ public class ST1EGame extends DefaultGame {
         try {
             int cardId = _gameState.getAndIncrementNextCardId();
             PhysicalCard card = library.createST1EPhysicalCard(this, blueprintId, cardId, playerId);
-            _gameState.addCardToAllCards(card);
+            _gameState.addCardToListOfAllCards(card);
             card.setZone(Zone.VOID);
             return card;
         } catch(PlayerNotFoundException exp) {

@@ -73,6 +73,10 @@ public class MissionLocation {
         return _missionCards.getCards();
     }
 
+    @JsonProperty("seedCardCount")
+    @JsonView(JsonViews.Public.class)
+    private int getSeedCardCount() { return _seedCards.size(); }
+
     public Quadrant getQuadrant() { return _quadrant; }
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }

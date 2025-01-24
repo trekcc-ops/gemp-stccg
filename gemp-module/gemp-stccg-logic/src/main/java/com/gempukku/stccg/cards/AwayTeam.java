@@ -36,10 +36,6 @@ public class AwayTeam implements AttemptingUnit {
         _awayTeamId = attemptingUnitId;
     }
 
-    public int getAttemptingUnitId() {
-        return _awayTeamId;
-    }
-
 
     private boolean hasAffiliation(Affiliation affiliation) {
         for (PhysicalCard card : _cardsInAwayTeam) {

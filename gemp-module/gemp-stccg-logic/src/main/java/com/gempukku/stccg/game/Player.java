@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.gamestate.GameStateListener;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -35,6 +36,9 @@ public class Player {
     CardPile _drawDeck;
     @JsonProperty("discardPile")
     CardPile _discardPile;
+
+    @JsonProperty("seedDeck")
+    PhysicalCardGroup _seedDeck;
 
     public Player(String playerId) {
         _playerId = playerId;
@@ -128,7 +132,11 @@ public class Player {
 
     public void addCardGroup(Zone zone) throws InvalidGameLogicException {
         PhysicalCardGroup group = switch(zone) {
-            case SEED_DECK, TABLE, HAND -> new PhysicalCardGroup();
+            case SEED_DECK -> {
+                _seedDeck = new PhysicalCardGroup();
+                yield _seedDeck;
+            }
+            case TABLE, HAND -> new PhysicalCardGroup();
             case DRAW_DECK -> {
                 _drawDeck = new CardPile();
                 yield _drawDeck;

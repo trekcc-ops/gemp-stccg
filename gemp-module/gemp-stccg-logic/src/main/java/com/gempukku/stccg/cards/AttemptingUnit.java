@@ -34,5 +34,4 @@ public interface AttemptingUnit {
         return result;
     }
 
-    int getAttemptingUnitId() throws InvalidGameLogicException;
 }

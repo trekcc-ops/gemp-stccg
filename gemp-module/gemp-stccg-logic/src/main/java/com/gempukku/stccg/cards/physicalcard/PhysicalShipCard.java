@@ -180,8 +180,4 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         return getPersonnelInCrew();
     }
 
-    public int getAttemptingUnitId() throws InvalidGameLogicException {
-        return _game.getGameState().getAttemptingUnitId(this);
-    }
-
 }

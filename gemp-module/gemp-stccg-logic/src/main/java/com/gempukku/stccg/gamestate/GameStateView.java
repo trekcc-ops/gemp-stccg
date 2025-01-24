@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
+import com.gempukku.stccg.game.PlayerView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,13 +19,11 @@ import java.util.List;
 public class GameStateView {
     // Class designed to pass game state information to the client
     private final static int ANONYMOUS_CARD_ID = -99;
-    private final String _playerId;
-    private final boolean _showComplete;
+    private final String _requestingPlayerId;
     private final GameState _gameState;
 
-    public GameStateView(String playerId, boolean showComplete, GameState gameState) {
-        _playerId = playerId;
-        _showComplete = showComplete;
+    public GameStateView(String playerId, GameState gameState) {
+        _requestingPlayerId = playerId;
         _gameState = gameState;
     }
 
@@ -56,7 +56,7 @@ public class GameStateView {
         else return null;
     }
 
-    @JsonProperty("awayTeams")
+    @JsonProperty("spacelineLocations")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MissionLocation> getSpacelineLocations() {
         if (_gameState instanceof ST1EGameState stGameState)
@@ -64,11 +64,17 @@ public class GameStateView {
         else return null;
     }
 
-// TODO   @JsonProperty("players") // Make private cards in cardGroups anonymous
+    @JsonProperty("players")
+    private List<PlayerView> getPlayers() {
+        List<PlayerView> result = new LinkedList<>();
+        for (Player player : _gameState.getPlayers()) {
+            result.add(new PlayerView(player, _requestingPlayerId));
+        }
+        return result;
+    }
 
     private boolean showCardInfo(PhysicalCard card) {
-        return _showComplete || card.getZone().isPublic() || card.getOwnerName().equals(_playerId) ||
-                card.isControlledBy(_playerId);
+        return card.getZone().isPublic() || card.getOwnerName().equals(_requestingPlayerId) || card.isControlledBy(_requestingPlayerId);
     }
 
     private int getSecureCardId(PhysicalCard card) {

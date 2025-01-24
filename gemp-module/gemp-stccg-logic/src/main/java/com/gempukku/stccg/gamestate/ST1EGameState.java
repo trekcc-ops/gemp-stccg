@@ -1,11 +1,9 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -22,7 +20,6 @@ public class ST1EGameState extends GameState {
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId;
     private int _nextLocationId;
-    private final Map<Integer, AttemptingUnit> _attemptingUnits = new HashMap<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
@@ -96,8 +93,8 @@ public class ST1EGameState extends GameState {
 
     public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
         AwayTeam result = new AwayTeam(player, location, _nextAttemptingUnitId);
+        _awayTeams.add(result);
         _nextAttemptingUnitId++;
-        _attemptingUnits.put(result.getAttemptingUnitId(), result);
         return result;
     }
 
@@ -251,13 +248,7 @@ public class ST1EGameState extends GameState {
     }
 
     public List<AwayTeam> getAwayTeams() {
-        List<AwayTeam> result = new LinkedList<>();
-        for (AttemptingUnit unit : _attemptingUnits.values()) {
-            if (unit instanceof AwayTeam awayTeam) {
-                result.add(awayTeam);
-            }
-        }
-        return result;
+        return _awayTeams;
     }
 
     public void checkVictoryConditions(DefaultGame cardGame) {
@@ -271,28 +262,10 @@ public class ST1EGameState extends GameState {
     }
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {
-        _attemptingUnits.remove(awayTeam.getAttemptingUnitId());
+        _awayTeams.remove(awayTeam);
     }
 
-    public int getAttemptingUnitId(AttemptingUnit unit) throws InvalidGameLogicException {
-        for (Map.Entry<Integer,AttemptingUnit> entry : _attemptingUnits.entrySet()) {
-            if (entry.getValue() == unit) {
-                return entry.getKey();
-            }
-        }
-        throw new InvalidGameLogicException("Unable to find attempting unit ID for attempting unit");
-    }
-
-    public AttemptingUnit getAttemptingUnit(int attemptingUnitId) throws InvalidGameLogicException {
-        AttemptingUnit result = _attemptingUnits.get(attemptingUnitId);
-        if (result == null) {
-            throw new InvalidGameLogicException("Unable to find attempting unit for ID " + attemptingUnitId);
-        } else {
-            return result;
-        }
-    }
-
-    public void addCardToAllCards(PhysicalCard card) {
+    public void addCardToListOfAllCards(PhysicalCard card) {
         _allCards.put(card.getCardId(), card);
     }
 
