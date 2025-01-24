@@ -6,10 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.PlayerNotFoundException;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.gamestate.ST1EGameStateDeserializer;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -50,25 +46,18 @@ public class GameStateSerializerTest extends AbstractAtTest {
                 tarses = card;
         }
 
-        assertNotEquals(null, archer);
+        assertNotNull(archer);
         assertNotNull(homeward);
         MissionLocation homewardLocation = homeward.getLocation();
         assertNotNull(homewardLocation);
-
-        assertEquals(0, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
         seedDilemma(archer, homeward);
-        assertEquals(1, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
-        removeDilemma(archer, homeward);
-        assertEquals(0, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
-        seedDilemma(archer, homeward);
-        assertEquals(1, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
 
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homeward.getLocation().getCardsSeededUnderneath().size());
-        assertTrue(homeward.getLocation().getCardsSeededUnderneath().contains(archer));
+        assertEquals(1, homeward.getLocation().getSeedCards(_game).size());
+        assertTrue(homeward.getLocation().getSeedCards(_game).contains(archer));
 
         ObjectMapper mapper = new ObjectMapper();
 

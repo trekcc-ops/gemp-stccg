@@ -51,4 +51,8 @@ public class CardPile extends PhysicalCardGroup {
     public boolean isEmpty() {
         return _cards.isEmpty();
     }
+
+    public void removeCard(PhysicalCard card) {
+        _cards.remove(card);
+    }
 }

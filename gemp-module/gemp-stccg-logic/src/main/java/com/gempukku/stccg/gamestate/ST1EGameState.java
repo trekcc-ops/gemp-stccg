@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -22,6 +23,7 @@ public class ST1EGameState extends GameState {
     private int _nextAttemptingUnitId;
     private int _nextLocationId;
     private final Map<Integer, AttemptingUnit> _attemptingUnits = new HashMap<>();
+    private final Map<MissionLocation, CardPile> _missionSeedCards = new HashMap<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
@@ -278,18 +280,16 @@ public class ST1EGameState extends GameState {
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
-            topCard.getLocation().addCardToSeededUnder(card);
-            card.setLocation(topCard.getLocation());
+            seedCardUnderMission(topCard.getLocation(), card);
         }
     }
 
     public void preSeedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard, Player player)
             throws InvalidGameLogicException {
-        // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
-            topCard.getLocation().addCardToPreSeeds(card, player);
+            topCard.getLocation().addCardToTopOfPreSeedPile(card, player);
         }
     }
 
@@ -313,5 +313,47 @@ public class ST1EGameState extends GameState {
 
     public void addCardToAllCards(PhysicalCard card) {
         _allCards.put(card.getCardId(), card);
+    }
+
+    public List<PhysicalCard> getSeedCardsForMission(MissionLocation location) {
+        CardPile seedCards = _missionSeedCards.get(location);
+        if (seedCards == null)
+            return new LinkedList<>();
+        else return seedCards.getCards();
+    }
+
+    public void seedCardUnderMission(MissionLocation location, PhysicalCard card) {
+        _missionSeedCards.computeIfAbsent(location, k -> new CardPile());
+        _missionSeedCards.get(location).addCardToBottom(card);
+        card.setLocation(location);
+    }
+
+    public void seedCardOnTopOfMissionSeedCards(MissionLocation location, PhysicalCard card) {
+        _missionSeedCards.computeIfAbsent(location, k -> new CardPile());
+        _missionSeedCards.get(location).addCardToTop(card);
+        card.setLocation(location);
+    }
+
+    public void removeSeedCardFromMission(MissionLocation location, PhysicalCard card) {
+        CardPile seedCards = _missionSeedCards.get(location);
+        if (seedCards != null) {
+            seedCards.removeCard(card);
+        }
+    }
+
+    public void seedCardPileOnBottomOfSeedCards(CardPile cardPile, MissionLocation missionLocation) {
+        while (!cardPile.isEmpty()) {
+            PhysicalCard card = cardPile.getTopCard();
+            cardPile.removeCard(card);
+            seedCardUnderMission(missionLocation, card);
+        }
+    }
+
+    public void seedCardPileOnTopOfSeedCards(CardPile cardPile, MissionLocation missionLocation) {
+        while (!cardPile.isEmpty()) {
+            PhysicalCard card = cardPile.getBottomCard();
+            cardPile.removeCard(card);
+            seedCardOnTopOfMissionSeedCards(missionLocation, card);
+        }
     }
 }

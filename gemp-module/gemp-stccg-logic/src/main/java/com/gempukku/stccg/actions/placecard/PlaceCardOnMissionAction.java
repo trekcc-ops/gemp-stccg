@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -30,13 +31,18 @@ public class PlaceCardOnMissionAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        GameState gameState = cardGame.getGameState();
+        ST1EGame stGame = null;
+        if (cardGame instanceof ST1EGame) {
+            stGame = (ST1EGame) cardGame;
+        }
+        if (stGame == null) {
+            throw new InvalidGameLogicException("Unable to place card on a mission in a non-1E game");
+        }
+        ST1EGameState gameState = stGame.getGameState();
         gameState.placeCardOnMission(cardGame, _cardBeingPlaced, _mission);
-        if (gameState instanceof ST1EGameState stGameState) {
-            for (MissionLocation location : stGameState.getSpacelineLocations()) {
-                if (location.getCardsSeededUnderneath().contains(_cardBeingPlaced)) {
-                    location.removeSeedCard(_cardBeingPlaced);
-                }
+        for (MissionLocation location : gameState.getSpacelineLocations()) {
+            if (location.getSeedCards(stGame).contains(_cardBeingPlaced)) {
+                location.removeSeedCard(stGame, _cardBeingPlaced);
             }
         }
         cardGame.sendMessage(_cardBeingPlaced.getTitle() + " was placed on " + _mission.getLocationName());

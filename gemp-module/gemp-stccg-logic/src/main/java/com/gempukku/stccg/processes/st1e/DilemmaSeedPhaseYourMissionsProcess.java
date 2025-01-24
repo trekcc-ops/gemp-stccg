@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.processes.GameProcess;
@@ -48,10 +49,13 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
         ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
             for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                location.seedPreSeeds();
+                location.seedPreSeedsForYourMissions(stGame);
             }
-            return new DilemmaSeedPhaseSharedMissionsProcess(stGame);
+            cardGame.setCurrentPhase(Phase.SEED_FACILITY);
+            cardGame.takeSnapshot("Start of facility seed phase");
+            return new ST1EFacilitySeedPhaseProcess(0); // TODO - Add "other cards" dilemma seed phase
         }
         else return new DilemmaSeedPhaseYourMissionsProcess(_playersParticipating);
+
     }
 }

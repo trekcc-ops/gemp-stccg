@@ -14,8 +14,6 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction {
@@ -108,7 +106,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                 failMission(cardGame);
             }
 
-            List<PhysicalCard> seedCards = missionLocation.getCardsSeededUnderneath();
+            List<PhysicalCard> seedCards = missionLocation.getSeedCards((ST1EGame) cardGame);
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
             if (!getProgress(Progress.endedMissionAttempt)) {

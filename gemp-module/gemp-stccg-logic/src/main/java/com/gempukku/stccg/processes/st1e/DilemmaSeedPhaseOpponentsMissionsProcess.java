@@ -53,9 +53,9 @@ public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhasePr
         ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
             for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                location.seedPreSeeds();
+                location.seedPreSeedsForOpponentsMissions(stGame);
             }
-            return new DilemmaSeedPhaseYourMissionsProcess(stGame);
+            return new DilemmaSeedPhaseSharedMissionsProcess(stGame);
         }
         else return new DilemmaSeedPhaseOpponentsMissionsProcess(_playersParticipating);
     }

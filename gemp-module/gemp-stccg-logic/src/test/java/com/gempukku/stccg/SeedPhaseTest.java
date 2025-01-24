@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.GameSnapshot;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -82,21 +81,24 @@ public class SeedPhaseTest extends AbstractAtTest {
         assertNotNull(homeward);
         MissionLocation homewardLocation = homeward.getLocation();
         assertNotNull(homewardLocation);
+        assertNotEquals(homeward.getOwner(), archer.getOwner());
 
-        assertEquals(0, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
+        Player archerOwner = archer.getOwner();
+
+        assertEquals(0, homewardLocation.getPreSeedCardCountForPlayer(archerOwner));
         seedDilemma(archer, homeward);
-        assertEquals(1, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
+        assertEquals(1, homewardLocation.getPreSeedCardCountForPlayer(archerOwner));
         removeDilemma(archer, homeward);
-        assertEquals(0, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
+        assertEquals(0, homewardLocation.getPreSeedCardCountForPlayer(archerOwner));
         seedDilemma(archer, homeward);
-        assertEquals(1, homewardLocation.getCardsPreSeeded(archer.getOwner()).size());
+        assertEquals(1, homewardLocation.getPreSeedCardCountForPlayer(archerOwner));
 
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homewardLocation.getCardsSeededUnderneath().size());
-        assertTrue(homewardLocation.getCardsSeededUnderneath().contains(archer));
+        assertEquals(1, homewardLocation.getSeedCards(_game).size());
+        assertTrue(homewardLocation.getSeedCards(_game).contains(archer));
 
         for (GameSnapshot snapshot : _game.getSnapshots())
             System.out.println(snapshot.getDescription());

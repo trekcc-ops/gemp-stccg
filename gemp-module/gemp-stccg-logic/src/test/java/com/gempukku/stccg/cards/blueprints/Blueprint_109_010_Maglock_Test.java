@@ -83,7 +83,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         }
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
-        assertTrue(_mission.getLocation().getCardsSeededUnderneath().contains(maglock));
+        assertTrue(_mission.getLocation().getSeedCards(_game).contains(maglock));
         showSerializedActions();
     }
 
@@ -146,7 +146,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         }
         assertFalse(runabout.isStopped());
         assertTrue(_mission.getLocation().isCompleted());
-        assertFalse(_mission.getLocation().getCardsSeededUnderneath().contains(maglock));
+        assertFalse(_mission.getLocation().getSeedCards(_game).contains(maglock));
         assertEquals(Zone.REMOVED, maglock.getZone());
     }
 

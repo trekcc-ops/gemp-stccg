@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
-import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
-import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -129,7 +127,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         }
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
-        assertTrue(_mission.getLocation().getCardsSeededUnderneath().contains(maglock));
+        assertTrue(_mission.getLocation().getSeedCards(_game).contains(maglock));
         showSerializedActions();
     }
 

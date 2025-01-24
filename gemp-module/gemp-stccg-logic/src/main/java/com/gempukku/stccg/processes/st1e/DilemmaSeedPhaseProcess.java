@@ -12,6 +12,7 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.ArrayList;
@@ -56,8 +57,8 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     TopLevelSelectableAction seedCardsAction = new AddSeedCardsAction(player, mission);
                     seedActions.add(seedCardsAction);
                 }
-                Collection<PhysicalCard> cardsPreSeeded = mission.getLocation().getCardsPreSeeded(player);
-                if (cardsPreSeeded != null && !cardsPreSeeded.isEmpty()) {
+                MissionLocation location = mission.getLocation();
+                if (location.hasCardsPreSeededByPlayer(player)) {
                     TopLevelSelectableAction removeSeedCardsAction = new RemoveSeedCardsAction(player, mission);
                     seedActions.add(removeSeedCardsAction);
                 }
@@ -114,7 +115,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     private void selectCardsToRemove(Player player, ST1EGame cardGame, PhysicalCard topCard) {
         Collection<PhysicalCard> availableCards;
         try {
-            availableCards = topCard.getLocation().getCardsPreSeeded(player);
+            availableCards = topCard.getLocation().getPreSeedCardsForPlayer(player);
         } catch(InvalidGameLogicException exp) {
             availableCards = new LinkedList<>();
         }

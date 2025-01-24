@@ -48,12 +48,11 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
         ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
             for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                location.seedPreSeeds();
+                location.seedPreSeedsForSharedMissions(stGame);
             }
-            cardGame.setCurrentPhase(Phase.SEED_FACILITY);
-            cardGame.takeSnapshot("Start of facility seed phase");
-            return new ST1EFacilitySeedPhaseProcess(0); // TODO - Add "other cards" dilemma seed phase
+            return new DilemmaSeedPhaseYourMissionsProcess(stGame);
         }
         else return new DilemmaSeedPhaseSharedMissionsProcess(_playersParticipating);
+
     }
 }

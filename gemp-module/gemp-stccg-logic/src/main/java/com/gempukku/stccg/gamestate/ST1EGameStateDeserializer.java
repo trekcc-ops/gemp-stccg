@@ -83,8 +83,11 @@ public class ST1EGameStateDeserializer {
         }
 
         for (Map.Entry<MissionLocation, List<Integer>> entry : seededUnderMap.entrySet()) {
-            for (int cardId : entry.getValue())
-                entry.getKey().addCardToSeededUnder(game.getCardFromCardId(cardId));
+            MissionLocation location = entry.getKey();
+            for (int cardId : entry.getValue()) {
+                PhysicalCard card = game.getCardFromCardId(cardId);
+                game.getGameState().seedCardUnderMission(location, card);
+            }
         }
 
         return gameState;
