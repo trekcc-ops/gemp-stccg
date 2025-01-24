@@ -106,7 +106,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                 failMission(cardGame);
             }
 
-            List<PhysicalCard> seedCards = missionLocation.getSeedCards((ST1EGame) cardGame);
+            List<PhysicalCard> seedCards = missionLocation.getSeedCards();
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
             if (!getProgress(Progress.endedMissionAttempt)) {

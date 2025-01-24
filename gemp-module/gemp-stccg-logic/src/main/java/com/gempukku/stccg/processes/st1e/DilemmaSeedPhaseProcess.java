@@ -102,7 +102,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     public void decisionMade (String result) throws DecisionResultInvalidException {
                         try {
                             Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                            cardGame.getGameState().preSeedCardsUnder(selectedCards, topCard, player);
+                            topCard.getLocation().preSeedCardsUnder(cardGame, selectedCards, topCard, player);
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             throw new DecisionResultInvalidException(exp.getMessage());

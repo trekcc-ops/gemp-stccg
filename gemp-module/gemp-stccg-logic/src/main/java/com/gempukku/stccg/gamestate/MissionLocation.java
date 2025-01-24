@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted",
-        "missionCardIds" })
+        "missionCardIds", "seedCardCount" })
 public class MissionLocation {
     @JsonProperty("quadrant")
     @JsonView(JsonViews.Public.class)
@@ -38,6 +38,7 @@ public class MissionLocation {
     private final int _locationId;
     private final MissionCardPile _missionCards = new MissionCardPile(Zone.SPACELINE);
     private Map<Player, CardPile> _preSeedCards = new HashMap<>();
+    private final CardPile _seedCards;
     public MissionLocation(MissionCard mission, int locationId) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
                 mission.getBlueprint().getLocation(), locationId);
@@ -50,6 +51,7 @@ public class MissionLocation {
         _region = region;
         _locationName = locationName;
         _locationId = locationId;
+        _seedCards = new CardPile();
     }
 
     public Stream<AwayTeam> getYourAwayTeamsOnSurface(ST1EGame game, Player player) {
@@ -93,9 +95,8 @@ public class MissionLocation {
     }
 
 
-    public List<PhysicalCard> getSeedCards(ST1EGame cardGame) {
-        ST1EGameState gameState = cardGame.getGameState();
-        return gameState.getSeedCardsForMission(this);
+    public List<PhysicalCard> getSeedCards() {
+        return _seedCards.getCards();
     }
 
 
@@ -134,8 +135,6 @@ public class MissionLocation {
     public int getLocationZoneIndex(ST1EGame cardGame) {
         return cardGame.getGameState().getSpacelineLocations().indexOf(this);
     }
-
-
 
     private int getSpan(Player player) throws InvalidGameLogicException {
         MissionCard card = getMissionForPlayer(player.getPlayerId());
@@ -202,9 +201,8 @@ public class MissionLocation {
         cardGame.getGameState().checkVictoryConditions(cardGame);
     }
 
-    public void removeSeedCard(ST1EGame cardGame, PhysicalCard cardToRemove) {
-        ST1EGameState gameState = cardGame.getGameState();
-        gameState.removeSeedCardFromMission(this, cardToRemove);
+    public void removeSeedCard(PhysicalCard cardToRemove) {
+        removeSeedCardFromMission(cardToRemove);
     }
 
     public int getPreSeedCardCountForPlayer(Player player) {
@@ -247,24 +245,24 @@ public class MissionLocation {
             } else {
                 PhysicalCard card = currentPreSeedPile.getBottomCard();
                 currentPreSeedPile.removeCard(card);
-                stGame.getGameState().seedCardOnTopOfMissionSeedCards(this, card);
+                seedCardOnTopOfMissionSeedCards(card);
             }
         }
     }
 
-    public void seedPreSeedsForYourMissions(ST1EGame stGame) {
+    public void seedPreSeedsForYourMissions() {
         Set<Player> playersWithSeeds = _preSeedCards.keySet();
         for (Player player : playersWithSeeds) {
-            stGame.getGameState().seedCardPileOnTopOfSeedCards(_preSeedCards.get(player), this);
+            seedCardPileOnTopOfSeedCards(_preSeedCards.get(player));
         }
     }
 
 
 
-    public void seedPreSeedsForOpponentsMissions(ST1EGame stGame) {
+    public void seedPreSeedsForOpponentsMissions() {
         Set<Player> playersWithSeeds = _preSeedCards.keySet();
         for (Player player : playersWithSeeds) {
-            stGame.getGameState().seedCardPileOnBottomOfSeedCards(_preSeedCards.get(player), this);
+            seedCardPileOnBottomOfSeedCards(_preSeedCards.get(player), this);
         }
     }
 
@@ -318,5 +316,48 @@ public class MissionLocation {
         }
         return false;
     }
+
+    public void seedCardUnderMission(MissionLocation location, PhysicalCard card) {
+        _seedCards.addCardToBottom(card);
+        card.setLocation(this);
+    }
+
+    public void seedCardOnTopOfMissionSeedCards(PhysicalCard card) {
+        _seedCards.addCardToTop(card);
+        card.setLocation(this);
+    }
+
+    public void removeSeedCardFromMission(PhysicalCard card) {
+        _seedCards.removeCard(card);
+    }
+
+    public void seedCardPileOnBottomOfSeedCards(CardPile cardPile, MissionLocation missionLocation) {
+        while (!cardPile.isEmpty()) {
+            PhysicalCard card = cardPile.getTopCard();
+            cardPile.removeCard(card);
+            seedCardUnderMission(missionLocation, card);
+        }
+    }
+
+    public void seedCardPileOnTopOfSeedCards(CardPile cardPile) {
+        while (!cardPile.isEmpty()) {
+            PhysicalCard card = cardPile.getBottomCard();
+            cardPile.removeCard(card);
+            seedCardOnTopOfMissionSeedCards(card);
+        }
+    }
+
+    public void preSeedCardsUnder(DefaultGame cardGame, Collection<PhysicalCard> cards, PhysicalCard topCard,
+                                  Player player)
+            throws InvalidGameLogicException {
+        GameState gameState = cardGame.getGameState();
+        for (PhysicalCard card : cards) {
+            gameState.removeCardFromZone(card);
+            gameState.addCardToZone(card, Zone.VOID);
+            topCard.getLocation().addCardToTopOfPreSeedPile(card, player);
+        }
+    }
+
+
 
 }

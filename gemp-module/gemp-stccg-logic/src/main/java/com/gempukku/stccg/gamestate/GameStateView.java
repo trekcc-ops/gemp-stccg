@@ -56,7 +56,14 @@ public class GameStateView {
         else return null;
     }
 
-// TODO   @JsonProperty("spacelineLocations") // Make seed cards anonymous
+    @JsonProperty("awayTeams")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<MissionLocation> getSpacelineLocations() {
+        if (_gameState instanceof ST1EGameState stGameState)
+            return stGameState.getSpacelineLocations();
+        else return null;
+    }
+
 // TODO   @JsonProperty("players") // Make private cards in cardGroups anonymous
 
     private boolean showCardInfo(PhysicalCard card) {

@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -30,7 +31,9 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
 
         ST1EPhysicalCard friendly =
                 (ST1EPhysicalCard) _game.addCardToGame("115_010", _cardLibrary, P1);
-        _game.getGameState().seedCardsUnder(Collections.singleton(friendly), _mission);
+
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(friendly), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());

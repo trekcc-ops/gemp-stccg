@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -34,7 +35,8 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
-        _game.getGameState().seedCardsUnder(Collections.singleton(maglock), _mission);
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());
@@ -83,7 +85,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         }
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
-        assertTrue(_mission.getLocation().getSeedCards(_game).contains(maglock));
+        assertTrue(_mission.getLocation().getSeedCards().contains(maglock));
         showSerializedActions();
     }
 
@@ -97,7 +99,8 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
-        _game.getGameState().seedCardsUnder(Collections.singleton(maglock), _mission);
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());
@@ -146,7 +149,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         }
         assertFalse(runabout.isStopped());
         assertTrue(_mission.getLocation().isCompleted());
-        assertFalse(_mission.getLocation().getSeedCards(_game).contains(maglock));
+        assertFalse(_mission.getLocation().getSeedCards().contains(maglock));
         assertEquals(Zone.REMOVED, maglock.getZone());
     }
 

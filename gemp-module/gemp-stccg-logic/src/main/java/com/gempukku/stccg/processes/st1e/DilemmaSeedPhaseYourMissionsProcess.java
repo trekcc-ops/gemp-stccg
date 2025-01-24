@@ -49,7 +49,7 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
         ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
             for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                location.seedPreSeedsForYourMissions(stGame);
+                location.seedPreSeedsForYourMissions();
             }
             cardGame.setCurrentPhase(Phase.SEED_FACILITY);
             cardGame.takeSnapshot("Start of facility seed phase");

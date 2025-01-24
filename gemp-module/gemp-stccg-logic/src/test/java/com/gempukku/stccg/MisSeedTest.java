@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -54,8 +55,9 @@ public class MisSeedTest extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Simon Tarses and a space dilemma under Excavation
-        _game.getGameState().seedCardsUnder(Collections.singleton(tarses), excavation);
-        _game.getGameState().seedCardsUnder(Collections.singleton(maglock), excavation);
+        MissionLocation kurl = excavation.getLocation();
+        seedCardsUnder(Collections.singleton(tarses), excavation);
+        seedCardsUnder(Collections.singleton(maglock), excavation);
 
         // Seed Federation Outpost at Excavation
         seedFacility(P1, outpost, excavation.getLocation());

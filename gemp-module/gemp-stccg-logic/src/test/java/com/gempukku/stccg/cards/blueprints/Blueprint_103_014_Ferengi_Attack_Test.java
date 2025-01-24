@@ -12,6 +12,7 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -33,8 +34,9 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
                 (ST1EPhysicalCard) _game.addCardToGame("103_014", _cardLibrary, P1);
         ferengiAttack.setZone(Zone.VOID);
 
-        // Seed Maglock
-        _game.getGameState().seedCardsUnder(Collections.singleton(ferengiAttack), _mission);
+        // Seed Ferengi Attack
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(ferengiAttack), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());

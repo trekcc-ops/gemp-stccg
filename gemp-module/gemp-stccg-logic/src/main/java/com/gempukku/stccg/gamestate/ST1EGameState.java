@@ -23,7 +23,6 @@ public class ST1EGameState extends GameState {
     private int _nextAttemptingUnitId;
     private int _nextLocationId;
     private final Map<Integer, AttemptingUnit> _attemptingUnits = new HashMap<>();
-    private final Map<MissionLocation, CardPile> _missionSeedCards = new HashMap<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
@@ -275,24 +274,6 @@ public class ST1EGameState extends GameState {
         _attemptingUnits.remove(awayTeam.getAttemptingUnitId());
     }
 
-    public void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) throws InvalidGameLogicException {
-        // TODO - This probably doesn't pay close enough attention to order
-        for (PhysicalCard card : cards) {
-            removeCardFromZone(card);
-            addCardToZone(card, Zone.VOID);
-            seedCardUnderMission(topCard.getLocation(), card);
-        }
-    }
-
-    public void preSeedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard, Player player)
-            throws InvalidGameLogicException {
-        for (PhysicalCard card : cards) {
-            removeCardFromZone(card);
-            addCardToZone(card, Zone.VOID);
-            topCard.getLocation().addCardToTopOfPreSeedPile(card, player);
-        }
-    }
-
     public int getAttemptingUnitId(AttemptingUnit unit) throws InvalidGameLogicException {
         for (Map.Entry<Integer,AttemptingUnit> entry : _attemptingUnits.entrySet()) {
             if (entry.getValue() == unit) {
@@ -315,45 +296,4 @@ public class ST1EGameState extends GameState {
         _allCards.put(card.getCardId(), card);
     }
 
-    public List<PhysicalCard> getSeedCardsForMission(MissionLocation location) {
-        CardPile seedCards = _missionSeedCards.get(location);
-        if (seedCards == null)
-            return new LinkedList<>();
-        else return seedCards.getCards();
-    }
-
-    public void seedCardUnderMission(MissionLocation location, PhysicalCard card) {
-        _missionSeedCards.computeIfAbsent(location, k -> new CardPile());
-        _missionSeedCards.get(location).addCardToBottom(card);
-        card.setLocation(location);
-    }
-
-    public void seedCardOnTopOfMissionSeedCards(MissionLocation location, PhysicalCard card) {
-        _missionSeedCards.computeIfAbsent(location, k -> new CardPile());
-        _missionSeedCards.get(location).addCardToTop(card);
-        card.setLocation(location);
-    }
-
-    public void removeSeedCardFromMission(MissionLocation location, PhysicalCard card) {
-        CardPile seedCards = _missionSeedCards.get(location);
-        if (seedCards != null) {
-            seedCards.removeCard(card);
-        }
-    }
-
-    public void seedCardPileOnBottomOfSeedCards(CardPile cardPile, MissionLocation missionLocation) {
-        while (!cardPile.isEmpty()) {
-            PhysicalCard card = cardPile.getTopCard();
-            cardPile.removeCard(card);
-            seedCardUnderMission(missionLocation, card);
-        }
-    }
-
-    public void seedCardPileOnTopOfSeedCards(CardPile cardPile, MissionLocation missionLocation) {
-        while (!cardPile.isEmpty()) {
-            PhysicalCard card = cardPile.getBottomCard();
-            cardPile.removeCard(card);
-            seedCardOnTopOfMissionSeedCards(missionLocation, card);
-        }
-    }
 }

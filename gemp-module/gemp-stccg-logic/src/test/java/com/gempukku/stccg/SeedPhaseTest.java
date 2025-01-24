@@ -97,8 +97,8 @@ public class SeedPhaseTest extends AbstractAtTest {
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homewardLocation.getSeedCards(_game).size());
-        assertTrue(homewardLocation.getSeedCards(_game).contains(archer));
+        assertEquals(1, homewardLocation.getSeedCards().size());
+        assertTrue(homewardLocation.getSeedCards().contains(archer));
 
         for (GameSnapshot snapshot : _game.getSnapshots())
             System.out.println(snapshot.getDescription());

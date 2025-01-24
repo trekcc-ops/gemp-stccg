@@ -55,7 +55,8 @@ public class ActionSerializerTest extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
-        _game.getGameState().seedCardsUnder(Collections.singleton(maglock), _mission);
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());
@@ -127,7 +128,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         }
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
-        assertTrue(_mission.getLocation().getSeedCards(_game).contains(maglock));
+        assertTrue(_mission.getLocation().getSeedCards().contains(maglock));
         showSerializedActions();
     }
 

@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals("Dedication to Duty", dedication.getTitle());
 
         // Seed Dedication to Duty
-        _game.getGameState().seedCardsUnder(Collections.singleton(dedication), _mission);
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(dedication), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());
@@ -88,7 +90,8 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals("Dedication to Duty", dedication.getTitle());
 
         // Seed Dedication to Duty
-        _game.getGameState().seedCardsUnder(Collections.singleton(dedication), _mission);
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(dedication), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());

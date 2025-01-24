@@ -35,8 +35,8 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
             PhysicalCard cardToRemove = _cardTarget.getCard();
 
             for (MissionLocation mission : gameState.getSpacelineLocations()) {
-                if (mission.getSeedCards(stGame).contains(cardToRemove)) {
-                    mission.removeSeedCard(stGame, cardToRemove);
+                if (mission.getSeedCards().contains(cardToRemove)) {
+                    mission.removeSeedCard(cardToRemove);
                 }
             }
 
