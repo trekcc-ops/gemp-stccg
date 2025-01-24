@@ -16,7 +16,7 @@ import java.util.List;
 public interface Modifier {
     PhysicalCard getSource();
 
-    String getCardInfoText(PhysicalCard affectedCard);
+    String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard);
 
     ModifierEffect getModifierEffect();
 

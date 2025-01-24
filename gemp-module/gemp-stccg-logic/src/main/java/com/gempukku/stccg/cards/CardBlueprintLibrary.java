@@ -82,7 +82,7 @@ public class CardBlueprintLibrary {
         int cardId = node.get("cardId").intValue();
         String playerId = node.get("owner").textValue();
         PhysicalCard newCard = createST1EPhysicalCard(game, blueprintId, cardId, playerId);
-        PhysicalCardDeserializer.deserialize(newCard, node);
+        PhysicalCardDeserializer.deserialize(game, newCard, node);
         return newCard;
     }
 

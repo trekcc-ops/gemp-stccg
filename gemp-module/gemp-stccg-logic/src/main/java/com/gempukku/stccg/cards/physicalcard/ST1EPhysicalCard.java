@@ -12,7 +12,6 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;

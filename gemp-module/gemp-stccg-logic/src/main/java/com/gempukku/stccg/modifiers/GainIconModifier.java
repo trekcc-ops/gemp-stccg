@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class GainIconModifier extends AbstractModifier implements IconAffectingModifier {
     private final CardIcon _icon;
@@ -20,7 +21,7 @@ public class GainIconModifier extends AbstractModifier implements IconAffectingM
     }
 
     @Override
-    public String getCardInfoText(PhysicalCard affectedCard) {
+    public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         return "Gains " + _icon.toHTML() + " from " + _cardSource.getCardLink();
     }
 

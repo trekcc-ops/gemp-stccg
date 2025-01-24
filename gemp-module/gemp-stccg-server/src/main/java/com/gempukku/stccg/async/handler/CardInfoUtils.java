@@ -39,11 +39,11 @@ public class CardInfoUtils {
             if (!modifiers.isEmpty()) {
                 sb.append(HTMLUtils.makeBold("Active modifiers:")).append(HTMLUtils.NEWLINE);
                 for (Modifier modifier : modifiers) {
-                    sb.append(modifier.getCardInfoText(card));
+                    sb.append(modifier.getCardInfoText(cardGame, card));
                 }
             }
 
-            List<PhysicalCard<? extends DefaultGame>> stackedCards = card.getStackedCards(card.getGame());
+            List<PhysicalCard<? extends DefaultGame>> stackedCards = card.getStackedCards(cardGame);
             if (!stackedCards.isEmpty()) {
                 sb.append("<br><b>Stacked cards:</b>");
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));

@@ -66,7 +66,7 @@ public class AttributeModifier extends AbstractModifier {
 
 
     @Override
-    public String getCardInfoText(PhysicalCard affectedCard) {
+    public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         String attributeString;
         if (getModifierEffect() == ModifierEffect.ALL_ATTRIBUTE_MODIFIER) {
             attributeString = "All attributes";

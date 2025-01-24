@@ -78,7 +78,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public String getCardInfoText(PhysicalCard affectedCard) {
+    public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         return _text;
     }
 

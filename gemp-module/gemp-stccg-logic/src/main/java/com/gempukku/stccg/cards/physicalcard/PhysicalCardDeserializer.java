@@ -10,9 +10,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 
 public class PhysicalCardDeserializer {
 
-    public static void deserialize(PhysicalCard card, JsonNode node) throws CardNotFoundException {
-
-        DefaultGame game = card.getGame();
+    public static void deserialize(ST1EGame game, PhysicalCard card, JsonNode node) throws CardNotFoundException {
 
         Zone zone = Zone.valueOf(node.get("zone").textValue());
         card.setZone(zone);
@@ -22,9 +20,9 @@ public class PhysicalCardDeserializer {
             affiliatedCard.setCurrentAffiliation(affiliation);
         }
 
-        if (node.has("locationZoneIndex") && game instanceof ST1EGame st1eGame) {
+        if (node.has("locationZoneIndex")) {
             int locationZoneIndex = node.get("locationZoneIndex").intValue();
-            MissionLocation location = st1eGame.getGameState().getSpacelineLocations().get(locationZoneIndex);
+            MissionLocation location = game.getGameState().getSpacelineLocations().get(locationZoneIndex);
             card.setLocation(location);
         }
 
