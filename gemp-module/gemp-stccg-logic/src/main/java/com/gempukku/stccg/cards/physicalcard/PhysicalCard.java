@@ -53,8 +53,8 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
 
     String getTitle();
     boolean canInsertIntoSpaceline();
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = PositiveIntegerFilter.class)
-    int getLocationZoneIndex();
+
+    int getLocationZoneIndex(GenericGame game);
 
     boolean canBeSeeded(GenericGame game);
 

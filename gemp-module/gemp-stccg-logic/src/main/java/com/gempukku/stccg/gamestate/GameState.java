@@ -134,15 +134,16 @@ public abstract class GameState {
 
         card.attachTo(transferTo);
         for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY,card));
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,card));
     }
 
-    public void detachCard(PhysicalCard attachedCard, Zone newZone) {
+    public void detachCard(DefaultGame cardGame, PhysicalCard attachedCard, Zone newZone) {
         attachedCard.setZone(newZone);
         attachedCard.detach();
-        for (GameStateListener listener : attachedCard.getGame().getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY,attachedCard));
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,attachedCard));
     }
+
 
     public void attachCard(PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
         if(card == attachTo)
@@ -164,7 +165,7 @@ public abstract class GameState {
 
     public void moveCard(DefaultGame cardGame, PhysicalCard card) {
         for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY, card));
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY, card));
     }
 
 
@@ -280,7 +281,7 @@ public abstract class GameState {
         else sendGameEvent = (overrideOwnerVisibility || card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
 
         if (sendGameEvent)
-            listener.sendEvent(new GameEvent(eventType, card));
+            listener.sendEvent(new GameEvent(card.getGame(), eventType, card));
     }
 
     public void putCardOnBottomOfDeck(PhysicalCard card) {

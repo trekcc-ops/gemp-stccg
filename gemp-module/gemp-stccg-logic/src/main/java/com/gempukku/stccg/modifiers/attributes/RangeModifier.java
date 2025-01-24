@@ -13,15 +13,14 @@ import com.gempukku.stccg.modifiers.ModifierEffect;
 public class RangeModifier extends AttributeModifier {
 
     public RangeModifier(PhysicalCard performingCard, ActionCardResolver affectedCards, int modifierValue) {
-        super(performingCard, affectedCards, new TrueCondition(),
-                new ConstantEvaluator(performingCard.getGame(), modifierValue),
+        super(performingCard, affectedCards, new TrueCondition(), new ConstantEvaluator(modifierValue),
                 CardAttribute.RANGE, ModifierEffect.SHIP_ATTRIBUTE_MODIFIER);
     }
 
     public RangeModifier(PhysicalCard performingCard, PhysicalCard affectedCard, Condition condition,
                          int modifierValue) {
         super(performingCard, new FixedCardResolver(affectedCard), condition,
-                new ConstantEvaluator(performingCard.getGame(), modifierValue), CardAttribute.RANGE,
+                new ConstantEvaluator(modifierValue), CardAttribute.RANGE,
                 ModifierEffect.SHIP_ATTRIBUTE_MODIFIER);
     }
 

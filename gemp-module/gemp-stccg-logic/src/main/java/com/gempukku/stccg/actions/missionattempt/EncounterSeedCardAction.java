@@ -20,10 +20,10 @@ public class EncounterSeedCardAction extends ActionyAction {
     private enum Progress { effectsAdded }
     private final AttemptingUnit _attemptingUnit;
 
-    public EncounterSeedCardAction(Player encounteringPlayer, PhysicalCard encounteredCard,
+    public EncounterSeedCardAction(DefaultGame cardGame, Player encounteringPlayer, PhysicalCard encounteredCard,
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction)
             throws InvalidGameLogicException {
-        super(encounteredCard.getGame(), encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        super(cardGame, encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);

@@ -88,10 +88,11 @@ public class GameEvent {
         _eventAttributes.put(Attribute.message, message);
     }
 
-    public GameEvent(Type type, PhysicalCard card) {
-        this(card.getGame(), type, card.getOwner());
+    public GameEvent(DefaultGame cardGame, Type type, PhysicalCard card) {
+        this(cardGame, type, card.getOwner());
         setCardData(card);
     }
+
 
     public GameEvent(DefaultGame cardGame, Type type, Collection<PhysicalCard> cards, String playerId) {
         this(cardGame, type);
@@ -151,7 +152,7 @@ public class GameEvent {
         _zone = card.getZone();
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
-        _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
+        _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex(_game)));
 
         if (card.getCardType() == CardType.MISSION && card.isInPlay()) {
             try {

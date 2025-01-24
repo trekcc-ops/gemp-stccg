@@ -109,7 +109,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 gameState.removeCardFromZone(_cardEnteringPlay);
                 performingPlayer.addPlayedAffiliation(facility.getAffiliation());
                 gameState.seedFacilityAtLocation(facility,
-                        Iterables.getOnlyElement(_destinationTarget.getCards(cardGame)).getLocationZoneIndex());
+                        Iterables.getOnlyElement(_destinationTarget.getCards(cardGame)).getLocationZoneIndex(cardGame));
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
                 setProgress(Progress.cardWasSeeded);

@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.AbstractModifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 
@@ -37,10 +38,11 @@ public class AttributeModifier extends AbstractModifier {
         _attributes.add(attribute);
     }
 
-    public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard, Condition condition,
-                             int modifierValue, ModifierEffect effectType, CardAttribute... attributes) {
+    public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,
+                             Condition condition, int modifierValue, ModifierEffect effectType,
+                             CardAttribute... attributes) {
         super(performingCard, new FixedCardResolver(affectedCard), condition, effectType);
-        _evaluator = new ConstantEvaluator(performingCard.getGame(), modifierValue);
+        _evaluator = new ConstantEvaluator(modifierValue);
         _attributes.addAll(Arrays.asList(attributes));
     }
 

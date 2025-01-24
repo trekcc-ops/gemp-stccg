@@ -74,7 +74,7 @@ public class ST1EGame extends DefaultGame {
 
     public void sendUpdatedCardImageToClient(PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.UPDATE_CARD_IMAGE, card));
+            listener.sendEvent(new GameEvent(this, GameEvent.Type.UPDATE_CARD_IMAGE, card));
     }
 
 }

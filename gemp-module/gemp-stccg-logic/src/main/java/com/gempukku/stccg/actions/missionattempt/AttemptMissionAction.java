@@ -120,7 +120,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         return new RevealSeedCardAction(performingPlayer, firstSeedCard, this);
                     } else if (_lastCardEncountered != firstSeedCard) {
                         _lastCardEncountered = firstSeedCard;
-                        return new EncounterSeedCardAction(
+                        return new EncounterSeedCardAction(cardGame,
                                 performingPlayer, firstSeedCard, attemptingUnit, this);
                     } else {
                         throw new InvalidGameLogicException(firstSeedCard.getTitle() + " has already been encountered, but has not been removed");
