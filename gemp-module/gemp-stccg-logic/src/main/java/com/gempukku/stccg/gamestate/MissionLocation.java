@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.MissionCardGroup;
 import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
@@ -17,17 +18,28 @@ import java.util.stream.Stream;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted",
-        "cardsSeededUnderneath" })
+        "missionCardIds", "seedCardIds" })
 public class MissionLocation {
+    @JsonProperty("quadrant")
+    @JsonView(JsonViews.Public.class)
     private final Quadrant _quadrant;
+    @JsonProperty("region")
+    @JsonView(JsonViews.Public.class)
     private final Region _region;
+    @JsonProperty("locationName")
+    @JsonView(JsonViews.Public.class)
     private final String _locationName;
+    @JsonProperty("isCompleted")
+    @JsonView(JsonViews.Public.class)
     private boolean _isCompleted;
     @JsonProperty("locationId")
+    @JsonView(JsonViews.Public.class)
     private final int _locationId;
     private final MissionCardGroup _missionCards = new MissionCardGroup(Zone.SPACELINE);
     protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
-
+    @JsonProperty("seedCardIds")
+    @JsonView(JsonViews.Private.class)
+    @JsonIdentityReference(alwaysAsId=true)
     private final List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
     public MissionLocation(MissionCard mission, int locationId) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
@@ -55,6 +67,9 @@ public class MissionLocation {
     }
 
 
+    @JsonProperty("missionCardIds")
+    @JsonView(JsonViews.Public.class)
+    @JsonIdentityReference(alwaysAsId=true)
     public List<MissionCard> getMissionCards() {
         return _missionCards.getCards();
     }
@@ -81,8 +96,6 @@ public class MissionLocation {
     }
 
 
-    @JsonIdentityReference(alwaysAsId=true)
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
     public List<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
 
     public int getDistanceToLocation(DefaultGame cardGame, MissionLocation location, Player player)

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -14,7 +15,9 @@ import com.gempukku.stccg.game.*;
 import java.util.*;
 
 public class ST1EGameState extends GameState {
+    @JsonProperty("spacelineLocations")
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
+    @JsonProperty("awayTeams")
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId;
     private int _nextLocationId;

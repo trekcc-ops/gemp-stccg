@@ -197,18 +197,7 @@ export default class GempClientCommunication {
         });
     }
 
-    getGameStateOld(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/game/" + getUrlParam("gameId") + "/gameState",
-            cache:false,
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
-    }
-
-    async getGameStateNew() {
+    async getGameState() {
         const url = this.url + "/game/" + getUrlParam("gameId") + "/gameState";
         try {
             let response = await fetch(url, {

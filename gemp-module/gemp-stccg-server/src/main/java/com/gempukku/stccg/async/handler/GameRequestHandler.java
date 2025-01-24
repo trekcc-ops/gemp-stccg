@@ -63,6 +63,8 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             cancel(request, uri.substring(1, uri.length() - 7), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/gameState") && request.method() == HttpMethod.GET) {
             getGameState(uri.substring(1, uri.length() - 10), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameStateForPlayer") && request.method() == HttpMethod.GET) {
+            getGameStateForPlayer(request, uri.substring(1, uri.length() - 19), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             startGameSession(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
@@ -89,6 +91,28 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             gameMediator.getGame().sendMessage("ERROR: Unable to create serialized game state");
         }
     }
+
+    private void getGameStateForPlayer(HttpRequest request, String gameId, ResponseWriter responseWriter)
+            throws HttpProcessingException {
+
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
+        User resourceOwner = getResourceOwnerSafely(request);
+        boolean isAdmin = resourceOwner.isAdmin();
+        String userId = resourceOwner.getName();
+
+        if (gameMediator == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+
+        GameState gameState = gameMediator.getGame().getGameState();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String gameStateString = mapper.writeValueAsString(gameState);
+            responseWriter.writeJsonResponse(gameStateString);
+        } catch(JsonProcessingException exp) {
+            gameMediator.getGame().sendMessage("ERROR: Unable to create serialized game state");
+        }
+    }
+
 
 
     private void updateGameState(HttpRequest request, String gameId, ResponseWriter responseWriter)

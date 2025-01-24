@@ -283,21 +283,8 @@ public abstract class GameState {
             listener.sendEvent(new GameEvent(eventType, card));
     }
 
-    public void shuffleCardsIntoDeck(DefaultGame cardGame, Iterable<? extends PhysicalCard> cards, Player performingPlayer)
-            throws InvalidGameLogicException {
-        for (PhysicalCard card : cards) {
-            performingPlayer.addCardToGroup(Zone.DRAW_DECK, card);
-            card.setZone(Zone.DRAW_DECK);
-        }
-        performingPlayer.shuffleDrawDeck(cardGame);
-    }
-
     public void putCardOnBottomOfDeck(PhysicalCard card) {
         addCardToZone(card, Zone.DRAW_DECK, true);
-    }
-
-    public void putCardOnTopOfDeck(PhysicalCard card) {
-        addCardToZone(card, Zone.DRAW_DECK, false);
     }
 
     public void iterateActiveCards(PhysicalCardVisitor physicalCardVisitor) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -18,18 +19,21 @@ import java.util.concurrent.ThreadLocalRandom;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class Player {
     @JsonProperty("playerId")
+    @JsonView(JsonViews.Public.class)
     private final String _playerId;
     @JsonProperty("decked")
+    @JsonView(JsonViews.Public.class)
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
-    @JsonProperty("cardGroups")
     Map<Zone, PhysicalCardGroup> _cardGroups = new HashMap<>();
     @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
     @JsonProperty("turnNumber")
     private int _turnNumber;
+    @JsonProperty("drawDeck")
     CardPile _drawDeck;
+    @JsonProperty("discardPile")
     CardPile _discardPile;
 
     public Player(String playerId) {

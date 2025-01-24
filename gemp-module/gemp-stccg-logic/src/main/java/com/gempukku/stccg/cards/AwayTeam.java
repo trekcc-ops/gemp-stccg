@@ -1,10 +1,6 @@
 package com.gempukku.stccg.cards;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -18,23 +14,30 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-@JsonPropertyOrder({ "attemptingUnitId", "locationZoneIndex", "playerId", "cardsInAwayTeam" })
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="awayTeamId")
+@JsonPropertyOrder({ "awayTeamId", "locationId", "playerId", "awayTeamCardIds" })
 public class AwayTeam implements AttemptingUnit {
+    @JsonProperty("playerId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final Player _player;
+    @JsonProperty("awayTeamCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
+    @JsonProperty("locationId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final MissionLocation _location;
-    private final int _attemptingUnitId;
+    @JsonProperty("awayTeamId")
+    private final int _awayTeamId;
 
     public AwayTeam(Player player, MissionLocation location, int attemptingUnitId) {
         _player = player;
         _cardsInAwayTeam = new LinkedList<>();
         _location = location;
-        _attemptingUnitId = attemptingUnitId;
+        _awayTeamId = attemptingUnitId;
     }
 
-    @JsonProperty("attemptingUnitId")
     public int getAttemptingUnitId() {
-        return _attemptingUnitId;
+        return _awayTeamId;
     }
 
 
@@ -56,10 +59,7 @@ public class AwayTeam implements AttemptingUnit {
 
     @JsonIgnore
     public Player getPlayer() { return _player; }
-    @JsonProperty("playerId")
     public String getPlayerId() { return _player.getPlayerId(); }
-    @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("cardsInAwayTeam")
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
 
     public boolean canAttemptMission(DefaultGame cardGame, MissionLocation mission) {
