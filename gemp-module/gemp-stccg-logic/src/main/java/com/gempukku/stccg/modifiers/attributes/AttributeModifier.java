@@ -79,8 +79,8 @@ public class AttributeModifier extends AbstractModifier {
     }
 
     @Override
-    public int getAttributeModifier(PhysicalCard physicalCard) {
-        return _evaluator.evaluateExpression(physicalCard.getGame(), physicalCard);
+    public int getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard) {
+        return _evaluator.evaluateExpression(cardGame, physicalCard);
     }
 
     public List<CardAttribute> getAttributesModified() {

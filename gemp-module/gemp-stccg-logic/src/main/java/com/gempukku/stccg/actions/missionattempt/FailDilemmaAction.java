@@ -21,18 +21,20 @@ public class FailDilemmaAction extends ActionyAction {
     private final PhysicalCard _dilemma;
 
     public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma) {
-        this(attemptingUnit.getPlayer(), attemptingUnit, dilemma);
+        this(dilemma.getGame(), attemptingUnit.getPlayer(), attemptingUnit, dilemma);
     }
 
-    public FailDilemmaAction(Player performingPlayer, AttemptingUnit attemptingUnit, PhysicalCard dilemma) {
-        super(dilemma.getGame(), performingPlayer, ActionType.FAIL_DILEMMA);
+    public FailDilemmaAction(DefaultGame cardGame, Player performingPlayer, AttemptingUnit attemptingUnit,
+                             PhysicalCard dilemma) {
+        super(cardGame, performingPlayer, ActionType.FAIL_DILEMMA);
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
     }
 
-    public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma,
+
+    public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
                              Action additionalEffect) {
-        this(attemptingUnit.getPlayer(), attemptingUnit, dilemma);
+        this(cardGame, attemptingUnit.getPlayer(), attemptingUnit, dilemma);
         appendEffect(additionalEffect);
     }
 

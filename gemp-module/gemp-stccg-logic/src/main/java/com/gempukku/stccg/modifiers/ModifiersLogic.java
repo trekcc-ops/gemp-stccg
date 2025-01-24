@@ -353,7 +353,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         for (Modifier modifier : attributeModifiers) {
             if (modifier instanceof AttributeModifier attributeModifier &&
                     attributeModifier.getAttributesModified().contains(attribute)) {
-                result += modifier.getAttributeModifier(card);
+                result += modifier.getAttributeModifier(_game, card);
             }
         }
         return Math.max(0, result);

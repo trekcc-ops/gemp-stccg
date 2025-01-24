@@ -422,7 +422,7 @@ public abstract class DefaultGame {
         return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null && !isRestoreSnapshotPending();
     }
 
-    public PhysicalCard<DefaultGame> getCardFromCardId(int cardId) throws CardNotFoundException {
+    public PhysicalCard<? extends DefaultGame> getCardFromCardId(int cardId) throws CardNotFoundException {
         return getGameState().getCardFromCardId(cardId);
     }
 

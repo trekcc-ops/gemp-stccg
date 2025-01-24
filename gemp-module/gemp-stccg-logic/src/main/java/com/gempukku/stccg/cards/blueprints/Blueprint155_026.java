@@ -51,8 +51,8 @@ public class Blueprint155_026 extends CardBlueprint {
             Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(game, player, selectCardsToPlaceAction);
             getItDoneAction.appendCost(costAction);
 
-            TopLevelSelectableAction choice1 = choice1(thisCard, player);
-            TopLevelSelectableAction choice2 = choice2(thisCard, player);
+            TopLevelSelectableAction choice1 = choice1(game, thisCard, player);
+            TopLevelSelectableAction choice2 = choice2(game, thisCard, player);
             TopLevelSelectableAction choice3 = choice3(thisCard, player);
 
             Action chooseAction =
@@ -72,7 +72,7 @@ public class Blueprint155_026 extends CardBlueprint {
         return actions;
     }
 
-    private TopLevelSelectableAction choice1(PhysicalCard thisCard, Player player) {
+    private TopLevelSelectableAction choice1(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
         SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard.getGame(), player,
                 "Select a personnel",
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
@@ -81,12 +81,13 @@ public class Blueprint155_026 extends CardBlueprint {
         ActionCardResolver resolver = new SelectCardsResolver(targetAction);
         Modifier modifier = new AllAttributeModifier(thisCard, resolver, 2);
 
-        TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
+        TopLevelSelectableAction addModifierAction =
+                new AddUntilEndOfTurnModifierAction(cardGame, player, thisCard, modifier);
         addModifierAction.appendCost(targetAction);
         return addModifierAction;
     }
 
-    private TopLevelSelectableAction choice2(PhysicalCard thisCard, Player player) {
+    private TopLevelSelectableAction choice2(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
         SelectVisibleCardAction targetAction = new SelectVisibleCardAction(thisCard.getGame(), player, "Select a ship",
                 Filters.and(Filters.your(player), Filters.inPlay, CardIcon.TNG_ICON,
                         CardType.SHIP));
@@ -94,7 +95,8 @@ public class Blueprint155_026 extends CardBlueprint {
         ActionCardResolver resolver = new SelectCardsResolver(targetAction);
         Modifier modifier = new RangeModifier(thisCard, resolver, 2);
 
-        TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
+        TopLevelSelectableAction addModifierAction =
+                new AddUntilEndOfTurnModifierAction(cardGame, player, thisCard, modifier);
         addModifierAction.appendCost(targetAction);
         return addModifierAction;
     }

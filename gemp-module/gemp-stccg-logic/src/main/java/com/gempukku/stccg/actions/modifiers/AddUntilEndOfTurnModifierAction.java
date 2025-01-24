@@ -21,6 +21,14 @@ public class AddUntilEndOfTurnModifierAction extends ActionyAction implements To
         _modifier = Objects.requireNonNull(modifier);
     }
 
+    public AddUntilEndOfTurnModifierAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard performingCard,
+                                           Modifier modifier) {
+        super(cardGame, performingPlayer, "Add modifier", ActionType.ADD_MODIFIER);
+        _performingCard = Objects.requireNonNull(performingCard);
+        _modifier = Objects.requireNonNull(modifier);
+    }
+
+
 
     @Override
     public PhysicalCard getPerformingCard() {

@@ -114,7 +114,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
 
         if (!(Objects.equals(_discardingPlayerId, _performingPlayerId) ||
                 Objects.equals(secondPlayerChosen, _performingPlayerId))) {
-            appendEffect(new ScorePointsAction(_performingCard, discardingPlayer, BONUS_POINTS));
+            appendEffect(new ScorePointsAction(game, _performingCard, discardingPlayer, BONUS_POINTS));
         }
     }
 

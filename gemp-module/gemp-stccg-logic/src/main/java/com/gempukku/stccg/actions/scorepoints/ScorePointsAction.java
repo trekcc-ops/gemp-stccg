@@ -3,10 +3,7 @@ package com.gempukku.stccg.actions.scorepoints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 
 import java.util.Objects;
 
@@ -14,9 +11,9 @@ public class ScorePointsAction extends ActionyAction {
     private final PhysicalCard _performingCard;
     private final int _points;
 
-    public ScorePointsAction(PhysicalCard source, Player scoringPlayer, int points)
+    public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, Player scoringPlayer, int points)
             throws InvalidGameLogicException {
-        super(source.getGame(), scoringPlayer, "Score " + points + " points", ActionType.SCORE_POINTS);
+        super(cardGame, scoringPlayer, "Score " + points + " points", ActionType.SCORE_POINTS);
         try {
             _performingCard = Objects.requireNonNull(source);
         } catch(NullPointerException npe) {
@@ -24,6 +21,7 @@ public class ScorePointsAction extends ActionyAction {
         }
         _points = points;
     }
+
 
 
     @Override
