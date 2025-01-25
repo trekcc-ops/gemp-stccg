@@ -15,11 +15,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "awayTeams" })
-@JsonPropertyOrder({ "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
+@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame",
+        "spacelineLocations", "awayTeams" })
+@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
         "awayTeams" })
 public class GameStateView {
+    @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
     private final GameState _gameState;
 
