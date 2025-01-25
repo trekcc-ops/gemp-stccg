@@ -1,7 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
@@ -9,8 +8,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+@JsonIncludeProperties({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
+@JsonPropertyOrder({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
 public class PlayerOrder {
-    @JsonProperty("isReversed")
     private boolean _isReversed;
     private final List<String> _turnOrder = new LinkedList<>();
     @JsonProperty("firstPlayer")
@@ -102,6 +102,7 @@ public class PlayerOrder {
     public void reversePlayerOrder() {
         _isReversed = !_isReversed;
     }
+    @JsonProperty("isReversed")
     public boolean isReversed() { return _isReversed; }
 
 }
