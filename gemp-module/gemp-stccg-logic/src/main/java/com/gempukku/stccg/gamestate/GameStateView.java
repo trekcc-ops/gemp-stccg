@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -14,11 +15,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "currentPhase", "players", "spacelineLocations", "awayTeams", "playerOrder",
-        "visibleCardsInGame" })
+@JsonIncludeProperties({ "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
+        "awayTeams" })
+@JsonPropertyOrder({ "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
+        "awayTeams" })
 public class GameStateView {
-    // Class designed to pass game state information to the client
-    private final static int ANONYMOUS_CARD_ID = -99;
     private final String _requestingPlayerId;
     private final GameState _gameState;
 
@@ -77,10 +78,4 @@ public class GameStateView {
         return card.getZone().isPublic() || card.getOwnerName().equals(_requestingPlayerId) || card.isControlledBy(_requestingPlayerId);
     }
 
-    private int getSecureCardId(PhysicalCard card) {
-        // Need new logic for this
-        if (showCardInfo(card))
-            return card.getCardId();
-        else return ANONYMOUS_CARD_ID;
-    }
 }

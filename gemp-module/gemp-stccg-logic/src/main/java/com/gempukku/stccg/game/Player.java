@@ -16,7 +16,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked" })
+@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
+@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class Player {
     @JsonProperty("playerId")
@@ -27,6 +28,7 @@ public class Player {
     @JsonView(JsonViews.Public.class)
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
+    @JsonProperty("cardGroups")
     Map<Zone, PhysicalCardGroup> _cardGroups = new HashMap<>();
     @JsonProperty("score")
     private int _currentScore;

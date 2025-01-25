@@ -25,8 +25,10 @@ import java.security.InvalidParameterException;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "currentPhase", "players", "spacelineLocations", "awayTeams", "playerOrder",
-        "currentProcess", "cardsInGame" })
+@JsonIncludeProperties({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
+        "awayTeams" })
+@JsonPropertyOrder({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
+        "awayTeams" })
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     Phase _currentPhase;

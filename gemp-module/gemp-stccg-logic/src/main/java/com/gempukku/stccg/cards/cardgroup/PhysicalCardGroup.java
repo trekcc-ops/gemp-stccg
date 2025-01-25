@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "cards" })
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
+@JsonIncludeProperties({ "cardCount", "cardIds" })
+@JsonPropertyOrder({ "cardCount", "cardIds" })
 public class PhysicalCardGroup {
     private final List<PhysicalCard> _cards = new LinkedList<>();
 
@@ -19,6 +19,7 @@ public class PhysicalCardGroup {
 
     public void addCard(PhysicalCard<? extends DefaultGame> card) { _cards.add(card); }
 
+    @JsonProperty("cardIds")
     @JsonIdentityReference(alwaysAsId=true)
     public List<PhysicalCard> getCards() {
         return _cards;
@@ -28,6 +29,7 @@ public class PhysicalCardGroup {
         _cards.addAll(subDeck);
     }
 
+    @JsonProperty("cardCount")
     public int size() {
         return _cards.size();
     }

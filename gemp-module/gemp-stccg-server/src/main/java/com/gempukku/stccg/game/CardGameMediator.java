@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.handler.CardInfoUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
@@ -209,8 +210,8 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final synchronized void playerAnsweredNew(User player, int channelNumber, int decisionId, String answer)
-            throws SubscriptionConflictException, SubscriptionExpiredException {
+    public final synchronized void playerAnswered(User player, int channelNumber, int decisionId, String answer)
+            throws HttpProcessingException {
         String playerName = player.getName();
         _writeLock.lock();
         try {
@@ -253,7 +254,7 @@ public abstract class CardGameMediator {
 
 
     public final GameCommunicationChannel getCommunicationChannel(User player, int channelNumber)
-            throws PrivateInformationException, SubscriptionConflictException, SubscriptionExpiredException {
+            throws PrivateInformationException, HttpProcessingException, SubscriptionExpiredException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
             throw new PrivateInformationException();

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.AbstractServer;
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -12,7 +13,9 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.chat.ChatStrings;
 import com.gempukku.stccg.chat.ChatServer;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
+import java.net.HttpURLConnection;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -188,13 +191,17 @@ public class GameServer extends AbstractServer {
         return _deckDao.getDeckForPlayer(player, deckName);
     }
 
-    public final CardGameMediator getGameById(String gameId) {
+    public final CardGameMediator getGameById(String gameId) throws HttpProcessingException {
+        CardGameMediator mediator;
         _lock.readLock().lock();
         try {
-            return _runningGames.get(gameId);
+            mediator = _runningGames.get(gameId);
         } finally {
             _lock.readLock().unlock();
         }
+        if (mediator == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+        else return mediator;
     }
 
 }

@@ -209,7 +209,20 @@ export default class GempClientCommunication {
 
             if (!response.ok) {
                 if (response.status == 404) {
-                    alert("Could not load game state for this game.");
+                    /* Thrown if server cannot identify a game with this id number, or if the server has no handler
+                        for the provided URL */
+                    alert("Unable to find game.");
+                }
+                else if (response.status == 401) {
+                    /* Users who have admin privileges should not encounter this error. Non-admin users get this if:
+                        - They try to access another player's game state view
+                        - They try to access the "complete" game state with no hidden information
+                    */
+                    alert("User cannot access this game state data.");
+                }
+                else if (response.status = 500) {
+                    // Thrown if the gamestate encounters errors while being serialized
+                    alert("Cannot create game state data.");
                 }
                 else {
                     throw new Error(response.statusText);
@@ -224,36 +237,6 @@ export default class GempClientCommunication {
             console.error({"getGameState fetch error": error.message});
         }
     }
-
-    async getGameStateForPlayer() {
-        const url = this.url + "/game/" + getUrlParam("gameId") + "/gameStateForPlayer";
-        try {
-            let response = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-
-            if (!response.ok) {
-                if (response.status == 404) {
-                    alert("Could not load game state for this game.");
-                }
-                else {
-                    throw new Error(response.statusText);
-                }
-            }
-            else {
-                let retval = await response.json();
-                return retval;
-            }
-        }
-        catch(error) {
-            console.error({"getGameState fetch error": error.message});
-        }
-    }
-
-
 
     startGameSession(callback, errorMap) {
         $.ajax({

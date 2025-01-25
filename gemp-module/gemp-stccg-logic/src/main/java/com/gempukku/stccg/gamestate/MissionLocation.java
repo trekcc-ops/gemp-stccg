@@ -20,6 +20,8 @@ import java.util.stream.Stream;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted",
         "missionCardIds", "seedCardCount" })
+@JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted",
+        "missionCardIds", "seedCardCount" })
 public class MissionLocation {
     @JsonProperty("quadrant")
     @JsonView(JsonViews.Public.class)

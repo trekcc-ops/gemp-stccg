@@ -3,15 +3,15 @@ package com.gempukku.stccg.game;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
+@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 public class PlayerView {
 
     private final String _requestingPlayerId;
@@ -63,11 +63,17 @@ public class PlayerView {
     }
 
     private class PrivateCardGroupView implements CardGroupView {
+
+        private static final int ANONYMOUS_CARD_ID = -99;
         @JsonProperty("cardCount")
         int _cardCount;
 
+        @JsonProperty("cardIds")
+        final Collection<Integer> _cardIds;
+
         PrivateCardGroupView(PhysicalCardGroup group) {
             _cardCount = group.size();
+            _cardIds = Collections.nCopies(_cardCount, ANONYMOUS_CARD_ID);
         }
     }
 

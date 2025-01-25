@@ -9,9 +9,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "cards" })
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class CardPile extends PhysicalCardGroup {
     private final List<PhysicalCard> _cards = new LinkedList<>();
 
@@ -20,7 +17,6 @@ public class CardPile extends PhysicalCardGroup {
 
     public void addCard(PhysicalCard<? extends DefaultGame> card) { _cards.add(card); }
 
-    @JsonIdentityReference(alwaysAsId=true)
     public List<PhysicalCard> getCards() {
         return _cards;
     }

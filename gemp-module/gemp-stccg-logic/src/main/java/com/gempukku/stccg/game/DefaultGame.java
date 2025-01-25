@@ -286,8 +286,13 @@ public abstract class DefaultGame {
     }
 
     public Player getPlayer(int index) throws PlayerNotFoundException {
-        return getGameState().getPlayer(getAllPlayerIds()[index-1]);
+        return getPlayer(getPlayerId(index));
     }
+
+    public String getPlayerId(int index) {
+        return getAllPlayerIds()[index - 1];
+    }
+
     public Player getPlayer(String playerId) throws PlayerNotFoundException {
         return getGameState().getPlayer(playerId);
     }
