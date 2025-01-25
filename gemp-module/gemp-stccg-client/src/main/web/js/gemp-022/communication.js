@@ -225,6 +225,35 @@ export default class GempClientCommunication {
         }
     }
 
+    async getGameStateForPlayer() {
+        const url = this.url + "/game/" + getUrlParam("gameId") + "/gameStateForPlayer";
+        try {
+            let response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status == 404) {
+                    alert("Could not load game state for this game.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                let retval = await response.json();
+                return retval;
+            }
+        }
+        catch(error) {
+            console.error({"getGameState fetch error": error.message});
+        }
+    }
+
+
 
     startGameSession(callback, errorMap) {
         $.ajax({

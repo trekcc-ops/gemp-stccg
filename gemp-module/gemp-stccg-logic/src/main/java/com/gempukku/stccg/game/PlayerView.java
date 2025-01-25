@@ -1,18 +1,17 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked" })
+@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 public class PlayerView {
 
     private final String _requestingPlayerId;
@@ -43,6 +42,7 @@ public class PlayerView {
         return _playerRequested.isDecked();
     }
 
+    @JsonProperty("cardGroups")
     private Map<Zone, CardGroupView> getCardGroups() {
         Map<Zone, CardGroupView> result = new HashMap<>();
         for (Zone zone : _playerRequested.getCardGroupZones()) {
@@ -57,11 +57,13 @@ public class PlayerView {
     }
 
 
+    @JsonIncludeProperties({ "cardCount", "cardIds" })
     private interface CardGroupView {
 
     }
 
     private class PrivateCardGroupView implements CardGroupView {
+        @JsonProperty("cardCount")
         int _cardCount;
 
         PrivateCardGroupView(PhysicalCardGroup group) {
@@ -70,7 +72,10 @@ public class PlayerView {
     }
 
     private class PublicCardGroupView implements CardGroupView {
+        @JsonProperty("cardCount")
         int _cardCount;
+        @JsonProperty("cardIds")
+        @JsonIdentityReference(alwaysAsId=true)
         List<PhysicalCard> _cards;
 
         PublicCardGroupView(PhysicalCardGroup group) {

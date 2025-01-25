@@ -11,11 +11,9 @@ import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.game.CardGameMediator;
-import com.gempukku.stccg.game.GameCommunicationChannel;
-import com.gempukku.stccg.game.GameServer;
-import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.GameStateView;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
@@ -65,6 +63,10 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             getGameState(uri.substring(1, uri.length() - 10), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/gameStateForPlayer") && request.method() == HttpMethod.GET) {
             getGameStateForPlayer(request, uri.substring(1, uri.length() - 19), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameStateForPlayer1") && request.method() == HttpMethod.GET) {
+            getGameStateForPlayer(uri.substring(1, uri.length() - 20), responseWriter, 0);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameStateForPlayer2") && request.method() == HttpMethod.GET) {
+            getGameStateForPlayer(uri.substring(1, uri.length() - 20), responseWriter, 1);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             startGameSession(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
@@ -104,14 +106,36 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         GameState gameState = gameMediator.getGame().getGameState();
+        GameStateView gameStateView = new GameStateView(userId, gameState);
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String gameStateString = mapper.writeValueAsString(gameState);
+            String gameStateString = mapper.writeValueAsString(gameStateView);
             responseWriter.writeJsonResponse(gameStateString);
         } catch(JsonProcessingException exp) {
             gameMediator.getGame().sendMessage("ERROR: Unable to create serialized game state");
         }
     }
+
+    private void getGameStateForPlayer(String gameId, ResponseWriter responseWriter, int playerIndex)
+            throws HttpProcessingException {
+
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
+
+        if (gameMediator == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+
+        GameState gameState = gameMediator.getGame().getGameState();
+        try {
+            Player player = gameMediator.getGame().getPlayer(playerIndex);
+            GameStateView gameStateView = new GameStateView(player.getPlayerId(), gameState);
+            ObjectMapper mapper = new ObjectMapper();
+            String gameStateString = mapper.writeValueAsString(gameStateView);
+            responseWriter.writeJsonResponse(gameStateString);
+        } catch(JsonProcessingException | PlayerNotFoundException exp) {
+            gameMediator.getGame().sendMessage("ERROR: Unable to create serialized game state");
+        }
+    }
+
 
 
 
