@@ -1,17 +1,19 @@
-package com.gempukku.stccg.parsing;
+package com.gempukku.stccg.cardparsing;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class IdentifyingActionsTest extends NewLibraryTest {
 
-    public void tokenTest() throws IOException {
+    public static void main(String[] args) {
         System.out.println("if you don't see this, the text got truncated");
         System.out.println(potentialActions().size());
         System.out.println(definiteActions().size());
 
-        createLibrary();
+        Map<String, CardData> _newLibraryMap = LibraryFunctions.createLibrary();
         for (CardData card : _newLibraryMap.values()) {
             boolean matches = false;
             String text = card._gameText.toString();
@@ -28,7 +30,7 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         }
     }
 
-    private List<String> definiteActions() {
+    private static List<String> definiteActions() {
         List<String> actions = new LinkedList<>();
         actions.add("abduct"); // abducted, abduction
         // Borg can abduct personnel
@@ -254,7 +256,7 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         return actions;
     }
 
-    private List<String> potentialActions() {
+    private static List<String> potentialActions() {
         // forms of to be? - are, be, been, being, is, was, were, weren't
         List<String> actions = new LinkedList<>();
         // abandon - no responses; shorthand for end mission attempt, and the mission can't be re-attempted

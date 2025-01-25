@@ -1,4 +1,4 @@
-package com.gempukku.stccg.parsing;
+package com.gempukku.stccg.cardparsing;
 
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
@@ -6,15 +6,12 @@ import opennlp.tools.sentdetect.SentenceModel;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class SentenceClassifyTest extends NewLibraryTest {
 
     public void sentenceTest() throws IOException {
-        createLibrary();
+        Map<String, CardData> _newLibraryMap = LibraryFunctions.createLibrary();
         int canBeParsed = 0;
         int cannotBeParsed = 0;
 

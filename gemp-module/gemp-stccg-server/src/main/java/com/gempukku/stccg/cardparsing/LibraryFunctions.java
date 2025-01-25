@@ -1,4 +1,4 @@
-package com.gempukku.stccg.parsing;
+package com.gempukku.stccg.cardparsing;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -7,16 +7,14 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import java.io.File;
 import java.util.*;
 
-public class NewLibraryTest {
-
-    List<CardData> _newLibrary = new LinkedList<>();
-    Map<String, CardData> _newLibraryMap = new HashMap<>();
-
-    public void createLibrary() {
+public class LibraryFunctions {
+    public static Map<String, CardData> createLibrary() {
+        Map<String, CardData> _newLibraryMap = new HashMap<>();
+        List<CardData> _newLibrary = new LinkedList<>();
         File input;
         MappingIterator<Map<?, ?>> mappingIterator;
         List<Map<?, ?>> list;
-        input = new File("..\\gemp-stccg-logic\\src\\test\\resources\\Physical.csv");
+        input = new File(".\\gemp-stccg\\gemp-module\\gemp-stccg-server\\src\\main\\resources\\Physical.csv");
         try {
             CsvSchema csv = CsvSchema.emptySchema().withHeader();
             CsvMapper csvMapper = new CsvMapper();
@@ -39,8 +37,7 @@ public class NewLibraryTest {
                     _newLibrary.add(cardInfo);
                 }
             }
-
-            input = new File("..\\gemp-stccg-logic\\src\\test\\resources\\Virtual.csv");
+            input = new File(".\\gemp-stccg\\gemp-module\\gemp-stccg-server\\src\\main\\resources\\Virtual.csv");
             mappingIterator =  csvMapper.reader().forType(Map.class).with(csv).readValues(input);
             list = mappingIterator.readAll();
             for (Map<?, ?> card : list) {
@@ -63,36 +60,12 @@ public class NewLibraryTest {
         } catch(Exception e) {
             e.printStackTrace();
         }
+        return _newLibraryMap;
     }
 
-    public class CardData {
-
-        String _title;
-        String _rawGameText;
-        GameTextObject _gameText;
-        String _type;
-        String _set;
-        String _formats;
-        String _csvSource;
-
-        CardData(Map<?, ?> card, String csvSource) {
-            _title = card.get("Name").toString();
-            _formats = card.get("Set").toString();
-            _rawGameText = card.get("Text").toString().replace("{", "").replace("}", "");
-            _set = card.get("Release").toString();
-            _type = card.get("Type").toString();
-            _csvSource = csvSource;
-            List<String> gameTextPieces = Arrays.asList(_rawGameText.split("(" + endOfSentenceFollowedBySpace() +
-                    "OR)"));
-            if (gameTextPieces.size() > 1) {
-                _gameText = new ChooseOptionGameText(gameTextPieces);
-            }
-            else _gameText = new GameText(_rawGameText);
-        }
-    }
-
-    public List<String> splitIntoSentences(String text) {
+    public static List<String> splitIntoSentences(String text) {
         String periodFollowedBySpace = "(?<=\\.\\s)";
+//        String periodFollowedBySpace = "[(?<=\\.\\s)|(?<=\\.\"\\s)]"; // also period before a quotation mark
         String notUSS = "(?<!U\\.S\\.S\\.\\s)";
         String notIKC = "(?<!I\\.K\\.C\\.\\s)";
         String notIKS = "(?<!I\\.K\\.S\\.\\s)";
@@ -111,153 +84,7 @@ public class NewLibraryTest {
         return result;
     }
 
-    public String endOfSentenceFollowedBySpace() {
-        String periodFollowedBySpace = "(?<=\\.\\s)";
-        String notUSS = "(?<!U\\.S\\.S\\.\\s)";
-        String notIKC = "(?<!I\\.K\\.C\\.\\s)";
-        String notIKS = "(?<!I\\.K\\.S\\.\\s)";
-        String notFollowedByLowercase = "(?![a-z])";
-        String notFollowedByOrAndLowercase = "(?!OR\\s[a-z])";
-        String notDr = "(?<!Dr\\.\\s)";
-        String notvs = "(?<!\svs\\.\\s)";
-        return periodFollowedBySpace + notUSS + notIKC + notIKS +
-                notFollowedByLowercase + notFollowedByOrAndLowercase + notDr + notvs;
-    }
-
-    public class GameText implements GameTextObject {
-
-        List<Sentence> sentences = new ArrayList<>();
-
-        GameText(String text) {
-            this(splitIntoSentences(text));
-        }
-
-        GameText(List<String> sentences) {
-            for (String string : sentences)
-                this.sentences.add(new Sentence(string));
-        }
-
-        public boolean canBeParsed() {
-            boolean result = true;
-            for (Sentence sentence : sentences) {
-                if (!sentence.canBeParsed())
-                    result = false;
-            }
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            StringJoiner sj = new StringJoiner(" ");
-            for (Sentence sentence : sentences)
-                sj.add(sentence.toString());
-            return sj.toString();
-        }
-
-        public List<Sentence> getSentences() {
-            return sentences;
-        }
-    }
-
-    public class ChooseOptionGameText implements GameTextObject {
-
-        List<GameText> gameTextOptions = new LinkedList<>();
-        String afterAnyUse;
-        boolean captainsOrder;
-
-        ChooseOptionGameText(List<String> pieces) {
-            List<List<String>> allPiecesSentences = new ArrayList<>();
-            for (String piece : pieces) {
-                List<String> pieceSentences = splitIntoSentences(piece);
-                allPiecesSentences.add(pieceSentences);
-            }
-            List<String> copyString = new ArrayList<>();
-            for (String sentence : allPiecesSentences.getLast()) {
-                if (sentence.contains("after any use") || sentence.contains("after either use")) {
-                    afterAnyUse = sentence;
-                } else if ("(Captain's Order.)".equals(sentence)) {
-                    captainsOrder = true;
-                } else {
-                    copyString.add(sentence);
-                }
-            }
-            allPiecesSentences.removeLast();
-            allPiecesSentences.add(copyString);
-
-            for (List<String> sentences : allPiecesSentences) {
-                List<String> copyList = new ArrayList<>(sentences);
-                if (afterAnyUse != null) {
-                    String toAdd = afterAnyUse.replace(
-                            " after any use", "").replace(" after either use", "");
-                    copyList.add(toAdd);
-                }
-                gameTextOptions.add(new GameText(copyList));
-            }
-        }
-
-        @Override
-        public boolean canBeParsed() {
-            boolean result = true;
-            for (GameText gameText : gameTextOptions)
-                if (!gameText.canBeParsed())
-                    result = false;
-            return result;
-        }
-
-        public String toString() {
-            return gameTextOptions.toString();
-        }
-
-        public List<Sentence> getSentences() {
-            List<Sentence> result = new ArrayList<>();
-            for (GameText text : gameTextOptions)
-                result.addAll(text.getSentences());
-            return result;
-        }
-    }
-
-    interface GameTextObject {
-
-        boolean canBeParsed();
-        List<Sentence> getSentences();
-    }
-
-    public class Sentence implements GameTextObject {
-
-        String text;
-        String parameterizedText;
-        Map<String, String> identifiedParts;
-
-        Sentence(String string) {
-            text = string;
-        }
-        @Override
-        public boolean canBeParsed() {
-            return isSentenceUnderstood(text);
-        }
-
-        public List<Sentence> getSentences() {
-            List<Sentence> result = new ArrayList<>();
-            result.add(this);
-            return result;
-        }
-
-        public String toString() {
-            return text;
-        }
-
-        public void identifyPart(String partName, String partText) {
-            if (identifiedParts.get(partName) != null)
-                throw new RuntimeException("Already have " + partName);
-            else {
-                identifiedParts.put(partName, partText);
-
-            }
-        }
-
-    }
-
-    boolean isSentenceUnderstood(String sentence) {
+    public static boolean isSentenceUnderstood(String sentence) {
         String fullSentence = sentence;
         if (fullSentence.endsWith(".")) {
             fullSentence = fullSentence.substring(0, fullSentence.length() - 1);
@@ -349,7 +176,7 @@ public class NewLibraryTest {
         return fullSentences.contains(fullSentence);
     }
 
-    private boolean areValidTargets(String[] strings, String[] validTargets) {
+    public static boolean areValidTargets(String[] strings, String[] validTargets) {
         boolean result = true;
         for (String string : strings) {
             if (!Arrays.stream(validTargets).toList().contains(string))
@@ -357,7 +184,4 @@ public class NewLibraryTest {
         }
         return result;
     }
-
-
-
 }

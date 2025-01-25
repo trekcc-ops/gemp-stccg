@@ -1,12 +1,13 @@
-package com.gempukku.stccg.parsing;
+package com.gempukku.stccg.cardparsing;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class SentenceParseTest extends NewLibraryTest {
 
     public void sentenceTest() {
-        createLibrary();
+        Map<String, CardData> _newLibraryMap = LibraryFunctions.createLibrary();
         int canBeParsed = 0;
         int cannotBeParsed = 0;
 

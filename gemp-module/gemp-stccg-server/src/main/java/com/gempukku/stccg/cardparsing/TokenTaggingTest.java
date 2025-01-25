@@ -1,4 +1,4 @@
-package com.gempukku.stccg.parsing;
+package com.gempukku.stccg.cardparsing;
 
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
@@ -12,6 +12,7 @@ import java.util.*;
 public class TokenTaggingTest extends NewLibraryTest {
 
     public void tokenTest() throws IOException {
+        Map<String, CardData> _newLibraryMap = LibraryFunctions.createLibrary();
 
         Map<String, Set<String>> words = new HashMap<>();
 
@@ -22,7 +23,7 @@ public class TokenTaggingTest extends NewLibraryTest {
         WhitespaceTokenizer whitespaceTokenizer = WhitespaceTokenizer.INSTANCE;
 
         Set<String> allTokens = new HashSet<>();
-        createLibrary();
+        LibraryFunctions.createLibrary();
         for (CardData card : _newLibraryMap.values()) {
             String[] tokens = whitespaceTokenizer.tokenize(card._rawGameText);
             String[] tags = tagger.tag(tokens);

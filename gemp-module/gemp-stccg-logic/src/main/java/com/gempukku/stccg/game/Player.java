@@ -22,6 +22,7 @@ public class Player {
     @JsonProperty("playerId")
     @JsonView(JsonViews.Public.class)
     private final String _playerId;
+
     @JsonProperty("decked")
     @JsonView(JsonViews.Public.class)
     private boolean _decked;

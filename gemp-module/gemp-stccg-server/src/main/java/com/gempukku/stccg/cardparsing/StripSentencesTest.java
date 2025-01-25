@@ -1,4 +1,4 @@
-package com.gempukku.stccg.parsing;
+package com.gempukku.stccg.cardparsing;
 
 import java.io.IOException;
 import java.util.*;
@@ -6,7 +6,7 @@ import java.util.*;
 public class StripSentencesTest extends NewLibraryTest {
 
     public void sentenceTest() throws IOException {
-        createLibrary();
+        Map<String, CardData> _newLibraryMap = LibraryFunctions.createLibrary();
         int canBeParsed = 0;
         int cannotBeParsed = 0;
 
