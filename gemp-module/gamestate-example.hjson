@@ -102,7 +102,7 @@
             "cardId": 1,
             "owner": "player1",
             "zone": "AT_LOCATION",
-            "affiliation": "FEDERATION", // only included for affiliated cards
+            "affiliation": "FEDERATION", // only included for affiliated cards in play
             "locationZoneIndex": 3 // only included if the card is on the spaceline
         },
         {
@@ -113,7 +113,7 @@
             "zone": "ATTACHED",
                /* Cards in the ATTACHED zone are attached to other cards. In this case, it demonstrates
                     that this ship is docked at a facility. */
-            "affiliation": "FEDERATION", // only included for affiliated cards
+            "affiliation": "FEDERATION", // only included for affiliated cards in play
             "locationZoneIndex": 3 // only included if the card is on the spaceline
             "attachedToCardId": 1, // only included if the card is attached to another
             "dockedAtCardId": 1, // only included for a docked ship

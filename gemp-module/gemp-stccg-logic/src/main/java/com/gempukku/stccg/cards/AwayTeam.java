@@ -37,7 +37,7 @@ public class AwayTeam implements AttemptingUnit {
     private boolean hasAffiliation(Affiliation affiliation) {
         for (PhysicalCard card : _cardsInAwayTeam) {
             if (card instanceof PhysicalNounCard1E noun)
-                if (noun.getAffiliation() == affiliation)
+                if (noun.getCurrentAffiliation() == affiliation)
                     return true;
         }
         return false;

@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
@@ -68,7 +67,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         if (playerId.equals(_owner.getPlayerId()))
             return true;
         return getFacilityType() == FacilityType.HEADQUARTERS &&
-                _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getAffiliation());
+                _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getCurrentAffiliation());
     }
 
     public boolean isUsableBy(String playerId) {

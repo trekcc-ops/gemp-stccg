@@ -12,7 +12,6 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
@@ -43,7 +42,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             _affiliationWasChosen = false;
         } else {
             _affiliationWasChosen = true;
-            _selectedAffiliation = cardToPlay.getAffiliation();
+            _selectedAffiliation = cardToPlay.getCurrentAffiliation();
         }
     }
 
@@ -154,7 +153,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " played " + _cardEnteringPlay.getCardLink());
 
             _cardEnteringPlay.reportToFacility(_reportingDestination);
-            performingPlayer.addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
+            performingPlayer.addPlayedAffiliation(_cardEnteringPlay.getCurrentAffiliation());
             cardGame.getActionsEnvironment().emitEffectResult(
                     new PlayCardResult(this, _fromZone, _cardEnteringPlay));
         }

@@ -160,7 +160,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
             boolean matchesShip = false;
             boolean matchesMission = false;
             for (PersonnelCard card : getAttemptingPersonnel()) {
-                Affiliation personnelAffiliation = card.getAffiliation();
+                Affiliation personnelAffiliation = card.getCurrentAffiliation();
                 if (personnelAffiliation == _currentAffiliation)
                     matchesShip = true;
                 if (mission.getAffiliationIcons(_owner.getPlayerId()).contains(personnelAffiliation))
