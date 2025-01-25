@@ -18,8 +18,8 @@ public class ST1EGameState extends GameState {
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     @JsonProperty("awayTeams")
     final List<AwayTeam> _awayTeams = new ArrayList<>();
-    private int _nextAttemptingUnitId;
-    private int _nextLocationId;
+    private int _nextAttemptingUnitId = 1;
+    private int _nextLocationId = 1;
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
