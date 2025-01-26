@@ -2,9 +2,12 @@
     triggering syntax errors/warnings in the IDE. */
 
 {
+    "requestingPlayer": "player1", /* Only shown in the player-specific game state. The player id of the player
+                                        requesting the information. */
     "currentPhase": "SEED_FACILITY", // name of the current phase, see stccg.common.filterable.Phase for options
     "currentProcess:" {
         // Class members for the value in TurnProcedure._currentGameProcess
+        // Not shown in player-specific game state view
         "className": "ST1EFacilitySeedPhaseProcess",
         "consecutivePasses": 0,
             /* consecutivePasses is stored for processes where players can pass but still participate later.
@@ -12,13 +15,48 @@
                 But unless player2 ALSO passes, player1 will get another option to seed more cards.
             */
         "isFinished": true,
+            /* isFinished is the status of the process, but not necessarily the phase itself. For example,
+                the facility seed phase consists of multiple iterations of the FacilitySeedPhaseProcess. */
         "playersParticipating": ["player2","player1"]
             /* Players still participating. This is stored if the current process allows both players to perform
                 actions simultaneously. For example, when seeding dilemmas, both players can stack (pre-seed) dilemmas
                 at the same time. If player2 has signaled they are finished, playersParticipating will only have
                 player1. */
     },
-    "modifiers": [], // Active modifiers (as of 11/16/24, this is never populated)
+    "players": [
+        // Information specific to a player. This array will have a similar JSON object for each player in the game.
+        {
+            "playerId": "player2",
+            "score": 0, // Player score. As of 1/25/25, no distinction between bonus and non-bonus points.
+            "turnNumber": 0, // Turn number for this player. Will be 0 if they have not had their first turn yet.
+            "decked": false, // Tribbles only
+            "cardGroups": {
+                    /* Cards that are organized in a certain way on the table. Mostly important for piles like
+                        discard piles and draw decks. If the cardGroup is a pile, the first element in the list is
+                        the bottom card.
+                      Some cards or entire card groups may not be public information for every player. In those
+                        instances, the cardId values in a player-specific game state are replaced with -99.
+                        */
+                "DRAW_DECK": {
+                    "cardCount": 12,
+                        /* cardIds for draw deck are all -99 because this draw deck does not belong to the player
+                            requesting this game state information */
+                    "cardIds": [-99,-99,-99,-99,-99,-99,-99,-99,-99,-99,-99,-99]
+                },
+                "DISCARD": {
+                    "cardCount": 2,
+                    "cardIds": [34,47]
+                },
+                "TABLE": {
+                    "cardCount": 2,
+                    "cardIds": [6,-99] // -99 here most likely represents a hidden agenda card
+                },
+                // etc.
+                // 1E uses DRAW_DECK, DISCARD, TABLE, MISSIONS_PILE, REMOVED, HAND, and SEED_DECK.
+                // Tribbles uses DRAW_DECK, DISCARD, and PLAY_PILE.
+        },
+        // etc. for each player
+    ],
     "playerOrder": {
         // Class members for the value in GameState._playerOrder
         "firstPlayer": "player2", // Player ID for player with first turn of the game
@@ -26,58 +64,33 @@
         "turnOrder": ["player2", "player1"], // Player order (only used in Tribbles)
         "currentPlayer": "player2" // Player ID for the player whose current turn it is
     },
-    "players": [
-        /* Information from a couple different classes, all specific to a player. This array will have a similar
-            JSON object for each player in the game. */
-        {
-            "playerId": "player1",
-            "score": 0, // Player score. As of 11/16/24, no distinction between bonus and non-bonus points.
-            "turnNumber": 0, // Turn number for this player. Will be 0 if they have not had their first turn yet.
-            "decked": true, // Tribbles only
-
-                /* List of cardIds for the cards in each zone. As of 11/16/24, there are expected changes to this format.
-                    The information is not always reliable or intuitive. */
-            "DRAW_DECK": [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38],
-            "MISSIONS_PILE": [],
-            "TABLE": [],
-            "REMOVED": [],
-            "HAND": [1,2],
-            "DISCARD": [],
-            "VOID": [45,6,41,8,43,4,44,3,42,7,46,5],
-            "SEED_DECK": []
-            // There may be additional zones specified here, like PLAY_PILE
-        },
-        // etc.
-    ],
     "spacelineLocations": [
-        // List of spaceline locations for 1E game.
+        /* List of spaceline locations for 1E game. This list in order from left to right.
+                    (As of 1/25/25, both players see the spaceline in the same left-to-right order.)
+            The locationId field is unique to each mission location and referenced by other objects, like cards
+                and away teams. If the spaceline is reorganized (for example, using Blade of Tkon), the locationId
+                values will not change, but the order of this list will.
+            */
         {
-            "locationZoneIndex": 1,
+            "locationId": 1,
             "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
-            "locationName": "Gravesworld",
-            "cardsSeededUnderneath": [6,7], // list of cardIds for cards seeded underneath a mission
-            "isCompleted": false
+            "locationName": "Gravesworld", // There may be multiple locations with the same name if universal
+            "isCompleted": false, // Will show as true if the mission has been completed by either player
+            "missionCardIds": [4,18], /* Card IDs for the cards representing this location. Typically this will be a
+                                        list with one item, but for shared missions, there will be two. The first
+                                        item in the list is the mission card on the bottom. */
+            "seedCardCount": 2,
+            "seedCardIds": [27,28] // This property is not shown in player-specific game states
         },
         {
-            "locationZoneIndex": 2,
+            "locationId": 2,
             "quadrant": "ALPHA",
             "region": "Romulus System", // There will not be a region item if the location is not in one
-            "locationName": "Romulus"
-        },
-        {
-            "locationZoneIndex": 3,
-            "quadrant": "ALPHA",
-            "locationName": "Excavation"
-        },
-        {
-            "locationZoneIndex": 4,
-            "quadrant": "ALPHA",
-            "locationName": "Space"
-        },
-        {
-            "locationZoneIndex": 5,
-            "quadrant": "ALPHA",
-            "locationName": "Space"
+            "locationName": "Romulus",
+            "isCompleted": false,
+            "missionCardIds": [6],
+            "seedCardCount": 0,
+            "seedCardsIds": []
         },
         // etc.
     ],
@@ -92,9 +105,13 @@
         // etc.
     ],
     "cardsInGame": [
-        /* Full information for every card in GameState._allCards
+        /* Information for every card in GameState._allCards
             This includes cards that were in the game, but have been placed out-of-play.
             (The cards in this file are examples and not expected to align with the cardId numbers above.)
+
+            Player-specific game state will show "visibleCardsInGame" here, but the contained information is in the
+            same format. visibleCardsInGame will not include a number of opponent cards that are not public information.
+        */
         {
             "title": "Federation Outpost",
             "blueprintId": "101_104",
