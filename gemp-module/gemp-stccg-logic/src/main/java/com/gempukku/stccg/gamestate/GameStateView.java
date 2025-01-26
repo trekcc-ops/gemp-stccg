@@ -1,11 +1,9 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
@@ -19,6 +17,7 @@ import java.util.List;
         "spacelineLocations", "awayTeams" })
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
         "awayTeams" })
+@JsonView(JsonViews.Public.class)
 public class GameStateView {
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
@@ -61,8 +60,9 @@ public class GameStateView {
     @JsonProperty("spacelineLocations")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MissionLocation> getSpacelineLocations() {
-        if (_gameState instanceof ST1EGameState stGameState)
-            return stGameState.getSpacelineLocations();
+        if (_gameState instanceof ST1EGameState stGameState) {
+            return new LinkedList<>(stGameState.getSpacelineLocations());
+        }
         else return null;
     }
 

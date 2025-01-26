@@ -129,7 +129,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
         assertTrue(_mission.getLocation().getSeedCards().contains(maglock));
-        showSerializedActions();
+        String gameStateString = _game.getGameState().serializeComplete();
     }
 
 }

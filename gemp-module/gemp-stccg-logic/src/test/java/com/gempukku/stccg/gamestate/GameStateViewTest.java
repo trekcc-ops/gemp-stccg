@@ -1,17 +1,20 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.PropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,16 +62,8 @@ public class GameStateViewTest extends AbstractAtTest {
         assertEquals(1, homeward.getLocation().getSeedCards().size());
         assertTrue(homeward.getLocation().getSeedCards().contains(archer));
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        List<PhysicalCard> cards = new LinkedList<>();
-        cards.add(archer);
-        cards.add(homeward);
-
-        String serialized4 = mapper.writeValueAsString(new GameStateView(P1, _game.getGameState()));
+        String serialized4 = _game.getGameState().serializeForPlayer(P1);
         System.out.println(serialized4.replace(",",",\n"));
-
-
     }
 
     private void compareUsingGetZoneCards(GameState oldGameState, GameState newGameState, Zone zone)

@@ -1,10 +1,13 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
-import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -433,5 +436,15 @@ public abstract class GameState {
         removeCardsFromZone(cardGame, owner.getPlayerId(), List.of(card));
         addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
     }
+
+    public String serializeComplete() throws JsonProcessingException {
+        return new GameStateMapper().writer(true).writeValueAsString(this);
+    }
+
+    public String serializeForPlayer(String playerId) throws JsonProcessingException {
+        return new GameStateMapper().writer(false).writeValueAsString(
+                new GameStateView(playerId, this));
+    }
+
 
 }

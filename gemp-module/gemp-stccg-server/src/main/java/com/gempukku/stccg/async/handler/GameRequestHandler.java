@@ -96,15 +96,13 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             GameState gameState = cardGame.getGameState();
             String gameStateString;
             if (uri.endsWith("admin")) {
-                gameStateString = _mapper.writeValueAsString(gameState);
+                gameStateString = gameState.serializeComplete();
             } else if (uri.endsWith("player")) {
-                gameStateString = _mapper.writeValueAsString(new GameStateView(resourceOwner.getName(), gameState));
+                gameStateString = gameState.serializeForPlayer(resourceOwner.getName());
             } else if (uri.endsWith("player1")) {
-                GameStateView view = new GameStateView(cardGame.getPlayerId(1), gameState);
-                gameStateString = _mapper.writeValueAsString(view);
+                gameStateString = gameState.serializeForPlayer(cardGame.getPlayerId(1));
             } else if (uri.endsWith("player2")) {
-                GameStateView view = new GameStateView(cardGame.getPlayerId(2), gameState);
-                gameStateString = _mapper.writeValueAsString(view);
+                gameStateString = gameState.serializeForPlayer(cardGame.getPlayerId(2));
             } else {
                 // Throws a 404 error if the URL provided doesn't go anywhere
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND);

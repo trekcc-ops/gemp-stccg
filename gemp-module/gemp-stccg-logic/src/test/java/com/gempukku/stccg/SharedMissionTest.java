@@ -24,9 +24,6 @@ public class SharedMissionTest extends AbstractAtTest {
         assertEquals(1, locations.size());
         MissionLocation onlyLocation = locations.getFirst();
         assertEquals(2, onlyLocation.getMissionCards().size());
-        ObjectMapper mapper = new ObjectMapper();
-        String serializedState = mapper.writeValueAsString(_game.getGameState());
-        System.out.println(serializedState);
         assertEquals(Zone.SPACELINE, onlyLocation.getMissionCards().getLast().getZone());
     }
 }

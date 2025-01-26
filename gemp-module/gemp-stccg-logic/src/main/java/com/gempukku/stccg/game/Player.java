@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 @JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
+@JsonView(JsonViews.Public.class)
 public class Player {
     @JsonProperty("playerId")
     @JsonView(JsonViews.Public.class)

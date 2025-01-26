@@ -54,8 +54,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals(Integer.valueOf(8), arridor.getAttribute(CardAttribute.CUNNING));
         assertEquals(Integer.valueOf(5), arridor.getAttribute(CardAttribute.STRENGTH));
 
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(_game.getGameState()).replace(",",",\n"));
+        String gameStateString = _game.getGameState().serializeComplete();
     }
 
     @Test

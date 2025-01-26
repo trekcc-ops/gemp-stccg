@@ -50,7 +50,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
         assertTrue(canUseCardAgain());
-        showSerializedActions();
+        String gameStateString = _game.getGameState().serializeComplete();
     }
 
     @Test
@@ -68,7 +68,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
         assertTrue(canUseCardAgain());
-        showSerializedActions();
+        String gameStateString = _game.getGameState().serializeComplete();
     }
 
     @Test
@@ -93,7 +93,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
         assertTrue(canUseCardAgain());
-        showSerializedActions();
+        String gameStateString = _game.getGameState().serializeComplete();
     }
 
 

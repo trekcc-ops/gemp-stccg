@@ -86,7 +86,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         assertTrue(runabout.isStopped());
         assertFalse(_mission.getLocation().isCompleted());
         assertTrue(_mission.getLocation().getSeedCards().contains(maglock));
-        showSerializedActions();
+        String gameStateString = _game.getGameState().serializeComplete();
     }
 
     @Test

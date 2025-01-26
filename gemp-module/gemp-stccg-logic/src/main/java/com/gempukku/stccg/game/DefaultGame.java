@@ -358,7 +358,8 @@ public abstract class DefaultGame {
         }
         // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
         ++_nextSnapshotId;
-        _snapshots.add(new GameSnapshot(_nextSnapshotId, description, getGameState()));
+        // TODO
+//        _snapshots.add(new GameSnapshot(_nextSnapshotId, description, getGameState()));
     }
 
     /**

@@ -9,4 +9,5 @@ public class JsonViews {
     public static class Private extends Public {
 
     }
+
 }

@@ -19,9 +19,10 @@ import java.util.stream.Stream;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted",
-        "missionCardIds", "seedCardCount" })
+        "missionCardIds", "seedCardCount", "seedCardIds" })
 @JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted",
-        "missionCardIds", "seedCardCount" })
+        "missionCardIds", "seedCardCount", "seedCardIds" })
+@JsonFilter("missionLocationSerializerFilter")
 public class MissionLocation {
     @JsonProperty("quadrant")
     @JsonView(JsonViews.Public.class)
@@ -100,7 +101,9 @@ public class MissionLocation {
         throw new InvalidGameLogicException("Could not find valid mission properties for player " + playerId + " at " + _locationName);
     }
 
-
+    @JsonProperty("seedCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonView(JsonViews.Private.class)
     public List<PhysicalCard> getSeedCards() {
         return _seedCards.getCards();
     }
