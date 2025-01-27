@@ -54,6 +54,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         cardGame.getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, playedFromZone, _cardEnteringPlay));
         _wasCarriedOut = true;
+        setAsSuccessful();
         return null;
     }
 }

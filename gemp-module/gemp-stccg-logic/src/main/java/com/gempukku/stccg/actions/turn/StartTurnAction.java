@@ -15,5 +15,6 @@ public class StartTurnAction extends SystemQueueAction {
     protected void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
         ModifiersLogic logic = cardGame.getGameState().getModifiersLogic();
         logic.signalStartOfTurn(cardGame.getCurrentPlayer());
+        setAsSuccessful();
     }
 }

@@ -142,6 +142,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
                 }
             }
             _wasCarriedOut = true;
+            setAsSuccessful();
         }
 
         return null;

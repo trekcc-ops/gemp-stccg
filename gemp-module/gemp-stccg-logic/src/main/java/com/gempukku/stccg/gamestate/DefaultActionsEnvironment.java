@@ -156,12 +156,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     @Override
     public void removeCompletedActionFromStack(Action action) throws ActionOrderOfOperationException {
-//        if (!action.isInProgress()) {
+        if (!action.isInProgress()) {
             _actionStack.remove(action);
             _performedActions.add(action);
-//        } else {
-//            throw new ActionOrderOfOperationException("Tried to remove incomplete action from stack");
-//        }
+        } else {
+            throw new ActionOrderOfOperationException("Tried to remove incomplete action from stack of class " +
+                    action.getClass().getSimpleName());
+        }
     }
 
     @Override

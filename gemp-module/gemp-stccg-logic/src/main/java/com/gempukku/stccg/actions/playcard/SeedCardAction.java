@@ -29,6 +29,7 @@ public class SeedCardAction extends PlayCardAction {
             _cardEnteringPlay.getOwner().shuffleDrawDeck(game);
         }
         gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
+        setAsSuccessful();
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, originalZone, _cardEnteringPlay));
     }
 

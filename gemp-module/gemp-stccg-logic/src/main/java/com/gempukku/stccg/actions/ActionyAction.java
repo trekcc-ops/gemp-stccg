@@ -297,5 +297,8 @@ public abstract class ActionyAction implements Action {
         };
     }
 
+    public boolean wasSuccessful() {
+        return _actionStatus == ActionStatus.completed_success;
+    }
 
 }

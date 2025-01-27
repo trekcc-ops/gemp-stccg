@@ -162,6 +162,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     reportable.changeAffiliation(_affiliationTarget.getAffiliation());
                 }
                 setProgress(Progress.cardPlayed);
+                setAsSuccessful();
 
                 cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " played " + _cardEnteringPlay.getCardLink());
 

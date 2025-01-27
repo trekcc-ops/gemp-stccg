@@ -114,6 +114,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
                 setProgress(Progress.cardWasSeeded);
+                setAsSuccessful();
                 return getNextAction();
             }
             return null;

@@ -78,6 +78,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         game.sendMessage(_cardEnteringPlay.getOwnerName() + " played " +
                 _cardEnteringPlay.getCardLink() +  " from " + originalZone.getHumanReadable() +
                 " to " + _destinationZone.getHumanReadable());
+        setAsSuccessful();
     }
 
     public boolean wasCarriedOut() {

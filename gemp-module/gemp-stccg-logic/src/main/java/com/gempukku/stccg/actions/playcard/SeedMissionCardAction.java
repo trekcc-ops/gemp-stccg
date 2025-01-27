@@ -124,10 +124,12 @@ public class SeedMissionCardAction extends PlayCardAction {
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
                 _actionCarriedOut = true;
                 _cardPlayed = true;
+                setAsSuccessful();
             } catch (InvalidGameLogicException exp) {
                 game.sendErrorMessage(exp);
             }
         } else {
+            setAsFailed();
             _actionCarriedOut = false;
             game.sendMessage("Seed mission action attempted in a non-1E game");
         }
