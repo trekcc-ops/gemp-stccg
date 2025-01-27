@@ -1,14 +1,13 @@
 package com.gempukku.stccg.actions;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
+@JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "status" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
     String getCardActionPrefix();
@@ -29,9 +28,11 @@ public interface Action {
         REVEAL_SEED_CARD
     }
 
+    @JsonProperty("actionType")
     ActionType getActionType();
     String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException;
 
+    @JsonProperty("performingPlayerId")
     String getPerformingPlayerId();
 
     boolean canBeInitiated(DefaultGame cardGame);

@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -26,9 +27,9 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams", "actions" })
+        "awayTeams", "actions", "performedActions" })
 @JsonPropertyOrder({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams", "actions" })
+        "awayTeams", "actions", "performedActions" })
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     Phase _currentPhase;
@@ -39,7 +40,6 @@ public abstract class GameState {
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
-    @JsonProperty("actions")
     private ActionsEnvironment _actionsEnvironment;
     private GameProcess _currentGameProcess;
 
@@ -441,6 +441,18 @@ public abstract class GameState {
         return new GameStateMapper().writer(false).writeValueAsString(
                 new GameStateView(playerId, this));
     }
+
+    @JsonProperty("actions")
+    private Map<Integer, Action> getAllActions() {
+        return _actionsEnvironment.getAllActions();
+    }
+
+    @JsonProperty("performedActions")
+    @JsonIdentityReference(alwaysAsId=true)
+    private List<Action> getPerformedActions() {
+        return _actionsEnvironment.getPerformedActions();
+    }
+
 
 
 }

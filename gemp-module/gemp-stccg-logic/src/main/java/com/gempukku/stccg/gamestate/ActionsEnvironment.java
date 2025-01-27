@@ -51,4 +51,6 @@ public interface ActionsEnvironment {
     Action getActionById(int actionId);
 
     void logAction(Action action);
+
+    Map<Integer, Action> getAllActions();
 }

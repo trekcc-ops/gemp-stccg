@@ -10,7 +10,6 @@ import java.util.*;
 
 public class DefaultActionsEnvironment implements ActionsEnvironment {
 
-    @JsonProperty("actions")
     private final Map<Integer, Action> _createdActionMap = new HashMap<>();
     private final Stack<Action> _actionStack = new Stack<>();
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
@@ -186,6 +185,10 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     public void logAction(Action action) {
         _createdActionMap.put(action.getActionId(), action);
+    }
+
+    public Map<Integer, Action> getAllActions() {
+        return _createdActionMap;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonViews;
@@ -11,12 +12,13 @@ import com.gempukku.stccg.game.PlayerView;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame",
-        "spacelineLocations", "awayTeams" })
+        "spacelineLocations", "awayTeams", "actions", "performedActions" })
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "awayTeams" })
+        "awayTeams", "actions", "performedActions" })
 @JsonView(JsonViews.Public.class)
 public class GameStateView {
     @JsonProperty("requestingPlayer")
@@ -78,5 +80,17 @@ public class GameStateView {
     private boolean showCardInfo(PhysicalCard card) {
         return card.getZone().isPublic() || card.getOwnerName().equals(_requestingPlayerId) || card.isControlledBy(_requestingPlayerId);
     }
+
+    @JsonProperty("actions")
+    private Map<Integer, Action> getAllActions() {
+        return _gameState.getActionsEnvironment().getAllActions();
+    }
+
+    @JsonProperty("performedActions")
+    @JsonIdentityReference(alwaysAsId=true)
+    private List<Action> getPerformedActions() {
+        return _gameState.getActionsEnvironment().getPerformedActions();
+    }
+
 
 }
