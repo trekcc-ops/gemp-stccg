@@ -13,7 +13,7 @@ import com.gempukku.stccg.processes.tribbles.TribblesPlayerPlaysOrDraws;
 @JsonTypeName("StartOfTurnGameProcess")
 public class StartOfTurnGameProcess extends GameProcess {
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws InvalidGameLogicException {
         cardGame.sendMessage("\n\n========\n\nStart of " + cardGame.getCurrentPlayerId() + "'s turn.");
         cardGame.getActionsEnvironment().addActionToStack(new StartTurnAction(cardGame));
     }

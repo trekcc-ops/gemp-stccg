@@ -143,13 +143,9 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
 
     @Override
-    public void addActionToStack(Action action) {
-        try {
-            action.startPerforming(); // Set action status
-            _actionStack.add(action);
-        } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
-        }
+    public void addActionToStack(Action action) throws InvalidGameLogicException {
+        action.startPerforming(); // Set action status
+        _actionStack.add(action);
     }
 
     public Stack<Action> getActionStack() { return _actionStack; }

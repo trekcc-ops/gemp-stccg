@@ -13,10 +13,7 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 
@@ -64,7 +61,7 @@ public class DownloadCardAction extends ActionyAction {
     }
 
 
-    protected void playCard(final PhysicalCard selectedCard) {
+    protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
         _playCardAction = selectedCard.getPlayCardAction(true);
         selectedCard.getGame().getActionsEnvironment().addActionToStack(_playCardAction);
     }
@@ -99,10 +96,14 @@ public class DownloadCardAction extends ActionyAction {
                             new LinkedList<>(playableCards), minimum, 1, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                            if (!selectedCards.isEmpty()) {
-                                final PhysicalCard selectedCard = selectedCards.getFirst();
-                                playCard(selectedCard);
+                            try {
+                                List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
+                                if (!selectedCards.isEmpty()) {
+                                    final PhysicalCard selectedCard = selectedCards.getFirst();
+                                    playCard(selectedCard);
+                                }
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
                             }
                         }
                     }); // Additional implementations are for playing from hand
@@ -114,8 +115,12 @@ public class DownloadCardAction extends ActionyAction {
                             1, 1, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            final PhysicalCard selectedCard = getSelectedCardsByResponse(result).iterator().next();
-                            playCard(selectedCard);
+                            try {
+                                final PhysicalCard selectedCard = getSelectedCardsByResponse(result).iterator().next();
+                                playCard(selectedCard);
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         }

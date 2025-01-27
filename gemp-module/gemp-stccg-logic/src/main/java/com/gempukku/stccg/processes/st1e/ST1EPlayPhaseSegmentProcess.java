@@ -33,11 +33,15 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                             if ("revert".equalsIgnoreCase(result)) {
                                 GameUtils.performRevert(cardGame, currentPlayer);
                             } else {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    cardGame.getActionsEnvironment().addActionToStack(action);
-                                } else {
-                                    _consecutivePasses++;
+                                try {
+                                    Action action = getSelectedAction(result);
+                                    if (action != null) {
+                                        cardGame.getActionsEnvironment().addActionToStack(action);
+                                    } else {
+                                        _consecutivePasses++;
+                                    }
+                                } catch(InvalidGameLogicException exp) {
+                                    throw new DecisionResultInvalidException(exp.getMessage());
                                 }
                             }
                         }

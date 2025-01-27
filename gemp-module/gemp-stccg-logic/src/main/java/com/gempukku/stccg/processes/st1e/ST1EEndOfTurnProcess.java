@@ -40,12 +40,16 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
                             "Play " + phase + " action or Pass", playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
+                            try {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
                                     cardGame.getActionsEnvironment().addActionToStack(action);
                                 } else {
                                     _consecutivePasses++;
                                 }
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         }

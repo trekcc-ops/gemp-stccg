@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
@@ -24,7 +25,7 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     }
 
 
-    public void doPlayEffect(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException {
+    public void doPlayEffect(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException, InvalidGameLogicException {
         ActionsEnvironment environment = cardGame.getActionsEnvironment();
         if (_responses.size() == 1) {
             environment.addActionToStack(_responses.getFirst());
@@ -38,11 +39,15 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
                             cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Action action = getSelectedAction(result);
-                            environment.addActionToStack(action);
-                            _responses.remove(action);
-                            _action.insertEffect(
-                                    new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
+                            try {
+                                Action action = getSelectedAction(result);
+                                environment.addActionToStack(action);
+                                _responses.remove(action);
+                                _action.insertEffect(
+                                        new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         }
@@ -63,7 +68,7 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException, InvalidGameLogicException {
         if (!_initialized) {
             _initialized = true;
             doPlayEffect(cardGame);

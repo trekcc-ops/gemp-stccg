@@ -10,10 +10,7 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.*;
@@ -254,11 +251,11 @@ public abstract class ActionyAction implements Action {
     @JsonIgnore
     public boolean isBeingInitiated() { return _actionStatus == ActionStatus.initiation_started; }
 
-    public void startPerforming() throws InvalidGameLogicException {
+    public void startPerforming() throws ActionOrderOfOperationException {
         if (_actionStatus == ActionStatus.virtual) {
             _actionStatus = ActionStatus.initiation_started;
         } else {
-            throw new InvalidGameLogicException("Tried to start performing an action already in progress");
+            throw new ActionOrderOfOperationException("Tried to start performing an action already in progress");
         }
     }
 

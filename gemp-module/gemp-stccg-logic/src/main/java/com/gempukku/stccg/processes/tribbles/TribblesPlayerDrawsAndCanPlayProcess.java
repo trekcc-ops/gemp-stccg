@@ -7,10 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.LinkedList;
@@ -53,11 +50,15 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
                         new CardActionSelectionDecision(currentPlayer, userMessage, playableActions, _game) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    thisGame.getActionsEnvironment().addActionToStack(action);
-                                } else
-                                    playerPassed();
+                                try {
+                                    Action action = getSelectedAction(result);
+                                    if (action != null) {
+                                        thisGame.getActionsEnvironment().addActionToStack(action);
+                                    } else
+                                        playerPassed();
+                                } catch(InvalidGameLogicException exp) {
+                                    throw new DecisionResultInvalidException(exp.getMessage());
+                                }
                             }
                         });
             }

@@ -46,9 +46,13 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                                 cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
-                                List<PhysicalCard> cards = getSelectedCardsByResponse(result);
-                                for (PhysicalCard card : cards) {
-                                    cardGame.getActionsEnvironment().addActionToStack(card.createSeedCardAction());
+                                try {
+                                    List<PhysicalCard> cards = getSelectedCardsByResponse(result);
+                                    for (PhysicalCard card : cards) {
+                                        cardGame.getActionsEnvironment().addActionToStack(card.createSeedCardAction());
+                                    }
+                                } catch(InvalidGameLogicException exp) {
+                                    throw new DecisionResultInvalidException(exp.getMessage());
                                 }
                             }
                         });

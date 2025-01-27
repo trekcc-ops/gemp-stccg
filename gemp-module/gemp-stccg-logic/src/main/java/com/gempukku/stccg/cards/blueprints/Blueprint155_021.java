@@ -12,6 +12,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 
@@ -65,7 +66,7 @@ public class Blueprint155_021 extends CardBlueprint {
                         }
 
                         @Override
-                        protected void playCard(final PhysicalCard selectedCard) {
+                        protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
 
                             Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
                                     true, Filters.filterYourActive(cardGame, thisCard.getOwner(),

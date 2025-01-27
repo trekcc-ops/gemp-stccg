@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.*;
@@ -22,7 +23,7 @@ public interface ActionsEnvironment {
 
     List<TopLevelSelectableAction> getPhaseActions(Player player);
 
-    void addActionToStack(Action action);
+    void addActionToStack(Action action) throws InvalidGameLogicException;
 
     void emitEffectResult(ActionResult actionResult);
 

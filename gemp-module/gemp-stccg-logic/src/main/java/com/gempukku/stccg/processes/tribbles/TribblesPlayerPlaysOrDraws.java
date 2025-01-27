@@ -4,10 +4,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
@@ -38,11 +35,15 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
                     new CardActionSelectionDecision(currentPlayer, userMessage, playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Action action = getSelectedAction(result);
-                            if (action != null) {
-                                thisGame.getActionsEnvironment().addActionToStack(action);
-                            } else
-                                _consecutivePasses++;
+                            try {
+                                Action action = getSelectedAction(result);
+                                if (action != null) {
+                                    thisGame.getActionsEnvironment().addActionToStack(action);
+                                } else
+                                    _consecutivePasses++;
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         }
