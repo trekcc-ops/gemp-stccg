@@ -42,7 +42,7 @@ public class GameEvent {
         GAME_ENDED("EG"),
         UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
         CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"),
-        DECISION("D"), SERIALIZED_GAME_STATE("SERIALIZED_GAME_STATE");
+        DECISION("D"), GAME_STATE_CHECK("GAME_STATE_CHECK");
 
         private final String code;
 
@@ -112,11 +112,7 @@ public class GameEvent {
 
     public GameEvent(DefaultGame cardGame, Type type, GameState gameState) {
         this(cardGame, type);
-        if (type == Type.SERIALIZED_GAME_STATE) {
-            serializeGameState(gameState);
-        } else {
-            _gameState = gameState;
-        }
+        _gameState = gameState;
     }
 
     public GameEvent(DefaultGame cardGame, Type type, GameState gameState, Player player) {

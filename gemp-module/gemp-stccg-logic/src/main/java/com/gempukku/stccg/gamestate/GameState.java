@@ -397,8 +397,6 @@ public abstract class GameState {
         return card;
     }
 
-    int getNextCardId() { return _nextCardId; }
-
     public void placeCardOnMission(DefaultGame cardGame, PhysicalCard cardBeingPlaced, MissionLocation mission)
             throws InvalidGameLogicException {
         Zone currentZone = cardBeingPlaced.getZone();

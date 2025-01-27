@@ -1,7 +1,6 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -509,7 +508,7 @@ public abstract class DefaultGame {
     }
     public void sendSerializedGameStateToClient() {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(this, GameEvent.Type.SERIALIZED_GAME_STATE, getGameState()));
+            listener.sendEvent(new GameEvent(this, GameEvent.Type.GAME_STATE_CHECK));
     }
 
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
