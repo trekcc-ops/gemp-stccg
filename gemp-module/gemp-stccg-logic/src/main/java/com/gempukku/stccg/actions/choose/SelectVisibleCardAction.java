@@ -51,6 +51,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         if (selectableCards.size() == 1) {
             _selectedCard = Iterables.getOnlyElement(selectableCards);
             _wasCarriedOut = true;
+            setAsSuccessful();
         } else {
             AwaitingDecision decision = new CardsSelectionDecision(
                                 cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
@@ -59,6 +60,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 _selectedCard = getSelectedCardByResponse(result);
                                 _wasCarriedOut = true;
+                                setAsSuccessful();
                             }
                         };
             cardGame.getUserFeedback().sendAwaitingDecision(decision);

@@ -62,6 +62,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
 
     private void attemptingUnitChosen(AttemptingUnit attemptingUnit) {
         _wasCarriedOut = true;
+        setAsSuccessful();
         _selectedResponse = attemptingUnit;
     }
 

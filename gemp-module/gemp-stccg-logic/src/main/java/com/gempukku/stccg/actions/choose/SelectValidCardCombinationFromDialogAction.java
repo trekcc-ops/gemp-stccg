@@ -55,6 +55,7 @@ public class SelectValidCardCombinationFromDialogAction extends ActionyAction im
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 _selectedCards = getSelectedCardsByResponse(result);
                 _wasCarriedOut = true;
+                setAsSuccessful();
             }
         };
 

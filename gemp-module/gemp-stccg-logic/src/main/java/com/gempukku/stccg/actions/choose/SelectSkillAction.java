@@ -35,6 +35,7 @@ public class SelectSkillAction extends ActionyAction {
                     @Override
                     protected void validDecisionMade(int index, String result) {
                         _selectedSkill = _skillOptions.get(result);
+                        setAsSuccessful();
                     }
                 });
         return getNextAction();

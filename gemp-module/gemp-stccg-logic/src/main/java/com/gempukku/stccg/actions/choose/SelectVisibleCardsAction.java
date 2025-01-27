@@ -76,6 +76,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         if (selectableCards.size() == _minimum) {
             _selectedCards.addAll(selectableCards);
             _wasCarriedOut = true;
+            setAsSuccessful();
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
@@ -84,6 +85,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             _selectedCards = getSelectedCardsByResponse(result);
                             _wasCarriedOut = true;
+                            setAsSuccessful();
                             if (_actionContext != null) {
                                 _actionContext.setCardMemory(_memory, _selectedCards);
                             }
