@@ -19,7 +19,7 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Player currentPlayer = _game.getCurrentPlayer();
         final List<TopLevelSelectableAction> playableActions =
-                _game.getActionsEnvironment().getPhaseActions(currentPlayer);
+                _game.getActionsEnvironment().getPhaseActions(_game, currentPlayer);
 
         if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _consecutivePasses++;

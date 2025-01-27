@@ -2,7 +2,6 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -17,11 +16,12 @@ public interface ActionsEnvironment {
     Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, String playerId,
                                                        Collection<? extends ActionResult> effectResults);
 
-    List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults);
+    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId,
+                                                           Collection<? extends ActionResult> effectResults);
 
     void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);
 
-    List<TopLevelSelectableAction> getPhaseActions(Player player);
+    List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player);
 
     void addActionToStack(Action action) throws InvalidGameLogicException;
 

@@ -38,7 +38,7 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
                 _actionsEnvironment.getOptionalAfterTriggers(cardGame, activePlayer, _actionResults);
 
         List<TopLevelSelectableAction> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
-        possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(activePlayer, _actionResults));
+        possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(cardGame, activePlayer, _actionResults));
 
         if (possibleActions.isEmpty()) {
             if ((_passCount + 1) < _actionOrder.getPlayerCount()) {

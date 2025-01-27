@@ -23,7 +23,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
         Phase phase = cardGame.getCurrentPhase();
         Player currentPlayer = cardGame.getCurrentPlayer();
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer);
+                cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(cardGame.getCurrentPlayer(), "Play " + phase + " action or Pass",

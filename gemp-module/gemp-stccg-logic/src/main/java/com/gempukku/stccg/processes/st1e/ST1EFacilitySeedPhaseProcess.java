@@ -16,7 +16,6 @@ import java.beans.ConstructorProperties;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @JsonTypeName("ST1EFacilitySeedPhaseProcess")
 public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
@@ -32,7 +31,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
         Player currentPlayer = cardGame.getCurrentPlayer();
 
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer);
+                cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
         if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {

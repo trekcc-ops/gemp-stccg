@@ -10,7 +10,6 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
@@ -32,7 +31,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
         cardGame.getGameState().playerDrawsCard(cardGame, player);
         cardGame.sendMessage(playerId + " drew their normal end-of-turn card draw");
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(player);
+                cardGame.getActionsEnvironment().getPhaseActions(cardGame, player);
         Phase phase = cardGame.getCurrentPhase();
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(

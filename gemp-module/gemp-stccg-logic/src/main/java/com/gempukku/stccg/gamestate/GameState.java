@@ -3,9 +3,6 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -65,7 +62,7 @@ public abstract class GameState {
             game.cancelGame();
         }
         _modifiersLogic = new ModifiersLogic(game);
-        _actionsEnvironment = new DefaultActionsEnvironment(game);
+        _actionsEnvironment = new DefaultActionsEnvironment();
     }
 
     public void initializePlayerOrder(PlayerOrder playerOrder) {

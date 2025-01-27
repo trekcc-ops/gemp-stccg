@@ -11,23 +11,13 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 import java.util.*;
 
 public class DefaultActionsEnvironment implements ActionsEnvironment {
-    private final DefaultGame _game;
     private final Map<Integer, Action> _createdActionMap = new HashMap<>();
-    private final Stack<Action> _actionStack;
+    private final Stack<Action> _actionStack = new Stack<>();
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
     private final List<Action> _performedActions = new LinkedList<>();
     private Set<ActionResult> _actionResults = new HashSet<>();
     private int _nextActionId = 1;
-
-    public DefaultActionsEnvironment(DefaultGame game) {
-        this(game, new Stack<>());
-    }
-
-    public DefaultActionsEnvironment(DefaultGame game, Stack<Action> actionStack) {
-        _game = game;
-        _actionStack = actionStack;
-    }
 
     @Override
     public void emitEffectResult(ActionResult actionResult) {
@@ -99,7 +89,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getOptionalAfterActions(String playerId,
+    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId,
                                                                   Collection<? extends ActionResult> effectResults) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
 
@@ -108,7 +98,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
                 for (ActionResult actionResult : effectResults) {
                     List<TopLevelSelectableAction> actions =
                             actionProxy.getOptionalAfterActions(playerId, actionResult);
-                    List<TopLevelSelectableAction> playableActions = getPlayableActions(playerId, actions);
+                    List<TopLevelSelectableAction> playableActions = getPlayableActions(cardGame, playerId, actions);
                     result.addAll(playableActions);
                 }
             }
@@ -117,24 +107,28 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         return result;
     }
 
-    private <T extends Action> List<T> getPlayableActions(String playerId, Iterable<T> actions) {
+
+    private <T extends Action> List<T> getPlayableActions(DefaultGame cardGame, String playerId, Iterable<T> actions) {
         List<T> result = new LinkedList<>();
         if (actions != null) {
             for (T action : actions) {
-                if (_game.getModifiersQuerying().canPerformAction(playerId, action) && action.canBeInitiated(_game))
+                if (cardGame.getModifiersQuerying().canPerformAction(playerId, action) &&
+                        action.canBeInitiated(cardGame))
                     result.add(action);
             }
         }
         return result;
     }
 
+
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
+    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
             List<TopLevelSelectableAction> actions = actionProxy.getPhaseActions(player);
-            List<TopLevelSelectableAction> playableActions = getPlayableActions(player.getPlayerId(), actions);
+            List<TopLevelSelectableAction> playableActions =
+                    getPlayableActions(cardGame, player.getPlayerId(), actions);
             result.addAll(playableActions);
         }
 

@@ -34,7 +34,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         Player currentPlayer = cardGame.getCurrentPlayer();
 
         final List<TopLevelSelectableAction> playableActions =
-                cardGame.getActionsEnvironment().getPhaseActions(currentPlayer);
+                cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
         ST1EGameState gameState = getST1EGame(cardGame).getGameState();
         Phase currentPhase = gameState.getCurrentPhase();
 
