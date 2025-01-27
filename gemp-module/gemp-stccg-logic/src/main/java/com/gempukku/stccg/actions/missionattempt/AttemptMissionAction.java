@@ -141,6 +141,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     private void solveMission(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         setProgress(Progress.solvedMission);
+        setAsSuccessful();
         MissionLocation missionLocation = _missionCard.getLocation();
         missionLocation.complete(_performingPlayerId, cardGame);
         cardGame.sendMessage(_performingPlayerId + " solved " + _missionCard.getCardLink());
@@ -153,11 +154,12 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         setProgress(Progress.choseAttemptingUnit);
     }
 
-    public boolean isFailed() { return getProgress(Progress.failedMissionAttempt); }
+    public boolean isFailed() { return getProgress(Progress.failedMissionAttempt);}
 
     private void failMission(DefaultGame game) {
         setProgress(Progress.failedMissionAttempt);
         setProgress(Progress.endedMissionAttempt);
+        setAsFailed();
         game.sendMessage(_performingPlayerId + " failed mission attempt of " + _missionCard.getCardLink());
     }
 

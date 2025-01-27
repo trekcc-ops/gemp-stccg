@@ -25,7 +25,7 @@ public class Blueprint101_030 extends CardBlueprint {
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action, MissionLocation missionLocation) {
         MissionRequirement condition = new RegularSkillMissionRequirement(SkillName.COMPUTER_SKILL);
-        Action overcomeAction = new OvercomeDilemmaConditionAction(thisCard, condition, attemptingUnit);
+        Action overcomeAction = new OvercomeDilemmaConditionAction(thisCard, action, condition, attemptingUnit);
         return List.of(overcomeAction);
     }
 

@@ -50,7 +50,12 @@ public class EncounterSeedCardAction extends ActionyAction {
                 appendEffect(action);
             setProgress(Progress.effectsAdded);
         }
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null) {
+            if (!wasFailed())
+                setAsSuccessful();
+        }
+        return nextAction;
     }
 
     public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _attemptingUnit; }

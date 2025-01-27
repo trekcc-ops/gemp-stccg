@@ -58,6 +58,7 @@ public class RevealSeedCardAction extends ActionyAction {
                 throw new InvalidGameLogicException("No valid action found for mission attempt");
             }
         }
+        setAsSuccessful();
         return getNextAction();
     }
 

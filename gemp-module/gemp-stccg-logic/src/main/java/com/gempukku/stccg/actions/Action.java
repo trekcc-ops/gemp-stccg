@@ -47,5 +47,6 @@ public interface Action {
     boolean wasCompleted();
 
     boolean wasFailed();
+    void setAsFailed();
 
 }

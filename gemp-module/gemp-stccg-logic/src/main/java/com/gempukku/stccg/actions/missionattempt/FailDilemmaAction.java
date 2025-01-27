@@ -57,6 +57,7 @@ public class FailDilemmaAction extends ActionyAction {
                 cardsToStop.add(ship);
             }
             _wasCarriedOut = true;
+            setAsFailed();
             return new StopCardsAction(cardGame, cardGame.getPlayer(_performingPlayerId), cardsToStop);
         } else {
             return getNextAction();

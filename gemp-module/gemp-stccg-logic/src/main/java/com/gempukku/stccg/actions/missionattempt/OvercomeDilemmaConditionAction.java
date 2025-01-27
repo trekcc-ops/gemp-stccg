@@ -14,11 +14,13 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     private final AttemptingUnit _attemptingUnit;
     private final int _failActionId;
     private final int _succeedActionId;
+    private final Action _encounterAction;
     private enum Progress { conditionsChecked }
     private final MissionRequirement _conditions;
 
-    public OvercomeDilemmaConditionAction(PhysicalCard dilemma, MissionRequirement conditions,
-                                          AttemptingUnit attemptingUnit, Action failDilemmaAction) {
+    public OvercomeDilemmaConditionAction(PhysicalCard dilemma, EncounterSeedCardAction encounterAction,
+                                          MissionRequirement conditions, AttemptingUnit attemptingUnit,
+                                          Action failDilemmaAction) {
         super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         Action failAction = new FailDilemmaAction(dilemma.getGame(), attemptingUnit, dilemma, failDilemmaAction);
@@ -27,10 +29,11 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         );
         _succeedActionId = succeedAction.getActionId();
         _conditions = conditions;
+        _encounterAction = encounterAction;
     }
 
-    public OvercomeDilemmaConditionAction(PhysicalCard dilemma, MissionRequirement conditions,
-                                          AttemptingUnit attemptingUnit) {
+    public OvercomeDilemmaConditionAction(PhysicalCard dilemma, EncounterSeedCardAction action,
+                                          MissionRequirement conditions, AttemptingUnit attemptingUnit) {
         super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         Action failAction = new FailDilemmaAction(attemptingUnit, dilemma);
@@ -39,6 +42,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         );
         _succeedActionId = succeedAction.getActionId();
         _conditions = conditions;
+        _encounterAction = action;
     }
 
 
@@ -53,8 +57,11 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
             Action result;
             if (_conditions.canBeMetBy(_attemptingUnit)) {
                 result = cardGame.getActionById(_succeedActionId);
+                setAsSuccessful();
             } else {
                 result = cardGame.getActionById(_failActionId);
+                _encounterAction.setAsFailed();
+                setAsFailed();
             }
             setProgress(Progress.conditionsChecked);
             return result;

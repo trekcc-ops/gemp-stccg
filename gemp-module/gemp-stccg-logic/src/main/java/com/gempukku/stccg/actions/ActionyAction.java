@@ -259,7 +259,7 @@ public abstract class ActionyAction implements Action {
         }
     }
 
-    protected void setAsFailed() {
+    public void setAsFailed() {
         if (_actionStatus == ActionStatus.initiation_started) {
             _actionStatus = ActionStatus.initiation_failed;
         } else {
