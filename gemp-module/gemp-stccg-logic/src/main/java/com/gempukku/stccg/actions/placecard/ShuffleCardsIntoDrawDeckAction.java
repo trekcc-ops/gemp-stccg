@@ -49,6 +49,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         cardGame.sendMessage(TextUtils.concatenateStrings(
                 cards.stream().map(PhysicalCard::getCardLink)) + " " +
                 TextUtils.be(cards) + " shuffled into " + _performingPlayerId + " deck");
+        setAsSuccessful();
         return getNextAction();
     }
 

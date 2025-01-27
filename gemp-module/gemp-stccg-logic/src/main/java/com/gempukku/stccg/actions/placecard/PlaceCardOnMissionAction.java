@@ -45,6 +45,7 @@ public class PlaceCardOnMissionAction extends ActionyAction {
             }
         }
         cardGame.sendMessage(_cardBeingPlaced.getTitle() + " was placed on " + _mission.getLocationName());
+        setAsSuccessful();
         return getNextAction();
     }
 }

@@ -47,6 +47,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
             drawn++;
         }
 
+        setAsSuccessful();
         return getNextAction();
     }
     

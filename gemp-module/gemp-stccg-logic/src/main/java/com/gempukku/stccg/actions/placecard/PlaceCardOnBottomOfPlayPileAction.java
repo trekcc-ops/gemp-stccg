@@ -50,6 +50,7 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
                         " from hand on bottom of their play pile");
                 cardGame.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);
                 _wasCarriedOut = true;
+                setAsSuccessful();
             }
         }
 
