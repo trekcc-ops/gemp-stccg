@@ -16,15 +16,16 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="cardId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "zone", "locationZoneIndex",
+@JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "zone", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
-@JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "zone", "locationZoneIndex",
+@JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "zone", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
 public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterable {
     GenericGame getGame();
@@ -54,8 +55,6 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
 
     String getTitle();
     boolean canInsertIntoSpaceline();
-
-    int getLocationZoneIndex(GenericGame game);
 
     boolean canBeSeeded(GenericGame game);
 
@@ -117,4 +116,14 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
     void setPlacedOnMission(boolean placedOnMission);
 
     boolean isPlacedOnMission();
+
+    @JsonProperty("locationId")
+    default Integer getLocationIdForSerialization() {
+        try {
+            MissionLocation location = getLocation();
+            return location.getLocationId();
+        } catch (InvalidGameLogicException | NullPointerException exp) {
+            return null;
+        }
+    }
 }

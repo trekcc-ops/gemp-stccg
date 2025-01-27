@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -152,7 +153,18 @@ public class GameEvent {
         _zone = card.getZone();
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
-        _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex(_game)));
+
+        // int locationZoneIndex
+        if (card instanceof ST1EPhysicalCard stCard) {
+            try {
+                MissionLocation location = stCard.getLocation();
+                int locationZoneIndex = location.getLocationZoneIndex(stCard.getGame());
+                _eventAttributes.put(Attribute.locationIndex, String.valueOf(locationZoneIndex));
+            } catch(InvalidGameLogicException | NullPointerException ignored) {
+                // Don't serialize the location if the card doesn't have one yet
+                // TODO - Eventually we'll be removing game events
+            }
+        }
 
         if (card.getCardType() == CardType.MISSION && card.isInPlay()) {
             try {

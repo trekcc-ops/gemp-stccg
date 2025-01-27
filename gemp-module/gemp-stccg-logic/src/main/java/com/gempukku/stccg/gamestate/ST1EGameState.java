@@ -125,10 +125,11 @@ public class ST1EGameState extends GameState {
         addCardToZone(newMission, Zone.SPACELINE, true, true);
     }
 
-    public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
-        card.setLocation(getSpacelineLocations().get(spacelineIndex));
+    public void seedFacilityAtLocation(FacilityCard card, MissionLocation location) {
+        card.setLocation(location);
         addCardToZone(card, Zone.AT_LOCATION, true);
     }
+
 
     public Integer indexOfLocation(String location, Quadrant quadrant) {
         for (int i = 0; i < _spacelineLocations.size(); i++) {

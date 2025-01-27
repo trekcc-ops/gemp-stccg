@@ -119,7 +119,7 @@
             "owner": "player1",
             "zone": "AT_LOCATION",
             "affiliation": "FEDERATION", // only included for affiliated cards
-            "locationZoneIndex": 3 // only included if the card is on the spaceline
+            "locationId": 3 // only included if the card is on the spaceline
         },
         {
             "title": "U.S.S. Galaxy",
@@ -130,7 +130,7 @@
                /* Cards in the ATTACHED zone are attached to other cards. In this case, it demonstrates
                     that this ship is docked at a facility. */
             "affiliation": "FEDERATION", // only included for affiliated cards
-            "locationZoneIndex": 3 // only included if the card is on the spaceline
+            "locationId": 3 // only included if the card is on the spaceline
             "attachedToCardId": 1, // only included if the card is attached to another
             "dockedAtCardId": 1, // only included for a docked ship
             "rangeAvailable": 3 // only included for a ship
@@ -142,7 +142,7 @@
             "cardId": 3,
             "owner": "player1",
             "zone": "SPACELINE",
-            "locationZoneIndex": 3, // only included if the card is on the spaceline
+            "locationId": 3, // only included if the card is on the spaceline
             "stackedOnCardId": 4, // only included if the card is stacked on another
         },
         // etc.

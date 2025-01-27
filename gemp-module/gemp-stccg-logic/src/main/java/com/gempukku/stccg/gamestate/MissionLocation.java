@@ -368,5 +368,7 @@ public class MissionLocation {
     }
 
 
-
+    public int getLocationId() {
+        return _locationId;
+    }
 }

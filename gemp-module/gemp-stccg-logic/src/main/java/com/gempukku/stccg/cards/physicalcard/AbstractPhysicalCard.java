@@ -134,12 +134,6 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
-    public int getLocationZoneIndex(DefaultGame cardGame) {
-        if (_currentLocation == null)
-            return -1;
-        else return _currentLocation.getLocationZoneIndex((ST1EGame) getGame());
-    }
-
 
     private boolean canEnterPlay(GenericGame game, List<Requirement> requirements) {
         if (cannotEnterPlayPerUniqueness())
