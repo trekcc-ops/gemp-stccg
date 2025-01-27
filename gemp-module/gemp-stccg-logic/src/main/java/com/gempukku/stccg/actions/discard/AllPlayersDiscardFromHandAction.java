@@ -59,6 +59,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             }
 
         }
+        setAsSuccessful();
         return getNextAction();
     }
 

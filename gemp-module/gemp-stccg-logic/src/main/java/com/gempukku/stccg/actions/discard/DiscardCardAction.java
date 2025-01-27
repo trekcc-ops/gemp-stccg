@@ -81,6 +81,7 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
                     new DiscardCardFromPlayResult(_performingCard, cardToDiscard));
         }
         cardGame.sendMessage(_performingPlayerId + " discards " + TextUtils.getConcatenatedCardLinks(cardsToDiscard));
+        setAsSuccessful();
         return getNextAction();
     }
 

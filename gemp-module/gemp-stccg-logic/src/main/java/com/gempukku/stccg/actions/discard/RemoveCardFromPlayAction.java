@@ -61,6 +61,7 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
         cardGame.sendMessage(_performingPlayerId + " removed " + TextUtils.getConcatenatedCardLinks(removedCards) +
                 " from the game");
+        setAsSuccessful();
 
         return getNextAction();
     }

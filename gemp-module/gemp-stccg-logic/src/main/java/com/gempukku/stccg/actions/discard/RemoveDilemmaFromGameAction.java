@@ -44,9 +44,10 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
             gameState.addCardToZone(cardToRemove, Zone.REMOVED);
 
             cardGame.sendMessage(_performingPlayerId + " removed " + cardToRemove.getCardLink() + " from the game");
-
+            setAsSuccessful();
             return getNextAction();
         } else {
+            setAsFailed();
             throw new InvalidGameLogicException("Tried to remove a dilemma from underneath a mission in a non-1E game");
         }
     }
