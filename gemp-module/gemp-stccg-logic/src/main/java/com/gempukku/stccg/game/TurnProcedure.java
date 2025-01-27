@@ -100,7 +100,8 @@ public class TurnProcedure {
         } else if (removeFromStack) {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
         } else if (!_game.isCarryingOutEffects()) {
-            throw new InvalidGameLogicException("Unable to process action");
+            throw new InvalidGameLogicException("Unable to process action " + currentAction.getActionId() + " of type " +
+                    currentAction.getClass().getSimpleName());
         }
     }
 
