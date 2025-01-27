@@ -63,6 +63,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
 
         if (!_cardDocked) {
             _cardDocked = true;
+            setAsSuccessful();
             _cardToDock.dockAtFacility(_dockingTarget);
             _cardToDock.getGame().getGameState().transferCard(cardGame, _cardToDock, _dockingTarget);
         }

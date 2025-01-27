@@ -130,6 +130,11 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
             }
         }
 
+        processEffect(cardGame);
+        return null;
+    }
+
+    private void processEffect(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_wasCarriedOut) {
             for (PhysicalCard card : _cardsToMove) {
                 cardGame.getGameState().transferCard(cardGame, card, _destination); // attach card to destination card
@@ -145,9 +150,8 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                         _origin.getCardLink() + " to " + _destination.getCardLink());
             }
             _wasCarriedOut = true;
+            setAsSuccessful();
         }
-
-        return getNextAction();
     }
 
     public void setCardsToMove(Collection<? extends PhysicalCard> cards) {

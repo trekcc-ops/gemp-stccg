@@ -32,6 +32,7 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
         if (!_wasCarriedOut) {
             _performingCard.undockFromFacility();
             _wasCarriedOut = true;
+            setAsSuccessful();
         }
 
         return getNextAction();
