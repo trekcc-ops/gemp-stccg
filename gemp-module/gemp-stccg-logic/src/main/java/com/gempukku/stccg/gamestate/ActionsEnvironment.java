@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -9,6 +10,7 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.*;
 
+@JsonIncludeProperties({"actions"})
 public interface ActionsEnvironment {
 
     List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);

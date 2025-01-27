@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -11,6 +12,8 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 import java.util.*;
 
 public class DefaultActionsEnvironment implements ActionsEnvironment {
+
+    @JsonProperty("actions")
     private final Map<Integer, Action> _createdActionMap = new HashMap<>();
     private final Stack<Action> _actionStack = new Stack<>();
     private final List<ActionProxy> _actionProxies = new LinkedList<>();

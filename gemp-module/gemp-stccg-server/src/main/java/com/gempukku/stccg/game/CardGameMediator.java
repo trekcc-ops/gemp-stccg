@@ -241,7 +241,7 @@ public abstract class CardGameMediator {
                         and ask again for the same decision */
                         game.sendWarning(playerName, exp.getWarningMessage());
                         game.sendAwaitingDecision(awaitingDecision);
-                    } catch (InvalidGameOperationException | RuntimeException runtimeException) {
+                    } catch (RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
                         game.cancelGame();
                     }
