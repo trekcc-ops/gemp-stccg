@@ -26,9 +26,9 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams" })
+        "awayTeams", "actions" })
 @JsonPropertyOrder({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams" })
+        "awayTeams", "actions" })
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     Phase _currentPhase;
@@ -39,6 +39,7 @@ public abstract class GameState {
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
+    @JsonProperty("actions")
     private ActionsEnvironment _actionsEnvironment;
     private GameProcess _currentGameProcess;
 
