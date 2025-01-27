@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.st1e.ST1EEndOfTurnProcess;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ public class GameProcessSerializerTest extends AbstractAtTest {
     private final ObjectMapper _mapper = new ObjectMapper();
 
     @Test
-    public void serializerTest() throws JsonProcessingException, DecisionResultInvalidException {
+    public void serializerTest() throws JsonProcessingException, DecisionResultInvalidException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         // ST1EFacilitySeedPhaseProcess

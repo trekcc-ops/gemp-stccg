@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ArmusTest extends AbstractAtTest {
 
     @Test
-    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first

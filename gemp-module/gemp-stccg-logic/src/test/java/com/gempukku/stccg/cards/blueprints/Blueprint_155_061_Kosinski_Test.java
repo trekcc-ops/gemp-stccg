@@ -14,6 +14,7 @@ import com.gempukku.stccg.condition.missionrequirements.AttributeMissionRequirem
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
     @Test
-    public void kosinskiTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void kosinskiTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
         /* Try to resolve Dangerous Climb with Taitt x2 + Kosinski. Kosinski's cunning should be reduced
         during the dilemma encounter, causing the encounter to fail. */
         initializeQuickMissionAttempt("Excavation");

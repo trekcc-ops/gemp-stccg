@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class FormatLibraryTest extends AbstractAtTest {
 
     @Test
-    public void libraryTest() throws DecisionResultInvalidException, CardNotFoundException {
+    public void libraryTest() {
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
         for (GameFormat format : formatLibrary.getAllFormats().values()) {

@@ -270,7 +270,7 @@ public abstract class DefaultGame {
         }
     }
 
-    public void carryOutPendingActionsUntilDecisionNeeded() {
+    public void carryOutPendingActionsUntilDecisionNeeded() throws InvalidGameOperationException {
         try {
             if (!_cancelled) {
                 getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
@@ -281,7 +281,7 @@ public abstract class DefaultGame {
                 }
             }
         } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
-            sendErrorMessage(exp);
+            throw new InvalidGameOperationException(exp);
         }
     }
 

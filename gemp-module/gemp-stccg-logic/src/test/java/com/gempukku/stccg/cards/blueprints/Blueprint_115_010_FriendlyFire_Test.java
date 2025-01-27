@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
 
     @Test
     public void placeOnMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 

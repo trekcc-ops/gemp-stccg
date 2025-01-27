@@ -14,6 +14,7 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -35,7 +36,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption1() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         runGameUntilActionSelection();
         playerDecided(P1, "0");
         selectCard(P1, cardToDiscard);
@@ -55,7 +56,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption2() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         runGameUntilActionSelection();
         playerDecided(P1, "1");
         selectCard(P1, cardToDiscard);
@@ -73,7 +74,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption3() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         runGameUntilActionSelection();
         for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
             if (card.getZone() == null) {
@@ -99,7 +100,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
 
     @SuppressWarnings("SpellCheckingInspection")
-    public void runGameUntilActionSelection() throws CardNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException {
+    public void runGameUntilActionSelection() throws CardNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
 
         initializeGameWithAttentionAllHands();
         Player player1 = _game.getPlayer(P1);

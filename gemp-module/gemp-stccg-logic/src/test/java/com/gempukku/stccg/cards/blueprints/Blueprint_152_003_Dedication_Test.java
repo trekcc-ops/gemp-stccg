@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
     @Test
     public void dedicationToDutyTest1() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
@@ -80,7 +81,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
     @Test
     public void dedicationToDutyTest2() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, PlayerNotFoundException {
+            CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 

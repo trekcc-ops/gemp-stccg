@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.GameSnapshot;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeedPhaseTest extends AbstractAtTest {
 
     @Test
-    public void autoSeedTest() throws DecisionResultInvalidException, PlayerNotFoundException {
+    public void autoSeedTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException {
         initializeIntroductoryTwoPlayerGame();
 
         // Figure out which player is going first

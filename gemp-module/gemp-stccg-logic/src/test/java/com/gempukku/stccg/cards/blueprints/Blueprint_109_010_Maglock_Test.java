@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
 
     @Test
     public void maglockFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, JsonProcessingException {
+            CardNotFoundException, JsonProcessingException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
@@ -91,7 +92,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
 
     @Test
     public void maglockPassedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         ST1EPhysicalCard maglock =

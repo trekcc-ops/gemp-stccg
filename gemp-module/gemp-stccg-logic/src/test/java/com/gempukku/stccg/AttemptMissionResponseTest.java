@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AttemptMissionResponseTest extends AbstractAtTest {
 
     @Test
-    public void attemptMissionResponseTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException {
+    public void attemptMissionResponseTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttemptWithRisk();
         Player player1 = _game.getPlayer(P1);
 

@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ public class NormalCardPlayTest extends AbstractAtTest {
 
     @Test
     public void normalCardPlayTest()
-            throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException {
+            throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost

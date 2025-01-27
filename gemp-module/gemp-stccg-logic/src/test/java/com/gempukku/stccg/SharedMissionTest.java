@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class SharedMissionTest extends AbstractAtTest {
 
     @Test
-    public void sharedMissionTest() throws DecisionResultInvalidException, JsonProcessingException {
+    public void sharedMissionTest() throws DecisionResultInvalidException, InvalidGameOperationException {
         initializeSimple1EGameWithSharedMission(30);
         autoSeedMissions();
         assertNotEquals(Phase.SEED_MISSION, _game.getCurrentPhase());
