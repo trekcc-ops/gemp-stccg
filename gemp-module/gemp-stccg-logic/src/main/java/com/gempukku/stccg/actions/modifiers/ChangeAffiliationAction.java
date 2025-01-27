@@ -73,6 +73,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
                     _performingCard.getCardLink() + "'s affiliation to " + selectedAffiliation.toHTML());
             _performingCard.changeAffiliation(selectedAffiliation);
             _wasCarriedOut = true;
+            setAsSuccessful();
         }
 
         return getNextAction();

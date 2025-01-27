@@ -52,6 +52,7 @@ public class AddUntilEndOfTurnModifierAction extends ActionyAction implements To
             return cost;
         }
         cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(_modifier);
+        setAsSuccessful();
         return getNextAction();
     }
 }

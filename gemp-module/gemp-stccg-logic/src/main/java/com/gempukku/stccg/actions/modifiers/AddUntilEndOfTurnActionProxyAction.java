@@ -25,6 +25,7 @@ public class AddUntilEndOfTurnActionProxyAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         cardGame.getActionsEnvironment().addUntilEndOfTurnActionProxy(_actionProxy);
+        setAsSuccessful();
         return getNextAction();
     }
 }

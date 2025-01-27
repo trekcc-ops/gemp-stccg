@@ -33,6 +33,7 @@ public class AddUntilModifierAction extends ActionyAction {
             cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(_modifier);
         else
             cardGame.getModifiersEnvironment().addUntilEndOfPhaseModifier(_modifier, phase);
+        setAsSuccessful();
         return getNextAction();
     }
 
