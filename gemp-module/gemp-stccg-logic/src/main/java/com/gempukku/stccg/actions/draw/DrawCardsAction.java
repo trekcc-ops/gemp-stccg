@@ -86,10 +86,14 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         int totalDrawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
+        if (isBeingInitiated())
+            setAsInitiated();
         if (_cardsAlreadyDrawnCount < totalDrawCount) {
             cardGame.getGameState().playerDrawsCard(cardGame, cardGame.getPlayer(_performingPlayerId));
             _cardsAlreadyDrawnCount++;
             return new AllowResponsesAction(cardGame, ActionResult.Type.DRAW_CARD);
+        } else {
+            setAsSuccessful();
         }
         return null;
     }

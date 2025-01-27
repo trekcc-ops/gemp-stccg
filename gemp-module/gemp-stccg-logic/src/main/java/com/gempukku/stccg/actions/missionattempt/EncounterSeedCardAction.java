@@ -41,6 +41,8 @@ public class EncounterSeedCardAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        if (isBeingInitiated())
+            setAsInitiated();
         if (!getProgress(Progress.effectsAdded)) {
             PhysicalCard encounteredCard = getEncounteredCard();
             MissionLocation location = encounteredCard.getLocation();
@@ -60,5 +62,5 @@ public class EncounterSeedCardAction extends ActionyAction {
 
     public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
-
+    public AttemptMissionAction getAttemptAction() { return _parentAction; }
 }

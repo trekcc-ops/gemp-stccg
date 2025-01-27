@@ -76,11 +76,10 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
                 if (victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
                     reportable.leaveAwayTeam((ST1EGame) cardGame);
                 _wasCarriedOut = true;
-                setAsSuccessful();
                 return new DiscardCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), victim);
             }
         }
-
+        setAsSuccessful();
         return getNextAction();
     }
 }

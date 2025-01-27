@@ -94,7 +94,7 @@ public class ArmusTest extends AbstractAtTest {
         // Confirm the mission attempt was added to performed actions
         int missionAttempts = 0;
         for (Action action : _game.getActionsEnvironment().getPerformedActions())
-            if (action instanceof AttemptMissionAction missionAction && missionAction.isFailed())
+            if (action instanceof AttemptMissionAction missionAction && missionAction.wasFailed())
                 missionAttempts++;
         assertEquals(1, missionAttempts);
     }

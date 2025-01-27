@@ -90,12 +90,18 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             }
         }
 
+        if (isBeingInitiated()) {
+            setAsInitiated();
+        }
+
         AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
 
 
         if (attemptingUnit.getAttemptingPersonnel().isEmpty()) {
             failMission(cardGame);
-        } else {
+        }
+
+        if (!wasFailed()) {
 
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt);
@@ -121,7 +127,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         return new EncounterSeedCardAction(cardGame,
                                 performingPlayer, firstSeedCard, attemptingUnit, this);
                     } else {
-                        throw new InvalidGameLogicException(firstSeedCard.getTitle() + " has already been encountered, but has not been removed");
+                        throw new InvalidGameLogicException(firstSeedCard.getTitle() +
+                                " was already encountered, but not removed from under the mission");
                     }
                 } else  {
                     if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, missionLocation)) {
@@ -131,6 +138,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         } else {
                             failMission(cardGame);
                         }
+                    } else {
+                        failMission(cardGame);
                     }
                 }
                 setProgress(Progress.endedMissionAttempt);
@@ -153,8 +162,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         _attemptingUnitTarget = new AttemptingUnitResolver(attemptingUnit);
         setProgress(Progress.choseAttemptingUnit);
     }
-
-    public boolean isFailed() { return getProgress(Progress.failedMissionAttempt);}
 
     private void failMission(DefaultGame game) {
         setProgress(Progress.failedMissionAttempt);

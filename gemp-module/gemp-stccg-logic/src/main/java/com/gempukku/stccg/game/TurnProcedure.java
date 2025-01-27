@@ -74,34 +74,15 @@ public class TurnProcedure {
             CardNotFoundException {
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
         Action currentAction = actionsEnvironment.getCurrentAction();
-
         Action nextAction = currentAction.nextAction(_game);
-        boolean addSubAction;
-        boolean removeFromStack;
-        if (currentAction instanceof SelectAffiliationAction) {
-            addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
-            removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
-        } else if (currentAction instanceof SelectAndInsertAction) {
-                addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
-                removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
-        } else if (currentAction instanceof StopCardsAction) {
-            addSubAction = currentAction.isInProgress() && _game.isCarryingOutEffects();
-            removeFromStack = currentAction.wasCompleted() && _game.isCarryingOutEffects();
-        } else {
-            addSubAction = nextAction != null;
-            removeFromStack = nextAction == null;
-        }
 
-        if (addSubAction) {
-            if (nextAction == null) {
-                System.out.println("Wait a tick");
-            }
+        if (currentAction.isInProgress() && nextAction != null) {
             _game.getActionsEnvironment().addActionToStack(nextAction);
-        } else if (removeFromStack) {
+        } else if (currentAction.wasCompleted()) {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
         } else if (_game.isCarryingOutEffects()) {
-            throw new InvalidGameLogicException("Unable to process action " + currentAction.getActionId() + " of type " +
-                    currentAction.getClass().getSimpleName());
+            throw new InvalidGameLogicException("Unable to process action " + currentAction.getActionId() +
+                    " of type " + currentAction.getClass().getSimpleName());
         }
     }
 

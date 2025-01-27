@@ -124,6 +124,7 @@ public class DownloadCardAction extends ActionyAction {
                         }
                     });
         }
+        setAsSuccessful();
         return null;
     }
 

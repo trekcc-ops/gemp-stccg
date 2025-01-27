@@ -53,7 +53,12 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
             if (_actionSource != null) {
                 cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionSource).countUse();
             }
-            return getNextAction();
+            Action action = getNextAction();
+            if (action == null)
+                setAsSuccessful();
+            return action;
+        } else {
+            setAsFailed();
         }
         return null;
     }

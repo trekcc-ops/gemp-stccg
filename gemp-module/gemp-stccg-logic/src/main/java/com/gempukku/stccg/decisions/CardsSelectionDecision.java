@@ -55,7 +55,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
             if (_minimum == 0)
                 return Collections.emptySet();
             else
-                throw new DecisionResultInvalidException();
+                throw new DecisionResultInvalidException("No cards selected");
         }
         String[] cardIds = response.split(",");
         if (cardIds.length < _minimum || cardIds.length > _maximum)
@@ -70,7 +70,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
                 result.add(card);
             }
         } catch (NumberFormatException e) {
-            throw new DecisionResultInvalidException();
+            throw new DecisionResultInvalidException("No valid card ids matching " + response);
         }
 
         return result;

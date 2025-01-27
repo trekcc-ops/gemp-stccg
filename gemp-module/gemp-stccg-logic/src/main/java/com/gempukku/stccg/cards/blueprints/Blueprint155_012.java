@@ -49,7 +49,7 @@ public class Blueprint155_012 extends CardBlueprint {
                 }
             }
             if (eligiblePersonnelToStop.isEmpty()) {
-                result.add(new FailDilemmaAction(attemptingUnit, thisCard));
+                result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
             } else {
                 SelectCardsAction selectAction = new SelectCardsFromDialogAction(game, thisCard.getOwner(),
                         "Select personnel to stop", Filters.in(eligiblePersonnelToStop)

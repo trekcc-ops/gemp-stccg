@@ -61,6 +61,7 @@ public class SelectValidCardCombinationFromDialogAction extends ActionyAction im
 
         cardGame.getUserFeedback().sendAwaitingDecision(decision);
 
+        setAsSuccessful();
         return getNextAction();
     }
 

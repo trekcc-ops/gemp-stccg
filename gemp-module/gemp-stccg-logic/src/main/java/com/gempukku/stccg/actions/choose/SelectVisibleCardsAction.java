@@ -91,6 +91,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
                             }
                         }
                     });
+            setAsSuccessful();
         }
 
         return getNextAction();

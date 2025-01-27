@@ -64,6 +64,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
                             }
                         };
             cardGame.getUserFeedback().sendAwaitingDecision(decision);
+            setAsSuccessful();
         }
         return getNextAction();
     }
