@@ -31,6 +31,7 @@ public class UseOncePerTurnAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         LimitCounter limitCounter = cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix);
         limitCounter.incrementToLimit(LIMIT_PER_TURN, 1);
+        setAsSuccessful();
         return getNextAction();
     }
 }

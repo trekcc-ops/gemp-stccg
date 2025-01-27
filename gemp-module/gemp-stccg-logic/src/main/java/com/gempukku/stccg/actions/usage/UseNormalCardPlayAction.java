@@ -36,6 +36,7 @@ public class UseNormalCardPlayAction extends ActionyAction {
         cardGame.getModifiersEnvironment().useNormalCardPlay(performingPlayer);
         cardGame.sendMessage("Normal card play used");
         _wasCarriedOut = true;
+        setAsSuccessful();
         return getNextAction();
     }
 }

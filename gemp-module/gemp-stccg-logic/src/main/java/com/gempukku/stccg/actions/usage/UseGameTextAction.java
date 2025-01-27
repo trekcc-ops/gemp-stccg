@@ -35,7 +35,10 @@ public class UseGameTextAction extends ActionyAction implements TopLevelSelectab
             if (cost != null)
                 return cost;
         }
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            setAsSuccessful();
+        return nextAction;
     }
 
 }
