@@ -87,11 +87,6 @@ public abstract class DefaultGame {
     }
 
 
-    public void sendStateToAllListeners() {
-        for (GameStateListener gameStateListener : _gameStateListeners)
-            sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
-    }
-
     public void requestCancel(String playerId) {
         _requestedCancel.add(playerId);
         if (_requestedCancel.size() == _allPlayerIds.size())
