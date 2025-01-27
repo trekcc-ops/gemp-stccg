@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -39,7 +40,7 @@ public interface ActionsEnvironment {
 
     boolean hasNoActionsInProgress();
 
-    void removeCompletedActionFromStack(Action action);
+    void removeCompletedActionFromStack(Action action) throws ActionOrderOfOperationException;
 
     Action getCurrentAction();
 

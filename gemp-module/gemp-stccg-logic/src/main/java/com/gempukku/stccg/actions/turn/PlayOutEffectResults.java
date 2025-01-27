@@ -35,7 +35,10 @@ public class PlayOutEffectResults extends SystemQueueAction {
             appendEffect(
                     new PlayOutOptionalResponsesAction(cardGame, this, actionOrder, 0, _actionResults));
         }
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            setAsSuccessful();
+        return nextAction;
     }
 
 }

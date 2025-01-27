@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.ActionResult;
@@ -31,7 +32,8 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame)
+            throws PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException {
         final String activePlayer = _actionOrder.getNextPlayer();
 
         final Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
@@ -72,7 +74,10 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
                         }
                     });
         }
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            processEffect(cardGame);
+        return nextAction;
     }
 
     public Collection<ActionResult> getEffectResults() { return _actionResults; }

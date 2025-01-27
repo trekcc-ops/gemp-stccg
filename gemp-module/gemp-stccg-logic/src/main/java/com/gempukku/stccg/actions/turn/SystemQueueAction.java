@@ -16,15 +16,27 @@ public class SystemQueueAction extends ActionyAction {
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame)
+            throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException {
         if (isCostFailed()) {
+            setAsFailed();
             return null;
         } else {
             Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
-            return getNextAction();
+            Action nextAction = getNextAction();
+            if (nextAction != null)
+                return nextAction;
+
+            processEffect(cardGame);
+            return null;
         }
+    }
+
+    protected void processEffect(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException,
+            InvalidGameLogicException {
+        setAsSuccessful();
     }
 }

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.*;
 
 import java.util.*;
 
@@ -158,9 +155,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public void removeCompletedActionFromStack(Action action) {
-        _actionStack.remove(action);
-        _performedActions.add(action);
+    public void removeCompletedActionFromStack(Action action) throws ActionOrderOfOperationException {
+//        if (!action.isInProgress()) {
+            _actionStack.remove(action);
+            _performedActions.add(action);
+//        } else {
+//            throw new ActionOrderOfOperationException("Tried to remove incomplete action from stack");
+//        }
     }
 
     @Override

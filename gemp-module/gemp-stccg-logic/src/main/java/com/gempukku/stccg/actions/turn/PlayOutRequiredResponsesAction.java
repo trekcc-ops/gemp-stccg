@@ -15,7 +15,6 @@ import java.util.List;
 public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     private final PlayOutEffectResults _action;
     private final List<TopLevelSelectableAction> _responses;
-    private boolean _initialized;
 
     public PlayOutRequiredResponsesAction(DefaultGame game, PlayOutEffectResults action,
                                           List<TopLevelSelectableAction> responses) {
@@ -25,7 +24,9 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     }
 
 
-    public void doPlayEffect(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException, InvalidGameLogicException {
+    @Override
+    protected void processEffect(DefaultGame cardGame)
+            throws CardNotFoundException, PlayerNotFoundException, InvalidGameLogicException {
         ActionsEnvironment environment = cardGame.getActionsEnvironment();
         if (_responses.size() == 1) {
             environment.addActionToStack(_responses.getFirst());
@@ -51,6 +52,7 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
                         }
                     });
         }
+        setAsSuccessful();
     }
 
     private static boolean areAllActionsTheSame(List<TopLevelSelectableAction> actions) {
@@ -65,14 +67,5 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
                 result = false;
         }
         return result;
-    }
-
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException, InvalidGameLogicException {
-        if (!_initialized) {
-            _initialized = true;
-            doPlayEffect(cardGame);
-        }
-        return getNextAction();
     }
 }

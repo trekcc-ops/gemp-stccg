@@ -13,11 +13,7 @@ public class EndTurnAction extends SystemQueueAction {
         appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.END_OF_TURN));
     }
     @Override
-    public Action nextAction(DefaultGame cardGame) {
-        Action nextAction = getNextAction();
-        if (nextAction != null)
-            return nextAction;
-
+    protected void processEffect(DefaultGame cardGame) {
         cardGame.getModifiersEnvironment().signalEndOfTurn();
         cardGame.getActionsEnvironment().signalEndOfTurn();
 
@@ -31,6 +27,6 @@ public class EndTurnAction extends SystemQueueAction {
             if (playerWentOut)
                 tribblesGame.getGameState().endRound();
         }
-        return getNextAction();
+        setAsSuccessful();
     }
 }

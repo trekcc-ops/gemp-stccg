@@ -32,7 +32,13 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
                 } catch (InvalidCardDefinitionException exp) {
                     throw new InvalidGameLogicException(exp.getMessage());
                 }
-                return getNextAction();
+                Action nextAction = getNextAction();
+                if (nextAction != null)
+                    return nextAction;
+                else {
+                    setAsSuccessful();
+                    return null;
+                }
             }
         };
 
