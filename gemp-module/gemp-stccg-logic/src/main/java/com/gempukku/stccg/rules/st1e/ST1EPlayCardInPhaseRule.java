@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
@@ -29,9 +30,12 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         final Phase phase = _game.getGameState().getCurrentPhase();
         if (phase == Phase.SEED_DOORWAY) {
             for (PhysicalCard card : cardsInHand) {
-                TopLevelSelectableAction action = card.createSeedCardAction();
-                if (action != null && action.canBeInitiated(_game))
-                    result.add(action);
+                ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
+                for (TopLevelSelectableAction action : stCard.createSeedCardActions()) {
+                    if (action != null && action.canBeInitiated(_game)) {
+                        result.add(action);
+                    }
+                }
             }
             return result;
         } else if (phase == Phase.SEED_MISSION && !cardsInHand.isEmpty()) {
@@ -42,9 +46,12 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             for (PhysicalCard card : cardsInHand) {
                 if (isCurrentPlayer) {
                     if (card.canBeSeeded(_game)) {
-                        TopLevelSelectableAction action = card.createSeedCardAction();
-                        if (action != null && action.canBeInitiated(_game))
-                            result.add(action);
+                        ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
+                        for (TopLevelSelectableAction action : stCard.createSeedCardActions()) {
+                            if (action != null && action.canBeInitiated(_game)) {
+                                result.add(action);
+                            }
+                        }
                     }
                 }
             }

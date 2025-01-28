@@ -8,12 +8,14 @@
             title: Reshape the Quadrant
             type: incident
             property-logo: ds9-logo
-            effects: [
+            actions: [
                 {
                     type: seed
                     limit: 1
                     where: table
                 }
+            ]
+            effects: [
                 {
                     type: action
                     optional: true

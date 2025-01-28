@@ -39,9 +39,6 @@ public class EffectFieldProcessor {
                     final Requirement[] conditions = RequirementFactory.getRequirements(effect);
                     blueprint.appendPlayOutOfSequenceCondition(actionContext -> actionContext.acceptsAllRequirements(conditions));
                     break;
-                case "seed":
-                    appendSeedActionSource(effect, blueprint);
-                    break;
                 default:
                     throw new InvalidCardDefinitionException("Unable to find effect of type: " + effectType);
             }
@@ -99,19 +96,4 @@ public class EffectFieldProcessor {
         }
     }
 
-    private static void appendSeedActionSource(JsonNode value, CardBlueprint blueprint)
-            throws InvalidCardDefinitionException {
-        BlueprintUtils.validateAllowedFields(value, "limit", "where");
-        SeedCardActionSource actionSource = new SeedCardActionSource();
-        if (value.has("limit"))
-            actionSource.addRequirement((actionContext) -> actionContext.getSource()
-                    .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer(), actionContext.getGame()
-                    ) < value.get("limit").asInt());
-        if (value.has("where")) {
-            if (Objects.equals(value.get("where").textValue(), "table"))
-                actionSource.setSeedZone(Zone.TABLE);
-            else throw new InvalidCardDefinitionException("Unknown parameter in seed:where field");
-        }
-        blueprint.setSeedCardActionSource(actionSource);
-    }
 }

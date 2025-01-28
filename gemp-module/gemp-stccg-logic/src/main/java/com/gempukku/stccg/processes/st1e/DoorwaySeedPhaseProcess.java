@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -13,6 +14,7 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.processes.GameProcess;
+import com.google.common.collect.Iterables;
 
 import java.beans.ConstructorProperties;
 import java.util.Collection;
@@ -49,7 +51,13 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                                 try {
                                     List<PhysicalCard> cards = getSelectedCardsByResponse(result);
                                     for (PhysicalCard card : cards) {
-                                        cardGame.getActionsEnvironment().addActionToStack(card.createSeedCardAction());
+                                        List<TopLevelSelectableAction> seedActions = card.createSeedCardActions();
+                                        if (seedActions.size() != 1) {
+                                            throw new InvalidGameLogicException("Could not create a seed action");
+                                        } else {
+                                            TopLevelSelectableAction action = Iterables.getOnlyElement(seedActions);
+                                            cardGame.getActionsEnvironment().addActionToStack(action);
+                                        }
                                     }
                                 } catch(InvalidGameLogicException exp) {
                                     throw new DecisionResultInvalidException(exp.getMessage());

@@ -9,6 +9,7 @@ import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.RequiredTriggerActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
 import com.gempukku.stccg.cards.blueprints.effect.EffectFieldProcessor;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
@@ -156,7 +157,9 @@ public class CardBlueprint {
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
     private List<Requirement> playOutOfSequenceConditions;
-    private ActionSource _seedCardActionSource;
+
+    @JsonProperty("actions")
+    private List<ActionSource> _actionSources = new LinkedList<>();
 
     public CardBlueprint() {
         for (RequiredType requiredType : RequiredType.values()) {
@@ -334,9 +337,15 @@ public class CardBlueprint {
     public boolean isHomeworld() { return homeworldAffiliation() != null; }
 
 
-    // Building methods
-    public void setSeedCardActionSource(ActionSource actionSource) { _seedCardActionSource = actionSource; }
-    public ActionSource getSeedCardActionSource() { return _seedCardActionSource; }
+    public List<ActionSource> getSeedCardActionSources() {
+        List<ActionSource> result = new LinkedList<>();
+        for (ActionSource source : _actionSources) {
+            if (source instanceof SeedCardActionSource)
+                result.add(source);
+        }
+        return result;
+    }
+
 
     public void appendPlayInOtherPhaseCondition(Requirement requirement) {
         if (playInOtherPhaseConditions == null)

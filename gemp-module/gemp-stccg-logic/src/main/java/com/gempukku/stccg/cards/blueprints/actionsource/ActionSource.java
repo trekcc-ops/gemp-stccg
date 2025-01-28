@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -7,7 +9,12 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.processes.StartOfTurnGameProcess;
+import com.gempukku.stccg.processes.st1e.*;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({@JsonSubTypes.Type(value = SeedCardActionSource.class, name = "seed")
+})
 public interface ActionSource {
 
     boolean isValid(ActionContext actionContext);

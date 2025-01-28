@@ -27,13 +27,6 @@ public class Blueprint109_063 extends CardBlueprint {
         super("109_063");
     }
 
-    @Override
-    public SeedCardActionSource getSeedCardActionSource() {
-        SeedCardActionSource actionSource = new SeedCardActionSource();
-        actionSource.setSeedZone(Zone.TABLE);
-        return actionSource;
-    }
-
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
                                                             ActionResult actionResult, DefaultGame cardGame)
             throws PlayerNotFoundException {

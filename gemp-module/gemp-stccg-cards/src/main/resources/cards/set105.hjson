@@ -7,7 +7,7 @@
             blueprintId: 105_015
             title: Q-Flash
             type: doorway
-            effects: [
+            actions: [
                 {
                     type: seed
                     limit: 1

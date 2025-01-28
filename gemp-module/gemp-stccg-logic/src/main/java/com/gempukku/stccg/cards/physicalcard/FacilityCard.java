@@ -92,10 +92,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return actions;
     }
 
-    public TopLevelSelectableAction createSeedCardAction() {
-        return new SeedOutpostAction(this);
+    public List<TopLevelSelectableAction> createSeedCardActions() {
+        return List.of(new SeedOutpostAction(this));
         // TODO - Add actions for non-outposts
     }
+
 
     public Collection<PhysicalCard> getDockedShips() {
         return Filters.filter(getAttachedCards(_game), Filters.ship);

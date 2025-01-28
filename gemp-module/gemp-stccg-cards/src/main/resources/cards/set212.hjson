@@ -10,6 +10,12 @@
             java-blueprint: true
             property-logo: tos-logo
             image-url: https://www.trekcc.org/1e/cardimages/cage/19.jpg
+            actions: [
+                {
+                    type: seed
+                    where: table
+                }
+            ]
         }
         {
             blueprintId: 212_026

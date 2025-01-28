@@ -316,12 +316,14 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
         return card.getBlueprint() == _blueprint;
     }
 
-    public TopLevelSelectableAction createSeedCardAction() {
-        if (_blueprint.getSeedCardActionSource() == null)
-            return null;
-        else
-            return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
+    public List<TopLevelSelectableAction> createSeedCardActions() {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
+        for (ActionSource source : _blueprint.getSeedCardActionSources()) {
+            result.add(source.createActionWithNewContext(this));
+        }
+        return result;
     }
+
 
     public boolean hasIcon(GenericGame game, CardIcon icon) {
         return game.getModifiersQuerying().hasIcon(this, icon);

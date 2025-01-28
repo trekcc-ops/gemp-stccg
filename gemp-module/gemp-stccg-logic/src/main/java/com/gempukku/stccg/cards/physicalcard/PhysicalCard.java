@@ -91,7 +91,9 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
     Integer getNumberOfCopiesSeededByPlayer(Player player, GenericGame cardGame);
 
     boolean isCopyOf(PhysicalCard card);
-    TopLevelSelectableAction createSeedCardAction();
+
+    List<TopLevelSelectableAction> createSeedCardActions();
+
 
     boolean hasIcon(GenericGame game, CardIcon icon);
     boolean isPresentWith(PhysicalCard card);

@@ -21,18 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Blueprint155_021 extends CardBlueprint {
-    Blueprint155_021() {
-        super("155_021"); // Attention All Hands
-    }
 
-    @Override
-    public SeedCardActionSource getSeedCardActionSource() {
-        SeedCardActionSource actionSource = new SeedCardActionSource();
-        actionSource.addRequirement((actionContext) -> actionContext.getSource()
-                .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer(), actionContext.getGame()) < 1);
-        actionSource.setSeedZone(Zone.TABLE);
-        return actionSource;
-    }
+    // Attention All Hands
 
     private Collection<PhysicalCard> getDestinationOptionsForCard(DefaultGame cardGame, PhysicalCard card) {
         return Filters.filterYourActive(cardGame, card.getOwner(),

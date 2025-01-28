@@ -28,7 +28,8 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
     // Unit tests for card definition of Ferengi Attack
 
     @Test
-    public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException, CardNotFoundException, InvalidGameOperationException {
+    public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Excavation");
 
         ST1EPhysicalCard ferengiAttack =

@@ -33,6 +33,12 @@
             property-logo: first-contact-logo
             java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
+            actions: [
+                {
+                    type: seed
+                    where: table
+                }
+            ]
         }
         {
             blueprintId: 109_095

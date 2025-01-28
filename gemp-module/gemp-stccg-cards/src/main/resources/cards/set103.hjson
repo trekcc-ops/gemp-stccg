@@ -77,7 +77,7 @@
             java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg
             rarity: C
-            effects: [
+            actions: [
                 {
                     type: seed
                     limit: 1
