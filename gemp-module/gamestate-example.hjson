@@ -148,7 +148,9 @@
         // etc.
     ],
     "actions": {
-        // All actions that have been created thus far in this game.
+        /* All actions that have been created thus far in this game. The player-specific game state includes only
+            the action from this list that was most recently completed, as "lastAction".
+        */
         1: {
             "actionId": 1,
             "actionType": "SEED_CARD", // See \logic\actions\ActionType.java for full list
@@ -164,7 +166,10 @@
         // etc.
     },
         /* performedActions only includes actionIds for actions that were finished,
-            whether successfully or unsuccessfully.
-        //
+            whether successfully or unsuccessfully. It does not include unselected actions that players never
+            attempted to initiate or actions that are still in progress.
+
+            Not included in the player-specific game state.
+        */
     "performedActions": [1,2,4,3,6,7,9,8]
 }
