@@ -64,46 +64,6 @@
         "turnOrder": ["player2", "player1"], // Player order (only used in Tribbles)
         "currentPlayer": "player2" // Player ID for the player whose current turn it is
     },
-    "spacelineLocations": [
-        /* List of spaceline locations for 1E game. This list in order from left to right.
-                    (As of 1/25/25, both players see the spaceline in the same left-to-right order.)
-            The locationId field is unique to each mission location and referenced by other objects, like cards
-                and away teams. If the spaceline is reorganized (for example, using Blade of Tkon), the locationId
-                values will not change, but the order of this list will.
-            */
-        {
-            "locationId": 1,
-            "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
-            "locationName": "Gravesworld", // There may be multiple locations with the same name if universal
-            "isCompleted": false, // Will show as true if the mission has been completed by either player
-            "missionCardIds": [4,18], /* Card IDs for the cards representing this location. Typically this will be a
-                                        list with one item, but for shared missions, there will be two. The first
-                                        item in the list is the mission card on the bottom. */
-            "seedCardCount": 2,
-            "seedCardIds": [27,28] // This property is not shown in player-specific game states
-        },
-        {
-            "locationId": 2,
-            "quadrant": "ALPHA",
-            "region": "Romulus System", // There will not be a region item if the location is not in one
-            "locationName": "Romulus",
-            "isCompleted": false,
-            "missionCardIds": [6],
-            "seedCardCount": 0,
-            "seedCardsIds": []
-        },
-        // etc.
-    ],
-    "awayTeams": [
-        /* List of away teams in the game. As of 11/16/24, the format of this information is expected to change
-            significantly. */
-        {
-            "locationZoneIndex": 3,
-            "playerId": "player1",
-            "cardsInAwayTeam": [10,17] // cardIds
-        },
-        // etc.
-    ],
     "cardsInGame": [
         /* Information for every card in GameState._allCards
             This includes cards that were in the game, but have been placed out-of-play.
@@ -146,4 +106,65 @@
             "stackedOnCardId": 4, // only included if the card is stacked on another
         },
         // etc.
-    ]
+    ],
+    "spacelineLocations": [
+        /* List of spaceline locations for 1E game. This list in order from left to right.
+                    (As of 1/25/25, both players see the spaceline in the same left-to-right order.)
+            The locationId field is unique to each mission location and referenced by other objects, like cards
+                and away teams. If the spaceline is reorganized (for example, using Blade of Tkon), the locationId
+                values will not change, but the order of this list will.
+            */
+        {
+            "locationId": 1,
+            "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
+            "locationName": "Gravesworld", // There may be multiple locations with the same name if universal
+            "isCompleted": false, // Will show as true if the mission has been completed by either player
+            "missionCardIds": [4,18], /* Card IDs for the cards representing this location. Typically this will be a
+                                        list with one item, but for shared missions, there will be two. The first
+                                        item in the list is the mission card on the bottom. */
+            "seedCardCount": 2,
+            "seedCardIds": [27,28] // This property is not shown in player-specific game states
+        },
+        {
+            "locationId": 2,
+            "quadrant": "ALPHA",
+            "region": "Romulus System", // There will not be a region item if the location is not in one
+            "locationName": "Romulus",
+            "isCompleted": false,
+            "missionCardIds": [6],
+            "seedCardCount": 0,
+            "seedCardsIds": []
+        },
+        // etc.
+    ],
+    "awayTeams": [
+        /* List of away teams in the game. As of 11/16/24, the format of this information is expected to change
+            significantly. */
+        {
+            "locationZoneIndex": 3,
+            "playerId": "player1",
+            "cardsInAwayTeam": [10,17] // cardIds
+        },
+        // etc.
+    ],
+    "actions": {
+        // All actions that have been created thus far in this game.
+        1: {
+            "actionId": 1,
+            "actionType": "SEED_CARD", // See \logic\actions\ActionType.java for full list
+            "performingPlayerId": "player1",
+            "status": "completed_success" // See \logic\actions\ActionyStatus.java for descriptions
+        },
+        2: {
+            "actionId": 2,
+            "actionType": "SEED_CARD",
+            "performingPlayerId": "player2",
+            "status": "completed_success"
+        },
+        // etc.
+    },
+        /* performedActions only includes actionIds for actions that were finished,
+            whether successfully or unsuccessfully.
+        //
+    "performedActions": [1,2,4,3,6,7,9,8]
+}

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
@@ -19,7 +20,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     private SelectAffiliationAction _selectAffiliationAction;
 
     public ChangeAffiliationAction(ST1EGame cardGame, Player player, AffiliatedCard card) {
-        super(cardGame, player, "Change affiliation", ActionType.OTHER);
+        super(cardGame, player, "Change affiliation", ActionType.CHANGE_AFFILIATION);
         _performingCard = card;
     }
 

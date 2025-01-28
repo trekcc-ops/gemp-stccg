@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.scorepoints;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.*;

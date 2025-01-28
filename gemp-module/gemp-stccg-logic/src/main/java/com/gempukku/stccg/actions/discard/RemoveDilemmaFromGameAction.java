@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.discard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -18,7 +19,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
 
     public RemoveDilemmaFromGameAction(Player performingPlayer, PhysicalCard cardToRemove) {
-        super(cardToRemove.getGame(), performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+        super(cardToRemove.getGame(), performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);
     }
 

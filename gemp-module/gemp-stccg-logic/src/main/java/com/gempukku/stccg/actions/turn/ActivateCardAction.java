@@ -1,9 +1,6 @@
 package com.gempukku.stccg.actions.turn;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -13,7 +10,7 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
     private enum Progress { sentMessage, activated, prevented }
 
     public ActivateCardAction(DefaultGame cardGame, PhysicalCard physicalCard) {
-        super(cardGame, physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.SPECIAL_ABILITY,
+        super(cardGame, physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.USE_GAME_TEXT,
                 Progress.values());
         _performingCard = physicalCard;
     }

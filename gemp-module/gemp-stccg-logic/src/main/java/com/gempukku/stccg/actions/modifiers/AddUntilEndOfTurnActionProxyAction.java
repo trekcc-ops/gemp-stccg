@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ActionProxy;
@@ -13,7 +13,7 @@ public class AddUntilEndOfTurnActionProxyAction extends ActionyAction {
     private final ActionProxy _actionProxy;
 
     public AddUntilEndOfTurnActionProxyAction(DefaultGame cardGame, Player performingPlayer, ActionProxy actionProxy) {
-        super(cardGame, performingPlayer, ActionType.OTHER);
+        super(cardGame, performingPlayer, ActionType.ADD_MODIFIER);
         _actionProxy = actionProxy;
     }
 

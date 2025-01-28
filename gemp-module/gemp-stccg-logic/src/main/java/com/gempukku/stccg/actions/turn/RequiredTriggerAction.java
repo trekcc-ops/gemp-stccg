@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -11,8 +12,8 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
     private enum Progress { sentMessage }
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getGame(), physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(), ActionType.OTHER,
-                Progress.values());
+        super(physicalCard.getGame(), physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(),
+                ActionType.USE_GAME_TEXT, Progress.values());
         _performingCard = physicalCard;
     }
 

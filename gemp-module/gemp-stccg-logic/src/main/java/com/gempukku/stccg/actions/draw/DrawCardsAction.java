@@ -1,10 +1,7 @@
 package com.gempukku.stccg.actions.draw;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
@@ -14,8 +11,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
-
-import java.util.List;
 
 public class DrawCardsAction extends ActionyAction implements TopLevelSelectableAction {
 

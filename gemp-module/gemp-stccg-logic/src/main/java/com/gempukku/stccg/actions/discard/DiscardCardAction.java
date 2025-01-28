@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.discard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;

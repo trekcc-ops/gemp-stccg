@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
@@ -13,7 +14,8 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
     private ActionSource _actionSource;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getGame(), physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(), ActionType.OTHER,
+        super(physicalCard.getGame(), physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(),
+                ActionType.USE_GAME_TEXT,
                 Progress.values());
         _performingCard = physicalCard;
     }

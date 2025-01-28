@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.AttemptingUnit;

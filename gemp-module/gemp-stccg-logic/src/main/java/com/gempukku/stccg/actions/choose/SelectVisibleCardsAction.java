@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filter;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -28,14 +27,14 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
 
     public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new FixedCardsResolver(cards);
         _minimum = minimum;
     }
 
     public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;
@@ -44,7 +43,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
 
     public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum, ActionContext context, String memory) {
-        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;

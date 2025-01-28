@@ -34,17 +34,6 @@ public abstract class ActionyAction implements Action {
     @JsonProperty("status")
     private ActionStatus _actionStatus;
 
-    // ActionStatus is intended to be used by serialization
-    private enum ActionStatus {
-        virtual, // Selectable actions that haven't been selected, or unperformed subactions of other actions
-        initiation_started, // Actions in progress that haven't been fully initiated
-        initiation_failed, // Actions that have ended because they couldn't be fully initiated
-        initiation_complete, // Actions that have been fully initiated and are being processed
-        cancelled, // Actions that were cancelled after being initiated
-        completed_success, // Actions that were successfully completed
-        completed_failure // Actions that were completed but failed
-    }
-
     protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
         _actionId = environment.getNextActionId();
         environment.logAction(this);
@@ -82,8 +71,8 @@ public abstract class ActionyAction implements Action {
     }
 
     // This constructor is only used for system queue actions
-    protected ActionyAction(DefaultGame game) {
-        this(game.getActionsEnvironment(), ActionType.OTHER, null);
+    protected ActionyAction(DefaultGame game, ActionType type) {
+        this(game.getActionsEnvironment(), type, null);
     }
 
 
@@ -275,10 +264,7 @@ public abstract class ActionyAction implements Action {
 
     @JsonIgnore
     public boolean isInProgress() {
-        return switch(_actionStatus) {
-            case initiation_started, initiation_complete -> true;
-            case virtual, initiation_failed, cancelled, completed_success, completed_failure -> false;
-        };
+        return _actionStatus.isInProgress();
     }
 
     public boolean wasCompleted() {
@@ -289,10 +275,7 @@ public abstract class ActionyAction implements Action {
     }
 
     public boolean wasFailed() {
-        return switch(_actionStatus) {
-            case initiation_failed, cancelled, completed_failure -> true;
-            case virtual, completed_success, initiation_started, initiation_complete -> false;
-        };
+        return _actionStatus.wasFailed();
     }
 
     public boolean wasSuccessful() {

@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.discard;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -11,7 +10,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,13 +18,13 @@ public class RemoveCardFromPlayAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
 
     public RemoveCardFromPlayAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard cardToRemove) {
-        super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+        super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);
     }
 
     public RemoveCardFromPlayAction(DefaultGame cardGame, Player performingPlayer,
                                     Collection<PhysicalCard> cardsToRemove) {
-        super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_PLAY);
+        super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardsResolver(cardsToRemove);
     }
 

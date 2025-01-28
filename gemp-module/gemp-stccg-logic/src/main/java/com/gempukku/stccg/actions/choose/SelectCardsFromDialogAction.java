@@ -1,22 +1,16 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.CardFilterResolver;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.filters.Filter;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -32,7 +26,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
 
     public SelectCardsFromDialogAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                        Filter cardFilter) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsTarget = new CardFilterResolver(cardFilter);
         _minimum = 1;
         _maximum = 1;
@@ -41,7 +35,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
 
     public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, Filter cardFilter, int minimum,
                                        int maximum, ActionContext context, String memory) {
-        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsTarget = new CardFilterResolver(cardFilter);
         _minimum = minimum;
         _maximum = maximum;

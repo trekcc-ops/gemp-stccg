@@ -1,24 +1,19 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.filters.Filter;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +29,7 @@ public class SelectValidCardCombinationFromDialogAction extends ActionyAction im
                                                       Collection<PhysicalCard> selectableCards,
                                                       Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                       int maximum) {
-        super(cardGame, performingPlayer, choiceText, ActionType.SELECT_CARD);
+        super(cardGame, performingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCards = selectableCards;
         _maximum = maximum;
         _validCombinations = validCombinations;
