@@ -99,7 +99,7 @@
             type: mission
             mission-type: space
             quadrant: alpha
-            affiliation-icons: any except borg
+            anyExceptBorgCanAttempt: true
             lore: Conduct a survey of this region known for its violent and unpredictable gravitational wavefronts.
             mission-requirements: Astrometrics, Leadership, Physics, Science, and Cunning>34
             point-box: 35
@@ -114,7 +114,7 @@
             type: mission
             mission-type: planet
             quadrant: alpha
-            affiliation-icons: any except borg
+            anyExceptBorgCanAttempt: true
             lore: "\"Who'd have dreamed they'd strike feldomite on Parsion III? The Sepian Commodities Exchange is in chaos – everybody's selling, prices falling...\""
             mission-requirements: Engineer, Geology, Cunning>28, and (Acquisition or Law or 2 Treachery)
             point-box: 30
@@ -129,7 +129,7 @@
             type: mission
             mission-type: space
             quadrant: alpha
-            affiliation-icons: any
+            anyCanAttempt: true
             lore: "Perform scans of this \"keyhole\" intersecting different quantum realities."
             mission-requirements: Astrometrics, Engineer, Physics, Science, and Cunning>36
             point-box: 35
@@ -144,7 +144,7 @@
             type: mission
             mission-type: space
             quadrant: alpha
-            affiliation-icons: any except borg
+            anyExceptBorgCanAttempt: true
             lore: "\"It is not native to this region of space, and there is no previous record of this object...\""
             mission-requirements: Anthropology, Archaeology, Engineer, Programming, and Cunning>34
             point-box: 35

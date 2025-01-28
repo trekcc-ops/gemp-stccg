@@ -1,5 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Locale;
@@ -16,6 +17,11 @@ public enum Species implements Filterable {
     Species() { _humanReadable = StringUtils.capitalize(name().toLowerCase(Locale.ROOT)); }
     Species(String humanReadable) {
         _humanReadable = humanReadable;
+    }
+
+    @JsonValue
+    private String getHumanReadable() {
+        return _humanReadable;
     }
 
 }

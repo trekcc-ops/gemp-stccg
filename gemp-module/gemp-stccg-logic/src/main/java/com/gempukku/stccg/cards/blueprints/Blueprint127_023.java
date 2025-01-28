@@ -1,19 +1,23 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.cards.NullSkill;
+import com.gempukku.stccg.cards.RegularSkill;
+import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.common.filterable.SkillName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Blueprint127_023 extends CardBlueprint {
 
     // Robert DeSoto
     Blueprint127_023() {
-        super("127_023");
-        addSkill(new NullSkill());
-        addSkill(SkillName.LEADERSHIP);
-        addSkill(SkillName.HONOR);
-        addSkill(SkillName.EXOBIOLOGY);
-        setSkillDotIcons(4);
+        List<Skill> skillList = new ArrayList<>();
+        skillList.add(new RegularSkill(SkillName.LEADERSHIP));
+        skillList.add(new RegularSkill(SkillName.HONOR));
+        skillList.add(new RegularSkill(SkillName.EXOBIOLOGY));
+        _skillBox = new SkillBox(4,0,skillList);
     }
 
 }

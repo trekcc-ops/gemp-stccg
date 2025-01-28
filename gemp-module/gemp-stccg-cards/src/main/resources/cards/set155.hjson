@@ -130,7 +130,7 @@
             type: mission
             mission-type: space
             location: Near Acamar system
-            affiliation-icons: any
+            anyCanAttempt: true
             lore: Mediate an end to Gatherer raids in this area.
             mission-requirements: Anthropology + Diplomacy x2 + Law OR Leadership + SECURITY + Treachery x2 OR Marouk
             point-box: 35
@@ -838,16 +838,10 @@
             cunning: 4
             strength: 10
             image-url: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
-            image-options: [
-                {
-                    affiliation: klingon
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/93AV.jpg
-                }
-                {
-                    affiliation: non-aligned
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
-                }
-            ]
+            image-options: {
+                non-aligned: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
+                klingon: https://www.trekcc.org/1e/cardimages/tng/93AV.jpg
+            }
         }
         {
             blueprintId: 155_094
@@ -878,17 +872,11 @@
             integrity: 5
             cunning: 7
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
-            image-options: [
-                {
-                    affiliation: non-aligned
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/95AV.jpg
-                }
-                {
-                    affiliation: federation
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
-                }
-            ]
+            image-url: https://www.trekcc.org/1e/cardimages/tng/95AV.jpg
+            image-options: {
+                non-aligned: https://www.trekcc.org/1e/cardimages/tng/95AV.jpg
+                federation: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
+            }
         }
         {
             blueprintId: 155_096

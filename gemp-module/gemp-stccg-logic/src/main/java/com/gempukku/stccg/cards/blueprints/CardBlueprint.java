@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -9,6 +10,7 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.RequiredTriggerActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
+import com.gempukku.stccg.cards.blueprints.effect.EffectFieldProcessor;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -21,54 +23,124 @@ import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;
 
+@JsonIgnoreProperties({"headquarters", "effects", "playable", "java-blueprint"})
 public class CardBlueprint {
-    private final String _blueprintId;
+
+    @JsonProperty(value = "blueprintId", required = true)
+    protected String _blueprintId;
     private GameType _gameType;
     private String _baseBlueprintId;
-    private String title;
-    private String subtitle;
-    private ShipClass _shipClass;
+    @JsonProperty(value = "title", required = true)
+    protected String title;
+    @JsonProperty("subtitle")
+    protected String subtitle;
+    @JsonProperty("ship-class")
+    protected ShipClass _shipClass;
+
+    @JsonProperty("anyCanAttempt")
     private boolean _anyCanAttempt;
+
+    @JsonProperty("anyExceptBorgCanAttempt")
     private boolean _anyExceptBorgCanAttempt;
+    @JsonProperty("type")
     protected CardType _cardType;
-    private String imageUrl;
-    private String _rarity;
-    private PropertyLogo _propertyLogo;
+
+    @JsonProperty("image-url")
+    protected String imageUrl;
+
+    @JsonProperty("rarity")
+    protected String _rarity;
+    @JsonProperty("property-logo")
+    protected PropertyLogo _propertyLogo;
     private String _persona;
-    private String _lore;
-    private List<Species> _species;
-    private final Set<Characteristic> _characteristics = new HashSet<>();
-    private Uniqueness uniqueness = null;
-    private List<CardIcon> _icons;
-    private Quadrant quadrant;
-    private String location;
-    private int _pointsShown;
-    int _skillDots;
-    private boolean _hasPointBox;
-    private MissionRequirement _missionRequirements;
-    final List<Skill> _skills = new LinkedList<>();
-    private final Set<Affiliation> _affiliations = new HashSet<>();
-    private Region region;
-    private SkillName _classification;
+
+    @JsonProperty("lore")
+    protected String _lore;
+    @JsonProperty("species")
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES)
+    protected List<Species> _species;
+
+    @JsonProperty("characteristic")
+    private final List<Characteristic> _characteristics = new ArrayList<>();
+
+    @JsonProperty("uniqueness")
+    protected Uniqueness uniqueness = null;
+
+    @JsonProperty("icons")
+    protected List<CardIcon> _icons;
+
+    @JsonProperty("quadrant")
+    protected Quadrant quadrant;
+
+    @JsonProperty("location")
+    protected String location;
+
+    @JsonProperty("point-box")
+    private PointBox _pointBox;
+
+    @JsonProperty("mission-requirements")
+    protected MissionRequirement _missionRequirements;
+    @JsonProperty("affiliation")
+    protected final List<Affiliation> _affiliations = new ArrayList<>();
+    @JsonProperty("region")
+    protected Region region;
+
+    @JsonProperty("classification")
+    protected SkillName _classification;
     private boolean _canInsertIntoSpaceline;
     private final List<Keyword> _keywords = new LinkedList<>();
-    private final Set<ShipSpecialEquipment> _specialEquipment = new HashSet<>();
-    private final Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
-    private final Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
+
+    @JsonProperty("gametext")
+    private final List<ShipSpecialEquipment> _specialEquipment = new LinkedList<>();
+
+    @JsonProperty("affiliation-icons")
+    private final List<Affiliation> _ownerAffiliationIcons = new ArrayList<>();
+    private final List<Affiliation> _opponentAffiliationIcons = new ArrayList<>();
     private int _span;
     private Integer _opponentSpan;
-    private MissionType _missionType;
-    private FacilityType _facilityType;
+
+    @JsonProperty("mission-type")
+    protected MissionType _missionType;
+
+    @JsonProperty("facility-type")
+    protected FacilityType _facilityType;
     private int cost = -1;
-    private final Map<CardAttribute, Integer> _cardAttributes = new HashMap<>();
-    private int _specialDownloadIcons;
-    private int tribbleValue;
-    private List<CardIcon> _staffing = new LinkedList<>();
+
+    @JsonProperty("integrity")
+    protected int _integrity;
+
+    @JsonProperty("cunning")
+    protected int _cunning;
+
+    @JsonProperty("strength")
+    protected int _strength;
+
+    @JsonProperty("range")
+    protected int _range;
+
+    @JsonProperty("weapons")
+    protected int _weapons;
+
+    @JsonProperty("shields")
+    protected int _shields;
+
+    @JsonProperty("skill-box")
+    protected SkillBox _skillBox;
+
+    @JsonProperty("tribble-value")
+    protected int tribbleValue;
+
+    @JsonProperty("staffing")
+    protected List<CardIcon> _staffing = new LinkedList<>();
     private String _missionRequirementsText;
-    private TribblePower tribblePower;
+
+    @JsonProperty("tribble-power")
+    protected TribblePower tribblePower;
     private List<Requirement> _seedRequirements;
     private List<Requirement> _playRequirements;
     private List<FilterableSource> targetFilters;
+
+    @JsonProperty("image-options")
     private final Map<Affiliation, String> _imageOptions = new HashMap<>();
     private final Map<RequiredType, List<ActionSource>> _beforeTriggers = new HashMap<>();
     private final Map<RequiredType, List<ActionSource>> _afterTriggers = new HashMap<>();
@@ -85,6 +157,13 @@ public class CardBlueprint {
     private List<Requirement> playInOtherPhaseConditions;
     private List<Requirement> playOutOfSequenceConditions;
     private ActionSource _seedCardActionSource;
+
+    public CardBlueprint() {
+        for (RequiredType requiredType : RequiredType.values()) {
+            _beforeTriggers.put(requiredType, new LinkedList<>());
+            _afterTriggers.put(requiredType, new LinkedList<>());
+        }
+    }
 
     public CardBlueprint(String blueprintId) {
         _blueprintId = blueprintId;
@@ -151,13 +230,15 @@ public class CardBlueprint {
     public MissionRequirement getMissionRequirements() { return _missionRequirements; }
     public void setMissionRequirementsText(String requirements) { _missionRequirementsText = requirements;}
     public String getMissionRequirementsText() { return _missionRequirementsText; }
-    public void setPointsShown(int pointsShown) { _pointsShown = pointsShown; }
-    public int getPointsShown() { return _pointsShown; }
-    public void setHasPointBox(boolean hasPointBox) { _hasPointBox = hasPointBox; }
-    public boolean hasNoPointBox() { return !_hasPointBox; }
+
+    public int getPointsShown() {
+        return (_pointBox == null) ? 0 : _pointBox.getPointsShown();
+    }
+
+    public boolean hasNoPointBox() { return _pointBox == null; }
     public void addOwnerAffiliationIcon(Affiliation affiliation) { _ownerAffiliationIcons.add(affiliation); }
-    public Set<Affiliation> getOwnerAffiliationIcons() { return _ownerAffiliationIcons; }
-    public Set<Affiliation> getOpponentAffiliationIcons() { return _opponentAffiliationIcons; }
+    public Set<Affiliation> getOwnerAffiliationIcons() { return new HashSet<>(_ownerAffiliationIcons); }
+    public Set<Affiliation> getOpponentAffiliationIcons() { return new HashSet<>(_ownerAffiliationIcons); }
     public void setSpan(int span) { _span = span; }
     public void setOpponentSpan(int span) { _opponentSpan = span; }
     public int getOwnerSpan() { return _span; }
@@ -171,30 +252,25 @@ public class CardBlueprint {
     public void setFacilityType(FacilityType facilityType) { _facilityType = facilityType; }
     public FacilityType getFacilityType() { return _facilityType; }
     public void addAffiliation(Affiliation affiliation) { _affiliations.add(affiliation); }
-    public Set<Affiliation> getAffiliations() { return _affiliations; }
-    public void setAttribute(CardAttribute attribute, int attributeValue) {
-        _cardAttributes.put(attribute, attributeValue);
+    public Set<Affiliation> getAffiliations() { return new HashSet<>(_affiliations); }
+
+    public int getIntegrity() { return _integrity;
     }
 
-    public int getIntegrity() { return _cardAttributes.get(CardAttribute.INTEGRITY);
-    }
+    public int getCunning() { return _cunning; }
 
-    public int getCunning() { return _cardAttributes.get(CardAttribute.CUNNING); }
+    public int getStrength() { return _strength; }
 
-    public int getStrength() { return _cardAttributes.get(CardAttribute.STRENGTH); }
     public int getRange() {
-        Integer range = _cardAttributes.get(CardAttribute.RANGE);
-        return (range == null) ? 0 : range;
+        return _range;
     }
 
     public int getWeapons() {
-        Integer weapons = _cardAttributes.get(CardAttribute.WEAPONS);
-        return (weapons == null) ? 0 : weapons;
+        return _weapons;
     }
 
     public int getShields() {
-        Integer shields = _cardAttributes.get(CardAttribute.SHIELDS);
-        return (shields == null) ? 0 : shields;
+        return _shields;
     }
 
 
@@ -202,22 +278,23 @@ public class CardBlueprint {
     public List<CardIcon> getStaffing() { return _staffing; }
     public void setClassification(SkillName classification) { _classification = classification; }
     public SkillName getClassification() { return _classification; }
-    public void addSkill(Skill skill) { _skills.add(skill); }
-    public void addSkill(SkillName skillName) { _skills.add(new RegularSkill(skillName, 1)); }
-    public void addSkill(SkillName skillName, int level) { _skills.add(new RegularSkill(skillName, level)); }
-        // TODO - Not an exact match for how skills are processed
+
     public List<RegularSkill> getRegularSkills() {
         List<RegularSkill> result = new LinkedList<>();
-        for (Skill skill : _skills) {
+        for (Skill skill : _skillBox.getSkillList()) {
             if (skill instanceof RegularSkill regularSkill)
                 result.add(regularSkill);
         }
         return result;
     }
-    public void setSkillDotIcons(int dots) { _skillDots = dots; }
-    public int getSkillDotCount() { return _skillDots; }
-    public int getSpecialDownloadIconCount() { return _specialDownloadIcons; }
-    public void setSpecialDownloadIcons(int icons) { _specialDownloadIcons = icons; }
+
+    public int getSkillDotCount() {
+        return (_skillBox == null) ? 0 : _skillBox.getSkillDots();
+    }
+    public int getSpecialDownloadIconCount() {
+        return (_skillBox == null) ? 0 : _skillBox.getSdIcons();
+    }
+
     public void setSpecies(List<Species> species) { _species = species; }
 
     public boolean isSpecies(Species species) {
@@ -242,7 +319,7 @@ public class CardBlueprint {
 
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
     public boolean canAnyAttempt() { return _anyCanAttempt; }
-    public void setAnyCrewOrAwayTeamCanAttempt() { _anyCanAttempt = true; }
+
     public Affiliation homeworldAffiliation() {
         if (this._cardType != CardType.MISSION)
             return null;
@@ -400,17 +477,6 @@ public class CardBlueprint {
                 (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
     }
 
-    public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
-        return switch(_cardType) {
-            case EQUIPMENT -> new PhysicalReportableCard1E(st1egame, cardId, player, this);
-            case FACILITY -> new FacilityCard(st1egame, cardId, player, this);
-            case MISSION -> new MissionCard(st1egame, cardId, player, this);
-            case PERSONNEL -> new PersonnelCard(st1egame, cardId, player, this);
-            case SHIP -> new PhysicalShipCard(st1egame, cardId, player, this);
-            default -> new ST1EPhysicalCard(st1egame, cardId, player, this);
-        };
-    }
-
     protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)
             throws InvalidGameLogicException {
         return new LinkedList<>();
@@ -456,7 +522,7 @@ public class CardBlueprint {
     }
 
     public List<Skill> getSkills(DefaultGame game, PhysicalCard thisCard) {
-        return _skills;
+        return _skillBox.getSkillList();
     }
 
     public void setPersona(String persona) { _persona = persona; }
@@ -489,7 +555,7 @@ public class CardBlueprint {
     }
 
     public List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
-                                                    ActionResult actionResult, List<ActionSource> actionSources) {
+                                                                      ActionResult actionResult, List<ActionSource> actionSources) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
@@ -508,10 +574,6 @@ public class CardBlueprint {
     }
 
 
-    public void setAnyExceptBorgCanAttempt() {
-        _anyExceptBorgCanAttempt = true;
-    }
-
     public boolean canAnyExceptBorgAttempt() { return _anyExceptBorgCanAttempt; }
 
     public void setKeywords(Collection<Keyword> keywords) {
@@ -527,4 +589,17 @@ public class CardBlueprint {
     public ShipClass getShipClass() {
         return _shipClass;
     }
+
+
+    public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
+        return switch(_cardType) {
+            case EQUIPMENT -> new PhysicalReportableCard1E(st1egame, cardId, player, this);
+            case FACILITY -> new FacilityCard(st1egame, cardId, player, this);
+            case MISSION -> new MissionCard(st1egame, cardId, player, this);
+            case PERSONNEL -> new PersonnelCard(st1egame, cardId, player, this);
+            case SHIP -> new PhysicalShipCard(st1egame, cardId, player, this);
+            default -> new ST1EPhysicalCard(st1egame, cardId, player, this);
+        };
+    }
+
 }

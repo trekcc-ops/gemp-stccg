@@ -6,22 +6,26 @@ import com.gempukku.stccg.actions.choose.SelectSkillAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.ActionSkill;
+import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 
 public class Blueprint155_056 extends CardBlueprint {
+
+    // Data (The Next Generation)
     Blueprint155_056() {
-        super("155_056"); // Data (The Next Generation)
-        addSkill(SkillName.COMPUTER_SKILL);
-        addSkill(SkillName.ASTROPHYSICS);
-        addSkill(SkillName.ENGINEER);
-        addSkill(specialSkill());
-        setSkillDotIcons(4);
+        List<Skill> skillList = new ArrayList<>();
+        skillList.add(new RegularSkill(SkillName.COMPUTER_SKILL));
+        skillList.add(new RegularSkill(SkillName.ASTROPHYSICS));
+        skillList.add(new RegularSkill(SkillName.ENGINEER));
+        skillList.add(specialSkill());
+        _skillBox = new SkillBox(4,0,skillList);
     }
 
     @Override
@@ -29,7 +33,7 @@ public class Blueprint155_056 extends CardBlueprint {
             // TODO - Need some additional work here to be check skill for usability
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard) {
-            for (Skill skill : _skills)
+            for (Skill skill : getSkills(thisCard.getGame(), thisCard))
                 if (skill instanceof ActionSkill actionSkill)
                     actions.add(actionSkill.getAction(thisCard));
         }

@@ -57,16 +57,10 @@
             cunning: 6
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/comingofage/10.jpg
-            image-options: [
-                {
-                    affiliation: ferengi
-                    image-url: https://www.trekcc.org/1e/cardimages/comingofage/10.jpg
-                }
-                {
-                    affiliation: non-aligned
-                    image-url: https://www.trekcc.org/1e/cardimages/comingofage/10A.jpg
-                }
-            ]
+            image-options: {
+                ferengi: https://www.trekcc.org/1e/cardimages/comingofage/10.jpg
+                non-aligned: https://www.trekcc.org/1e/cardimages/comingofage/10A.jpg
+            }
         }
         {
             blueprintId: 204_011

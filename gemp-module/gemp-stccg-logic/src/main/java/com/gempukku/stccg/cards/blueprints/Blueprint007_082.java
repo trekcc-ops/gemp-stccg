@@ -16,9 +16,6 @@ import java.util.List;
 public class Blueprint007_082 extends CardBlueprint {
 
     // Letek (2E)
-    Blueprint007_082() {
-        super("007_082");
-    }
 
     @Override
     protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {

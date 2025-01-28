@@ -1242,16 +1242,10 @@
             cunning: 6
             strength: 4
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
-            image-options: [
-                {
-                    affiliation: klingon
-                    image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
-                }
-                {
-                    affiliation: romulan
-                    image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
-                }
-            ]
+            image-options: {
+                klingon: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
+                romulan: image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
+            }
             rarity: U
         }
         {

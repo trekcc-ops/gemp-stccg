@@ -1,5 +1,7 @@
 package com.gempukku.stccg.common.filterable;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 @SuppressWarnings("unused")
 public enum PropertyLogo implements Filterable {
     // TV shows
@@ -25,6 +27,11 @@ public enum PropertyLogo implements Filterable {
     // Other products
     ARMADA_LOGO,
     KLINGON_CHALLENGE_LOGO,
-    CCG_LOGO
+    CCG_LOGO;
+
+    @JsonValue
+    public String getJsonValue() {
+        return name().replace("_","-");
+    }
 
 }

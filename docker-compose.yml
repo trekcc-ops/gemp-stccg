@@ -39,8 +39,7 @@ services:
       gemp_net_1:
         ipv4_address: ${APP_IP}
     tty: true
-    command: java -jar -Dlog4j2.configurationFile=/src/gemp-module/gemp-stccg-client/target/log4j2.xml /src/gemp-module/gemp-stccg-client/target/web.jar &
-
+    command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n -Dlog4j2.configurationFile=/src/gemp-module/gemp-stccg-client/target/log4j2.xml /src/gemp-module/gemp-stccg-client/target/web.jar &
 
   db:
     env_file:
