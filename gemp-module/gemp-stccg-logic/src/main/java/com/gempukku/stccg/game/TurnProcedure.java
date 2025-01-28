@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
+import com.gempukku.stccg.actions.placecard.PlaceCardOnMissionAction;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -81,7 +82,7 @@ public class TurnProcedure {
             _game.getActionsEnvironment().addActionToStack(nextAction);
         } else if (currentAction.wasCompleted()) {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
-            if (!(currentAction instanceof SystemQueueAction)) {
+            if (currentAction instanceof StopCardsAction || currentAction instanceof PlaceCardOnMissionAction) {
                 _game.sendSerializedGameStateToClient();
             }
         } else if (_game.isCarryingOutEffects()) {
