@@ -1,9 +1,10 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
@@ -18,6 +19,7 @@ import java.util.*;
 public class FilterFactory {
     private final Map<String, FilterableSource> simpleFilters = new HashMap<>();
     private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
+    private final ObjectMapper _mapper = new ObjectMapper();
 
     public FilterFactory() {
         for (CardIcon value : CardIcon.values())
@@ -156,7 +158,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("strengthlessthan",
                 (parameter) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
+                    final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
 
                     return (actionContext) -> {
                         int amount = valueSource.evaluateExpression(actionContext, null);
@@ -165,7 +167,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("strengthmorethan",
                 (parameter) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
+                    final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
 
                     return (actionContext) -> {
                         int amount = valueSource.evaluateExpression(actionContext, null);
@@ -192,25 +194,29 @@ public class FilterFactory {
 
     public FilterableSource generateFilter(String value) throws
             InvalidCardDefinitionException {
-        if (value == null)
-            throw new InvalidCardDefinitionException("Filter not specified");
-        String[] filterStrings = splitIntoFilters(value);
-        if (filterStrings.length == 0)
-            return (actionContext) -> Filters.any;
-        if (filterStrings.length == 1)
-            return createFilter(filterStrings[0]);
+        try {
+            if (value == null)
+                throw new InvalidCardDefinitionException("Filter not specified");
+            String[] filterStrings = splitIntoFilters(value);
+            if (filterStrings.length == 0)
+                return (actionContext) -> Filters.any;
+            if (filterStrings.length == 1)
+                return createFilter(filterStrings[0]);
 
-        FilterableSource[] filters = new FilterableSource[filterStrings.length];
-        for (int i = 0; i < filters.length; i++)
-            filters[i] = createFilter(filterStrings[i]);
-        return (actionContext) -> {
-            Filterable[] filter = new Filterable[filters.length];
-            for (int i = 0; i < filter.length; i++) {
-                filter[i] = filters[i].getFilterable(actionContext);
-            }
+            FilterableSource[] filters = new FilterableSource[filterStrings.length];
+            for (int i = 0; i < filters.length; i++)
+                filters[i] = createFilter(filterStrings[i]);
+            return (actionContext) -> {
+                Filterable[] filter = new Filterable[filters.length];
+                for (int i = 0; i < filter.length; i++) {
+                    filter[i] = filters[i].getFilterable(actionContext);
+                }
 
-            return Filters.and(filter);
-        };
+                return Filters.and(filter);
+            };
+        } catch(JsonProcessingException exp) {
+            throw new InvalidCardDefinitionException(exp.getMessage());
+        }
     }
 
     public FilterableSource generateFilter(JsonNode node) throws InvalidCardDefinitionException {
@@ -311,7 +317,7 @@ public class FilterFactory {
         return parts.toArray(new String[0]);
     }
 
-    private FilterableSource createFilter(String filterString) throws InvalidCardDefinitionException {
+    private FilterableSource createFilter(String filterString) throws InvalidCardDefinitionException, JsonProcessingException {
         if (filterString.contains("(") && filterString.endsWith(")")) {
             String filterName = filterString.substring(0, filterString.indexOf("("));
             String filterParameter =
@@ -323,7 +329,8 @@ public class FilterFactory {
 
 
 
-    private FilterableSource lookupFilter(String name, String parameter) throws InvalidCardDefinitionException {
+    private FilterableSource lookupFilter(String name, String parameter)
+            throws InvalidCardDefinitionException, JsonProcessingException {
         if (parameter == null) {
             FilterableSource result = simpleFilters.get(Sanitize(name));
             if (result != null)

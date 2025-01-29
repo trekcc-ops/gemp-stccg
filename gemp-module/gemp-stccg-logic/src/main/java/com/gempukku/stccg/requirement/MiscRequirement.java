@@ -1,24 +1,26 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.evaluator.ValueSource;
-import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.evaluator.ConstantEvaluator;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 
+import java.util.Objects;
+
 public class MiscRequirement implements Requirement {
 
-    private enum RequirementType {
+    protected enum RequirementType {
         CARDSINDECKCOUNT(Zone.DRAW_DECK),
         CARDSINHANDMORETHAN(Zone.HAND),
         HASCARDINDISCARD(Zone.DISCARD),
@@ -34,26 +36,17 @@ public class MiscRequirement implements Requirement {
     private final ValueSource _valueSource;
     private final FilterableSource _filterableSource;
 
-    public MiscRequirement(JsonNode node) throws InvalidCardDefinitionException {
-        _requirementType = BlueprintUtils.getEnum(RequirementType.class, node, "type", false);
-        if (_requirementType == null)
-            throw new InvalidCardDefinitionException("Invalid requirement type");
-
-        switch (_requirementType) {
-            case CARDSINDECKCOUNT, CARDSINHANDMORETHAN:
-                BlueprintUtils.validateAllowedFields(node, "count");
-                BlueprintUtils.validateRequiredFields(node, "count");
-                break;
-            case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE:
-                BlueprintUtils.validateAllowedFields(node, "count", "filter");
-                BlueprintUtils.validateRequiredFields(node, "filter");
-                break;
-        }
-
-        _playerSource = BlueprintUtils.getTargetPlayerSource(node);
-        _valueSource = ValueResolver.resolveEvaluator(node.get("count"), 1);
-        _filterableSource = (node.has("filter")) ?
-                new FilterFactory().generateFilter(node.get("filter")) : actionContext -> Filters.any;
+    public MiscRequirement(@JsonProperty("type")
+                           RequirementType requirementType,
+                           @JsonProperty(value = "count", required = true)
+                           ValueSource count,
+                           @JsonProperty(value="filter", required = true)
+                           JsonNode filter) throws InvalidCardDefinitionException {
+        _requirementType = requirementType;
+        _playerSource = ActionContext::getPerformingPlayerId;
+        _valueSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));
+        _filterableSource = (filter != null) ?
+                new FilterFactory().generateFilter(filter) : actionContext -> Filters.any;
     }
 
     public boolean accepts(ActionContext actionContext) {

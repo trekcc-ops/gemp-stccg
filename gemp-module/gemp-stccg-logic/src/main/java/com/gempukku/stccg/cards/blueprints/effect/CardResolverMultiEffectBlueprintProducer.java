@@ -1,6 +1,8 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
@@ -8,6 +10,7 @@ import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
@@ -15,7 +18,6 @@ import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -55,7 +57,7 @@ public class CardResolverMultiEffectBlueprintProducer {
     }
 
     public static SubActionBlueprint createEffectBlueprint(JsonNode effectObject)
-            throws InvalidCardDefinitionException {
+            throws InvalidCardDefinitionException, JsonProcessingException {
 
         // Get effectType from the JSON. Will throw an exception if the type isn't a valid EffectType.
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
@@ -83,7 +85,10 @@ public class CardResolverMultiEffectBlueprintProducer {
         String onFilter = effectObject.has("on") ? effectObject.get("on").textValue() : null;
         final FilterableSource onFilterableSource = (onFilter != null) ? new FilterFactory().generateFilter(onFilter) : null;
 
-        ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1);
+        // TODO - Use Jackson annotations
+        final ValueSource count = effectObject.has("count") ?
+                new ObjectMapper().treeToValue(effectObject.get("count"), ValueSource.class) :
+                new ConstantValueSource(1);
 
         MultiSubActionBlueprint result = new MultiSubActionBlueprint();
 

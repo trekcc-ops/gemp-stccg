@@ -1,11 +1,13 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.*;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.ValueSource;
 
@@ -22,7 +24,7 @@ public class ChooseCardEffectBlueprintProducer {
     }
 
     public static SubActionBlueprint createEffectBlueprint(JsonNode effectObject)
-            throws InvalidCardDefinitionException {
+            throws InvalidCardDefinitionException, JsonProcessingException {
 
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
         BlueprintUtils.validateAllowedFields(effectObject, "count", "filter", "memorize", "text", "player");
@@ -38,7 +40,9 @@ public class ChooseCardEffectBlueprintProducer {
         final FilterableSource cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
                 new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
-        final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1);
+            // TODO - Use Jackson annotations
+        final ValueSource count = effectObject.has("count") ?
+                new ObjectMapper().treeToValue(effectObject.get("count"), ValueSource.class) : new ConstantValueSource(1);
 
         final String text = switch (effectType) {
             case CHOOSEACTIVECARDS -> BlueprintUtils.getString(effectObject, "text");

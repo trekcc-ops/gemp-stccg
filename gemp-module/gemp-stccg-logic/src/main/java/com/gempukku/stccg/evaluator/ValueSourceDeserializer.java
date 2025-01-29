@@ -252,8 +252,8 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 };
             } else if (type.equalsIgnoreCase("multiply")) {
                 BlueprintUtils.validateAllowedFields(object, "multiplier", "source");
-                final ValueSource multiplier = ValueResolver.resolveEvaluator(object.get("multiplier"));
-                final ValueSource valueSource = ValueResolver.resolveEvaluator(object.get("source"), 0);
+                final ValueSource multiplier = resolveEvaluator(ctxt, object.get("multiplier"));
+                final ValueSource valueSource = resolveEvaluator(ctxt, object.get("source"), 0);
                 return (actionContext) -> new MultiplyEvaluator(actionContext, multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
             } else if (type.equalsIgnoreCase("forEachStrength")) {
                 BlueprintUtils.validateAllowedFields(object, "multiplier", "over", "filter");
@@ -333,9 +333,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             else if (type.equalsIgnoreCase("subtract")) {
                 BlueprintUtils.validateAllowedFields(object, "firstNumber", "secondNumber");
                 final ValueSource firstNumber =
-                        ValueResolver.resolveEvaluator(object.get("firstNumber"), 0);
+                        resolveEvaluator(ctxt, object.get("firstNumber"), 0);
                 final ValueSource secondNumber =
-                        ValueResolver.resolveEvaluator(object.get("secondNumber"), 0);
+                        resolveEvaluator(ctxt, object.get("secondNumber"), 0);
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {

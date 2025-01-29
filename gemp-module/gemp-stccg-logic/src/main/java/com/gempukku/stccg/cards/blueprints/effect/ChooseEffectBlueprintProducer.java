@@ -1,15 +1,17 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.evaluator.ValueSource;
-import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
@@ -22,7 +24,7 @@ public class ChooseEffectBlueprintProducer {
         CHOOSEANUMBER, CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT, CHOOSETRIBBLEPOWER
     }
     public static SubActionBlueprint createEffectBlueprint(JsonNode effectObject)
-            throws InvalidCardDefinitionException {
+            throws InvalidCardDefinitionException, JsonProcessingException {
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
 
         switch(effectType) {
@@ -43,8 +45,10 @@ public class ChooseEffectBlueprintProducer {
         final String memorize = effectObject.get("memorize").textValue();
 
         final String choiceText = BlueprintUtils.getString(effectObject, "text", getDefaultText(effectType));
-        final ValueSource valueSource =
-                ValueResolver.resolveEvaluator(effectObject.get("amount"), 0);
+        // TODO - Use Jackson annotations
+        final ValueSource valueSource = effectObject.has("amount") ?
+                new ObjectMapper().treeToValue(effectObject.get("amount"), ValueSource.class) :
+                new ConstantValueSource(0);
         final PlayerSource excludePlayerSource =
                 BlueprintUtils.getPlayerSource(effectObject, "exclude", true);
 
