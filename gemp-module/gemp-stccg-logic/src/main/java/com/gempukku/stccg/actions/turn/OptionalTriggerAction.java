@@ -4,14 +4,14 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class OptionalTriggerAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
     private enum Progress { sentMessage }
-    private ActionSource _actionSource;
+    private ActionBlueprint _actionBlueprint;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
         super(physicalCard.getGame(), physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(),
@@ -20,9 +20,9 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
         _performingCard = physicalCard;
     }
 
-    public OptionalTriggerAction(PhysicalCard physicalCard, ActionSource actionSource) {
+    public OptionalTriggerAction(PhysicalCard physicalCard, ActionBlueprint actionBlueprint) {
         this(physicalCard);
-        _actionSource = actionSource;
+        _actionBlueprint = actionBlueprint;
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
@@ -52,8 +52,8 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
             if (cost != null)
                 return cost;
 
-            if (_actionSource != null) {
-                cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionSource).countUse();
+            if (_actionBlueprint != null) {
+                cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionBlueprint).countUse();
             }
             Action action = getNextAction();
             if (action == null)

@@ -6,8 +6,8 @@ import com.gempukku.stccg.cards.ActionContext;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MultiEffectBlueprint implements EffectBlueprint {
-    private boolean playabilityCheckedForEffect;
+public class MultiSubActionBlueprint implements EffectBlueprint {
+    protected boolean playabilityCheckedForEffect;
 
     private final List<EffectBlueprint> effectBlueprints = new LinkedList<>();
 

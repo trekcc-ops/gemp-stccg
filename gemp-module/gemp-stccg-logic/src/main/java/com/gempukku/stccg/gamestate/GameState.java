@@ -385,7 +385,7 @@ public abstract class GameState {
     public void setModifiersLogic(ModifiersLogic modifiers) { _modifiersLogic = modifiers; }
     public void setNextCardId(int nextCardId) { _nextCardId = nextCardId; }
 
-    public void setModifiersLogic(JsonNode node, ST1EGame game) { _modifiersLogic = new ModifiersLogic(game, node); }
+    public void setModifiersLogic(JsonNode node, ST1EGame game) { _modifiersLogic = new ModifiersLogic(game); }
     public void setActionsEnvironment(ActionsEnvironment actionsEnvironment) {
         _actionsEnvironment = actionsEnvironment;
     }

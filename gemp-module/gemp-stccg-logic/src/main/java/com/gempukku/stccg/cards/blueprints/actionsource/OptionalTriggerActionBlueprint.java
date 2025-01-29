@@ -1,10 +1,12 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
 import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -12,29 +14,33 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.RequiredType;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 
-public class OptionalTriggerActionSource extends TriggerActionSource {
+import java.util.List;
+
+public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
     private final TriggerTiming _triggerTiming;
     private final RequiredType _requiredType = RequiredType.OPTIONAL;
 
-    public OptionalTriggerActionSource(@JsonProperty("text")
+    public OptionalTriggerActionBlueprint(@JsonProperty("text")
                                        String text,
-                                       @JsonProperty(value="limitPerTurn", defaultValue="0")
+                                          @JsonProperty(value="limitPerTurn", defaultValue="0")
                                        int limitPerTurn,
-                                       @JsonProperty("phase")
+                                          @JsonProperty("phase")
                                        Phase phase,
-                                       @JsonProperty("trigger")
+                                          @JsonProperty("trigger")
                                        JsonNode triggerNode,
-                                       @JsonProperty("requires")
-                                       JsonNode requirementNode,
-                                       @JsonProperty("cost")
-                                       JsonNode costNode,
-                                       @JsonProperty("effect")
-                                       JsonNode effectNode) throws InvalidCardDefinitionException {
+                                          @JsonProperty("requires")
+                                       JsonNode requirements,
+                                          @JsonProperty("cost")
+                                          @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                       List<EffectBlueprint> costs,
+                                          @JsonProperty("effect")
+                                          @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                          List<EffectBlueprint> effects) throws InvalidCardDefinitionException {
         super(text, limitPerTurn, phase);
         TriggerChecker triggerChecker = TriggerCheckerFactory.getTriggerChecker(triggerNode);
         _triggerTiming = triggerChecker.isBefore() ? TriggerTiming.BEFORE : TriggerTiming.AFTER;
         addRequirement(triggerChecker);
-        processRequirementsCostsAndEffects(requirementNode, costNode, effectNode);
+        processRequirementsCostsAndEffects(requirements, costs, effects);
     }
 
     public OptionalTriggerAction createAction(PhysicalCard card) {

@@ -1,12 +1,11 @@
 package com.gempukku.stccg.modifiers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -32,7 +31,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
     private final Collection<Modifier> _skipSet = new HashSet<>();
     private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
-    private final Map<ActionSource, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
+    private final Map<ActionBlueprint, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
     private final DefaultGame _game;
     private final Map<Player, Integer> _normalCardPlaysAvailable = new HashMap<>();
     private final int _normalCardPlaysPerTurn;
@@ -40,12 +39,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     public ModifiersLogic(DefaultGame game) {
         _game = game;
         _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
-    }
-
-    public ModifiersLogic(DefaultGame game, JsonNode node) {
-        _game = game;
-        _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
-        // TODO - load all modifiers from JsonNode
     }
 
 
@@ -60,8 +53,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource) {
-        return _turnLimitActionSourceCounters.computeIfAbsent(actionSource, entry -> new DefaultLimitCounter());
+    public LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint) {
+        return _turnLimitActionSourceCounters.computeIfAbsent(actionBlueprint, entry -> new DefaultLimitCounter());
     }
 
     private List<Modifier> getEffectModifiers(ModifierEffect modifierEffect) {

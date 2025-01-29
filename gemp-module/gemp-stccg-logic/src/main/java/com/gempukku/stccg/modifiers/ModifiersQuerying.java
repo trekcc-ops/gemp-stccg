@@ -2,7 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -60,7 +60,7 @@ public interface ModifiersQuerying {
 
     boolean hasFlagActive(ModifierFlag modifierFlag);
 
-    LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource);
+    LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint);
 
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
     int getNormalCardPlaysAvailable(Player player);

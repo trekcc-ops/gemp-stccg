@@ -9,16 +9,14 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.processes.StartOfTurnGameProcess;
-import com.gempukku.stccg.processes.st1e.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({@JsonSubTypes.Type(value = SeedCardActionSource.class, name = "seedThis"),
-        @JsonSubTypes.Type(value = ActivateCardActionSource.class, name = "activate"),
-        @JsonSubTypes.Type(value = OptionalTriggerActionSource.class, name = "optionalTrigger"),
-        @JsonSubTypes.Type(value = RequiredTriggerActionSource.class, name = "requiredTrigger")
+@JsonSubTypes({@JsonSubTypes.Type(value = SeedCardActionBlueprint.class, name = "seedThis"),
+        @JsonSubTypes.Type(value = ActivateCardActionBlueprint.class, name = "activate"),
+        @JsonSubTypes.Type(value = OptionalTriggerActionBlueprint.class, name = "optionalTrigger"),
+        @JsonSubTypes.Type(value = RequiredTriggerActionBlueprint.class, name = "requiredTrigger")
 })
-public interface ActionSource {
+public interface ActionBlueprint {
 
     boolean isValid(ActionContext actionContext);
     void setText(String text);

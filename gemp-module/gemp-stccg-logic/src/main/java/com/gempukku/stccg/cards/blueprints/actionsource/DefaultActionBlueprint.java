@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
@@ -10,25 +9,20 @@ import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
-import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
-import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class DefaultActionSource implements ActionSource {
+public abstract class DefaultActionBlueprint implements ActionBlueprint {
     private final List<Requirement> requirements = new LinkedList<>();
 
     protected final List<EffectBlueprint> costs = new LinkedList<>();
@@ -36,7 +30,7 @@ public abstract class DefaultActionSource implements ActionSource {
 
     protected String _text;
 
-    public DefaultActionSource(String text, int limitPerTurn, Phase phase) {
+    public DefaultActionBlueprint(String text, int limitPerTurn, Phase phase) {
             if (text != null)
                 setText(text);
             if (limitPerTurn > 0)
@@ -77,38 +71,35 @@ public abstract class DefaultActionSource implements ActionSource {
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
-    public void processRequirementsCostsAndEffects(JsonNode node) throws InvalidCardDefinitionException {
-        processRequirementsCostsAndEffects(node.get("requires"), node.get("cost"), node.get("effect"));
-    }
-
-    public void processRequirementsCostsAndEffects(JsonNode requirementNode, JsonNode costNode, JsonNode effectNode)
+    public void processRequirementsCostsAndEffects(JsonNode requirements, List<EffectBlueprint> costs,
+                                                   List<EffectBlueprint> effects)
             throws InvalidCardDefinitionException {
 
-        if (costNode == null && effectNode == null)
+        if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
 
-        if (requirementNode != null) {
-            for (JsonNode requirement : JsonUtils.toArray(requirementNode))
+        if (requirements != null) {
+            for (JsonNode requirement : JsonUtils.toArray(requirements))
                 addRequirement(RequirementFactory.getRequirement(requirement));
         }
 
-        if (costNode != null) {
-            for (JsonNode cost : JsonUtils.toArray(costNode)) {
-                final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(cost);
-                addRequirement(effectBlueprint::isPlayableInFull);
-                addCost(effectBlueprint);
+        if (costs != null && !costs.isEmpty()) {
+            for (EffectBlueprint costBlueprint : costs) {
+                addRequirement(costBlueprint::isPlayableInFull);
+                addCost(costBlueprint);
             }
         }
 
-        if (effectNode != null) {
-            for (JsonNode effect : JsonUtils.toArray(effectNode)) {
-                final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(effect);
-                if (effectBlueprint.isPlayabilityCheckedForEffect())
-                    addRequirement(effectBlueprint::isPlayableInFull);
-                addEffect(effectBlueprint);
+        if (effects != null && !effects.isEmpty()) {
+            for (EffectBlueprint blueprint : effects) {
+                if (blueprint.isPlayabilityCheckedForEffect())
+                    addRequirement(blueprint::isPlayableInFull);
+                addEffect(blueprint);
             }
         }
     }
+
+
 
 
 

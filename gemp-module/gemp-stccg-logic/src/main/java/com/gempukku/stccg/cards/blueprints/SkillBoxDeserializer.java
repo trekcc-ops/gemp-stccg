@@ -14,8 +14,8 @@ import java.util.*;
 
 public class SkillBoxDeserializer extends StdDeserializer<SkillBox> {
 
-    final String multiplierSplit1e = "(?=x\\d+)";
-    final String multiplierSplit2e = "(?<=\\d).*(?=\\s\\w)";
+    private static final String MULTIPLIER_SPLIT_1E = "(?=x\\d+)";
+    private static final String MULTIPLIER_SPLIT_2E = "(?<=\\d).*(?=\\s\\w)";
     final Map<String, SkillName> _skillMap = new HashMap<>();
 
 
@@ -56,14 +56,14 @@ public class SkillBoxDeserializer extends StdDeserializer<SkillBox> {
 
         if (skillSplit[0].trim().equals("[*]")) {
             String skill = skillSplit[1].trim();
-            if (skill.split(multiplierSplit1e).length > 1) {
+            if (skill.split(MULTIPLIER_SPLIT_1E).length > 1) {
                 // 1E-style multiplier (like Leadership x2)
-                String[] stringSplit = skill.split(multiplierSplit1e);
+                String[] stringSplit = skill.split(MULTIPLIER_SPLIT_1E);
                 skillName = stringSplit[0].trim();
                 skillLevel = Integer.parseInt(stringSplit[1].substring(1).trim());
-            } else if (skill.split(multiplierSplit2e).length > 1) {
+            } else if (skill.split(MULTIPLIER_SPLIT_2E).length > 1) {
                 // 2E-style multiplier (like 2 Leadership)
-                String[] stringSplit = skill.split(multiplierSplit2e);
+                String[] stringSplit = skill.split(MULTIPLIER_SPLIT_2E);
                 skillName = stringSplit[1].trim();
                 skillLevel = Integer.parseInt(stringSplit[0]);
             } else {

@@ -1,7 +1,5 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -10,10 +8,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.Player;
 
-public class SeedCardActionSource extends DefaultActionSource {
+public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     private final Zone _seedToZone;
 
-    public SeedCardActionSource(@JsonProperty(value = "where", required = true)
+    public SeedCardActionBlueprint(@JsonProperty(value = "where", required = true)
                                 Zone seedToZone
     ) {
         super("Seed card", 0, null);

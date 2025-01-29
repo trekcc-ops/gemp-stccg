@@ -55,7 +55,6 @@ public class CardBlueprint {
     @JsonProperty("lore")
     protected String _lore;
     @JsonProperty("species")
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES)
     protected List<Species> _species;
 
     @JsonProperty("characteristic")
@@ -140,13 +139,13 @@ public class CardBlueprint {
 
     @JsonProperty("image-options")
     private final Map<Affiliation, String> _imageOptions = new HashMap<>();
-    private final Map<RequiredType, List<ActionSource>> _beforeTriggers = new HashMap<>();
-    private final Map<RequiredType, List<ActionSource>> _afterTriggers = new HashMap<>();
-    private final Map<RequiredType, ActionSource> _discardedFromPlayTriggers = new HashMap<>();
-    private final Map<TriggerTiming, List<ActionSource>> _optionalInHandTriggers = new HashMap<>();
-    private final Map<TriggerTiming, List<ActionSource>> _activatedTriggers = new HashMap<>();
+    private final Map<RequiredType, List<ActionBlueprint>> _beforeTriggers = new HashMap<>();
+    private final Map<RequiredType, List<ActionBlueprint>> _afterTriggers = new HashMap<>();
+    private final Map<RequiredType, ActionBlueprint> _discardedFromPlayTriggers = new HashMap<>();
+    private final Map<TriggerTiming, List<ActionBlueprint>> _optionalInHandTriggers = new HashMap<>();
+    private final Map<TriggerTiming, List<ActionBlueprint>> _activatedTriggers = new HashMap<>();
 
-    private List<ActionSource> inDiscardPhaseActions;
+    private List<ActionBlueprint> inDiscardPhaseActions;
 
     @JsonProperty("modifiers")
     private final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
@@ -158,7 +157,7 @@ public class CardBlueprint {
     private List<PlayOutOfSequenceCondition> playOutOfSequenceConditions;
 
     @JsonProperty("actions")
-    private List<ActionSource> _actionSources = new LinkedList<>();
+    private List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
 
     public CardBlueprint() {
         for (RequiredType requiredType : RequiredType.values()) {
@@ -336,10 +335,10 @@ public class CardBlueprint {
     public boolean isHomeworld() { return homeworldAffiliation() != null; }
 
 
-    public List<ActionSource> getSeedCardActionSources() {
-        List<ActionSource> result = new LinkedList<>();
-        for (ActionSource source : _actionSources) {
-            if (source instanceof SeedCardActionSource)
+    public List<ActionBlueprint> getSeedCardActionSources() {
+        List<ActionBlueprint> result = new LinkedList<>();
+        for (ActionBlueprint source : _actionBlueprints) {
+            if (source instanceof SeedCardActionBlueprint)
                 result.add(source);
         }
         return result;
@@ -352,15 +351,15 @@ public class CardBlueprint {
         playInOtherPhaseConditions.add(requirement);
     }
 
-    public void appendOptionalInHandTrigger(ActionSource actionSource, TriggerTiming timing) {
+    public void appendOptionalInHandTrigger(ActionBlueprint actionBlueprint, TriggerTiming timing) {
         _optionalInHandTriggers.computeIfAbsent(timing, k -> new LinkedList<>());
-        _optionalInHandTriggers.get(timing).add(actionSource);
+        _optionalInHandTriggers.get(timing).add(actionBlueprint);
     }
 
-    public void appendBeforeOrAfterTrigger(TriggerActionSource actionSource) {
+    public void appendBeforeOrAfterTrigger(TriggerActionBlueprint actionSource) {
         RequiredType requiredType = actionSource.getRequiredType();
         TriggerTiming triggerTiming = actionSource.getTiming();
-        Map<RequiredType, List<ActionSource>> triggersMap = null;
+        Map<RequiredType, List<ActionBlueprint>> triggersMap = null;
         if (triggerTiming == TriggerTiming.BEFORE)
             triggersMap = _beforeTriggers;
         else if (triggerTiming == TriggerTiming.AFTER)
@@ -389,16 +388,16 @@ public class CardBlueprint {
         targetFilters.add(targetFilter);
     }
 
-    public void appendInDiscardPhaseAction(ActionSource actionSource) {
+    public void appendInDiscardPhaseAction(ActionBlueprint actionBlueprint) {
         if (inDiscardPhaseActions == null)
             inDiscardPhaseActions = new LinkedList<>();
-        inDiscardPhaseActions.add(actionSource);
+        inDiscardPhaseActions.add(actionBlueprint);
     }
 
-    public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) {
-        _discardedFromPlayTriggers.put(requiredType, actionSource);
+    public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionBlueprint actionBlueprint) {
+        _discardedFromPlayTriggers.put(requiredType, actionBlueprint);
     }
-    public ActionSource getDiscardedFromPlayTrigger(RequiredType requiredType) {
+    public ActionBlueprint getDiscardedFromPlayTrigger(RequiredType requiredType) {
         return _discardedFromPlayTriggers.get(requiredType);
     }
     public List<Requirement> getSeedRequirements() { return _seedRequirements; }
@@ -406,19 +405,19 @@ public class CardBlueprint {
 
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
 
-    public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
-    public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
+    public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
+    public List<ActionBlueprint> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
     public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
-    public List<ActionSource> getBeforeOrAfterTriggers(RequiredType requiredType, TriggerTiming timing) {
-        List<ActionSource> sourceResult = new ArrayList<>();
-        for (ActionSource source : _actionSources) {
+    public List<ActionBlueprint> getBeforeOrAfterTriggers(RequiredType requiredType, TriggerTiming timing) {
+        List<ActionBlueprint> sourceResult = new ArrayList<>();
+        for (ActionBlueprint source : _actionBlueprints) {
             if (requiredType == RequiredType.REQUIRED) {
-                if (source instanceof RequiredTriggerActionSource triggerSource && triggerSource.getTiming() == timing)
+                if (source instanceof RequiredTriggerActionBlueprint triggerSource && triggerSource.getTiming() == timing)
                     sourceResult.add(source);
             } else {
-                if (source instanceof OptionalTriggerActionSource triggerSource && triggerSource.getTiming() == timing)
+                if (source instanceof OptionalTriggerActionBlueprint triggerSource && triggerSource.getTiming() == timing)
                     sourceResult.add(source);
             }
         }
@@ -500,7 +499,7 @@ public class CardBlueprint {
     public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
-            if (actionSource instanceof RequiredTriggerActionSource triggerSource) {
+            if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
                 RequiredTriggerAction action = triggerSource.createActionWithNewContext(card, actionResult);
                 if (action != null) result.add(action);
             }
@@ -542,9 +541,9 @@ public class CardBlueprint {
     }
 
     public List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
-                                                                      ActionResult actionResult, List<ActionSource> actionSources) {
+                                                                      ActionResult actionResult, List<ActionBlueprint> actionBlueprints) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        actionSources.forEach(actionSource -> {
+        actionBlueprints.forEach(actionSource -> {
             if (actionSource != null) {
                 TopLevelSelectableAction action = actionSource.createActionWithNewContext(card, playerId, actionResult);
                 if (action != null) result.add(action);
@@ -556,10 +555,10 @@ public class CardBlueprint {
 
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame cardGame) {
-        List<ActionSource> resultSources = new ArrayList<>();
-        for (ActionSource actionSource : _actionSources) {
-            if (actionSource instanceof ActivateCardActionSource)
-                resultSources.add(actionSource);
+        List<ActionBlueprint> resultSources = new ArrayList<>();
+        for (ActionBlueprint actionBlueprint : _actionBlueprints) {
+            if (actionBlueprint instanceof ActivateCardActionBlueprint)
+                resultSources.add(actionBlueprint);
         }
         return getActionsFromActionSources(player.getPlayerId(), thisCard, null, resultSources);
     }

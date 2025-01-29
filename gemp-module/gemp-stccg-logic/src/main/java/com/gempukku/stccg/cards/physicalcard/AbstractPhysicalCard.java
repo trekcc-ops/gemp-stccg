@@ -13,7 +13,7 @@ import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
@@ -237,10 +237,10 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
 
     public List<TopLevelSelectableAction> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        List<ActionSource> triggers = _blueprint.getActivatedTriggers(timing);
+        List<ActionBlueprint> triggers = _blueprint.getActivatedTriggers(timing);
 
         if (triggers != null) {
-            for (ActionSource trigger : triggers) {
+            for (ActionBlueprint trigger : triggers) {
                 TopLevelSelectableAction action = trigger.createActionWithNewContext(this, actionResult);
                 if (action != null)
                     result.add(action);
@@ -252,16 +252,16 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
 
 
     public TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType) {
-        ActionSource actionSource = _blueprint.getDiscardedFromPlayTrigger(requiredType);
-        return (actionSource == null) ?
-                null : actionSource.createActionWithNewContext(this, null);
+        ActionBlueprint actionBlueprint = _blueprint.getDiscardedFromPlayTrigger(requiredType);
+        return (actionBlueprint == null) ?
+                null : actionBlueprint.createActionWithNewContext(this, null);
     }
 
 
     private List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
-                                                     ActionResult actionResult, List<ActionSource> actionSources) {
+                                                     ActionResult actionResult, List<ActionBlueprint> actionBlueprints) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        actionSources.forEach(actionSource -> {
+        actionBlueprints.forEach(actionSource -> {
             if (actionSource != null) {
                 TopLevelSelectableAction action =
                         actionSource.createActionWithNewContext(card, playerId, actionResult);
@@ -321,7 +321,7 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
 
     public List<TopLevelSelectableAction> createSeedCardActions() {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        for (ActionSource source : _blueprint.getSeedCardActionSources()) {
+        for (ActionBlueprint source : _blueprint.getSeedCardActionSources()) {
             result.add(source.createActionWithNewContext(this));
         }
         return result;

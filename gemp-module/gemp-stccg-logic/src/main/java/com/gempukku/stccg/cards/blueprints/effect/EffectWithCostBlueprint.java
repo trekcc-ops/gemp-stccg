@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
@@ -19,11 +20,15 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
     private final List<EffectBlueprint> _costAppenders;
     private final Requirement[] _requirements;
 
-    public EffectWithCostBlueprint(JsonNode node) throws InvalidCardDefinitionException {
-        BlueprintUtils.validateAllowedFields(node, "cost", "effect", "requires");
-        _costAppenders = EffectBlueprintDeserializer.getEffectBlueprints(node.get("cost"));
-        _effectBlueprints = EffectBlueprintDeserializer.getEffectBlueprints(node.get("effect"));
-        _requirements = RequirementFactory.getRequirements(node);
+    public EffectWithCostBlueprint(@JsonProperty("requires")
+                                   JsonNode requirementNode,
+                                   @JsonProperty("cost")
+                                   List<EffectBlueprint> costs,
+                                   @JsonProperty("effect")
+                                   List<EffectBlueprint> effects) throws InvalidCardDefinitionException {
+        _requirements = RequirementFactory.getRequirements(requirementNode);
+        _costAppenders = (costs == null) ? new LinkedList<>() : costs;
+        _effectBlueprints = (effects == null) ? new LinkedList<>() : effects;
     }
     @Override
     protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
