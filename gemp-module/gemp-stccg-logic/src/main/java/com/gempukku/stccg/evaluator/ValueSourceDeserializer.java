@@ -1,6 +1,9 @@
 package com.gempukku.stccg.evaluator;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -16,14 +19,35 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.Requirement;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
-public class ValueResolver {
+public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
-    public static ValueSource resolveEvaluator(JsonNode value)
-            throws InvalidCardDefinitionException {
-        return resolveEvaluator(value, null);
+    public ValueSourceDeserializer() {
+        this(null);
+    }
+
+    public ValueSourceDeserializer(Class<?> vc) {
+        super(vc);
+    }
+
+    @Override
+    public ValueSource deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        JsonNode object = jp.getCodec().readTree(jp);
+        if (object != null)
+            return resolveEvaluator(ctxt, object);
+        else throw new InvalidCardDefinitionException("Null value source");
+    }
+
+    private static ValueSource resolveEvaluator(DeserializationContext ctxt, JsonNode node, int defaultValue)
+            throws IOException {
+        return Objects.requireNonNullElse(resolveEvaluator(ctxt, node), new ConstantValueSource(defaultValue));
     }
 
     public static ValueSource resolveEvaluator(String stringValue) throws InvalidCardDefinitionException {
@@ -53,12 +77,8 @@ public class ValueResolver {
             return new ConstantValueSource(Integer.parseInt(stringValue));
     }
 
-    public static ValueSource resolveEvaluator(JsonNode value, Integer defaultValue)
-            throws InvalidCardDefinitionException {
-        if (value == null && defaultValue == null)
-            throw new InvalidCardDefinitionException("Value not defined");
-        if (value == null)
-            return new ConstantValueSource(defaultValue);
+    public static ValueSource resolveEvaluator(DeserializationContext ctxt, JsonNode value)
+            throws IOException {
         if (value.isInt())
             return new ConstantValueSource(value.asInt());
         if (value.isTextual())
@@ -69,8 +89,8 @@ public class ValueResolver {
                 throw new InvalidCardDefinitionException("ValueResolver type not defined");
             if (type.equalsIgnoreCase("range")) {
                 BlueprintUtils.validateAllowedFields(object, "from", "to");
-                ValueSource fromValue = resolveEvaluator(object.get("from"));
-                ValueSource toValue = resolveEvaluator(object.get("to"));
+                ValueSource fromValue = resolveEvaluator(ctxt, object.get("from"));
+                ValueSource toValue = resolveEvaluator(ctxt, object.get("to"));
                 return new ValueSource() {
                     @Override
                     public Evaluator getEvaluator(ActionContext actionContext) {
@@ -104,6 +124,30 @@ public class ValueResolver {
                         }
                     }
                 };
+            } else if (type.equalsIgnoreCase("requires")) {
+                BlueprintUtils.validateAllowedFields(object, "requires", "true", "false");
+                JsonNode requiresArray = object.get("requires");
+                List<Requirement> conditions = new ArrayList<>();
+                if (requiresArray.isArray()) {
+                    for (JsonNode requirement : requiresArray) {
+                        conditions.add(ctxt.readTreeAsValue(requirement, Requirement.class));
+                    }
+                } else {
+                    conditions.add(ctxt.readTreeAsValue(requiresArray, Requirement.class));
+                }
+                ValueSource trueValue = resolveEvaluator(ctxt, object.get("true"));
+                ValueSource falseValue = resolveEvaluator(ctxt, object.get("false"));
+                return actionContext -> (Evaluator) new Evaluator() {
+                    @Override
+                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                        if (actionContext.acceptsAllRequirements(conditions)) {
+                            return trueValue.evaluateExpression(actionContext, cardAffected);
+                        } else {
+                            return falseValue.evaluateExpression(actionContext, cardAffected);
+                        }
+                    }
+                };
+
             } else if (type.equalsIgnoreCase("forEachInMemory")) {
                 BlueprintUtils.validateAllowedFields(object, "memory", "limit");
                 final String memory = object.get("memory").textValue();
@@ -124,8 +168,8 @@ public class ValueResolver {
                 };
             } else if (type.equalsIgnoreCase("limit")) {
                 BlueprintUtils.validateAllowedFields(object, "limit", "value");
-                ValueSource limitSource = resolveEvaluator(object.get("limit"), 1);
-                ValueSource valueSource = resolveEvaluator(object.get("value"), 0);
+                ValueSource limitSource = resolveEvaluator(ctxt, object.get("limit"), 1);
+                ValueSource valueSource = resolveEvaluator(ctxt, object.get("value"), 0);
                 return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
             } else if (type.equalsIgnoreCase("countStacked")) {
                 BlueprintUtils.validateAllowedFields(object, "on", "filter");
@@ -232,13 +276,13 @@ public class ValueResolver {
                                 new Evaluator() {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                            final Filterable filterable = strengthSource.getFilterable(actionContext);
-                                            int strength = 0;
-                                            for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
-                                                strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
-                                            }
+                                        final Filterable filterable = strengthSource.getFilterable(actionContext);
+                                        int strength = 0;
+                                        for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
+                                            strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
+                                        }
 
-                                            return Math.max(0, strength - over);
+                                        return Math.max(0, strength - over);
                                     }
                                 });
                     }
@@ -302,8 +346,8 @@ public class ValueResolver {
                 };
             } else if (type.equalsIgnoreCase("max")) {
                 BlueprintUtils.validateAllowedFields(object, "first", "second");
-                ValueSource first = resolveEvaluator(object.get("first"));
-                ValueSource second = resolveEvaluator(object.get("second"));
+                ValueSource first = resolveEvaluator(ctxt, object.get("first"));
+                ValueSource second = resolveEvaluator(ctxt, object.get("second"));
 
                 return actionContext -> new Evaluator() {
                     @Override
@@ -316,8 +360,8 @@ public class ValueResolver {
                 };
             } else if (type.equalsIgnoreCase("min")) {
                 BlueprintUtils.validateAllowedFields(object, "first", "second");
-                ValueSource first = resolveEvaluator(object.get("first"));
-                ValueSource second = resolveEvaluator(object.get("second"));
+                ValueSource first = resolveEvaluator(ctxt, object.get("first"));
+                ValueSource second = resolveEvaluator(ctxt, object.get("second"));
 
                 return actionContext -> new Evaluator() {
                     @Override
@@ -333,4 +377,6 @@ public class ValueResolver {
         }
         throw new InvalidCardDefinitionException("Unable to resolve an evaluator");
     }
+
+
 }

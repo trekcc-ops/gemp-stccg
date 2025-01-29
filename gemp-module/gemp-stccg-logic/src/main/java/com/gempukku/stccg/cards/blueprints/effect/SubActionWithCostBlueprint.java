@@ -1,32 +1,29 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class SubActionWithCostBlueprint extends DelayedEffectBlueprint {
     private final List<SubActionBlueprint> _subActionBlueprints;
     private final List<SubActionBlueprint> _costAppenders;
-    private final Requirement[] _requirements;
+    private final List<Requirement> _requirements;
 
     public SubActionWithCostBlueprint(@JsonProperty("requires")
-                                   JsonNode requirementNode,
+                                   List<Requirement> requirements,
                                       @JsonProperty("cost")
                                    List<SubActionBlueprint> costs,
                                       @JsonProperty("effect")
-                                   List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        _requirements = RequirementFactory.getRequirements(requirementNode);
+                                   List<SubActionBlueprint> effects) {
+        _requirements = Objects.requireNonNullElse(requirements, new LinkedList<>());
         _costAppenders = (costs == null) ? new LinkedList<>() : costs;
         _subActionBlueprints = (effects == null) ? new LinkedList<>() : effects;
     }
@@ -43,7 +40,7 @@ public class SubActionWithCostBlueprint extends DelayedEffectBlueprint {
 
 
     private boolean requirementsNotMet(ActionContext actionContext) {
-        return (!actionContext.acceptsAllRequirements(List.of(_requirements)));
+        return (!actionContext.acceptsAllRequirements(_requirements));
     }
 
     @Override
@@ -65,8 +62,4 @@ public class SubActionWithCostBlueprint extends DelayedEffectBlueprint {
 
         return true;
     }
-/*
-    List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException;
-  */
 }

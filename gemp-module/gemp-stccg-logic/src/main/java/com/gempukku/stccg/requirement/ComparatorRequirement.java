@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints.requirement;
+package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;

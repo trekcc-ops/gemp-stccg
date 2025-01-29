@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -141,18 +138,6 @@ public final class BlueprintUtils {
             if (!keys.contains(field))
                 throw new InvalidCardDefinitionException("Missing field: " + field);
         }
-    }
-
-    public static List<Requirement> getRequirementsFromRequirementNode(JsonNode node)
-            throws InvalidCardDefinitionException {
-        List<Requirement> result = new ArrayList<>();
-        if (node != null) {
-            List<JsonNode> requirements = JsonUtils.toArray(node);
-            for (JsonNode requirement : requirements) {
-                result.add(RequirementFactory.getRequirement(requirement));
-            }
-        }
-        return result;
     }
 
 

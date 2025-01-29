@@ -1,5 +1,6 @@
-package com.gempukku.stccg.cards.blueprints.requirement;
+package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.TribblesActionContext;
 
@@ -10,12 +11,13 @@ public class PlayOutOfSequenceCondition implements Requirement {
     private final ValueCheck _valueCheck;
     private final int _value;
 
-    public PlayOutOfSequenceCondition(String jsonString) {
-        if (jsonString.equals("tribbleSequenceBroken")) {
+    public PlayOutOfSequenceCondition(@JsonProperty(value = "condition", required = true)
+                                      String condition) {
+        if (condition.equals("tribbleSequenceBroken")) {
             _valueCheck = ValueCheck.tribbleSequenceBroken;
             _value = 1;
         } else {
-            String[] pieces = jsonString.split("=");
+            String[] pieces = condition.split("=");
             _valueCheck = ValueCheck.valueOf(pieces[0].trim());
             _value = Integer.valueOf(pieces[1].trim());
         }

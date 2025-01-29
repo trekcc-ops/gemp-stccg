@@ -1,12 +1,14 @@
-package com.gempukku.stccg.cards.blueprints.trigger;
+package com.gempukku.stccg.requirement.trigger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
+import com.gempukku.stccg.requirement.Requirement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConditionTrigger implements TriggerCheckerProducer {
@@ -15,7 +17,14 @@ public class ConditionTrigger implements TriggerCheckerProducer {
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value, "requires");
 
-        final Requirement[] requirements = RequirementFactory.getRequirements(value);
+        List<Requirement> requirements = new ArrayList<>();
+        for (JsonNode node : value) {
+            try {
+                requirements.add(new ObjectMapper().treeToValue(node, Requirement.class));
+            } catch(JsonProcessingException exp) {
+                throw new InvalidCardDefinitionException(exp.getMessage());
+            }
+        }
 
         return new TriggerChecker() {
             @Override
@@ -25,7 +34,7 @@ public class ConditionTrigger implements TriggerCheckerProducer {
 
             @Override
             public boolean accepts(ActionContext actionContext) {
-                return actionContext.acceptsAllRequirements(List.of(requirements));
+                return actionContext.acceptsAllRequirements(requirements);
             }
         };
     }

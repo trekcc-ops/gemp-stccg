@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -144,6 +144,8 @@ public class DefaultActionContext implements ActionContext {
 
 
     public boolean acceptsAllRequirements(Iterable<Requirement> requirements) {
+        if (requirements == null)
+            return true;
         boolean result = true;
         for (Requirement requirement : requirements) {
             if (!requirement.accepts(this)) result = false;

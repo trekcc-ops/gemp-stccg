@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                        @JsonProperty("phase")
                                     Phase phase,
                                        @JsonProperty("requires")
-                                    JsonNode requirementNode,
+                                       @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                    List<Requirement> requirements,
                                        @JsonProperty("cost")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                        List<SubActionBlueprint> costs,
@@ -29,7 +31,7 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
             super(text, limitPerTurn, phase);
-            processRequirementsCostsAndEffects(requirementNode, costs, effects);
+            processRequirementsCostsAndEffects(requirements, costs, effects);
     }
 
     public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card.getGame(), card); }

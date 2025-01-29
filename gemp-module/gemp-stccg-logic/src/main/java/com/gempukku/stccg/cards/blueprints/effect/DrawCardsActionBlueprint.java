@@ -7,10 +7,9 @@ import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
-import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -18,6 +17,7 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class DrawCardsActionBlueprint extends DelayedEffectBlueprint {
 
@@ -25,12 +25,12 @@ public class DrawCardsActionBlueprint extends DelayedEffectBlueprint {
     private final PlayerSource _drawingPlayerSource;
 
     DrawCardsActionBlueprint(@JsonProperty(value = "count")
-                             String count,
+                             ValueSource count,
                              @JsonProperty(value = "player")
                              String playerText) throws InvalidCardDefinitionException {
         _drawingPlayerSource = (playerText == null) ?
                 ActionContext::getPerformingPlayerId : PlayerResolver.resolvePlayer(playerText);
-        _countSource = (count == null) ? new ConstantEvaluator(1) : ValueResolver.resolveEvaluator(count);
+        _countSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));
     }
 
     @Override

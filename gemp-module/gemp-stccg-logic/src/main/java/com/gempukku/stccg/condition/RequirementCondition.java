@@ -1,7 +1,7 @@
 package com.gempukku.stccg.condition;
 
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;

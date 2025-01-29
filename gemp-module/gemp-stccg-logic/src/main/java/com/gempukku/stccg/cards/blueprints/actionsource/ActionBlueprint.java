@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")

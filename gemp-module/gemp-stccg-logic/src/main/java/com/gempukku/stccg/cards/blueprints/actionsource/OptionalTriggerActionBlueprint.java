@@ -7,8 +7,9 @@ import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
-import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
-import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
+import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.requirement.trigger.TriggerChecker;
+import com.gempukku.stccg.requirement.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.RequiredType;
@@ -29,7 +30,7 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                           @JsonProperty("trigger")
                                        JsonNode triggerNode,
                                           @JsonProperty("requires")
-                                       JsonNode requirements,
+                                       List<Requirement> requirements,
                                           @JsonProperty("cost")
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                        List<SubActionBlueprint> costs,

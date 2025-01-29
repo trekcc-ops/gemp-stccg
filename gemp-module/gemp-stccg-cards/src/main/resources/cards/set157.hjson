@@ -18,7 +18,10 @@
             tribble-value: 10
             tribble-power: advance
             image-url: https://www.trekcc.org/tribbles/cardimages/nbt/58V.jpg
-            playOutOfSequenceCondition: tribbleSequenceBroken
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: tribbleSequenceBroken
+            }
         }
         {
             blueprintId: 157_010

@@ -1,13 +1,11 @@
 package com.gempukku.stccg.cards;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.google.common.collect.Multimap;
 

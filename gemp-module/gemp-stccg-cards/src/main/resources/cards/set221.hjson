@@ -34,7 +34,10 @@
             tribble-value: 100
             tribble-power: cheat
             image-url: https://www.trekcc.org/tribbles/cardimages/toadc/143V.jpg
-            playOutOfSequenceCondition: nextTribbleInSequence = 10
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: nextTribbleInSequence = 10
+            }
         }
         {
             blueprintId: 221_010

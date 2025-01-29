@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints.trigger;
+package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;

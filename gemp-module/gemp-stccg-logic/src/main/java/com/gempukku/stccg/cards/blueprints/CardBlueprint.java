@@ -8,9 +8,9 @@ import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.*;
-import com.gempukku.stccg.cards.blueprints.requirement.PlayOutOfSequenceCondition;
+import com.gempukku.stccg.requirement.PlayOutOfSequenceCondition;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
@@ -154,6 +154,7 @@ public class CardBlueprint {
     private List<Requirement> playInOtherPhaseConditions;
 
     @JsonProperty("playOutOfSequenceCondition")
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<PlayOutOfSequenceCondition> playOutOfSequenceConditions;
 
     @JsonProperty("actions")

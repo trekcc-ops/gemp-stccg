@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.CardPerformedAction;
@@ -11,12 +10,10 @@ import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -71,16 +68,17 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
-    public void processRequirementsCostsAndEffects(JsonNode requirements, List<SubActionBlueprint> costs,
+    public void processRequirementsCostsAndEffects(List<Requirement> requirements, List<SubActionBlueprint> costs,
                                                    List<SubActionBlueprint> effects)
             throws InvalidCardDefinitionException {
 
         if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
 
-        if (requirements != null) {
-            for (JsonNode requirement : JsonUtils.toArray(requirements))
-                addRequirement(RequirementFactory.getRequirement(requirement));
+        if (requirements != null && !requirements.isEmpty()) {
+            for (Requirement requirement : requirements) {
+                addRequirement(requirement);
+            }
         }
 
         if (costs != null && !costs.isEmpty()) {
@@ -98,6 +96,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
             }
         }
     }
+
 
 
 

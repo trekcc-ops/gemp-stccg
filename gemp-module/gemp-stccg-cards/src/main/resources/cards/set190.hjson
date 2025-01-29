@@ -26,7 +26,10 @@
             tribble-value: 1000
             tribble-power: cheat
             image-url: https://www.trekcc.org/tribbles/cardimages/50th/126V.jpg
-            playOutOfSequenceCondition: nextTribbleInSequence = 100
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: nextTribbleInSequence = 100
+            }
         }
         {
             blueprintId: 190_012

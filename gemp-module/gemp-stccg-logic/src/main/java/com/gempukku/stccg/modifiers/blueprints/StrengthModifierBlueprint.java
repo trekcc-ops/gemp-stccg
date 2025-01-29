@@ -8,33 +8,35 @@ import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.condition.RequirementCondition;
-import com.gempukku.stccg.modifiers.GainIconModifier;
+import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 
 import java.util.List;
 
-public class GainIconModifierBlueprint implements ModifierBlueprint {
+public class StrengthModifierBlueprint implements ModifierBlueprint {
 
-    private final CardIcon _icon;
     private final FilterableSource _filterableSource;
     private final List<Requirement> _requirements;
+    private final ValueSource _valueSource;
 
-    GainIconModifierBlueprint(@JsonProperty(value = "icon", required = true)
-                              CardIcon icon,
+    StrengthModifierBlueprint(@JsonProperty(value = "amount", required = true)
+                              ValueSource amount,
                               @JsonProperty(value = "filter", required = true)
                               String filterText,
-                              @JsonProperty(value = "requires")
+                              @JsonProperty(value = "requires", required = true)
                               List<Requirement> requirements) throws InvalidCardDefinitionException {
-        _icon = icon;
-        _filterableSource = new FilterFactory().parseSTCCGFilter(filterText);
+        _valueSource = amount;
+        _filterableSource = new FilterFactory().generateFilter(filterText);
         _requirements = requirements;
     }
 
     public Modifier getModifier(ActionContext actionContext) {
-        RequirementCondition requirement = new RequirementCondition(_requirements, actionContext);
-        return new GainIconModifier(actionContext, _filterableSource.getFilterable(actionContext), requirement, _icon);
+        final Evaluator evaluator = _valueSource.getEvaluator(actionContext);
+        return new StrengthModifier(actionContext, _filterableSource.getFilterable(actionContext),
+                new RequirementCondition(_requirements, actionContext), evaluator);
     }
 
 }
