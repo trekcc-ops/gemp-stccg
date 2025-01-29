@@ -140,25 +140,20 @@ public class CardInfoUtils {
     static String getMissionCardInfo(MissionCard mission) {
         StringBuilder sb = new StringBuilder();
         ST1EGame cardGame = mission.getGame();
-        try {
-            if (mission.getBlueprint().getMissionType() == MissionType.PLANET && mission.getZone().isInPlay()) {
-                MissionLocation location = mission.getLocation();
-                long awayTeamCount = location.getAwayTeamsOnSurface(cardGame).count();
-                sb.append(HTMLUtils.NEWLINE);
-                sb.append(HTMLUtils.makeBold("Away Teams on Planet: "));
-                sb.append(awayTeamCount);
-                if (awayTeamCount > 0) {
-                    location.getAwayTeamsOnSurface(cardGame).forEach(awayTeam -> {
-                                sb.append(HTMLUtils.NEWLINE);
-                                sb.append(HTMLUtils.makeBold("Away Team: "));
-                                sb.append("(").append(awayTeam.getPlayerId()).append(") ");
-                                sb.append(TextUtils.getConcatenatedCardLinks(awayTeam.getCards()));
-                            }
-                    );
-                }
+        if (mission.getGameLocation() instanceof MissionLocation missionLocation && missionLocation.isPlanet()) {
+            long awayTeamCount = missionLocation.getAwayTeamsOnSurface(cardGame).count();
+            sb.append(HTMLUtils.NEWLINE);
+            sb.append(HTMLUtils.makeBold("Away Teams on Planet: "));
+            sb.append(awayTeamCount);
+            if (awayTeamCount > 0) {
+                missionLocation.getAwayTeamsOnSurface(cardGame).forEach(awayTeam -> {
+                            sb.append(HTMLUtils.NEWLINE);
+                            sb.append(HTMLUtils.makeBold("Away Team: "));
+                            sb.append("(").append(awayTeam.getPlayerId()).append(") ");
+                            sb.append(TextUtils.getConcatenatedCardLinks(awayTeam.getCards()));
+                        }
+                );
             }
-        } catch(InvalidGameLogicException exp) {
-            mission.getGame().sendErrorMessage(exp);
         }
         sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.NEWLINE);
         sb.append(HTMLUtils.makeBold("Mission Requirements: "));

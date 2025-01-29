@@ -153,23 +153,21 @@ public class GameEvent {
         // int locationZoneIndex
         if (card instanceof ST1EPhysicalCard stCard) {
             try {
-                MissionLocation location = stCard.getLocation();
-                int locationZoneIndex = location.getLocationZoneIndex(stCard.getGame());
-                _eventAttributes.put(Attribute.locationIndex, String.valueOf(locationZoneIndex));
-            } catch(InvalidGameLogicException | NullPointerException ignored) {
+                GameLocation location = stCard.getGameLocation();
+                if (location instanceof MissionLocation mission) {
+                    int locationZoneIndex = mission.getLocationZoneIndex(stCard.getGame());
+                    _eventAttributes.put(Attribute.locationIndex, String.valueOf(locationZoneIndex));
+                }
+            } catch(NullPointerException ignored) {
                 // Don't serialize the location if the card doesn't have one yet
                 // TODO - Eventually we'll be removing game events
             }
         }
 
-        if (card.getCardType() == CardType.MISSION && card.isInPlay()) {
-            try {
-                _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
-                if (card.getLocation().getRegion() != null)
-                    _eventAttributes.put(Attribute.region, card.getLocation().getRegion().name());
-            } catch(InvalidGameLogicException exp) {
-                _game.sendErrorMessage(exp);
-            }
+        if (card.getCardType() == CardType.MISSION && card.getGameLocation() instanceof MissionLocation mission) {
+            _eventAttributes.put(Attribute.quadrant, mission.getQuadrant().name());
+            if (mission.getRegion() != null)
+                _eventAttributes.put(Attribute.region, mission.getRegion().name());
         }
 
         if (card.getStackedOn() != null)
@@ -178,13 +176,14 @@ public class GameEvent {
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
         serializeGameState(_game.getGameState());
         if (card.isPlacedOnMission()) {
-            try {
-                _eventAttributes.put(Attribute.placedOnMission, "true");
-                _eventAttributes.put(Attribute.targetCardId,
-                        String.valueOf(card.getLocation().getTopMission().getCardId()));
-            } catch(InvalidGameLogicException exp) {
-                _game.sendErrorMessage(exp);
-            }
+                if (card.getGameLocation() instanceof MissionLocation mission) {
+                    _eventAttributes.put(Attribute.placedOnMission, "true");
+                    _eventAttributes.put(Attribute.targetCardId,
+                            String.valueOf(mission.getTopMissionCard().getCardId()));
+                } else {
+                    _game.sendErrorMessage("Tried to create game event for card placed on mission," +
+                            " but card is placed on a non-mission card");
+                }
         }
     }
 

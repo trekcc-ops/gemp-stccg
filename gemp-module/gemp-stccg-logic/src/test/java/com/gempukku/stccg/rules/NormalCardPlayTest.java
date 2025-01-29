@@ -21,8 +21,8 @@ public class NormalCardPlayTest extends AbstractAtTest {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
         Player player1 = _game.getPlayer(P1);
 

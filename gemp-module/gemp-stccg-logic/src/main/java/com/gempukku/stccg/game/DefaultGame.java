@@ -164,8 +164,9 @@ public abstract class DefaultGame {
 
                 try {
                     gameState.sendCardsToClient(playerId, listener, restoreSnapshot);
-                } catch (PlayerNotFoundException exp) {
+                } catch (PlayerNotFoundException | InvalidGameLogicException exp) {
                     sendErrorMessage(exp);
+                    cancelGame();
                 }
             }
             for (String lastMessage : getMessages())

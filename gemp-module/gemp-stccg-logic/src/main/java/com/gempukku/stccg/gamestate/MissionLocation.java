@@ -85,6 +85,10 @@ public class MissionLocation implements GameLocation {
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
 
+    public MissionCard getCardForActionSelection(Player performingPlayer) throws InvalidGameLogicException {
+        return getMissionForPlayer(performingPlayer.getPlayerId());
+    }
+
     public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
         PhysicalCard result = null;
         Collection<? extends PhysicalCard> missionCards = getMissionCards();
@@ -308,7 +312,7 @@ public class MissionLocation implements GameLocation {
     public boolean isPlanet() { return getMissionType() == MissionType.PLANET || getMissionType() == MissionType.DUAL; }
     public boolean isSpace() { return getMissionType() == MissionType.SPACE || getMissionType() == MissionType.DUAL; }
 
-    public MissionCard getTopMission() { return getMissionCards().getLast(); }
+    public MissionCard getTopMissionCard() { return getMissionCards().getLast(); }
 
     public void addMission(MissionCard newMission) {
         newMission.stackOn(_missionCards.getCards().getFirst());
@@ -354,14 +358,13 @@ public class MissionLocation implements GameLocation {
         }
     }
 
-    public void preSeedCardsUnder(DefaultGame cardGame, Collection<PhysicalCard> cards, PhysicalCard topCard,
-                                  Player player)
+    public void preSeedCardsUnder(DefaultGame cardGame, Collection<PhysicalCard> cards, Player player)
             throws InvalidGameLogicException {
         GameState gameState = cardGame.getGameState();
         for (PhysicalCard card : cards) {
             gameState.removeCardFromZone(card);
             gameState.addCardToZone(card, Zone.VOID);
-            topCard.getLocation().addCardToTopOfPreSeedPile(card, player);
+            addCardToTopOfPreSeedPile(card, player);
         }
     }
 

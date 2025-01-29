@@ -87,10 +87,6 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) throws InvalidGameLogicException {
-        return createNewAwayTeam(player, mission.getLocation());
-    }
-
     public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
         AwayTeam result = new AwayTeam(player, location, _nextAttemptingUnitId);
         _awayTeams.add(result);
@@ -186,7 +182,7 @@ public class ST1EGameState extends GameState {
 
     @Override
     public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
-            throws PlayerNotFoundException {
+            throws PlayerNotFoundException, InvalidGameLogicException {
         Player player = getPlayer(playerId);
         boolean sharedMission;
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
@@ -212,16 +208,17 @@ public class ST1EGameState extends GameState {
                 PhysicalCard physicalCard = cardIterator.next();
                 PhysicalCard attachedTo = physicalCard.getAttachedTo();
                 if (physicalCard.isPlacedOnMission()) {
-                    try {
-                        PhysicalCard topMission = physicalCard.getLocation().getTopMission();
+                    GameLocation location = physicalCard.getGameLocation();
+                    if (location instanceof MissionLocation mission) {
+                        PhysicalCard topMission = mission.getTopMissionCard();
                         if (sentCardsFromPlay.contains(topMission)) {
                             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                             sentCardsFromPlay.add(physicalCard);
 
                             cardIterator.remove();
                         }
-                    } catch(InvalidGameLogicException exp) {
-                        listener.getGame().sendErrorMessage(exp);
+                    } else {
+                        throw new InvalidGameLogicException("Card placed on mission, but is attached to a non-mission card");
                     }
                 } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
                     sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);

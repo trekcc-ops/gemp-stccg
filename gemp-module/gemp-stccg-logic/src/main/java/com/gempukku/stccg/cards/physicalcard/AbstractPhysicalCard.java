@@ -167,12 +167,6 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
     public boolean isControlledBy(Player player) { return isControlledBy(player.getPlayerId()); }
 
     public String getCardLink() { return _blueprint.getCardLink(); }
-    public MissionLocation getLocation() throws InvalidGameLogicException {
-        if (_currentGameLocation instanceof MissionLocation mission)
-            return mission;
-        throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
-    }
-
     public GameLocation getGameLocation() {
         return _currentGameLocation;
     }

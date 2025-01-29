@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,8 +36,11 @@ public class MissionCard extends ST1EPhysicalCard {
         try {
             if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 try {
-                    actions.add(new AttemptMissionAction(cardGame, player, this.getLocation()));
-                    actions.add(new ShipBattleAction(cardGame, this, player, this.getLocation()));
+                    if (_currentGameLocation instanceof MissionLocation mission) {
+                        actions.add(new AttemptMissionAction(
+                                cardGame, player, mission.getCardForActionSelection(player), mission));
+                        actions.add(new ShipBattleAction(cardGame, this, player, mission));
+                    }
                 } catch (InvalidGameLogicException exp) {
                     cardGame.sendErrorMessage(exp);
                 }

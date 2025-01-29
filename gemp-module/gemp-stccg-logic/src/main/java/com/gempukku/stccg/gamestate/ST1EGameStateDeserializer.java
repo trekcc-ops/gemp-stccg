@@ -73,15 +73,6 @@ public class ST1EGameStateDeserializer {
 
         gameState.setModifiersLogic(node.get("modifiers"), game);
 
-        for (JsonNode awayTeamNode : node.get("awayTeams")) {
-            PhysicalCard parentCard = game.getCardFromCardId(awayTeamNode.get("parentCard").intValue());
-            Player player = game.getPlayer(awayTeamNode.get("playerId").textValue());
-            AwayTeam awayTeam = gameState.createNewAwayTeam(player, parentCard);
-            for (JsonNode cardInAwayTeamNode : awayTeamNode.get("cardsInAwayTeam")) {
-                awayTeam.add((PhysicalReportableCard1E) (game.getCardFromCardId(cardInAwayTeamNode.intValue())));
-            }
-        }
-
         for (Map.Entry<MissionLocation, List<Integer>> entry : seededUnderMap.entrySet()) {
             MissionLocation location = entry.getKey();
             for (int cardId : entry.getValue()) {

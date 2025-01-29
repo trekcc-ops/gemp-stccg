@@ -48,7 +48,7 @@ public class GameStateSerializerTest extends AbstractAtTest {
 
         assertNotNull(archer);
         assertNotNull(homeward);
-        MissionLocation homewardLocation = homeward.getLocation();
+        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
         assertNotNull(homewardLocation);
         seedDilemma(archer, homeward);
 
@@ -56,8 +56,8 @@ public class GameStateSerializerTest extends AbstractAtTest {
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homeward.getLocation().getSeedCards().size());
-        assertTrue(homeward.getLocation().getSeedCards().contains(archer));
+        assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().size());
+        assertTrue(homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(archer));
 
         ObjectMapper mapper = new ObjectMapper();
 

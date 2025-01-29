@@ -18,7 +18,7 @@ public class WhereYouControlCardsLocationFilter implements LocationFilter {
 
     public boolean accepts(ST1EGame game, MissionLocation location) throws InvalidGameLogicException {
         for (PhysicalCard card : game.getGameState().getAllCardsInPlay()) {
-            if (card.getLocation() == location && card.isControlledBy(_youResolver.getPlayer()) &&
+            if (card.getGameLocation() == location && card.isControlledBy(_youResolver.getPlayer()) &&
                     _filter.accepts(game, card)) {
                 return true;
             }

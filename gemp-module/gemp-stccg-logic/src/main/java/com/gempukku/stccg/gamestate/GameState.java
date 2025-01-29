@@ -81,7 +81,7 @@ public abstract class GameState {
     }
 
     public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
-            throws PlayerNotFoundException {
+            throws PlayerNotFoundException, InvalidGameLogicException {
 
         Player player = getPlayer(playerId);
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);

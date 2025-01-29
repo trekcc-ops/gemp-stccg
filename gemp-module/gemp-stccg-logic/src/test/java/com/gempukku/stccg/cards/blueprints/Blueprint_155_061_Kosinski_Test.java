@@ -37,12 +37,12 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         climb.setZone(Zone.VOID);
 
         // Seed Dangerous Climb
-        MissionLocation missionLocation = _mission.getLocation();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(climb), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard taitt1 = (PersonnelCard) newCardForGame("101_242", P1);
@@ -77,8 +77,8 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
         // Verify that, in practice, the Away Team failed to resolve the dilemma
         attemptMission(P1, team, _mission);
-        assertTrue(_mission.getLocation().getSeedCards().contains(climb));
-        assertFalse(_mission.getLocation().isCompleted());
+        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(climb));
+        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests().isCompleted());
     }
 
 }

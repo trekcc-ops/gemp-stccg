@@ -121,7 +121,7 @@ public class SeedOutpostAction extends PlayCardAction {
     }
 
     public void setDestination(MissionLocation location) {
-        _destinationTarget = new FixedCardResolver(location.getTopMission());
+        _destinationTarget = new FixedCardResolver(location.getTopMissionCard());
         setProgress(Progress.placementChosen);
     }
 

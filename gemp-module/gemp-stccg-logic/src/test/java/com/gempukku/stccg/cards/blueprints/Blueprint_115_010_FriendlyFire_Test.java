@@ -7,7 +7,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -33,12 +32,12 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
         ST1EPhysicalCard friendly =
                 (ST1EPhysicalCard) _game.addCardToGame("115_010", _cardLibrary, P1);
 
-        MissionLocation missionLocation = _mission.getLocation();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(friendly), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);

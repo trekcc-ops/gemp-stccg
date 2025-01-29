@@ -66,7 +66,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         assertEquals("Deanna Troi", deanna.getTitle());
 
         _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocation());
+        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocationDeprecatedOnlyUseForTests());
 
         assertTrue(outpost.isInPlay());
 

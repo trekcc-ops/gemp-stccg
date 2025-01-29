@@ -1,16 +1,9 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.PropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +44,7 @@ public class GameStateViewTest extends AbstractAtTest {
 
         assertNotNull(archer);
         assertNotNull(homeward);
-        MissionLocation homewardLocation = homeward.getLocation();
+        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
         assertNotNull(homewardLocation);
         seedDilemma(archer, homeward);
 
@@ -59,8 +52,8 @@ public class GameStateViewTest extends AbstractAtTest {
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homeward.getLocation().getSeedCards().size());
-        assertTrue(homeward.getLocation().getSeedCards().contains(archer));
+        assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().size());
+        assertTrue(homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(archer));
 
         String serialized4 = _game.getGameState().serializeForPlayer(P1);
         System.out.println(serialized4.replace(",",",\n"));

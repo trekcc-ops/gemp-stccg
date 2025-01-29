@@ -8,7 +8,6 @@ import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -17,7 +16,6 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
-import org.apache.commons.lang.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -64,7 +62,6 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
     String getCardLink();
-    MissionLocation getLocation() throws InvalidGameLogicException;
     GameLocation getGameLocation();
     void setLocation(GameLocation location);
     String getFullName();
@@ -125,11 +122,15 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
 
     @JsonProperty("locationId")
     default Integer getLocationIdForSerialization() {
-        try {
-            MissionLocation location = getLocation();
-            return location.getLocationId();
-        } catch (InvalidGameLogicException | NullPointerException exp) {
-            return null;
-        }
+        GameLocation location = getGameLocation();
+        if (location instanceof MissionLocation mission)
+            return mission.getLocationId();
+        else return null;
+    }
+
+    default MissionLocation getLocationDeprecatedOnlyUseForTests() throws InvalidGameLogicException {
+        if (getGameLocation() instanceof MissionLocation mission)
+            return mission;
+        throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
     }
 }

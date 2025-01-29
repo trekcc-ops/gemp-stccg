@@ -29,18 +29,18 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
     }
-    public void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException {
+    public void changeAffiliation(Affiliation affiliation) {
         setCurrentAffiliation(affiliation);
         if (getAffiliationOptions().size() > 1) {
-            if (getAttachedTo() instanceof MissionCard mission &&
-                    this instanceof PhysicalReportableCard1E reportable) {
+            if (this instanceof PhysicalReportableCard1E reportable &&
+                    _currentGameLocation instanceof MissionLocation missionLocation) {
                 if (reportable.getAwayTeam().canBeDisbanded(_game)) {
                     reportable.getAwayTeam().disband(_game);
                 } else {
                     if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(reportable))
                         reportable.leaveAwayTeam(_game);
                     if (reportable.getAwayTeam() == null)
-                        reportable.joinEligibleAwayTeam(mission.getLocation());
+                        reportable.joinEligibleAwayTeam(missionLocation);
                 }
             }
             _game.sendUpdatedCardImageToClient(this);

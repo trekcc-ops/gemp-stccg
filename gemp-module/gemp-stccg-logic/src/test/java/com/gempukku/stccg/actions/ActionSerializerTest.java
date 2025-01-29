@@ -39,7 +39,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         String jsonString = mapper.writeValueAsString(action);
         System.out.println(jsonString);
         System.out.println(mapper.writeValueAsString(_mission));
-        System.out.println(mapper.writeValueAsString(_mission.getLocation()));
+        System.out.println(mapper.writeValueAsString(_mission.getLocationDeprecatedOnlyUseForTests()));
         System.out.println(mapper.writeValueAsString(_game.getCardFromCardId(1)));
         System.out.println(mapper.writeValueAsString(troi));
         System.out.println(mapper.writeValueAsString(runabout));
@@ -56,12 +56,12 @@ public class ActionSerializerTest extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
-        MissionLocation missionLocation = _mission.getLocation();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
 
         MissionLocation gault = null;
         for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
@@ -73,7 +73,7 @@ public class ActionSerializerTest extends AbstractAtTest {
 
         // Seed Klingon Outpost
         seedFacility(P1, _klingonOutpost, gault);
-        assertEquals(gault, _klingonOutpost.getLocation());
+        assertEquals(gault, _klingonOutpost.getLocationDeprecatedOnlyUseForTests());
 
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
@@ -128,8 +128,8 @@ public class ActionSerializerTest extends AbstractAtTest {
             assertTrue(personnel.isStopped());
         }
         assertTrue(runabout.isStopped());
-        assertFalse(_mission.getLocation().isCompleted());
-        assertTrue(_mission.getLocation().getSeedCards().contains(maglock));
+        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests().isCompleted());
+        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(maglock));
         String gameStateString = _game.getGameState().serializeComplete();
     }
 
