@@ -79,7 +79,7 @@
             rarity: C
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }

@@ -13,8 +13,7 @@ public class RequirementFactory {
     public static Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
         final String type = object.get("type").textValue().toLowerCase();
         return switch(type) {
-            case "cardsindeckcount", "cardsinhandmorethan", "hascardindiscard", "hascardinhand", "hascardinplaypile",
-                    "lasttribbleplayed", "nexttribbleinsequence", "tribblesequencebroken" ->
+            case "cardsindeckcount", "cardsinhandmorethan", "hascardindiscard", "hascardinhand", "hascardinplaypile" ->
                     new MiscRequirement(object);
             case "isequal", "isgreaterthan", "isgreaterthanorequal", "islessthan", "islessthanorequal", "isnotequal" ->
                     new ComparatorRequirement(object);

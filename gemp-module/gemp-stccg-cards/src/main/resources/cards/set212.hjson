@@ -12,7 +12,7 @@
             image-url: https://www.trekcc.org/1e/cardimages/cage/19.jpg
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     where: table
                 }
             ]

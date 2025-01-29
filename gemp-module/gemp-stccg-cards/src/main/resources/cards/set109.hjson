@@ -35,7 +35,7 @@
             image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     where: table
                 }
             ]

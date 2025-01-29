@@ -1,21 +1,15 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
-import com.gempukku.stccg.cards.blueprints.effect.EffectFieldProcessor;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.condition.missionrequirements.*;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class SkillBoxDeserializer extends StdDeserializer<SkillBox> {

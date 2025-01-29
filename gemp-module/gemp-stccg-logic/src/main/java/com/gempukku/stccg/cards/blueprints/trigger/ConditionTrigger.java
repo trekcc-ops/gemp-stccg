@@ -7,6 +7,8 @@ import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 
+import java.util.List;
+
 public class ConditionTrigger implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode value)
@@ -23,7 +25,7 @@ public class ConditionTrigger implements TriggerCheckerProducer {
 
             @Override
             public boolean accepts(ActionContext actionContext) {
-                return actionContext.acceptsAllRequirements(requirements);
+                return actionContext.acceptsAllRequirements(List.of(requirements));
             }
         };
     }

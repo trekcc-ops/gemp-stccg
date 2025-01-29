@@ -13,7 +13,10 @@ import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 import com.gempukku.stccg.processes.st1e.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({@JsonSubTypes.Type(value = SeedCardActionSource.class, name = "seed")
+@JsonSubTypes({@JsonSubTypes.Type(value = SeedCardActionSource.class, name = "seedThis"),
+        @JsonSubTypes.Type(value = ActivateCardActionSource.class, name = "activate"),
+        @JsonSubTypes.Type(value = OptionalTriggerActionSource.class, name = "optionalTrigger"),
+        @JsonSubTypes.Type(value = RequiredTriggerActionSource.class, name = "requiredTrigger")
 })
 public interface ActionSource {
 

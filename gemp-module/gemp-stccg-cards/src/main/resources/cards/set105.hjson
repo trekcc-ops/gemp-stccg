@@ -9,7 +9,7 @@
             type: doorway
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }

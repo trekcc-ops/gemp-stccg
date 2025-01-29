@@ -43,7 +43,7 @@
             image-url: https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     where: table
                 }
             ]
@@ -55,15 +55,12 @@
             property-logo: tng-logo
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }
-            ]
-            effects: [
                 {
-                    type: action
-                    optional: true
+                    type: optionalTrigger
                     trigger: {
                         type: played
                         filter: self
@@ -74,16 +71,7 @@
                     }
                 }
                 {
-                    type: modifier
-                    modifier: {
-                        type: gainIcon
-                        filter: yoursEvenIfNotInPlay + (personnel OR ship) + (tng-logo OR generations-logo)
-                        icon: tng-icon
-                    }
-                }
-                {
-                    type: action
-                    optional: false
+                    type: requiredTrigger
                     trigger: {
                         type: played
                         player: you
@@ -95,8 +83,7 @@
                     }
                 }
                 {
-                    type: action
-                    optional: true
+                    type: optionalTrigger
                     limitPerTurn: 1
                     trigger: {
                         type: played
@@ -106,6 +93,13 @@
                     effect: {
                         type: drawCards
                     }
+                }
+            ]
+            modifiers: [
+                {
+                    type: gainIcon
+                    filter: yoursEvenIfNotInPlay + (personnel OR ship) + (tng-logo OR generations-logo)
+                    icon: tng-icon
                 }
             ]
             image-url: https://www.trekcc.org/1e/cardimages/errata/Continuing-Mission.jpg

@@ -4,22 +4,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.condition.RequirementCondition;
-import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
-import com.gempukku.stccg.modifiers.CantDiscardFromPlayByPlayerModifier;
-import com.gempukku.stccg.modifiers.GainIconModifier;
-import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,61 +143,18 @@ public final class BlueprintUtils {
         }
     }
 
-
-    public static ModifierSource getModifier(JsonNode node) throws InvalidCardDefinitionException {
-        ModifierSourceProcessorType modifierType = getEnum(ModifierSourceProcessorType.class, node, "type");
-        validateAllowedFields(node, modifierType);
-
-        final Requirement[] requirements = RequirementFactory.getRequirements(node);
-        final FilterableSource filterableSource;
-
-        switch(modifierType) {
-            case GAINICON:
-                CardIcon icon = getEnum(CardIcon.class, node, "icon");
-                filterableSource = new FilterFactory().parseSTCCGFilter(node.get("filter").textValue());
-                return actionContext -> new GainIconModifier(actionContext,
-                        filterableSource.getFilterable(actionContext),
-                        new RequirementCondition(requirements, actionContext), icon);
-            case MODIFYSTRENGTH:
-                ValueSource valueSource = ValueResolver.resolveEvaluator(node.get("amount").textValue());
-                filterableSource = getFilterable(node);
-                return (actionContext) -> {
-                    final Evaluator evaluator = valueSource.getEvaluator(actionContext);
-                    return new StrengthModifier(actionContext,
-                            filterableSource.getFilterable(actionContext),
-                            new RequirementCondition(requirements, actionContext), evaluator);
-                };
-            case OPPONENTMAYNOTDISCARD:
-                filterableSource = getFilterable(node);
-                return (actionContext) -> new CantDiscardFromPlayByPlayerModifier(
-                        actionContext.getSource(), "Can't be discarded by opponent",
-                        filterableSource.getFilterable(actionContext), actionContext.getPerformingPlayerId());
-            default:
-                throw new InvalidCardDefinitionException("Unable to resolve modifier of type: " + modifierType);
-        }
-    }
-
-    private enum ModifierSourceProcessorType { CANTPLAYCARDS, GAINICON, MODIFYSTRENGTH, OPPONENTMAYNOTDISCARD }
-
-    private static void validateAllowedFields(JsonNode node, ModifierSourceProcessorType modifierType)
+    public static List<Requirement> getRequirementsFromRequirementNode(JsonNode node)
             throws InvalidCardDefinitionException {
-        switch(modifierType) {
-            case CANTPLAYCARDS:
-                validateAllowedFields(node, "filter", "requires");
-                break;
-            case GAINICON:
-                validateAllowedFields(node, "filter", "requires", "icon");
-                break;
-            case MODIFYSTRENGTH:
-                validateAllowedFields(node, "filter", "requires", "amount");
-                break;
-            case OPPONENTMAYNOTDISCARD:
-                validateAllowedFields(node, "filter");
-                break;
-            default:
-                throw new InvalidCardDefinitionException("Unable to resolve modifier of type : " + modifierType);
+        List<Requirement> result = new ArrayList<>();
+        if (node != null) {
+            List<JsonNode> requirements = JsonUtils.toArray(node);
+            for (JsonNode requirement : requirements) {
+                result.add(RequirementFactory.getRequirement(requirement));
+            }
         }
+        return result;
     }
+
 
     public static PlayerSource getSelectingPlayerSource(JsonNode parentNode)
             throws InvalidCardDefinitionException {

@@ -7,12 +7,9 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
-import com.gempukku.stccg.cards.blueprints.actionsource.RequiredTriggerActionSource;
-import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
-import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
-import com.gempukku.stccg.cards.blueprints.effect.EffectFieldProcessor;
-import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.*;
+import com.gempukku.stccg.cards.blueprints.requirement.PlayOutOfSequenceCondition;
+import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
@@ -24,7 +21,7 @@ import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;
 
-@JsonIgnoreProperties({"headquarters", "effects", "playable", "java-blueprint"})
+@JsonIgnoreProperties({"headquarters", "playable", "java-blueprint"})
 public class CardBlueprint {
 
     @JsonProperty(value = "blueprintId", required = true)
@@ -149,14 +146,16 @@ public class CardBlueprint {
     private final Map<TriggerTiming, List<ActionSource>> _optionalInHandTriggers = new HashMap<>();
     private final Map<TriggerTiming, List<ActionSource>> _activatedTriggers = new HashMap<>();
 
-    private final List<ActionSource> inPlayPhaseActions = new LinkedList<>();
     private List<ActionSource> inDiscardPhaseActions;
 
-    private final List<ModifierSource> inPlayModifiers = new LinkedList<>();
+    @JsonProperty("modifiers")
+    private final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
 
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
-    private List<Requirement> playOutOfSequenceConditions;
+
+    @JsonProperty("playOutOfSequenceCondition")
+    private List<PlayOutOfSequenceCondition> playOutOfSequenceConditions;
 
     @JsonProperty("actions")
     private List<ActionSource> _actionSources = new LinkedList<>();
@@ -353,26 +352,9 @@ public class CardBlueprint {
         playInOtherPhaseConditions.add(requirement);
     }
 
-    public void appendPlayOutOfSequenceCondition(Requirement requirement) {
-        if (playOutOfSequenceConditions == null)
-            playOutOfSequenceConditions = new LinkedList<>();
-        playOutOfSequenceConditions.add(requirement);
-    }
-
     public void appendOptionalInHandTrigger(ActionSource actionSource, TriggerTiming timing) {
         _optionalInHandTriggers.computeIfAbsent(timing, k -> new LinkedList<>());
         _optionalInHandTriggers.get(timing).add(actionSource);
-    }
-
-    public void appendExtraPlayCost(ExtraPlayCostSource extraPlayCostSource) {
-        if (extraPlayCosts == null)
-            extraPlayCosts = new LinkedList<>();
-        extraPlayCosts.add(extraPlayCostSource);
-    }
-
-    public void appendActivatedTrigger(ActionSource actionSource, TriggerTiming timing) {
-        _activatedTriggers.computeIfAbsent(timing, k -> new LinkedList<>());
-        _activatedTriggers.get(timing).add(actionSource);
     }
 
     public void appendBeforeOrAfterTrigger(TriggerActionSource actionSource) {
@@ -401,18 +383,10 @@ public class CardBlueprint {
         _seedRequirements.add(requirement);
     }
 
-    public void appendInPlayModifier(ModifierSource modifierSource) {
-        inPlayModifiers.add(modifierSource);
-    }
-
     public void appendTargetFilter(FilterableSource targetFilter) {
         if (targetFilters == null)
             targetFilters = new LinkedList<>();
         targetFilters.add(targetFilter);
-    }
-
-    public void appendInPlayPhaseAction(ActionSource actionSource) {
-        inPlayPhaseActions.add(actionSource);
     }
 
     public void appendInDiscardPhaseAction(ActionSource actionSource) {
@@ -429,22 +403,26 @@ public class CardBlueprint {
     }
     public List<Requirement> getSeedRequirements() { return _seedRequirements; }
     public List<Requirement> getPlayRequirements() { return _playRequirements; }
-    public List<ActionSource> getOptionalInHandTriggers(TriggerTiming timing) {
-        return _optionalInHandTriggers.get(timing);
-    }
+
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
-    public List<Requirement> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
+
     public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
-    public List<Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
+    public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
     public List<ActionSource> getBeforeOrAfterTriggers(RequiredType requiredType, TriggerTiming timing) {
-        if (timing == TriggerTiming.BEFORE)
-            return _beforeTriggers.get(requiredType);
-        else if (timing == TriggerTiming.AFTER)
-            return _afterTriggers.get(requiredType);
-        else return null;
+        List<ActionSource> sourceResult = new ArrayList<>();
+        for (ActionSource source : _actionSources) {
+            if (requiredType == RequiredType.REQUIRED) {
+                if (source instanceof RequiredTriggerActionSource triggerSource && triggerSource.getTiming() == timing)
+                    sourceResult.add(source);
+            } else {
+                if (source instanceof OptionalTriggerActionSource triggerSource && triggerSource.getTiming() == timing)
+                    sourceResult.add(source);
+            }
+        }
+        return sourceResult;
     }
 
 
@@ -495,7 +473,7 @@ public class CardBlueprint {
         List<Modifier> result = new LinkedList<>();
 
         // Add in-play modifiers created through JSON definitions
-        for (ModifierSource modifierSource : inPlayModifiers) {
+        for (ModifierBlueprint modifierSource : inPlayModifiers) {
             ActionContext context =
                     new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null);
             result.add(modifierSource.getModifier(context));
@@ -578,8 +556,12 @@ public class CardBlueprint {
 
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame cardGame) {
-        return getActionsFromActionSources(
-                player.getPlayerId(), thisCard, null, inPlayPhaseActions);
+        List<ActionSource> resultSources = new ArrayList<>();
+        for (ActionSource actionSource : _actionSources) {
+            if (actionSource instanceof ActivateCardActionSource)
+                resultSources.add(actionSource);
+        }
+        return getActionsFromActionSources(player.getPlayerId(), thisCard, null, resultSources);
     }
 
 

@@ -21,6 +21,7 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
+import java.util.List;
 
 public class ValueResolver {
 
@@ -115,7 +116,7 @@ public class ValueResolver {
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        if (actionContext.acceptsAllRequirements(conditions)) {
+                        if (actionContext.acceptsAllRequirements(List.of(conditions))) {
                             return trueValue.evaluateExpression(actionContext, cardAffected);
                         } else {
                             return falseValue.evaluateExpression(actionContext, cardAffected);

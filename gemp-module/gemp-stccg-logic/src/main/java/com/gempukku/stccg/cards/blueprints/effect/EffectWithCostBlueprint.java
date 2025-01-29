@@ -38,7 +38,7 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
 
 
     private boolean requirementsNotMet(ActionContext actionContext) {
-        return (!actionContext.acceptsAllRequirements(_requirements));
+        return (!actionContext.acceptsAllRequirements(List.of(_requirements)));
     }
 
     @Override

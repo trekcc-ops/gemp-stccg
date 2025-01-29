@@ -20,7 +20,7 @@
             property-logo: tng-logo
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }

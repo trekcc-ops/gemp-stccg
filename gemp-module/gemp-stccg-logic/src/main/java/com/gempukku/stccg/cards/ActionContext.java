@@ -31,8 +31,7 @@ public interface ActionContext {
     PhysicalCard getSource();
     ActionResult getEffectResult();
 
-    boolean acceptsAllRequirements(Requirement[] requirementArray);
-    boolean acceptsAllRequirements(List<Requirement> requirementList);
+    boolean acceptsAllRequirements(Iterable<Requirement> requirements);
     boolean acceptsAnyRequirements(Requirement[] requirementArray);
 
     ActionContext createDelegateContext(ActionResult actionResult);

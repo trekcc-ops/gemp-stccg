@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.requirement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -24,10 +25,7 @@ public class MiscRequirement implements Requirement {
         CARDSINHANDMORETHAN(Zone.HAND),
         HASCARDINDISCARD(Zone.DISCARD),
         HASCARDINHAND(Zone.HAND),
-        HASCARDINPLAYPILE(Zone.PLAY_PILE),
-        LASTTRIBBLEPLAYED(null),
-        NEXTTRIBBLEINSEQUENCE(null),
-        TRIBBLESEQUENCEBROKEN(null);
+        HASCARDINPLAYPILE(Zone.PLAY_PILE);
 
         private final Zone zone;
         RequirementType(Zone zone) { this.zone = zone; }
@@ -38,23 +36,19 @@ public class MiscRequirement implements Requirement {
     private final ValueSource _valueSource;
     private final FilterableSource _filterableSource;
 
-
     public MiscRequirement(JsonNode node) throws InvalidCardDefinitionException {
         _requirementType = BlueprintUtils.getEnum(RequirementType.class, node, "type", false);
         if (_requirementType == null)
             throw new InvalidCardDefinitionException("Invalid requirement type");
 
         switch (_requirementType) {
-            case CARDSINDECKCOUNT, CARDSINHANDMORETHAN, LASTTRIBBLEPLAYED, NEXTTRIBBLEINSEQUENCE:
+            case CARDSINDECKCOUNT, CARDSINHANDMORETHAN:
                 BlueprintUtils.validateAllowedFields(node, "count");
                 BlueprintUtils.validateRequiredFields(node, "count");
                 break;
             case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE:
                 BlueprintUtils.validateAllowedFields(node, "count", "filter");
                 BlueprintUtils.validateRequiredFields(node, "filter");
-                break;
-            case TRIBBLESEQUENCEBROKEN:
-                BlueprintUtils.validateAllowedFields(node);
                 break;
         }
 
@@ -76,13 +70,8 @@ public class MiscRequirement implements Requirement {
                 case CARDSINDECKCOUNT -> player.getCardsInDrawDeck().size() == count;
                 case CARDSINHANDMORETHAN -> player.getCardsInHand().size() > count;
                 case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE ->
-                        gameState.getPlayer(playerId).hasCardInZone(actionContext.getGame(), _requirementType.zone, count, filterable);
-                case LASTTRIBBLEPLAYED -> actionContext instanceof TribblesActionContext context &&
-                        context.getGameState().getLastTribblePlayed() == count;
-                case NEXTTRIBBLEINSEQUENCE -> actionContext instanceof TribblesActionContext context &&
-                        context.getGameState().getNextTribbleInSequence() == count;
-                case TRIBBLESEQUENCEBROKEN -> actionContext instanceof TribblesActionContext context &&
-                        context.getGameState().isChainBroken();
+                        gameState.getPlayer(playerId).hasCardInZone(
+                                actionContext.getGame(), _requirementType.zone, count, filterable);
             };
         } catch(PlayerNotFoundException exp) {
             actionContext.getGame().sendErrorMessage(exp);

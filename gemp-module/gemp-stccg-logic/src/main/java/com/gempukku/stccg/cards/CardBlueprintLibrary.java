@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.EffectFieldProcessor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardDeserializer;
 import com.gempukku.stccg.common.*;
@@ -189,9 +188,6 @@ public class CardBlueprintLibrary {
                             "Card blueprintId " + blueprintId + " invalid for set " + setId);
                 try {
                     final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, gameType, cardNode);
-                    if (cardNode.has("effects")) {
-                        EffectFieldProcessor.processField(cardNode.get("effects"), cardBlueprint);
-                    }
                     _blueprints.put(blueprintId, cardBlueprint);
                     setDefinition.addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (Exception exp) {

@@ -10,15 +10,12 @@
             property-logo: ds9-logo
             actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }
-            ]
-            effects: [
                 {
-                    type: action
-                    optional: true
+                    type: optionalTrigger
                     trigger: {
                         type: played
                         filter: self
@@ -29,16 +26,7 @@
                     }
                 }
                 {
-                    type: modifier
-                    modifier: {
-                        type: gainIcon
-                        filter: yoursEvenIfNotInPlay + (personnel OR ship OR Nor) + ds9-logo
-                        icon: ds9-icon
-                    }
-                }
-                {
-                    type: action
-                    optional: false
+                    type: requiredTrigger
                     trigger: {
                         type: played
                         player: you
@@ -48,6 +36,13 @@
                         type: discard
                         filter: self
                     }
+                }
+            ]
+            modifiers: [
+                {
+                    type: gainIcon
+                    filter: yoursEvenIfNotInPlay + (personnel OR ship OR Nor) + ds9-logo
+                    icon: ds9-icon
                 }
             ]
             image-url: https://www.trekcc.org/1e/cardimages/emissary/30.jpg

@@ -12,6 +12,10 @@ public class SeedCardActionSource extends DefaultActionSource {
     @JsonProperty(value = "where", required = true)
     private Zone _seedToZone;
 
+    public SeedCardActionSource() {
+        super("Seed card", 0, null);
+    }
+
     public SeedCardAction createAction(PhysicalCard card) {
         if (_seedToZone == null)
             return new SeedCardAction(card);

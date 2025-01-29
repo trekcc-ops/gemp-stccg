@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.actionsource;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
@@ -9,13 +10,18 @@ import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collections;
@@ -29,6 +35,16 @@ public abstract class DefaultActionSource implements ActionSource {
     protected final List<EffectBlueprint> effects = new LinkedList<>();
 
     protected String _text;
+
+    public DefaultActionSource(String text, int limitPerTurn, Phase phase) {
+            if (text != null)
+                setText(text);
+            if (limitPerTurn > 0)
+                setTurnLimit(limitPerTurn);
+            if (phase != null)
+                addRequirement(
+                        (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
+    }
 
     public void setText(String text) {
         this._text = text;
@@ -61,27 +77,31 @@ public abstract class DefaultActionSource implements ActionSource {
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
-    public void processRequirementsCostsAndEffects(JsonNode node)
+    public void processRequirementsCostsAndEffects(JsonNode node) throws InvalidCardDefinitionException {
+        processRequirementsCostsAndEffects(node.get("requires"), node.get("cost"), node.get("effect"));
+    }
+
+    public void processRequirementsCostsAndEffects(JsonNode requirementNode, JsonNode costNode, JsonNode effectNode)
             throws InvalidCardDefinitionException {
 
-        if (!node.has("cost") && !node.has("effect"))
+        if (costNode == null && effectNode == null)
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
 
-        if (node.has("requires")) {
-            for (JsonNode requirement : JsonUtils.toArray(node.get("requires")))
-                    addRequirement(RequirementFactory.getRequirement(requirement));
+        if (requirementNode != null) {
+            for (JsonNode requirement : JsonUtils.toArray(requirementNode))
+                addRequirement(RequirementFactory.getRequirement(requirement));
         }
 
-        if (node.has("cost")) {
-            for (JsonNode cost : JsonUtils.toArray(node.get("cost"))) {
+        if (costNode != null) {
+            for (JsonNode cost : JsonUtils.toArray(costNode)) {
                 final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(cost);
                 addRequirement(effectBlueprint::isPlayableInFull);
                 addCost(effectBlueprint);
             }
         }
 
-        if (node.has("effect")) {
-            for (JsonNode effect : JsonUtils.toArray(node.get("effect"))) {
+        if (effectNode != null) {
+            for (JsonNode effect : JsonUtils.toArray(effectNode)) {
                 final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(effect);
                 if (effectBlueprint.isPlayabilityCheckedForEffect())
                     addRequirement(effectBlueprint::isPlayableInFull);
@@ -89,6 +109,7 @@ public abstract class DefaultActionSource implements ActionSource {
             }
         }
     }
+
 
 
     protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);

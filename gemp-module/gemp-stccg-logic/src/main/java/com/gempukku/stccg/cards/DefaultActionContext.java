@@ -143,17 +143,9 @@ public class DefaultActionContext implements ActionContext {
     }
 
 
-    public boolean acceptsAllRequirements(Requirement[] requirementArray) {
+    public boolean acceptsAllRequirements(Iterable<Requirement> requirements) {
         boolean result = true;
-        for (Requirement requirement : requirementArray) {
-            if (!requirement.accepts(this)) result = false;
-        }
-        return result;
-    }
-
-    public boolean acceptsAllRequirements(List<Requirement> requirementList) {
-        boolean result = true;
-        for (Requirement requirement : requirementList) {
+        for (Requirement requirement : requirements) {
             if (!requirement.accepts(this)) result = false;
         }
         return result;
