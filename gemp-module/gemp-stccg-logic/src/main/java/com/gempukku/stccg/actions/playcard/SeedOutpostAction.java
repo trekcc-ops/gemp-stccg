@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
@@ -71,13 +72,9 @@ public class SeedOutpostAction extends PlayCardAction {
                         (MissionCard) Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                 if (!getProgress(Progress.affiliationSelected)) {
                     for (Affiliation affiliation : facility.getAffiliationOptions()) {
-                        try {
-                            if (facility.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
-                                    affiliation))
-                                affiliationOptions.add(affiliation);
-                        } catch (InvalidGameLogicException exp) {
-                            cardGame.sendErrorMessage(exp);
-                        }
+                        if (facility.canSeedAtMissionAsAffiliation(selectedMission.getGameLocation(),
+                                affiliation))
+                            affiliationOptions.add(affiliation);
                     }
                 }
 
@@ -109,7 +106,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 gameState.removeCardFromZone(_cardEnteringPlay);
                 performingPlayer.addPlayedAffiliation(facility.getAffiliation());
                 PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
-                MissionLocation destinationLocation = destinationCard.getLocation();
+                GameLocation destinationLocation = destinationCard.getGameLocation();
                 gameState.seedFacilityAtLocation(facility, destinationLocation);
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));

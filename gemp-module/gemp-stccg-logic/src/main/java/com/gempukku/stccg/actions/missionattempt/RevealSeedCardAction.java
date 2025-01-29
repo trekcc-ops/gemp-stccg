@@ -19,11 +19,14 @@ public class RevealSeedCardAction extends ActionyAction {
     private final int _revealedCardId;
     private final int _missionAttemptActionId;
     private enum Progress { misSeedResolved }
+    private final MissionLocation _missionLocation;
 
-    public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, AttemptMissionAction attemptAction) {
+    public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, AttemptMissionAction attemptAction,
+                                MissionLocation mission) {
         super(revealedCard.getGame(), revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCardId = revealedCard.getCardId();
         _missionAttemptActionId = attemptAction.getActionId();
+        _missionLocation = mission;
     }
 
 
@@ -39,13 +42,12 @@ public class RevealSeedCardAction extends ActionyAction {
             PhysicalCard revealedCard = cardGame.getCardFromCardId(_revealedCardId);
             Action attemptAction = cardGame.getActionById(_missionAttemptActionId);
             if (attemptAction instanceof AttemptMissionAction missionAction) {
-                MissionLocation location = missionAction.getMission();
                 setProgress(Progress.misSeedResolved);
-                if (revealedCard.isMisSeed(cardGame, location)) {
+                if (revealedCard.isMisSeed(cardGame, _missionLocation)) {
                     if (_performingPlayerId.equals(revealedCard.getOwnerName())) {
                         // TODO - Player also cannot solve objectives targeting the mission
                         Modifier modifier =
-                                new PlayerCannotSolveMissionModifier(cardGame, location, _performingPlayerId);
+                                new PlayerCannotSolveMissionModifier(cardGame, _missionLocation, _performingPlayerId);
                         cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
                     }
                     if (revealedCard instanceof ST1EPhysicalCard stCard) {
@@ -65,5 +67,4 @@ public class RevealSeedCardAction extends ActionyAction {
 
     public int getRevealedCardId() { return _revealedCardId; }
 
-    public int getMissionAttemptActionId() { return _missionAttemptActionId; }
 }

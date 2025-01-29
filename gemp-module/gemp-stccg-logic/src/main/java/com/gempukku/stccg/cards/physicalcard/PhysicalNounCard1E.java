@@ -7,6 +7,8 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.Set;
@@ -61,8 +63,9 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         else
             return _game.getRules().areCardsCompatiblePerRules(this, card);
     }
-    public Quadrant getCurrentQuadrant() {
-        return _currentLocation.getQuadrant();
+
+    public boolean isInQuadrant(Quadrant quadrant) {
+        return _currentGameLocation.isInQuadrant(quadrant);
     }
 
     @Override

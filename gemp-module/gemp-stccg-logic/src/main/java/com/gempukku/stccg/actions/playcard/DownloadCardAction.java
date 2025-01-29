@@ -12,7 +12,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.GameState;
@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DownloadCardAction extends ActionyAction {
-    private final Filter _filter;
+    private final CardFilter _filter;
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)

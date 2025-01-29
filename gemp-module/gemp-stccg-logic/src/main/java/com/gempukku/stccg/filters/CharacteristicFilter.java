@@ -4,11 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-public class CharacteristicFilter implements Filter {
+public class CharacteristicFilter implements CardFilter {
 
     private final Characteristic _characteristic;
 

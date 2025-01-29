@@ -1,14 +1,14 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 
 public class CancelStrengthBonusTargetModifier extends AbstractModifier {
-    private final Filter _sourceFilter;
+    private final CardFilter _sourceFilter;
 
     public CancelStrengthBonusTargetModifier(PhysicalCard source, Filterable affectFilter, Filterable sourceFilter) {
         this(source, null, affectFilter, sourceFilter);

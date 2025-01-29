@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -28,12 +29,12 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         _destinationOptions = new LinkedList<>();
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
         List<MissionLocation> allLocations = _flyingCard.getGame().getGameState().getSpacelineLocations();
-        MissionLocation _currentLocation = _flyingCard.getLocation();
+        GameLocation currentLocation = _flyingCard.getGameLocation();
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
         for (MissionLocation location : allLocations) {
-            if (location.getQuadrant() == _currentLocation.getQuadrant() && location != _currentLocation) {
+            if (location.isInSameQuadrantAs(currentLocation) && location != currentLocation) {
                 try {
-                    int rangeNeeded = _currentLocation.getDistanceToLocation(cardGame, location, player);
+                    int rangeNeeded = currentLocation.getDistanceToLocation(cardGame, location, player);
                     if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
                         PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
                         _destinationOptions.add(destination);
@@ -55,6 +56,10 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
 //        if (!isAnyCostFailed()) {
+        ST1EGame stGame;
+        if (cardGame instanceof ST1EGame)
+            stGame = (ST1EGame) cardGame;
+        else throw new InvalidGameLogicException("Tried to fly a ship in a non-1E game");
 
         Action cost = getNextCost();
         if (cost != null)
@@ -74,17 +79,18 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             }
         }
 
+        GameLocation destinationLocation = _destination.getGameLocation();
+
         if (!_cardMoved) {
             int rangeNeeded =
-                    _flyingCard.getLocation().getDistanceToLocation(cardGame, _destination.getLocation(),
-                            performingPlayer);
+                    _flyingCard.getGameLocation().getDistanceToLocation(stGame, destinationLocation, performingPlayer);
             _cardMoved = true;
             setAsSuccessful();
             _flyingCard.useRange(rangeNeeded);
-            _flyingCard.setLocation(_destination.getLocation());
+            _flyingCard.setLocation(destinationLocation);
             _flyingCard.getGame().getGameState().moveCard(cardGame, _flyingCard);
             _flyingCard.getGame().sendMessage(
-                    _flyingCard.getCardLink() + " flew to " + _destination.getLocation().getLocationName() +
+                    _flyingCard.getCardLink() + " flew to " + destinationLocation.getLocationName() +
                             " (using " + rangeNeeded + " RANGE)"
             );
         }

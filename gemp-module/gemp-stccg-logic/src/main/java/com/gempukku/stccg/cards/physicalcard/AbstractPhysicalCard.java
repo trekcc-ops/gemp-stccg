@@ -17,7 +17,9 @@ import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
@@ -36,12 +38,14 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
     private Integer _attachedToCardId;
     private Integer _stackedOnCardId;
     protected MissionLocation _currentLocation;
+    protected GameLocation _currentGameLocation;
     private boolean _placedOnMission = false;
 
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _owner = owner;
         _blueprint = blueprint;
+        _currentGameLocation = new NullLocation();
     }
 
     public Zone getZone() {
@@ -164,13 +168,18 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
 
     public String getCardLink() { return _blueprint.getCardLink(); }
     public MissionLocation getLocation() throws InvalidGameLogicException {
-        if (_currentLocation == null)
-            throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
-        return _currentLocation;
+        if (_currentGameLocation instanceof MissionLocation mission)
+            return mission;
+        throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
     }
 
-    public void setLocation(MissionLocation location) {
-        _currentLocation = location;
+    public GameLocation getGameLocation() {
+        return _currentGameLocation;
+    }
+
+
+    public void setLocation(GameLocation location) {
+        _currentGameLocation = location;
         for (PhysicalCard attachedCard : getAttachedCards(getGame())) {
             attachedCard.setLocation(location);
         }
@@ -331,12 +340,8 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
 
 
     public boolean isPresentWith(PhysicalCard card) {
-        try {
-            return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
-        } catch(InvalidGameLogicException exp) {
-            card.getGame().sendErrorMessage(exp);
-            return false;
-        }
+        return card.getGameLocation() == this.getGameLocation() &&
+                card.getAttachedTo() == this.getAttachedTo();
     }
 
     public boolean hasSkill(SkillName skillName) { return false; }
@@ -367,15 +372,11 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
     }
 
     public boolean isAtPlanetLocation() {
-        if (_currentLocation == null)
-            return false;
-        else return _currentLocation.isPlanet();
+        return _currentGameLocation.isPlanet();
     }
 
     public boolean isAtSpaceLocation() {
-        if (_currentLocation == null)
-            return false;
-        else return _currentLocation.isSpace();
+        return _currentGameLocation.isSpace();
     }
 
     public Player getController() {

@@ -15,7 +15,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -45,7 +45,7 @@ public class Blueprint155_026 extends CardBlueprint {
             getItDoneAction.appendCost(new UseOncePerTurnAction(getItDoneAction, thisCard, player));
             getItDoneAction.setCardActionPrefix("1");
 
-            Filter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
+            CardFilter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
             SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(game, player,
                     "Select cards to place beneath draw deck", selectableFilter, 2, 2);
             Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(game, player, selectCardsToPlaceAction);
@@ -60,8 +60,8 @@ public class Blueprint155_026 extends CardBlueprint {
             getItDoneAction.appendEffect(chooseAction);
 
             // after any use, discard incident OR discard a [TNG] card from hand
-            Filter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
-            Filter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
+            CardFilter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
+            CardFilter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
             SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(game, player,
                     "Select a card to discard", discardCardFilter);
             Action discardAction = new DiscardCardAction(game, thisCard, player, selectCardToDiscardAction);
@@ -103,7 +103,7 @@ public class Blueprint155_026 extends CardBlueprint {
 
     private TopLevelSelectableAction choice3(PhysicalCard thisCard, Player player) {
         // shuffle the bottom three personnel and/or ships from your discard pile into your draw deck
-        Filter shuffleCardsFilter = Filters.bottomCardsOfDiscard(player, 3, CardIcon.TNG_ICON,
+        CardFilter shuffleCardsFilter = Filters.bottomCardsOfDiscard(player, 3, CardIcon.TNG_ICON,
                 Filters.or(CardType.PERSONNEL, CardType.SHIP));
         return new ShuffleCardsIntoDrawDeckAction(thisCard, player, shuffleCardsFilter);
     }

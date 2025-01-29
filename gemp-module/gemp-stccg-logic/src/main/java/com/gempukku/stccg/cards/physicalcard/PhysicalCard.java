@@ -14,6 +14,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import org.apache.commons.lang.ObjectUtils;
@@ -64,7 +65,8 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
     boolean isControlledBy(Player player);
     String getCardLink();
     MissionLocation getLocation() throws InvalidGameLogicException;
-    void setLocation(MissionLocation location);
+    GameLocation getGameLocation();
+    void setLocation(GameLocation location);
     String getFullName();
     TopLevelSelectableAction getPlayCardAction();
     Action getPlayCardAction(boolean forFree);
@@ -105,7 +107,9 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
 
     boolean isMisSeed(GenericGame cardGame, MissionLocation mission) throws CardNotFoundException;
 
-    List<Action> getEncounterActions(GenericGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException;
+    List<Action> getEncounterActions(GenericGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action,
+                                     MissionLocation missionLocation)
+            throws InvalidGameLogicException, PlayerNotFoundException;
 
     boolean isAtSpaceLocation();
 

@@ -7,18 +7,18 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AndFilter implements Filter {
+public class AndFilter implements CardFilter {
 
-    private final List<Filter> _filters = new LinkedList<>();
+    private final List<CardFilter> _filters = new LinkedList<>();
 
-    public AndFilter(Filter... filters) {
+    public AndFilter(CardFilter... filters) {
         _filters.addAll(Arrays.asList(filters));
     }
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         boolean result = true;
-        for (Filter filter : _filters) {
+        for (CardFilter filter : _filters) {
             if (!filter.accepts(game, physicalCard)) {
                 result = false;
             }

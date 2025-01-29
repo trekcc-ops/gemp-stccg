@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.rules.UndefinedRuleException;
 
@@ -17,7 +18,7 @@ import java.util.Collection;
 public class PlayCardDestinationRules {
 
     public static boolean isLocationValidPlayCardDestinationForFacilityPerRules(
-            ST1EGame cardGame, MissionLocation location, FacilityCard facilityEnteringPlay,
+            ST1EGame cardGame, GameLocation location, FacilityCard facilityEnteringPlay,
             Class<? extends PlayCardAction> actionClass, Player performingPlayer,
             Collection<Affiliation> affiliationOptions
     ) throws UndefinedRuleException {
@@ -25,7 +26,7 @@ public class PlayCardDestinationRules {
         final boolean isSeeding = SeedCardAction.class.isAssignableFrom(actionClass);
 
         // Each facility must be seeded in its native quadrant
-        if (isSeeding && location.getQuadrant() != facilityEnteringPlay.getNativeQuadrant()) {
+        if (isSeeding && !location.isInQuadrant(facilityEnteringPlay.getNativeQuadrant())) {
             return false;
         }
 
@@ -51,7 +52,8 @@ public class PlayCardDestinationRules {
             // Otherwise, outposts may be seeded at any mission in their native quadrant with a matching affiliation icon
             // (No need to check for native quadrant again; that was performed above)
             // TODO - This may not be a sufficient check for multi-affiliation cards under special reporting
-            return location.hasMatchingAffiliationIcon(performingPlayer, affiliationOptions);
+            return location instanceof MissionLocation mission &&
+                    mission.hasMatchingAffiliationIcon(performingPlayer, affiliationOptions);
         } else {
             // TODO - No specific rules for where outposts can be played, because this is on the gametext
             throw new UndefinedRuleException("No rule defined yet for where outposts can be played");

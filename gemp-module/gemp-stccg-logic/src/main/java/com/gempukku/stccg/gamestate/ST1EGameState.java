@@ -125,7 +125,7 @@ public class ST1EGameState extends GameState {
         addCardToZone(newMission, Zone.SPACELINE, true, true);
     }
 
-    public void seedFacilityAtLocation(FacilityCard card, MissionLocation location) {
+    public void seedFacilityAtLocation(FacilityCard card, GameLocation location) {
         card.setLocation(location);
         addCardToZone(card, Zone.AT_LOCATION, true);
     }

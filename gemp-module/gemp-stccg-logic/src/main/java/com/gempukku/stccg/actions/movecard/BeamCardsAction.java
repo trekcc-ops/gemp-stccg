@@ -21,23 +21,18 @@ public class BeamCardsAction extends BeamOrWalkAction {
 
     @Override
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
-        try {
-            // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
-            return Filters.filterActive(
-                    game,
-                    Filters.atLocation(_cardSource.getLocation()),
-                    Filters.or(
-                            Filters.planetLocation,
-                            Filters.and(
-                                    Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
-                                    Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
-                            )
-                    )
-            );
-        } catch(InvalidGameLogicException exp) {
-            game.sendErrorMessage(exp);
-            return new LinkedList<>();
-        }
+        // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
+        return Filters.filterActive(
+                game,
+                Filters.atLocation(_cardSource.getGameLocation()),
+                Filters.or(
+                        Filters.planetLocation,
+                        Filters.and(
+                                Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
+                                Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
+                        )
+                )
+        );
     }
 
     @Override

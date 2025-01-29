@@ -20,15 +20,18 @@ public class EncounterSeedCardAction extends ActionyAction {
     private final AttemptMissionAction _parentAction;
     private enum Progress { effectsAdded }
     private final AttemptingUnit _attemptingUnit;
+    private final MissionLocation _missionLocation;
 
     public EncounterSeedCardAction(DefaultGame cardGame, Player encounteringPlayer, PhysicalCard encounteredCard,
-                                   AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction)
+                                   AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
+                                   MissionLocation location)
             throws InvalidGameLogicException {
         super(cardGame, encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);
             _attemptingUnit = Objects.requireNonNull(attemptingUnit);
+            _missionLocation = Objects.requireNonNull(location);
         } catch(NullPointerException npe) {
             throw new InvalidGameLogicException(npe.getMessage());
         }
@@ -46,9 +49,8 @@ public class EncounterSeedCardAction extends ActionyAction {
             setAsInitiated();
         if (!getProgress(Progress.effectsAdded)) {
             PhysicalCard encounteredCard = getEncounteredCard();
-            MissionLocation location = encounteredCard.getLocation();
             List<Action> encounterActions =
-                    encounteredCard.getEncounterActions(cardGame, _attemptingUnit, this, location);
+                    encounteredCard.getEncounterActions(cardGame, _attemptingUnit, this, _missionLocation);
             for (Action action : encounterActions)
                 appendEffect(action);
             setProgress(Progress.effectsAdded);

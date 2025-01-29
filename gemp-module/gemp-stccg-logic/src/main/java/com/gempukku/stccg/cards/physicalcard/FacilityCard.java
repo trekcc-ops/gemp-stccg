@@ -15,6 +15,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -36,11 +37,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
                 _game, this, mission, SeedCardAction.class, _owner, getAffiliationOptions());
     }
 
-    public boolean canSeedAtMissionAsAffiliation(MissionLocation mission, Affiliation affiliation) {
+    public boolean canSeedAtMissionAsAffiliation(GameLocation location, Affiliation affiliation) {
         // Checks if the mission is a legal reporting destination for seeding this facility
         // Assumes an affiliation has already been selected
         return _game.getRules().isLocationValidPlayCardDestinationPerRules(
-                _game, this, mission, SeedCardAction.class, _owner, List.of(affiliation));
+                _game, this, location, SeedCardAction.class, _owner, List.of(affiliation));
     }
 
     public Quadrant getNativeQuadrant() {

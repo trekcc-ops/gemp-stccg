@@ -11,21 +11,17 @@ import com.gempukku.stccg.common.filterable.Phase;
 public class ActivateCardActionSource extends DefaultActionSource {
 
     public ActivateCardActionSource(@JsonProperty("text")
-                String text,
-        @JsonProperty(value="optional", defaultValue="false")
-        boolean optional,
-        @JsonProperty(value="limitPerTurn", defaultValue="0")
-        int limitPerTurn,
-        @JsonProperty("phase")
-        Phase phase,
-        @JsonProperty("trigger")
-        JsonNode triggerNode,
-        @JsonProperty("requires")
-        JsonNode requirementNode,
-        @JsonProperty("cost")
-        JsonNode costNode,
-        @JsonProperty("effect")
-        JsonNode effectNode) throws InvalidCardDefinitionException {
+                                    String text,
+                                    @JsonProperty(value="limitPerTurn", defaultValue="0")
+                                    int limitPerTurn,
+                                    @JsonProperty("phase")
+                                    Phase phase,
+                                    @JsonProperty("requires")
+                                    JsonNode requirementNode,
+                                    @JsonProperty("cost")
+                                    JsonNode costNode,
+                                    @JsonProperty("effect")
+                                    JsonNode effectNode) throws InvalidCardDefinitionException {
             super(text, limitPerTurn, phase);
             processRequirementsCostsAndEffects(requirementNode, costNode, effectNode);
     }

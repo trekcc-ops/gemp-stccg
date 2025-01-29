@@ -2,16 +2,16 @@ package com.gempukku.stccg.condition;
 
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 public class ThisCardAtMissionCondition implements Condition {
     private final PhysicalCard _thisCard;
-    private final Filter _missionFilter;
+    private final CardFilter _missionFilter;
 
-    public ThisCardAtMissionCondition(PhysicalCard thisCard, Filter missionFilter) {
+    public ThisCardAtMissionCondition(PhysicalCard thisCard, CardFilter missionFilter) {
         _thisCard = thisCard;
         _missionFilter = missionFilter;
     }

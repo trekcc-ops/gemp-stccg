@@ -9,12 +9,10 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-
-import java.util.List;
 
 public abstract class AbstractModifier implements Modifier {
     protected final PhysicalCard _cardSource;
@@ -56,7 +54,7 @@ public abstract class AbstractModifier implements Modifier {
                                Condition condition, ModifierEffect effect) {
         _cardSource = source;
         _text = text;
-        Filter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
+        CardFilter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
         _cardResolver = new CardFilterResolver(affectedFilter);
         _condition = condition;
         _effect = effect;

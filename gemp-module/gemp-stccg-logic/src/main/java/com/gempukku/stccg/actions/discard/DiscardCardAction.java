@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -40,7 +40,7 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
         _performingCard = performingCard;
     }
 
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, Filter cardFilter) {
+    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, CardFilter cardFilter) {
         super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;

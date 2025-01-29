@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted",
         "missionCardIds", "seedCardCount", "seedCardIds" })
 @JsonFilter("missionLocationSerializerFilter")
-public class MissionLocation {
+public class MissionLocation implements GameLocation {
     @JsonProperty("quadrant")
     @JsonView(JsonViews.Public.class)
     private final Quadrant _quadrant;
@@ -80,6 +80,7 @@ public class MissionLocation {
     @JsonView(JsonViews.Public.class)
     private int getSeedCardCount() { return _seedCards.size(); }
 
+    public boolean isInQuadrant(Quadrant quadrant) { return _quadrant == quadrant; }
     public Quadrant getQuadrant() { return _quadrant; }
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
@@ -109,19 +110,15 @@ public class MissionLocation {
     }
 
 
-    public int getDistanceToLocation(DefaultGame cardGame, MissionLocation location, Player player)
-            throws InvalidGameLogicException {
+    public int getDistanceToLocation(ST1EGame cardGame, GameLocation location, Player player)
+            throws InvalidGameLogicException
+    {
                 // TODO - Not correct if you're calculating inter-quadrant distance (e.g., Bajoran Wormhole)
 
-        ST1EGame stGame;
-        if (cardGame instanceof ST1EGame)
-            stGame = (ST1EGame) cardGame;
-        else throw new InvalidGameLogicException("Unable to process distance between locations in this game");
-
-        if (location.getQuadrant() != _quadrant)
+        if (location.isInQuadrant(_quadrant))
             throw new InvalidGameLogicException("Tried to calculate span between quadrants");
         else {
-            List<MissionLocation> spaceline = stGame.getGameState().getSpacelineLocations();
+            List<MissionLocation> spaceline = cardGame.getGameState().getSpacelineLocations();
             int startingIndex = spaceline.indexOf(this);
             int endingIndex = spaceline.indexOf(location);
             int distance = 0;
@@ -152,6 +149,7 @@ public class MissionLocation {
         else return card.getBlueprint().getOpponentSpan();
     }
 
+    @Override
     public boolean mayBeAttemptedByPlayer(Player player, ST1EGame cardGame) throws InvalidGameLogicException {
         // Rule 7.2.1, Paragraph 1
         // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
@@ -370,5 +368,9 @@ public class MissionLocation {
 
     public int getLocationId() {
         return _locationId;
+    }
+
+    public boolean isInSameQuadrantAs(GameLocation currentLocation) {
+        return currentLocation.isInQuadrant(_quadrant);
     }
 }

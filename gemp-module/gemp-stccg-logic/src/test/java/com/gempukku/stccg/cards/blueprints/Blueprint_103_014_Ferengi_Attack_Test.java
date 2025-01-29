@@ -9,7 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -82,7 +82,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         assertNotNull(_userFeedback.getAwaitingDecision(P2));
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P2));
 
-        Filter inAwayTeamFilter = Filters.personnelInAttemptingUnit(troi.getAwayTeam());
+        CardFilter inAwayTeamFilter = Filters.personnelInAttemptingUnit(troi.getAwayTeam());
         assertTrue(inAwayTeamFilter.accepts(_game, hobson));
 
         selectCard(P2, hobson);

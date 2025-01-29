@@ -34,7 +34,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
                 in their native quadrant. */
         // TODO - Does not perform any compatibility checks other than affiliation
         if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
-                facility.isUsableBy(_owner.getPlayerId()) && facility.getCurrentQuadrant() == getNativeQuadrant())
+                facility.isUsableBy(_owner.getPlayerId()) && facility.isInQuadrant(this.getNativeQuadrant()))
             return isCompatibleWithCardAndItsCrewAsAffiliation(facility, affiliation);
         else return false;
     }

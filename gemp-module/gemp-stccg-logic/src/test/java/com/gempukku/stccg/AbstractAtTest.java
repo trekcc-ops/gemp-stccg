@@ -783,7 +783,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getMission() == mission.getLocation())
+                        attemptAction.getLocation() == mission.getGameLocation())
                     choice = attemptAction;
             }
             choice.setAttemptingUnit(attemptingUnit);
@@ -802,7 +802,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getMission() == mission)
+                        attemptAction.getLocation() == mission)
                     choice = attemptAction;
             }
             actionDecision.decisionMade(choice);

@@ -149,7 +149,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public boolean canAttemptMission(MissionLocation mission) {
-            if (_currentLocation != mission)
+            if (_currentGameLocation != mission)
                 return false;
             if (_docked)
                 return false;

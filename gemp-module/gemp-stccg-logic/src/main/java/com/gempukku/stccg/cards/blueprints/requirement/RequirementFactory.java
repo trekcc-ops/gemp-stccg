@@ -27,10 +27,6 @@ public class RequirementFactory {
                 Requirement[] requirements = getRequirements(object);
                 yield actionContext -> actionContext.acceptsAnyRequirements(requirements);
             }
-            case "perturnlimit" -> {
-                int limit = BlueprintUtils.getInteger(object, "limit", 1);
-                yield actionContext -> actionContext.getSource().checkTurnLimit(actionContext.getGame(), limit);
-            }
             default -> throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
         };
     }

@@ -89,4 +89,12 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard<ST1EGame> {
         return _blueprint.getEncounterActions(this, cardGame, attemptingUnit, action, missionLocation);
     }
 
+    @Override
+    public boolean isPresentWith(PhysicalCard card) {
+        return card.getGameLocation() == this.getGameLocation() &&
+                card.getAttachedTo() == this.getAttachedTo() &&
+                _game.getGameState().getSpacelineLocations().contains(card.getGameLocation());
+    }
+
+
 }

@@ -200,6 +200,18 @@
             shields: 30
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg
             rarity: C
+/*            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+                {
+                    type: playThis
+                    targetLocation: {
+                        filter: whereYouControl(federation engineer)
+                    }
+                }
+            ] */
         }
         {
             blueprintId: 101_105

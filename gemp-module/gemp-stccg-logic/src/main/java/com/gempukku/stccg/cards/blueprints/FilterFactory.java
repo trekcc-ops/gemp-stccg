@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -108,7 +108,7 @@ public class FilterFactory {
         parameterFilters.put("name",
                 (parameter) -> {
                     String name = Sanitize(parameter);
-                    return (actionContext) -> (Filter)
+                    return (actionContext) -> (CardFilter)
                             (game, physicalCard) -> physicalCard.getBlueprint().getTitle() != null && name.equals(Sanitize(physicalCard.getBlueprint().getTitle()));
                 });
         parameterFilters.put("namefrommemory",
@@ -116,14 +116,14 @@ public class FilterFactory {
                     Set<String> titles = new HashSet<>();
                     for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter))
                         titles.add(physicalCard.getBlueprint().getTitle());
-                    return (Filter) (game, physicalCard) -> titles.contains(physicalCard.getBlueprint().getTitle());
+                    return (CardFilter) (game, physicalCard) -> titles.contains(physicalCard.getBlueprint().getTitle());
                 });
         parameterFilters.put("nameinstackedon",
                 (parameter) -> {
                     final FilterableSource filterableSource = generateFilter(parameter);
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
-                        return (Filter) (game, physicalCard) -> {
+                        return (CardFilter) (game, physicalCard) -> {
                             for (PhysicalCard<? super DefaultGame> cardWithStack : Filters.filterActive(game, sourceFilterable)) {
                                 for (PhysicalCard stackedCard : cardWithStack.getStackedCards(game)) {
                                     if (stackedCard.getBlueprint().getTitle().equals(physicalCard.getBlueprint().getTitle()))

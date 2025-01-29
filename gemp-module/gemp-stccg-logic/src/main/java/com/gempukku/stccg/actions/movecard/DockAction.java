@@ -26,14 +26,8 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
         _cardToDock = cardToDock;
 
         _dockingTargetOptions = Filters.yourFacilitiesInPlay(cardGame, player).stream()
-                .filter(card -> {
-                    try {
-                        return card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation();
-                    } catch (InvalidGameLogicException e) {
-                        cardGame.sendErrorMessage(e);
-                        return false;
-                    }
-                })
+                .filter(card -> card.isCompatibleWith(_cardToDock) &&
+                        card.getGameLocation() == _cardToDock.getGameLocation())
                 .toList();
     }
 
