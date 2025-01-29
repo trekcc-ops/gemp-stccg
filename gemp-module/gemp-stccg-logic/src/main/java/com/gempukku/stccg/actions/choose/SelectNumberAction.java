@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.IntegerAwaitingDecision;

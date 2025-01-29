@@ -13,16 +13,15 @@ import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
-import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.google.common.collect.Iterables;
 
@@ -55,7 +54,7 @@ public class CardResolverMultiEffectBlueprintProducer {
         private String getZoneName() { return this.fromZone.getHumanReadable(); }
     }
 
-    public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
+    public static SubActionBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
 
         // Get effectType from the JSON. Will throw an exception if the type isn't a valid EffectType.
@@ -88,7 +87,7 @@ public class CardResolverMultiEffectBlueprintProducer {
 
         MultiSubActionBlueprint result = new MultiSubActionBlueprint();
 
-        final EffectBlueprint targetCardAppender;
+        final SubActionBlueprint targetCardAppender;
 
         FilterableSource choiceFilter = (actionContext) -> null;
 

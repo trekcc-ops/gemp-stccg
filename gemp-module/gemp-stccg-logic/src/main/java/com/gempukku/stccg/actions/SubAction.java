@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -19,14 +19,14 @@ public class SubAction extends ActionyAction implements CardPerformedAction {
     }
 
     public SubAction(CardPerformedAction action, ActionContext context,
-                     List<EffectBlueprint> costAppenders, List<EffectBlueprint> effectBlueprints) throws PlayerNotFoundException {
+                     List<SubActionBlueprint> costAppenders, List<SubActionBlueprint> subActionBlueprints) throws PlayerNotFoundException {
         this(action, context);
 
-        for (EffectBlueprint costAppender : costAppenders) {
+        for (SubActionBlueprint costAppender : costAppenders) {
             costAppender.addEffectToAction(true, this, context);
         }
-        for (EffectBlueprint effectBlueprint : effectBlueprints)
-            effectBlueprint.addEffectToAction(false, this, context);
+        for (SubActionBlueprint subActionBlueprint : subActionBlueprints)
+            subActionBlueprint.addEffectToAction(false, this, context);
     }
 
     @Override

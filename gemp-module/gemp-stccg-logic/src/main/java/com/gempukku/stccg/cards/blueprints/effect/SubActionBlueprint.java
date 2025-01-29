@@ -4,15 +4,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActivateCardActionBlueprint;
-import com.gempukku.stccg.cards.blueprints.actionsource.OptionalTriggerActionBlueprint;
-import com.gempukku.stccg.cards.blueprints.actionsource.RequiredTriggerActionBlueprint;
-import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionBlueprint;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({@JsonSubTypes.Type(value = ActivateTribblePowerEffectBlueprint.class, name = "activateTribblePower"),
         @JsonSubTypes.Type(value = AddModifierEffectBlueprint.class, name = "addModifier"),
-        @JsonSubTypes.Type(value = EffectWithCostBlueprint.class, name = "costToEffect"),
+        @JsonSubTypes.Type(value = SubActionWithCostBlueprint.class, name = "costToEffect"),
         @JsonSubTypes.Type(value = DrawCardsActionBlueprint.class, name = "drawCards"),
 /*        @JsonSubTypes.Type(value = ChooseCardEffectBlueprint.class,
                 names = {"chooseActiveCards", "chooseCardsFromDiscard", "chooseCardsFromDrawDeck"}),
@@ -27,7 +23,7 @@ import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionBlueprint;
                         "shufflecardsfromdiscardintodrawdeck", "shufflecardsfromhandintodrawdeck",
                         "shufflecardsfromplayintodrawdeck"}) */
 })
-public interface EffectBlueprint {
+public interface SubActionBlueprint {
     void addEffectToAction(boolean cost, CardPerformedAction action, ActionContext actionContext);
     boolean isPlayableInFull(ActionContext actionContext);
     default boolean isPlayabilityCheckedForEffect() {

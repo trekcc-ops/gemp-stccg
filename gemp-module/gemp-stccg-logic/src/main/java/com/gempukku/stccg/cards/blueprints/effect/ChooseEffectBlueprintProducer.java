@@ -8,8 +8,8 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
@@ -21,7 +21,7 @@ public class ChooseEffectBlueprintProducer {
     private enum EffectType {
         CHOOSEANUMBER, CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT, CHOOSETRIBBLEPOWER
     }
-    public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
+    public static SubActionBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
 

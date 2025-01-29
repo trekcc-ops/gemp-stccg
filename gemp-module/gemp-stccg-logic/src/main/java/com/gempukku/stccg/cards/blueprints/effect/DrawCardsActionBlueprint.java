@@ -1,18 +1,15 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;

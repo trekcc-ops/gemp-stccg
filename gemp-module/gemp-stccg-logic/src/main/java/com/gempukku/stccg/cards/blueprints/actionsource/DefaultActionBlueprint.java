@@ -10,7 +10,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -25,8 +25,8 @@ import java.util.List;
 public abstract class DefaultActionBlueprint implements ActionBlueprint {
     private final List<Requirement> requirements = new LinkedList<>();
 
-    protected final List<EffectBlueprint> costs = new LinkedList<>();
-    protected final List<EffectBlueprint> effects = new LinkedList<>();
+    protected final List<SubActionBlueprint> costs = new LinkedList<>();
+    protected final List<SubActionBlueprint> effects = new LinkedList<>();
 
     protected String _text;
 
@@ -48,12 +48,12 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         this.requirements.add(requirement);
     }
 
-    public void addCost(EffectBlueprint effectBlueprint) {
-        costs.add(effectBlueprint);
+    public void addCost(SubActionBlueprint subActionBlueprint) {
+        costs.add(subActionBlueprint);
     }
 
-    public void addEffect(EffectBlueprint effectBlueprint) {
-        effects.add(effectBlueprint);
+    public void addEffect(SubActionBlueprint subActionBlueprint) {
+        effects.add(subActionBlueprint);
     }
 
     @Override
@@ -71,8 +71,8 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
-    public void processRequirementsCostsAndEffects(JsonNode requirements, List<EffectBlueprint> costs,
-                                                   List<EffectBlueprint> effects)
+    public void processRequirementsCostsAndEffects(JsonNode requirements, List<SubActionBlueprint> costs,
+                                                   List<SubActionBlueprint> effects)
             throws InvalidCardDefinitionException {
 
         if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
@@ -84,14 +84,14 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         }
 
         if (costs != null && !costs.isEmpty()) {
-            for (EffectBlueprint costBlueprint : costs) {
+            for (SubActionBlueprint costBlueprint : costs) {
                 addRequirement(costBlueprint::isPlayableInFull);
                 addCost(costBlueprint);
             }
         }
 
         if (effects != null && !effects.isEmpty()) {
-            for (EffectBlueprint blueprint : effects) {
+            for (SubActionBlueprint blueprint : effects) {
                 if (blueprint.isPlayabilityCheckedForEffect())
                     addRequirement(blueprint::isPlayableInFull);
                 addEffect(blueprint);

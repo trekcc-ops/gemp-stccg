@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.turn.ActivateCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 
@@ -24,10 +24,10 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                     JsonNode requirementNode,
                                        @JsonProperty("cost")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                       List<EffectBlueprint> costs,
+                                       List<SubActionBlueprint> costs,
                                        @JsonProperty("effect")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                    List<EffectBlueprint> effects) throws InvalidCardDefinitionException {
+                                    List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
             super(text, limitPerTurn, phase);
             processRequirementsCostsAndEffects(requirementNode, costs, effects);
     }

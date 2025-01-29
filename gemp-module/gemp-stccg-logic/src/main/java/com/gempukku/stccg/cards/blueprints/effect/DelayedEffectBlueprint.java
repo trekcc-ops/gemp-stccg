@@ -11,7 +11,7 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.List;
 
-public abstract class DelayedEffectBlueprint implements EffectBlueprint {
+public abstract class DelayedEffectBlueprint implements SubActionBlueprint {
 
     @Override
     public final void addEffectToAction(boolean cost, CardPerformedAction action, ActionContext actionContext) {

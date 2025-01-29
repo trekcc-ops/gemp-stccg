@@ -6,13 +6,12 @@ import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -28,12 +27,12 @@ import java.util.function.Function;
 
 public class CardResolver {
 
-    public static EffectBlueprint resolveCardsInZone(String type, FilterableSource choiceFilter,
-                                                     ValueSource countSource,
-                                                     String memory, PlayerSource selectingPlayer,
-                                                     PlayerSource targetPlayer, String choiceText,
-                                                     FilterableSource typeFilter, Zone zone,
-                                                     Function<ActionContext, List<PhysicalCard>> cardSource) {
+    public static SubActionBlueprint resolveCardsInZone(String type, FilterableSource choiceFilter,
+                                                        ValueSource countSource,
+                                                        String memory, PlayerSource selectingPlayer,
+                                                        PlayerSource targetPlayer, String choiceText,
+                                                        FilterableSource typeFilter, Zone zone,
+                                                        Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
 
@@ -50,9 +49,9 @@ public class CardResolver {
 
 
 
-    public static EffectBlueprint resolveCardsInPlay(String type, ValueSource countSource, String memory,
-                                                     PlayerSource choicePlayer, String choiceText,
-                                                     FilterableSource typeFilter) {
+    public static SubActionBlueprint resolveCardsInPlay(String type, ValueSource countSource, String memory,
+                                                        PlayerSource choicePlayer, String choiceText,
+                                                        FilterableSource typeFilter) {
         final String sourceMemory =
                 type.startsWith("memory(") ? type.substring(type.indexOf("(") + 1, type.lastIndexOf(")")) : null;
         Function<ActionContext, List<PhysicalCard>> cardSource =
@@ -63,11 +62,11 @@ public class CardResolver {
     }
 
 
-    public static EffectBlueprint resolveCardsInPlay(String type, FilterableSource typeFilter,
-                                                     FilterableSource choiceFilter, FilterableSource playabilityFilter,
-                                                     ValueSource countSource, String memory, PlayerSource choicePlayer,
-                                                     String choiceText,
-                                                     Function<ActionContext, List<PhysicalCard>> cardSource) {
+    public static SubActionBlueprint resolveCardsInPlay(String type, FilterableSource typeFilter,
+                                                        FilterableSource choiceFilter, FilterableSource playabilityFilter,
+                                                        ValueSource countSource, String memory, PlayerSource choicePlayer,
+                                                        String choiceText,
+                                                        Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
 

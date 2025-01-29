@@ -5,8 +5,9 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.*;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.evaluator.ValueResolver;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.evaluator.ValueSource;
 
 public class ChooseCardEffectBlueprintProducer {
 
@@ -20,7 +21,7 @@ public class ChooseCardEffectBlueprintProducer {
         private String getZoneName() { return this.fromZone.getHumanReadable(); }
     }
 
-    public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
+    public static SubActionBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
 
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");

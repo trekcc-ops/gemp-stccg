@@ -71,7 +71,7 @@ public class ST1EGameStateDeserializer {
         GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
         game.setCurrentProcess(currentProcess);
 
-        gameState.setModifiersLogic(node.get("modifiers"), game);
+        gameState.setModifiersLogic(game);
 
         for (Map.Entry<MissionLocation, List<Integer>> entry : seededUnderMap.entrySet()) {
             MissionLocation location = entry.getKey();

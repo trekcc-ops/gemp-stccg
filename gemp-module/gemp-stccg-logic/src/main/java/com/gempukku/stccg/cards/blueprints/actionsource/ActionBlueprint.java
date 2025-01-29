@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
@@ -29,6 +29,6 @@ public interface ActionBlueprint {
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult);
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult);
 
-    void addCost(EffectBlueprint effectBlueprint);
-    void addEffect(EffectBlueprint effectBlueprint);
+    void addCost(SubActionBlueprint subActionBlueprint);
+    void addEffect(SubActionBlueprint subActionBlueprint);
 }

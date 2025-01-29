@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints;
+package com.gempukku.stccg.evaluator;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;

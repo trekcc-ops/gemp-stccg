@@ -6,29 +6,29 @@ import com.gempukku.stccg.cards.ActionContext;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MultiSubActionBlueprint implements EffectBlueprint {
+public class MultiSubActionBlueprint implements SubActionBlueprint {
     protected boolean playabilityCheckedForEffect;
 
-    private final List<EffectBlueprint> effectBlueprints = new LinkedList<>();
+    private final List<SubActionBlueprint> subActionBlueprints = new LinkedList<>();
 
     public void setPlayabilityCheckedForEffect(boolean playabilityCheckedForEffect) {
         this.playabilityCheckedForEffect = playabilityCheckedForEffect;
     }
 
-    public void addEffectBlueprint(EffectBlueprint effectBlueprint) {
-        effectBlueprints.add(effectBlueprint);
+    public void addEffectBlueprint(SubActionBlueprint subActionBlueprint) {
+        subActionBlueprints.add(subActionBlueprint);
     }
 
     @Override
     public void addEffectToAction(boolean cost, CardPerformedAction action, ActionContext actionContext) {
-        for (EffectBlueprint effectBlueprint : effectBlueprints)
-            effectBlueprint.addEffectToAction(cost, action, actionContext);
+        for (SubActionBlueprint subActionBlueprint : subActionBlueprints)
+            subActionBlueprint.addEffectToAction(cost, action, actionContext);
     }
 
     @Override
     public boolean isPlayableInFull(ActionContext actionContext) {
-        for (EffectBlueprint effectBlueprint : effectBlueprints) {
-            if (!effectBlueprint.isPlayableInFull(actionContext))
+        for (SubActionBlueprint subActionBlueprint : subActionBlueprints) {
+            if (!subActionBlueprint.isPlayableInFull(actionContext))
                 return false;
         }
 
