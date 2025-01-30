@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -22,7 +22,7 @@ public class CountDiscardEvaluator implements ValueSource {
     private final int _multiplier;
     private final int _limit;
     private final PlayerSource _playerSource;
-    private final FilterableSource _filterableSource;
+    private final FilterBlueprint _filterBlueprint;
 
     public CountDiscardEvaluator(@JsonProperty("filter")
                                  String filter,
@@ -37,7 +37,7 @@ public class CountDiscardEvaluator implements ValueSource {
         _playerSource = (playerText == null) ?
                 ActionContext::getPerformingPlayerId : PlayerResolver.resolvePlayer(playerText);
 
-        _filterableSource = (filter == null) ?
+        _filterBlueprint = (filter == null) ?
                 new FilterFactory().generateFilter("any") : new FilterFactory().generateFilter(filter);
     }
 
@@ -49,7 +49,7 @@ public class CountDiscardEvaluator implements ValueSource {
             public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                 try {
                     Player player = game.getPlayer(playerId);
-                    final Filterable filterable = _filterableSource.getFilterable(actionContext);
+                    final Filterable filterable = _filterBlueprint.getFilterable(actionContext);
                     int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), game, filterable).size();
                     return Math.min(_limit, count);
                 } catch(PlayerNotFoundException exp) {

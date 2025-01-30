@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
@@ -34,7 +34,7 @@ public class MiscRequirement implements Requirement {
     private final RequirementType _requirementType;
     private final PlayerSource _playerSource;
     private final ValueSource _valueSource;
-    private final FilterableSource _filterableSource;
+    private final FilterBlueprint _filterBlueprint;
 
     public MiscRequirement(@JsonProperty("type")
                            RequirementType requirementType,
@@ -45,7 +45,7 @@ public class MiscRequirement implements Requirement {
         _requirementType = requirementType;
         _playerSource = ActionContext::getPerformingPlayerId;
         _valueSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));
-        _filterableSource = (filter != null) ?
+        _filterBlueprint = (filter != null) ?
                 new FilterFactory().generateFilter(filter) : actionContext -> Filters.any;
     }
 
@@ -56,7 +56,7 @@ public class MiscRequirement implements Requirement {
             Player player = actionContext.getGame().getPlayer(playerId);
             final int count = _valueSource.evaluateExpression(actionContext, null);
             final GameState gameState = actionContext.getGameState();
-            final Filterable filterable = _filterableSource.getFilterable(actionContext);
+            final Filterable filterable = _filterBlueprint.getFilterable(actionContext);
             return switch (_requirementType) {
                 case CARDSINDECKCOUNT -> player.getCardsInDrawDeck().size() == count;
                 case CARDSINHANDMORETHAN -> player.getCardsInHand().size() > count;

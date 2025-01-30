@@ -6,8 +6,8 @@ import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -20,8 +20,8 @@ import java.util.Objects;
 
 public class PlayedTriggerChecker implements TriggerChecker {
 
-    private final FilterableSource _filter;
-    private final FilterableSource _onFilter;
+    private final FilterBlueprint _filter;
+    private final FilterBlueprint _onFilter;
     private final String _saveToMemoryId;
     private final PlayerSource _playingPlayer;
 

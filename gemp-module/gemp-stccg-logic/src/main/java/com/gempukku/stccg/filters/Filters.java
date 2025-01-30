@@ -409,7 +409,7 @@ public class Filters {
     }
 
     public static CardFilter skillDotsLessThanOrEqualTo(Integer count) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getSkillDotCount() <= count;
+        return new SkillDotsLessThanCardFilter(count);
     }
 
     public static CardFilter specialDownloadIconCount(Integer count) {
@@ -430,7 +430,7 @@ public class Filters {
         CardFilter[] filtersInt = convertToFilters(filters);
         if (filtersInt.length == 1)
             return filtersInt[0];
-        return orInternal(filtersInt);
+        return new OrCardFilter(filtersInt);
     }
 
     private static CardFilter[] convertToFilters(Filterable... filters) {

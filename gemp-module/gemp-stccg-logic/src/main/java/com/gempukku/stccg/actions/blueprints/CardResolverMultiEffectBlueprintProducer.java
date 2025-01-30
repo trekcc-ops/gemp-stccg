@@ -14,8 +14,8 @@ import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -78,12 +78,12 @@ public class CardResolverMultiEffectBlueprintProducer {
         final boolean forced = BlueprintUtils.getBoolean(effectObject, "forced", false);
 
         String filter = BlueprintUtils.getString(effectObject, "filter", "choose(any)");
-        FilterableSource cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
+        FilterBlueprint cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
                 new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
 
         String onFilter = effectObject.has("on") ? effectObject.get("on").textValue() : null;
-        final FilterableSource onFilterableSource = (onFilter != null) ? new FilterFactory().generateFilter(onFilter) : null;
+        final FilterBlueprint onFilterBlueprint = (onFilter != null) ? new FilterFactory().generateFilter(onFilter) : null;
 
         // TODO - Use Jackson annotations
         final ValueSource count = effectObject.has("count") ?
@@ -94,7 +94,7 @@ public class CardResolverMultiEffectBlueprintProducer {
 
         final SubActionBlueprint targetCardAppender;
 
-        FilterableSource choiceFilter = (actionContext) -> null;
+        FilterBlueprint choiceFilter = (actionContext) -> null;
 
         Function<ActionContext, List<PhysicalCard>> cardSource =
                 getCardSource(filter, effectType.fromZone, targetPlayerSource);

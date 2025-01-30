@@ -6,8 +6,8 @@ import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -40,7 +40,7 @@ public class DownloadActionBlueprint extends MultiSubActionBlueprint {
         final PlayerSource targetPlayerSource = ActionContext::getPerformingPlayerId;
         final String defaultText = "Choose card to download";
 
-        FilterableSource cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
+        FilterBlueprint cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
                 new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
 
@@ -49,7 +49,7 @@ public class DownloadActionBlueprint extends MultiSubActionBlueprint {
         playabilityCheckedForEffect = true;
         setPlayabilityCheckedForEffect(true);
 
-        FilterableSource choiceFilter = (actionContext) -> Filters.playable;
+        FilterBlueprint choiceFilter = (actionContext) -> Filters.playable;
 
         Function<ActionContext, List<PhysicalCard>> cardSource = getCardSource(filter, targetPlayerSource);
 

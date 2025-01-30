@@ -9,8 +9,8 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.ValueSource;
@@ -42,11 +42,11 @@ public class DiscardActionBlueprint extends MultiSubActionBlueprint {
         final PlayerSource selectingPlayer = ActionContext::getPerformingPlayerId;
         final PlayerSource targetPlayerSource = ActionContext::getPerformingPlayerId;
 
-        FilterableSource cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
+        FilterBlueprint cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
                 new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
 
-        FilterableSource choiceFilter = (actionContext) ->
+        FilterBlueprint choiceFilter = (actionContext) ->
                 Filters.canBeDiscarded(actionContext.getPerformingPlayerId(), actionContext.getSource());
 
         Function<ActionContext, List<PhysicalCard>> cardSource = getCardSource(filter);

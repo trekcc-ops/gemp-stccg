@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.requirement.PlayOutOfSequenceCondition;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 import com.gempukku.stccg.requirement.Requirement;
@@ -135,7 +136,7 @@ public class CardBlueprint {
     protected TribblePower tribblePower;
     private List<Requirement> _seedRequirements;
     private List<Requirement> _playRequirements;
-    private List<FilterableSource> targetFilters;
+    private List<FilterBlueprint> targetFilters;
 
     @JsonProperty("image-options")
     private final Map<Affiliation, String> _imageOptions = new HashMap<>();
@@ -374,7 +375,7 @@ public class CardBlueprint {
         _seedRequirements.add(requirement);
     }
 
-    public void appendTargetFilter(FilterableSource targetFilter) {
+    public void appendTargetFilter(FilterBlueprint targetFilter) {
         if (targetFilters == null)
             targetFilters = new LinkedList<>();
         targetFilters.add(targetFilter);
@@ -425,8 +426,8 @@ public class CardBlueprint {
 
         Filterable[] result = new Filterable[targetFilters.size()];
         for (int i = 0; i < result.length; i++) {
-            final FilterableSource filterableSource = targetFilters.get(i);
-            result[i] = filterableSource.getFilterable(null);
+            final FilterBlueprint filterBlueprint = targetFilters.get(i);
+            result[i] = filterBlueprint.getFilterable(null);
         }
 
         return Filters.and(result);

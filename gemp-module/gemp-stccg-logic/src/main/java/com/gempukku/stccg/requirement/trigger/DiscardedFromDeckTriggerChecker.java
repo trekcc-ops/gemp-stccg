@@ -5,8 +5,8 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class DiscardedFromDeckTriggerChecker implements TriggerChecker {
 
-    private final FilterableSource _filterableSource;
+    private final FilterBlueprint _filterBlueprint;
     private final String _memoryId;
 
     DiscardedFromDeckTriggerChecker(@JsonProperty("filter")
@@ -23,7 +23,7 @@ public class DiscardedFromDeckTriggerChecker implements TriggerChecker {
                                     @JsonProperty("memorize")
                     String memoryId) throws InvalidCardDefinitionException {
         _memoryId = memoryId;
-        _filterableSource = new FilterFactory().generateFilter(Objects.requireNonNullElse(filter, "any"));
+        _filterBlueprint = new FilterFactory().generateFilter(Objects.requireNonNullElse(filter, "any"));
     }
 
 
@@ -37,7 +37,7 @@ public class DiscardedFromDeckTriggerChecker implements TriggerChecker {
     public boolean accepts(ActionContext actionContext) {
         boolean result = forEachDiscardedFromDeck(
                 actionContext.getGame(), actionContext.getEffectResult(),
-                _filterableSource.getFilterable(actionContext));
+                _filterBlueprint.getFilterable(actionContext));
         if (result && _memoryId != null) {
             actionContext.setCardMemory(_memoryId,
                     ((DiscardCardFromDeckResult) actionContext.getEffectResult()).getDiscardedCard());

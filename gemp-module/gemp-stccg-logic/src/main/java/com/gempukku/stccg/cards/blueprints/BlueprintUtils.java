@@ -7,6 +7,8 @@ import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
@@ -45,12 +47,12 @@ public final class BlueprintUtils {
             return parentNode.get(key).textValue();
     }
 
-    public static FilterableSource getFilterable(JsonNode node) throws InvalidCardDefinitionException {
+    public static FilterBlueprint getFilterable(JsonNode node) throws InvalidCardDefinitionException {
         return new FilterFactory().generateFilter(node.get("filter").textValue());
     }
 
 
-    public static FilterableSource getFilterable(JsonNode node, String defaultValue)
+    public static FilterBlueprint getFilterable(JsonNode node, String defaultValue)
             throws InvalidCardDefinitionException {
         if (!node.has("filter"))
             return new FilterFactory().generateFilter(defaultValue);

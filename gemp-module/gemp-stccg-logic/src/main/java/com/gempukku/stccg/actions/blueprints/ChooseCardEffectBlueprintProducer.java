@@ -10,6 +10,8 @@ import com.gempukku.stccg.cards.blueprints.*;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 
 public class ChooseCardEffectBlueprintProducer {
 
@@ -37,7 +39,7 @@ public class ChooseCardEffectBlueprintProducer {
         final PlayerSource targetPlayer = BlueprintUtils.getTargetPlayerSource(effectObject);
         final String memorize = effectObject.get("memorize").textValue();
         final String filter = BlueprintUtils.getString(effectObject, "filter", "choose(any)");
-        final FilterableSource cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
+        final FilterBlueprint cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
                 new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
             // TODO - Use Jackson annotations

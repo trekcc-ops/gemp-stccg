@@ -8,7 +8,7 @@ import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.actions.blueprints.DelayedEffectBlueprint;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
@@ -27,11 +27,11 @@ import java.util.function.Function;
 
 public class CardResolver {
 
-    public static SubActionBlueprint resolveCardsInZone(String type, FilterableSource choiceFilter,
+    public static SubActionBlueprint resolveCardsInZone(String type, FilterBlueprint choiceFilter,
                                                         ValueSource countSource,
                                                         String memory, PlayerSource selectingPlayer,
                                                         PlayerSource targetPlayer, String choiceText,
-                                                        FilterableSource typeFilter, Zone zone,
+                                                        FilterBlueprint typeFilter, Zone zone,
                                                         Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
@@ -51,7 +51,7 @@ public class CardResolver {
 
     public static SubActionBlueprint resolveCardsInPlay(String type, ValueSource countSource, String memory,
                                                         PlayerSource choicePlayer, String choiceText,
-                                                        FilterableSource typeFilter) {
+                                                        FilterBlueprint typeFilter) {
         final String sourceMemory =
                 type.startsWith("memory(") ? type.substring(type.indexOf("(") + 1, type.lastIndexOf(")")) : null;
         Function<ActionContext, List<PhysicalCard>> cardSource =
@@ -62,8 +62,8 @@ public class CardResolver {
     }
 
 
-    public static SubActionBlueprint resolveCardsInPlay(String type, FilterableSource typeFilter,
-                                                        FilterableSource choiceFilter, FilterableSource playabilityFilter,
+    public static SubActionBlueprint resolveCardsInPlay(String type, FilterBlueprint typeFilter,
+                                                        FilterBlueprint choiceFilter, FilterBlueprint playabilityFilter,
                                                         ValueSource countSource, String memory, PlayerSource choicePlayer,
                                                         String choiceText,
                                                         Function<ActionContext, List<PhysicalCard>> cardSource) {
@@ -85,7 +85,7 @@ public class CardResolver {
                                                                              String memory,
                                                                              PlayerSource choicePlayer,
                                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                                             FilterableSource typeFilter, FilterableSource choiceFilter) {
+                                                                             FilterBlueprint typeFilter, FilterBlueprint choiceFilter) {
         return (actionContext) -> {
             try {
                 List<PhysicalCard> possibleCards = (List<PhysicalCard>) Filters.filter(cardSource.apply(actionContext),
@@ -131,11 +131,11 @@ public class CardResolver {
     }
 
 
-    private static DelayedEffectBlueprint finalTargetAppender(FilterableSource choiceFilter,
-                                                              FilterableSource playabilityFilter,
+    private static DelayedEffectBlueprint finalTargetAppender(FilterBlueprint choiceFilter,
+                                                              FilterBlueprint playabilityFilter,
                                                               ValueSource countSource, String memory,
                                                               Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                              String selectionType, FilterableSource typeFilter) {
+                                                              String selectionType, FilterBlueprint typeFilter) {
 
         return new DelayedEffectBlueprint() {
             @Override
@@ -202,7 +202,7 @@ public class CardResolver {
                 }
             }
 
-            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
+            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterBlueprint filter) {
                 Filterable additionalFilterable = (filter == null) ? Filters.any : filter.getFilterable(actionContext);
                 return switch (selectionType) {
                     case "self" ->
@@ -222,8 +222,8 @@ public class CardResolver {
     }
 
 
-    private static DelayedEffectBlueprint resolveChoiceCards(FilterableSource typeFilter, FilterableSource choiceFilter,
-                                                             FilterableSource playabilityFilter,
+    private static DelayedEffectBlueprint resolveChoiceCards(FilterBlueprint typeFilter, FilterBlueprint choiceFilter,
+                                                             FilterBlueprint playabilityFilter,
                                                              ValueSource countSource,
                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
                                                              ChoiceActionSource effectSource) {
@@ -245,7 +245,7 @@ public class CardResolver {
                 return result;
             }
 
-            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
+            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterBlueprint filter) {
                 Filterable filterable = typeFilter.getFilterable(actionContext);
                 Filterable additionalFilterable = Filters.any;
                 if (filter != null)
@@ -256,8 +256,8 @@ public class CardResolver {
         };
     }
 
-    private static DelayedEffectBlueprint resolveChoiceCardsWithEffect(FilterableSource typeFilter,
-                                                                       FilterableSource playabilityFilter,
+    private static DelayedEffectBlueprint resolveChoiceCardsWithEffect(FilterBlueprint typeFilter,
+                                                                       FilterBlueprint playabilityFilter,
                                                                        ValueSource countSource,
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource,
                                                                        Function<ActionContext, Action> choiceAction) {
@@ -276,7 +276,7 @@ public class CardResolver {
                 return result;
             }
 
-            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
+            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterBlueprint filter) {
                 Filterable filterable = typeFilter.getFilterable(actionContext);
                 Filterable additionalFilterable = Filters.any;
                 if (filter != null)

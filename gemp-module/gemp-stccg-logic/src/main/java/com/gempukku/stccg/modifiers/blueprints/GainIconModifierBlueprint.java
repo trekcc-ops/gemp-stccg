@@ -1,12 +1,10 @@
 package com.gempukku.stccg.modifiers.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.condition.RequirementCondition;
@@ -18,7 +16,7 @@ import java.util.List;
 public class GainIconModifierBlueprint implements ModifierBlueprint {
 
     private final CardIcon _icon;
-    private final FilterableSource _filterableSource;
+    private final FilterBlueprint _filterBlueprint;
     private final List<Requirement> _requirements;
 
     GainIconModifierBlueprint(@JsonProperty(value = "icon", required = true)
@@ -28,13 +26,13 @@ public class GainIconModifierBlueprint implements ModifierBlueprint {
                               @JsonProperty(value = "requires")
                               List<Requirement> requirements) throws InvalidCardDefinitionException {
         _icon = icon;
-        _filterableSource = new FilterFactory().parseSTCCGFilter(filterText);
+        _filterBlueprint = new FilterFactory().parseSTCCGFilter(filterText);
         _requirements = requirements;
     }
 
     public Modifier getModifier(ActionContext actionContext) {
         RequirementCondition requirement = new RequirementCondition(_requirements, actionContext);
-        return new GainIconModifier(actionContext, _filterableSource.getFilterable(actionContext), requirement, _icon);
+        return new GainIconModifier(actionContext, _filterBlueprint.getFilterable(actionContext), requirement, _icon);
     }
 
 }

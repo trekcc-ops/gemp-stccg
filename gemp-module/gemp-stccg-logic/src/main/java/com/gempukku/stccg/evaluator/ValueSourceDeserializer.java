@@ -8,8 +8,8 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.FilterFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.filters.FilterFactory;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -159,10 +159,10 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 BlueprintUtils.validateAllowedFields(object, "memory", "filter", "limit");
                 final String memory = object.get("memory").textValue();
                 final int limit = BlueprintUtils.getInteger(object, "limit", Integer.MAX_VALUE);
-                final FilterableSource filterableSource = BlueprintUtils.getFilterable(object);
+                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object);
                 return (actionContext) -> {
                     final int count = Filters.filter(actionContext.getCardsFromMemory(memory), actionContext.getGame(),
-                            filterableSource.getFilterable(actionContext)).size();
+                            filterBlueprint.getFilterable(actionContext)).size();
                     return new ConstantEvaluator(actionContext, Math.min(limit, count));
                 };
             } else if (type.equalsIgnoreCase("limit")) {
@@ -172,19 +172,19 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
             } else if (type.equalsIgnoreCase("countStacked")) {
                 BlueprintUtils.validateAllowedFields(object, "on", "filter");
-                final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                final FilterableSource onFilter =
+                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object, "any");
+                final FilterBlueprint onFilter =
                         new FilterFactory().generateFilter(object.get("on").textValue());
                 return (actionContext) ->
                         new CountStackedEvaluator(onFilter.getFilterable(actionContext),
-                                filterableSource.getFilterable(actionContext));
+                                filterBlueprint.getFilterable(actionContext));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
                 return ctxt.readTreeAsValue(object, CountDiscardEvaluator.class);
             } else if (type.equalsIgnoreCase("forEachInHand")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "hand");
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(BlueprintUtils.getString(object, "hand", "you"));
-                final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
+                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object, "any");
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -192,7 +192,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
                             return Filters.filter(playerObj.getCardsInHand(),
-                                    actionContext.getGame(), filterableSource.getFilterable(actionContext)).size();
+                                    actionContext.getGame(), filterBlueprint.getFilterable(actionContext)).size();
                         } catch(PlayerNotFoundException exp) {
                             game.sendErrorMessage(exp);
                             return 0;
@@ -203,7 +203,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 BlueprintUtils.validateAllowedFields(object, "filter", "owner");
                 final String owner = BlueprintUtils.getString(object, "owner", "you");
                 final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
-                final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
+                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object, "any");
                 return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -212,7 +212,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                             Player player = game.getPlayer(playerId);
                             Collection<PhysicalCard> cards = Filters.filter(
                                     player.getCardsInGroup(Zone.PLAY_PILE), game,
-                                    filterableSource.getFilterable(actionContext)
+                                    filterBlueprint.getFilterable(actionContext)
                             );
                             return cards.size();
                         } catch(PlayerNotFoundException exp) {
@@ -240,7 +240,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final int multiplier = BlueprintUtils.getInteger(object, "multiplier", 1);
                 final int over = BlueprintUtils.getInteger(object, "over", 0);
                 final String filter = BlueprintUtils.getString(object, "filter", "any");
-                final FilterableSource strengthSource = BlueprintUtils.getFilterable(object, "any");
+                final FilterBlueprint strengthSource = BlueprintUtils.getFilterable(object, "any");
 
                 return (actionContext) -> {
                     if (filter.equals("any")) {

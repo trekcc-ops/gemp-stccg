@@ -1,23 +1,22 @@
-package com.gempukku.stccg.cards.blueprints;
+package com.gempukku.stccg.filters;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
 import com.gempukku.stccg.evaluator.ValueSource;
-import com.gempukku.stccg.filters.CardFilter;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
 
 public class FilterFactory {
-    private final Map<String, FilterableSource> simpleFilters = new HashMap<>();
+    private final Map<String, FilterBlueprint> simpleFilters = new HashMap<>();
     private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
     private final ObjectMapper _mapper = new ObjectMapper();
 
@@ -49,7 +48,7 @@ public class FilterFactory {
         parameterFilters.put("and",
                 (parameter) -> {
                     final String[] filters = splitIntoFilters(parameter);
-                    FilterableSource[] filterables = new FilterableSource[filters.length];
+                    FilterBlueprint[] filterables = new FilterBlueprint[filters.length];
                     for (int i = 0; i < filters.length; i++)
                         filterables[i] = generateFilter(filters[i]);
                     return (actionContext) -> {
@@ -62,8 +61,8 @@ public class FilterFactory {
                 });
         parameterFilters.put("attachedto",
                 (parameter) -> {
-                    final FilterableSource filterableSource = generateFilter(parameter);
-                    return (actionContext) -> Filters.attachedTo(filterableSource.getFilterable(actionContext));
+                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
+                    return (actionContext) -> Filters.attachedTo(filterBlueprint.getFilterable(actionContext));
                 });
         parameterFilters.put("affiliation", (parameter) -> {
             final Affiliation affiliation = Affiliation.findAffiliation(parameter);
@@ -73,21 +72,21 @@ public class FilterFactory {
         });
         parameterFilters.put("hasstacked",
                 (parameter) -> {
-                    final FilterableSource filterableSource = generateFilter(parameter);
-                    return (actionContext) -> Filters.hasStacked(filterableSource.getFilterable(actionContext));
+                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
+                    return (actionContext) -> Filters.hasStacked(filterBlueprint.getFilterable(actionContext));
                 });
         parameterFilters.put("hasstackedcount",
                 (parameter) -> {
                     String[] parameterSplit = parameter.split(",", 2);
                     int count = Integer.parseInt(parameterSplit[0]);
-                    final FilterableSource filterableSource = generateFilter(parameterSplit[1]);
-                    return (actionContext) -> Filters.hasStacked(count, filterableSource.getFilterable(actionContext));
+                    final FilterBlueprint filterBlueprint = generateFilter(parameterSplit[1]);
+                    return (actionContext) -> Filters.hasStacked(count, filterBlueprint.getFilterable(actionContext));
                 });
         parameterFilters.put("loweststrength",
                 (parameter) -> {
-                    final FilterableSource filterableSource = generateFilter(parameter);
+                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
                     return actionContext -> {
-                        final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
+                        final Filterable sourceFilterable = filterBlueprint.getFilterable(actionContext);
                         return Filters.and(
                                 sourceFilterable, Filters.strengthEqual(
                                         new SingleMemoryEvaluator(actionContext,
@@ -123,9 +122,9 @@ public class FilterFactory {
                 });
         parameterFilters.put("nameinstackedon",
                 (parameter) -> {
-                    final FilterableSource filterableSource = generateFilter(parameter);
+                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
                     return actionContext -> {
-                        final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
+                        final Filterable sourceFilterable = filterBlueprint.getFilterable(actionContext);
                         return (CardFilter) (game, physicalCard) -> {
                             for (PhysicalCard<? super DefaultGame> cardWithStack : Filters.filterActive(game, sourceFilterable)) {
                                 for (PhysicalCard stackedCard : cardWithStack.getStackedCards(game)) {
@@ -139,13 +138,13 @@ public class FilterFactory {
                 });
         parameterFilters.put("not",
                 (parameter) -> {
-                    final FilterableSource filterableSource = generateFilter(parameter);
-                    return (actionContext) -> Filters.not(filterableSource.getFilterable(actionContext));
+                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
+                    return (actionContext) -> Filters.not(filterBlueprint.getFilterable(actionContext));
                 });
         parameterFilters.put("or",
                 (parameter) -> {
                     final String[] filters = splitIntoFilters(parameter);
-                    FilterableSource[] filterables = new FilterableSource[filters.length];
+                    FilterBlueprint[] filterables = new FilterBlueprint[filters.length];
                     for (int i = 0; i < filters.length; i++)
                         filterables[i] = generateFilter(filters[i]);
                     return (actionContext) -> {
@@ -166,13 +165,16 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("strengthmorethan",
-                (parameter) -> {
-                    final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
+                new FilterableSourceProducer() {
+                    @Override
+                    public FilterBlueprint createFilterableSource(String parameter) throws InvalidCardDefinitionException, JsonProcessingException {
+                        final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
 
-                    return (actionContext) -> {
-                        int amount = valueSource.evaluateExpression(actionContext, null);
-                        return Filters.moreStrengthThan(amount);
-                    };
+                        return (actionContext) -> {
+                            int amount = valueSource.evaluateExpression(actionContext, null);
+                            return Filters.moreStrengthThan(amount);
+                        };
+                    }
                 });
         parameterFilters.put("title",parameterFilters.get("name"));
         parameterFilters.put("zone",
@@ -192,7 +194,7 @@ public class FilterFactory {
             simpleFilters.put(optionalFilterName, (actionContext -> value));
     }
 
-    public FilterableSource generateFilter(String value) throws
+    public FilterBlueprint generateFilter(String value) throws
             InvalidCardDefinitionException {
         try {
             if (value == null)
@@ -203,7 +205,7 @@ public class FilterFactory {
             if (filterStrings.length == 1)
                 return createFilter(filterStrings[0]);
 
-            FilterableSource[] filters = new FilterableSource[filterStrings.length];
+            FilterBlueprint[] filters = new FilterBlueprint[filterStrings.length];
             for (int i = 0; i < filters.length; i++)
                 filters[i] = createFilter(filterStrings[i]);
             return (actionContext) -> {
@@ -219,39 +221,39 @@ public class FilterFactory {
         }
     }
 
-    public FilterableSource generateFilter(JsonNode node) throws InvalidCardDefinitionException {
+    public FilterBlueprint generateFilter(JsonNode node) throws InvalidCardDefinitionException {
         if (node == null || !node.isTextual()) {
             throw new InvalidCardDefinitionException("Filter not specified");
         }
         return generateFilter(node.textValue());
     }
 
-    public FilterableSource parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
+    public FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
         String orNoParens = "\\s+OR\\s+(?![^\\(]*\\))";
         String andNoParens = "\\s+\\+\\s+(?![^\\(]*\\))";
         if (value == null)
             return null;
         if (value.split(orNoParens).length > 1) {
             String[] stringSplit = value.split(orNoParens);
-            List<FilterableSource> filterableSources = new LinkedList<>();
+            List<FilterBlueprint> filterBlueprints = new LinkedList<>();
             for (String string : stringSplit)
-                filterableSources.add(parseSTCCGFilter(string));
+                filterBlueprints.add(parseSTCCGFilter(string));
             return (actionContext) -> {
                 List<Filterable> filterables = new LinkedList<>();
-                for (FilterableSource filterableSource : filterableSources)
-                    filterables.add(filterableSource.getFilterable(actionContext));
+                for (FilterBlueprint filterBlueprint : filterBlueprints)
+                    filterables.add(filterBlueprint.getFilterable(actionContext));
                 return Filters.or(filterables.toArray(new Filterable[0]));
             };
         }
         if (value.split(andNoParens).length > 1) {
             String[] stringSplit = value.split(andNoParens);
-            List<FilterableSource> filterableSources = new LinkedList<>();
+            List<FilterBlueprint> filterBlueprints = new LinkedList<>();
             for (String string : stringSplit)
-                filterableSources.add(parseSTCCGFilter(string));
+                filterBlueprints.add(parseSTCCGFilter(string));
             return (actionContext) -> {
                 List<Filterable> filterables = new LinkedList<>();
-                for (FilterableSource filterableSource : filterableSources)
-                    filterables.add(filterableSource.getFilterable(actionContext));
+                for (FilterBlueprint filterBlueprint : filterBlueprints)
+                    filterables.add(filterBlueprint.getFilterable(actionContext));
                 return Filters.and(filterables.toArray(new Filterable[0]));
             };
         }
@@ -259,8 +261,8 @@ public class FilterFactory {
             return parseSTCCGFilter(value.substring(1, value.length() - 1));
         }
         if (value.startsWith("not(") && value.endsWith(")")) {
-            FilterableSource filterableSource = parseSTCCGFilter(value.substring(4, value.length() - 1));
-            return (actionContext) -> Filters.not(filterableSource.getFilterable(actionContext));
+            FilterBlueprint filterBlueprint = parseSTCCGFilter(value.substring(4, value.length() - 1));
+            return (actionContext) -> Filters.not(filterBlueprint.getFilterable(actionContext));
         }
         if (value.startsWith("name(") && value.endsWith(")")) {
             return (actionContext) -> Filters.name(value.substring(5, value.length() - 1));
@@ -276,7 +278,7 @@ public class FilterFactory {
         if (value.equals("you have no copies in play")) {
             return (actionContext) -> Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer());
         }
-        FilterableSource result = simpleFilters.get(Sanitize(value));
+        FilterBlueprint result = simpleFilters.get(Sanitize(value));
         if (result == null)
             throw new InvalidCardDefinitionException("Unknown filter: " + value);
         else return result;
@@ -317,7 +319,7 @@ public class FilterFactory {
         return parts.toArray(new String[0]);
     }
 
-    private FilterableSource createFilter(String filterString) throws InvalidCardDefinitionException, JsonProcessingException {
+    private FilterBlueprint createFilter(String filterString) throws InvalidCardDefinitionException, JsonProcessingException {
         if (filterString.contains("(") && filterString.endsWith(")")) {
             String filterName = filterString.substring(0, filterString.indexOf("("));
             String filterParameter =
@@ -329,10 +331,10 @@ public class FilterFactory {
 
 
 
-    private FilterableSource lookupFilter(String name, String parameter)
+    private FilterBlueprint lookupFilter(String name, String parameter)
             throws InvalidCardDefinitionException, JsonProcessingException {
         if (parameter == null) {
-            FilterableSource result = simpleFilters.get(Sanitize(name));
+            FilterBlueprint result = simpleFilters.get(Sanitize(name));
             if (result != null)
                 return result;
         }
