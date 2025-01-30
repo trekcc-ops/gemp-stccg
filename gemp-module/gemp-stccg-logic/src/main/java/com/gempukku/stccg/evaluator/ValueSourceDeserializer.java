@@ -176,7 +176,8 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final FilterableSource onFilter =
                         new FilterFactory().generateFilter(object.get("on").textValue());
                 return (actionContext) ->
-                        new CountStackedEvaluator(onFilter.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
+                        new CountStackedEvaluator(onFilter.getFilterable(actionContext),
+                                filterableSource.getFilterable(actionContext));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
                 return ctxt.readTreeAsValue(object, CountDiscardEvaluator.class);
             } else if (type.equalsIgnoreCase("forEachInHand")) {
