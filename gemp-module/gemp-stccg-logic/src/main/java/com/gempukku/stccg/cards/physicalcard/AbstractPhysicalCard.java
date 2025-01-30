@@ -235,9 +235,9 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
         return result;
     }
 
-    public List<TopLevelSelectableAction> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing) {
+    public List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        List<ActionBlueprint> triggers = _blueprint.getActivatedTriggers(timing);
+        List<ActionBlueprint> triggers = _blueprint.getActivatedTriggers();
 
         if (triggers != null) {
             for (ActionBlueprint trigger : triggers) {
@@ -283,7 +283,7 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
             case null, default -> {
                 assert _blueprint != null;
                 yield getActionsFromActionSources(player.getPlayerId(), this, actionResult,
-                        _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
+                        _blueprint.getTriggers(RequiredType.OPTIONAL));
             }
         };
     }

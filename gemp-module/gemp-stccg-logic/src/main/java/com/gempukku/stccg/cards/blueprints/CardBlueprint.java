@@ -142,8 +142,8 @@ public class CardBlueprint {
     private final Map<RequiredType, List<ActionBlueprint>> _beforeTriggers = new HashMap<>();
     private final Map<RequiredType, List<ActionBlueprint>> _afterTriggers = new HashMap<>();
     private final Map<RequiredType, ActionBlueprint> _discardedFromPlayTriggers = new HashMap<>();
-    private final Map<TriggerTiming, List<ActionBlueprint>> _optionalInHandTriggers = new HashMap<>();
-    private final Map<TriggerTiming, List<ActionBlueprint>> _activatedTriggers = new HashMap<>();
+    private final List<ActionBlueprint> _optionalInHandTriggers = new ArrayList<>();
+    private final List<ActionBlueprint> _activatedTriggers = new ArrayList<>();
 
     private List<ActionBlueprint> inDiscardPhaseActions;
 
@@ -352,23 +352,14 @@ public class CardBlueprint {
         playInOtherPhaseConditions.add(requirement);
     }
 
-    public void appendOptionalInHandTrigger(ActionBlueprint actionBlueprint, TriggerTiming timing) {
-        _optionalInHandTriggers.computeIfAbsent(timing, k -> new LinkedList<>());
-        _optionalInHandTriggers.get(timing).add(actionBlueprint);
+    public void appendOptionalInHandTrigger(ActionBlueprint actionBlueprint) {
+        _optionalInHandTriggers.add(actionBlueprint);
     }
 
-    public void appendBeforeOrAfterTrigger(TriggerActionBlueprint actionSource) {
+    public void appendTrigger(TriggerActionBlueprint actionSource) {
         RequiredType requiredType = actionSource.getRequiredType();
-        TriggerTiming triggerTiming = actionSource.getTiming();
-        Map<RequiredType, List<ActionBlueprint>> triggersMap = null;
-        if (triggerTiming == TriggerTiming.BEFORE)
-            triggersMap = _beforeTriggers;
-        else if (triggerTiming == TriggerTiming.AFTER)
-            triggersMap = _afterTriggers;
-        if (triggersMap != null){
-            triggersMap.computeIfAbsent(requiredType, k -> new LinkedList<>());
-            triggersMap.get(requiredType).add(actionSource);
-        }
+        _afterTriggers.computeIfAbsent(requiredType, k -> new LinkedList<>());
+        _afterTriggers.get(requiredType).add(actionSource);
     }
 
     public void appendPlayRequirement(Requirement requirement) {
@@ -407,18 +398,20 @@ public class CardBlueprint {
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
 
     public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
-    public List<ActionBlueprint> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
+    public List<ActionBlueprint> getActivatedTriggers() {
+        return _activatedTriggers;
+    }
     public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
-    public List<ActionBlueprint> getBeforeOrAfterTriggers(RequiredType requiredType, TriggerTiming timing) {
+    public List<ActionBlueprint> getTriggers(RequiredType requiredType) {
         List<ActionBlueprint> sourceResult = new ArrayList<>();
         for (ActionBlueprint source : _actionBlueprints) {
             if (requiredType == RequiredType.REQUIRED) {
-                if (source instanceof RequiredTriggerActionBlueprint triggerSource && triggerSource.getTiming() == timing)
+                if (source instanceof RequiredTriggerActionBlueprint)
                     sourceResult.add(source);
             } else {
-                if (source instanceof OptionalTriggerActionBlueprint triggerSource && triggerSource.getTiming() == timing)
+                if (source instanceof OptionalTriggerActionBlueprint)
                     sourceResult.add(source);
             }
         }
@@ -499,7 +492,7 @@ public class CardBlueprint {
 
     public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
+        getTriggers(RequiredType.REQUIRED).forEach(actionSource -> {
             if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
                 RequiredTriggerAction action = triggerSource.createActionWithNewContext(card, actionResult);
                 if (action != null) result.add(action);
