@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
@@ -179,27 +178,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return (actionContext) ->
                         new CountStackedEvaluator(onFilter.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
-                BlueprintUtils.validateAllowedFields(object, "filter", "multiplier", "limit", "player");
-                final int multiplier = BlueprintUtils.getInteger(object, "multiplier", 1);
-                final int limit = BlueprintUtils.getInteger(object, "limit", Integer.MAX_VALUE);
-                final String playerInput = BlueprintUtils.getString(object, "player", "you");
-                final PlayerSource playerSrc = PlayerResolver.resolvePlayer(playerInput);
-                final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                return actionContext -> new MultiplyEvaluator(actionContext, multiplier, new Evaluator() {
-                    final String playerId = playerSrc.getPlayerId(actionContext);
-                    @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        try {
-                            Player player = game.getPlayer(playerId);
-                            final Filterable filterable = filterableSource.getFilterable(actionContext);
-                            int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), game, filterable).size();
-                            return Math.min(limit, count);
-                        } catch(PlayerNotFoundException exp) {
-                            game.sendErrorMessage(exp);
-                            return 0;
-                        }
-                    }
-                });
+                return ctxt.readTreeAsValue(object, CountDiscardEvaluator.class);
             } else if (type.equalsIgnoreCase("forEachInHand")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "hand");
                 final PlayerSource player =

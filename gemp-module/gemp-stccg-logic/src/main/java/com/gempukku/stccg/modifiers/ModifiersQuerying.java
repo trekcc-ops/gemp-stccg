@@ -2,7 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;

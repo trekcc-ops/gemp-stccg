@@ -19,7 +19,7 @@ public class PlayOutOfSequenceCondition implements Requirement {
         } else {
             String[] pieces = condition.split("=");
             _valueCheck = ValueCheck.valueOf(pieces[0].trim());
-            _value = Integer.valueOf(pieces[1].trim());
+            _value = Integer.parseInt(pieces[1].trim());
         }
     }
 

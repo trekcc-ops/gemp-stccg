@@ -142,6 +142,10 @@ public class DefaultActionContext implements ActionContext {
         return actionResult;
     }
 
+    public boolean hasActionResultType(ActionResult.Type type) {
+        return actionResult != null && actionResult.getType() == type;
+    }
+
 
     public boolean acceptsAllRequirements(Iterable<Requirement> requirements) {
         if (requirements == null)

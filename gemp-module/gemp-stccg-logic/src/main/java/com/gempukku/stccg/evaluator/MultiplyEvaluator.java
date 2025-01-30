@@ -1,7 +1,6 @@
 package com.gempukku.stccg.evaluator;
 
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 

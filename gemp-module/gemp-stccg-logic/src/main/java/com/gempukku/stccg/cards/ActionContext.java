@@ -38,6 +38,8 @@ public interface ActionContext {
 
     List<PhysicalCard> getZoneCards(Player player, Zone zone);
 
+    boolean hasActionResultType(ActionResult.Type type);
+
 
     ActionContext getParentContext();
 }

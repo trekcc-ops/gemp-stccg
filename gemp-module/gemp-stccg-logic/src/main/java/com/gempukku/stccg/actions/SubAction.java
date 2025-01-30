@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.effect.SubActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;

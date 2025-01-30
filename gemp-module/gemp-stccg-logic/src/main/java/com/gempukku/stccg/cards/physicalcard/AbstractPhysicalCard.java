@@ -13,7 +13,7 @@ import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
