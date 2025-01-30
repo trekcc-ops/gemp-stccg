@@ -22,11 +22,11 @@ public class GainIconModifierBlueprint implements ModifierBlueprint {
     GainIconModifierBlueprint(@JsonProperty(value = "icon", required = true)
                               CardIcon icon,
                               @JsonProperty(value = "filter", required = true)
-                              String filterText,
+                              FilterBlueprint filterBlueprint,
                               @JsonProperty(value = "requires")
-                              List<Requirement> requirements) throws InvalidCardDefinitionException {
+                              List<Requirement> requirements) {
         _icon = icon;
-        _filterBlueprint = new FilterFactory().parseSTCCGFilter(filterText);
+        _filterBlueprint = filterBlueprint;
         _requirements = requirements;
     }
 

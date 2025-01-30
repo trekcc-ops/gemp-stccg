@@ -18,7 +18,6 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     private final static String AND_WITH_NO_PARENTHESES = "\\s+\\+\\s+(?![^\\(]*\\))";
 
     private final Map<String, FilterBlueprint> simpleFilters = new HashMap<>();
-    private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
     private final ObjectMapper _mapper = new ObjectMapper();
 
 
@@ -47,10 +46,11 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put("nor", (actionContext) -> Filters.Nor);
         simpleFilters.put("self", ActionContext::getSource);
         simpleFilters.put("unique", (actionContext) -> Filters.unique);
-        // TODO - "your" isn't quite right
         simpleFilters.put("your", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yours", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yoursevenifnotinplay", (actionContext) -> Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
+        simpleFilters.put("you have no copies in play", (actionContext) ->
+                Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer()));
     }
 
     @Override
@@ -59,6 +59,35 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         if (object != null && object.isTextual() && object.textValue() != null)
             return parseSTCCGFilter(object.textValue());
         else throw new InvalidCardDefinitionException("Unable to deserialize filter blueprint");
+    }
+
+    private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
+        if (value.split(OR_WITH_NO_PARENTHESES).length > 1)
+            return createOrFilter(value);
+        if (value.split(AND_WITH_NO_PARENTHESES).length > 1)
+            return createAndFilter(value);
+        if (value.startsWith("(") && value.endsWith(")")) {
+            return parseSTCCGFilter(value.substring(1, value.length() - 1));
+        }
+        if (value.startsWith("not(") && value.endsWith(")")) {
+            FilterBlueprint filterBlueprint = parseSTCCGFilter(value.substring(4, value.length() - 1));
+            return (actionContext) -> Filters.not(filterBlueprint.getFilterable(actionContext));
+        }
+        if (value.startsWith("name(") && value.endsWith(")")) {
+            return (actionContext) -> Filters.name(value.substring(5, value.length() - 1));
+        }
+        if (value.startsWith("skill-dots<=")) {
+            String[] stringSplit = value.split("<=");
+            return (actionContext) -> Filters.skillDotsLessThanOrEqualTo(Integer.parseInt(stringSplit[1]));
+        }
+        if (value.startsWith("sd-icons=")) {
+            String[] stringSplit = value.split("=");
+            return (actionContext) -> Filters.specialDownloadIconCount(Integer.parseInt(stringSplit[1]));
+        }
+        FilterBlueprint result = simpleFilters.get(Sanitize(value));
+        if (result == null)
+            throw new InvalidCardDefinitionException("Unknown filter: " + value);
+        else return result;
     }
 
     private FilterBlueprint createOrFilter(String value) throws InvalidCardDefinitionException {
@@ -85,39 +114,6 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 filterables.add(filterBlueprint.getFilterable(actionContext));
             return Filters.and(filterables.toArray(new Filterable[0]));
         };
-    }
-
-
-    private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
-        if (value.split(OR_WITH_NO_PARENTHESES).length > 1)
-            return createOrFilter(value);
-        if (value.split(AND_WITH_NO_PARENTHESES).length > 1)
-            return createAndFilter(value);
-        if (value.startsWith("(") && value.endsWith(")")) {
-            return parseSTCCGFilter(value.substring(1, value.length() - 1));
-        }
-        if (value.startsWith("not(") && value.endsWith(")")) {
-            FilterBlueprint filterBlueprint = parseSTCCGFilter(value.substring(4, value.length() - 1));
-            return (actionContext) -> Filters.not(filterBlueprint.getFilterable(actionContext));
-        }
-        if (value.startsWith("name(") && value.endsWith(")")) {
-            return (actionContext) -> Filters.name(value.substring(5, value.length() - 1));
-        }
-        if (value.startsWith("skill-dots<=")) {
-            String[] stringSplit = value.split("<=");
-            return (actionContext) -> Filters.skillDotsLessThanOrEqualTo(Integer.parseInt(stringSplit[1]));
-        }
-        if (value.startsWith("sd-icons=")) {
-            String[] stringSplit = value.split("=");
-            return (actionContext) -> Filters.specialDownloadIconCount(Integer.parseInt(stringSplit[1]));
-        }
-        if (value.equals("you have no copies in play")) {
-            return (actionContext) -> Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer());
-        }
-        FilterBlueprint result = simpleFilters.get(Sanitize(value));
-        if (result == null)
-            throw new InvalidCardDefinitionException("Unknown filter: " + value);
-        else return result;
     }
 
     private static String Sanitize(String input)

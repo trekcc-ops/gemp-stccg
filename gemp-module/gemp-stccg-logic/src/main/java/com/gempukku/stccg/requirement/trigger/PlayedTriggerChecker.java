@@ -27,18 +27,17 @@ public class PlayedTriggerChecker implements TriggerChecker {
 
     PlayedTriggerChecker(
             @JsonProperty(value = "filter", required = true)
-            String filter,
+            FilterBlueprint filter,
             @JsonProperty("on")
-            String onFilter,
+            FilterBlueprint onFilter,
             @JsonProperty("memorize")
             String memorize,
             @JsonProperty("player")
             String playerText
     ) throws InvalidCardDefinitionException {
-        FilterFactory factory = new FilterFactory();
         _playingPlayer = PlayerResolver.resolvePlayer(Objects.requireNonNullElse(playerText, "you"));
-        _filter = factory.parseSTCCGFilter(filter);
-        _onFilter = (onFilter != null) ? factory.parseSTCCGFilter(onFilter) : null;
+        _filter = filter;
+        _onFilter = onFilter;
         _saveToMemoryId = Objects.requireNonNullElse(memorize, "_temp");
     }
     @Override

@@ -228,62 +228,6 @@ public class FilterFactory {
         return generateFilter(node.textValue());
     }
 
-    public FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
-        String orNoParens = "\\s+OR\\s+(?![^\\(]*\\))";
-        String andNoParens = "\\s+\\+\\s+(?![^\\(]*\\))";
-        if (value == null)
-            return null;
-        if (value.split(orNoParens).length > 1) {
-            String[] stringSplit = value.split(orNoParens);
-            List<FilterBlueprint> filterBlueprints = new LinkedList<>();
-            for (String string : stringSplit)
-                filterBlueprints.add(parseSTCCGFilter(string));
-            return (actionContext) -> {
-                List<Filterable> filterables = new LinkedList<>();
-                for (FilterBlueprint filterBlueprint : filterBlueprints)
-                    filterables.add(filterBlueprint.getFilterable(actionContext));
-                return Filters.or(filterables.toArray(new Filterable[0]));
-            };
-        }
-        if (value.split(andNoParens).length > 1) {
-            String[] stringSplit = value.split(andNoParens);
-            List<FilterBlueprint> filterBlueprints = new LinkedList<>();
-            for (String string : stringSplit)
-                filterBlueprints.add(parseSTCCGFilter(string));
-            return (actionContext) -> {
-                List<Filterable> filterables = new LinkedList<>();
-                for (FilterBlueprint filterBlueprint : filterBlueprints)
-                    filterables.add(filterBlueprint.getFilterable(actionContext));
-                return Filters.and(filterables.toArray(new Filterable[0]));
-            };
-        }
-        if (value.startsWith("(") && value.endsWith(")")) {
-            return parseSTCCGFilter(value.substring(1, value.length() - 1));
-        }
-        if (value.startsWith("not(") && value.endsWith(")")) {
-            FilterBlueprint filterBlueprint = parseSTCCGFilter(value.substring(4, value.length() - 1));
-            return (actionContext) -> Filters.not(filterBlueprint.getFilterable(actionContext));
-        }
-        if (value.startsWith("name(") && value.endsWith(")")) {
-            return (actionContext) -> Filters.name(value.substring(5, value.length() - 1));
-        }
-        if (value.startsWith("skill-dots<=")) {
-            String[] stringSplit = value.split("<=");
-            return (actionContext) -> Filters.skillDotsLessThanOrEqualTo(Integer.parseInt(stringSplit[1]));
-        }
-        if (value.startsWith("sd-icons=")) {
-            String[] stringSplit = value.split("=");
-            return (actionContext) -> Filters.specialDownloadIconCount(Integer.parseInt(stringSplit[1]));
-        }
-        if (value.equals("you have no copies in play")) {
-            return (actionContext) -> Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer());
-        }
-        FilterBlueprint result = simpleFilters.get(Sanitize(value));
-        if (result == null)
-            throw new InvalidCardDefinitionException("Unknown filter: " + value);
-        else return result;
-    }
-
     private String[] splitIntoFilters(String value) throws InvalidCardDefinitionException {
         List<String> parts = new LinkedList<>();
         final char[] chars = value.toCharArray();
