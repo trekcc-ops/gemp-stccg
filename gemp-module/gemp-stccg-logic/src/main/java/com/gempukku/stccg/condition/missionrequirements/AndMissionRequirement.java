@@ -21,10 +21,6 @@ public class AndMissionRequirement implements MissionRequirement {
             _requirements.add(new RegularSkillMissionRequirement(skill));
         }
     }
-    @Override
-    public boolean canBeMetBy(PersonnelCard personnel) {
-        return _requirements.stream().allMatch(requirement -> requirement.canBeMetBy(personnel));
-    }
 
     @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel) {

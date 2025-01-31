@@ -87,9 +87,16 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
             for (int i = 0; i < 2; i++) {
                 stringSplit[i] = stringSplit[i].trim();
             }
-            if (_skillMap.get(stringSplit[0].toUpperCase()) != null)
+            if (_skillMap.get(stringSplit[0].toUpperCase()) != null) {
                 return new RegularSkillMissionRequirement(_skillMap.get(stringSplit[0].toUpperCase()),
                         Integer.parseInt(stringSplit[1].substring(1)));
+            }
+            if (stringSplit[0].startsWith("personnelWith(") && stringSplit[0].endsWith(")")) {
+                int numberOfPersonnelNeeded = Integer.parseInt(stringSplit[1].substring(1));
+                String requirement = stringSplit[0].substring(14,stringSplit[0].length()-1);
+                MissionRequirement personnelRequirement = createRequirement(requirement);
+                return new FromOnePersonnelMissionRequirement(personnelRequirement, numberOfPersonnelNeeded);
+            }
         }
         if (text.split(multiplierSplit2e).length > 1) {
             String[] stringSplit = text.split(multiplierSplit2e);

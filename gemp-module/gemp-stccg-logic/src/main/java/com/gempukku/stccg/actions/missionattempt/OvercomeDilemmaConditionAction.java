@@ -25,6 +25,8 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     private final EncounterSeedCardAction _encounterAction;
     private enum Progress { conditionsChecked }
     private final MissionRequirement _conditions;
+    private boolean _failed;
+    private boolean _succeeded;
 
     public OvercomeDilemmaConditionAction(PhysicalCard dilemma, EncounterSeedCardAction encounterAction,
                                           MissionRequirement conditions, AttemptingUnit attemptingUnit,
@@ -66,17 +68,23 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
             Action result;
             if (_conditions.canBeMetBy(_attemptingUnit)) {
                 result = cardGame.getActionById(_succeedActionId);
-                setAsSuccessful();
+                _succeeded = true;
             } else {
                 result = _failAction;
                 _encounterAction.setAsFailed();
                 _encounterAction.getAttemptAction().setAsFailed();
-                setAsFailed();
+                _failed = true;
             }
             setProgress(Progress.conditionsChecked);
             return result;
         }
 
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null) {
+            if (_succeeded)
+                setAsSuccessful();
+            else setAsFailed();
+        }
+        return nextAction;
     }
 }

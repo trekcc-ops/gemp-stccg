@@ -17,11 +17,6 @@ public class RegularSkillMissionRequirement implements MissionRequirement {
         _skill = skill;
         _count = count;
     }
-    @Override
-    public boolean canBeMetBy(PersonnelCard personnel) {
-        Integer skillCount = personnel.getSkillLevel(_skill);
-        return skillCount >= _count;
-    }
 
     @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel) {

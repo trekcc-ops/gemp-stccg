@@ -10,8 +10,6 @@ import java.util.Collection;
 @JsonDeserialize(using = MissionRequirementDeserializer.class)
 public interface MissionRequirement {
 
-    boolean canBeMetBy(PersonnelCard personnel);
-
     boolean canBeMetBy(Collection<PersonnelCard> personnel);
 
     default boolean canBeMetBy(AttemptingUnit attemptingUnit) {
