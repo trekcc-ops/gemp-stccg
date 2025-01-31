@@ -24,8 +24,7 @@ public class KillActionBlueprint extends DelayedEffectBlueprint {
     private final CardTargetBlueprint _targetResolver;
 
     KillActionBlueprint(@JsonProperty(value = "target")
-                        CardTargetBlueprint target)
-            throws InvalidCardDefinitionException {
+                        CardTargetBlueprint target) {
         _targetResolver = target;
     }
 

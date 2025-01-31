@@ -69,9 +69,17 @@
             mission-type: planet
             lore: Forcefields across door or hallway openings are commonly used to bar entry.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR30.jpg
             rarity: C
+            actions: [
+                {
+                    type: encounter
+                    effect: {
+                        type: overcomeCondition
+                        requires: Computer Skill
+                    }
+                }
+            ]
         }
     /*    {
             blueprintId: 101_032
