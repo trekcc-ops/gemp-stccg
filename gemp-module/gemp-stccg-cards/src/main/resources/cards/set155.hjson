@@ -67,7 +67,11 @@
                     }
                     effect: {
                         type: download
-                        filter: choose(warp-core)
+                        target: {
+                            type: select
+                            filter: warp-core
+                            count: 1
+                        }
                     }
                 }
                 {

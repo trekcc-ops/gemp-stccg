@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.filters.FilterFactory;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -25,7 +24,7 @@ public class CountDiscardEvaluator implements ValueSource {
     private final FilterBlueprint _filterBlueprint;
 
     public CountDiscardEvaluator(@JsonProperty("filter")
-                                 String filter,
+                                 FilterBlueprint filterBlueprint,
                                  @JsonProperty("player")
                                  String playerText,
                                  @JsonProperty("limit")
@@ -36,9 +35,7 @@ public class CountDiscardEvaluator implements ValueSource {
         _limit = Objects.requireNonNullElse(limit, Integer.MAX_VALUE);
         _playerSource = (playerText == null) ?
                 ActionContext::getPerformingPlayerId : PlayerResolver.resolvePlayer(playerText);
-
-        _filterBlueprint = (filter == null) ?
-                new FilterFactory().generateFilter("any") : new FilterFactory().generateFilter(filter);
+        _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, actionContext -> Filters.any);
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.gempukku.stccg.modifiers.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.filters.FilterFactory;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.condition.RequirementCondition;
@@ -23,11 +21,11 @@ public class StrengthModifierBlueprint implements ModifierBlueprint {
     StrengthModifierBlueprint(@JsonProperty(value = "amount", required = true)
                               ValueSource amount,
                               @JsonProperty(value = "filter", required = true)
-                              String filterText,
+                              FilterBlueprint filterBlueprint,
                               @JsonProperty(value = "requires", required = true)
-                              List<Requirement> requirements) throws InvalidCardDefinitionException {
+                              List<Requirement> requirements) {
         _valueSource = amount;
-        _filterBlueprint = new FilterFactory().generateFilter(filterText);
+        _filterBlueprint = filterBlueprint;
         _requirements = requirements;
     }
 

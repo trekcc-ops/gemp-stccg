@@ -22,7 +22,11 @@
                     }
                     effect: {
                         type: download
-                        filter: choose(reactor-core)
+                        target: {
+                            type: select
+                            filter: reactor-core
+                            count: 1
+                        }
                     }
                 }
                 {

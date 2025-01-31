@@ -2,23 +2,23 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.evaluator.ConstantValueSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.filters.CanBeDiscardedFilterBlueprint;
-import com.gempukku.stccg.filters.FilterFactory;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.filters.CanBeDiscardedFilterBlueprint;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,14 +37,15 @@ public class DiscardActionBlueprint extends MultiSubActionBlueprint {
                            @JsonProperty(value = "filter", required = true)
                            String filter,
                            @JsonProperty(value = "memorize")
-                           String memoryId) throws InvalidCardDefinitionException {
+                           String memoryId) throws IOException {
         _memoryId = Objects.requireNonNullElse(memoryId, "_temp");
         _countSource = Objects.requireNonNullElse(count, new ConstantValueSource(1));
         final PlayerSource selectingPlayer = ActionContext::getPerformingPlayerId;
         final PlayerSource targetPlayerSource = ActionContext::getPerformingPlayerId;
 
         FilterBlueprint cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
-                new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
+                new ObjectMapper().readValue(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")")),
+                        FilterBlueprint.class) :
                 null;
 
         FilterBlueprint choiceFilter = new CanBeDiscardedFilterBlueprint();

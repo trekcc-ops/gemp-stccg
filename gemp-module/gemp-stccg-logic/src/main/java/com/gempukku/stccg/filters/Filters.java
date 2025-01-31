@@ -113,6 +113,16 @@ public class Filters {
         return result;
     }
 
+    public static Collection<PhysicalCard> filter(DefaultGame cardGame, Iterable<? extends Filterable> filters) {
+        CardFilter filter = Filters.and(filters);
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : cardGame.getGameState().getAllCardsInGame()) {
+            if (filter.accepts(cardGame, card))
+                result.add(card);
+        }
+        return result;
+    }
+
     public static Collection<PhysicalCard> filter(DefaultGame game, Filterable... filters) {
         CardFilter filter = Filters.and(filters);
         List<PhysicalCard> result = new LinkedList<>();
@@ -238,7 +248,6 @@ public class Filters {
     }
 
     public static final CardFilter canBeRemovedFromTheGame = (game, physicalCard) -> true;
-
 
     public static CardFilter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
@@ -428,6 +437,15 @@ public class Filters {
         return new AndFilter(filtersInt);
     }
 
+    public static CardFilter and(Iterable<? extends Filterable> filters) {
+        List<CardFilter> result = new LinkedList<>();
+        for (Filterable filter : filters) {
+            result.add(changeToFilter(filter));
+        }
+        return new AndFilter(result);
+    }
+
+
     public static CardFilter or(final Filterable... filters) {
         CardFilter[] filtersInt = convertToFilters(filters);
         if (filtersInt.length == 1)
@@ -577,6 +595,31 @@ public class Filters {
                 if (action instanceof EncounterSeedCardAction encounterAction &&
                         encounterAction.getEncounteredCard() == encounteredCard) {
                     return encounterAction.getAttemptingUnit().getAttemptingPersonnel().contains(physicalCard);
+                }
+            }
+            return false;
+        };
+    }
+
+    public static CardFilter inYourDrawDeck(Player performingPlayer) {
+        return (game, physicalCard) -> performingPlayer.getCardsInDrawDeck().contains(physicalCard);
+    }
+
+    public static CardFilter cardsYouCanDownload(Player performingPlayer) {
+        return inYourDrawDeck(performingPlayer);
+    }
+
+    public static CardFilter inYourHand(Player player) {
+        return (game, physicalCard) -> player.getCardsInHand().contains(physicalCard);
+    }
+
+    public static CardFilter youControlAMatchingOutpost(Player player) {
+        return (game, cardToCheck) -> {
+            for (PhysicalCard outpostCard : Filters.filterCardsInPlay(game, FacilityType.OUTPOST)) {
+                if (outpostCard instanceof FacilityCard outpost && outpost.isControlledBy(player) &&
+                        cardToCheck instanceof AffiliatedCard affiliatedCard &&
+                        affiliatedCard.matchesAffiliationOf(outpost)) {
+                    return true;
                 }
             }
             return false;

@@ -14,4 +14,8 @@ public interface AffiliatedCard extends PhysicalCard<ST1EGame> {
     void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException;
     Set<Affiliation> getAffiliationOptions();
     String getCardLink();
+
+    default boolean matchesAffiliationOf(AffiliatedCard affiliatedCard) {
+        return getAffiliation() == affiliatedCard.getAffiliation();
+    }
 }

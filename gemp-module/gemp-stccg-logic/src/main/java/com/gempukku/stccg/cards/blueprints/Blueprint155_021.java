@@ -13,20 +13,13 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.GameState;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Blueprint155_021 extends CardBlueprint {
 
     // Attention All Hands
-
-    private Collection<PhysicalCard> getDestinationOptionsForCard(DefaultGame cardGame, PhysicalCard card) {
-        return Filters.filterYourActive(cardGame, card.getOwner(),
-                Filters.yourMatchingOutposts(card.getOwner(), card));
-    }
 
     @Override
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
@@ -41,18 +34,12 @@ public class Blueprint155_021 extends CardBlueprint {
                 // TODO - Make sure there's a native quadrant requirement here if Modern rules are used
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
                     Filters.youHaveNoCopiesInPlay(thisCard.getOwner()), Filters.playable,
-                    Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON));
+                    Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON),
+                    Filters.inYourHand(player), Filters.youControlAMatchingOutpost(player));
             action1.setCardActionPrefix("1");
             action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
             action1.appendEffect(
                     new DownloadCardAction(cardGame, Zone.HAND, thisCard.getOwner(), playableCardFilter) {
-                        @Override
-                        protected Collection<PhysicalCard> getPlayableCards(DefaultGame cardGame, GameState gameState) {
-                            Collection<PhysicalCard> playableCards = Filters.filter(
-                                    thisCard.getOwner().getCardsInHand(), playableCardFilter);
-                            playableCards.removeIf(card -> getDestinationOptionsForCard(cardGame, card).isEmpty());
-                            return playableCards;
-                        }
 
                         @Override
                         protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {

@@ -54,15 +54,20 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
+        simpleFilters.put("cardyoucandownload", (actionContext) ->
+                Filters.cardsYouCanDownload(actionContext.getPerformingPlayer()));
         simpleFilters.put("encounteringthiscard", (actionContext) ->
                 Filters.encounteringCard(actionContext.getSource()));
         simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
+        simpleFilters.put("inyourdrawdeck", (actionContext) ->
+                Filters.inYourDrawDeck(actionContext.getPerformingPlayer()));
         simpleFilters.put("nor", (actionContext) -> Filters.Nor);
         simpleFilters.put("self", ActionContext::getSource);
         simpleFilters.put("unique", (actionContext) -> Filters.unique);
         simpleFilters.put("your", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yours", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yoursevenifnotinplay", (actionContext) -> Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
+        simpleFilters.put("yoursevenifnotinplay", (actionContext) ->
+                Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
         simpleFilters.put("you have no copies in play", (actionContext) ->
                 Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer()));
     }

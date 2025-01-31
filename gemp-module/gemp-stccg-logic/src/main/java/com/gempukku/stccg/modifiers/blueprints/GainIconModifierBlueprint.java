@@ -2,14 +2,12 @@ package com.gempukku.stccg.modifiers.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.filters.FilterFactory;
-import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.condition.RequirementCondition;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.List;
 

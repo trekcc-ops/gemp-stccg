@@ -7,12 +7,11 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.filters.FilterFactory;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -49,13 +48,6 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             return defaultValue;
         else
             return parentNode.get(key).textValue();
-    }
-
-    public static FilterBlueprint getFilterable(JsonNode node, String defaultValue)
-            throws InvalidCardDefinitionException {
-        if (!node.has("filter"))
-            return new FilterFactory().generateFilter(defaultValue);
-        else return new FilterFactory().generateFilter(node.get("filter").textValue());
     }
 
     private static void validateAllowedFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
@@ -201,8 +193,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 validateAllowedFields(object, "memory", "filter", "limit");
                 final String memory = object.get("memory").textValue();
                 final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
-                final FilterBlueprint filterBlueprint =
-                        new FilterFactory().generateFilter(object.get("filter").textValue());
+                final FilterBlueprint filterBlueprint = ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class);
                 return (actionContext) -> {
                     final int count = Filters.filter(actionContext.getCardsFromMemory(memory), actionContext.getGame(),
                             filterBlueprint.getFilterable(actionContext)).size();
@@ -215,9 +206,10 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
             } else if (type.equalsIgnoreCase("countStacked")) {
                 validateAllowedFields(object, "on", "filter");
-                final FilterBlueprint filterBlueprint = getFilterable(object, "any");
-                final FilterBlueprint onFilter =
-                        new FilterFactory().generateFilter(object.get("on").textValue());
+                final FilterBlueprint filterBlueprint = object.has("filter") ?
+                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
+                        (actionContext -> Filters.any);
+                final FilterBlueprint onFilter = ctxt.readTreeAsValue(object.get("on"), FilterBlueprint.class);
                 return (actionContext) ->
                         new CountStackedEvaluator(onFilter.getFilterable(actionContext),
                                 filterBlueprint.getFilterable(actionContext));
@@ -227,7 +219,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 validateAllowedFields(object, "filter", "hand");
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(getString(object, "hand", "you"));
-                final FilterBlueprint filterBlueprint = getFilterable(object, "any");
+                final FilterBlueprint filterBlueprint = object.has("filter") ?
+                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
+                        (actionContext -> Filters.any);
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -246,7 +240,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 validateAllowedFields(object, "filter", "owner");
                 final String owner = getString(object, "owner", "you");
                 final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
-                final FilterBlueprint filterBlueprint = getFilterable(object, "any");
+                final FilterBlueprint filterBlueprint = object.has("filter") ?
+                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
+                        (actionContext -> Filters.any);
                 return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -283,7 +279,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final int multiplier = getInteger(object, "multiplier", 1);
                 final int over = getInteger(object, "over", 0);
                 final String filter = getString(object, "filter", "any");
-                final FilterBlueprint strengthSource = getFilterable(object, "any");
+                final FilterBlueprint strengthSource = object.has("filter") ?
+                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
+                        (actionContext -> Filters.any);
 
                 return (actionContext) -> {
                     if (filter.equals("any")) {

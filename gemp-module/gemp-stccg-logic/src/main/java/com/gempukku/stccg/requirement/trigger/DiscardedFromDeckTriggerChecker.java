@@ -5,9 +5,8 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.filters.FilterFactory;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -19,11 +18,11 @@ public class DiscardedFromDeckTriggerChecker implements TriggerChecker {
     private final String _memoryId;
 
     DiscardedFromDeckTriggerChecker(@JsonProperty("filter")
-                    String filter,
+                    FilterBlueprint filterBlueprint,
                                     @JsonProperty("memorize")
                     String memoryId) throws InvalidCardDefinitionException {
         _memoryId = memoryId;
-        _filterBlueprint = new FilterFactory().generateFilter(Objects.requireNonNullElse(filter, "any"));
+        _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, actionContext -> Filters.any);
     }
 
 
