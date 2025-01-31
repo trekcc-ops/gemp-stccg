@@ -90,18 +90,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
             if("true".equalsIgnoreCase(includeEventsStr))
             {
-                JSONData.FullFormatReadout data = new JSONData.FullFormatReadout();
-                data.Formats = _formatLibrary.getAllFormats().values().stream()
-                        .map(GameFormat::Serialize)
-                        .collect(Collectors.toMap(x-> x.code, x-> x));
-                data.SealedTemplates = _formatLibrary.GetAllSealedTemplates().values().stream()
-                        .map(SealedEventDefinition::Serialize)
-                        .collect(Collectors.toMap(x-> x.name, x-> x));
-                data.DraftTemplates = _draftLibrary.getAllSoloDrafts().values().stream()
-                        .map(soloDraft -> new JSONData.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))
-                        .collect(Collectors.toMap(x-> x.code, x-> x));
-
-                json = JsonUtils.toJsonString(data);
+                responseWriter.writeJsonResponse(JsonUtils.toJsonString(_formatLibrary));
             }
             else {
                 Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
@@ -111,9 +100,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                         .toArray();
 
                 json = JsonUtils.toJsonString(output);
+                responseWriter.writeJsonResponse(json);
             }
-
-            responseWriter.writeJsonResponse(json);
         } finally {
             postDecoder.destroy();
         }
@@ -155,7 +143,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             }
 
             assert format != null;
-            String response = HTMLUtils.getDeckValidation(deck, format);
+            String response = HTMLUtils.getDeckValidation(_cardBlueprintLibrary, deck, format);
             responseWriter.writeHtmlResponse(response);
         } finally {
             postDecoder.destroy();

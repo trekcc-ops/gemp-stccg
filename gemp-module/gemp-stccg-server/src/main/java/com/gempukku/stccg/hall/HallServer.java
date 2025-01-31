@@ -401,8 +401,8 @@ public class HallServer extends AbstractServer {
         if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
 
-        CardDeck deck = format.applyErrata(cardDeck);
-        List<String> validations = format.validateDeck(deck);
+        CardDeck deck = format.applyErrata(_serverObjects.getCardBlueprintLibrary(), cardDeck);
+        List<String> validations = format.validateDeck(_serverObjects.getCardBlueprintLibrary(), deck);
         if(!validations.isEmpty()) {
             String firstValidation = validations.stream().findFirst().orElse(null);
             long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();

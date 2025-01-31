@@ -46,7 +46,7 @@ public class NewSealedLeagueData implements LeagueData {
                     new DefaultLeagueSeriesData(_leaguePrizes, true, "Series " + (i + 1),
                             DateUtils.offsetDate(start, i * seriesDuration),
                             DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
-                            def.GetFormat(), _collectionType));
+                            def.getFormat(), _collectionType));
         }
     }
 

@@ -119,7 +119,7 @@ public class SortAndFilterCards {
             GameFormat format = formatLibrary.getFormat(setId);
 
             if (format != null) {
-                String valid = format.validateCard(blueprintId);
+                String valid = format.validateCard(library, blueprintId);
                 return valid == null || valid.isEmpty();
             } else {
                 if (blueprintId.startsWith(setId + "_") || library.hasAlternateInSet(blueprintId, setId))

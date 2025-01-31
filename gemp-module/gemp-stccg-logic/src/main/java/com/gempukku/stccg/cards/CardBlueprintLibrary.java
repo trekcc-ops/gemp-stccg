@@ -316,8 +316,8 @@ public class CardBlueprintLibrary {
         }
     }
 
-    private Map<String, JSONData.ErrataInfo> errataMappings = null;
-    public Map<String, JSONData.ErrataInfo> getErrata() {
+    private Map<String, ErrataInfo> errataMappings = null;
+    public Map<String, ErrataInfo> getErrata() {
         try {
             if(errataMappings == null) {
                 collectionReady.acquire();
@@ -326,7 +326,7 @@ public class CardBlueprintLibrary {
                     var parts = id.split("_");
                     int setID = Integer.parseInt(parts[0]);
                     String cardID = parts[1];
-                    JSONData.ErrataInfo card;
+                    ErrataInfo card;
                     String base;
                     if(setID >= 50 && setID <= 69) {
                         base = (setID - 50) + "_" + cardID;
@@ -345,7 +345,7 @@ public class CardBlueprintLibrary {
                     }
                     else {
                         CardBlueprint blueprint = _blueprints.get(base);
-                        card = new JSONData.ErrataInfo();
+                        card = new ErrataInfo();
                         card.BaseID = base;
                         card.Name = blueprint.getFullName();
                         card.LinkText = blueprint.getCardLink();
@@ -353,7 +353,7 @@ public class CardBlueprintLibrary {
                         errataMappings.put(base, card);
                     }
 
-                    card.ErrataIDs.put(JSONData.ErrataInfo.PC_Errata, id);
+                    card.ErrataIDs.put(ErrataInfo.PC_Errata, id);
                 }
 
                 collectionReady.release();
@@ -452,5 +452,13 @@ public class CardBlueprintLibrary {
     public SetDefinition getSetDefinition(String setId) {
         Map<String, SetDefinition> sets = Collections.unmodifiableMap(_allSets);
         return sets.get(setId);
+    }
+
+    private static class ErrataInfo {
+        public static final String PC_Errata = "PC";
+        public String BaseID;
+        public String Name;
+        public String LinkText;
+        public Map<String, String> ErrataIDs;
     }
 }

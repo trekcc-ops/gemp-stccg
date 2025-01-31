@@ -506,7 +506,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     }
 
     private String serializeSealedLeagueParameters(Map<String,String> parameters) {
-        return String.join(",", _formatLibrary.GetSealedTemplate(parameters.get("format")).GetID(),
+        return String.join(",", _formatLibrary.GetSealedTemplate(parameters.get("format")).getId(),
                 parameters.get("start"), parameters.get("seriesDuration"), parameters.get("maxMatches"),
                 parameters.get("code"), parameters.get("name"));
     }
@@ -582,8 +582,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         _serverObjects.getProductLibrary().ReloadPacks();
 
-        _formatLibrary.ReloadFormats();
-        _formatLibrary.ReloadSealedTemplates();
+        _formatLibrary.reloadFormats(_cardBlueprintLibrary);
+        _formatLibrary.reloadSealedTemplates();
 
         chatServer.sendSystemMessageToAllUsers(
                 "Card definition reload complete.  If you are mid-game and you notice any oddities, reload the page " +

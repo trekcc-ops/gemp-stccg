@@ -1,5 +1,7 @@
 package com.gempukku.stccg.formats;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.common.JSONData;
 
@@ -11,13 +13,22 @@ import java.util.stream.Collectors;
 public class SealedEventDefinition {
     private final String _name;
     private final String _id;
-    private final GameFormat _format;
+    private GameFormat _format;
+    private final String _formatId;
     private final List<List<GenericCardItem>> _seriesProduct = new ArrayList<>();
 
-    public SealedEventDefinition(String name, String id, GameFormat format, List<List<String>> product) {
+    public SealedEventDefinition(
+            @JsonProperty(value = "name", required = true)
+            String name,
+            @JsonProperty(value = "id", required = true)
+                    String id,
+            @JsonProperty(value = "format", required = true)
+                    String format,
+            @JsonProperty(value = "seriesProduct", required = true)
+                    List<List<String>> product) {
         _name = name;
         _id = id;
-        _format = format;
+        _formatId = format;
 
         for(List<String> series : product) {
             List<GenericCardItem> items = new ArrayList<>();
@@ -32,18 +43,29 @@ public class SealedEventDefinition {
 
     public int GetSeriesCount() { return _seriesProduct.size(); }
 
-    public String GetID() { return _id; }
-    public GameFormat GetFormat() { return _format; }
+    @JsonProperty("name")
+    public String getName() { return _name; }
+    @JsonProperty("id")
+    public String getId() { return _id; }
+    public GameFormat getFormat() { return _format; }
+    @JsonProperty("format")
+    public String getFormatId() { return _formatId; }
     public List<GenericCardItem> GetProductForSeries(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
 
-    public JSONData.SealedTemplate Serialize() {
-        return new JSONData.SealedTemplate() {{
-           name = _name;
-           id = _id;
-           format = _format.getCode();
-           seriesProduct = _seriesProduct.stream()
-                   .map(x->x.stream().map(GenericCardItem::toString).collect(Collectors.toList()))
-                   .collect(Collectors.toList());
-        }};
+    @JsonProperty("seriesProduct")
+    public List<List<String>> getSeriesProductForSerialization() {
+        List<List<String>> result = new ArrayList<>();
+        for (List<GenericCardItem> stringList : _seriesProduct) {
+            List<String> newList = new ArrayList<>();
+            result.add(newList);
+            for (GenericCardItem item : stringList) {
+                newList.add(item.toString());
+            }
+        }
+        return result;
+    }
+
+    public void assignFormat(GameFormat format) {
+        _format = format;
     }
 }

@@ -165,17 +165,17 @@ public class HTMLUtils {
         return result.toString();
     }
 
-    static String getDeckValidation(CardDeck deck, GameFormat format) {
+    static String getDeckValidation(CardBlueprintLibrary library, CardDeck deck, GameFormat format) {
         StringBuilder sb = new StringBuilder();
 
         StringBuilder valid = new StringBuilder();
         StringBuilder invalid = new StringBuilder();
 
-        List<String> validation = format.validateDeck(deck);
+        List<String> validation = format.validateDeck(library, deck);
         List<String> errataValidation = null;
         if (!format.getErrataCardMap().isEmpty()) {
-            CardDeck deckWithErrata = format.applyErrata(deck);
-            errataValidation = format.validateDeck(deckWithErrata);
+            CardDeck deckWithErrata = format.applyErrata(library, deck);
+            errataValidation = format.validateDeck(library, deckWithErrata);
         }
 
         String formatName = format.getName();

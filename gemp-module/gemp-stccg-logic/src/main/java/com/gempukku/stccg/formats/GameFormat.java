@@ -1,5 +1,8 @@
 package com.gempukku.stccg.formats;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;
@@ -8,6 +11,8 @@ import com.gempukku.stccg.common.filterable.GameType;
 import java.util.List;
 import java.util.Map;
 
+
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="code")
 public interface GameFormat {
 
     boolean discardPileIsPublic();
@@ -16,14 +21,17 @@ public interface GameFormat {
 
     String getName();
 
+    @JsonProperty("code")
     String getCode();
     int getOrder();
 
-    String validateCard(String cardId);
+    String validateCard(CardBlueprintLibrary library, String cardId);
 
-    List<String> validateDeck(CardDeck deck);
 
-    CardDeck applyErrata(CardDeck deck);
+    List<String> validateDeck(CardBlueprintLibrary library, CardDeck deck);
+
+
+    CardDeck applyErrata(CardBlueprintLibrary library, CardDeck deck);
 
     List<String> getValidSetIdsAsStrings();
     Map<String, String> getValidSetsAndTheirCards(CardBlueprintLibrary library);
@@ -36,11 +44,8 @@ public interface GameFormat {
 
     Map<String,String> getErrataCardMap();
 
-    String applyErrata(String bpID);
-
     int getHandSize();
 
-    JSONData.Format Serialize();
     int getMissions();
 
     boolean hasFixedPlayerOrder();

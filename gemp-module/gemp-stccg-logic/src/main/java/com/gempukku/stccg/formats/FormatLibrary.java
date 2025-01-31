@@ -1,5 +1,8 @@
 package com.gempukku.stccg.formats;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONData;
@@ -10,35 +13,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+@JsonIncludeProperties({ "Formats", "SealedTemplates" })
+@JsonPropertyOrder({ "Formats", "SealedTemplates" })
 public class FormatLibrary {
     private final Map<String, GameFormat> _allFormats = new HashMap<>();
     private final Map<String, GameFormat> _hallFormats = new LinkedHashMap<>();
     private final Map<String, SealedEventDefinition> _sealedTemplates = new LinkedHashMap<>();
-    private final CardBlueprintLibrary _cardLibrary;
-    private final File _formatPath;
-    private final File _sealedPath;
-
-
     private final Semaphore collectionReady = new Semaphore(1);
 
     public FormatLibrary(CardBlueprintLibrary bpLibrary) {
-        this(bpLibrary, AppConfig.getFormatDefinitionsPath(), AppConfig.getSealedPath());
+        reloadFormats(bpLibrary);
+        reloadSealedTemplates();
     }
 
-    public FormatLibrary(CardBlueprintLibrary bpLibrary, File formatPath, File sealedPath) {
-        _cardLibrary = bpLibrary;
-        _formatPath = formatPath;
-        _sealedPath = sealedPath;
-
-        ReloadFormats();
-        ReloadSealedTemplates();
-    }
-
-    public void ReloadSealedTemplates() {
+    public void reloadSealedTemplates() {
         try {
             collectionReady.acquire();
             _sealedTemplates.clear();
-            loadSealedTemplates(_sealedPath);
+            loadSealedTemplates(AppConfig.getSealedPath());
             collectionReady.release();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -55,27 +47,31 @@ public class FormatLibrary {
             if (JsonUtils.isNotAValidHJSONFile(path))
                 return;
             try (Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8)) {
-                List<JSONData.SealedTemplate> defs =
-                        JsonUtils.readListOfClassFromReader(reader, JSONData.SealedTemplate.class);
-
-                for (var def : defs) {
-                    if(def == null)
-                        continue;
-                    var sealed = new SealedEventDefinition(def.name, def.id, _allFormats.get(def.format), def.seriesProduct);
-
-                    if(_sealedTemplates.containsKey(def.id)) {
-                        System.out.println("Overwriting existing sealed definition '" + def.id + "'!");
+                List<SealedEventDefinition> sealedDefinitions =
+                        JsonUtils.readListOfClassFromReader(reader, SealedEventDefinition.class);
+                for (SealedEventDefinition definition : sealedDefinitions) {
+                    String definitionId = definition.getId();
+                    if(_sealedTemplates.containsKey(definitionId)) {
+                        System.out.println("Overwriting existing sealed definition '" + definitionId + "'!");
                     }
-                    _sealedTemplates.put(def.id, sealed);
+                    GameFormat format = _allFormats.get(definition.getFormatId());
+                    if (format != null) {
+                        definition.assignFormat(format);
+                    } else {
+                        throw new IOException("Unable to create sealed event template " + definition.getName());
+                    }
+                    _sealedTemplates.put(definitionId, definition);
                 }
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    public void ReloadFormats() {
-        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(_formatPath), StandardCharsets.UTF_8)) {
+
+    public void reloadFormats(CardBlueprintLibrary blueprintLibrary) {
+        try (InputStreamReader reader =
+                     new InputStreamReader(new FileInputStream(AppConfig.getFormatDefinitionsPath()),
+                             StandardCharsets.UTF_8)) {
             collectionReady.acquire();
             _allFormats.clear();
             _hallFormats.clear();
@@ -84,7 +80,7 @@ public class FormatLibrary {
                 if (def == null)
                     continue;
 
-                DefaultGameFormat format = new DefaultGameFormat(_cardLibrary, def);
+                DefaultGameFormat format = new DefaultGameFormat(blueprintLibrary, def);
 
                 _allFormats.put(format.getCode(), format);
                 if (format.hallVisible()) {
@@ -98,6 +94,7 @@ public class FormatLibrary {
         }
     }
 
+
     public Map<String, GameFormat> getHallFormats() {
         try {
             collectionReady.acquire();
@@ -110,6 +107,7 @@ public class FormatLibrary {
         }
     }
 
+    @JsonProperty("Formats")
     public Map<String, GameFormat> getAllFormats() {
         try {
             collectionReady.acquire();
@@ -165,16 +163,21 @@ public class FormatLibrary {
         }
     }
 
-    public Map<String, SealedEventDefinition> GetAllSealedTemplates() {
+    @JsonProperty("SealedTemplates")
+    private Map<String, SealedEventDefinition> GetAllSealedTemplatesNew() {
         try {
             collectionReady.acquire();
-            var data = Collections.unmodifiableMap(_sealedTemplates);
+            Map<String, SealedEventDefinition> result = new HashMap<>();
+            for (SealedEventDefinition eventDef : _sealedTemplates.values()) {
+                result.put(eventDef.getName(), eventDef);
+            }
             collectionReady.release();
-            return data;
+            return result;
         }
         catch (InterruptedException exp) {
             throw new RuntimeException("FormatLibrary.GetSealedTemplate() interrupted: ", exp);
         }
     }
+
 
 }
