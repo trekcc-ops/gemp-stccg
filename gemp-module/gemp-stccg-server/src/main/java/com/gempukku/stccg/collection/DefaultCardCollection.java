@@ -1,5 +1,6 @@
 package com.gempukku.stccg.collection;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -91,7 +92,7 @@ public class DefaultCardCollection implements MutableCardCollection {
                 var product = lib.GetProduct(bp);
                 if(product == null)
                     continue;
-                var children = product.openPack();
+                var children = product.openPack(lib.getCardBlueprintLibrary());
                 for(var child : children) {
                     addAllItems(child, coll, lib);
                 }
@@ -120,7 +121,7 @@ public class DefaultCardCollection implements MutableCardCollection {
                 var product = productLibrary.GetProduct(packId);
                 if(product == null)
                     return null;
-                packContents = product.openPack();
+                packContents = product.openPack(productLibrary.getCardBlueprintLibrary());
             }
 
             if (packContents == null)
@@ -153,7 +154,7 @@ public class DefaultCardCollection implements MutableCardCollection {
     }
 
     private boolean hasSelection(String packId, String selection, ProductLibrary productLibrary) {
-        for (GenericCardItem item : productLibrary.GetProduct(packId).openPack()) {
+        for (GenericCardItem item : productLibrary.GetProduct(packId).openPack(productLibrary.getCardBlueprintLibrary())) {
             if (item.getBlueprintId().equals(selection))
                 return true;
         }

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.formats;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -18,8 +19,14 @@ import java.util.stream.Collectors;
 public class DefaultGameFormat implements GameFormat {
 
     private final CardBlueprintLibrary _library;
+
+    @JsonProperty("name")
     private final String _name;
+
+    @JsonProperty("code")
     private final String _code;
+
+    @JsonProperty("order")
     private final int _order;
     private final boolean _hallVisible;
     private final int _maximumSameName;
@@ -34,6 +41,8 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _validCards = new ArrayList<>();
     private final List<String> _validSets = new ArrayList<>();
     private final List<String> _restrictedCardNames = new ArrayList<>();
+
+    @JsonProperty("surveyUrl")
     private final String _surveyUrl;
     private final boolean _isPlaytest;
     private final boolean _noShuffle;

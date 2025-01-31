@@ -7,9 +7,7 @@
 		    3xU
 		    11xC
 		]
-		data: {
-			set: "101"
-		}
+		set: "101"
 	}
 /*	{
 		name: Alternate Universe - Booster
@@ -19,9 +17,7 @@
 		    3x[3*(U)+1*(103_104)] // uncommon sheets include 3 sets of uncommons + Ophidian Cane
 		    11x[3*(C)+1*(103_032)] // common sheets include 3 sets of commons + Alternate Universe Door
 		]
-		data: {
-			set: "103"
-		}
+		set: "103"
 	}
 	{
 		name: Q-Continuum - Booster
@@ -31,9 +27,7 @@
 		    3x[3*(U)+1*(105_065)] // uncommon sheets include 3 sets of uncommons + Data's Body
 		    11x[3*(C)+1*(105_015)] // common sheets include 3 sets of commons + Q-Flash
 		]
-		data: {
-			set: "105"
-		}
+		set: "105"
 	} */
 	{
 		name: First Contact - Booster
@@ -43,8 +37,6 @@
 		    3xU
 		    5xC
 		]
-		data: {
-			set: "109"
-		}
+		set: "109"
 	}
 ]

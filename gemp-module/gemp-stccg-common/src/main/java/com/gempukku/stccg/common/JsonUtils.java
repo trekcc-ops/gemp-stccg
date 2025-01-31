@@ -22,22 +22,13 @@ public class JsonUtils {
         return !ext.equalsIgnoreCase("json") && !ext.equalsIgnoreCase("hjson");
     }
 
-    //Reads both json and hjson files, converting both to json (for compatibility with other libraries)
-    public static String readJson(Reader reader) throws IOException {
-        return JsonValue.readHjson(reader).toString();
-    }
-
     public static JsonNode readJsonFromFile(File file) throws IOException {
         Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-        return readJsonFromReader(reader);
-    }
-
-    public static JsonNode readJsonFromReader(Reader reader) throws IOException {
-        return _mapper.readTree(readJson(reader));
+        return _mapper.readTree(JsonValue.readHjson(reader).toString());
     }
 
     public static <T> List<T> readListOfClassFromReader(Reader reader, Class<T> clazz) throws IOException {
-        JsonNode node = readJsonFromReader(reader);
+        JsonNode node = _mapper.readTree(JsonValue.readHjson(reader).toString());
         if (node.isNull())
             return new ArrayList<>();
         else {
@@ -76,14 +67,6 @@ public class JsonUtils {
 
     public static String toJsonString(Object object) throws JsonProcessingException {
         return _mapper.writeValueAsString(object);
-    }
-
-    public static void writeArray(String fieldName, List<?> array, JsonGenerator jsonGenerator)
-            throws IOException {
-        jsonGenerator.writeArrayFieldStart(fieldName);
-        for (Object object : array)
-            jsonGenerator.writeObject(object);
-        jsonGenerator.writeEndArray();
     }
 
     public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String value) throws JsonParseException {

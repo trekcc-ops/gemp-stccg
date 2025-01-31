@@ -5,16 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.*;
 
 public class JSONData {
-    public static class Pack {
-        public enum PackType {
-            selection, pack, random, random_foil, booster
-        }
-
-        public String name;
-        public PackType type;
-        public List<String> items;
-        public JsonNode data;
-    }
 
     public static class SealedTemplate {
         public String name;
@@ -74,14 +64,6 @@ public class JSONData {
         public String Name;
         public String LinkText;
         public Map<String, String> ErrataIDs;
-    }
-
-    public static class PlayHistoryStats {
-        public List<FormatStats> Stats;
-        public int ActivePlayers;
-        public int GamesCount;
-        public String StartDate;
-        public String EndDate;
     }
 
     @SuppressWarnings("unused") // Class is used in JSON data parsing, and usages may not be obvious to the IDE

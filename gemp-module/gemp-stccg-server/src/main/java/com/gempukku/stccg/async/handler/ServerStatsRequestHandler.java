@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.TimeZone;
 
 public class ServerStatsRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
@@ -49,7 +50,7 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
                     default -> throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
                 }
 
-                var stats = new JSONData.PlayHistoryStats();
+                var stats = new PlayHistoryStats();
                 stats.ActivePlayers = _gameHistoryService.getActivePlayersCount(from, to);
                 stats.GamesCount = _gameHistoryService.getGamesPlayedCount(from, to);
                 stats.StartDate = from.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -65,4 +66,13 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
+
+    private static class PlayHistoryStats {
+        public List<JSONData.FormatStats> Stats;
+        public int ActivePlayers;
+        public int GamesCount;
+        public String StartDate;
+        public String EndDate;
+    }
+
 }

@@ -17,7 +17,7 @@ public class BoosterPackTest extends AbstractServerTest {
     public void openingPacks() {
         ProductLibrary productLibrary = new ProductLibrary(_cardLibrary);
         Map<String, PackBox> products = productLibrary.getAllProducts();
-        final List<GenericCardItem> items = products.get("Premiere - Booster").openPack();
+        final List<GenericCardItem> items = products.get("Premiere - Booster").openPack(_cardLibrary);
         assertEquals(15, items.size());
     }
 }
