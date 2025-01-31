@@ -48,7 +48,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {
                                 if ("revert".equalsIgnoreCase(result))
-                                    GameUtils.performRevert(cardGame, currentPlayer);
+                                    cardGame.performRevert(currentPlayer);
                                 Action action = getSelectedAction(result);
                                 cardGame.getActionsEnvironment().addActionToStack(action);
                             } catch(InvalidGameLogicException exp) {

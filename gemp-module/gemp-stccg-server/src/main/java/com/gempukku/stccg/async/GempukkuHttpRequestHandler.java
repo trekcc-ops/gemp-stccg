@@ -1,6 +1,5 @@
 package com.gempukku.stccg.async;
 
-import com.gempukku.stccg.async.handler.HttpUtils;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.IpBanDAO;
@@ -48,6 +47,17 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         _ipBanDAO = serverObjects.getIpBanDAO();
     }
 
+    private static void logHttpError(int code, String uri, Exception exp) {
+        //401, 403, 404, and other 400 errors should just do minimal logging,
+        // but 400 (HTTP_BAD_REQUEST) itself should error out
+        if(code < 500 && code != HttpURLConnection.HTTP_BAD_REQUEST)
+            GempukkuHttpRequestHandler.LOGGER.debug("HTTP {} response for {}", code, uri);
+
+            // record an HTTP 400 or 500 error
+        else if((code < 600))
+            GempukkuHttpRequestHandler.LOGGER.error("HTTP code {} response for {}", code, uri, exp);
+    }
+
     private record RequestInformation(String uri, String remoteIp, long requestTime) {
 
     }
@@ -85,7 +95,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             int code = exp.getStatus();
             String message =
                     "HTTP " + code + " response for " + requestInformation.remoteIp + ":" + requestInformation.uri;
-            HttpUtils.logHttpError(LOGGER, code, message, exp);
+            logHttpError(code, message, exp);
             responseSender.writeError(exp.getStatus());
         } catch (Exception exp) {
             LOGGER.error("Error response for {}", uri, exp);

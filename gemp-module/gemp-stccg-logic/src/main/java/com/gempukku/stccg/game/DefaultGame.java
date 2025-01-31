@@ -1,7 +1,10 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
+import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -515,5 +518,94 @@ public abstract class DefaultGame {
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
         getGameState().removeCardsFromZone(this, playerPerforming, cards);
     }
+
+    public void performRevert(Player player) {
+        DefaultGame thisGame = this;
+        String playerId = player.getPlayerId();
+        final List<Integer> snapshotIds = new ArrayList<>();
+        final List<String> snapshotDescriptions = new ArrayList<>();
+        for (GameSnapshot gameSnapshot : getSnapshots()) {
+            snapshotIds.add(gameSnapshot.getId());
+            snapshotDescriptions.add(gameSnapshot.getDescription());
+        }
+        int numSnapshots = snapshotDescriptions.size();
+        if (numSnapshots == 0) {
+            checkPlayerAgain();
+            return;
+        }
+        snapshotIds.add(-1);
+        snapshotDescriptions.add("Do not revert");
+
+        // Ask player to choose snapshot to revert back to
+        getUserFeedback().sendAwaitingDecision(
+                new MultipleChoiceAwaitingDecision(player, "Choose game state to revert prior to",
+                        snapshotDescriptions.toArray(new String[0]), snapshotDescriptions.size() - 1, this) {
+                    @Override
+                    public void validDecisionMade(int index, String result) throws DecisionResultInvalidException {
+                        try {
+                            final int snapshotIdChosen = snapshotIds.get(index);
+                            if (snapshotIdChosen == -1) {
+                                checkPlayerAgain();
+                                return;
+                            }
+
+                            sendMessage(playerId + " attempts to revert game to a previous state");
+
+                            // Confirm with the other player if it is acceptable to revert to the game state
+                            // TODO SNAPSHOT - Needs to work differently if more than 2 players
+                            final String opponent;
+                            String temp_opponent;
+                            temp_opponent = getOpponent(playerId);
+
+                            opponent = temp_opponent;
+                            Player opponentPlayer = getPlayer(opponent);
+
+                            StringBuilder snapshotDescMsg = new StringBuilder("</br>");
+                            for (int i = 0; i < snapshotDescriptions.size() - 1; ++i) {
+                                if (i == index) {
+                                    snapshotDescMsg.append("</br>").append(">>> Revert to here <<<");
+                                }
+                                if ((index - i) < 3) {
+                                    snapshotDescMsg.append("</br>").append(snapshotDescriptions.get(i));
+                                }
+                            }
+                            snapshotDescMsg.append("</br>");
+
+                            getUserFeedback().sendAwaitingDecision(
+                                    new YesNoDecision(opponentPlayer,
+                                            "Do you want to allow game to be reverted to the following game state?" +
+                                                    snapshotDescMsg, thisGame) {
+                                        @Override
+                                        protected void yes() {
+                                            sendMessage(opponent + " allows game to revert to a previous state");
+                                            requestRestoreSnapshot(snapshotIdChosen);
+                                        }
+
+                                        @Override
+                                        protected void no() {
+                                            sendMessage(opponent + " denies attempt to revert game to a previous state");
+                                            checkPlayerAgain();
+                                        }
+                                    });
+                        } catch(PlayerNotFoundException exp) {
+                            throw new DecisionResultInvalidException(exp.getMessage());
+                        }
+                    }
+                });
+    }
+
+
+    /**
+     * This method if the same player should be asked again to choose an action or pass.
+     */
+    private GameProcess checkPlayerAgain() {
+        // TODO SNAPSHOT - The SWCCG code is incompatible with the structure of this process
+/*        _playOrder.getNextPlayer();
+        return new PlayersPlayPhaseActionsInOrderGameProcess(
+                getGameState().getPlayerOrder().getPlayOrder(
+                        _playOrder.getNextPlayer(), true), _consecutivePasses, _followingGameProcess); */
+        return null;
+    }
+
 
 }

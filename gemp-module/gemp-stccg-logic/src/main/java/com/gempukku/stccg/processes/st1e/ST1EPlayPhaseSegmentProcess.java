@@ -31,7 +31,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result)) {
-                                GameUtils.performRevert(cardGame, currentPlayer);
+                                cardGame.performRevert(currentPlayer);
                             } else {
                                 try {
                                     Action action = getSelectedAction(result);
