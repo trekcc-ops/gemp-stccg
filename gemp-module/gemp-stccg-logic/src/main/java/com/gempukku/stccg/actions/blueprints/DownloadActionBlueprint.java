@@ -31,7 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-public class DownloadActionBlueprint extends DelayedEffectBlueprint {
+public class DownloadActionBlueprint implements SubActionBlueprint {
 
     private final String _saveToMemoryId;
     private final CardTargetBlueprint _cardTarget;
@@ -46,7 +46,7 @@ public class DownloadActionBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
+    public List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         Action downloadAction = new DownloadCardAction(actionContext.getGame(), actionContext.getPerformingPlayer(),
                 _cardTarget.getTargetResolver(actionContext));

@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class DrawCardsActionBlueprint extends DelayedEffectBlueprint {
+public class DrawCardsActionBlueprint implements SubActionBlueprint {
 
     private final ValueSource _countSource;
     private final PlayerSource _drawingPlayerSource;
@@ -34,7 +34,7 @@ public class DrawCardsActionBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected List<Action> createActions(CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(CardPerformedAction action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         final String targetPlayerId = _drawingPlayerSource.getPlayerId(context);
         DefaultGame cardGame = context.getGame();

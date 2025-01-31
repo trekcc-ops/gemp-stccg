@@ -82,8 +82,7 @@
                         filter: (personnel OR ship) + not(tng-icon)
                     }
                     effect: {
-                        type: discard
-                        filter: self
+                        type: discardThisCard
                     }
                 }
                 {

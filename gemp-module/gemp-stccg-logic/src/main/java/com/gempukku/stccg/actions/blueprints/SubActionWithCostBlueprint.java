@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class SubActionWithCostBlueprint extends DelayedEffectBlueprint {
+public class SubActionWithCostBlueprint implements SubActionBlueprint {
     private final List<SubActionBlueprint> _subActionBlueprints;
     private final List<SubActionBlueprint> _costAppenders;
     private final List<Requirement> _requirements;
@@ -28,7 +28,7 @@ public class SubActionWithCostBlueprint extends DelayedEffectBlueprint {
         _subActionBlueprints = (effects == null) ? new LinkedList<>() : effects;
     }
     @Override
-    protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
+    public List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
 
         List<Action> result = new LinkedList<>();
         if(requirementsNotMet(context)) {

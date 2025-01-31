@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectSubActionBlueprint extends DelayedEffectBlueprint {
+public class SelectSubActionBlueprint implements SubActionBlueprint {
 
     private final EffectType _effectType;
     private final String _saveToMemoryId;
@@ -58,7 +58,7 @@ public class SelectSubActionBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context)
+    public List<Action> createActions(CardPerformedAction parentAction, ActionContext context)
             throws PlayerNotFoundException {
         DefaultGame cardGame = context.getGame();
         Action action = switch (_effectType) {

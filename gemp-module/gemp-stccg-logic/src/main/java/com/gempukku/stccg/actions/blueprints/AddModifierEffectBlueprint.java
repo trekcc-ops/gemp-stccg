@@ -13,7 +13,7 @@ import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 
 import java.util.List;
 
-public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
+public class AddModifierEffectBlueprint implements SubActionBlueprint {
 
     private final TimeResolver.Time _until;
     private final ModifierBlueprint _modifierSource;
@@ -27,7 +27,7 @@ public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
+    public List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
         final Modifier modifier = _modifierSource.getModifier(context);
         Action action = new AddUntilModifierAction(context.getSource(), modifier, _until);
         return List.of(action);

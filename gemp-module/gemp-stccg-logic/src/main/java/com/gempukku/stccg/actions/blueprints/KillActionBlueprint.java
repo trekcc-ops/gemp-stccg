@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class KillActionBlueprint extends DelayedEffectBlueprint {
+public class KillActionBlueprint implements SubActionBlueprint {
 
     private final CardTargetBlueprint _targetResolver;
 
@@ -29,7 +29,7 @@ public class KillActionBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected List<Action> createActions(CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(CardPerformedAction action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         return List.of(
                 new KillSinglePersonnelAction(context.getPerformingPlayer(), context.getSource(),

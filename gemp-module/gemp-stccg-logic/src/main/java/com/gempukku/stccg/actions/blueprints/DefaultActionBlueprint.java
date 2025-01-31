@@ -106,15 +106,11 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         addRequirement((actionContext) ->
                 actionContext.getSource().checkTurnLimit(actionContext.getGame(), limitPerTurn));
         addCost(
-            new DelayedEffectBlueprint() {
-                @Override
-                protected List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
-                        throws PlayerNotFoundException {
+                (action, actionContext) -> {
                     Action usageLimitAction = new UseOncePerTurnAction(
                             action, action.getPerformingCard(), actionContext.getPerformingPlayer());
                     return Collections.singletonList(usageLimitAction);
-                }
-            });
+                });
     }
 
     public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card) {

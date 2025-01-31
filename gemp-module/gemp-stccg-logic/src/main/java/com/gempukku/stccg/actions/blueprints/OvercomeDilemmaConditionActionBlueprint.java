@@ -18,7 +18,7 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.*;
 
-public class OvercomeDilemmaConditionActionBlueprint extends DelayedEffectBlueprint {
+public class OvercomeDilemmaConditionActionBlueprint implements SubActionBlueprint {
 
     private final MissionRequirement _conditions;
     private final boolean _discardDilemma;
@@ -36,7 +36,7 @@ public class OvercomeDilemmaConditionActionBlueprint extends DelayedEffectBluepr
     }
 
     @Override
-    protected List<Action> createActions(CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(CardPerformedAction action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         List<Action> result = new ArrayList<>();
         DefaultGame cardGame = context.getGame();

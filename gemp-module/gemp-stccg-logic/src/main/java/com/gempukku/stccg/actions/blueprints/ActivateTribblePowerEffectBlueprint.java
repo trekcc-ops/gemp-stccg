@@ -13,10 +13,10 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint {
+public class ActivateTribblePowerEffectBlueprint implements SubActionBlueprint {
 
     @Override
-    protected List<Action> createActions(CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(CardPerformedAction action, ActionContext context)
             throws InvalidCardDefinitionException, InvalidGameLogicException, PlayerNotFoundException {
 
         List<Action> result = new LinkedList<>();

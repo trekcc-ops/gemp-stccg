@@ -37,8 +37,7 @@
                         filter: (personnel OR ship) + not(ds9-icon)
                     }
                     effect: {
-                        type: discard
-                        filter: self
+                        type: discardThisCard
                     }
                 }
             ]

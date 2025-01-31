@@ -98,13 +98,13 @@ public class CardResolver {
     }
 
 
-    public static DelayedEffectBlueprint finalTargetAppender(FilterBlueprint choiceFilter,
+    public static SubActionBlueprint finalTargetAppender(FilterBlueprint choiceFilter,
                                                               FilterBlueprint playabilityFilter,
                                                               ValueSource countSource, String memory,
                                                               Function<ActionContext, List<PhysicalCard>> cardSource,
                                                               String selectionType, FilterBlueprint typeFilter) {
 
-        return new DelayedEffectBlueprint() {
+        return new SubActionBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 switch(selectionType) {
@@ -126,7 +126,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) throws PlayerNotFoundException {
+            public List<Action> createActions(CardPerformedAction parentAction, ActionContext context) throws PlayerNotFoundException {
                 Action action = switch (selectionType) {
                     case "self", "memory" -> {
                         Collection<PhysicalCard> result = filterCards(context, choiceFilter);
@@ -203,7 +203,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
+            public List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
                 List<Action> result = new LinkedList<>();
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
                 Action selectionAction = effectSource.createAction(cards, action, context,
@@ -223,7 +223,7 @@ public class CardResolver {
         };
     }
 
-    public static DelayedEffectBlueprint resolveChoiceCardsWithEffect(FilterBlueprint typeFilter,
+    public static SubActionBlueprint resolveChoiceCardsWithEffect(FilterBlueprint typeFilter,
                                                                        FilterBlueprint playabilityFilter,
                                                                        ValueSource countSource,
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource,
@@ -236,7 +236,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
+            public List<Action> createActions(CardPerformedAction action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Action selectionAction = choiceAction.apply(context);
                 result.add(selectionAction);
