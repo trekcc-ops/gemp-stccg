@@ -4,17 +4,16 @@ import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.evaluator.ValueSource;
-import com.gempukku.stccg.actions.blueprints.DelayedEffectBlueprint;
-import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -189,13 +188,13 @@ public class CardResolver {
     }
 
 
-    private static DelayedEffectBlueprint resolveChoiceCards(FilterBlueprint typeFilter, FilterBlueprint choiceFilter,
+    private static SubActionBlueprint resolveChoiceCards(FilterBlueprint typeFilter, FilterBlueprint choiceFilter,
                                                              FilterBlueprint playabilityFilter,
                                                              ValueSource countSource,
                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
                                                              ChoiceActionSource effectSource) {
 
-        return new DelayedEffectBlueprint() {
+        return new SubActionBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 int min = countSource.getMinimum(actionContext);
@@ -228,7 +227,7 @@ public class CardResolver {
                                                                        ValueSource countSource,
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource,
                                                                        Function<ActionContext, Action> choiceAction) {
-        return new DelayedEffectBlueprint() {
+        return new SubActionBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 int min = countSource.getMinimum(actionContext);
