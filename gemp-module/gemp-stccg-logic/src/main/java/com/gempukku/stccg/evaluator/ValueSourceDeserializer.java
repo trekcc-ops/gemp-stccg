@@ -83,9 +83,10 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
         if (value.isTextual())
             return resolveEvaluator(value.textValue());
         if (value instanceof JsonNode object) {
-            final String type = BlueprintUtils.getString(object, "type");
-            if (type == null)
+            JsonNode typeNode = object.get("type");
+            if (typeNode == null || !typeNode.isTextual())
                 throw new InvalidCardDefinitionException("ValueResolver type not defined");
+            String type = typeNode.textValue();
             if (type.equalsIgnoreCase("range")) {
                 BlueprintUtils.validateAllowedFields(object, "from", "to");
                 ValueSource fromValue = resolveEvaluator(ctxt, object.get("from"));
@@ -150,7 +151,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             } else if (type.equalsIgnoreCase("forEachInMemory")) {
                 BlueprintUtils.validateAllowedFields(object, "memory", "limit");
                 final String memory = object.get("memory").textValue();
-                final int limit = BlueprintUtils.getInteger(object, "limit", Integer.MAX_VALUE);
+                final int limit = ctxt.readTreeAsValue(object.get("limit"), Integer.class); // Set to MAX_VALUE if fails
                 return (actionContext) -> {
                     final int count = actionContext.getCardsFromMemory(memory).size();
                     return new ConstantEvaluator(actionContext, Math.min(limit, count));

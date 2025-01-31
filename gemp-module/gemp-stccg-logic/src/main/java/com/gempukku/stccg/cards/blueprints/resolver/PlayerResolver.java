@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.resolver;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -8,6 +9,10 @@ import com.gempukku.stccg.cards.PlayerSource;
 import java.util.Locale;
 
 public class PlayerResolver {
+
+    public static PlayerSource resolvePlayer(JsonNode node) throws InvalidCardDefinitionException {
+        return resolvePlayer(node.textValue());
+    }
     public static PlayerSource resolvePlayer(String type) throws InvalidCardDefinitionException {
 
         if (type.equalsIgnoreCase("you"))

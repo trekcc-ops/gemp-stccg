@@ -272,7 +272,7 @@ public class CardBlueprintLibrary {
     }
 
     private Class<? extends CardBlueprint> getBlueprintClass(JsonNode node) throws InvalidCardDefinitionException {
-        String blueprintId = BlueprintUtils.getString(node, "blueprintId");
+        String blueprintId = node.get("blueprintId").textValue();
         if (blueprintId == null)
             throw new InvalidCardDefinitionException("Null value for blueprintId");
         if (node.has("java-blueprint")) {

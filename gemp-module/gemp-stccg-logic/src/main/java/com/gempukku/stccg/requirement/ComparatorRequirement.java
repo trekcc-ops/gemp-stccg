@@ -1,5 +1,6 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +11,7 @@ import com.gempukku.stccg.evaluator.ValueSource;
 
 public class ComparatorRequirement implements Requirement {
 
-    private enum ComparatorType {
+    public enum ComparatorType {
         ISEQUAL, ISGREATERTHAN, ISGREATERTHANOREQUAL,
         ISLESSTHAN, ISLESSTHANOREQUAL, ISNOTEQUAL
     }
@@ -19,17 +20,15 @@ public class ComparatorRequirement implements Requirement {
     private final ValueSource _firstNumber;
     private final ValueSource _secondNumber;
 
-    public ComparatorRequirement(JsonNode node) throws InvalidCardDefinitionException, JsonProcessingException {
-        _comparatorType = BlueprintUtils.getEnum(ComparatorType.class, node, "type");
-        if (_comparatorType == null)
-            throw new InvalidCardDefinitionException("Comparator requirement type not found");
-
-        BlueprintUtils.validateAllowedFields(node, "firstNumber", "secondNumber");
-
-
-        ObjectMapper mapper = new ObjectMapper();
-        _firstNumber = mapper.treeToValue(node.get("firstNumber"), ValueSource.class);
-        _secondNumber = mapper.treeToValue(node.get("secondNumber"), ValueSource.class);
+    public ComparatorRequirement(@JsonProperty("firstNumber")
+                                 ValueSource firstNumber,
+                                 @JsonProperty("secondNumber")
+                                 ValueSource secondNumber,
+                                 @JsonProperty("type")
+                                 ComparatorType type) {
+        _comparatorType = type;
+        _firstNumber = firstNumber;
+        _secondNumber = secondNumber;
     }
 
     public boolean accepts(ActionContext actionContext) {

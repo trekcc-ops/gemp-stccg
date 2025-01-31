@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
@@ -38,7 +39,7 @@ public class ChooseEffectBlueprintProducer {
                 BlueprintUtils.validateAllowedFields(effectObject, "memorize", "text");
                 break;
         }
-        BlueprintUtils.validateRequiredFields(effectObject, "memorize");
+        // Every type should require the "memorize" field
 
 
 
@@ -49,8 +50,9 @@ public class ChooseEffectBlueprintProducer {
         final ValueSource valueSource = effectObject.has("amount") ?
                 new ObjectMapper().treeToValue(effectObject.get("amount"), ValueSource.class) :
                 new ConstantValueSource(0);
-        final PlayerSource excludePlayerSource =
-                BlueprintUtils.getPlayerSource(effectObject, "exclude", true);
+        final PlayerSource excludePlayerSource = effectObject.has("exclude") ?
+                PlayerResolver.resolvePlayer(effectObject.get("exclude").textValue()) :
+                ActionContext::getPerformingPlayerId;
 
 
         return new DelayedEffectBlueprint() {
