@@ -23,8 +23,8 @@ public class Blueprint101_015 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+    public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                                    EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> actions = new LinkedList<>();
         SelectCardsAction selectPersonnelAction = new SelectRandomCardAction(game, thisCard.getOwner(),
                 "Select personnel to be killed", Filters.personnelInAttemptingUnit(attemptingUnit));

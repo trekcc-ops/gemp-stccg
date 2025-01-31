@@ -1,9 +1,6 @@
 package com.gempukku.stccg.actions.missionattempt;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.FixedCardResolver;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -15,9 +12,10 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import java.util.List;
 import java.util.Objects;
 
-public class EncounterSeedCardAction extends ActionyAction {
+public class EncounterSeedCardAction extends ActionyAction implements TopLevelSelectableAction {
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
+
     private enum Progress { effectsAdded }
     private final AttemptingUnit _attemptingUnit;
     private final MissionLocation _missionLocation;
@@ -47,14 +45,9 @@ public class EncounterSeedCardAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (isBeingInitiated())
             setAsInitiated();
-        if (!getProgress(Progress.effectsAdded)) {
-            PhysicalCard encounteredCard = getEncounteredCard();
-            List<Action> encounterActions =
-                    encounteredCard.getEncounterActions(cardGame, _attemptingUnit, this, _missionLocation);
-            for (Action action : encounterActions)
-                appendEffect(action);
-            setProgress(Progress.effectsAdded);
-        }
+                // TODO - handling if one effect of the dilemma makes it impossible to perform another
+/*        if (_attemptingUnit.getAttemptingPersonnel().isEmpty())
+            setAsFailed(); */
         Action nextAction = getNextAction();
         if (nextAction == null) {
             if (!wasFailed())
@@ -66,4 +59,16 @@ public class EncounterSeedCardAction extends ActionyAction {
     public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
     public AttemptMissionAction getAttemptAction() { return _parentAction; }
+
+    @Override
+    public PhysicalCard getPerformingCard() {
+        return _cardTarget.getCard();
+    }
+
+    @Override
+    public int getCardIdForActionSelection() {
+        return _cardTarget.getCard().getCardId();
+    }
+
+
 }

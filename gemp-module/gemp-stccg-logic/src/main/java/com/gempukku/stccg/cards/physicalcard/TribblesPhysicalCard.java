@@ -1,12 +1,16 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class TribblesPhysicalCard extends AbstractPhysicalCard<TribblesGame> {
     private final TribblesGame _game;
@@ -19,6 +23,11 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard<TribblesGame> {
 
     public boolean isMisSeed(TribblesGame game, MissionLocation mission) {
         return false;
+    }
+
+    @Override
+    public List<Action> getEncounterActions(TribblesGame game, AttemptMissionAction attemptAction, AttemptingUnit attemptingUnit, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException {
+        return new LinkedList<>();
     }
 
     @Override

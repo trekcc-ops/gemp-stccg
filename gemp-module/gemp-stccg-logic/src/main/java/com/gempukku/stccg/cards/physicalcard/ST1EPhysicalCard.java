@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -83,10 +84,11 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard<ST1EGame> {
     }
 
     @Override
-    public List<Action> getEncounterActions(ST1EGame cardGame, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation)
-            throws PlayerNotFoundException {
-        return _blueprint.getEncounterActions(this, cardGame, attemptingUnit, action, missionLocation);
+    public List<Action> getEncounterActions(ST1EGame cardGame, AttemptMissionAction attemptAction,
+                                            AttemptingUnit attemptingUnit, MissionLocation missionLocation)
+            throws InvalidGameLogicException, PlayerNotFoundException {
+        return _blueprint.getEncounterSeedCardActions(this, attemptAction, cardGame, attemptingUnit,
+                missionLocation);
     }
 
     @Override

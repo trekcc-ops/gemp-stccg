@@ -221,12 +221,7 @@ public class FilterFactory {
         }
     }
 
-    public FilterBlueprint generateFilter(JsonNode node) throws InvalidCardDefinitionException {
-        if (node == null || !node.isTextual()) {
-            throw new InvalidCardDefinitionException("Filter not specified");
-        }
-        return generateFilter(node.textValue());
-    }
+
 
     private String[] splitIntoFilters(String value) throws InvalidCardDefinitionException {
         List<String> parts = new LinkedList<>();
@@ -290,7 +285,7 @@ public class FilterFactory {
         return filterableSourceProducer.createFilterableSource(parameter);
     }
 
-    public static String Sanitize(String input)
+    private static String Sanitize(String input)
     {
         return input
                 .toLowerCase()

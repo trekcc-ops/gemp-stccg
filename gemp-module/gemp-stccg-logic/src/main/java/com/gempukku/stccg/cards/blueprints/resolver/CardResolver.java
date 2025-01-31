@@ -48,40 +48,7 @@ public class CardResolver {
     }
 
 
-
-    public static SubActionBlueprint resolveCardsInPlay(String type, ValueSource countSource, String memory,
-                                                        PlayerSource choicePlayer, String choiceText,
-                                                        FilterBlueprint typeFilter) {
-        final String sourceMemory =
-                type.startsWith("memory(") ? type.substring(type.indexOf("(") + 1, type.lastIndexOf(")")) : null;
-        Function<ActionContext, List<PhysicalCard>> cardSource =
-                actionContext -> Filters.filterActive(actionContext.getGame(), sourceMemory == null ? Filters.any :
-                        actionContext.getCardFromMemory(sourceMemory)).stream().toList();
-        return resolveCardsInPlay(type, typeFilter, null, null, countSource, memory,
-                choicePlayer, choiceText, cardSource);
-    }
-
-
-    public static SubActionBlueprint resolveCardsInPlay(String type, FilterBlueprint typeFilter,
-                                                        FilterBlueprint choiceFilter, FilterBlueprint playabilityFilter,
-                                                        ValueSource countSource, String memory, PlayerSource choicePlayer,
-                                                        String choiceText,
-                                                        Function<ActionContext, List<PhysicalCard>> cardSource) {
-
-        String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
-
-        return switch (selectionType) {
-            case "self", "memory", "all", "random" ->
-                    finalTargetAppender(choiceFilter, playabilityFilter, countSource, memory, cardSource,
-                            selectionType, typeFilter);
-            case "choose" -> resolveChoiceCardsWithEffect(typeFilter, playabilityFilter, countSource, cardSource,
-                    getChoiceEffectFromInPlay(choiceText, countSource, memory, choicePlayer, cardSource, typeFilter, choiceFilter));
-            default -> throw new RuntimeException("Unable to resolve card resolver of type: " + selectionType);
-        };
-    }
-
-
-    private static Function<ActionContext, Action> getChoiceEffectFromInPlay(String choiceText, ValueSource countSource,
+    public static Function<ActionContext, Action> getChoiceEffectFromInPlay(String choiceText, ValueSource countSource,
                                                                              String memory,
                                                                              PlayerSource choicePlayer,
                                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
@@ -131,7 +98,7 @@ public class CardResolver {
     }
 
 
-    private static DelayedEffectBlueprint finalTargetAppender(FilterBlueprint choiceFilter,
+    public static DelayedEffectBlueprint finalTargetAppender(FilterBlueprint choiceFilter,
                                                               FilterBlueprint playabilityFilter,
                                                               ValueSource countSource, String memory,
                                                               Function<ActionContext, List<PhysicalCard>> cardSource,
@@ -256,7 +223,7 @@ public class CardResolver {
         };
     }
 
-    private static DelayedEffectBlueprint resolveChoiceCardsWithEffect(FilterBlueprint typeFilter,
+    public static DelayedEffectBlueprint resolveChoiceCardsWithEffect(FilterBlueprint typeFilter,
                                                                        FilterBlueprint playabilityFilter,
                                                                        ValueSource countSource,
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource,

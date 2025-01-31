@@ -14,6 +14,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.PlayableFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerNotFoundException;
@@ -49,7 +50,7 @@ public class DownloadActionBlueprint extends MultiSubActionBlueprint {
         playabilityCheckedForEffect = true;
         setPlayabilityCheckedForEffect(true);
 
-        FilterBlueprint choiceFilter = (actionContext) -> Filters.playable;
+        FilterBlueprint choiceFilter = new PlayableFilterBlueprint();
 
         Function<ActionContext, List<PhysicalCard>> cardSource = getCardSource(filter, targetPlayerSource);
 

@@ -29,7 +29,7 @@
         }
         {
             blueprintId: 101_015
-            title: Armus - Skin of Evil
+            title: "Armus: Skin of Evil"
             type: dilemma
             mission-type: planet
             lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
@@ -37,6 +37,22 @@
             java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR15.jpg
             rarity: R
+/*            actions: [
+                {
+                    type: requiredTrigger
+                    trigger: {
+                        type: encountered
+                        filter: self
+                    }
+                    effect: {
+                        type: kill
+                        target: {
+                            type: random
+                            count: 1
+                        }
+                    }
+                }
+            ] */
         }
     /*    {
             blueprintId: 101_024

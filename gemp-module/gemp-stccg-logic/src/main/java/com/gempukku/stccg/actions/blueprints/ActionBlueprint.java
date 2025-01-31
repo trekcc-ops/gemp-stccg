@@ -22,7 +22,6 @@ public interface ActionBlueprint {
     void addRequirement(Requirement requirement);
 
     void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext);
-    Action createAction(PhysicalCard card);
 
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card);
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult);

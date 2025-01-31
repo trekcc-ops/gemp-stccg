@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -104,7 +104,8 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
 
     boolean isMisSeed(GenericGame cardGame, MissionLocation mission) throws CardNotFoundException;
 
-    List<Action> getEncounterActions(GenericGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action,
+    List<Action> getEncounterActions(GenericGame game, AttemptMissionAction attemptAction,
+                                     AttemptingUnit attemptingUnit,
                                      MissionLocation missionLocation)
             throws InvalidGameLogicException, PlayerNotFoundException;
 

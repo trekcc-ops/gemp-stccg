@@ -127,8 +127,13 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                                 performingPlayer, firstSeedCard, this, _missionLocation);
                     } else if (_lastCardEncountered != firstSeedCard) {
                         _lastCardEncountered = firstSeedCard;
-                        return new EncounterSeedCardAction(cardGame,
-                                performingPlayer, firstSeedCard, attemptingUnit, this, _missionLocation);
+                        List<Action> encounterActions = firstSeedCard.getEncounterActions(
+                                cardGame, this, attemptingUnit, _missionLocation);
+                        if (encounterActions.size() != 1) {
+                            throw new InvalidGameLogicException("Unable to identify seed card actions");
+                        } else {
+                            return Iterables.getOnlyElement(encounterActions);
+                        }
                     } else {
                         throw new InvalidGameLogicException(firstSeedCard.getTitle() +
                                 " was already encountered, but not removed from under the mission");
@@ -159,7 +164,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         cardGame.sendMessage(_performingPlayerId + " solved " + _performingCard.getCardLink());
     }
 
-    public GameLocation getLocation() throws InvalidGameLogicException { return _missionLocation; }
+    public GameLocation getLocation() { return _missionLocation; }
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
         _attemptingUnitTarget = new AttemptingUnitResolver(attemptingUnit);

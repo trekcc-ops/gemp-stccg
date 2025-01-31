@@ -35,14 +35,10 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
         super(RequiredType.OPTIONAL, text, limitPerTurn, phase, triggerChecker, requirements, costs, effects);
     }
 
-    public OptionalTriggerAction createAction(PhysicalCard card) {
-        return new OptionalTriggerAction(card, this);
-    }
-
     @Override
     protected OptionalTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
         if (isValid(actionContext)) {
-                OptionalTriggerAction action = createAction(card);
+                OptionalTriggerAction action = new OptionalTriggerAction(card, this);
                 appendActionToContext(action, actionContext);
                 return action;
         }

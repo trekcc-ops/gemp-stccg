@@ -24,8 +24,8 @@ public class Blueprint152_004 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+    public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                                    EncounterSeedCardAction action, MissionLocation missionLocation) {
         MissionRequirement condition1 = new AndMissionRequirement(
                 new AttributeMissionRequirement(CardAttribute.INTEGRITY, 20),
                 new CharacteristicMissionRequirement(Characteristic.ADMIRAL)

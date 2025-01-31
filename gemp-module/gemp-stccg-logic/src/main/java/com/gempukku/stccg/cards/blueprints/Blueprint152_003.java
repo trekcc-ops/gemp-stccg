@@ -26,8 +26,8 @@ public class Blueprint152_003 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+    public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                                    EncounterSeedCardAction action, MissionLocation missionLocation)
             throws PlayerNotFoundException {
         List<Action> result = new ArrayList<>();
         String opponentId = game.getOpponent(attemptingUnit.getPlayer().getPlayerId());

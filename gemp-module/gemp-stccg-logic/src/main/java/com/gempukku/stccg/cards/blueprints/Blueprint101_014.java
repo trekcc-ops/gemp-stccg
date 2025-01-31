@@ -27,8 +27,8 @@ public class Blueprint101_014 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+    public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                                    EncounterSeedCardAction action, MissionLocation missionLocation)
             throws PlayerNotFoundException {
         List<Action> result = new LinkedList<>();
         MissionRequirement conditions = new AndMissionRequirement(SkillName.MEDICAL, SkillName.SECURITY);

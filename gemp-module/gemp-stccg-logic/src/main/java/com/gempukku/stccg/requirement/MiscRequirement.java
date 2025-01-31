@@ -41,12 +41,11 @@ public class MiscRequirement implements Requirement {
                            @JsonProperty(value = "count", required = true)
                            ValueSource count,
                            @JsonProperty(value="filter", required = true)
-                           JsonNode filter) throws InvalidCardDefinitionException {
+                           FilterBlueprint filterBlueprint) {
         _requirementType = requirementType;
         _playerSource = ActionContext::getPerformingPlayerId;
         _valueSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));
-        _filterBlueprint = (filter != null) ?
-                new FilterFactory().generateFilter(filter) : actionContext -> Filters.any;
+        _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, actionContext -> Filters.any);
     }
 
     public boolean accepts(ActionContext actionContext) {

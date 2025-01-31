@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.filters.CanBeDiscardedFilterBlueprint;
 import com.gempukku.stccg.filters.FilterFactory;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
@@ -46,14 +47,24 @@ public class DiscardActionBlueprint extends MultiSubActionBlueprint {
                 new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
 
-        FilterBlueprint choiceFilter = (actionContext) ->
-                Filters.canBeDiscarded(actionContext.getPerformingPlayerId(), actionContext.getSource());
-
+        FilterBlueprint choiceFilter = new CanBeDiscardedFilterBlueprint();
         Function<ActionContext, List<PhysicalCard>> cardSource = getCardSource(filter);
 
+        String selectionType = (filter.contains("(")) ? filter.substring(0,filter.indexOf("(")) : filter;
+        SubActionBlueprint selectionBlueprint = switch (selectionType) {
+            case "self", "memory", "all", "random" ->
+                    CardResolver.finalTargetAppender(choiceFilter, choiceFilter, _countSource, _memoryId, cardSource,
+                            selectionType, cardFilter);
+            case "choose" -> CardResolver.resolveChoiceCardsWithEffect(cardFilter, choiceFilter, _countSource,
+                    cardSource,
+                    CardResolver.getChoiceEffectFromInPlay(SELECTION_TEXT, _countSource, _memoryId, selectingPlayer,
+                            cardSource, cardFilter, choiceFilter));
+            default -> throw new RuntimeException("Unable to resolve card resolver of type: " + selectionType);
+        };
 
-        addEffectBlueprint(CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter,
-                _countSource, _memoryId, selectingPlayer, SELECTION_TEXT, cardSource));
+
+
+        addEffectBlueprint(selectionBlueprint);
 
         addEffectBlueprint(
                 new DelayedEffectBlueprint() {

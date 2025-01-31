@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.*;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
@@ -521,11 +522,43 @@ public class CardBlueprint {
     public String getBaseBlueprintId() { return _baseBlueprintId; }
     public void setBaseBlueprintId(String baseBlueprintId) { _baseBlueprintId = baseBlueprintId; }
 
-    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action,
-                                            MissionLocation missionLocation) throws PlayerNotFoundException {
+    public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game,
+                                                    AttemptingUnit attemptingUnit,
+                                                    EncounterSeedCardAction action,
+                                                    MissionLocation missionLocation) throws PlayerNotFoundException {
         return new LinkedList<>();
     }
+
+    public List<Action> getEncounterSeedCardActions(ST1EPhysicalCard thisCard, AttemptMissionAction attemptAction,
+                                                    DefaultGame game, AttemptingUnit attemptingUnit,
+                                                    MissionLocation missionLocation)
+            throws InvalidGameLogicException, PlayerNotFoundException {
+        List<Action> result = new LinkedList<>();
+        for (ActionBlueprint blueprint : _actionBlueprints) {
+            if (blueprint instanceof EncounterSeedCardActionBlueprint encounterBlueprint) {
+                result.add(encounterBlueprint.createAction(game, attemptingUnit.getPlayer(), thisCard, attemptingUnit,
+                        missionLocation, attemptAction));
+            }
+        }
+        if (result.isEmpty()) {
+            EncounterSeedCardAction action = new EncounterSeedCardAction(game, attemptingUnit.getPlayer(), thisCard,
+                    attemptingUnit, attemptAction, missionLocation);
+            List<Action> javaActions =
+                    getEncounterActionsFromJava(thisCard, game, attemptingUnit, action, missionLocation);
+            if (!javaActions.isEmpty()) {
+                for (Action javaAction : javaActions) {
+                    action.appendEffect(javaAction);
+                }
+                result.add(action);
+            }
+        }
+        if (result.isEmpty()) {
+            throw new InvalidGameLogicException("Unable to identify encounter seed card actions");
+        } else {
+            return result;
+        }
+    }
+
 
     public void setShipClass(ShipClass shipClass) {
         _shipClass = shipClass;
