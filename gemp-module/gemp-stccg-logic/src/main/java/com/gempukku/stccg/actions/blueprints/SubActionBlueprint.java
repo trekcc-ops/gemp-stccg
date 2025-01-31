@@ -11,10 +11,10 @@ import com.gempukku.stccg.cards.ActionContext;
         @JsonSubTypes.Type(value = SubActionWithCostBlueprint.class, name = "costToEffect"),
         @JsonSubTypes.Type(value = DrawCardsActionBlueprint.class, name = "drawCards"),
 /*        @JsonSubTypes.Type(value = ChooseCardEffectBlueprint.class,
-                names = {"chooseActiveCards", "chooseCardsFromDiscard", "chooseCardsFromDrawDeck"}),
-        @JsonSubTypes.Type(value = SelectEffectBlueprint.class,
+                names = {"chooseActiveCards", "chooseCardsFromDiscard", "chooseCardsFromDrawDeck"}),*/
+        @JsonSubTypes.Type(value = SelectSubActionBlueprint.class,
                 names = {"chooseANumber", "chooseOpponent", "choosePlayer", "choosePlayerExcept",
-                        "choosePlayerWithCardsInDeck", "chooseTribblePower"}),*/
+                        "choosePlayerWithCardsInDeck", "chooseTribblePower"}),
         @JsonSubTypes.Type(value = DiscardActionBlueprint.class, name = "discard"),
         @JsonSubTypes.Type(value = DownloadActionBlueprint.class, name = "download"),
         @JsonSubTypes.Type(value = KillActionBlueprint.class, name = "kill"),

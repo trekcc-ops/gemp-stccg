@@ -1,12 +1,7 @@
 package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.evaluator.ValueSource;
 
 public class ComparatorRequirement implements Requirement {

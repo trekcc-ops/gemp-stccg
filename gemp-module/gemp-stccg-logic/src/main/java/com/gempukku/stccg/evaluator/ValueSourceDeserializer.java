@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.filters.FilterFactory;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
@@ -21,10 +20,7 @@ import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
@@ -60,6 +56,25 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
         if (!node.has("filter"))
             return new FilterFactory().generateFilter(defaultValue);
         else return new FilterFactory().generateFilter(node.get("filter").textValue());
+    }
+
+    private static void validateAllowedFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
+        // Always allowed - type, player, selectingPlayer, targetPlayer
+        List<String> allowedFields = Arrays.asList(fields);
+        List<String> unrecognizedFields = new LinkedList<>();
+        node.fieldNames().forEachRemaining(fieldName -> {
+            switch(fieldName) {
+                case "player", "selectingPlayer", "targetPlayer", "type":
+                    break;
+                default:
+                    if (!allowedFields.contains(fieldName)) unrecognizedFields.add(fieldName);
+                    break;
+            }
+        });
+        if (!unrecognizedFields.isEmpty())
+            throw new InvalidCardDefinitionException("Unrecognized field: " + unrecognizedFields.getFirst());
+        if (node.has("player") && (node.has("selectingPlayer") || (node.has("targetPlayer"))))
+            throw new InvalidCardDefinitionException("Blueprint has both 'player' and either 'selectingPlayer' or 'targetPlayer'");
     }
 
     @Override
@@ -114,7 +129,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 throw new InvalidCardDefinitionException("ValueResolver type not defined");
             String type = typeNode.textValue();
             if (type.equalsIgnoreCase("range")) {
-                BlueprintUtils.validateAllowedFields(object, "from", "to");
+                validateAllowedFields(object, "from", "to");
                 ValueSource fromValue = resolveEvaluator(ctxt, object.get("from"));
                 ValueSource toValue = resolveEvaluator(ctxt, object.get("to"));
                 return new ValueSource() {
@@ -134,7 +149,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
-                BlueprintUtils.validateAllowedFields(object, "owner");
+                validateAllowedFields(object, "owner");
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(getString(object, "owner", "you"));
                 return actionContext -> (Evaluator) new Evaluator() {
@@ -151,7 +166,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("requires")) {
-                BlueprintUtils.validateAllowedFields(object, "requires", "true", "false");
+                validateAllowedFields(object, "requires", "true", "false");
                 JsonNode requiresArray = object.get("requires");
                 List<Requirement> conditions = new ArrayList<>();
                 if (requiresArray.isArray()) {
@@ -175,7 +190,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 };
 
             } else if (type.equalsIgnoreCase("forEachInMemory")) {
-                BlueprintUtils.validateAllowedFields(object, "memory", "limit");
+                validateAllowedFields(object, "memory", "limit");
                 final String memory = object.get("memory").textValue();
                 final int limit = ctxt.readTreeAsValue(object.get("limit"), Integer.class); // Set to MAX_VALUE if fails
                 return (actionContext) -> {
@@ -183,7 +198,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     return new ConstantEvaluator(actionContext, Math.min(limit, count));
                 };
             } else if (type.equalsIgnoreCase("forEachMatchingInMemory")) {
-                BlueprintUtils.validateAllowedFields(object, "memory", "filter", "limit");
+                validateAllowedFields(object, "memory", "filter", "limit");
                 final String memory = object.get("memory").textValue();
                 final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
                 final FilterBlueprint filterBlueprint =
@@ -194,12 +209,12 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     return new ConstantEvaluator(actionContext, Math.min(limit, count));
                 };
             } else if (type.equalsIgnoreCase("limit")) {
-                BlueprintUtils.validateAllowedFields(object, "limit", "value");
+                validateAllowedFields(object, "limit", "value");
                 ValueSource limitSource = resolveEvaluator(ctxt, object.get("limit"), 1);
                 ValueSource valueSource = resolveEvaluator(ctxt, object.get("value"), 0);
                 return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
             } else if (type.equalsIgnoreCase("countStacked")) {
-                BlueprintUtils.validateAllowedFields(object, "on", "filter");
+                validateAllowedFields(object, "on", "filter");
                 final FilterBlueprint filterBlueprint = getFilterable(object, "any");
                 final FilterBlueprint onFilter =
                         new FilterFactory().generateFilter(object.get("on").textValue());
@@ -209,7 +224,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
                 return ctxt.readTreeAsValue(object, CountDiscardEvaluator.class);
             } else if (type.equalsIgnoreCase("forEachInHand")) {
-                BlueprintUtils.validateAllowedFields(object, "filter", "hand");
+                validateAllowedFields(object, "filter", "hand");
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(getString(object, "hand", "you"));
                 final FilterBlueprint filterBlueprint = getFilterable(object, "any");
@@ -228,7 +243,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
-                BlueprintUtils.validateAllowedFields(object, "filter", "owner");
+                validateAllowedFields(object, "filter", "owner");
                 final String owner = getString(object, "owner", "you");
                 final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
                 final FilterBlueprint filterBlueprint = getFilterable(object, "any");
@@ -250,7 +265,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("fromMemory")) {
-                BlueprintUtils.validateAllowedFields(object, "memory", "multiplier", "limit");
+                validateAllowedFields(object, "memory", "multiplier", "limit");
                 String memory = object.get("memory").textValue();
                 final int multiplier = getInteger(object, "multiplier", 1);
                 final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
@@ -259,12 +274,12 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     return new ConstantEvaluator(actionContext, Math.min(limit, multiplier * value1));
                 };
             } else if (type.equalsIgnoreCase("multiply")) {
-                BlueprintUtils.validateAllowedFields(object, "multiplier", "source");
+                validateAllowedFields(object, "multiplier", "source");
                 final ValueSource multiplier = resolveEvaluator(ctxt, object.get("multiplier"));
                 final ValueSource valueSource = resolveEvaluator(ctxt, object.get("source"), 0);
                 return (actionContext) -> new MultiplyEvaluator(actionContext, multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
             } else if (type.equalsIgnoreCase("forEachStrength")) {
-                BlueprintUtils.validateAllowedFields(object, "multiplier", "over", "filter");
+                validateAllowedFields(object, "multiplier", "over", "filter");
                 final int multiplier = getInteger(object, "multiplier", 1);
                 final int over = getInteger(object, "over", 0);
                 final String filter = getString(object, "filter", "any");
@@ -296,7 +311,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("printedStrengthFromMemory")) {
-                BlueprintUtils.validateAllowedFields(object, "memory");
+                validateAllowedFields(object, "memory");
 
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
@@ -310,7 +325,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("strengthFromMemory")) {
-                BlueprintUtils.validateAllowedFields(object, "memory");
+                validateAllowedFields(object, "memory");
                 final String memory = object.get("memory").textValue();
 
                 return actionContext -> (Evaluator) new Evaluator() {
@@ -324,7 +339,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("tribbleValueFromMemory")) {
-                BlueprintUtils.validateAllowedFields(object, "memory");
+                validateAllowedFields(object, "memory");
                 final String memory = object.get("memory").textValue();
 
                 return actionContext -> (Evaluator) new Evaluator() {
@@ -339,7 +354,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 };
             }
             else if (type.equalsIgnoreCase("subtract")) {
-                BlueprintUtils.validateAllowedFields(object, "firstNumber", "secondNumber");
+                validateAllowedFields(object, "firstNumber", "secondNumber");
                 final ValueSource firstNumber =
                         resolveEvaluator(ctxt, object.get("firstNumber"), 0);
                 final ValueSource secondNumber =
@@ -353,7 +368,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("max")) {
-                BlueprintUtils.validateAllowedFields(object, "first", "second");
+                validateAllowedFields(object, "first", "second");
                 ValueSource first = resolveEvaluator(ctxt, object.get("first"));
                 ValueSource second = resolveEvaluator(ctxt, object.get("second"));
 
@@ -367,7 +382,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
                 };
             } else if (type.equalsIgnoreCase("min")) {
-                BlueprintUtils.validateAllowedFields(object, "first", "second");
+                validateAllowedFields(object, "first", "second");
                 ValueSource first = resolveEvaluator(ctxt, object.get("first"));
                 ValueSource second = resolveEvaluator(ctxt, object.get("second"));
 

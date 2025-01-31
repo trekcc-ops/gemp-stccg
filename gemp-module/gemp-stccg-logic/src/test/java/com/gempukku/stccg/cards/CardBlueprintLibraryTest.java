@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.gempukku.stccg.AbstractLogicTest;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.common.filterable.*;
@@ -264,7 +263,8 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
         if (!result) {
             System.out.println(blueprint.getUniqueness() + ", " + lackeyData._uniqueness);
-            System.out.println("Uniqueness doesn't match for blueprint " + blueprint.getBlueprintId() + " " + blueprint.getTitle());
+            System.out.println("Uniqueness doesn't match for blueprint " + blueprint.getBlueprintId() + " " +
+                    blueprint.getTitle());
         }
         return result;
     }

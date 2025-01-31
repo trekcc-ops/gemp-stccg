@@ -1,15 +1,9 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConditionTriggerChecker implements TriggerChecker {
