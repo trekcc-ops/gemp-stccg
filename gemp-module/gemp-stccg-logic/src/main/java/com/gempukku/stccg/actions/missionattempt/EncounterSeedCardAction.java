@@ -37,6 +37,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
     }
 
 
+
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;

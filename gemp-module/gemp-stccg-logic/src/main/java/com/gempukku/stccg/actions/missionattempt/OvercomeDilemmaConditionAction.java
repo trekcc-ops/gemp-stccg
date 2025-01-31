@@ -4,16 +4,23 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     private final AttemptingUnit _attemptingUnit;
-    private final int _failActionId;
+    private final Action _failAction;
     private final int _succeedActionId;
     private final EncounterSeedCardAction _encounterAction;
     private enum Progress { conditionsChecked }
@@ -24,9 +31,8 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                                           Action failDilemmaAction) {
         super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
-        Action failAction =
+        _failAction =
                 new FailDilemmaAction(dilemma.getGame(), attemptingUnit, dilemma, failDilemmaAction, encounterAction);
-        _failActionId = failAction.getActionId();
         Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma
         );
         _succeedActionId = succeedAction.getActionId();
@@ -38,10 +44,8 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                                           MissionRequirement conditions, AttemptingUnit attemptingUnit) {
         super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
-        Action failAction = new FailDilemmaAction(attemptingUnit, dilemma, action);
-        _failActionId = failAction.getActionId();
-        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma
-        );
+        _failAction = new FailDilemmaAction(attemptingUnit, dilemma, action);
+        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma);
         _succeedActionId = succeedAction.getActionId();
         _conditions = conditions;
         _encounterAction = action;
@@ -64,7 +68,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                 result = cardGame.getActionById(_succeedActionId);
                 setAsSuccessful();
             } else {
-                result = cardGame.getActionById(_failActionId);
+                result = _failAction;
                 _encounterAction.setAsFailed();
                 _encounterAction.getAttemptAction().setAsFailed();
                 setAsFailed();

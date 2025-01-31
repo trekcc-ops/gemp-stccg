@@ -1,10 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
@@ -19,17 +16,23 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerNotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class OvercomeDilemmaConditionActionBlueprint extends DelayedEffectBlueprint {
 
     private final MissionRequirement _conditions;
+    private final boolean _discardDilemma;
+    private final List<SubActionBlueprint> _failEffects;
 
     public OvercomeDilemmaConditionActionBlueprint(@JsonProperty(value = "requires", required = true)
-            MissionRequirement conditions) {
+            MissionRequirement conditions,
+                                                   @JsonProperty("discardDilemma")
+                                                   boolean discardDilemma,
+                                                   @JsonProperty("failEffect")
+                                                           SubActionBlueprint failEffect) {
         _conditions = conditions;
+        _discardDilemma = discardDilemma;
+        _failEffects = (failEffect == null) ? new LinkedList<>() : List.of(failEffect);
     }
 
     @Override
