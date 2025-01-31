@@ -3,7 +3,7 @@ package com.gempukku.stccg.packs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.cards.SetDefinition;
+import com.gempukku.stccg.common.SetDefinition;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;

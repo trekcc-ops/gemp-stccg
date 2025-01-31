@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.common.filterable.*;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Test;

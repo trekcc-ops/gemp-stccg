@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.SetDefinition;
+import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;

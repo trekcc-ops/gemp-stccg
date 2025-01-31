@@ -52,4 +52,6 @@ public interface GameFormat {
 
     boolean isNoShuffle();
     GameType getGameType();
+
+    boolean hallVisible();
 }

@@ -54,7 +54,6 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
         GameProcess result;
-        ST1EGame stGame = getST1EGame(cardGame);
         if (_consecutivePasses > 0) {
             Phase phase = cardGame.getCurrentPhase();
             String message = "End of " + phase + " phase";
@@ -70,7 +69,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                     cardGame.setCurrentPhase(Phase.END_OF_TURN);
                     yield new ST1EEndOfTurnProcess();
                 }
-                case null, default -> throw new RuntimeException(
+                case null, default -> throw new InvalidGameLogicException(
                         "End of play phase segment process reached without being in a valid play phase segment");
             };
         } else {

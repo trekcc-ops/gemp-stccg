@@ -17,7 +17,6 @@ import java.util.concurrent.Semaphore;
 @JsonPropertyOrder({ "Formats", "SealedTemplates" })
 public class FormatLibrary {
     private final Map<String, GameFormat> _allFormats = new HashMap<>();
-    private final Map<String, GameFormat> _hallFormats = new LinkedHashMap<>();
     private final Map<String, SealedEventDefinition> _sealedTemplates = new LinkedHashMap<>();
     private final Semaphore collectionReady = new Semaphore(1);
 
@@ -74,18 +73,12 @@ public class FormatLibrary {
                              StandardCharsets.UTF_8)) {
             collectionReady.acquire();
             _allFormats.clear();
-            _hallFormats.clear();
 
             for (JSONData.Format def : JsonUtils.readListOfClassFromReader(reader, JSONData.Format.class)) {
                 if (def == null)
                     continue;
-
-                DefaultGameFormat format = new DefaultGameFormat(blueprintLibrary, def);
-
+                GameFormat format = new DefaultGameFormat(blueprintLibrary, def);
                 _allFormats.put(format.getCode(), format);
-                if (format.hallVisible()) {
-                    _hallFormats.put(format.getCode(), format);
-                }
             }
             collectionReady.release();
         }
@@ -98,7 +91,13 @@ public class FormatLibrary {
     public Map<String, GameFormat> getHallFormats() {
         try {
             collectionReady.acquire();
-            var data = Collections.unmodifiableMap(_hallFormats);
+            Map<String, GameFormat> result = new HashMap<>();
+            for (Map.Entry<String, GameFormat> entry : _allFormats.entrySet()) {
+                if (entry.getValue().hallVisible()) {
+                    result.put(entry.getKey(), entry.getValue());
+                }
+            }
+            var data = Collections.unmodifiableMap(result);
             collectionReady.release();
             return data;
         }

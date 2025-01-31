@@ -1,6 +1,6 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.cards.SetDefinition;
+import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;

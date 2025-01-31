@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.common;
 
 import com.gempukku.stccg.common.filterable.GameType;
 
