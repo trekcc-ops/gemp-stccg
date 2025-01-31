@@ -1,5 +1,7 @@
 package com.gempukku.stccg.filters;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
@@ -565,6 +567,19 @@ public class Filters {
         return (game, physicalCard) -> {
             Collection<PersonnelCard> personnel = attemptingUnit.getAttemptingPersonnel();
             return physicalCard instanceof PersonnelCard personnelCard && personnel.contains(personnelCard);
+        };
+    }
+
+    public static CardFilter encounteringCard(PhysicalCard encounteredCard) {
+        return (game, physicalCard) -> {
+            Stack<Action> actionStack = game.getActionsEnvironment().getActionStack();
+            for (Action action : actionStack) {
+                if (action instanceof EncounterSeedCardAction encounterAction &&
+                        encounterAction.getEncounteredCard() == encounteredCard) {
+                    return encounterAction.getAttemptingUnit().getAttemptingPersonnel().contains(physicalCard);
+                }
+            }
+            return false;
         };
     }
 

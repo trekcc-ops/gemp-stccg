@@ -16,7 +16,8 @@ import com.gempukku.stccg.cards.ActionContext;
                 names = {"chooseANumber", "chooseOpponent", "choosePlayer", "choosePlayerExcept",
                         "choosePlayerWithCardsInDeck", "chooseTribblePower"}),*/
         @JsonSubTypes.Type(value = DiscardActionBlueprint.class, name = "discard"),
-        @JsonSubTypes.Type(value = DownloadActionBlueprint.class, name = "download")
+        @JsonSubTypes.Type(value = DownloadActionBlueprint.class, name = "download"),
+        @JsonSubTypes.Type(value = KillActionBlueprint.class, name = "kill")
 /*        @JsonSubTypes.Type(value = CardResolverMultiEffectBlueprint.class,
                 names = {"discardCardsFromDrawDeck", "discardfromhand", "play",
                         "playcardfromdiscard", "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame",

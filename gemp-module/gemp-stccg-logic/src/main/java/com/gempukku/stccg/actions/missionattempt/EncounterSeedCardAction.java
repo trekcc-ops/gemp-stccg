@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -49,14 +50,16 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
 /*        if (_attemptingUnit.getAttemptingPersonnel().isEmpty())
             setAsFailed(); */
         Action nextAction = getNextAction();
-        if (nextAction == null) {
-            if (!wasFailed())
-                setAsSuccessful();
+        if (nextAction == null && isInProgress()) {
+            if (_cardTarget.getCard().getGameLocation() == _missionLocation) {
+                return new RemoveDilemmaFromGameAction(cardGame.getPlayer(_performingPlayerId), _cardTarget.getCard());
+            }
+            setAsSuccessful();
         }
         return nextAction;
     }
 
-    public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _attemptingUnit; }
+    public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
     public AttemptMissionAction getAttemptAction() { return _parentAction; }
 

@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.io.IOException;
 import java.util.*;
@@ -42,6 +44,8 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
+        simpleFilters.put("encounteringthiscard", (actionContext) ->
+                Filters.encounteringCard(actionContext.getSource()));
         simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
         simpleFilters.put("nor", (actionContext) -> Filters.Nor);
         simpleFilters.put("self", ActionContext::getSource);

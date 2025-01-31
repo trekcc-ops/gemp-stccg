@@ -34,25 +34,22 @@
             mission-type: planet
             lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR15.jpg
             rarity: R
-/*            actions: [
+            actions: [
                 {
-                    type: requiredTrigger
-                    trigger: {
-                        type: encountered
-                        filter: self
-                    }
+                    type: encounter
                     effect: {
                         type: kill
                         target: {
-                            type: random
+                            type: select
+                            random: true
+                            filter: personnel + encounteringThisCard
                             count: 1
                         }
                     }
                 }
-            ] */
+            ]
         }
     /*    {
             blueprintId: 101_024

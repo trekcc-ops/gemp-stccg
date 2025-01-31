@@ -45,14 +45,10 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         boolean result = false;
         Stack<Action> actionStack = _game.getActionsEnvironment().getActionStack();
         for (Action action : actionStack) {
-            try {
-                if (action instanceof EncounterSeedCardAction encounterAction &&
-                        encounterAction.getEncounteredCard().getCardType() == CardType.DILEMMA &&
-                        encounterAction.getAttemptingUnit().getAttemptingPersonnel().contains(this)) {
-                    result = true;
-                }
-            } catch(InvalidGameLogicException exp) {
-                // If error is thrown, don't change result to true
+            if (action instanceof EncounterSeedCardAction encounterAction &&
+                    encounterAction.getEncounteredCard().getCardType() == CardType.DILEMMA &&
+                    encounterAction.getAttemptingUnit().getAttemptingPersonnel().contains(this)) {
+                result = true;
             }
         }
         return result;

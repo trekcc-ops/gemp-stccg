@@ -2,6 +2,8 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.turn.ActivateCardAction;
@@ -20,14 +22,16 @@ import com.gempukku.stccg.requirement.Requirement;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
-public class EncounterSeedCardActionBlueprint {
+public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
 
     private final List<SubActionBlueprint> _effects;
 
     public EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                             List<SubActionBlueprint> effects) {
+        super("Encounter card", 0, Phase.EXECUTE_ORDERS);
         _effects = Objects.requireNonNullElse(effects, new LinkedList<>());
     }
 
@@ -43,4 +47,25 @@ public class EncounterSeedCardActionBlueprint {
         return encounterAction;
     }
 
+    @Override
+    protected EncounterSeedCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext context) {
+        try {
+            Stack<Action> actionStack = context.getGame().getActionsEnvironment().getActionStack();
+            for (Action action : actionStack) {
+                if (action instanceof AttemptMissionAction attemptAction &&
+                        attemptAction.getLocation() == card.getGameLocation()) {
+                    Player performingPlayer = context.getPerformingPlayer();
+                    DefaultGame cardGame = context.getGame();
+                    EncounterSeedCardAction encounterAction = new EncounterSeedCardAction(cardGame, performingPlayer,
+                            card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocation());
+                    appendActionToContext(encounterAction, context);
+                    return encounterAction;
+                }
+            }
+            throw new InvalidGameLogicException("Could not identify an active mission attempt for this encounter");
+        } catch(InvalidGameLogicException exp) {
+            context.getGame().sendErrorMessage(exp);
+            return null;
+        }
+    }
 }

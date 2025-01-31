@@ -24,6 +24,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     private PhysicalCard _lastCardEncountered;
     private MissionLocation _missionLocation;
 
+
     private enum Progress {
         choseAttemptingUnit, startedMissionAttempt, solvedMission, failedMissionAttempt, endedMissionAttempt
     }
@@ -164,7 +165,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         cardGame.sendMessage(_performingPlayerId + " solved " + _performingCard.getCardLink());
     }
 
-    public GameLocation getLocation() { return _missionLocation; }
+    public MissionLocation getLocation() { return _missionLocation; }
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
         _attemptingUnitTarget = new AttemptingUnitResolver(attemptingUnit);
@@ -177,6 +178,11 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         setAsFailed();
         game.sendMessage(_performingPlayerId + " failed mission attempt of " + _performingCard.getCardLink());
     }
+
+    public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException {
+        return _attemptingUnitTarget.getAttemptingUnit();
+    }
+
 
 
 }
