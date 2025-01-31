@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.gempukku.stccg.AbstractLogicTest;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -158,6 +160,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
     }
 
     private boolean getBlueprintMatch(CardBlueprint blueprint, CardData lackeyData) {
+        ObjectMapper jsonMapper = _cardLibrary.getMapper();
         String blueprintId = blueprint.getBlueprintId();
         if (lackeyData == null) {
             System.out.println("Could not find lackeyData for " + blueprint.getBlueprintId() + " " + blueprint.getTitle());
@@ -186,9 +189,9 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
 
         try {
-            CardType lackeyType = BlueprintUtils.getEnum(CardType.class, lackeyData._type, "card type");
+            CardType lackeyType = jsonMapper.readValue(lackeyData._type, CardType.class);
             assertEquals(blueprint.getCardType(), lackeyType);
-        } catch(InvalidCardDefinitionException exp) {
+        } catch(IOException exp) {
             System.out.println(exp.getMessage());
             return false;
         }
@@ -197,10 +200,10 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         // TODO: Affiliation
 
         try {
-            if (!checkClass(blueprint, lackeyData)) {
+            if (!checkClass(blueprint, lackeyData._class)) {
                 return false;
             }
-        } catch(InvalidCardDefinitionException exp) {
+        } catch(IOException exp) {
             System.out.println(exp.getMessage());
             return false;
         }
@@ -300,10 +303,12 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
 
     }
 
-    private boolean checkClass(CardBlueprint blueprint, CardData lackeyData) throws InvalidCardDefinitionException {
+    private boolean checkClass(CardBlueprint blueprint, String lackeyClassText) throws IOException {
+        ObjectMapper jsonMapper = _cardLibrary.getMapper();
+
         if (blueprint.getCardType() == CardType.PERSONNEL) {
             SkillName gempClass = blueprint.getClassification();
-            SkillName lackeyClass = BlueprintUtils.getEnum(SkillName.class, lackeyData._class, "classification");
+            SkillName lackeyClass = jsonMapper.readValue(lackeyClassText, SkillName.class);
             if (gempClass != lackeyClass) {
                 throw new InvalidCardDefinitionException("Classification mismatch for blueprint" + blueprint.getBlueprintId() + " " + blueprint.getTitle());
             } else {
@@ -312,7 +317,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
         if (blueprint.getCardType() == CardType.FACILITY) {
             FacilityType gempType = blueprint.getFacilityType();
-            FacilityType lackeyType = BlueprintUtils.getEnum(FacilityType.class, lackeyData._class, "facility type");
+            FacilityType lackeyType = jsonMapper.readValue(lackeyClassText, FacilityType.class);
             if (gempType != lackeyType) {
                 System.out.println("Facility type mismatch for blueprint" + blueprint.getBlueprintId() + " " + blueprint.getTitle());
                 return false;
@@ -322,11 +327,11 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
         if (blueprint.getCardType() == CardType.SHIP) {
             ShipClass gempClass = blueprint.getShipClass();
-            String lackeyClassText = lackeyData._class.replace(" Class","");
+            lackeyClassText = lackeyClassText.replace(" Class","");
             if (lackeyClassText.startsWith("D'Kora-Class")) {
                 lackeyClassText = "D'Kora";
             }
-            ShipClass lackeyClass = BlueprintUtils.getEnum(ShipClass.class, lackeyClassText, "ship class");
+            ShipClass lackeyClass = jsonMapper.readValue(lackeyClassText, ShipClass.class);
             if (gempClass != lackeyClass) {
                 System.out.println("Ship class mismatch for blueprint" + blueprint.getBlueprintId() + " " + blueprint.getTitle());
                 return false;
@@ -334,7 +339,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
                 return true;
             }
         }
-        return Objects.equals(lackeyData._class, "");
+        return Objects.equals(lackeyClassText, "");
     }
 
     private boolean checkIcons(CardBlueprint blueprint, CardData lackeyData) throws InvalidCardDefinitionException {

@@ -17,10 +17,6 @@ import java.util.List;
 
 public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint {
 
-    public ActivateTribblePowerEffectBlueprint(JsonNode effectObject) throws InvalidCardDefinitionException {
-        BlueprintUtils.validateAllowedFields(effectObject);
-    }
-
     @Override
     protected List<Action> createActions(CardPerformedAction action, ActionContext context)
             throws InvalidCardDefinitionException, InvalidGameLogicException, PlayerNotFoundException {

@@ -172,7 +172,7 @@ public class CardBlueprintLibrary {
             // Add set
             String setId = jsonNode.get("setId").textValue();
             String setName = jsonNode.get("setName").textValue();
-            GameType gameType = BlueprintUtils.getEnum(GameType.class, jsonNode, "gameType");
+            GameType gameType = _jsonMapper.treeToValue(jsonNode.get("gameType"), GameType.class);
             Set<String> flags = new HashSet<>();
             determineNeedsLoadingFlag(jsonNode, flags);
             SetDefinition setDefinition = new SetDefinition(setId, setName, gameType, flags);
@@ -460,5 +460,9 @@ public class CardBlueprintLibrary {
         public String Name;
         public String LinkText;
         public Map<String, String> ErrataIDs;
+    }
+
+    public ObjectMapper getMapper() {
+        return _jsonMapper;
     }
 }

@@ -36,6 +36,32 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
         super(vc);
     }
 
+    private static int getInteger(JsonNode parentNode, String key, int defaultValue)
+            throws InvalidCardDefinitionException {
+        if (!parentNode.has(key))
+            return defaultValue;
+        else {
+            JsonNode node = parentNode.get(key);
+            if (!node.isInt())
+                throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
+            else return node.asInt(defaultValue);
+        }
+    }
+
+    private static String getString(JsonNode parentNode, String key, String defaultValue) {
+        if (parentNode == null || !parentNode.has(key))
+            return defaultValue;
+        else
+            return parentNode.get(key).textValue();
+    }
+
+    public static FilterBlueprint getFilterable(JsonNode node, String defaultValue)
+            throws InvalidCardDefinitionException {
+        if (!node.has("filter"))
+            return new FilterFactory().generateFilter(defaultValue);
+        else return new FilterFactory().generateFilter(node.get("filter").textValue());
+    }
+
     @Override
     public ValueSource deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode object = jp.getCodec().readTree(jp);
@@ -110,7 +136,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
                 BlueprintUtils.validateAllowedFields(object, "owner");
                 final PlayerSource player =
-                        PlayerResolver.resolvePlayer(BlueprintUtils.getString(object, "owner", "you"));
+                        PlayerResolver.resolvePlayer(getString(object, "owner", "you"));
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -159,8 +185,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             } else if (type.equalsIgnoreCase("forEachMatchingInMemory")) {
                 BlueprintUtils.validateAllowedFields(object, "memory", "filter", "limit");
                 final String memory = object.get("memory").textValue();
-                final int limit = BlueprintUtils.getInteger(object, "limit", Integer.MAX_VALUE);
-                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object);
+                final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
+                final FilterBlueprint filterBlueprint =
+                        new FilterFactory().generateFilter(object.get("filter").textValue());
                 return (actionContext) -> {
                     final int count = Filters.filter(actionContext.getCardsFromMemory(memory), actionContext.getGame(),
                             filterBlueprint.getFilterable(actionContext)).size();
@@ -173,7 +200,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
             } else if (type.equalsIgnoreCase("countStacked")) {
                 BlueprintUtils.validateAllowedFields(object, "on", "filter");
-                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object, "any");
+                final FilterBlueprint filterBlueprint = getFilterable(object, "any");
                 final FilterBlueprint onFilter =
                         new FilterFactory().generateFilter(object.get("on").textValue());
                 return (actionContext) ->
@@ -184,8 +211,8 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             } else if (type.equalsIgnoreCase("forEachInHand")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "hand");
                 final PlayerSource player =
-                        PlayerResolver.resolvePlayer(BlueprintUtils.getString(object, "hand", "you"));
-                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object, "any");
+                        PlayerResolver.resolvePlayer(getString(object, "hand", "you"));
+                final FilterBlueprint filterBlueprint = getFilterable(object, "any");
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -202,9 +229,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 };
             } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "owner");
-                final String owner = BlueprintUtils.getString(object, "owner", "you");
+                final String owner = getString(object, "owner", "you");
                 final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
-                final FilterBlueprint filterBlueprint = BlueprintUtils.getFilterable(object, "any");
+                final FilterBlueprint filterBlueprint = getFilterable(object, "any");
                 return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
@@ -225,8 +252,8 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             } else if (type.equalsIgnoreCase("fromMemory")) {
                 BlueprintUtils.validateAllowedFields(object, "memory", "multiplier", "limit");
                 String memory = object.get("memory").textValue();
-                final int multiplier = BlueprintUtils.getInteger(object, "multiplier", 1);
-                final int limit = BlueprintUtils.getInteger(object, "limit", Integer.MAX_VALUE);
+                final int multiplier = getInteger(object, "multiplier", 1);
+                final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
                 return (actionContext) -> {
                     int value1 = Integer.parseInt(actionContext.getValueFromMemory(memory));
                     return new ConstantEvaluator(actionContext, Math.min(limit, multiplier * value1));
@@ -238,10 +265,10 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return (actionContext) -> new MultiplyEvaluator(actionContext, multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
             } else if (type.equalsIgnoreCase("forEachStrength")) {
                 BlueprintUtils.validateAllowedFields(object, "multiplier", "over", "filter");
-                final int multiplier = BlueprintUtils.getInteger(object, "multiplier", 1);
-                final int over = BlueprintUtils.getInteger(object, "over", 0);
-                final String filter = BlueprintUtils.getString(object, "filter", "any");
-                final FilterBlueprint strengthSource = BlueprintUtils.getFilterable(object, "any");
+                final int multiplier = getInteger(object, "multiplier", 1);
+                final int over = getInteger(object, "over", 0);
+                final String filter = getString(object, "filter", "any");
+                final FilterBlueprint strengthSource = getFilterable(object, "any");
 
                 return (actionContext) -> {
                     if (filter.equals("any")) {

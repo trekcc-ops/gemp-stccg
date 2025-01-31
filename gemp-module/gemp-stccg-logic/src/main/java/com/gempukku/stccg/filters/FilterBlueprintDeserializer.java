@@ -204,7 +204,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         parameterFilters.put("title",parameterFilters.get("name"));
         parameterFilters.put("zone",
                 (parameter) -> {
-                    final Zone zone = BlueprintUtils.getEnum(Zone.class, parameter, "parameter");
+                    final Zone zone = _mapper.readValue(parameter, Zone.class);
                     return actionContext -> zone;
                 });
 

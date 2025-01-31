@@ -26,7 +26,7 @@ public class ChooseEffectBlueprintProducer {
     }
     public static SubActionBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException, JsonProcessingException {
-        EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
+        EffectType effectType = new ObjectMapper().treeToValue(effectObject.get("type"), EffectType.class);
 
         switch(effectType) {
             case CHOOSEANUMBER:
@@ -44,8 +44,10 @@ public class ChooseEffectBlueprintProducer {
 
 
         final String memorize = effectObject.get("memorize").textValue();
+        JsonNode choiceTextNode = effectObject.get("text");
+        final String choiceText = choiceTextNode != null && choiceTextNode.isTextual() ?
+                choiceTextNode.textValue() : getDefaultText(effectType);
 
-        final String choiceText = BlueprintUtils.getString(effectObject, "text", getDefaultText(effectType));
         // TODO - Use Jackson annotations
         final ValueSource valueSource = effectObject.has("amount") ?
                 new ObjectMapper().treeToValue(effectObject.get("amount"), ValueSource.class) :
