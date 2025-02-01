@@ -38,7 +38,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     private List<Affiliation> getAffiliationOptions() {
         List<Affiliation> _affiliationOptions = new LinkedList<>();
         _performingCard.getAffiliationOptions().forEach(affiliation -> {
-            if (affiliation != _performingCard.getAffiliation())
+            if (affiliation != _performingCard.getCurrentAffiliation())
                 _affiliationOptions.add(affiliation);
         });
         if (_performingCard instanceof PersonnelCard personnel) {

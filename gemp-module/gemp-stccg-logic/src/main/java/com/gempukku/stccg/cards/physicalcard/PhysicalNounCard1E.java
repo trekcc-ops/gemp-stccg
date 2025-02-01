@@ -22,7 +22,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     protected Quadrant getNativeQuadrant() { return _blueprint.getQuadrant(); }
     public boolean isMultiAffiliation() { return getAffiliationOptions().size() > 1; }
 
-    public Affiliation getAffiliation() { return _currentAffiliation; }
+    public Affiliation getCurrentAffiliation() { return _currentAffiliation; }
 
     public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
@@ -67,7 +67,8 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
 
     @Override
     public boolean hasTransporters() {
-        return _blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
+        return _blueprint.getCardType() == CardType.SHIP ||
+                _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
     }
 
     public boolean isAffiliation(Affiliation affiliation) {

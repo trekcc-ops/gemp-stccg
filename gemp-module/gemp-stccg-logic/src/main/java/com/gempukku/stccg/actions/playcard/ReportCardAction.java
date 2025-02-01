@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -23,7 +22,6 @@ import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ReportCardAction extends STCCGPlayCardAction {
@@ -37,7 +35,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         setText("Play " + _cardEnteringPlay.getFullName());
         if (cardToPlay.getAffiliationOptions().size() == 1) {
             setProgress(Progress.affiliationSelected);
-            _affiliationTarget = new AffiliationResolver(cardToPlay.getAffiliation());
+            _affiliationTarget = new AffiliationResolver(cardToPlay.getCurrentAffiliation());
         } else if (cardToPlay.getAffiliationOptions().isEmpty() && !(cardToPlay instanceof AffiliatedCard)) {
             setProgress(Progress.affiliationSelected);
         }
@@ -168,7 +166,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
                 Zone originalZone = _cardEnteringPlay.getZone();
                 reportable.reportToFacility(getSelectedDestination(cardGame));
-                performingPlayer.addPlayedAffiliation(reportable.getAffiliation());
+                performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
             }

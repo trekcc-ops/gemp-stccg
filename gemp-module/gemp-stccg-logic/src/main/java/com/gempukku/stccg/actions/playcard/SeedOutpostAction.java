@@ -107,7 +107,7 @@ public class SeedOutpostAction extends PlayCardAction {
 
                 cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
                 gameState.removeCardFromZone(_cardEnteringPlay);
-                performingPlayer.addPlayedAffiliation(facility.getAffiliation());
+                performingPlayer.addPlayedAffiliation(facility.getCurrentAffiliation());
                 PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                 MissionLocation destinationLocation = destinationCard.getLocation();
                 gameState.seedFacilityAtLocation(facility, destinationLocation);

@@ -66,7 +66,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
             if (playerId.equals(_owner.getPlayerId()))
                 return true;
             return getFacilityType() == FacilityType.HEADQUARTERS &&
-                    _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getAffiliation());
+                    _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getCurrentAffiliation());
         } catch(PlayerNotFoundException exp) {
             _game.sendErrorMessage(exp);
             return false;
