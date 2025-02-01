@@ -14,17 +14,17 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
 
     final List<TopLevelSelectableAction> _actions;
 
-    ActionDecision(Player player, String text, List<TopLevelSelectableAction> actions, AwaitingDecisionType type) {
-        super(player, text, type);
+    ActionDecision(Player player, String text, List<TopLevelSelectableAction> actions, AwaitingDecisionType type,
+                   DefaultGame cardGame) {
+        super(player, text, type, cardGame);
         _actions = actions;
         setParam("actionId", getActionIds());
         try {
-            setParam("actionText", getActionTexts(player.getGame()));
+            setParam("actionText", getActionTexts(cardGame));
         } catch(InvalidGameLogicException exp) {
             setParam("actionText", "Select action");
         }
     }
-
 
 
     private String[] getActionIds() {

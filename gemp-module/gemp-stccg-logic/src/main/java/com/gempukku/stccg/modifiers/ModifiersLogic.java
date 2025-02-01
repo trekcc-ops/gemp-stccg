@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.RegularSkill;
@@ -17,15 +16,13 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.SnapshotData;
-import com.gempukku.stccg.game.Snapshotable;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 
 import java.util.*;
 
-@JsonSerialize(using = ModifiersLogicSerializer.class)
-public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, Snapshotable<ModifiersLogic> {
+public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);
     private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new EnumMap<>(Phase.class);
@@ -106,7 +103,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     Condition condition = modifier.getCondition();
                     if (condition == null || condition.isFulfilled(_game))
                         if (shouldAdd(modifierEffect, modifier)) {
-                            if ((card == null || modifier.affectsCard(card)) &&
+                            if ((card == null || modifier.affectsCard(card.getGame(), card)) &&
                                     (foundNoCumulativeConflict(liveModifiers, modifier)))
                                 liveModifiers.add(modifier);
                         }
@@ -136,7 +133,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                         Condition condition = modifier.getCondition();
                         if (condition == null || condition.isFulfilled(_game))
                             if (shouldAdd(ModifierEffect.GAIN_ICON_MODIFIER, modifier)) {
-                                if ((card == null || modifier.affectsCard(card)) &&
+                                if ((card == null || modifier.affectsCard(_game, card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
                                     liveModifiers.add(modifier);
                             }
@@ -162,7 +159,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                         Condition condition = modifier.getCondition();
                         if (condition == null || condition.isFulfilled(_game))
                             if (shouldAdd(ModifierEffect.GAIN_SKILL_MODIFIER, modifier)) {
-                                if ((card == null || modifier.affectsCard(card)) &&
+                                if ((card == null || modifier.affectsCard(_game, card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
                                     liveModifiers.add(modifier);
                             }
@@ -223,9 +220,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
 
-    public void signalStartOfTurn() { signalStartOfTurn(_game.getCurrentPlayer().getPlayerId()); }
-
-    public void signalStartOfTurn(String playerId) {
+    public void signalStartOfTurn(String playerId) throws PlayerNotFoundException {
         List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
         if (list != null) {
             for (Modifier modifier : list) {
@@ -243,6 +238,27 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             }
         }
     }
+
+    public void signalStartOfTurn(Player player) {
+        String playerId = player.getPlayerId();
+        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
+        if (list != null) {
+            for (Modifier modifier : list) {
+                list.remove(modifier);
+                _untilEndOfTurnModifiers.add(modifier);
+            }
+        }
+        _normalCardPlaysAvailable.put(player, _normalCardPlaysPerTurn);
+
+        // Unstop all "stopped" cards
+        // TODO - Does not account for cards that can be stopped for multiple turns
+        for (PhysicalCard card : _game.getGameState().getAllCardsInPlay()) {
+            if (card instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
+                stCard.unstop();
+            }
+        }
+    }
+
 
     public void signalEndOfTurn() {
         removeModifiers(_untilEndOfTurnModifiers);
@@ -302,7 +318,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     private boolean affectsCardWithSkipSet(PhysicalCard physicalCard, Modifier modifier) {
         if (!_skipSet.contains(modifier) && physicalCard != null) {
             _skipSet.add(modifier);
-            boolean result = modifier.affectsCard(physicalCard);
+            boolean result = modifier.affectsCard(_game, physicalCard);
             _skipSet.remove(modifier);
             return result;
         } else {
@@ -337,7 +353,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         for (Modifier modifier : attributeModifiers) {
             if (modifier instanceof AttributeModifier attributeModifier &&
                     attributeModifier.getAttributesModified().contains(attribute)) {
-                result += modifier.getAttributeModifier(card);
+                result += modifier.getAttributeModifier(_game, card);
             }
         }
         return Math.max(0, result);
@@ -446,24 +462,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         return true;
     }
 
-    public boolean canPlayOutOfSequence(PhysicalCard source) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.PLAY_OUT_OF_SEQUENCE, source))
-            if (modifier.canPlayCardOutOfSequence(source)) {
-                return true;
-            }
-        return false;
-    }
-
     @Override
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return getModifiers(ModifierEffect.SPECIAL_FLAG_MODIFIER).stream()
                 .anyMatch(modifier -> modifier.hasFlagActive(modifierFlag));
-    }
-
-    @Override
-    public ModifiersLogic generateSnapshot(SnapshotData snapshotData) {
-        // TODO SNAPSHOT - Basically need to copy everything here
-        return this;
     }
 
     final class ModifierHookImpl implements ModifierHook {
@@ -529,6 +531,17 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
     }
+
+    @Override
+    public void addModifierHooks(DefaultGame cardGame, PhysicalCard card) {
+        CardBlueprint blueprint = card.getBlueprint();
+        _modifierHooks.computeIfAbsent(card, cardModifiers -> new LinkedList<>());
+        Iterable<Modifier> modifiers =
+                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
+        for (Modifier modifier : modifiers)
+            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+    }
+
 
     public List<Modifier> getModifiers() {
         List<Modifier> result = new LinkedList<>();

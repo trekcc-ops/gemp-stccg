@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.playcard.DownloadCardFromZoneAction;
+import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
@@ -12,7 +12,9 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -27,19 +29,20 @@ public class Blueprint155_021 extends CardBlueprint {
     public SeedCardActionSource getSeedCardActionSource() {
         SeedCardActionSource actionSource = new SeedCardActionSource();
         actionSource.addRequirement((actionContext) -> actionContext.getSource()
-                .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer()) < 1);
+                .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer(), actionContext.getGame()) < 1);
         actionSource.setSeedZone(Zone.TABLE);
         return actionSource;
     }
 
-    private Collection<PhysicalCard> getDestinationOptionsForCard(PhysicalCard card) {
-        return Filters.filterYourActive(card.getOwner(), Filters.yourMatchingOutposts(card.getOwner(), card));
+    private Collection<PhysicalCard> getDestinationOptionsForCard(DefaultGame cardGame, PhysicalCard card) {
+        return Filters.filterYourActive(cardGame, card.getOwner(),
+                Filters.yourMatchingOutposts(card.getOwner(), card));
     }
 
     @Override
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
-        DefaultGame game = player.getGame();
-        Phase currentPhase = game.getCurrentPhase();
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+                                                                        DefaultGame cardGame) {
+        Phase currentPhase = cardGame.getCurrentPhase();
         List<TopLevelSelectableAction> actions = new LinkedList<>();
 
         if (currentPhase == Phase.CARD_PLAY) {
@@ -53,27 +56,27 @@ public class Blueprint155_021 extends CardBlueprint {
             action1.setCardActionPrefix("1");
             action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
             action1.appendEffect(
-                    new DownloadCardFromZoneAction(Zone.HAND, thisCard.getOwner(), thisCard, playableCardFilter) {
+                    new DownloadCardAction(cardGame, Zone.HAND, thisCard.getOwner(), playableCardFilter) {
                         @Override
-                        protected Collection<PhysicalCard> getPlayableCards() {
+                        protected Collection<PhysicalCard> getPlayableCards(DefaultGame cardGame, GameState gameState) {
                             Collection<PhysicalCard> playableCards = Filters.filter(
-                                    game.getGameState().getHand(thisCard.getOwnerName()), playableCardFilter);
-                            playableCards.removeIf(card -> getDestinationOptionsForCard(card).isEmpty());
+                                    thisCard.getOwner().getCardsInHand(), playableCardFilter);
+                            playableCards.removeIf(card -> getDestinationOptionsForCard(cardGame, card).isEmpty());
                             return playableCards;
                         }
 
                         @Override
-                        protected void playCard(final PhysicalCard selectedCard) {
+                        protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
 
                             Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                                    true, Filters.filterYourActive(thisCard.getOwner(),
+                                    true, Filters.filterYourActive(cardGame, thisCard.getOwner(),
                                     Filters.yourMatchingOutposts(thisCard.getOwner(), thisCard)));
                             setPlayCardAction(action);
                             selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
                         }
                     });
             action1.setText("Report a personnel for free");
-            if (action1.canBeInitiated(game))
+            if (action1.canBeInitiated(cardGame))
                 actions.add(action1);
 
 /*            ActivateCardAction action2 = new ActivateCardAction(card);

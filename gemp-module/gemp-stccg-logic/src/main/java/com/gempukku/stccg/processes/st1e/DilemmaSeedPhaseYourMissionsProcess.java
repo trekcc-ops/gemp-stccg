@@ -1,49 +1,61 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.processes.GameProcess;
 
+import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@JsonTypeName("DilemmaSeedPhaseYourMissionsProcess")
 public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess {
 
     DilemmaSeedPhaseYourMissionsProcess(ST1EGame game) {
-        super(game.getPlayerIds(), game);
+        super(game.getPlayerIds());
     }
-    public DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
-        super(playersSelecting, game);
+    @ConstructorProperties({"playersParticipating"})
+    public DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting) {
+        super(playersSelecting);
     }
 
     @Override
-    List<MissionCard> getAvailableMissions(Player player) {
+    List<MissionCard> getAvailableMissions(ST1EGame stGame, String playerId) {
         List<MissionCard> result = new ArrayList<>();
-        for (MissionLocation location: _game.getGameState().getSpacelineLocations()) {
-            MissionCard mission = location.getMissions().getFirst();
-            if (location.getMissions().size() == 1 && mission.getOwner() == player)
-                result.add(mission);
+        try {
+            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+                MissionCard mission = location.getMissionCards().getFirst();
+                if (location.getMissionCards().size() == 1 && mission.getOwner() == stGame.getPlayer(playerId))
+                    result.add(mission);
+            }
+        } catch(PlayerNotFoundException exp) {
+            stGame.sendErrorMessage(exp);
         }
         return result;
     }
 
+
     @Override
-    protected String getDecisionText(Player player) {
+    protected String getDecisionText(DefaultGame cardGame, Player player) {
         return "Select your mission to seed cards under or remove cards from";
     }
 
     @Override
-    public GameProcess getNextProcess(DefaultGame cardGame) {
+    public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
+        ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
-            for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
-                location.seedPreSeeds();
+            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+                location.seedPreSeedsForYourMissions();
             }
-            return new DilemmaSeedPhaseSharedMissionsProcess(_game);
+            cardGame.setCurrentPhase(Phase.SEED_FACILITY);
+            cardGame.takeSnapshot("Start of facility seed phase");
+            return new ST1EFacilitySeedPhaseProcess(0); // TODO - Add "other cards" dilemma seed phase
         }
-        else return new DilemmaSeedPhaseYourMissionsProcess(_playersParticipating, _game);
+        else return new DilemmaSeedPhaseYourMissionsProcess(_playersParticipating);
+
     }
 }

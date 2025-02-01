@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
@@ -9,6 +10,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -19,10 +21,9 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     private final List<AttemptingUnit> _eligibleUnits;
     private AttemptingUnit _selectedResponse;
 
-
-    public SelectAttemptingUnitAction(Player player, Collection<AttemptingUnit> attemptingUnits)
+    public SelectAttemptingUnitAction(DefaultGame cardGame, Player player, Collection<AttemptingUnit> attemptingUnits)
             throws InvalidGameLogicException {
-        super(player, "Choose an Away Team", ActionType.SELECT_AWAY_TEAM);
+        super(cardGame, player, "Choose an Away Team", ActionType.SELECT_AWAY_TEAM);
         _eligibleUnits = new LinkedList<>(attemptingUnits);
         for (AttemptingUnit unit : _eligibleUnits) {
             String decisionText;
@@ -44,13 +45,13 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
         if (_presentedOptions.size() == 1) {
             attemptingUnitChosen(_eligibleUnits.getFirst());
         } else {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new MultipleChoiceAwaitingDecision(performingPlayer, _text, _presentedOptions) {
+                    new MultipleChoiceAwaitingDecision(performingPlayer, _text, _presentedOptions, cardGame) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             attemptingUnitChosen(_eligibleUnits.get(index));
@@ -62,6 +63,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
 
     private void attemptingUnitChosen(AttemptingUnit attemptingUnit) {
         _wasCarriedOut = true;
+        setAsSuccessful();
         _selectedResponse = attemptingUnit;
     }
 

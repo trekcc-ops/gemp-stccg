@@ -37,9 +37,9 @@ public class Blueprint109_010 extends CardBlueprint {
         }
 
         if (officers.size() >= 3) {
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         } else {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
         }
 
         return result;

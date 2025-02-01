@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.battle;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -9,6 +10,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -46,45 +48,46 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
      * Creates an action for playing the specified card.
      * @param actionSource the card to initiate the deployment
      */
-    public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, MissionLocation location)
-            throws InvalidGameLogicException {
-        super(performingPlayer, "Initiate battle", ActionType.BATTLE);
-        DefaultGame game = actionSource.getGame();
+    public ShipBattleAction(DefaultGame cardGame, PhysicalCard actionSource, Player performingPlayer,
+                            MissionLocation location)
+            throws InvalidGameLogicException, PlayerNotFoundException {
+        super(cardGame, performingPlayer, "Initiate battle", ActionType.BATTLE);
         _actionSource = actionSource;
         _location = location;
         _attackingPlayer = performingPlayer;
-        _defendingPlayer = game.getPlayer(game.getOpponent(_performingPlayerId));
+        _defendingPlayer = cardGame.getPlayer(cardGame.getOpponent(_performingPlayerId));
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !getEligibleCardsForForce(_attackingPlayer).isEmpty() && !getTargetOptions(_attackingPlayer).isEmpty();
+        return !getEligibleCardsForForce(_attackingPlayer, cardGame).isEmpty() &&
+                !getTargetOptions(_attackingPlayer, cardGame).isEmpty();
     }
 
 //    protected Effect getFinalEffect() { return new DefaultEffect(); }
-    private Collection<PhysicalCard> getEligibleCardsForForce(Player player) {
+    private Collection<PhysicalCard> getEligibleCardsForForce(Player player, DefaultGame cardGame) {
             // TODO - Every ship needs a leader aboard
             // TODO - Each ship must have at least one matching, compatible personnel aboard
             // TODO - Attacking cards must be compatible
         // TODO - Ignores non-ship cards that can participate in battle
-        return Filters.filterYourActive(
+        return Filters.filterYourActive(cardGame,
                 player, Filters.ship, Filters.undocked, Filters.atLocation(_location));
     }
 
-    private Collection<PhysicalCard> getTargetOptions(Player player) {
-        return Filters.filterActive(player.getGame(), Filters.or(Filters.and(Filters.ship, Filters.undocked),
+    private Collection<PhysicalCard> getTargetOptions(Player player, DefaultGame cardGame) {
+        return Filters.filterActive(cardGame, Filters.or(Filters.and(Filters.ship, Filters.undocked),
                         Filters.facility),
                 Filters.atLocation(_location), Filters.not(Filters.your(player)));
     }
 
-    private OpenFireResult calculateOpenFireResult(Player player) {
+    private OpenFireResult calculateOpenFireResult(Player player, DefaultGame cardGame) {
         String playerId = player.getPlayerId();
         int attackTotal = 0;
         for (PhysicalCard ship : _forces.get(player)) {
             attackTotal += ship.getBlueprint().getWeapons();
         }
         int defenseTotal = _targets.get(player).getBlueprint().getShields();
-        player.getGame().sendMessage(playerId + " opens fire");
-        player.getGame().sendMessage("ATTACK: " + attackTotal + ", DEFENSE: " + defenseTotal);
+        cardGame.sendMessage(playerId + " opens fire");
+        cardGame.sendMessage("ATTACK: " + attackTotal + ", DEFENSE: " + defenseTotal);
         if (attackTotal > defenseTotal * 2)
             return OpenFireResult.DIRECT_HIT;
         else if (attackTotal > defenseTotal)
@@ -126,7 +129,7 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
 
         if (!_returnFireDecisionMade) {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new YesNoDecision(_defendingPlayer, "Do you want to return fire?") {
+                    new YesNoDecision(_defendingPlayer, "Do you want to return fire?", cardGame) {
                 @Override
                         protected void yes() {
                     _returnFireDecisionMade = true;
@@ -151,12 +154,12 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
 
         if (!_openedFire) {
             _openedFire = true;
-            _openFireResults.put(_attackingPlayer, calculateOpenFireResult(_attackingPlayer));
+            _openFireResults.put(_attackingPlayer, calculateOpenFireResult(_attackingPlayer, cardGame));
         }
 
         if (!_returnedFire && _returningFire) {
             _returnedFire = true;
-            _openFireResults.put(_defendingPlayer, calculateOpenFireResult(_defendingPlayer));
+            _openFireResults.put(_defendingPlayer, calculateOpenFireResult(_defendingPlayer, cardGame));
         }
 
         if (!_damageApplied) {

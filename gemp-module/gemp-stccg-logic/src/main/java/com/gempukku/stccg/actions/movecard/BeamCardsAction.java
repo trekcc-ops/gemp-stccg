@@ -15,8 +15,8 @@ import java.util.List;
 
 public class BeamCardsAction extends BeamOrWalkAction {
 
-    public BeamCardsAction(Player player, PhysicalNounCard1E cardUsingTransporters) {
-        super(player, cardUsingTransporters);
+    public BeamCardsAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardUsingTransporters) {
+        super(cardGame, player, cardUsingTransporters);
     }
 
     @Override

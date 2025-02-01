@@ -6,7 +6,7 @@ import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Set;
 
-public interface AffiliatedCard extends PhysicalCard {
+public interface AffiliatedCard extends PhysicalCard<ST1EGame> {
     ST1EGame getGame();
     boolean isMultiAffiliation();
     Affiliation getCurrentAffiliation();

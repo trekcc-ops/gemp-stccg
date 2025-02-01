@@ -1,9 +1,14 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.*;
@@ -24,7 +29,10 @@ public abstract class ActionyAction implements Action {
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
-    public ActionType getActionType() { return _actionType; }
+    protected final Map<String, ActionCardResolver> _cards = new HashMap<>();
+
+    @JsonProperty("status")
+    private ActionStatus _actionStatus;
 
     protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
         _actionId = environment.getNextActionId();
@@ -32,27 +40,30 @@ public abstract class ActionyAction implements Action {
         environment.incrementActionId();
         _actionType = actionType;
         _performingPlayerId = performingPlayerId;
+        _actionStatus = ActionStatus.virtual;
     }
 
-    protected ActionyAction(Player player, ActionType actionType) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+    protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
     }
 
-    protected ActionyAction(Player player, String text, ActionType actionType) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+
+    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
         _text = text;
     }
 
-    protected ActionyAction(Player player, ActionType actionType, Enum<?>[] progressValues) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+
+    protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType, Enum<?>[] progressValues) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
         for (Enum<?> progressType : progressValues) {
             _progressIndicators.put(progressType.name(), false);
         }
     }
 
-
-    protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
-        this(player.getGame().getActionsEnvironment(), actionType, player.getPlayerId());
+    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType,
+                            Enum<?>[] progressTypes) {
+        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
         _text = text;
         for (Enum<?> progressType : progressTypes) {
             _progressIndicators.put(progressType.name(), false);
@@ -60,8 +71,8 @@ public abstract class ActionyAction implements Action {
     }
 
     // This constructor is only used for system queue actions
-    protected ActionyAction(DefaultGame game) {
-        this(game.getActionsEnvironment(), ActionType.OTHER, null);
+    protected ActionyAction(DefaultGame game, ActionType type) {
+        this(game.getActionsEnvironment(), type, null);
     }
 
 
@@ -69,6 +80,7 @@ public abstract class ActionyAction implements Action {
     public String getPerformingPlayerId() {
         return _performingPlayerId;
     }
+    public ActionType getActionType() { return _actionType; }
 
     public final void appendCost(Action cost) {
         _costs.add(cost);
@@ -183,7 +195,7 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
-    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException;
+    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException;
 
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType) {
@@ -197,5 +209,77 @@ public abstract class ActionyAction implements Action {
     }
 
     public void insertEffect(Action actionEffect) { insertAction(actionEffect); }
+
+    protected void assignCardLabel(Enum<?> cardLabelType, ActionCardResolver cardTarget) {
+        _cards.put(cardLabelType.name(), cardTarget);
+    }
+
+    protected void assignCardLabel(Enum<?> cardLabelType, PhysicalCard card) {
+        _cards.put(cardLabelType.name(), new FixedCardResolver(card));
+    }
+
+    protected void assignCardLabel(Enum<?> cardLabelType, SelectCardsAction selectAction) {
+        _cards.put(cardLabelType.name(), new SelectCardsResolver(selectAction));
+    }
+
+    protected ActionCardResolver getCardTarget(Enum<?> cardLabelType) {
+        return _cards.get(cardLabelType.name());
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
+    @JsonIdentityReference(alwaysAsId=true)
+    public List<Action> getCosts() { return _costs; }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
+    public Map<String, Boolean> getProgressIndicators() {
+        return _progressIndicators;
+    }
+
+    @JsonIgnore
+    public boolean isBeingInitiated() { return _actionStatus == ActionStatus.initiation_started; }
+
+    public void startPerforming() throws ActionOrderOfOperationException {
+        if (_actionStatus == ActionStatus.virtual) {
+            _actionStatus = ActionStatus.initiation_started;
+        } else {
+            throw new ActionOrderOfOperationException("Tried to start performing an action already in progress");
+        }
+    }
+
+    public void setAsFailed() {
+        if (_actionStatus == ActionStatus.initiation_started) {
+            _actionStatus = ActionStatus.initiation_failed;
+        } else {
+            _actionStatus = ActionStatus.completed_failure;
+        }
+    }
+
+    protected void setAsSuccessful() {
+        _actionStatus = ActionStatus.completed_success;
+    }
+
+    protected void setAsInitiated() {
+        _actionStatus = ActionStatus.initiation_complete;
+    }
+
+    @JsonIgnore
+    public boolean isInProgress() {
+        return _actionStatus.isInProgress();
+    }
+
+    public boolean wasCompleted() {
+        return switch(_actionStatus) {
+            case completed_success, completed_failure -> true;
+            case virtual, initiation_failed, cancelled, initiation_started, initiation_complete -> false;
+        };
+    }
+
+    public boolean wasFailed() {
+        return _actionStatus.wasFailed();
+    }
+
+    public boolean wasSuccessful() {
+        return _actionStatus == ActionStatus.completed_success;
+    }
 
 }

@@ -141,6 +141,21 @@ class DefaultServerRequestHandler {
         return resourceOwner;
     }
 
+    final User getResourceOwnerSafely(HttpMessage request)
+            throws HttpProcessingException {
+        String loggedUser = getLoggedUser(request);
+
+        if (loggedUser == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
+
+        User resourceOwner = _playerDao.getPlayer(loggedUser);
+
+        if (resourceOwner == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
+        return resourceOwner;
+    }
+
+
     final User getLibrarian() throws HttpProcessingException {
         User resourceOwner = _playerDao.getPlayer("Librarian");
 

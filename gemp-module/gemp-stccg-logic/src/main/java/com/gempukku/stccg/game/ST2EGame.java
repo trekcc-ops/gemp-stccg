@@ -16,9 +16,11 @@ public class ST2EGame extends DefaultGame {
         super(format, decks, library);
 
         _gameState = new ST2EGameState(decks.keySet(), this);
-        new RuleSet(this).applyRuleSet();
+        RuleSet<ST2EGame> ruleSet = new RuleSet<>();
+        ruleSet.applyRuleSet(this);
 
-        _turnProcedure = new TurnProcedure(this, null);
+        _turnProcedure = new TurnProcedure(this);
+        setCurrentProcess(null);
     }
 
 
@@ -28,19 +30,4 @@ public class ST2EGame extends DefaultGame {
     }
     public TurnProcedure getTurnProcedure() { return _turnProcedure; }
 
-    protected void restoreSnapshot() {
-        if (_snapshotToRestore != null) {
-            if (!(_snapshotToRestore.getGameState() instanceof ST2EGameState))
-                throw new RuntimeException("Tried to restore a snapshot with an invalid game state");
-            else {
-                _gameState = (ST2EGameState) _snapshotToRestore.getGameState();
-                _gameState.setModifiersLogic(_snapshotToRestore.getModifiersLogic());
-                _gameState.setActionsEnvironment(_snapshotToRestore.getActionsEnvironment());
-                _turnProcedure = _snapshotToRestore.getTurnProcedure();
-                sendMessage("Reverted to previous game state");
-                _snapshotToRestore = null;
-                sendStateToAllListeners();
-            }
-        }
-    }
 }

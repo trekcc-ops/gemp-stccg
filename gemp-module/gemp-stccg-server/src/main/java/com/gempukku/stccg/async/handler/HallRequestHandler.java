@@ -1,21 +1,19 @@
 package com.gempukku.stccg.async.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gempukku.stccg.SubscriptionConflictException;
-import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.collection.CollectionType;
-import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.*;
+import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import io.netty.handler.codec.http.HttpMethod;
@@ -366,13 +364,9 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                         new HallUpdateLongPollingResource(commChannel, request, resourceOwner, responseWriter);
                 _longPollingSystem.processLongPollingResource(polledResource, commChannel);
             }
-            catch (SubscriptionExpiredException exp) {
-                logHttpError(LOGGER, HttpURLConnection.HTTP_GONE, request.uri(), exp);
-                responseWriter.writeError(HttpURLConnection.HTTP_GONE); // 410
-            }
-            catch (SubscriptionConflictException exp) {
-                logHttpError(LOGGER, HttpURLConnection.HTTP_CONFLICT, request.uri(), exp);
-                responseWriter.writeError(HttpURLConnection.HTTP_CONFLICT); // 409
+            catch (HttpProcessingException exp) {
+                logHttpError(LOGGER, exp.getStatus(), request.uri(), exp);
+                responseWriter.writeError(exp.getStatus());
             }
         } finally {
             postDecoder.destroy();

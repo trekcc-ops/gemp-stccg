@@ -2,12 +2,15 @@ package com.gempukku.stccg.modifiers.attributes;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.FixedCardResolver;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.AbstractModifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 
@@ -35,10 +38,11 @@ public class AttributeModifier extends AbstractModifier {
         _attributes.add(attribute);
     }
 
-    public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard, Condition condition,
-                             int modifierValue, ModifierEffect effectType, CardAttribute... attributes) {
-        super(performingCard, new ActionCardResolver(affectedCard), condition, effectType);
-        _evaluator = new ConstantEvaluator(performingCard.getGame(), modifierValue);
+    public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,
+                             Condition condition, int modifierValue, ModifierEffect effectType,
+                             CardAttribute... attributes) {
+        super(performingCard, new FixedCardResolver(affectedCard), condition, effectType);
+        _evaluator = new ConstantEvaluator(modifierValue);
         _attributes.addAll(Arrays.asList(attributes));
     }
 
@@ -62,7 +66,7 @@ public class AttributeModifier extends AbstractModifier {
 
 
     @Override
-    public String getCardInfoText(PhysicalCard affectedCard) {
+    public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         String attributeString;
         if (getModifierEffect() == ModifierEffect.ALL_ATTRIBUTE_MODIFIER) {
             attributeString = "All attributes";
@@ -70,13 +74,13 @@ public class AttributeModifier extends AbstractModifier {
             attributeString = _attributes.getFirst().toString();
         }
 
-        return attributeString +  " " + TextUtils.signed(_evaluator.evaluateExpression(_game, affectedCard)) +
+        return attributeString +  " " + TextUtils.signed(_evaluator.evaluateExpression(affectedCard.getGame(), affectedCard)) +
                 " from " + _cardSource.getCardLink();
     }
 
     @Override
-    public int getAttributeModifier(PhysicalCard physicalCard) {
-        return _evaluator.evaluateExpression(_game, physicalCard);
+    public int getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard) {
+        return _evaluator.evaluateExpression(cardGame, physicalCard);
     }
 
     public List<CardAttribute> getAttributesModified() {

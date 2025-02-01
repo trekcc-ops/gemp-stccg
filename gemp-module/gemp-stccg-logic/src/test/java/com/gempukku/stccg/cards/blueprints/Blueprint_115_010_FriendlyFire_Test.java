@@ -9,6 +9,8 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -24,25 +26,27 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
 
     @Test
     public void placeOnMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
         ST1EPhysicalCard friendly =
-                (ST1EPhysicalCard) _game.getGameState().addCardToGame("115_010", _cardLibrary, P1);
-        _game.getGameState().seedCardsUnder(Collections.singleton(friendly), _mission);
+                (ST1EPhysicalCard) _game.addCardToGame("115_010", _cardLibrary, P1);
+
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(friendly), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = (PersonnelCard) _game.getGameState().addCardToGame("101_205", _cardLibrary, P1);
-        PersonnelCard hobson = (PersonnelCard) _game.getGameState().addCardToGame("101_202", _cardLibrary, P1);
-        PersonnelCard picard = (PersonnelCard) _game.getGameState().addCardToGame("101_215", _cardLibrary, P1);
-        PersonnelCard data = (PersonnelCard) _game.getGameState().addCardToGame("101_204", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", _cardLibrary, P1);
+        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", _cardLibrary, P1);
+        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         troi.reportToFacility(_outpost);
         hobson.reportToFacility(_outpost);
@@ -55,7 +59,7 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
         assertTrue(_outpost.getCrew().contains(picard));
         assertTrue(_outpost.getCrew().contains(data));
         assertFalse(_outpost.getCrew().contains(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard());
+        assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 
@@ -19,7 +20,7 @@ import java.util.Map;
 public class CardInfoUtils {
 
     public static String getCardInfoHTML(DefaultGame game, PhysicalCard card) {
-        String info = getBasicCardInfoHTML(card);
+        String info = getBasicCardInfoHTML(game, card);
         return switch (card) {
             case PersonnelCard personnel -> info + getPersonnelInfo(game, personnel);
             case PhysicalShipCard ship -> info + getShipCardInfo(game, ship);
@@ -30,19 +31,19 @@ public class CardInfoUtils {
     }
 
 
-    public static String getBasicCardInfoHTML(PhysicalCard card) {
+    public static String getBasicCardInfoHTML(DefaultGame cardGame, PhysicalCard card) {
         if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
             StringBuilder sb = new StringBuilder();
 
-            Collection<Modifier> modifiers = card.getGame().getModifiersQuerying().getModifiersAffecting(card);
+            Collection<Modifier> modifiers = cardGame.getModifiersQuerying().getModifiersAffecting(card);
             if (!modifiers.isEmpty()) {
                 sb.append(HTMLUtils.makeBold("Active modifiers:")).append(HTMLUtils.NEWLINE);
                 for (Modifier modifier : modifiers) {
-                    sb.append(modifier.getCardInfoText(card));
+                    sb.append(modifier.getCardInfoText(cardGame, card));
                 }
             }
 
-            List<PhysicalCard> stackedCards = card.getStackedCards(card.getGame());
+            List<PhysicalCard<? extends DefaultGame>> stackedCards = card.getStackedCards(cardGame);
             if (!stackedCards.isEmpty()) {
                 sb.append("<br><b>Stacked cards:</b>");
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));
@@ -138,15 +139,16 @@ public class CardInfoUtils {
 
     static String getMissionCardInfo(MissionCard mission) {
         StringBuilder sb = new StringBuilder();
+        ST1EGame cardGame = mission.getGame();
         try {
             if (mission.getBlueprint().getMissionType() == MissionType.PLANET && mission.getZone().isInPlay()) {
                 MissionLocation location = mission.getLocation();
-                long awayTeamCount = location.getAwayTeamsOnSurface().count();
+                long awayTeamCount = location.getAwayTeamsOnSurface(cardGame).count();
                 sb.append(HTMLUtils.NEWLINE);
                 sb.append(HTMLUtils.makeBold("Away Teams on Planet: "));
                 sb.append(awayTeamCount);
                 if (awayTeamCount > 0) {
-                    location.getAwayTeamsOnSurface().forEach(awayTeam -> {
+                    location.getAwayTeamsOnSurface(cardGame).forEach(awayTeam -> {
                                 sb.append(HTMLUtils.NEWLINE);
                                 sb.append(HTMLUtils.makeBold("Away Team: "));
                                 sb.append("(").append(awayTeam.getPlayerId()).append(") ");

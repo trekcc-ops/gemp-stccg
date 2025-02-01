@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
@@ -8,19 +9,15 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class OptionalTriggerAction extends ActionyAction implements TopLevelSelectableAction {
-    private final PhysicalCard _physicalCard;
-    private final PhysicalCard _actionAttachedToCard;
-
-    private String _message;
-
-    private boolean _sentMessage;
+    private final PhysicalCard _performingCard;
+    private enum Progress { sentMessage }
     private ActionSource _actionSource;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(), ActionType.OTHER);
-        _physicalCard = physicalCard;
-        _actionAttachedToCard = physicalCard;
-        _message = _physicalCard.getCardLink() + " optional triggered effect is used";
+        super(physicalCard.getGame(), physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(),
+                ActionType.USE_GAME_TEXT,
+                Progress.values());
+        _performingCard = physicalCard;
     }
 
     public OptionalTriggerAction(PhysicalCard physicalCard, ActionSource actionSource) {
@@ -28,29 +25,26 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
         _actionSource = actionSource;
     }
 
-    public void setMessage(String message) {
-        _message = message;
-    }
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
     @Override
     public PhysicalCard getPerformingCard() {
-        return _physicalCard;
+        return _performingCard;
     }
 
     @Override
     public int getCardIdForActionSelection() {
-        return _actionAttachedToCard.getCardId();
+        return _performingCard.getCardId();
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
-        if (!_sentMessage) {
-            _sentMessage = true;
-            if (_physicalCard != null)
-                cardGame.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
-            if (_message != null)
-                cardGame.sendMessage(_message);
+        if (!getProgress(Progress.sentMessage)) {
+            setProgress(Progress.sentMessage);
+            if (_performingCard != null) {
+                cardGame.activatedCard(getPerformingPlayerId(), _performingCard);
+                cardGame.sendMessage(_performingCard.getCardLink() + " optional triggered effect is used");
+            }
         }
 
         if (!isCostFailed()) {
@@ -61,7 +55,12 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
             if (_actionSource != null) {
                 cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionSource).countUse();
             }
-            return getNextAction();
+            Action action = getNextAction();
+            if (action == null)
+                setAsSuccessful();
+            return action;
+        } else {
+            setAsFailed();
         }
         return null;
     }

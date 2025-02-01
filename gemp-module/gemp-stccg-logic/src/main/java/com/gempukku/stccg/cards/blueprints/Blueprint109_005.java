@@ -39,14 +39,14 @@ public class Blueprint109_005 extends CardBlueprint {
         }
 
         if (!hasEmpathyOrDiplomacy && targetPersonnel.isEmpty()) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
         } else {
             if (targetPersonnel.size() >= 2) {
                 PersonnelCard cardToContinue = TextUtils.getRandomItemFromList(targetPersonnel);
                 targetPersonnel.remove(cardToContinue);
             }
-            result.add(new StopCardsAction(thisCard.getOwner(), targetPersonnel));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+            result.add(new StopCardsAction(game, thisCard.getOwner(), targetPersonnel));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         }
 
         return result;

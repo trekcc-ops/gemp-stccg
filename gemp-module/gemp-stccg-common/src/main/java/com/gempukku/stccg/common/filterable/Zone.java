@@ -9,7 +9,6 @@ public enum Zone implements Filterable {
     SPACELINE("spaceline", true, true, true, false),
     AT_LOCATION("location", true, true, true, false),
 
-    SUPPORT("play", true, true, true, true),
     ATTACHED("play", true, true, true, false),
 
     REMOVED("removed", true, true, false, true),
@@ -26,8 +25,7 @@ public enum Zone implements Filterable {
     DISCARD("discard", false, true, false, true),
 
     // Nobody sees
-    VOID("void", false, false, false, false),
-    VOID_FROM_HAND("voidFromHand", false, false, false, false);
+    VOID("void", false, false, false, false);
 
     private final String _humanReadable;
     private final boolean _public;

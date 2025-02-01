@@ -1,7 +1,11 @@
 package com.gempukku.stccg.actions.placecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -14,12 +18,13 @@ import java.util.List;
 
 public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
 
-    private final PhysicalCard _cardBeingPlaced;
-
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("cardTarget")
+    private final FixedCardResolver _cardTarget;
 
     public PlaceCardOnTopOfDrawDeckAction(Player performingPlayer, PhysicalCard cardBeingPlaced) {
-        super(performingPlayer, ActionType.PLACE_CARD);
-        _cardBeingPlaced = cardBeingPlaced;
+        super(cardBeingPlaced.getGame(), performingPlayer, ActionType.PLACE_CARD);
+        _cardTarget = new FixedCardResolver(cardBeingPlaced);
     }
 
     @Override
@@ -29,10 +34,12 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        PhysicalCard cardBeingPlaced = _cardTarget.getCard();
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(_cardBeingPlaced.getOwnerName(), List.of(_cardBeingPlaced));
-        gameState.sendMessage(_performingPlayerId + " placed " + _cardBeingPlaced + " on top of their draw deck");
-        gameState.addCardToZone(_cardBeingPlaced, Zone.DRAW_DECK, EndOfPile.TOP);
+        gameState.removeCardsFromZone(cardGame, cardBeingPlaced.getOwnerName(), List.of(cardBeingPlaced));
+        cardGame.sendMessage(_performingPlayerId + " placed " + cardBeingPlaced + " on top of their draw deck");
+        gameState.addCardToZone(cardBeingPlaced, Zone.DRAW_DECK, EndOfPile.TOP);
+        setAsSuccessful();
         return getNextAction();
     }
 }

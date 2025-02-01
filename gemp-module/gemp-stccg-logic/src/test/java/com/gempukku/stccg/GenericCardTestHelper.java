@@ -1,5 +1,6 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -73,123 +74,10 @@ public class GenericCardTestHelper extends AbstractAtTest {
         return decision.getDecisionParameters();
     }
 
-    public List<? extends PhysicalCard> GetPlayerHand(String player)
-    {
-        return _game.getGameState().getHand(player);
-    }
-
-    public int GetPlayerDeckCount(String player)
-    {
-        return _game.getGameState().getDrawDeck(player).size();
-    }
-
-    public PhysicalCard GetPlayerBottomOfDeck(String player) { return GetFromBottomOfPlayerDeck(player, 1); }
-    public PhysicalCard GetFromBottomOfPlayerDeck(String player, int index)
-    {
-        var deck = _game.getGameState().getDrawDeck(player);
-        return deck.get(deck.size() - index);
-    }
-
-    public PhysicalCard GetPlayerTopOfDeck(String player) { return GetFromTopOfPlayerDeck(player, 1); }
-
-    /**
-     * Index is 1-based (1 is first, 2 is second, etc.)
-     */
-    public PhysicalCard GetFromTopOfPlayerDeck(String player, int index)
-    {
-        var deck = _game.getGameState().getDrawDeck(player);
-        return deck.get(index - 1);
-    }
-
     public Phase GetCurrentPhase() { return _game.getGameState().getCurrentPhase(); }
 
 
-
-    public void ShuffleDeck(String player) {
-        _game.getGameState().shuffleDeck(player);
-    }
-
-
-    public void SkipToPhase(Phase target) throws DecisionResultInvalidException {
-        for(int attempts = 1; attempts <= 20; attempts++)
-        {
-            Phase current = _game.getGameState().getCurrentPhase();
-            if(current == target)
-                break;
-
-            PassCurrentPhaseActions();
-
-            if(attempts == 20)
-            {
-                throw new DecisionResultInvalidException("Could not arrive at target '" + target + "' after 20 attempts!");
-            }
-        }
-    }
-
-    public void SkipToPhaseInverted(Phase target) throws DecisionResultInvalidException {
-        for(int attempts = 1; attempts <= 20; attempts++)
-        {
-            Phase current = _game.getGameState().getCurrentPhase();
-            if(current == target)
-                break;
-
-            PassCurrentPhaseActions();
-
-            if(attempts == 20)
-            {
-                throw new DecisionResultInvalidException("Could not arrive at target '" + target + "' after 20 attempts!");
-            }
-        }
-    }
-
-    public void PassCurrentPhaseActions() throws DecisionResultInvalidException {
-        if(_userFeedback.getAwaitingDecision(P1) != null) {
-            playerDecided(P1, "");
-        }
-        if(_userFeedback.getAwaitingDecision(P2) != null) {
-            playerDecided(P2, "");
-        }
-    }
-
-    public void ChooseCards(String player, PhysicalCard...cards) throws DecisionResultInvalidException {
-        String[] ids = new String[cards.length];
-
-        for(int i = 0; i < cards.length; i++)
-        {
-            ids[i] = String.valueOf(cards[i].getCardId());
-        }
-
-        playerDecided(player, String.join(",", ids));
-    }
-
-
-
-    public void ChooseCardBPFromSelection(String player, PhysicalCard...cards) throws DecisionResultInvalidException {
-        String[] choices = GetAwaitingDecisionParam(player,"blueprintId");
-        Collection<String> bps = new ArrayList<>();
-        Collection<PhysicalCard> found = new ArrayList<>();
-
-        for(int i = 0; i < choices.length; i++)
-        {
-            for(PhysicalCard card : cards)
-            {
-                if(found.contains(card))
-                    continue;
-
-                if(Objects.equals(card.getBlueprintId(), choices[i]))
-                {
-                    // I have no idea why the spacing is required, but the BP parser skips to the fourth position
-                    bps.add("    " + i);
-                    found.add(card);
-                    break;
-                }
-            }
-        }
-
-        playerDecided(player, String.join(",", bps));
-    }
-
-    public void ChooseCardIDFromSelection(String player, PhysicalCard...cards) throws DecisionResultInvalidException {
+    public void ChooseCardIDFromSelection(String player, PhysicalCard...cards) throws DecisionResultInvalidException, InvalidGameOperationException {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(player);
         //playerDecided(player, "" + card.getCardId());
 
@@ -228,25 +116,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void ApplyAdHocAction(ActionProxy action)
     {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(action);
-    }
-
-    public void ChooseMultipleChoiceOption(String playerID, String option) throws DecisionResultInvalidException { ChooseAction(playerID, "results", option); }
-    public void ChooseAction(String playerID, String paramName, String option) throws DecisionResultInvalidException {
-        List<String> choices = GetADParamAsList(playerID, paramName);
-        for(String choice : choices){
-            if(choice.toLowerCase().contains(option.toLowerCase())) {
-                playerDecided(playerID, String.valueOf(choices.indexOf(choice)));
-                return;
-            }
-        }
-        //couldn't find an exact match, so maybe it's a direct index:
-        playerDecided(playerID, option);
-    }
-
-    public void AcknowledgeReveal() throws DecisionResultInvalidException
-    {
-        playerDecided(P1, "");
-        playerDecided(P2, "");
     }
 
 }

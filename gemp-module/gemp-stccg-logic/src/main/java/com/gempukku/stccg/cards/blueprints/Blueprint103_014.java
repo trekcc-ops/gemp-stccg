@@ -15,6 +15,7 @@ import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.LinkedList;
@@ -30,7 +31,8 @@ public class Blueprint103_014 extends CardBlueprint {
 
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+            throws PlayerNotFoundException {
         List<Action> result = new LinkedList<>();
         int totalCunning = 0;
         int totalStrength = 0;
@@ -43,14 +45,14 @@ public class Blueprint103_014 extends CardBlueprint {
         if ((totalCunning + totalStrength <= 68) && !condition.canBeMetBy(attemptingUnit)) {
             String opponentId = game.getOpponent(attemptingUnit.getPlayer().getPlayerId());
             SelectCardsAction selectAction =
-                    new SelectCardsFromDialogAction(game.getPlayer(opponentId),
+                    new SelectCardsFromDialogAction(game, game.getPlayer(opponentId),
                             "Select a personnel to kill",
                             Filters.personnelInAttemptingUnit(attemptingUnit));
             result.add(selectAction);
             result.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction));
         }
 
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         return result;
     }
 

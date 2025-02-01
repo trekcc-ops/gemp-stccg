@@ -15,10 +15,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 
@@ -479,7 +476,7 @@ public class CardBlueprint {
 
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action,
-                                            MissionLocation missionLocation) {
+                                            MissionLocation missionLocation) throws PlayerNotFoundException {
         return new LinkedList<>();
     }
 
@@ -504,10 +501,12 @@ public class CardBlueprint {
     }
 
 
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+                                                                        DefaultGame cardGame) {
         return getActionsFromActionSources(
                 player.getPlayerId(), thisCard, null, inPlayPhaseActions);
     }
+
 
     public void setAnyExceptBorgCanAttempt() {
         _anyExceptBorgCanAttempt = true;

@@ -1,9 +1,8 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.ActionOrder;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.StartOfTurnGameProcess;
@@ -13,21 +12,22 @@ public class TribblesBetweenTurnsProcess extends TribblesGameProcess {
         super(game);
     }
     @Override
-    public void process(DefaultGame cardGame) {
-        TribblesGameState gameState = _game.getGameState();
-        _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
+        GameState gameState = cardGame.getGameState();
+        cardGame.setCurrentPhase(Phase.BETWEEN_TURNS);
         ActionOrder actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(gameState.getCurrentPlayerId(), false);
 
         actionOrder.getNextPlayer(); // TODO: This call is necessary but not logical
-        String currentPlayer = actionOrder.getNextPlayer();
+        String currentPlayerId = actionOrder.getNextPlayer();
 
-        while (_game.getGameState().getPlayerDecked(currentPlayer)) {
-            _game.sendMessage(currentPlayer + " is decked. Skipping their turn.");
-            actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(currentPlayer, false);
-            currentPlayer = actionOrder.getNextPlayer();
+        while (cardGame.getPlayer(currentPlayerId).isDecked()) {
+            cardGame.sendMessage(currentPlayerId + " is decked. Skipping their turn.");
+            actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(currentPlayerId, false);
+            currentPlayerId = actionOrder.getNextPlayer();
         }
 
-        _game.getGameState().startPlayerTurn(currentPlayer);
+        Player currentPlayer = cardGame.getPlayer(currentPlayerId);
+        gameState.startPlayerTurn(cardGame, currentPlayer);
     }
 
     @Override

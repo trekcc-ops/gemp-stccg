@@ -19,6 +19,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -87,17 +88,23 @@ public class CardResolver {
                                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
                                                                              FilterableSource typeFilter, FilterableSource choiceFilter) {
         return (actionContext) -> {
-            List<PhysicalCard> possibleCards = (List<PhysicalCard>) Filters.filter(cardSource.apply(actionContext),
-                    typeFilter.getFilterable(actionContext),
-                    choiceFilter == null ? Filters.any : choiceFilter.getFilterable(actionContext));
+            try {
+                List<PhysicalCard> possibleCards = (List<PhysicalCard>) Filters.filter(cardSource.apply(actionContext),
+                        typeFilter.getFilterable(actionContext),
+                        choiceFilter == null ? Filters.any : choiceFilter.getFilterable(actionContext));
 
-            String selectingPlayerId = choicePlayer.getPlayerId(actionContext);
-            Player selectingPlayer = actionContext.getGame().getPlayer(selectingPlayerId);
+                String selectingPlayerId = choicePlayer.getPlayerId(actionContext);
+                Player selectingPlayer = actionContext.getGame().getPlayer(selectingPlayerId);
 
-            return new SelectVisibleCardsAction(selectingPlayer,
-                    actionContext.substituteText(choiceText), Filters.in(possibleCards),
-                    countSource.getMinimum(actionContext), countSource.getMaximum(actionContext),
-                    actionContext, memory);
+                return new SelectVisibleCardsAction(selectingPlayer,
+                        actionContext.substituteText(choiceText), Filters.in(possibleCards),
+                        countSource.getMinimum(actionContext), countSource.getMaximum(actionContext),
+                        actionContext, memory);
+            } catch(PlayerNotFoundException exp) {
+                actionContext.getGame().sendErrorMessage(exp);
+                actionContext.getGame().cancelGame();
+                return null;
+            }
         };
     }
 
@@ -153,7 +160,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) throws PlayerNotFoundException {
                 Action action = switch (selectionType) {
                     case "self", "memory" -> {
                         Collection<PhysicalCard> result = filterCards(context, choiceFilter);
@@ -230,7 +237,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
                 List<Action> result = new LinkedList<>();
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
                 Action selectionAction = effectSource.createAction(cards, action, context,
@@ -283,7 +290,7 @@ public class CardResolver {
 
     private interface ChoiceActionSource {
         Action createAction(Collection<? extends PhysicalCard> possibleCards, Action action,
-                            ActionContext actionContext, int min, int max);
+                            ActionContext actionContext, int min, int max) throws PlayerNotFoundException;
     }
 
 

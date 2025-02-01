@@ -14,6 +14,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     private final static int BONUS_POINTS = 25000;
     private String _discardingPlayerId;
 
-    public ActivateLaughterTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateLaughterTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
         super(actionContext, power);
     }
 
@@ -34,30 +35,36 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     public boolean requirementsAreMet(DefaultGame cardGame) {
         // There must be at least two players with cards in their hands
         int playersWithHands = 0;
-        for (String player : cardGame.getAllPlayerIds()) {
-            if (!cardGame.getGameState().getHand(player).isEmpty())
+        for (Player player : cardGame.getPlayers()) {
+            if (!player.getCardsInHand().isEmpty())
                 playersWithHands++;
         }
         return playersWithHands >= 2;
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Action cost = getNextCost();
         if (cost != null)
             return cost;
 
         List<String> players = Arrays.asList(cardGame.getAllPlayerIds());
-        players.removeIf(player -> cardGame.getGameState().getHand(player).isEmpty());
+
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardsInHand().isEmpty()) {
+                players.remove(player.getPlayerId());
+            }
+        }
+
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
-                        "Choose a player to discard a card", players) {
+                        "Choose a player to discard a card", players, cardGame) {
                     @Override
                     protected void validDecisionMade(int index, String result)
                             throws DecisionResultInvalidException {
                         try {
                             firstPlayerChosen(players, result, cardGame);
-                        } catch(InvalidGameLogicException exp) {
+                        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             throw new DecisionResultInvalidException(exp.getMessage());
                         }
                     }
@@ -67,7 +74,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     }
 
     private void firstPlayerChosen(List<String> allPlayers, String chosenPlayer, DefaultGame game)
-            throws InvalidGameLogicException {
+            throws InvalidGameLogicException, PlayerNotFoundException {
         _discardingPlayerId = chosenPlayer;
         List<String> newSelectablePlayers = new ArrayList<>(allPlayers);
         newSelectablePlayers.remove(chosenPlayer);
@@ -77,13 +84,13 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             game.getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(game.getPlayer(_performingPlayerId),
                             "Choose a player to place a card from hand on the bottom of their deck",
-                            newSelectablePlayers) {
+                            newSelectablePlayers, game) {
                         @Override
                         protected void validDecisionMade(int index, String result)
                                 throws DecisionResultInvalidException {
                             try {
                                 secondPlayerChosen(result, game);
-                            } catch(InvalidGameLogicException exp) {
+                            } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }
                         }
@@ -91,22 +98,23 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         }
     }
 
-    private void secondPlayerChosen(String secondPlayerChosen, DefaultGame game) throws InvalidGameLogicException {
+    private void secondPlayerChosen(String secondPlayerChosen, DefaultGame game)
+            throws InvalidGameLogicException, PlayerNotFoundException {
         Player discardingPlayer = game.getPlayer(_discardingPlayerId);
         SelectVisibleCardAction discardSelectAction =
-                new SelectVisibleCardAction(discardingPlayer, "Choose a card to discard",
+                new SelectVisibleCardAction(game, discardingPlayer, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
-        appendEffect(new DiscardCardAction(_performingCard, discardingPlayer, discardSelectAction));
+        appendEffect(new DiscardCardAction(game, _performingCard, discardingPlayer, discardSelectAction));
 
         Player performingPlayer = game.getPlayer(_performingPlayerId);
-        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(performingPlayer,
+        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 2, 2);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(performingPlayer, selectAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(game, performingPlayer, selectAction));
 
         if (!(Objects.equals(_discardingPlayerId, _performingPlayerId) ||
                 Objects.equals(secondPlayerChosen, _performingPlayerId))) {
-            appendEffect(new ScorePointsAction(game, _performingCard, _performingPlayerId, BONUS_POINTS));
+            appendEffect(new ScorePointsAction(game, _performingCard, discardingPlayer, BONUS_POINTS));
         }
     }
 

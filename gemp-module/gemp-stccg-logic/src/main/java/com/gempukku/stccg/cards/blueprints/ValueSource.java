@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 public interface ValueSource {
     Evaluator getEvaluator(ActionContext actionContext);

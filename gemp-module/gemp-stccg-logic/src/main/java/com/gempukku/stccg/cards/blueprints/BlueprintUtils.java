@@ -15,6 +15,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.condition.RequirementCondition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.modifiers.CantDiscardFromPlayByPlayerModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
@@ -249,10 +251,20 @@ public final class BlueprintUtils {
         String sourceMemory = (filter.startsWith("memory(")) ?
                 filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")")) : null;
         return switch (zone) {
-            case HAND, DISCARD, DRAW_DECK -> actionContext -> Filters.filter(
-                    actionContext.getGameState().getZoneCards(player.getPlayerId(actionContext), zone),
-                    sourceMemory == null ?
-                            Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+            case HAND, DISCARD, DRAW_DECK -> actionContext -> {
+                try {
+                    String playerId = player.getPlayerId(actionContext);
+                    Player performingPlayer = actionContext.getGame().getPlayer(playerId);
+                    return Filters.filter(
+                            actionContext.getGameState().getZoneCards(performingPlayer, zone),
+                            sourceMemory == null ?
+                                    Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+                } catch(PlayerNotFoundException exp) {
+                    actionContext.getGame().sendErrorMessage(exp);
+                    actionContext.getGame().cancelGame();
+                    return null;
+                }
+            };
             default -> throw new InvalidCardDefinitionException(
                     "getCardSource function not defined for zone " + zone.getHumanReadable());
         };

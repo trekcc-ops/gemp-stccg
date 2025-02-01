@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -16,10 +17,18 @@ public class AddUntilEndOfTurnModifierAction extends ActionyAction implements To
     private final PhysicalCard _performingCard;
 
     public AddUntilEndOfTurnModifierAction(Player performingPlayer, PhysicalCard performingCard, Modifier modifier) {
-        super(performingPlayer, "Add modifier", ActionType.ADD_MODIFIER);
+        super(performingCard.getGame(), performingPlayer, "Add modifier", ActionType.ADD_MODIFIER);
         _performingCard = Objects.requireNonNull(performingCard);
         _modifier = Objects.requireNonNull(modifier);
     }
+
+    public AddUntilEndOfTurnModifierAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard performingCard,
+                                           Modifier modifier) {
+        super(cardGame, performingPlayer, "Add modifier", ActionType.ADD_MODIFIER);
+        _performingCard = Objects.requireNonNull(performingCard);
+        _modifier = Objects.requireNonNull(modifier);
+    }
+
 
 
     @Override
@@ -44,6 +53,7 @@ public class AddUntilEndOfTurnModifierAction extends ActionyAction implements To
             return cost;
         }
         cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(_modifier);
+        setAsSuccessful();
         return getNextAction();
     }
 }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
@@ -15,6 +16,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 
 import java.util.Collection;
@@ -24,11 +26,9 @@ import java.util.Map;
 
 public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyAction
         implements TopLevelSelectableAction {
-    private final String _playerId;
     private final int _maxCardCount;
     private final List<Action> _playCardActions = new LinkedList<>();
     private final Zone _fromZone;
-    private final DefaultGame _game;
     private final PhysicalCard _performingCard;
     private final Map<PersonnelCard, List<PersonnelCard>> _validCombinations;
     private FacilityCard _destination;
@@ -39,16 +39,15 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
     private enum Progress { cardsToDownloadSelected, destinationSelected }
 
-    public DownloadMultipleCardsToSameCompatibleOutpostAction(Zone fromZone, Player player, PhysicalCard actionSource,
+    public DownloadMultipleCardsToSameCompatibleOutpostAction(DefaultGame cardGame, Zone fromZone, Player player,
+                                                              PhysicalCard actionSource,
                                                               Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                               int maxCardCount) {
-        super(player, "Download card from " + fromZone.getHumanReadable(), ActionType.DOWNLOAD_CARD,
+        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(), ActionType.DOWNLOAD_CARD,
                 Progress.values());
-        _playerId = player.getPlayerId();
         _performingCard = actionSource;
         _validCombinations = validCombinations;
         _fromZone = fromZone;
-        _game = player.getGame();
         _maxCardCount = maxCardCount;
     }
 
@@ -71,19 +70,19 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK)
-            return !_game.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
+            return !cardGame.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
                     !getPlayableCards().isEmpty();
         else
             return !getPlayableCards().isEmpty();
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Player performingPlayer = cardGame.getPlayer(_playerId);
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (!getProgress(Progress.cardsToDownloadSelected)) {
             if (_selectCardsToDownloadAction == null) {
-                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogAction(performingPlayer,
+                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogAction(cardGame, performingPlayer,
                         "Choose card(s) to download", getPlayableCards(), _validCombinations, _maxCardCount);
                 return _selectCardsToDownloadAction;
             } else if (!_selectCardsToDownloadAction.wasCarriedOut()) {
@@ -99,7 +98,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
         }
 
         if (!getProgress(Progress.destinationSelected)) {
-            for (PhysicalCard card : Filters.yourFacilitiesInPlay(performingPlayer)) {
+            for (PhysicalCard card : Filters.yourFacilitiesInPlay(cardGame, performingPlayer)) {
                 if (card instanceof FacilityCard facilityCard &&
                         facilityCard.getFacilityType() == FacilityType.OUTPOST) {
                     boolean allCompatible = true;
@@ -123,7 +122,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
             }
 
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(cardGame, performingPlayer,
                         "Select outpost to download cards to", _destinationOptions);
                 return _selectDestinationAction;
             } else if (_selectDestinationAction.wasCarriedOut()) {
@@ -139,11 +138,12 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
                 Action playCardAction = card.getPlayCardAction(true);
                 if (playCardAction instanceof ReportCardAction reportAction) {
                     reportAction.setDestination(_destination);
-                    _game.getActionsEnvironment().addActionToStack(playCardAction);
+                    cardGame.getActionsEnvironment().addActionToStack(playCardAction);
                     _playCardActions.add(playCardAction);
                 }
             }
             _wasCarriedOut = true;
+            setAsSuccessful();
         }
 
         return null;
@@ -159,7 +159,4 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
         return _performingCard.getCardId();
     }
 
-    public String getPerformingPlayerId() { return _playerId; }
-
-    public DefaultGame getGame() { return _game; }
 }

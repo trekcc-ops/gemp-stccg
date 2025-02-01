@@ -2,33 +2,33 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
+import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
+import com.gempukku.stccg.actions.placecard.PlaceCardOnMissionAction;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-public class TurnProcedure implements Snapshotable<TurnProcedure> {
+public class TurnProcedure {
     private static final int MAXIMUM_LOOPS = 5000; // Max number of loops allowed before throwing error
     private final DefaultGame _game;
-    private GameProcess _currentGameProcess;
-
-    @Override
-    public TurnProcedure generateSnapshot(SnapshotData snapshotData) {
-        return new TurnProcedure(_game, _currentGameProcess);
-    }
 
 
-    public TurnProcedure(DefaultGame game, GameProcess currentProcess) {
+    public TurnProcedure(DefaultGame game) {
         _game = game;
-        _currentGameProcess = currentProcess;
     }
 
 
-    public void carryOutPendingActionsUntilDecisionNeeded() {
+    public void carryOutPendingActionsUntilDecisionNeeded() throws PlayerNotFoundException, InvalidGameLogicException,
+            CardNotFoundException {
         int numSinceDecision = 0;
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
 
@@ -36,7 +36,9 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             numSinceDecision++;
             // First check for any "state-based" effects
             Set<ActionResult> actionResults = actionsEnvironment.consumeEffectResults();
-            actionResults.forEach(effectResult -> effectResult.createOptionalAfterTriggerActions(_game));
+            for (ActionResult result : actionResults) {
+                result.createOptionalAfterTriggerActions(_game);
+            }
             if (actionResults.isEmpty()) {
                 if (actionsEnvironment.hasNoActionsInProgress())
                     try {
@@ -49,7 +51,7 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             } else {
                 actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, actionResults));
             }
-            _game.getGameState().updateGameStatsAndSendIfChanged();
+            _game.updateGameStatsAndSendIfChanged();
 
             // Check if an unusually large number loops since user decision, which means game is probably in a loop
             if (numSinceDecision >= MAXIMUM_LOOPS)
@@ -57,29 +59,35 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
     }
 
-    private void continueCurrentProcess() throws InvalidGameLogicException {
-        if (_currentGameProcess.isFinished()) {
-            _currentGameProcess = _currentGameProcess.getNextProcess(_game);
+    private void continueCurrentProcess() throws InvalidGameLogicException, PlayerNotFoundException {
+        GameState gameState = _game.getGameState();
+        GameProcess originalProcess = gameState.getCurrentProcess();
+        if (originalProcess.isFinished()) {
+            gameState.setCurrentProcess(originalProcess.getNextProcess(_game));
         } else {
             // TODO - This implementation seems to assume that game stats will never change during a process
-            _currentGameProcess.process(_game);
-            _game.getGameState().updateGameStatsAndSendIfChanged();
-            _currentGameProcess.finish();
+            originalProcess.process(_game);
+            _game.updateGameStatsAndSendIfChanged();
+            originalProcess.setFinished(true);
         }
     }
 
-    private void executeNextSubaction() {
+    private void executeNextSubaction() throws PlayerNotFoundException, InvalidGameLogicException,
+            CardNotFoundException {
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
-        Action action = actionsEnvironment.getCurrentAction();
-        try {
-            Action nextAction = action.nextAction(_game);
-            if (nextAction == null) {
-                actionsEnvironment.removeCompletedActionFromStack(action);
-            } else {
-                _game.getActionsEnvironment().addActionToStack(nextAction);
+        Action currentAction = actionsEnvironment.getCurrentAction();
+        Action nextAction = currentAction.nextAction(_game);
+
+        if (currentAction.isInProgress() && nextAction != null) {
+            _game.getActionsEnvironment().addActionToStack(nextAction);
+        } else if (currentAction.wasCompleted()) {
+            actionsEnvironment.removeCompletedActionFromStack(currentAction);
+            if (currentAction instanceof StopCardsAction || currentAction instanceof PlaceCardOnMissionAction) {
+                _game.sendSerializedGameStateToClient();
             }
-        } catch (InvalidGameLogicException | CardNotFoundException exp) {
-            _game.sendErrorMessage(exp);
+        } else if (_game.isCarryingOutEffects()) {
+            throw new InvalidGameLogicException("Unable to process action " + currentAction.getActionId() +
+                    " of type " + currentAction.getClass().getSimpleName());
         }
     }
 
@@ -103,7 +111,5 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
     private void sendMessage(String message) {
         _game.sendMessage(message);
     }
-    public GameProcess getCurrentProcess() { return _currentGameProcess; }
-    public void setCurrentProcess(GameProcess process) { _currentGameProcess = process; }
 
 }

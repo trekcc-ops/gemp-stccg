@@ -27,4 +27,8 @@ public class CharacteristicMissionRequirement implements MissionRequirement {
         return result;
     }
 
+    public String toString() {
+        return "any " + _characteristic.getHumanReadable();
+    }
+
 }

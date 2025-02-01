@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.usage;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -8,24 +9,24 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 public class UseGameTextAction extends ActionyAction implements TopLevelSelectableAction {
-    private final PhysicalCard _physicalCard;
+    private final PhysicalCard _performingCard;
 
     public UseGameTextAction(PhysicalCard physicalCard, Player performingPlayer, String text) {
-        super(performingPlayer, text, ActionType.USE_GAME_TEXT);
-        _physicalCard = physicalCard;
+        super(physicalCard.getGame(), performingPlayer, text, ActionType.USE_GAME_TEXT);
+        _performingCard = physicalCard;
     }
 
 
     @Override
     public PhysicalCard getPerformingCard() {
-        return _physicalCard;
+        return _performingCard;
     }
 
     public boolean requirementsAreMet(DefaultGame game) { return true; }
 
     @Override
     public int getCardIdForActionSelection() {
-        return _physicalCard.getCardId();
+        return _performingCard.getCardId();
     }
 
     @Override
@@ -35,7 +36,10 @@ public class UseGameTextAction extends ActionyAction implements TopLevelSelectab
             if (cost != null)
                 return cost;
         }
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            setAsSuccessful();
+        return nextAction;
     }
 
 }

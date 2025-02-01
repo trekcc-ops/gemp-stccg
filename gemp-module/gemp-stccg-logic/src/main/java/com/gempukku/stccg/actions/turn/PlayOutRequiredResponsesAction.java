@@ -6,6 +6,8 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.List;
@@ -13,7 +15,6 @@ import java.util.List;
 public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     private final PlayOutEffectResults _action;
     private final List<TopLevelSelectableAction> _responses;
-    private boolean _initialized;
 
     public PlayOutRequiredResponsesAction(DefaultGame game, PlayOutEffectResults action,
                                           List<TopLevelSelectableAction> responses) {
@@ -23,7 +24,9 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
     }
 
 
-    public void doPlayEffect(DefaultGame cardGame) throws CardNotFoundException {
+    @Override
+    protected void processEffect(DefaultGame cardGame)
+            throws CardNotFoundException, PlayerNotFoundException, InvalidGameLogicException {
         ActionsEnvironment environment = cardGame.getActionsEnvironment();
         if (_responses.size() == 1) {
             environment.addActionToStack(_responses.getFirst());
@@ -33,17 +36,23 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
             _action.insertEffect(new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new ActionSelectionDecision(cardGame.getCurrentPlayer(), "Required responses", _responses) {
+                    new ActionSelectionDecision(cardGame.getCurrentPlayer(), "Required responses", _responses,
+                            cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Action action = getSelectedAction(result);
-                            environment.addActionToStack(action);
-                            _responses.remove(action);
-                            _action.insertEffect(
-                                    new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
+                            try {
+                                Action action = getSelectedAction(result);
+                                environment.addActionToStack(action);
+                                _responses.remove(action);
+                                _action.insertEffect(
+                                        new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         }
+        setAsSuccessful();
     }
 
     private static boolean areAllActionsTheSame(List<TopLevelSelectableAction> actions) {
@@ -58,14 +67,5 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
                 result = false;
         }
         return result;
-    }
-
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws CardNotFoundException {
-        if (!_initialized) {
-            _initialized = true;
-            doPlayEffect(cardGame);
-        }
-        return getNextAction();
     }
 }

@@ -21,7 +21,7 @@ public class MissionCard extends ST1EPhysicalCard {
 
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
     @Override
-    public boolean canBeSeeded(DefaultGame game) { return true; }
+    public boolean canBeSeeded(ST1EGame game) { return true; }
 
     public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
 
@@ -30,17 +30,21 @@ public class MissionCard extends ST1EPhysicalCard {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
-        if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
-            try {
-                actions.add(new AttemptMissionAction(player, this.getLocation()));
-                actions.add(new ShipBattleAction(this, player, this.getLocation()));
-            } catch(InvalidGameLogicException exp) {
-                _game.sendErrorMessage(exp);
+        try {
+            if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
+                try {
+                    actions.add(new AttemptMissionAction(cardGame, player, this.getLocation()));
+                    actions.add(new ShipBattleAction(cardGame, this, player, this.getLocation()));
+                } catch (InvalidGameLogicException exp) {
+                    cardGame.sendErrorMessage(exp);
+                }
             }
+            actions.removeIf(action -> !action.canBeInitiated(cardGame));
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
         }
-        actions.removeIf(action -> !action.canBeInitiated(player.getGame()));
         return actions;
     }
 

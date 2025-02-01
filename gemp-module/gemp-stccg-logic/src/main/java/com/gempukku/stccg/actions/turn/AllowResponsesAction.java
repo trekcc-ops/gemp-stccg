@@ -14,8 +14,9 @@ public class AllowResponsesAction extends SystemQueueAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    protected void processEffect(DefaultGame cardGame) {
         cardGame.getActionsEnvironment().emitEffectResult(new ActionResult(_type));
-        return getNextAction();
+        setAsSuccessful();
     }
+
 }

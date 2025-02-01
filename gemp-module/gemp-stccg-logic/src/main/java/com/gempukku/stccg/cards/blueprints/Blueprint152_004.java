@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
+import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -25,8 +26,6 @@ public class Blueprint152_004 extends CardBlueprint {
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action, MissionLocation missionLocation) {
-        List<Action> result = new ArrayList<>();
-
         MissionRequirement condition1 = new AndMissionRequirement(
                 new AttributeMissionRequirement(CardAttribute.INTEGRITY, 20),
                 new CharacteristicMissionRequirement(Characteristic.ADMIRAL)
@@ -43,15 +42,10 @@ public class Blueprint152_004 extends CardBlueprint {
                 new AttributeMissionRequirement(CardAttribute.STRENGTH, 20),
                 new CharacteristicMissionRequirement(Characteristic.MAJE)
         );
-
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2, condition3, condition4);
 
-        if (fullCondition.canBeMetBy(attemptingUnit)) {
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
-        } else {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
-        }
-        return result;
+        Action overcomeAction = new OvercomeDilemmaConditionAction(thisCard, action, fullCondition, attemptingUnit);
+        return List.of(overcomeAction);
     }
 
 }

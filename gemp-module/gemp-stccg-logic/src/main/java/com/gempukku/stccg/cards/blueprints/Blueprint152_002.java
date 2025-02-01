@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
+import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -31,13 +32,9 @@ public class Blueprint152_002 extends CardBlueprint {
                 new AttributeMissionRequirement(CardAttribute.CUNNING, 20)
         );
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2);
-
-        if (fullCondition.canBeMetBy(attemptingUnit)) {
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
-        } else {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
-        }
-
+        OvercomeDilemmaConditionAction overcomeAction =
+                new OvercomeDilemmaConditionAction(thisCard, action, fullCondition, attemptingUnit);
+        result.add(overcomeAction);
         return result;
     }
 

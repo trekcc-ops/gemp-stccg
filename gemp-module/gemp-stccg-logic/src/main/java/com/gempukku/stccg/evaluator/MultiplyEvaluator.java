@@ -11,7 +11,7 @@ public class MultiplyEvaluator extends Evaluator {
     private final DefaultGame _game;
 
     public MultiplyEvaluator(ActionContext context, Evaluator multiplier, Evaluator source) {
-        super(context);
+        super();
         _multiplier = multiplier;
         _game = context.getGame();
         _source = source;

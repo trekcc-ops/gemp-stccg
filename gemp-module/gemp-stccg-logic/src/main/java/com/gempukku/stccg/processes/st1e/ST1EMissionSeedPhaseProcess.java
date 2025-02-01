@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -7,83 +8,85 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.game.GameUtils;
 
+import java.beans.ConstructorProperties;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+@JsonTypeName("ST1EMissionSeedPhaseProcess")
 public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
 
-    public ST1EMissionSeedPhaseProcess(ST1EGame game) {
-        this(0, game);
+    public ST1EMissionSeedPhaseProcess() {
+        super(0);
     }
 
-    public ST1EMissionSeedPhaseProcess(int consecutivePasses, ST1EGame game) {
-        super(consecutivePasses, game);
+    @ConstructorProperties({"consecutivePasses"})
+    public ST1EMissionSeedPhaseProcess(int consecutivePasses) {
+        super(consecutivePasses);
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
-        String _currentPlayer = _game.getCurrentPlayerId();
+    public void process(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        Player currentPlayer = cardGame.getCurrentPlayer();
 
         final List<TopLevelSelectableAction> playableActions =
-                _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
-        ST1EGameState gameState = _game.getGameState();
+                cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
+        ST1EGameState gameState = getST1EGame(cardGame).getGameState();
         Phase currentPhase = gameState.getCurrentPhase();
 
-        if (playableActions.isEmpty() && _game.shouldAutoPass(currentPhase)) {
+        if (playableActions.isEmpty() && cardGame.shouldAutoPass(currentPhase)) {
             _consecutivePasses++;
         } else {
-            DefaultGame thisGame = _game;
             String message = "Play " + currentPhase + " action";
-            Player player = _game.getCurrentPlayer();
-            _game.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(player, message, playableActions, true) {
+            cardGame.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(currentPlayer, message, playableActions, true, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            if ("revert".equalsIgnoreCase(result))
-                                GameUtils.performRevert(thisGame, _currentPlayer);
-                            Action action = getSelectedAction(result);
-                            thisGame.getActionsEnvironment().addActionToStack(action);
+                            try {
+                                if ("revert".equalsIgnoreCase(result))
+                                    GameUtils.performRevert(cardGame, currentPlayer);
+                                Action action = getSelectedAction(result);
+                                cardGame.getActionsEnvironment().addActionToStack(action);
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         }
     }
 
     @Override
-    public GameProcess getNextProcess(DefaultGame cardGame) {
-        PlayerOrder playerOrder = _game.getGameState().getPlayerOrder();
+    public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
+        ST1EGame stGame = getST1EGame(cardGame);
+        PlayerOrder playerOrder = cardGame.getGameState().getPlayerOrder();
 
         // Check if any missions are left to be seeded
         boolean areAllMissionsSeeded = true;
-        for (Player player : _game.getPlayers()) {
-            if (!_game.getGameState().getZoneCards(player.getPlayerId(), Zone.HAND).isEmpty())
+        for (Player player : cardGame.getPlayers()) {
+            if (!cardGame.getGameState().getZoneCards(player, Zone.HAND).isEmpty())
                 areAllMissionsSeeded = false;
         }
 
         if (areAllMissionsSeeded) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
-            ST1EGameState gameState = _game.getGameState();
-            gameState.setCurrentPhase(Phase.SEED_DILEMMA);
-            for (String player : _game.getPlayerIds()) {
-                List<PhysicalCard> remainingSeeds = new LinkedList<>(gameState.getSeedDeck(player));
+            ST1EGameState gameState = getST1EGame(cardGame).getGameState();
+            cardGame.setCurrentPhase(Phase.SEED_DILEMMA);
+            for (Player player : cardGame.getPlayers()) {
+                List<PhysicalCard> remainingSeeds = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeeds) {
-                    gameState.removeCardsFromZone(player, Collections.singleton(card));
+                    cardGame.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
                     gameState.addCardToZone(card, Zone.HAND);
                 }
             }
-            _game.takeSnapshot("Start of dilemma seed phase");
-            return new DilemmaSeedPhaseOpponentsMissionsProcess(_game);
+            cardGame.takeSnapshot("Start of dilemma seed phase");
+            return new DilemmaSeedPhaseOpponentsMissionsProcess(stGame);
         } else {
             playerOrder.advancePlayer();
-            return new ST1EMissionSeedPhaseProcess(_consecutivePasses, _game);
+            return new ST1EMissionSeedPhaseProcess(_consecutivePasses);
         }
     }
 

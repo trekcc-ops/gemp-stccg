@@ -13,6 +13,7 @@ import com.gempukku.stccg.condition.missionrequirements.AndMissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -27,19 +28,20 @@ public class Blueprint101_014 extends CardBlueprint {
 
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+            throws PlayerNotFoundException {
         List<Action> result = new LinkedList<>();
         MissionRequirement conditions = new AndMissionRequirement(SkillName.MEDICAL, SkillName.SECURITY);
 
         Collection<PersonnelCard> highestPersonnel =
                 Filters.highestTotalAttributes(attemptingUnit.getAttemptingPersonnel());
         SelectVisibleCardAction selectAction =
-                new SelectVisibleCardAction(game.getOpponent(attemptingUnit.getPlayer()),
+                new SelectVisibleCardAction(game, game.getOpponent(attemptingUnit.getPlayer()),
                         "Select a personnel to kill", highestPersonnel);
         result.add(selectAction);
         Action killAction = new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction);
         Action overcomeAction =
-                new OvercomeDilemmaConditionAction(thisCard, conditions, attemptingUnit, killAction, action);
+                new OvercomeDilemmaConditionAction(thisCard, action, conditions, attemptingUnit, killAction);
         result.add(overcomeAction);
         return result;
     }

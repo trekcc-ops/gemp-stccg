@@ -1,28 +1,37 @@
 package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.FixedCardResolver;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EncounterSeedCardAction extends ActionyAction {
-    private final PhysicalCard _encounteredCard;
-    private final MissionLocation _location;
-    private final AttemptingUnit _attemptingUnit;
+    private final FixedCardResolver _cardTarget;
+    private final AttemptMissionAction _parentAction;
     private enum Progress { effectsAdded }
+    private final AttemptingUnit _attemptingUnit;
 
-    public EncounterSeedCardAction(Player encounteringPlayer, PhysicalCard encounteredCard, MissionLocation mission,
-                                   AttemptingUnit attemptingUnit) throws InvalidGameLogicException {
-        super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
-        _encounteredCard = encounteredCard;
-        _location = mission;
-        _attemptingUnit = attemptingUnit;
+    public EncounterSeedCardAction(DefaultGame cardGame, Player encounteringPlayer, PhysicalCard encounteredCard,
+                                   AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction)
+            throws InvalidGameLogicException {
+        super(cardGame, encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        try {
+            _parentAction = Objects.requireNonNull(attemptAction);
+            _cardTarget = new FixedCardResolver(encounteredCard);
+            _attemptingUnit = Objects.requireNonNull(attemptingUnit);
+        } catch(NullPointerException npe) {
+            throw new InvalidGameLogicException(npe.getMessage());
+        }
     }
 
 
@@ -32,19 +41,27 @@ public class EncounterSeedCardAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        if (isBeingInitiated())
+            setAsInitiated();
         if (!getProgress(Progress.effectsAdded)) {
-            List<Action> encounterActions = _encounteredCard.getEncounterActions(
-                    cardGame, _attemptingUnit, this, _location);
+            PhysicalCard encounteredCard = getEncounteredCard();
+            MissionLocation location = encounteredCard.getLocation();
+            List<Action> encounterActions =
+                    encounteredCard.getEncounterActions(cardGame, _attemptingUnit, this, location);
             for (Action action : encounterActions)
                 appendEffect(action);
             setProgress(Progress.effectsAdded);
         }
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null) {
+            if (!wasFailed())
+                setAsSuccessful();
+        }
+        return nextAction;
     }
 
-    public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
-    public PhysicalCard getEncounteredCard() { return _encounteredCard; }
-
-    public MissionLocation getLocation() { return _location; }
+    public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException { return _attemptingUnit; }
+    public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
+    public AttemptMissionAction getAttemptAction() { return _parentAction; }
 }

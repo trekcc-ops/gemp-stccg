@@ -30,7 +30,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals("Dr. Arridor", arridor.getTitle());
 
         _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, 0);
+        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocation());
 
         assertTrue(outpost.isInPlay());
 
@@ -54,8 +54,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals(Integer.valueOf(8), arridor.getAttribute(CardAttribute.CUNNING));
         assertEquals(Integer.valueOf(5), arridor.getAttribute(CardAttribute.STRENGTH));
 
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(_game.getGameState()).replace(",",",\n"));
+        String gameStateString = _game.getGameState().serializeComplete();
     }
 
     @Test
@@ -75,7 +74,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals("K'Ehleyr", kehleyr2.getTitle()); // 8-7-7
 
         _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost1, 0);
+        _game.getGameState().seedFacilityAtLocation(outpost1, mission.getLocation());
 
         assertTrue(outpost1.isInPlay());
 

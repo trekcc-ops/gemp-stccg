@@ -9,6 +9,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Arrays;
 
@@ -21,13 +22,13 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
     private final TribblesActionContext _actionContext;
 
     public ActivateKillTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
-            throws InvalidGameLogicException {
+            throws InvalidGameLogicException, PlayerNotFoundException {
         super(actionContext, power, Progress.values());
         _actionContext = actionContext;
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Action cost = getNextCost();
         if (cost != null)
             return cost;

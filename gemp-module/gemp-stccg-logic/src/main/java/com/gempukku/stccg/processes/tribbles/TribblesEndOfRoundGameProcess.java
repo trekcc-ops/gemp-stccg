@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
@@ -20,31 +21,32 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
         Map<String, Integer> pointsScored = new HashMap<>();
         TribblesGameState gameState = _game.getGameState();
 
-        for (String playerId : _game.getPlayerIds()) {
+        for (Player player : _game.getPlayers()) {
+            String playerId = player.getPlayerId();
 
             // Count the total number of Tribbles in the play piles of the players who "went out" and score points.
-            if (gameState.getHand(playerId).isEmpty()) {
+            if (player.getCardsInHand().isEmpty()) {
                 gameState.playerWentOut(); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 pointsScored.put(playerId, score);
-                gameState.addToPlayerScore(playerId, score);
+                cardGame.addToPlayerScore(player, score);
                 _game.sendMessage(playerId + " went out with " + score + " points");
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
 
             // Each player places the cards remaining in their hand into their discard pile.
-            gameState.discardHand(playerId);
+            player.discardHand(cardGame);
 
             // Each player then shuffles their play pile into their decks.
-            gameState.shufflePlayPileIntoDeck(playerId);
+            gameState.shufflePlayPileIntoDeck(cardGame, player);
         }
 
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfRound();
 
         if (gameState.isLastRound()) {
             Map<String, Integer> finalPoints = new HashMap<>();
-            for (String playerId : _game.getPlayerIds()) {
-                finalPoints.put(playerId, _game.getGameState().getPlayerScore(playerId));
+            for (Player player : _game.getPlayers()) {
+                finalPoints.put(player.getPlayerId(), player.getScore());
             }
             int highestScore = Collections.max(finalPoints.values());
             finalPoints.entrySet().removeIf(entry -> entry.getValue() < highestScore);
@@ -68,7 +70,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                     first player. Tribbles rules are inconclusive about what should happen in this case.
                  */
             String firstPlayer = firstPlayerList.get(new Random().nextInt(firstPlayerList.size()));
-            gameState.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
+            cardGame.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
 
             gameState.setCurrentPlayerId(firstPlayer);
         }

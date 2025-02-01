@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.google.common.collect.Multimap;
 
@@ -14,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@JsonSerialize(using = ActionContextSerializer.class)
 public interface ActionContext {
     Map<String, String> getValueMemory();
     Multimap<String, PhysicalCard> getCardMemory();
@@ -38,7 +38,9 @@ public interface ActionContext {
     ActionContext createDelegateContext(ActionResult actionResult);
     ActionContext createDelegateContext(String playerId);
     String substituteText(String text);
-    List<PhysicalCard> getZoneCards(PlayerSource playerSource, Zone zone);
+
+    List<PhysicalCard> getZoneCards(Player player, Zone zone);
+
 
     ActionContext getParentContext();
 }

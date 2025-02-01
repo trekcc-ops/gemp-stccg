@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -13,7 +14,7 @@ public class AddUntilModifierAction extends ActionyAction {
     private final TimeResolver.Time until;
 
     public AddUntilModifierAction(PhysicalCard performingCard, Modifier modifier, TimeResolver.Time until) {
-        super(performingCard.getController(), ActionType.ADD_MODIFIER);
+        super(performingCard.getGame(), performingCard.getController(), ActionType.ADD_MODIFIER);
         _modifier = modifier;
         this.until = until;
     }
@@ -33,6 +34,7 @@ public class AddUntilModifierAction extends ActionyAction {
             cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(_modifier);
         else
             cardGame.getModifiersEnvironment().addUntilEndOfPhaseModifier(_modifier, phase);
+        setAsSuccessful();
         return getNextAction();
     }
 

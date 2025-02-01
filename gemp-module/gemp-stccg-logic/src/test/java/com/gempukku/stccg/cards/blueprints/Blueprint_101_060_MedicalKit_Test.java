@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import org.junit.jupiter.api.Test;
 
@@ -17,15 +18,15 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void medicalKitTest() throws CardNotFoundException, InvalidGameLogicException {
+    public void medicalKitTest() throws CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();
-
-        gameState.addCardToGame("101_174", _cardLibrary, P1);
-        gameState.addCardToGame("101_060", _cardLibrary, P1);
-        gameState.addCardToGame("101_215", _cardLibrary, P1);
-        gameState.addCardToGame("105_085", _cardLibrary, P1);
+        
+        _game.addCardToGame("101_174", _cardLibrary, P1);
+        _game.addCardToGame("101_060", _cardLibrary, P1);
+        _game.addCardToGame("101_215", _cardLibrary, P1);
+        _game.addCardToGame("105_085", _cardLibrary, P1);
 
         MissionCard mission = null;
         PhysicalReportableCard1E medicalKit = null;
@@ -59,7 +60,7 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         assertEquals("Medical Kit", medicalKit.getTitle());
 
         _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, 0);
+        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocation());
 
         assertTrue(outpost.isInPlay());
 

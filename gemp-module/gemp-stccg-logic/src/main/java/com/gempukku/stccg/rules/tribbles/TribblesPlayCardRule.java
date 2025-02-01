@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.LinkedList;
@@ -15,10 +16,10 @@ public class TribblesPlayCardRule extends TribblesRule {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
-        if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
+    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
+        if (_game.getGameState().getCurrentPlayerId().equals(player.getPlayerId())) {
             List<TopLevelSelectableAction> result = new LinkedList<>();
-            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
+            for (PhysicalCard card : player.getCardsInHand()) {
                 if (card.canBePlayed(_game)) {
                     TopLevelSelectableAction action = card.getPlayCardAction();
                     if (action.canBeInitiated(_game))
@@ -29,4 +30,5 @@ public class TribblesPlayCardRule extends TribblesRule {
         }
         return null;
     }
+
 }

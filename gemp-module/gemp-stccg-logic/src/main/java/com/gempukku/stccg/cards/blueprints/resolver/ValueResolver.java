@@ -17,6 +17,10 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
+
+import java.util.Collection;
 
 public class ValueResolver {
 
@@ -90,10 +94,17 @@ public class ValueResolver {
                 BlueprintUtils.validateAllowedFields(object, "owner");
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(BlueprintUtils.getString(object, "owner", "you"));
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        return actionContext.getZoneCards(player, Zone.PLAY_PILE).size();
+                        try {
+                            String playerId = player.getPlayerId(actionContext);
+                            Player playerObj = game.getPlayer(playerId);
+                            return actionContext.getZoneCards(playerObj, Zone.PLAY_PILE).size();
+                        } catch(PlayerNotFoundException exp) {
+                            game.sendErrorMessage(exp);
+                            return 0;
+                        }
                     }
                 };
             } else if (type.equalsIgnoreCase("requires")) {
@@ -101,7 +112,7 @@ public class ValueResolver {
                 final Requirement[] conditions = RequirementFactory.getRequirements(object);
                 ValueSource trueValue = resolveEvaluator(object.get("true"));
                 ValueSource falseValue = resolveEvaluator(object.get("false"));
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         if (actionContext.acceptsAllRequirements(conditions)) {
@@ -140,8 +151,8 @@ public class ValueResolver {
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
                 final FilterableSource onFilter =
                         new FilterFactory().generateFilter(object.get("on").textValue());
-                return (actionContext) -> new CountStackedEvaluator(actionContext.getGame(),
-                        onFilter.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
+                return (actionContext) ->
+                        new CountStackedEvaluator(onFilter.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "multiplier", "limit", "player");
                 final int multiplier = BlueprintUtils.getInteger(object, "multiplier", 1);
@@ -149,14 +160,19 @@ public class ValueResolver {
                 final String playerInput = BlueprintUtils.getString(object, "player", "you");
                 final PlayerSource playerSrc = PlayerResolver.resolvePlayer(playerInput);
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                return actionContext -> new MultiplyEvaluator(actionContext, multiplier, new Evaluator(actionContext) {
-                    final String player = playerSrc.getPlayerId(actionContext);
+                return actionContext -> new MultiplyEvaluator(actionContext, multiplier, new Evaluator() {
+                    final String playerId = playerSrc.getPlayerId(actionContext);
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        int count = Filters.filter(actionContext.getGame().getGameState().getDiscard(player),
-                                actionContext.getGame(), filterable).size();
-                        return Math.min(limit, count);
+                        try {
+                            Player player = game.getPlayer(playerId);
+                            final Filterable filterable = filterableSource.getFilterable(actionContext);
+                            int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), game, filterable).size();
+                            return Math.min(limit, count);
+                        } catch(PlayerNotFoundException exp) {
+                            game.sendErrorMessage(exp);
+                            return 0;
+                        }
                     }
                 });
             } else if (type.equalsIgnoreCase("forEachInHand")) {
@@ -164,26 +180,40 @@ public class ValueResolver {
                 final PlayerSource player =
                         PlayerResolver.resolvePlayer(BlueprintUtils.getString(object, "hand", "you"));
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        return Filters.filter(actionContext.getGame().getGameState().getHand(player.getPlayerId(actionContext)),
-                                actionContext.getGame(), filterableSource.getFilterable(actionContext)).size();
+                        try {
+                            String playerId = player.getPlayerId(actionContext);
+                            Player playerObj = game.getPlayer(playerId);
+                            return Filters.filter(playerObj.getCardsInHand(),
+                                    actionContext.getGame(), filterableSource.getFilterable(actionContext)).size();
+                        } catch(PlayerNotFoundException exp) {
+                            game.sendErrorMessage(exp);
+                            return 0;
+                        }
                     }
                 };
             } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
                 BlueprintUtils.validateAllowedFields(object, "filter", "owner");
                 final String owner = BlueprintUtils.getString(object, "owner", "you");
-                final PlayerSource player = PlayerResolver.resolvePlayer(owner);
+                final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
-                return actionContext -> new Evaluator(actionContext) {
+                return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        return Filters.filter(
-                                actionContext.getGame().getGameState()
-                                        .getZoneCards(player.getPlayerId(actionContext),
-                                                Zone.PLAY_PILE),
-                                actionContext.getGame(), filterableSource.getFilterable(actionContext)).size();
+                        try {
+                            String playerId = playerSource.getPlayerId(actionContext);
+                            Player player = game.getPlayer(playerId);
+                            Collection<PhysicalCard> cards = Filters.filter(
+                                    player.getCardsInGroup(Zone.PLAY_PILE), game,
+                                    filterableSource.getFilterable(actionContext)
+                            );
+                            return cards.size();
+                        } catch(PlayerNotFoundException exp) {
+                            game.sendErrorMessage(exp);
+                            return 0;
+                        }
                     }
                 };
             } else if (type.equalsIgnoreCase("fromMemory")) {
@@ -210,7 +240,7 @@ public class ValueResolver {
                 return (actionContext) -> {
                     if (filter.equals("any")) {
                         return new MultiplyEvaluator(actionContext, multiplier,
-                                new Evaluator(actionContext) {
+                                new Evaluator() {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                                         return Math.max(0, actionContext.getGame().getModifiersQuerying().getStrength(cardAffected) - over);
@@ -218,16 +248,16 @@ public class ValueResolver {
                                 });
                     } else {
                         return new MultiplyEvaluator(actionContext, multiplier,
-                                new Evaluator(actionContext) {
+                                new Evaluator() {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                        final Filterable filterable = strengthSource.getFilterable(actionContext);
-                                        int strength = 0;
-                                        for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
-                                            strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
-                                        }
+                                            final Filterable filterable = strengthSource.getFilterable(actionContext);
+                                            int strength = 0;
+                                            for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
+                                                strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
+                                            }
 
-                                        return Math.max(0, strength - over);
+                                            return Math.max(0, strength - over);
                                     }
                                 });
                     }
@@ -235,7 +265,7 @@ public class ValueResolver {
             } else if (type.equalsIgnoreCase("printedStrengthFromMemory")) {
                 BlueprintUtils.validateAllowedFields(object, "memory");
 
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
@@ -250,7 +280,7 @@ public class ValueResolver {
                 BlueprintUtils.validateAllowedFields(object, "memory");
                 final String memory = object.get("memory").textValue();
 
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
@@ -264,7 +294,7 @@ public class ValueResolver {
                 BlueprintUtils.validateAllowedFields(object, "memory");
                 final String memory = object.get("memory").textValue();
 
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
@@ -281,7 +311,7 @@ public class ValueResolver {
                         ValueResolver.resolveEvaluator(object.get("firstNumber"), 0);
                 final ValueSource secondNumber =
                         ValueResolver.resolveEvaluator(object.get("secondNumber"), 0);
-                return actionContext -> (Evaluator) new Evaluator(actionContext) {
+                return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         final int first = firstNumber.evaluateExpression(actionContext, null);
@@ -294,7 +324,7 @@ public class ValueResolver {
                 ValueSource first = resolveEvaluator(object.get("first"));
                 ValueSource second = resolveEvaluator(object.get("second"));
 
-                return actionContext -> new Evaluator(actionContext) {
+                return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         return Math.max(
@@ -308,7 +338,7 @@ public class ValueResolver {
                 ValueSource first = resolveEvaluator(object.get("first"));
                 ValueSource second = resolveEvaluator(object.get("second"));
 
-                return actionContext -> new Evaluator(actionContext) {
+                return actionContext -> new Evaluator() {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         return Math.min(

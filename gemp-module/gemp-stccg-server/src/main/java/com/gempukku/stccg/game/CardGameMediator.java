@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.handler.CardInfoUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
@@ -209,8 +210,8 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final synchronized void playerAnsweredNew(User player, int channelNumber, int decisionId, String answer)
-            throws SubscriptionConflictException, SubscriptionExpiredException {
+    public final synchronized void playerAnswered(User player, int channelNumber, int decisionId, String answer)
+            throws HttpProcessingException {
         String playerName = player.getName();
         _writeLock.lock();
         try {
@@ -223,10 +224,10 @@ public abstract class CardGameMediator {
             AwaitingDecision awaitingDecision = game.getAwaitingDecision(playerName);
 
             if (awaitingDecision != null) {
-                if (awaitingDecision.getAwaitingDecisionId() == decisionId && !game.isFinished()) {
+                if (awaitingDecision.getDecisionId() == decisionId && !game.isFinished()) {
                     GameState gameState = game.getGameState();
                     try {
-                        gameState.playerDecisionFinished(playerName);
+                        gameState.playerDecisionFinished(playerName, game.getUserFeedback());
                         awaitingDecision.decisionMade(answer);
 
                         // Decision successfully made, add the time to user clock
@@ -238,10 +239,9 @@ public abstract class CardGameMediator {
                     } catch (DecisionResultInvalidException exp) {
                         /* Participant provided wrong answer - send a warning message,
                         and ask again for the same decision */
-                        String warningMessage = exp.getWarningMessage();
-                        gameState.sendWarning(playerName, warningMessage);
+                        game.sendWarning(playerName, exp.getWarningMessage());
                         game.sendAwaitingDecision(awaitingDecision);
-                    } catch (RuntimeException runtimeException) {
+                    } catch (InvalidGameOperationException | RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
                         game.cancelGame();
                     }
@@ -254,7 +254,7 @@ public abstract class CardGameMediator {
 
 
     public final GameCommunicationChannel getCommunicationChannel(User player, int channelNumber)
-            throws PrivateInformationException, SubscriptionConflictException, SubscriptionExpiredException {
+            throws PrivateInformationException, HttpProcessingException, SubscriptionExpiredException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
             throw new PrivateInformationException();

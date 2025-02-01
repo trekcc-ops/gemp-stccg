@@ -1,30 +1,37 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.processes.GameProcessDeserializer;
+import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.processes.GameProcess;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ST1EGameStateDeserializer {
 
-    public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException, InvalidGameLogicException {
+    public static ST1EGameState deserialize(ST1EGame game, JsonNode node) throws CardNotFoundException,
+            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException {
+
+        ObjectMapper mapper = new ObjectMapper();
 
         ST1EGameState gameState = new ST1EGameState(game);
-        gameState.setCurrentPhase(Phase.valueOf(node.get("currentPhase").textValue()));
 
-        PlayerOrder playerOrder = new PlayerOrder(node.get("playerOrder"));
-        gameState.loadPlayerOrder(playerOrder);
+        gameState.setCurrentPhaseNew(mapper.treeToValue(node.get("currentPhase"), Phase.class));
+        gameState.loadPlayerOrder(mapper.treeToValue(node.get("playerOrder"), PlayerOrder.class));
 
         Map<MissionLocation, List<Integer>> seededUnderMap = new HashMap<>();
 
@@ -33,7 +40,8 @@ public class ST1EGameStateDeserializer {
             JsonNode regionNode = locationNode.get("region");
             Region region = (regionNode == null) ? null : Region.valueOf(regionNode.textValue());
             String locationName = locationNode.get("locationName").textValue();
-            MissionLocation location = new MissionLocation(quadrant, region, locationName, game);
+            int locationId = locationNode.get("locationId").intValue();
+            MissionLocation location = new MissionLocation(quadrant, region, locationName, locationId);
             gameState._spacelineLocations.add(location);
             if (locationNode.has("cardsSeededUnderneath")) {
                 seededUnderMap.put(location, new ArrayList<>());
@@ -46,26 +54,24 @@ public class ST1EGameStateDeserializer {
             }
         }
 
-        deserializeCardsInGame(node, gameState);
+        deserializeCardsInGame(node, gameState, game);
 
         JsonNode players = node.get("players");
         for (JsonNode playerNode : players) {
             String playerId = playerNode.get("playerId").asText();
-            gameState._playerScores.put(playerId, playerNode.get("score").asInt());
-            gameState._turnNumbers.put(playerId, playerNode.get("turnNumber").asInt());
             Player player = game.getPlayer(playerId);
+            player.setTurnNumber(playerNode.get("turnNumber").asInt());
+            player.setScore(playerNode.get("score").asInt());
             if (playerNode.has("decked"))
                 player.setDecked(playerNode.get("decked").asBoolean());
-
-            readCardIdList(Zone.SEED_DECK, playerId, playerNode, gameState, gameState._seedDecks);
-
-            for (Zone zone : gameState._cardGroups.keySet())
-                readCardIdList(zone, playerId, playerNode, gameState, gameState._cardGroups.get(zone));
+            for (Zone zone : player.getCardGroupZones())
+                readCardIdList(zone, player, playerNode, gameState);
         }
 
-        game.setCurrentProcess(GameProcessDeserializer.deserialize(game, node.get("currentProcess")));
+        GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
+        game.setCurrentProcess(currentProcess);
 
-        gameState.setModifiersLogic(node.get("modifiers"));
+        gameState.setModifiersLogic(node.get("modifiers"), game);
 
         for (JsonNode awayTeamNode : node.get("awayTeams")) {
             PhysicalCard parentCard = game.getCardFromCardId(awayTeamNode.get("parentCard").intValue());
@@ -77,33 +83,36 @@ public class ST1EGameStateDeserializer {
         }
 
         for (Map.Entry<MissionLocation, List<Integer>> entry : seededUnderMap.entrySet()) {
-            for (int cardId : entry.getValue())
-                entry.getKey().addCardToSeededUnder(game.getCardFromCardId(cardId));
+            MissionLocation location = entry.getKey();
+            for (int cardId : entry.getValue()) {
+                PhysicalCard card = game.getCardFromCardId(cardId);
+                location.seedCardUnderMission(location, card);
+            }
         }
 
         return gameState;
     }
 
-    private static void readCardIdList(Zone zone, String playerId, JsonNode playerNode, GameState gameState,
-                                       Map<String, ? extends List<PhysicalCard>> cardGroups) {
+    private static void readCardIdList(Zone zone, Player player, JsonNode playerNode, GameState gameState) throws InvalidGameLogicException {
         if (playerNode.has(zone.name()) && !playerNode.get(zone.name()).isEmpty()) {
             for (JsonNode cardNode : playerNode.get(zone.name())) {
                 int cardId = cardNode.asInt();
                 PhysicalCard card = gameState._allCards.get(cardId);
-                cardGroups.get(playerId).add(card);
+                player.addCardToGroup(zone, card);
             }
         }
     }
 
-    private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState) throws CardNotFoundException {
-        ST1EGame game = gameState.getGame();
+
+    private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState, ST1EGame game)
+            throws CardNotFoundException, PlayerNotFoundException {
         int maxCardId = 0;
         Map<PhysicalCard, Integer> attachedMap = new HashMap<>();
         Map<PhysicalCard, Integer> stackedMap = new HashMap<>();
         Map<PhysicalShipCard, Integer> dockedMap = new HashMap<>();
 
         for (JsonNode cardNode : node.get("cardsInGame")) {
-            PhysicalCard card = gameState.getGame().getBlueprintLibrary().createST1EPhysicalCard(game, cardNode);
+            PhysicalCard card = game.getBlueprintLibrary().createST1EPhysicalCard(game, cardNode);
             gameState._allCards.put(card.getCardId(), card);
             if (card.getZone().isInPlay())
                 gameState._inPlay.add(card);

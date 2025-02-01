@@ -1,21 +1,20 @@
 package com.gempukku.stccg.actions.scorepoints;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.*;
 
 import java.util.Objects;
 
 public class ScorePointsAction extends ActionyAction {
     private final PhysicalCard _performingCard;
     private final int _points;
-    private enum Progress { wasCarriedOut }
-    public ScorePointsAction(DefaultGame game, PhysicalCard source, String scoringPlayer, int points)
+
+    public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, Player scoringPlayer, int points)
             throws InvalidGameLogicException {
-        super(game.getPlayer(scoringPlayer), "Score " + points + " points",
-                ActionType.SCORE_POINTS, Progress.values());
+        super(cardGame, scoringPlayer, "Score " + points + " points", ActionType.SCORE_POINTS);
         try {
             _performingCard = Objects.requireNonNull(source);
         } catch(NullPointerException npe) {
@@ -23,6 +22,8 @@ public class ScorePointsAction extends ActionyAction {
         }
         _points = points;
     }
+
+
 
     @Override
     public String getActionSelectionText(DefaultGame cardGame) {
@@ -35,8 +36,9 @@ public class ScorePointsAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        cardGame.getGameState().addToPlayerScore(_performingPlayerId, _points);
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+        cardGame.addToPlayerScore(performingPlayer, _points);
         return getNextAction();
     }
 }

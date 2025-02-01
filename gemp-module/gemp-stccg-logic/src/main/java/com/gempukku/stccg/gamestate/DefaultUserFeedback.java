@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +27,14 @@ public class DefaultUserFeedback implements UserFeedback {
 
     @Override
     public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
-        String decidingPlayerId = awaitingDecision.getDecidingPlayerId();
-        _awaitingDecisionMap.put(decidingPlayerId, awaitingDecision);
-        _game.getGameState().playerDecisionStarted(decidingPlayerId, awaitingDecision);
+        try {
+            String decidingPlayerId = awaitingDecision.getDecidingPlayerId();
+            _awaitingDecisionMap.put(decidingPlayerId, awaitingDecision);
+            _game.getGameState().playerDecisionStarted(_game, decidingPlayerId, awaitingDecision);
+        } catch(PlayerNotFoundException exp) {
+            _game.sendErrorMessage(exp);
+            _game.cancelGame();
+        }
     }
 
     @Override

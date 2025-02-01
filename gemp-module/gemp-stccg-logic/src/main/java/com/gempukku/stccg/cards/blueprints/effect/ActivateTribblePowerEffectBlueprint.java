@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
 
     @Override
     protected List<Action> createActions(CardPerformedAction action, ActionContext context)
-            throws InvalidCardDefinitionException, InvalidGameLogicException {
+            throws InvalidCardDefinitionException, InvalidGameLogicException, PlayerNotFoundException {
 
         List<Action> result = new LinkedList<>();
         TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();

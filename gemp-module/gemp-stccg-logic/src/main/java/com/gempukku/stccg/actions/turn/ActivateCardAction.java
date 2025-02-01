@@ -1,27 +1,23 @@
 package com.gempukku.stccg.actions.turn;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class ActivateCardAction extends ActionyAction implements TopLevelSelectableAction {
 
-    private final PhysicalCard _physicalCard;
-    private boolean _sentMessage;
-    private boolean _activated;
-    private boolean _prevented;
+    private final PhysicalCard _performingCard;
+    private enum Progress { sentMessage, activated, prevented }
 
-    public ActivateCardAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.SPECIAL_ABILITY);
-        _physicalCard = physicalCard;
+    public ActivateCardAction(DefaultGame cardGame, PhysicalCard physicalCard) {
+        super(cardGame, physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.USE_GAME_TEXT,
+                Progress.values());
+        _performingCard = physicalCard;
     }
 
     @Override
     public PhysicalCard getPerformingCard() {
-        return _physicalCard;
+        return _performingCard;
     }
 
     // TODO - Not sure this is accurate. Also not sure we need this class at all.
@@ -29,22 +25,22 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
 
     @Override
     public int getCardIdForActionSelection() {
-        return _physicalCard.getCardId();
+        return _performingCard.getCardId();
     }
 
 
     public void prevent() {
-        _prevented = true;
+        setProgress(Progress.prevented);
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
-        if (!_sentMessage) {
-            _sentMessage = true;
-            if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
-                DefaultGame game = _physicalCard.getGame();
-                game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
-                game.sendMessage(_physicalCard.getCardLink() + " is used");
+        if (!getProgress(Progress.sentMessage)) {
+            setProgress(Progress.sentMessage);
+            if (_performingCard != null && _performingCard.getZone().isInPlay()) {
+                DefaultGame game = _performingCard.getGame();
+                game.activatedCard(getPerformingPlayerId(), _performingCard);
+                game.sendMessage(_performingCard.getCardLink() + " is used");
             }
         }
 
@@ -53,13 +49,13 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
             if (cost != null)
                 return cost;
 
-            if (!_activated) {
-                _activated = true;
+            if (!getProgress(Progress.activated)) {
+                setProgress(Progress.activated);
                 cardGame.getActionsEnvironment().emitEffectResult(
-                        new ActionResult(ActionResult.Type.ACTIVATE, this, _physicalCard));
+                        new ActionResult(ActionResult.Type.ACTIVATE, this, _performingCard));
             }
 
-            if (!_prevented)
+            if (!getProgress(Progress.prevented))
                 return getNextAction();
         }
         return null;

@@ -11,6 +11,7 @@ import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +51,8 @@ public class ChooseEffectBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context)
+                    throws PlayerNotFoundException {
                 DefaultGame cardGame = context.getGame();
                 Action action = switch (effectType) {
                     case CHOOSEANUMBER -> new SelectNumberAction(context, choiceText, valueSource, memorize);

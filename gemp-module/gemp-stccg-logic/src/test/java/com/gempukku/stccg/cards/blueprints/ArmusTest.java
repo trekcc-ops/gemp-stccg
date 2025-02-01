@@ -9,6 +9,8 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ArmusTest extends AbstractAtTest {
 
     @Test
-    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
@@ -29,6 +31,7 @@ public class ArmusTest extends AbstractAtTest {
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
             skipDilemma();
         }
+        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
 
         FacilityCard outpost = null;
         MissionCard excavation = null;
@@ -51,11 +54,12 @@ public class ArmusTest extends AbstractAtTest {
         assertNotNull(picard);
         assertNotNull(tarses);
 
-        PhysicalCard armus = _game.getGameState().addCardToGame("101_015", _cardLibrary, P2);
+        PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation
-        _game.getGameState().seedCardsUnder(Collections.singleton(armus), excavation);
+        MissionLocation kurl = excavation.getLocation();
+        seedCardsUnder(Collections.singleton(armus), excavation);
 
         // Seed Federation Outpost at Excavation
         seedFacility(P1, outpost, excavation.getLocation());
@@ -90,7 +94,7 @@ public class ArmusTest extends AbstractAtTest {
         // Confirm the mission attempt was added to performed actions
         int missionAttempts = 0;
         for (Action action : _game.getActionsEnvironment().getPerformedActions())
-            if (action instanceof AttemptMissionAction missionAction && missionAction.isFailed())
+            if (action instanceof AttemptMissionAction missionAction && missionAction.wasFailed())
                 missionAttempts++;
         assertEquals(1, missionAttempts);
     }

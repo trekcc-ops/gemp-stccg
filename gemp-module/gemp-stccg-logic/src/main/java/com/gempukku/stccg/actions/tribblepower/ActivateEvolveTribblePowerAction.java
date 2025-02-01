@@ -1,28 +1,29 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateEvolveTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateEvolveTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+            throws PlayerNotFoundException {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         // Count the number of cards in your hand
-        int cardsInHand = cardGame.getGameState().getHand(_performingPlayerId).size();
+        int cardsInHand = performingPlayer.getCardsInHand().size();
 
         // Place your hand in your discard pile
-        appendEffect(new DiscardCardAction(_performingCard, performingPlayer,
-                cardGame.getGameState().getHand(_performingPlayerId)));
+        appendEffect(new DiscardCardAction(_performingCard, performingPlayer, performingPlayer.getCardsInHand()));
 
         // Draw that many cards
-        appendEffect(new DrawCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), cardsInHand));
+        appendEffect(new DrawCardsAction(_performingCard, performingPlayer, cardsInHand, cardGame));
     }
 
 }

@@ -12,16 +12,16 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
 
-public class ST1EPhysicalCard extends AbstractPhysicalCard {
+public class ST1EPhysicalCard extends AbstractPhysicalCard<ST1EGame> {
     protected final ST1EGame _game;
-    private boolean _isStopped;
+    protected boolean _isStopped;
     public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
         _game = game;
@@ -46,7 +46,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException {
+    public boolean isMisSeed(ST1EGame cardGame, MissionLocation mission) throws CardNotFoundException {
         if (_blueprint.getCardType() != CardType.DILEMMA && _blueprint.getCardType() != CardType.ARTIFACT)
             return true; // TODO - Sometimes gametext allows them to be seeded
         if (hasIcon(cardGame, CardIcon.AU_ICON))
@@ -72,12 +72,10 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     public void stop() {
         _isStopped = true;
-        _game.getGameState().sendSerializedGameStateToClient();
     }
 
     public void unstop() {
         _isStopped = false;
-        _game.getGameState().sendSerializedGameStateToClient();
     }
 
     public boolean isStopped() {
@@ -85,9 +83,10 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
-        return _blueprint.getEncounterActions(this, game, attemptingUnit, action, missionLocation);
+    public List<Action> getEncounterActions(ST1EGame cardGame, AttemptingUnit attemptingUnit,
+                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+            throws PlayerNotFoundException {
+        return _blueprint.getEncounterActions(this, cardGame, attemptingUnit, action, missionLocation);
     }
 
 }

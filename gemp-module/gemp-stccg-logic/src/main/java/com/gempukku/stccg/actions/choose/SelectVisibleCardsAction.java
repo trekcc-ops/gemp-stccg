@@ -1,17 +1,15 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filter;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -27,25 +25,26 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     private ActionContext _actionContext;
     private String _memory;
 
-    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText,
+    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCardsResolver = new ActionCardResolver(cards);
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+        _selectableCardsResolver = new FixedCardsResolver(cards);
         _minimum = minimum;
     }
 
-    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
+    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCardsResolver = new ActionCardResolver(selectionFilter);
+        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+        _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;
     }
 
+
     public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
                                     int maximum, ActionContext context, String memory) {
-        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
-        _selectableCardsResolver = new ActionCardResolver(selectionFilter);
+        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+        _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;
         _actionContext = context;
@@ -65,7 +64,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         _selectableCardsResolver.resolve(cardGame);
         Collection<PhysicalCard> selectableCards = _selectableCardsResolver.getCards(cardGame);
 
@@ -76,19 +75,22 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         if (selectableCards.size() == _minimum) {
             _selectedCards.addAll(selectableCards);
             _wasCarriedOut = true;
+            setAsSuccessful();
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
-                            _minimum, _maximum) {
+                            _minimum, _maximum, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             _selectedCards = getSelectedCardsByResponse(result);
                             _wasCarriedOut = true;
+                            setAsSuccessful();
                             if (_actionContext != null) {
                                 _actionContext.setCardMemory(_memory, _selectedCards);
                             }
                         }
                     });
+            setAsSuccessful();
         }
 
         return getNextAction();
@@ -100,5 +102,17 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     }
 
     public Collection<PhysicalCard> getSelectedCards() { return _selectedCards; }
+
+    @Override
+    public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) {
+        try {
+            return _selectableCardsResolver.getCards(cardGame);
+        } catch(InvalidGameLogicException exp) {
+            return new LinkedList<>();
+        }
+    }
+
+    public int getMinimum() { return _minimum; }
+    public int getMaximum() { return _maximum; }
 
 }

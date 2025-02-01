@@ -16,7 +16,7 @@ import java.util.List;
 public interface Modifier {
     PhysicalCard getSource();
 
-    String getCardInfoText(PhysicalCard affectedCard);
+    String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard);
 
     ModifierEffect getModifierEffect();
 
@@ -26,11 +26,11 @@ public interface Modifier {
     Condition getCondition();
     boolean isCumulative();
 
-    boolean affectsCard(PhysicalCard physicalCard);
+    boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard);
 
     boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard);
 
-    int getAttributeModifier(PhysicalCard physicalCard);
+    int getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard);
 
     boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTaget);
 

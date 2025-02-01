@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -19,7 +20,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
     @Test
     public void planetSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost
@@ -27,16 +28,16 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard geordi = (PersonnelCard) _game.getGameState().addCardToGame("155_060", _cardLibrary, P1);
+        PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         geordi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
 
         assertTrue(_outpost.getCrew().contains(geordi));
         assertFalse(_outpost.getCrew().contains(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard());
+        assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
@@ -54,7 +55,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
     @Test
     public void spaceSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         // Seed Federation Outpost
@@ -62,16 +63,16 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocation(), _mission.getLocation());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard geordi = (PersonnelCard) _game.getGameState().addCardToGame("155_060", _cardLibrary, P1);
+        PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
         PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.getGameState().addCardToGame("101_331", _cardLibrary, P1);
+                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         geordi.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
 
         assertTrue(_outpost.getCrew().contains(geordi));
         assertFalse(_outpost.getCrew().contains(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard());
+        assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

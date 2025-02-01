@@ -2,6 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 public interface ModifiersEnvironment {
@@ -13,9 +14,10 @@ public interface ModifiersEnvironment {
 
     void signalEndOfTurn();
 
-    void signalStartOfTurn();
     void useNormalCardPlay(Player player);
     void removeModifierHooks(PhysicalCard card);
     void addModifierHooks(PhysicalCard card);
+
+    void addModifierHooks(DefaultGame cardGame, PhysicalCard card);
 
 }

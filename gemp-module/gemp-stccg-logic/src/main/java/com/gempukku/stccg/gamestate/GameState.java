@@ -1,8 +1,11 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -11,69 +14,61 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerOrder;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
+import com.gempukku.stccg.modifiers.ModifiersQuerying;
+import com.gempukku.stccg.processes.GameProcess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
-@JsonSerialize(using = GameStateSerializer.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIncludeProperties({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
+        "awayTeams", "actions", "performedActions" })
+@JsonPropertyOrder({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
+        "awayTeams", "actions", "performedActions" })
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
-
-    // previousZoneSizes and previousPlayerScores are only used for GameStats comparisons and event sending
-    private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
-    private Map<String, Integer> _previousPlayerScores = new HashMap<>();
-
-    PlayerOrder _playerOrder;
-    private ModifiersLogic _modifiersLogic;
-    protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new EnumMap<>(Zone.class);
-    final List<PhysicalCard> _inPlay = new LinkedList<>();
-    protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
     Phase _currentPhase;
-    private boolean _consecutiveAction;
+    Map<String, Player> _players = new HashMap<>();
+    PlayerOrder _playerOrder;
+    protected final Map<Integer, PhysicalCard<DefaultGame>> _allCards = new HashMap<>();
+    private ModifiersLogic _modifiersLogic;
+    final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
-    final Map<String, Integer> _turnNumbers = new HashMap<>();
-    Map<String, Integer> _playerScores = new HashMap<>();
-    Map<String, Player> _players = new HashMap<>();
     private ActionsEnvironment _actionsEnvironment;
+    private GameProcess _currentGameProcess;
 
     protected GameState(DefaultGame game, Iterable<String> playerIds) {
         Collection<Zone> cardGroupList = new LinkedList<>();
         cardGroupList.add(Zone.DRAW_DECK);
         cardGroupList.add(Zone.HAND);
-        cardGroupList.add(Zone.VOID);
-        cardGroupList.add(Zone.VOID_FROM_HAND);
         cardGroupList.add(Zone.DISCARD);
         cardGroupList.add(Zone.REMOVED);
 
-        cardGroupList.forEach(cardGroup -> _cardGroups.put(cardGroup, new HashMap<>()));
-        for (String playerId : playerIds) {
-            cardGroupList.forEach(cardGroup -> _cardGroups.get(cardGroup).put(playerId, new LinkedList<>()));
-            _turnNumbers.put(playerId, 0);
-            _playerScores.put(playerId, 0);
-            _players.put(playerId, new Player(game, playerId));
+        try {
+            for (String playerId : playerIds) {
+                Player player = new Player(playerId);
+                for (Zone zone : cardGroupList) {
+                    player.addCardGroup(zone);
+                }
+                _players.put(playerId, player);
+            }
+        } catch(InvalidGameLogicException exp) {
+            game.sendErrorMessage(exp);
+            game.cancelGame();
         }
         _modifiersLogic = new ModifiersLogic(game);
-        _actionsEnvironment = new DefaultActionsEnvironment(game);
+        _actionsEnvironment = new DefaultActionsEnvironment();
     }
-
-    public abstract DefaultGame getGame();
 
     public void initializePlayerOrder(PlayerOrder playerOrder) {
         _playerOrder = playerOrder;
         setCurrentPlayerId(playerOrder.getFirstPlayer());
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.initializeBoard();
-        }
     }
 
     public void loadPlayerOrder(PlayerOrder playerOrder) {
@@ -81,56 +76,14 @@ public abstract class GameState {
     }
     public ActionsEnvironment getActionsEnvironment() { return _actionsEnvironment; }
 
-    public void finish() {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.sendEvent(GameEvent.Type.GAME_ENDED);
-        }
-
-        if(_playerOrder == null || _playerOrder.getAllPlayers() == null)
-            return;
-
-        for (String playerId : _playerOrder.getAllPlayers()) {
-            for(var card : getDrawDeck(playerId)) {
-                for (GameStateListener listener : getAllGameStateListeners()) {
-                    sendCreatedCardToListener(card, false, listener, true, true);
-                }
-            }
-        }
-    }
-
-    public boolean isConsecutiveAction() {
-        return _consecutiveAction;
-    }
-
-    public void setConsecutiveAction(boolean consecutiveAction) {
-        _consecutiveAction = consecutiveAction;
-    }
-
     public PlayerOrder getPlayerOrder() {
         return _playerOrder;
     }
 
-    Collection<GameStateListener> getAllGameStateListeners() {
-        return getGame().getAllGameStateListeners();
-    }
+    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
+            throws PlayerNotFoundException {
 
-    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
-        if (_playerOrder != null) {
-            listener.initializeBoard();
-            if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
-            if (_currentPhase != null) listener.setCurrentPhase(_currentPhase);
-
-            sendCardsToClient(playerId, listener, restoreSnapshot);
-        }
-        for (String lastMessage : getMessages())
-            listener.sendMessage(lastMessage);
-
-        final AwaitingDecision awaitingDecision = _playerDecisions.get(playerId);
-        sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
-    }
-
-    protected void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
-
+        Player player = getPlayer(playerId);
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
         Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
 
@@ -149,28 +102,27 @@ public abstract class GameState {
 
         Collection<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
 
-        cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
-        cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
+        cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.HAND));
+        cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.DISCARD));
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, this));
+        listener.sendEvent(new GameEvent(listener.getGame(), GameEvent.Type.GAME_STATS, this));
     }
 
-    public void sendMessage(String message) {
-        getGame().addMessage(message);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendMessage(message);
-    }
-
-    public void playerDecisionStarted(String playerId, AwaitingDecision awaitingDecision) {
+    public void playerDecisionStarted(DefaultGame cardGame, String playerId, AwaitingDecision awaitingDecision)
+            throws PlayerNotFoundException {
         _playerDecisions.put(playerId, awaitingDecision);
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
             sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
     }
 
-    private void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) {
+    public AwaitingDecision getDecision(String playerId) {
+        return _playerDecisions.get(playerId);
+    }
+
+    public void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) throws PlayerNotFoundException {
         if (decision != null)
             listener.decisionRequired(playerId, decision);
     }
@@ -180,26 +132,22 @@ public abstract class GameState {
         _playerDecisions.remove(playerId);
     }
 
-    public void playerDecisionFinished(String playerId) {
-        getGame().getUserFeedback().removeDecision(playerId);
-        _playerDecisions.remove(playerId);
-    }
-
-    public void transferCard(PhysicalCard card, PhysicalCard transferTo) {
+    public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) {
         if (card.getZone() != Zone.ATTACHED)
             card.setZone(Zone.ATTACHED);
 
         card.attachTo(transferTo);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY,card));
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,card));
     }
 
-    public void detachCard(PhysicalCard attachedCard, Zone newZone) {
+    public void detachCard(DefaultGame cardGame, PhysicalCard attachedCard, Zone newZone) {
         attachedCard.setZone(newZone);
         attachedCard.detach();
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY,attachedCard));
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,attachedCard));
     }
+
 
     public void attachCard(PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
         if(card == attachTo)
@@ -209,39 +157,25 @@ public abstract class GameState {
         addCardToZone(card, Zone.ATTACHED);
     }
 
-    public void cardAffectsCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.CARD_AFFECTED_BY_CARD, card, affectedCards, getPlayer(playerPerforming)));
+    public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
+        List<PhysicalCard> zoneCards = player.getCardGroupCards(zone);
+        return Objects.requireNonNullElse(zoneCards, _inPlay);
     }
 
-    public void activatedCard(String playerPerforming, PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            GameEvent event = new GameEvent(GameEvent.Type.FLASH_CARD_IN_PLAY, card, getPlayer(playerPerforming));
-            listener.sendEvent(event);
-        }
-    }
-
-    public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        List<PhysicalCard> zoneCards = _cardGroups.get(zone).get(playerId);
-        if (zoneCards != null)
-            return zoneCards;
-        else
-            return _inPlay;
-    }
 
     public void removeCardFromZone(PhysicalCard card) {
-        removeCardsFromZone(card.getOwnerName(), Collections.singleton(card));
+        removeCardsFromZone(card.getGame(), card.getOwnerName(), Collections.singleton(card));
     }
 
-    public void moveCard(PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY, card));
+    public void moveCard(DefaultGame cardGame, PhysicalCard card) {
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY, card));
     }
 
 
-    public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
+    public void removeCardsFromZone(DefaultGame cardGame, String playerPerforming, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
-            List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), card.getZone());
+            List<PhysicalCard> zoneCards = getZoneCards(card.getOwner(), card.getZone());
             if (!zoneCards.contains(card) && card.getZone() != Zone.VOID)
                 LOGGER.error(
                         "Card was not found in the expected zone: " + card.getTitle() + ", " + card.getZone().name());
@@ -250,39 +184,43 @@ public abstract class GameState {
         for (PhysicalCard card : cards) {
             Zone zone = card.getZone();
 
-            if (zone.isInPlay()) card.stopAffectingGame(getGame());
+            if (zone.isInPlay()) card.stopAffectingGame(card.getGame());
 
-            getZoneCards(card.getOwnerName(), zone).remove(card);
+            getZoneCards(card.getOwner(), zone).remove(card);
 
             if (card instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam() != null) {
-                    reportable.leaveAwayTeam();
+                    reportable.leaveAwayTeam((ST1EGame) cardGame);
                 }
             }
 
             if (zone.isInPlay())
                 _inPlay.remove(card);
             if (zone == Zone.ATTACHED)
-                card.attachTo(null);
+                card.detach();
         }
 
-        for (GameStateListener listener : getAllGameStateListeners()) {
+        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
 
             Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
             for (PhysicalCard card : cards) {
-                boolean publicDiscard = card.getZone() == Zone.DISCARD && getGame().isDiscardPilePublic();
+                boolean publicDiscard = card.getZone() == Zone.DISCARD && listener.getGame().isDiscardPilePublic();
                 if (card.getZone().isPublic() || publicDiscard ||
                         (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(listener.getPlayerId())))
                     removedCardsVisibleByPlayer.add(card);
             }
-            if (!removedCardsVisibleByPlayer.isEmpty())
-                listener.sendEvent(new GameEvent(GameEvent.Type.REMOVE_CARD_FROM_PLAY, removedCardsVisibleByPlayer, getPlayer(playerPerforming)));
+            if (!removedCardsVisibleByPlayer.isEmpty()) {
+                GameEvent event = new GameEvent(listener.getGame(), GameEvent.Type.REMOVE_CARD_FROM_PLAY,
+                        removedCardsVisibleByPlayer, playerPerforming);
+                listener.sendEvent(event);
+            }
         }
 
         for (PhysicalCard card : cards) {
-            card.setZone(null);
+            card.setZone(Zone.VOID);
         }
     }
+
 
     public void addCardToZone(PhysicalCard card, Zone zone) {
         addCardToZone(card, zone, true);
@@ -297,7 +235,7 @@ public abstract class GameState {
 
     public void addCardToZone(PhysicalCard card, Zone zone, boolean end, boolean sharedMission) {
         if (zone == Zone.DISCARD &&
-                getGame().getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
+                getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
             zone = Zone.REMOVED;
 
         if (zone.isInPlay()) {
@@ -305,7 +243,7 @@ public abstract class GameState {
         }
 
         if (zone.hasList()) {
-            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
+            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), zone);
             if (end)
                 zoneCardList.add(card);
             else
@@ -316,12 +254,12 @@ public abstract class GameState {
             LOGGER.error("Card was in {} when tried to add to zone: {}", card.getZone(), zone);
 
         card.setZone(zone);
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : card.getGame().getAllGameStateListeners())
             sendCreatedCardToListener(card, sharedMission, listener,true);
 
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
-            card.startAffectingGame(getGame());
+            card.startAffectingGame(card.getGame());
     }
 
     protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
@@ -329,7 +267,7 @@ public abstract class GameState {
         sendCreatedCardToListener(card, sharedMission, listener, animate, false);
     }
 
-    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
+    public void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
                                              boolean animate, boolean overrideOwnerVisibility) {
         GameEvent.Type eventType;
 
@@ -342,30 +280,16 @@ public abstract class GameState {
         boolean sendGameEvent;
         if (card.getZone().isPublic())
             sendGameEvent = true;
-        else if (card.getZone() == Zone.DISCARD && getGame().isDiscardPilePublic())
+        else if (card.getZone() == Zone.DISCARD && listener.getGame().isDiscardPilePublic())
             sendGameEvent = true;
         else sendGameEvent = (overrideOwnerVisibility || card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
 
         if (sendGameEvent)
-            listener.sendEvent(new GameEvent(eventType, card));
-    }
-
-    public void shuffleCardsIntoDeck(Iterable<? extends PhysicalCard> cards, String playerId) {
-
-        for (PhysicalCard card : cards) {
-            _cardGroups.get(Zone.DRAW_DECK).get(playerId).add(card);
-            card.setZone(Zone.DRAW_DECK);
-        }
-
-        shuffleDeck(playerId);
+            listener.sendEvent(new GameEvent(card.getGame(), eventType, card));
     }
 
     public void putCardOnBottomOfDeck(PhysicalCard card) {
         addCardToZone(card, Zone.DRAW_DECK, true);
-    }
-
-    public void putCardOnTopOfDeck(PhysicalCard card) {
-        addCardToZone(card, Zone.DRAW_DECK, false);
     }
 
     public void iterateActiveCards(PhysicalCardVisitor physicalCardVisitor) {
@@ -381,19 +305,11 @@ public abstract class GameState {
         return _allCards.get(cardId);
     }
 
+    @JsonProperty("cardsInGame")
     public Iterable<PhysicalCard> getAllCardsInGame() { return Collections.unmodifiableCollection(_allCards.values()); }
     public List<PhysicalCard> getAllCardsInPlay() {
         return Collections.unmodifiableList(_inPlay);
     }
-    public List<PhysicalCard> getHand(String playerId) { return getCardGroup(Zone.HAND, playerId); }
-
-    public List<PhysicalCard> getRemoved(String playerId) { return getCardGroup(Zone.REMOVED, playerId); }
-    public List<PhysicalCard> getDrawDeck(String playerId) { return getCardGroup(Zone.DRAW_DECK, playerId); }
-
-    protected List<PhysicalCard> getCardGroup(Zone zone, String playerId) {
-        return Collections.unmodifiableList(_cardGroups.get(zone).get(playerId));
-    }
-    public List<PhysicalCard> getDiscard(String playerId) { return getCardGroup(Zone.DISCARD, playerId); }
 
     public String getCurrentPlayerId() {
         return _playerOrder.getCurrentPlayer();
@@ -412,103 +328,50 @@ public abstract class GameState {
         return result;
     }
 
-    public void startPlayerTurn(String playerId) {
-        _playerOrder.setCurrentPlayer(playerId);
-        incrementCurrentTurnNumber();
-        getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(playerId));
+    public void startPlayerTurn(DefaultGame cardGame, Player player) {
+        _playerOrder.setCurrentPlayer(player.getPlayerId());
+        player.incrementTurnNumber();
+        cardGame.getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(player.getPlayerId()));
     }
+
 
     public boolean isCardInPlayActive(PhysicalCard card) {
         if (card.getAttachedTo() != null) return isCardInPlayActive(card.getAttachedTo());
         else return true;
     }
 
-    public void startAffectingCardsForCurrentPlayer() {
-        for (PhysicalCard physicalCard : _inPlay)
-            if (isCardInPlayActive(physicalCard)) physicalCard.startAffectingGame(getGame());
-    }
-
-    public void stopAffectingCardsForCurrentPlayer() {
-        for (PhysicalCard physicalCard : _inPlay)
-            physicalCard.stopAffectingGame(getGame());
-    }
-
-    public void setCurrentPhase(Phase phase) {
-        _currentPhase = phase;
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setCurrentPhase(phase);
-    }
-
     public Phase getCurrentPhase() {
         return _currentPhase;
     }
 
-    public PhysicalCard removeCardFromEndOfPile(String player, Zone zone, EndOfPile endOfPile) {
-        List<PhysicalCard> deck = getZoneCards(player, zone);
-        int pileIndex = endOfPile == EndOfPile.BOTTOM ? deck.size() - 1 : 0;
-        if (!deck.isEmpty()) {
-            final PhysicalCard removedCard = deck.get(pileIndex);
-            removeCardsFromZone(null, Collections.singleton(removedCard));
-            return removedCard;
-        } else {
-            return null;
-        }
-    }
-
-    public void playerDrawsCard(String playerId) {
-        List<PhysicalCard> deck = _cardGroups.get(Zone.DRAW_DECK).get(playerId);
-        if (!deck.isEmpty()) {
-            PhysicalCard card = deck.getFirst();
-            removeCardsFromZone(playerId, Collections.singleton(card));
+    public void playerDrawsCard(DefaultGame game, Player player) {
+        CardPile drawDeck = player.getDrawDeck();
+        if (!drawDeck.isEmpty()) {
+            PhysicalCard card = drawDeck.getTopCard();
+            removeCardsFromZone(game, player.getPlayerId(), Collections.singleton(card));
             addCardToZone(card, Zone.HAND);
         }
     }
 
-    public void shuffleDeck(String playerId) {
-        if (!getGame().getFormat().isNoShuffle())
-            Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK).get(playerId), ThreadLocalRandom.current());
+
+    public void sendGameStats(DefaultGame cardGame) {
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.GAME_STATS, this));
     }
 
-    public void sendGameStats() {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, this));
-    }
 
-    public void sendWarning(String player, String warning) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendWarning(player, warning);
-    }
-
-    public void addToPlayerScore(String playerId, int points) {
-        int currentScore = _playerScores.get(playerId);
-        _playerScores.put(playerId, currentScore + points);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerScore(playerId);
-    }
-
-    public int getPlayerScore(String playerId) {
-        return _playerScores.get(playerId);
-    }
-
-    public Player getPlayer(String playerId) { return _players.get(playerId); }
-    public Collection<Player> getPlayers() { return _players.values(); }
-
-    public void discardHand(String playerId) {
-        List<PhysicalCard> hand = new LinkedList<>(getHand(playerId));
-        removeCardsFromZone(playerId, hand);
-        for (PhysicalCard card : hand) {
-            addCardToZone(card, Zone.DISCARD);
+    public Player getPlayer(String playerId) throws PlayerNotFoundException {
+        Player player = _players.get(playerId);
+        if (player != null) {
+            return player;
+        } else {
+            throw new PlayerNotFoundException("Player " + playerId + " not found");
         }
     }
+    public Collection<Player> getPlayers() { return _players.values(); }
 
-    public Player getCurrentPlayer() { return getPlayer(getCurrentPlayerId()); }
-
-    public void incrementCurrentTurnNumber() {
-        _turnNumbers.put(getCurrentPlayerId(), _turnNumbers.get(getCurrentPlayerId())+1);
-    }
-
-    public int getPlayersLatestTurnNumber(String playerId) {
-        return _turnNumbers.get(playerId);
+    public Player getCurrentPlayer() throws PlayerNotFoundException {
+        return getPlayer(getCurrentPlayerId());
     }
 
     public int getAndIncrementNextCardId() {
@@ -518,71 +381,78 @@ public abstract class GameState {
     }
 
 
-    public void updateGameStatsAndSendIfChanged() {
-        boolean changed = false;
-
-        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
-        Map<String, Integer> newPlayerScores = new HashMap<>();
-
-        if (_playerOrder != null) {
-            for (String player : _playerOrder.getAllPlayers()) {
-                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
-                playerZoneSizes.put(Zone.HAND, getHand(player).size());
-                playerZoneSizes.put(Zone.DRAW_DECK, getDrawDeck(player).size());
-                playerZoneSizes.put(Zone.DISCARD, getDiscard(player).size());
-                playerZoneSizes.put(Zone.REMOVED, getRemoved(player).size());
-                newZoneSizes.put(player, playerZoneSizes);
-                newPlayerScores.put(player, getPlayerScore(player));
-            }
-        }
-
-        if (!newZoneSizes.equals(_previousZoneSizes)) {
-            changed = true;
-            _previousZoneSizes = newZoneSizes;
-        }
-
-        if (!newPlayerScores.equals(_previousPlayerScores)) {
-            changed = true;
-            _previousPlayerScores = newPlayerScores;
-        }
-
-        if (changed) sendGameStats();
-    }
-
-    public Map<String, Map<Zone, Integer>> getZoneSizes() {
-        return Collections.unmodifiableMap(_previousZoneSizes);
-    }
-    public Map<String, Integer> getPlayerScores() { return Collections.unmodifiableMap(_previousPlayerScores); }
     public ModifiersLogic getModifiersLogic() { return _modifiersLogic; }
     public void setModifiersLogic(ModifiersLogic modifiers) { _modifiersLogic = modifiers; }
     public void setNextCardId(int nextCardId) { _nextCardId = nextCardId; }
 
-    public void setModifiersLogic(JsonNode node) { _modifiersLogic = new ModifiersLogic(getGame(), node); }
+    public void setModifiersLogic(JsonNode node, ST1EGame game) { _modifiersLogic = new ModifiersLogic(game, node); }
     public void setActionsEnvironment(ActionsEnvironment actionsEnvironment) {
         _actionsEnvironment = actionsEnvironment;
     }
 
-    public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
-        PhysicalCard card = _allCards.get(cardId);
+    public PhysicalCard<DefaultGame> getCardFromCardId(int cardId) throws CardNotFoundException {
+        PhysicalCard<DefaultGame> card = _allCards.get(cardId);
         if (card == null)
             throw new CardNotFoundException("Could not find card from id number " + cardId);
         return card;
     }
 
-    public List<String> getMessages() { return getGame().getMessages(); }
-    int getNextCardId() { return _nextCardId; }
-
-    public void placeCardOnMission(PhysicalCard cardBeingPlaced, MissionLocation mission)
+    public void placeCardOnMission(DefaultGame cardGame, PhysicalCard cardBeingPlaced, MissionLocation mission)
             throws InvalidGameLogicException {
         Zone currentZone = cardBeingPlaced.getZone();
         if (currentZone == null) {
             throw new InvalidGameLogicException("Tried to process a card not in any zone");
         } else {
-            removeCardsFromZone(cardBeingPlaced.getOwnerName(), Arrays.asList(cardBeingPlaced));
+            removeCardsFromZone(cardGame, cardBeingPlaced.getOwnerName(), List.of(cardBeingPlaced));
             cardBeingPlaced.setPlacedOnMission(true);
             cardBeingPlaced.setLocation(mission);
             addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
             cardBeingPlaced.setLocation(mission);
         }
     }
+
+
+    public GameProcess getCurrentProcess() {
+        return _currentGameProcess;
+    }
+
+    public void setCurrentProcess(GameProcess process) {
+        _currentGameProcess = process;
+    }
+
+    public abstract void checkVictoryConditions(DefaultGame cardGame);
+
+    protected ModifiersQuerying getModifiersQuerying() { return _modifiersLogic; }
+
+    public void setCurrentPhaseNew(Phase phase) {
+        _currentPhase = phase;
+    }
+
+    public void placeCardOnBottomOfDrawDeck(DefaultGame cardGame, Player owner, PhysicalCard card) {
+        removeCardsFromZone(cardGame, owner.getPlayerId(), List.of(card));
+        addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
+    }
+
+    public String serializeComplete() throws JsonProcessingException {
+        return new GameStateMapper().writer(true).writeValueAsString(this);
+    }
+
+    public String serializeForPlayer(String playerId) throws JsonProcessingException {
+        return new GameStateMapper().writer(false).writeValueAsString(
+                new GameStateView(playerId, this));
+    }
+
+    @JsonProperty("actions")
+    private Map<Integer, Action> getAllActions() {
+        return _actionsEnvironment.getAllActions();
+    }
+
+    @JsonProperty("performedActions")
+    @JsonIdentityReference(alwaysAsId=true)
+    private List<Action> getPerformedActions() {
+        return _actionsEnvironment.getPerformedActions();
+    }
+
+
+
 }

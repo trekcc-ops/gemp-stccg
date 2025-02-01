@@ -1,29 +1,25 @@
 package com.gempukku.stccg.actions.modifiers;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.*;
+import com.google.common.collect.Iterables;
 
 public class KillSinglePersonnelAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
-    private final SelectCardsAction _selectVictimAction;
-    private boolean _victimSelected;
-    private PhysicalCard _victim;
+    private final ActionCardResolver _cardTarget;
 
     public KillSinglePersonnelAction(Player performingPlayer, PhysicalCard performingCard,
                                      SelectCardsAction selectVictimAction) {
-        super(performingPlayer, "Kill", ActionType.KILL);
+        super(performingCard.getGame(), performingPlayer, "Kill", ActionType.KILL);
         _performingCard = performingCard;
-        _selectVictimAction = selectVictimAction;
+        _cardTarget = new SelectCardsResolver(selectVictimAction);
     }
+
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
@@ -31,7 +27,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
 
     @Override
     public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
+        return getPerformingCard().getCardId();
     }
 
     @Override
@@ -43,9 +39,8 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     public String getActionSelectionText(DefaultGame cardGame) throws InvalidGameLogicException {
         StringBuilder sb = new StringBuilder();
         sb.append("Kill ");
-        if (_selectVictimAction != null && _selectVictimAction.wasCarriedOut() &&
-                _selectVictimAction.getSelectedCards().size() == 1) {
-            PhysicalCard victim = _selectVictimAction.getSelectedCards().stream().toList().getFirst();
+        if (_cardTarget.isResolved() && _cardTarget.getCards(cardGame).size() == 1) {
+            PhysicalCard victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
             sb.append(victim.getTitle());
         } else {
             sb.append("a personnel");
@@ -54,30 +49,34 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_victimSelected) {
-            if (!_selectVictimAction.wasCarriedOut())
-                return _selectVictimAction;
-            else {
-                _victimSelected = true;
-                _victim = _selectVictimAction.getSelectedCards().stream().toList().getFirst();
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        if (!_cardTarget.isResolved()) {
+            Action selectionAction = _cardTarget.getSelectionAction();
+            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
+                return selectionAction;
+            } else {
+                _cardTarget.resolve(cardGame);
             }
         }
 
         if (!_wasCarriedOut) {
-            StringBuilder message = new StringBuilder();
-            message.append(_performingPlayerId).append(" killed ").append(_victim.getCardLink());
-            if (_performingCard != null)
-                message.append(" using ").append(_performingCard.getCardLink());
-            cardGame.sendMessage(message.toString());
+            if (_cardTarget.getCards(cardGame).size() != 1) {
+                throw new InvalidGameLogicException("Too many cards selected for KillSinglePersonnelAction");
+            } else {
+                PhysicalCard victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
+                StringBuilder message = new StringBuilder();
+                message.append(_performingPlayerId).append(" killed ").append(victim.getCardLink());
+                if (_performingCard != null)
+                    message.append(" using ").append(_performingCard.getCardLink());
+                cardGame.sendMessage(message.toString());
 
-            if (_victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
-                reportable.leaveAwayTeam();
-            _wasCarriedOut = true;
-            return new DiscardCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), _victim);
+                if (victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
+                    reportable.leaveAwayTeam((ST1EGame) cardGame);
+                _wasCarriedOut = true;
+                return new DiscardCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), victim);
+            }
         }
-
+        setAsSuccessful();
         return getNextAction();
     }
-
 }

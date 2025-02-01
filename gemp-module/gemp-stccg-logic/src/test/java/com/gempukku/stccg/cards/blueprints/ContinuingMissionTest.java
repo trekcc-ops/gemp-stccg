@@ -9,7 +9,9 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
 
     // Test of Continuing Mission
     @Test
-    public void introTwoPlayerGameWithSeedCardsTest() throws DecisionResultInvalidException {
+    public void introTwoPlayerGameWithSeedCardsTest() throws DecisionResultInvalidException, InvalidGameOperationException {
         initializeGameWithAttentionAllHands();
         autoSeedMissions();
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
@@ -33,7 +35,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
     }
 
     @Test
-    public void makingDecisionsTest() throws DecisionResultInvalidException {
+    public void makingDecisionsTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException {
         initializeGameWithAttentionAllHands();
         autoSeedMissions();
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
@@ -48,14 +50,14 @@ public class ContinuingMissionTest extends AbstractAtTest {
 
     private PhysicalCard getCardInGame(String cardTitle, Player cardOwner, Zone zone) {
         Collection<PhysicalCard> possibleCandidates = Filters.filter(
-                _game.getGameState().getZoneCards(cardOwner.getPlayerId(), zone),
+                _game.getGameState().getZoneCards(cardOwner, zone),
                 Filters.name(cardTitle)
         );
         assertEquals(1, possibleCandidates.size());
         return Iterables.getOnlyElement(possibleCandidates);
     }
 
-    private void seedCardIfAllowed(PhysicalCard card) throws DecisionResultInvalidException {
+    private void seedCardIfAllowed(PhysicalCard card) throws DecisionResultInvalidException, InvalidGameOperationException {
         String ownerId = card.getOwnerName();
         // Assumes there is only one valid location for the card to seed at
         assertNotNull(_userFeedback.getAwaitingDecision(ownerId));

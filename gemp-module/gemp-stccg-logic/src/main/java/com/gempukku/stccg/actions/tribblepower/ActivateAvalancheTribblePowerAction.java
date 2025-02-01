@@ -8,24 +8,26 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateAvalancheTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateAvalancheTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateAvalancheTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+            throws PlayerNotFoundException {
         super(actionContext, power);
         TribblesGame cardGame = actionContext.getGame();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         appendEffect(new AllPlayersDiscardFromHandAction(cardGame, this, actionContext.getSource(), false, true));
         SelectVisibleCardAction selectAction =
-                new SelectVisibleCardAction(performingPlayer, "select",
+                new SelectVisibleCardAction(cardGame, performingPlayer, "select",
                         Filters.yourHand(performingPlayer));
-        appendEffect(new DiscardCardAction(_performingCard, performingPlayer, selectAction));
+        appendEffect(new DiscardCardAction(cardGame, _performingCard, performingPlayer, selectAction));
     }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return (cardGame.getGameState().getHand(_performingPlayerId).size() >= 4);
+        return _performingPlayer.getCardsInHand().size() >= 4;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
@@ -9,6 +10,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -62,16 +64,17 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return createReportCardAction(forFree); }
 
     public TopLevelSelectableAction createReportCardAction() {
-        return new ReportCardAction(this, false);
+        return createReportCardAction(false);
     }
     public TopLevelSelectableAction createReportCardAction(boolean forFree) {
         return new ReportCardAction(this, forFree);
     }
 
-    public void leaveAwayTeam() {
-        _awayTeam.remove(this);
+    public void leaveAwayTeam(ST1EGame cardGame) {
+        _awayTeam.remove(cardGame, this);
         _awayTeam = null;
     }
+
 
     public void addToAwayTeam(AwayTeam awayTeam) {
         _awayTeam = awayTeam;
@@ -81,7 +84,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     public void joinEligibleAwayTeam(MissionLocation mission) {
         // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
         // TODO - When there are multiple eligible away teams, there should be a player decision
-        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_owner).toList()) {
+        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_game, _owner).toList()) {
             if (awayTeam.isCompatibleWith(this) && _awayTeam == null) {
                 addToAwayTeam(awayTeam);
             }
@@ -94,4 +97,11 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
 
 
     public AwayTeam getAwayTeam() { return _awayTeam; }
+
+    @Override
+    @JsonProperty("isStopped")
+    public boolean isStopped() {
+        return _isStopped;
+    }
+
 }

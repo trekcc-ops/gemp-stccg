@@ -21,6 +21,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
 
     protected Quadrant getNativeQuadrant() { return _blueprint.getQuadrant(); }
     public boolean isMultiAffiliation() { return getAffiliationOptions().size() > 1; }
+
     public Affiliation getCurrentAffiliation() { return _currentAffiliation; }
 
     public void setCurrentAffiliation(Affiliation affiliation) {
@@ -29,18 +30,18 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException {
         setCurrentAffiliation(affiliation);
         if (getAffiliationOptions().size() > 1) {
-            if (_attachedTo instanceof MissionCard mission &&
+            if (getAttachedTo() instanceof MissionCard mission &&
                     this instanceof PhysicalReportableCard1E reportable) {
-                if (reportable.getAwayTeam().canBeDisbanded()) {
-                    reportable.getAwayTeam().disband();
+                if (reportable.getAwayTeam().canBeDisbanded(_game)) {
+                    reportable.getAwayTeam().disband(_game);
                 } else {
                     if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(reportable))
-                        reportable.leaveAwayTeam();
+                        reportable.leaveAwayTeam(_game);
                     if (reportable.getAwayTeam() == null)
                         reportable.joinEligibleAwayTeam(mission.getLocation());
                 }
             }
-            _game.getGameState().sendUpdatedCardImageToClient(this);
+            _game.sendUpdatedCardImageToClient(this);
         }
     }
 
@@ -66,7 +67,8 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
 
     @Override
     public boolean hasTransporters() {
-        return _blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
+        return _blueprint.getCardType() == CardType.SHIP ||
+                _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
     }
 
     public boolean isAffiliation(Affiliation affiliation) {

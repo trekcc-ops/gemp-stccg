@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -12,23 +13,25 @@ public class SeedCardAction extends PlayCardAction {
     }
 
     public SeedCardAction(PhysicalCard cardToSeed, Zone zone) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
+        super(cardToSeed, cardToSeed, cardToSeed.getOwner(), zone, ActionType.SEED_CARD);
         setText("Seed " + cardToSeed.getFullName());
     }
 
     @Override
     protected void putCardIntoPlay(DefaultGame game) {
 
+        Zone originalZone = _cardEnteringPlay.getZone();
         GameState gameState = game.getGameState();
 
         game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
         gameState.removeCardFromZone(_cardEnteringPlay);
-        if (_fromZone == Zone.DRAW_DECK) {
+        if (originalZone == Zone.DRAW_DECK) {
             game.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            gameState.shuffleDeck(_cardEnteringPlay.getOwnerName());
+            _cardEnteringPlay.getOwner().shuffleDrawDeck(game);
         }
-        gameState.addCardToZone(_cardEnteringPlay, _toZone);
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardEnteringPlay));
+        gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
+        setAsSuccessful();
+        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, originalZone, _cardEnteringPlay));
     }
 
 }

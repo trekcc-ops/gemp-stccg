@@ -2,8 +2,22 @@ package com.gempukku.stccg.common.filterable;
 
 @SuppressWarnings("unused")
 public enum Characteristic implements Filterable {
-    COOK,
-    @SuppressWarnings("SpellCheckingInspection") K_EHLEYR,
-    ADMIRAL, GENERAL, MAJE, SCOTTY
+    ADMIRAL("admiral"),
+    COOK("cook"),
+    GENERAL("general"),
+
+    @SuppressWarnings("SpellCheckingInspection") K_EHLEYR("K'Ehleyr"),
+    MAJE("Maje"),
+    SCOTTY("Scotty");
+
+    private String _humanReadable;
+
+    Characteristic(String humanReadable) {
+        _humanReadable = humanReadable;
+    }
+
+    public String getHumanReadable() {
+        return _humanReadable;
+    }
 
 }

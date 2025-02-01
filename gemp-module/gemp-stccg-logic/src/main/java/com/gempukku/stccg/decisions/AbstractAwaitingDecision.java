@@ -3,19 +3,21 @@ package com.gempukku.stccg.decisions;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractAwaitingDecision implements AwaitingDecision {
-    private final int _id;
+    private final int _decisionId;
     private final String _text;
     private final AwaitingDecisionType _decisionType;
     private final Map<String, String[]> _params = new HashMap<>();
     private final String _decidingPlayerId;
 
-    public AbstractAwaitingDecision(Player player, String text, AwaitingDecisionType decisionType) {
-        _id = player.getGame().getUserFeedback().getNextDecisionIdAndIncrement();
+    public AbstractAwaitingDecision(Player player, String text, AwaitingDecisionType decisionType,
+                                    DefaultGame cardGame) {
+        _decisionId = cardGame.getUserFeedback().getNextDecisionIdAndIncrement();
         _text = text;
         _decisionType = decisionType;
         _decidingPlayerId = player.getPlayerId();
@@ -35,8 +37,8 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
     }
 
     @Override
-    public int getAwaitingDecisionId() {
-        return _id;
+    public int getDecisionId() {
+        return _decisionId;
     }
 
     @Override
@@ -54,6 +56,7 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
         return _params;
     }
 
-    public Player getDecidingPlayer(DefaultGame game) { return game.getPlayer(_decidingPlayerId); }
+    public Player getDecidingPlayer(DefaultGame game) throws PlayerNotFoundException {
+        return game.getPlayer(_decidingPlayerId); }
     public String getDecidingPlayerId() { return _decidingPlayerId; }
 }

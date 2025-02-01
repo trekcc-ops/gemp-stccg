@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 import org.junit.jupiter.api.Test;
 
@@ -13,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("SpellCheckingInspection")
 public class ST1ERuleSetTest extends AbstractAtTest {
     @Test
-    public void CompatibilityTest() throws CardNotFoundException {
+    public void CompatibilityTest() throws CardNotFoundException, PlayerNotFoundException {
         initializeSimple1EGame(30);
-        final ST1ERuleSet _rules = new ST1ERuleSet(_game);
+        final ST1ERuleSet _rules = new ST1ERuleSet();
         Player player = _game.getCurrentPlayer();
         final PersonnelCard picard = new PersonnelCard(_game, 101, player, _cardLibrary.getCardBlueprint("101_215"));
         final PersonnelCard sarek = new PersonnelCard(_game, 102, player, _cardLibrary.getCardBlueprint("101_233"));

@@ -14,6 +14,8 @@ import com.gempukku.stccg.condition.missionrequirements.AttributeMissionRequirem
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -25,17 +27,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
     @Test
-    public void kosinskiTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException {
+    public void kosinskiTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
         /* Try to resolve Dangerous Climb with Taitt x2 + Kosinski. Kosinski's cunning should be reduced
         during the dilemma encounter, causing the encounter to fail. */
         initializeQuickMissionAttempt("Excavation");
 
-        PhysicalCard climb = _game.getGameState().addCardToGame("152_002", _cardLibrary, P1);
+        PhysicalCard climb = _game.addCardToGame("152_002", _cardLibrary, P1);
 
         climb.setZone(Zone.VOID);
 
-        // Seed Maglock
-        _game.getGameState().seedCardsUnder(Collections.singleton(climb), _mission);
+        // Seed Dangerous Climb
+        MissionLocation missionLocation = _mission.getLocation();
+        seedCardsUnder(Collections.singleton(climb), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission.getLocation());
@@ -74,7 +77,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
         // Verify that, in practice, the Away Team failed to resolve the dilemma
         attemptMission(P1, team, _mission);
-        assertTrue(_mission.getLocation().getCardsSeededUnderneath().contains(climb));
+        assertTrue(_mission.getLocation().getSeedCards().contains(climb));
         assertFalse(_mission.getLocation().isCompleted());
     }
 

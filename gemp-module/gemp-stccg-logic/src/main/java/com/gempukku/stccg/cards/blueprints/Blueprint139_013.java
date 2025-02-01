@@ -44,10 +44,10 @@ public class Blueprint139_013 extends CardBlueprint {
                 PersonnelCard personnelToContinue = TextUtils.getRandomItemFromList(allSuchPersonnel);
                 allSuchPersonnel.remove(personnelToContinue);
             }
-            result.add(new StopCardsAction(thisCard.getOwner(), allSuchPersonnel));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+            result.add(new StopCardsAction(game, thisCard.getOwner(), allSuchPersonnel));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         } else {
-            result.add(new FailDilemmaAction(attemptingUnit.getPlayer(), attemptingUnit, thisCard));
+            result.add(new FailDilemmaAction(game, attemptingUnit.getPlayer(), attemptingUnit, thisCard, action));
         }
 
         return result;

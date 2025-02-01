@@ -1,6 +1,5 @@
 package com.gempukku.stccg.rules.st1e;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -19,18 +18,18 @@ public class ST1EPhaseActionsRule extends ST1ERule {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
-        final GameState gameState = _game.getGameState();
-        final Player player = gameState.getPlayer(playerId);
-        final Phase currentPhase = gameState.getCurrentPhase();
+    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
+        final GameState gameState = _game.getGameState();
+        final Phase currentPhase = gameState.getCurrentPhase();
         if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
-            Filters.filterActive(gameState.getGame(), CardType.MISSION).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
-            Filters.filterYourActive(player, Filters.not(CardType.MISSION)).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player)));
+            Filters.filterActive(_game, CardType.MISSION).forEach(
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+            Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
         }
         Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }
+
 }

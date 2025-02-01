@@ -13,19 +13,19 @@ import com.gempukku.stccg.modifiers.ModifierEffect;
 public class StrengthModifier extends AttributeModifier {
 
     public StrengthModifier(ActionContext context, Filterable affectFilter, int modifier) {
-        this(context, affectFilter, null, new ConstantEvaluator(context.getGame(), modifier));
+        this(context, affectFilter, null, new ConstantEvaluator(modifier));
     }
 
     public StrengthModifier(PhysicalCard modifierSource, Condition condition, int modifier) {
-        this(modifierSource, modifierSource, condition, new ConstantEvaluator(modifierSource.getGame(), modifier));
+        this(modifierSource, modifierSource, condition, new ConstantEvaluator(modifier));
     }
 
     public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, int modifier) {
-        this(modifierSource, affectFilter, new TrueCondition(), new ConstantEvaluator(modifierSource.getGame(), modifier));
+        this(modifierSource, affectFilter, new TrueCondition(), new ConstantEvaluator(modifier));
     }
 
     public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, int modifier) {
-        this(modifierSource, affectFilter, condition, new ConstantEvaluator(modifierSource.getGame(), modifier));
+        this(modifierSource, affectFilter, condition, new ConstantEvaluator(modifier));
     }
 
     public StrengthModifier(ActionContext context, Filterable affectFilter, Condition condition, Evaluator evaluator) {
@@ -33,6 +33,7 @@ public class StrengthModifier extends AttributeModifier {
     }
 
     public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, Evaluator evaluator) {
-        super(modifierSource, affectFilter, condition, evaluator, CardAttribute.STRENGTH, ModifierEffect.STRENGTH_MODIFIER);
+        super(modifierSource, affectFilter, condition, evaluator, CardAttribute.STRENGTH,
+                ModifierEffect.STRENGTH_MODIFIER);
     }
 }

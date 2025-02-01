@@ -4,8 +4,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
@@ -17,9 +16,10 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
-        String playerId = _game.getCurrentPlayerId();
-        final List<TopLevelSelectableAction> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
+        Player currentPlayer = _game.getCurrentPlayer();
+        final List<TopLevelSelectableAction> playableActions =
+                _game.getActionsEnvironment().getPhaseActions(_game, currentPlayer);
 
         if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
@@ -32,14 +32,18 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
                 userMessage = "Select Tribble to play or click 'Pass' to draw a card.";
             }
             _game.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(_game.getPlayer(playerId), userMessage, playableActions) {
+                    new CardActionSelectionDecision(currentPlayer, userMessage, playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Action action = getSelectedAction(result);
-                            if (action != null) {
-                                thisGame.getActionsEnvironment().addActionToStack(action);
-                            } else
-                                _consecutivePasses++;
+                            try {
+                                Action action = getSelectedAction(result);
+                                if (action != null) {
+                                    thisGame.getActionsEnvironment().addActionToStack(action);
+                                } else
+                                    _consecutivePasses++;
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
                         }
                     });
         }

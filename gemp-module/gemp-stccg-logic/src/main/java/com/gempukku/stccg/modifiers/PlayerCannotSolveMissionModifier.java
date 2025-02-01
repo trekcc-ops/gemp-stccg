@@ -8,7 +8,7 @@ public class PlayerCannotSolveMissionModifier extends AbstractModifier {
     private final MissionLocation _missionLocation;
 
     public PlayerCannotSolveMissionModifier(DefaultGame game, MissionLocation missionLocation, String playerId) {
-        super(game, ModifierEffect.SOLVE_MISSION_MODIFIER);
+        super(ModifierEffect.SOLVE_MISSION_MODIFIER);
         _playerId = playerId;
         _missionLocation = missionLocation;
     }

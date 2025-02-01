@@ -1,9 +1,14 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.gamestate.GameEvent;
+import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
@@ -21,12 +26,12 @@ public class ST1EGame extends DefaultGame {
         super(format, decks, library);
 
         _gameState = new ST1EGameState(decks.keySet(), this);
-        _rules = new ST1ERuleSet(this);
-        _rules.applyRuleSet();
+        _rules = new ST1ERuleSet();
+        _rules.applyRuleSet(this);
 
-        _gameState.createPhysicalCards(library, decks);
-        _turnProcedure =
-                new TurnProcedure(this, new ST1EPlayerOrderProcess(this));
+        _gameState.createPhysicalCards(library, decks, this);
+        _turnProcedure = new TurnProcedure(this);
+        setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
     @Override
@@ -35,20 +40,6 @@ public class ST1EGame extends DefaultGame {
     }
 
     public TurnProcedure getTurnProcedure() { return _turnProcedure; }
-
-    protected void restoreSnapshot() {
-        if (_snapshotToRestore != null) {
-            if (_snapshotToRestore.getGameState() instanceof ST1EGameState st1estate) {
-                _gameState = st1estate;
-                _gameState.setModifiersLogic(_snapshotToRestore.getModifiersLogic());
-                _gameState.setActionsEnvironment(_snapshotToRestore.getActionsEnvironment());
-                _turnProcedure = _snapshotToRestore.getTurnProcedure();
-                sendMessage("Reverted to previous game state");
-                _snapshotToRestore = null;
-                sendStateToAllListeners();
-            } else throw new RuntimeException("Tried to restore a snapshot with an invalid game state");
-        }
-    }
 
     public void setAffiliationAttackRestrictions(AffiliationAttackRestrictions restrictions) {
     }
@@ -67,5 +58,23 @@ public class ST1EGame extends DefaultGame {
     }
 
     public ST1ERuleSet getRules() { return _rules; }
+
+    public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)
+            throws CardNotFoundException {
+        try {
+            int cardId = _gameState.getAndIncrementNextCardId();
+            PhysicalCard card = library.createST1EPhysicalCard(this, blueprintId, cardId, playerId);
+            _gameState.addCardToListOfAllCards(card);
+            card.setZone(Zone.VOID);
+            return card;
+        } catch(PlayerNotFoundException exp) {
+            throw new CardNotFoundException(exp.getMessage());
+        }
+    }
+
+    public void sendUpdatedCardImageToClient(PhysicalCard card) {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(this, GameEvent.Type.UPDATE_CARD_IMAGE, card));
+    }
 
 }

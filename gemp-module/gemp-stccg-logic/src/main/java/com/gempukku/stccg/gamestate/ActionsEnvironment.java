@@ -1,41 +1,46 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 
 import java.util.*;
 
+@JsonIncludeProperties({"actions"})
 public interface ActionsEnvironment {
 
     List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
 
-    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(String playerId,
+    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, String playerId,
                                                        Collection<? extends ActionResult> effectResults);
 
-    List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, Collection<? extends ActionResult> effectResults);
-
-    List<TopLevelSelectableAction> getPhaseActions(String playerId);
+    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId,
+                                                           Collection<? extends ActionResult> effectResults);
 
     void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);
 
-    void addActionToStack(Action action);
+    List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player);
+
+    void addActionToStack(Action action) throws InvalidGameLogicException;
 
     void emitEffectResult(ActionResult actionResult);
 
     Set<ActionResult> consumeEffectResults();
     void signalEndOfTurn();
     void addAlwaysOnActionProxy(ActionProxy actionProxy);
-    DefaultGame getGame();
+
     Stack<Action> getActionStack();
 
     List<Action> getPerformedActions();
 
     boolean hasNoActionsInProgress();
 
-    void removeCompletedActionFromStack(Action action);
+    void removeCompletedActionFromStack(Action action) throws ActionOrderOfOperationException;
 
     Action getCurrentAction();
 
@@ -46,4 +51,6 @@ public interface ActionsEnvironment {
     Action getActionById(int actionId);
 
     void logAction(Action action);
+
+    Map<Integer, Action> getAllActions();
 }

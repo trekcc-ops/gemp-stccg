@@ -32,7 +32,7 @@ public class Blueprint155_010 extends CardBlueprint {
             Replace dilemma under mission to be encountered again.
          */
         if (attemptingPersonnel.size() < 2) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
         }
 
         /* Randomly select two personnel to be stopped. If any [Q] card in play when dilemma is encountered,
@@ -41,8 +41,8 @@ public class Blueprint155_010 extends CardBlueprint {
         // TODO - No need to add the Q card condition yet, since Q cards are not in the current card pool
         else {
             Collection<PersonnelCard> personnelToStop = TextUtils.getRandomItemsFromList(attemptingPersonnel, 2);
-            result.add(new StopCardsAction(thisCard.getOwner(), personnelToStop));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+            result.add(new StopCardsAction(game, thisCard.getOwner(), personnelToStop));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         }
         return result;
     }

@@ -8,7 +8,7 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
-public class TribblesPhysicalCard extends AbstractPhysicalCard {
+public class TribblesPhysicalCard extends AbstractPhysicalCard<TribblesGame> {
     private final TribblesGame _game;
     public TribblesPhysicalCard(TribblesGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
@@ -17,25 +17,25 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     @Override
     public TribblesGame getGame() { return _game; }
 
-    public boolean isMisSeed(DefaultGame game, MissionLocation mission) {
+    public boolean isMisSeed(TribblesGame game, MissionLocation mission) {
         return false;
     }
 
     @Override
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
 
-    public boolean canPlayOutOfSequence() {
+    public boolean canPlayOutOfSequence(TribblesGame cardGame) {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;
         return _blueprint.getPlayOutOfSequenceConditions().stream().anyMatch(
-                requirement -> requirement.accepts(createActionContext(getGame())));
+                requirement -> requirement.accepts(createActionContext(cardGame)));
     }
 
-    public boolean isNextInSequence() {
+    public boolean isNextInSequence(TribblesGame cardGame) {
         final int cardValue = _blueprint.getTribbleValue();
-        if (_game.getGameState().isChainBroken() && (cardValue == 1)) {
+        if (cardGame.getGameState().isChainBroken() && (cardValue == 1)) {
             return true;
         }
-        return (cardValue == _game.getGameState().getNextTribbleInSequence());
+        return (cardValue == cardGame.getGameState().getNextTribbleInSequence());
     }
 
 }

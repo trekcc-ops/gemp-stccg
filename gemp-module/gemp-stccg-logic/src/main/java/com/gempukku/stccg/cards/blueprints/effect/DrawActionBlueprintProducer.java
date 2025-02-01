@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.draw.DrawCardAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
@@ -12,6 +12,7 @@ import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class DrawActionBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
+            protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
                 final String targetPlayerId = targetPlayerSource.getPlayerId(context);
                 DefaultGame cardGame = context.getGame();
                 Player targetPlayer = cardGame.getPlayer(targetPlayerId);
@@ -38,16 +39,22 @@ public class DrawActionBlueprintProducer {
                 List<Action> result = new LinkedList<>();
                 int numberOfEffects = 1;
                 for (int i = 0; i < numberOfEffects; i++) {
-                    result.add(new DrawCardAction(context.getSource(), targetPlayer, count));
+                    result.add(new DrawCardsAction(context.getSource(), targetPlayer, count));
                 }
                 return result;
             }
             
             @Override
             public boolean isPlayableInFull(ActionContext context) {
-                final int count = countSource.evaluateExpression(context, null);
-                final String targetPlayerId = targetPlayerSource.getPlayerId(context);
-                return context.getGameState().getDrawDeck(targetPlayerId).size() >= count;
+                try {
+                    final int count = countSource.evaluateExpression(context, null);
+                    final String targetPlayerId = targetPlayerSource.getPlayerId(context);
+                    Player targetPlayer = context.getGame().getPlayer(targetPlayerId);
+                    return targetPlayer.getCardsInDrawDeck().size() >= count;
+                } catch(PlayerNotFoundException exp) {
+                    context.getGame().sendErrorMessage(exp);
+                    return false;
+                }
             }
         };
     }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -9,6 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.PlayerCannotSolveMissionModifier;
@@ -19,7 +21,7 @@ public class RevealSeedCardAction extends ActionyAction {
     private enum Progress { misSeedResolved }
 
     public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, AttemptMissionAction attemptAction) {
-        super(revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
+        super(revealedCard.getGame(), revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCardId = revealedCard.getCardId();
         _missionAttemptActionId = attemptAction.getActionId();
     }
@@ -31,7 +33,8 @@ public class RevealSeedCardAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException,
+            PlayerNotFoundException {
         if (!getProgress(Progress.misSeedResolved)) {
             PhysicalCard revealedCard = cardGame.getCardFromCardId(_revealedCardId);
             Action attemptAction = cardGame.getActionById(_missionAttemptActionId);
@@ -47,7 +50,7 @@ public class RevealSeedCardAction extends ActionyAction {
                     }
                     if (revealedCard instanceof ST1EPhysicalCard stCard) {
                         return new RemoveDilemmaFromGameAction(
-                                cardGame.getPlayer(_performingPlayerId), stCard, location);
+                                cardGame.getPlayer(_performingPlayerId), stCard);
                     } else {
                         throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
                     }
@@ -56,6 +59,7 @@ public class RevealSeedCardAction extends ActionyAction {
                 throw new InvalidGameLogicException("No valid action found for mission attempt");
             }
         }
+        setAsSuccessful();
         return getNextAction();
     }
 

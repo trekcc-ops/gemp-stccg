@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -73,7 +74,7 @@ public class ActionResult {
         else return _optionalAfterTriggerActions.get(player);
     }
 
-    public void createOptionalAfterTriggerActions(DefaultGame game) {
+    public void createOptionalAfterTriggerActions(DefaultGame game) throws PlayerNotFoundException {
         Map<Player, List<TopLevelSelectableAction>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
             List<TopLevelSelectableAction> playerActions = new LinkedList<>();

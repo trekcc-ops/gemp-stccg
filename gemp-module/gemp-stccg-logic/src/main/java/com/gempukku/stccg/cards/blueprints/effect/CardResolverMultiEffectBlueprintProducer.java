@@ -19,7 +19,9 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.google.common.collect.Iterables;
@@ -120,7 +122,8 @@ public class CardResolverMultiEffectBlueprintProducer {
         result.addEffectBlueprint(
                 new DelayedEffectBlueprint() {
                     @Override
-                    protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
+                    protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context)
+                            throws PlayerNotFoundException {
                         final Collection<PhysicalCard> cardsFromMemory = context.getCardsFromMemory(memory);
                         final List<Collection<PhysicalCard>> effectCardLists = new LinkedList<>();
 
@@ -145,9 +148,9 @@ public class CardResolverMultiEffectBlueprintProducer {
                                                 targetPlayer, Iterables.getOnlyElement(cards));
                                 case DOWNLOAD -> Iterables.getOnlyElement(cards).getPlayCardAction(true);
                                 case PUTCARDSFROMPLAYONBOTTOMOFDECK ->
-                                        new PlaceCardsOnBottomOfDrawDeckAction(targetPlayer, cards);
+                                        new PlaceCardsOnBottomOfDrawDeckAction(context.getGame(), targetPlayer, cards);
                                 case REMOVECARDSINDISCARDFROMGAME ->
-                                        new RemoveCardFromPlayAction(targetPlayer, cards);
+                                        new RemoveCardFromPlayAction(context.getGame(), targetPlayer, cards);
                                 case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                                         SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                                         new ShuffleCardsIntoDrawDeckAction(context.getSource(), context.getPerformingPlayer(), Filters.in(cards));
@@ -219,10 +222,21 @@ public class CardResolverMultiEffectBlueprintProducer {
                     actionContext.getCardFromMemory(sourceMemory)).stream().toList();
         } else {
             return switch (fromZone) {
-                case HAND, DISCARD, DRAW_DECK -> actionContext -> Filters.filter(
-                        actionContext.getGameState().getZoneCards(targetPlayer.getPlayerId(actionContext), fromZone),
-                        sourceMemory == null ?
-                                Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+                case HAND, DISCARD, DRAW_DECK -> actionContext -> {
+                    try {
+                        String playerId = targetPlayer.getPlayerId(actionContext);
+                        Player target = actionContext.getGame().getPlayer(playerId);
+                        return Filters.filter(
+                                actionContext.getGameState().getZoneCards(target, fromZone),
+                                sourceMemory == null ?
+                                        Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+                    } catch(PlayerNotFoundException exp) {
+                        DefaultGame cardGame = actionContext.getGame();
+                        cardGame.sendErrorMessage(exp);
+                        cardGame.cancelGame();
+                        return null;
+                    }
+                };
                 default -> throw new InvalidCardDefinitionException(
                         "getCardSource function not defined for zone " + fromZone.getHumanReadable());
             };

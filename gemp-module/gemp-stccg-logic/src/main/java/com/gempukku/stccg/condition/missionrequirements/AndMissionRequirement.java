@@ -3,10 +3,7 @@ package com.gempukku.stccg.condition.missionrequirements;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.SkillName;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class AndMissionRequirement implements MissionRequirement {
 
@@ -32,5 +29,17 @@ public class AndMissionRequirement implements MissionRequirement {
     @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
         return _requirements.stream().allMatch(requirement -> requirement.canBeMetBy(personnel));
+    }
+
+    public String toString() {
+        StringJoiner sj = new StringJoiner(" + ");
+        for (MissionRequirement requirement : _requirements) {
+            if (requirement instanceof OrMissionRequirement orReq) {
+                sj.add("(" + orReq + ")");
+            } else {
+                sj.add(requirement.toString());
+            }
+        }
+        return sj.toString();
     }
 }

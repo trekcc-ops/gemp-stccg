@@ -1,11 +1,13 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -25,7 +27,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         implements AffiliatedCard, AttemptingUnit, CardWithCrew {
 
     private boolean _docked = false;
-    private FacilityCard _dockedAtCard = null;
+    @JsonProperty("dockedAtCardId")
+    private Integer _dockedAtCardId;
     int _rangeAvailable;
     int _usedRange;
 
@@ -34,24 +37,24 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 // TODO - Implement land, take off, cloak
             if (isControlledBy(player.getPlayerId())) {
                 if (hasTransporters())
-                    actions.add(new BeamCardsAction(player, this));
+                    actions.add(new BeamCardsAction(cardGame, player, this));
                 if (isDocked())
-                    actions.add(new WalkCardsAction(player, this));
+                    actions.add(new WalkCardsAction(cardGame, player, this));
                 if (isStaffed()) {
                     if (isDocked())
                         actions.add(new UndockAction(player, this));
                     if (!isDocked())
-                        actions.add(new DockAction(player, this));
+                        actions.add(new DockAction(player, this, _game));
                     try {
-                        actions.add(new FlyShipAction(player, this));
+                        actions.add(new FlyShipAction(player, this, _game));
                     } catch(InvalidGameLogicException exp) {
-                        player.getGame().sendErrorMessage(exp);
+                        _game.sendErrorMessage(exp);
                     }
                 }
             }
@@ -70,7 +73,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     public void dockAtFacility(FacilityCard facilityCard) {
         _docked = true;
-        _dockedAtCard = facilityCard;
+        _dockedAtCardId = facilityCard.getCardId();
     }
 
     public Player getPlayer() {
@@ -80,12 +83,16 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     public void undockFromFacility() {
         _docked = false;
-        _dockedAtCard = null;
-        _game.getGameState().detachCard(this, Zone.AT_LOCATION);
+        _dockedAtCardId = null;
+        _game.getGameState().detachCard(_game,this, Zone.AT_LOCATION);
     }
 
-    public PhysicalCard getDockedAtCard() {
-        return _dockedAtCard;
+    public PhysicalCard getDockedAtCard(DefaultGame cardGame) {
+        try {
+            return cardGame.getCardFromCardId(_dockedAtCardId);
+        } catch(Exception exp) {
+            return null;
+        }
     }
 
     public Collection<PhysicalCard> getCrew() {
@@ -142,7 +149,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public boolean canAttemptMission(MissionLocation mission) {
-        try {
             if (_currentLocation != mission)
                 return false;
             if (_docked)
@@ -167,19 +173,11 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                     matchesMission = true;
             }
             return matchesShip && matchesMission;
-        } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
-            return false;
-        }
     }
 
 
     public Collection<PersonnelCard> getAllPersonnel() {
         return getPersonnelInCrew();
-    }
-
-    public int getAttemptingUnitId() throws InvalidGameLogicException {
-        return _game.getGameState().getAttemptingUnitId(this);
     }
 
 }

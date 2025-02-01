@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
     @Test
-    public void assignMissionSpecialistsTest() throws DecisionResultInvalidException {
+    public void assignMissionSpecialistsTest() throws DecisionResultInvalidException, InvalidGameOperationException {
         initializeGameToTestAMS();
         autoSeedMissions();
 

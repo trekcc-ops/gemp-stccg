@@ -4,6 +4,7 @@ import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.HallChatRoomMediator;
@@ -344,7 +345,7 @@ public class HallServer extends AbstractServer {
     }
 
     public final HallCommunicationChannel getCommunicationChannel(User player, int channelNumber)
-            throws SubscriptionExpiredException, SubscriptionConflictException {
+            throws HttpProcessingException {
         _hallDataAccessLock.readLock().lock();
         try {
             HallCommunicationChannel communicationChannel = _playerChannelCommunication.get(player);

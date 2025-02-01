@@ -1,12 +1,12 @@
 package com.gempukku.stccg.rules.st1e;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.LinkedList;
@@ -20,10 +20,11 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(String playerId) {
-        final List<PhysicalCard> cardsInHand = _game.getGameState().getHand(playerId);
+    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
+        final List<PhysicalCard> cardsInHand = player.getCardsInHand();
         final String currentPlayerId = _game.getGameState().getCurrentPlayerId();
         final List<TopLevelSelectableAction> result = new LinkedList<>();
+        boolean isCurrentPlayer = Objects.equals(player.getPlayerId(), currentPlayerId);
 
         final Phase phase = _game.getGameState().getCurrentPhase();
         if (phase == Phase.SEED_DOORWAY) {
@@ -34,12 +35,12 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             }
             return result;
         } else if (phase == Phase.SEED_MISSION && !cardsInHand.isEmpty()) {
-            if (Objects.equals(playerId, currentPlayerId)) {
+            if (isCurrentPlayer) {
                 result.add(new SeedMissionCardAction((MissionCard) cardsInHand.getFirst()));
             }
         } else if (phase == Phase.SEED_FACILITY) {
             for (PhysicalCard card : cardsInHand) {
-                if (Objects.equals(playerId, currentPlayerId)) {
+                if (isCurrentPlayer) {
                     if (card.canBeSeeded(_game)) {
                         TopLevelSelectableAction action = card.createSeedCardAction();
                         if (action != null && action.canBeInitiated(_game))
@@ -49,8 +50,8 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             }
             return result;
         } else if (phase == Phase.CARD_PLAY) {
-            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-                if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
+            for (PhysicalCard card : Filters.filter(player.getCardsInHand(), _game)) {
+                if (isCurrentPlayer) {
                     if (card.canBePlayed(_game)) {
                         TopLevelSelectableAction action = card.getPlayCardAction();
                         if (action != null && action.canBeInitiated(_game))
@@ -61,4 +62,5 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         }
         return result;
     }
+
 }

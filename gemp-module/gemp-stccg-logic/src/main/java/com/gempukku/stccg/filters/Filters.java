@@ -48,18 +48,26 @@ public class Filters {
             _characteristicFilterMap.put(characteristic, characteristic(characteristic));
     }
 
-    public static Collection<PhysicalCard> filterYourActive(Player player, Filterable... filters) {
-        return filterActive(player.getGame(), your(player), and(filters));
+    public static Collection<PhysicalCard> filterYourActive(DefaultGame cardGame, Player player,
+                                                            Filterable... filters) {
+        return filterActive(cardGame, your(player), and(filters));
     }
 
-    public static Collection<PhysicalCard> filterYourCardsPresentWith(Player player, PhysicalCard card,
+    public static Collection<PhysicalCard> filteredCardsYouOwnInPlay(DefaultGame cardGame, Player player,
+                                                            Filterable... filters) {
+        return filterActive(cardGame, your(player), and(filters));
+    }
+
+
+    public static Collection<PhysicalCard> filterYourCardsPresentWith(DefaultGame cardGame,
+                                                                      Player player, PhysicalCard card,
                                                                       Filterable... filters) {
-        return filterYourActive(player, presentWith(card), and(filters));
+        return filterYourActive(cardGame, player, presentWith(card), and(filters));
     }
 
-    public static List<FacilityCard> yourFacilitiesInPlay(Player player) {
+    public static List<FacilityCard> yourFacilitiesInPlay(DefaultGame cardGame, Player player) {
         List<FacilityCard> result = new LinkedList<>();
-        Collection<PhysicalCard> facilities = filterYourActive(player, CardType.FACILITY);
+        Collection<PhysicalCard> facilities = filterYourActive(cardGame, player, CardType.FACILITY);
         for (PhysicalCard facility : facilities) {
             if (facility instanceof FacilityCard && facility.isInPlay()) {
                 result.add((FacilityCard) facility);
@@ -67,6 +75,7 @@ public class Filters {
         }
         return result;
     }
+
 
 
     public static Collection<PersonnelCard> highestTotalAttributes(Collection<PersonnelCard> personnelCards) {
@@ -243,12 +252,12 @@ public class Filters {
     }
 
     public static Filter yourHand(Player player) {
-        return (game, physicalCard) -> game.getGameState().getHand(player.getPlayerId()).contains(physicalCard);
+        return (game, physicalCard) -> player.getCardsInHand().contains(physicalCard);
     }
 
     public static Filter bottomCardsOfDiscard(Player player, int cardCount, Filterable... filterables) {
         return (game, physicalCard) -> {
-            List<PhysicalCard> discardCards = player.getGame().getGameState().getDiscard(player.getPlayerId());
+            List<PhysicalCard> discardCards = player.getCardGroupCards(Zone.DISCARD);
             int cardsIdentified = 0;
             for (int i = discardCards.size() - 1; i >= 0; i--) {
                 if (and(filterables).accepts(game, discardCards.get(i)) && cardsIdentified < cardCount) {
@@ -261,6 +270,8 @@ public class Filters {
             return false;
         };
     }
+
+
 
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed(game);
 
@@ -325,7 +336,7 @@ public class Filters {
     }
 
     public static Filter youHaveNoCopiesInPlay(final Player player) {
-        return (game, physicalCard) -> filterYourActive(player, copyOfCard(physicalCard)).isEmpty();
+        return (game, physicalCard) -> filterYourActive(game, player, copyOfCard(physicalCard)).isEmpty();
     }
 
     public static Filter hasAttributeMatchingPersonnel(final PersonnelCard cardToMatch) {
@@ -555,8 +566,8 @@ public class Filters {
                 missionCard.getPoints() >= pointValue;
     }
 
-    public static Filter yourDiscard(String playerId) {
-        return (game, physicalCard) -> game.getGameState().getDiscard(playerId).contains(physicalCard);
+    public static Filter yourDiscard(Player player) {
+        return (game, physicalCard) -> player.getCardGroupCards(Zone.DISCARD).contains(physicalCard);
     }
 
     public static Filter personnelInAttemptingUnit(AttemptingUnit attemptingUnit) {

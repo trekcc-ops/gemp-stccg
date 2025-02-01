@@ -16,15 +16,15 @@ import java.util.List;
 
 public class WalkCardsAction extends BeamOrWalkAction {
 
-    public WalkCardsAction(Player player, PhysicalNounCard1E cardWalkingFrom) {
-        super(player, cardWalkingFrom);
+    public WalkCardsAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardWalkingFrom) {
+        super(cardGame, player, cardWalkingFrom);
     }
 
     @Override
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
         Collection<PhysicalCard> result = new LinkedList<>();
         if (_cardSource instanceof PhysicalShipCard ship && ship.isDocked())
-            result.add(ship.getDockedAtCard());
+            result.add(ship.getDockedAtCard(game));
         else if (_cardSource instanceof FacilityCard)
             result.addAll(Filters.filter(
                     _cardSource.getAttachedCards(game), game, Filters.ship, Filters.your(_performingPlayer)));
@@ -43,7 +43,7 @@ public class WalkCardsAction extends BeamOrWalkAction {
     public boolean requirementsAreMet(DefaultGame cardGame) {
             // TODO - No compatibility check
         return !_destinationOptions.isEmpty() &&
-                !Filters.filter(_cardSource.getAttachedCards(cardGame), Filters.personnel).isEmpty();
+                !Filters.filter(_cardSource.getAttachedCards((ST1EGame) cardGame), Filters.personnel).isEmpty();
     }
 
 }

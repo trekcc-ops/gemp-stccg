@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
@@ -15,9 +16,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -28,14 +27,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPhysicalCard implements PhysicalCard {
+public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> implements PhysicalCard<GenericGame> {
 
     protected final CardBlueprint _blueprint;
     protected final Player _owner;
     protected final int _cardId;
     protected Zone _zone;
-    protected PhysicalCard _attachedTo;
-    protected PhysicalCard _stackedOn;
+    private Integer _attachedToCardId;
+    private Integer _stackedOnCardId;
     protected MissionLocation _currentLocation;
     private boolean _placedOnMission = false;
 
@@ -45,7 +44,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _blueprint = blueprint;
     }
 
-    public Zone getZone() { return _zone; }
+    public Zone getZone() {
+        return _zone;
+    }
 
     public void setZone(Zone zone) { _zone = zone; }
 
@@ -76,11 +77,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
     }
 
-    public void startAffectingGame(DefaultGame game) {
-        game.getModifiersEnvironment().addModifierHooks(this);
+    public void startAffectingGame(GenericGame game) {
+        game.getModifiersEnvironment().addModifierHooks(game, this);
     }
 
-    public void stopAffectingGame(DefaultGame game) {
+    public void stopAffectingGame(GenericGame game) {
         game.getModifiersEnvironment().removeModifierHooks(this);
     }
 
@@ -89,25 +90,43 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint;
     }
 
-    public void attachTo(PhysicalCard physicalCard) {
-        _attachedTo = physicalCard;
+    public void attachTo(PhysicalCard<? extends GenericGame> physicalCard) {
+        _attachedToCardId = physicalCard.getCardId();
     }
 
     public void detach() {
-        _attachedTo = null;
+        _attachedToCardId = null;
     }
 
     public PhysicalCard getAttachedTo() {
-        return _attachedTo;
+        if (_attachedToCardId == null) {
+            return null;
+        } else {
+            try {
+                return getGame().getCardFromCardId(_attachedToCardId);
+            } catch(CardNotFoundException exp) {
+                getGame().sendErrorMessage(exp);
+                return null;
+            }
+        }
     }
 
     public void stackOn(PhysicalCard physicalCard) {
-        _stackedOn = physicalCard;
+        _stackedOnCardId = physicalCard.getCardId();
     }
 
 
     public PhysicalCard getStackedOn() {
-        return _stackedOn;
+        if (_stackedOnCardId == null) {
+            return null;
+        } else {
+            try {
+                return getGame().getCardFromCardId(_stackedOnCardId);
+            } catch(CardNotFoundException exp) {
+                getGame().sendErrorMessage(exp);
+                return null;
+            }
+        }
     }
 
 
@@ -115,13 +134,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
-    public int getLocationZoneIndex() {
-        if (_currentLocation == null)
-            return -1;
-        else return _currentLocation.getLocationZoneIndex();
-    }
 
-    private boolean canEnterPlay(DefaultGame game, List<Requirement> requirements) {
+    private boolean canEnterPlay(GenericGame game, List<Requirement> requirements) {
         if (cannotEnterPlayPerUniqueness())
             return false;
         if (requirements != null && !createActionContext(game).acceptsAllRequirements(requirements))
@@ -131,12 +145,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     protected boolean cannotEnterPlayPerUniqueness() {
-        return isUnique() && (_owner.hasACopyOfCardInPlay(this));
+        return isUnique() && (_owner.hasACopyOfCardInPlay(getGame(), this));
     }
 
-    public boolean canBeSeeded(DefaultGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }
+    public boolean canBeSeeded(GenericGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }
 
-    public boolean canBePlayed(DefaultGame game) { return canEnterPlay(game, _blueprint.getPlayRequirements()); }
+    public boolean canBePlayed(GenericGame game) { return canEnterPlay(game, _blueprint.getPlayRequirements()); }
 
 
     public boolean isControlledBy(String playerId) {
@@ -173,7 +187,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public abstract TopLevelSelectableAction getPlayCardAction(boolean forFree);
 
 
-    public boolean hasTextRemoved(DefaultGame game) {
+    public boolean hasTextRemoved(GenericGame game) {
         for (Modifier modifier :
                 game.getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
             if (modifier.hasRemovedText(game, this))
@@ -189,15 +203,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, GenericGame cardGame) {
         return new LinkedList<>();
     }
 
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player) {
-        return _blueprint.getGameTextActionsWhileInPlay(player, this);
+        return _blueprint.getGameTextActionsWhileInPlay(player, this, getGame());
     }
 
-    public List<PhysicalCard> getStackedCards(DefaultGame game) {
+    public List<PhysicalCard> getStackedCards(GenericGame game) {
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard card : game.getGameState().getAllCardsInGame()) {
             if (card.getStackedOn() == this)
@@ -206,9 +220,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public Collection<PhysicalCard> getAttachedCards(DefaultGame game) { return game.getGameState().getAttachedCards(this); }
+    public Collection<PhysicalCard> getAttachedCards(GenericGame game) { return game.getGameState().getAttachedCards(this); }
 
-    public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game) {
+    public List<? extends ExtraPlayCost> getExtraCostToPlay(GenericGame game) {
         if (_blueprint.getExtraPlayCosts() == null)
             return null;
 
@@ -254,12 +268,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult)
+            throws PlayerNotFoundException {
         return switch (_blueprint) {
-            case Blueprint212_019 riskBlueprint -> riskBlueprint.getValidResponses(this, player, actionResult);
-            case Blueprint156_010 surpriseBlueprint -> surpriseBlueprint.getValidResponses(this, player, actionResult);
+            case Blueprint212_019 riskBlueprint ->
+                    riskBlueprint.getValidResponses(this, player, actionResult, getGame());
+            case Blueprint156_010 surpriseBlueprint ->
+                    surpriseBlueprint.getValidResponses(this, player, actionResult, getGame());
             case Blueprint109_063 missionSpecBlueprint ->
-                    missionSpecBlueprint.getValidResponses(this, player, actionResult);
+                    missionSpecBlueprint.getValidResponses(this, player, actionResult, getGame());
             case null, default -> {
                 assert _blueprint != null;
                 yield getActionsFromActionSources(player.getPlayerId(), this, actionResult,
@@ -272,7 +289,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
     }
 
-    ActionContext createActionContext(DefaultGame game) {
+    ActionContext createActionContext(GenericGame game) {
         return new DefaultActionContext(getOwnerName(), game, this, null);
     }
 
@@ -281,9 +298,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.isUnique();
     }
 
-    public Integer getNumberOfCopiesSeededByPlayer(Player player) {
+    public Integer getNumberOfCopiesSeededByPlayer(Player player, GenericGame cardGame) {
         int total = 0;
-        Collection<Action> performedActions = player.getGame().getActionsEnvironment().getPerformedActions();
+        Collection<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
         for (Action action : performedActions) {
             if (action instanceof SeedCardAction seedCardAction) {
                 if (Objects.equals(seedCardAction.getPerformingPlayerId(), player.getPlayerId()) &&
@@ -293,6 +310,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
         return total;
     }
+
 
     public boolean isCopyOf(PhysicalCard card) {
         return card.getBlueprint() == _blueprint;
@@ -305,7 +323,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
     }
 
-    public boolean hasIcon(DefaultGame game, CardIcon icon) {
+    public boolean hasIcon(GenericGame game, CardIcon icon) {
         return game.getModifiersQuerying().hasIcon(this, icon);
     }
 
@@ -322,7 +340,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean hasSkill(SkillName skillName) { return false; }
     // TODO May need to implement something here for weird non-personnel cards that have skills
 
-    public boolean checkTurnLimit(DefaultGame game, int max) {
+    public boolean checkTurnLimit(GenericGame game, int max) {
         // TODO This isn't right since it checks against the card instead of the action
         return game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
     }
@@ -339,9 +357,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
 
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
+    public List<Action> getEncounterActions(GenericGame game, AttemptingUnit attemptingUnit,
                                             EncounterSeedCardAction action, MissionLocation missionLocation)
-            throws InvalidGameLogicException {
+            throws InvalidGameLogicException, PlayerNotFoundException {
         throw new InvalidGameLogicException(
                 "Tried to call getEncounterActions for a card that does not have an encounter action");
     }

@@ -6,22 +6,29 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 public abstract class ActivateTribblePowerAction extends ActionyAction {
     protected final PhysicalCard _performingCard;
     protected final TribblePower _tribblePower;
+    protected final Player _performingPlayer;
 
-    public ActivateTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
-        super(actionContext.getPerformingPlayer(), ActionType.ACTIVATE_TRIBBLE_POWER);
+    public ActivateTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+            throws PlayerNotFoundException {
+        super(actionContext.getGame(), actionContext.getPerformingPlayer(), ActionType.ACTIVATE_TRIBBLE_POWER);
         _performingCard = actionContext.getSource();
         _tribblePower = power;
+        _performingPlayer = actionContext.getGame().getPlayer(_performingPlayerId);
     }
 
     public ActivateTribblePowerAction(TribblesActionContext actionContext, TribblePower power,
-                                      Enum<?>[] progressNames) throws InvalidGameLogicException {
-        super(actionContext.getPerformingPlayer(), "Activate tribble power", ActionType.ACTIVATE_TRIBBLE_POWER, progressNames);
+                                      Enum<?>[] progressNames) throws InvalidGameLogicException, PlayerNotFoundException {
+        super(actionContext.getGame(), actionContext.getPerformingPlayer(), "Activate tribble power",
+                ActionType.ACTIVATE_TRIBBLE_POWER, progressNames);
         _performingCard = actionContext.getSource();
         _tribblePower = power;
+        _performingPlayer = actionContext.getGame().getPlayer(_performingPlayerId);
     }
 
 
@@ -35,7 +42,7 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Action cost = getNextCost();
         if (cost != null)
             return cost;

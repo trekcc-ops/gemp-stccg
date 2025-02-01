@@ -11,7 +11,7 @@ public class LimitEvaluator extends Evaluator {
     private final ActionContext _actionContext;
 
     public LimitEvaluator(ActionContext actionContext, ValueSource value, ValueSource limit) {
-        super(actionContext);
+        super();
         _actionContext = actionContext;
         _value = value;
         _limit = limit;

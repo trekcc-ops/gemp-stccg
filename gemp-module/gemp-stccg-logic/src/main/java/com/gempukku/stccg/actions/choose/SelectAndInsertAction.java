@@ -1,14 +1,17 @@
 package com.gempukku.stccg.actions.choose;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -16,23 +19,30 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class SelectAndInsertAction extends ActionyAction {
-    private final PhysicalCard _actionSource;
-    private final List<TopLevelSelectableAction> _actionsToChooseFrom = new LinkedList<>();
-    private boolean _actionSelected;
+    @JsonProperty("selectableActions")
+    @JsonIdentityReference(alwaysAsId=true)
+    private final List<TopLevelSelectableAction> _selectableActions = new LinkedList<>();
+    @JsonProperty("parentAction")
+    @JsonIdentityReference(alwaysAsId=true)
     private final ActionyAction _parentAction;
-    private Action _chosenAction;
+    @JsonProperty("selectedAction")
+    @JsonIdentityReference(alwaysAsId=true)
+    private Action _selectedAction;
+    @JsonProperty("decisionId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private AwaitingDecision _decision;
 
-    public SelectAndInsertAction(ActionyAction parentAction, PhysicalCard performingCard, Player selectingPlayer,
+    public SelectAndInsertAction(DefaultGame cardGame, ActionyAction parentAction, Player selectingPlayer,
                                  TopLevelSelectableAction... actions) {
-        super(selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
-        _actionsToChooseFrom.addAll(Arrays.asList(actions));
-        _actionSource = performingCard;
+        super(cardGame, selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
+        _selectableActions.addAll(Arrays.asList(actions));
         _parentAction = parentAction;
     }
 
+
     public boolean requirementsAreMet(DefaultGame game) {
         boolean result = false;
-        for (Action action : _actionsToChooseFrom) {
+        for (Action action : _selectableActions) {
             if (action.canBeInitiated(game)) {
                 result = true;
             }
@@ -41,41 +51,40 @@ public class SelectAndInsertAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_actionSelected) {
-            List<Action> performableActions = new LinkedList<>();
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        if (_decision == null) {
+            List<TopLevelSelectableAction> performableActions = new LinkedList<>();
             List<String> actionTexts = new LinkedList<>();
-            for (Action action : _actionsToChooseFrom) {
+            for (TopLevelSelectableAction action : _selectableActions) {
                 if (action.canBeInitiated(cardGame)) {
                     performableActions.add(action);
                     actionTexts.add(action.getActionSelectionText(cardGame));
                 }
             }
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            AwaitingDecision decision = new MultipleChoiceAwaitingDecision(performingPlayer, "Choose an action",
-                    actionTexts) {
+            _decision = new MultipleChoiceAwaitingDecision(performingPlayer, "Choose an action",
+                    actionTexts, cardGame) {
                 @Override
                 protected void validDecisionMade(int index, String result) {
                     try {
-                        _chosenAction = performableActions.get(index);
-                        _parentAction.insertAction(_chosenAction);
-                        _actionSelected = true;
+                        _selectedAction = performableActions.get(index);
+                        _parentAction.insertAction(_selectedAction);
+                        setAsSuccessful();
                         _wasCarriedOut = true;
                     } catch(NoSuchElementException exp) {
+                        setAsFailed();
                         cardGame.sendErrorMessage(exp);
                     }
                 }
             };
-            cardGame.getUserFeedback().sendAwaitingDecision(decision);
+            cardGame.getUserFeedback().sendAwaitingDecision(_decision);
         }
         return getNextAction();
     }
 
     @Override
     public boolean wasCarriedOut() {
-        return _wasCarriedOut;
+        return wasCompleted();
     }
-
-    public PhysicalCard getPerformingCard() { return _actionSource; }
 
 }

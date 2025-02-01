@@ -3,7 +3,10 @@ package com.gempukku.stccg.decisions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 
 import java.util.*;
 
@@ -12,13 +15,14 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
     private final int _minimum;
     private final int _maximum;
 
-    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards) {
-        this(player, text, physicalCards, 0, physicalCards.size());
+    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
+                                  DefaultGame cardGame) {
+        this(player, text, physicalCards, 0, physicalCards.size(), cardGame);
     }
 
     public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
-                                  int minimum, int maximum) {
-        super(player, text, AwaitingDecisionType.CARD_SELECTION);
+                                  int minimum, int maximum, DefaultGame cardGame) {
+        super(player, text, AwaitingDecisionType.CARD_SELECTION, cardGame);
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;
@@ -51,7 +55,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
             if (_minimum == 0)
                 return Collections.emptySet();
             else
-                throw new DecisionResultInvalidException();
+                throw new DecisionResultInvalidException("No cards selected");
         }
         String[] cardIds = response.split(",");
         if (cardIds.length < _minimum || cardIds.length > _maximum)
@@ -66,7 +70,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
                 result.add(card);
             }
         } catch (NumberFormatException e) {
-            throw new DecisionResultInvalidException();
+            throw new DecisionResultInvalidException("No valid card ids matching " + response);
         }
 
         return result;

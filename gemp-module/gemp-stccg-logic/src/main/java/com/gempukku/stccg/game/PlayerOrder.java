@@ -1,41 +1,46 @@
 package com.gempukku.stccg.game;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.*;
 
-import java.util.*;
+import java.beans.ConstructorProperties;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
-@JsonSerialize(using = PlayerOrderSerializer.class)
+@JsonIncludeProperties({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
+@JsonPropertyOrder({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
 public class PlayerOrder {
     private boolean _isReversed;
     private final List<String> _turnOrder = new LinkedList<>();
+    @JsonProperty("firstPlayer")
     private final String _firstPlayer;
-    private String _currentPlayer;
-    public PlayerOrder(List<String> turnOrder) {
-        _turnOrder.addAll(turnOrder);
-        _isReversed = false;
+    @JsonProperty("currentPlayer")
+    private String _currentPlayerId;
+    @ConstructorProperties({"isReversed", "currentPlayer", "turnOrder"})
+    public PlayerOrder(boolean isReversed, String currentPlayer, List<String> turnOrder) {
+        _isReversed = isReversed;
         _firstPlayer = turnOrder.getFirst();
-        _currentPlayer = turnOrder.getFirst();
+        _currentPlayerId = currentPlayer;
+        _turnOrder.addAll(turnOrder);
     }
 
-    public PlayerOrder(JsonNode node) {
-        _isReversed = node.get("isReversed").booleanValue();
-        _firstPlayer = node.get("firstPlayer").textValue();
-        _currentPlayer = node.get("currentPlayer").textValue();
-        for (JsonNode playerNode : node.get("turnOrder"))
-            _turnOrder.add(playerNode.textValue());
+    public PlayerOrder(List<String> turnOrder) {
+        this(false, turnOrder.getFirst(), turnOrder);
     }
 
     public String getFirstPlayer() {
         return _firstPlayer;
     }
-    public String getCurrentPlayer() { return _currentPlayer; }
-    public void setCurrentPlayer(String player) { _currentPlayer = player; }
+    public String getCurrentPlayer() { return _currentPlayerId; }
+    public void setCurrentPlayer(String player) { _currentPlayerId = player; }
 
+    @JsonProperty("turnOrder")
     public List<String> getAllPlayers() {
         return Collections.unmodifiableList(_turnOrder);
     }
 
+    @JsonIgnore
     public ActionOrder getCounterClockwisePlayOrder(String startingPlayerId, boolean looped) {
         int currentPlayerIndex = _turnOrder.indexOf(startingPlayerId);
         List<String> playOrder = new ArrayList<>();
@@ -49,6 +54,7 @@ public class PlayerOrder {
         return new ActionOrder(playOrder, looped);
     }
 
+    @JsonIgnore
     public ActionOrder getClockwisePlayOrder(String startingPlayerId, boolean looped) {
         int currentPlayerIndex = _turnOrder.indexOf(startingPlayerId);
         List<String> playOrder = new ArrayList<>();
@@ -62,6 +68,13 @@ public class PlayerOrder {
         return new ActionOrder(playOrder, looped);
     }
 
+    @JsonIgnore
+    public ActionOrder getClockwisePlayOrder(Player startingPlayer, boolean looped) {
+        return getClockwisePlayOrder(startingPlayer.getPlayerId(), looped);
+    }
+
+
+    @JsonIgnore
     public ActionOrder getStandardPlayOrder(String startingPlayerId, boolean looped) {
         if (!_isReversed) {
             return getClockwisePlayOrder(startingPlayerId, looped);
@@ -70,17 +83,18 @@ public class PlayerOrder {
         }
     }
 
+    @JsonIgnore
     public int getPlayerCount() {
         return _turnOrder.size();
     }
     public void advancePlayer() {
-        int currentPlayerIndex = _turnOrder.indexOf(_currentPlayer);
+        int currentPlayerIndex = _turnOrder.indexOf(_currentPlayerId);
         if (currentPlayerIndex == _turnOrder.size() - 1) {
             currentPlayerIndex = 0;
         } else {
             currentPlayerIndex++;
         }
-        _currentPlayer = _turnOrder.get(currentPlayerIndex);
+        _currentPlayerId = _turnOrder.get(currentPlayerIndex);
     }
 
     public void setReversed(boolean isReversed) { _isReversed = isReversed; }
@@ -88,6 +102,7 @@ public class PlayerOrder {
     public void reversePlayerOrder() {
         _isReversed = !_isReversed;
     }
+    @JsonProperty("isReversed")
     public boolean isReversed() { return _isReversed; }
 
 }

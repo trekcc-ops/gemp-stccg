@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
@@ -39,11 +40,11 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param player              the player
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
-    BeamOrWalkAction(Player player, PhysicalNounCard1E cardSource) {
-        super(player, ActionType.MOVE_CARDS);
+    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource) {
+        super(cardGame, player, ActionType.MOVE_CARDS);
         _performingPlayer = player;
         _cardSource = cardSource;
-        _destinationOptions = getDestinationOptions(cardSource.getGame());
+        _destinationOptions = getDestinationOptions((ST1EGame) cardGame);
     }
 
     protected abstract String actionVerb();
@@ -80,7 +81,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
         if (!_fromCardChosen) {
             if (_selectOriginAction == null) {
-                _selectOriginAction = new SelectVisibleCardAction(_performingPlayer,
+                _selectOriginAction = new SelectVisibleCardAction(cardGame, _performingPlayer,
                         "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
                 appendTargeting(_selectOriginAction);
                 return getNextCost();
@@ -103,7 +104,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
         if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(_performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(cardGame, _performingPlayer,
                         "Choose card to " + actionVerb() + " to ", _destinationOptions);
                 appendTargeting(_selectDestinationAction);
                 return getNextCost();
@@ -119,7 +120,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                 Collection<PhysicalCard> movableCards =
                         Filters.filter(_origin.getAttachedCards(_origin.getGame()),
                                 Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
-                _selectCardsToMoveAction = new SelectVisibleCardsAction(_performingPlayer,
+                _selectCardsToMoveAction = new SelectVisibleCardsAction(cardGame, _performingPlayer,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
                         movableCards, 1);
                 appendTargeting(_selectCardsToMoveAction);
@@ -130,12 +131,17 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
             }
         }
 
+        processEffect(cardGame);
+        return null;
+    }
+
+    private void processEffect(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_wasCarriedOut) {
             for (PhysicalCard card : _cardsToMove) {
-                cardGame.getGameState().transferCard(card, _destination); // attach card to destination card
+                cardGame.getGameState().transferCard(cardGame, card, _destination); // attach card to destination card
                 card.setLocation(_destination.getLocation());
                 if (_origin instanceof MissionCard)
-                    ((PhysicalReportableCard1E) card).leaveAwayTeam();
+                    ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
                 if (_destination instanceof MissionCard mission)
                     ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission.getLocation());
             }
@@ -145,9 +151,8 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                         _origin.getCardLink() + " to " + _destination.getCardLink());
             }
             _wasCarriedOut = true;
+            setAsSuccessful();
         }
-
-        return getNextAction();
     }
 
     public void setCardsToMove(Collection<? extends PhysicalCard> cards) {

@@ -3,9 +3,7 @@ package com.gempukku.stccg.processes.tribbles;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
@@ -18,7 +16,7 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
     }
 
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException {
 
         LinkedList<String> playersInOrder = new LinkedList<>(_game.getPlayerIds());
         Collections.shuffle(playersInOrder, ThreadLocalRandom.current());
@@ -27,15 +25,16 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
         LinkedList<String> playersSelecting = new LinkedList<>(playersInOrder);
         Map<String, Integer> playersWithOneValue = new LinkedHashMap<>();
 
-        for (String player: playersSelecting) {
-            playersWithOneValue.put(player, playerOnlyHasOneTribbleValue(player));
+        for (String playerId : playersSelecting) {
+            Player player = cardGame.getPlayer(playerId);
+            playersWithOneValue.put(playerId, playerOnlyHasOneTribbleValue(player));
         }
 
         while (playersSelecting.size() > 1) {
             startingTribbles.clear();
 
             for (String player : playersSelecting) {
-                List<PhysicalCard> deckCards = _game.getGameState().getZoneCards(player, Zone.DRAW_DECK);
+                List<PhysicalCard> deckCards = _game.getGameState().getZoneCards(cardGame.getPlayer(player), Zone.DRAW_DECK);
                 PhysicalCard randomCard = deckCards.get(new Random().nextInt(deckCards.size()));
                 CardBlueprint randomBlueprint = randomCard.getBlueprint();
                 _game.sendMessage(player + " drew " + randomBlueprint.getTitle());
@@ -68,15 +67,12 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
                 playersSelecting.subList(1, playersSelecting.size()).clear();
             }
         }
-
-        String _firstPlayer = playersSelecting.getFirst();
-
-        _game.getGameState().initializePlayerOrder(new PlayerOrder(playersInOrder));
+        _game.initializePlayerOrder(new PlayerOrder(playersInOrder));
     }
     
-    private Integer playerOnlyHasOneTribbleValue(String playerId) {
+    private Integer playerOnlyHasOneTribbleValue(Player player) {
         ArrayList<Integer> uniqueValues = new ArrayList<>();
-        for (PhysicalCard card : _game.getGameState().getDrawDeck(playerId)) {
+        for (PhysicalCard card : player.getCardsInDrawDeck()) {
             int value = card.getBlueprint().getTribbleValue();
             if (!uniqueValues.contains(value))
                 uniqueValues.add(value);

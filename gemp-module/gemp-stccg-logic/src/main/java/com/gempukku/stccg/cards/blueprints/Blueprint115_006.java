@@ -40,8 +40,8 @@ public class Blueprint115_006 extends CardBlueprint {
             }
         }
 
-        result.add(new StopCardsAction(thisCard.getOwner(), cardsToStop));
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+        result.add(new StopCardsAction(game, thisCard.getOwner(), cardsToStop));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         return result;
     }
 

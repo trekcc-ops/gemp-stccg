@@ -1,5 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.Action;
@@ -19,7 +20,7 @@ public class PlayerCantPlayCardsModifier extends AbstractModifier {
 
     @Override
     public boolean canPerformAction(DefaultGame game, String performingPlayer, Action action) {
-        return action.getActionType() != Action.ActionType.PLAY_CARD
+        return action.getActionType() != ActionType.PLAY_CARD
                 || !performingPlayer.equals(_playerId);
     }
 }

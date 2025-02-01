@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
@@ -19,21 +20,23 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     private Map<String, List<String>> _validCombinations;
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
-                                           Collection<? extends PhysicalCard> physicalCards) {
-        this(player, text, physicalCards, physicalCards, 0, physicalCards.size());
+                                           Collection<? extends PhysicalCard> physicalCards, DefaultGame cardGame) {
+        this(player, text, physicalCards, physicalCards, 0, physicalCards.size(), cardGame);
     }
 
 
+
     public ArbitraryCardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
-                                           int minimum, int maximum) {
-        this(player, text, physicalCards, physicalCards, minimum, maximum);
+                                           int minimum, int maximum, DefaultGame cardGame) {
+        this(player, text, physicalCards, physicalCards, minimum, maximum, cardGame);
     }
 
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards,
-                                           Collection<? extends PhysicalCard> selectable, int minimum, int maximum) {
-        super(player, text, AwaitingDecisionType.ARBITRARY_CARDS);
+                                           Collection<? extends PhysicalCard> selectable, int minimum, int maximum,
+                                           DefaultGame cardGame) {
+        super(player, text, AwaitingDecisionType.ARBITRARY_CARDS, cardGame);
         _physicalCards.addAll(physicalCards);
         _selectable = selectable;
         _minimum = minimum;
@@ -49,8 +52,8 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards,
                                            Map<PersonnelCard, List<PersonnelCard>> validCombinations,
-                                           int minimum, int maximum) {
-        super(player, text, AwaitingDecisionType.CARD_SELECTION_FROM_COMBINATIONS);
+                                           int minimum, int maximum, DefaultGame cardGame) {
+        super(player, text, AwaitingDecisionType.CARD_SELECTION_FROM_COMBINATIONS, cardGame);
         _physicalCards.addAll(physicalCards);
         _selectable = physicalCards;
         _minimum = minimum;
@@ -67,7 +70,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
                 _validCombinations.put(cardId, pairingsList);
             }
         } catch(InvalidGameLogicException exp) {
-            player.getGame().sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
         }
 
         setParam("min", String.valueOf(minimum));

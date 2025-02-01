@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class GainSkillModifier extends AbstractModifier implements SkillAffectin
     }
 
     @Override
-    public String getCardInfoText(PhysicalCard affectedCard) {
+    public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         StringJoiner sj = new StringJoiner(", ");
         for (SkillName skill : _skills)
             sj.add(skill.get_humanReadable());

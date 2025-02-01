@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
@@ -32,8 +33,8 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard) {
-        DefaultGame game = player.getGame();
+    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+                                                                        DefaultGame game) {
         Phase currentPhase = game.getCurrentPhase();
         List<TopLevelSelectableAction> actions = new LinkedList<>();
 
@@ -45,25 +46,25 @@ public class Blueprint155_026 extends CardBlueprint {
             getItDoneAction.setCardActionPrefix("1");
 
             Filter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
-            SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(player,
+            SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(game, player,
                     "Select cards to place beneath draw deck", selectableFilter, 2, 2);
-            Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(player, selectCardsToPlaceAction);
+            Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(game, player, selectCardsToPlaceAction);
             getItDoneAction.appendCost(costAction);
 
-            TopLevelSelectableAction choice1 = choice1(thisCard, player);
-            TopLevelSelectableAction choice2 = choice2(thisCard, player);
+            TopLevelSelectableAction choice1 = choice1(game, thisCard, player);
+            TopLevelSelectableAction choice2 = choice2(game, thisCard, player);
             TopLevelSelectableAction choice3 = choice3(thisCard, player);
 
             Action chooseAction =
-                    new SelectAndInsertAction(getItDoneAction, thisCard, player, choice1, choice2, choice3);
+                    new SelectAndInsertAction(game, getItDoneAction, player, choice1, choice2, choice3);
             getItDoneAction.appendEffect(chooseAction);
 
             // after any use, discard incident OR discard a [TNG] card from hand
             Filter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
             Filter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
-            SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(player,
+            SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(game, player,
                     "Select a card to discard", discardCardFilter);
-            Action discardAction = new DiscardCardAction(thisCard, player, selectCardToDiscardAction);
+            Action discardAction = new DiscardCardAction(game, thisCard, player, selectCardToDiscardAction);
             getItDoneAction.appendEffect(discardAction);
 
             actions.add(getItDoneAction);
@@ -71,29 +72,31 @@ public class Blueprint155_026 extends CardBlueprint {
         return actions;
     }
 
-    private TopLevelSelectableAction choice1(PhysicalCard thisCard, Player player) {
-        SelectCardsAction targetAction = new SelectCardsFromDialogAction(player,
+    private TopLevelSelectableAction choice1(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
+        SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard.getGame(), player,
                 "Select a personnel",
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
                         CardType.PERSONNEL));
 
-        ActionCardResolver resolver = new ActionCardResolver(targetAction);
+        ActionCardResolver resolver = new SelectCardsResolver(targetAction);
         Modifier modifier = new AllAttributeModifier(thisCard, resolver, 2);
 
-        TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
+        TopLevelSelectableAction addModifierAction =
+                new AddUntilEndOfTurnModifierAction(cardGame, player, thisCard, modifier);
         addModifierAction.appendCost(targetAction);
         return addModifierAction;
     }
 
-    private TopLevelSelectableAction choice2(PhysicalCard thisCard, Player player) {
-        SelectVisibleCardAction targetAction = new SelectVisibleCardAction(player, "Select a ship",
+    private TopLevelSelectableAction choice2(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
+        SelectVisibleCardAction targetAction = new SelectVisibleCardAction(thisCard.getGame(), player, "Select a ship",
                 Filters.and(Filters.your(player), Filters.inPlay, CardIcon.TNG_ICON,
                         CardType.SHIP));
 
-        ActionCardResolver resolver = new ActionCardResolver(targetAction);
+        ActionCardResolver resolver = new SelectCardsResolver(targetAction);
         Modifier modifier = new RangeModifier(thisCard, resolver, 2);
 
-        TopLevelSelectableAction addModifierAction = new AddUntilEndOfTurnModifierAction(player, thisCard, modifier);
+        TopLevelSelectableAction addModifierAction =
+                new AddUntilEndOfTurnModifierAction(cardGame, player, thisCard, modifier);
         addModifierAction.appendCost(targetAction);
         return addModifierAction;
     }

@@ -1,18 +1,17 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.chat.PrivateInformationException;
-import com.gempukku.stccg.SubscriptionConflictException;
-import com.gempukku.stccg.SubscriptionExpiredException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.game.CardGameMediator;
-import com.gempukku.stccg.game.GameCommunicationChannel;
-import com.gempukku.stccg.game.GameServer;
-import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
+import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.GameStateView;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
@@ -24,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,8 +34,8 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private final GameServer _gameServer;
     private final LongPollingSystem longPollingSystem;
     private final Set<Phase> _autoPassDefault = new HashSet<>();
-
     private static final Logger LOGGER = LogManager.getLogger(GameRequestHandler.class);
+    private final ObjectMapper _mapper = new ObjectMapper();
 
     public GameRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
         super(objects);
@@ -58,8 +58,16 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             concede(request, uri.substring(1, uri.length() - 8), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/cancel") && request.method() == HttpMethod.POST) {
             cancel(request, uri.substring(1, uri.length() - 7), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameState/admin") && request.method() == HttpMethod.GET) {
+            getGameState(uri, request, uri.substring(1, uri.length() - 16), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameState/player") && request.method() == HttpMethod.GET) {
+            getGameState(uri, request, uri.substring(1, uri.length() - 17), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameState/player1") && request.method() == HttpMethod.GET) {
+            getGameState(uri, request, uri.substring(1, uri.length() - 18), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/gameState/player2") && request.method() == HttpMethod.GET) {
+            getGameState(uri, request, uri.substring(1, uri.length() - 18), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
-            getGameState(request, uri.substring(1), responseWriter);
+            startGameSession(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             updateGameState(request, uri.substring(1), responseWriter);
         } else {
@@ -67,40 +75,66 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
+    private void getGameState(String uri, HttpRequest request, String gameId, ResponseWriter responseWriter)
+            throws HttpProcessingException {
+
+        // int = 11 + length of admin, player, player1, player2
+//        gameId = uri.substring(1, uri.length() - int)
+
+        User resourceOwner = getResourceOwnerSafely(request);
+
+        boolean userCanAccess = resourceOwner.isAdmin() || uri.endsWith("player");
+        if (!userCanAccess) {
+            // Throw 401 error if user does not have access
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED);
+        }
+
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId); // throws a 404 error if game can't be found
+
+        try {
+            DefaultGame cardGame = gameMediator.getGame();
+            GameState gameState = cardGame.getGameState();
+            String gameStateString;
+            if (uri.endsWith("admin")) {
+                gameStateString = gameState.serializeComplete();
+            } else if (uri.endsWith("player")) {
+                gameStateString = gameState.serializeForPlayer(resourceOwner.getName());
+            } else if (uri.endsWith("player1")) {
+                gameStateString = gameState.serializeForPlayer(cardGame.getPlayerId(1));
+            } else if (uri.endsWith("player2")) {
+                gameStateString = gameState.serializeForPlayer(cardGame.getPlayerId(2));
+            } else {
+                // Throws a 404 error if the URL provided doesn't go anywhere
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND);
+            }
+            responseWriter.writeJsonResponse(gameStateString);
+        } catch(JsonProcessingException exp) {
+                // Throws a 500 error if the serialization doesn't work
+            throw new HttpProcessingException(HttpURLConnection.HTTP_INTERNAL_ERROR);
+        }
+    }
+
+
     private void updateGameState(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-        int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.channelNumber));
-        Integer decisionId = null;
-        String decisionIdStr = getFormParameterSafely(postDecoder, FormParameter.decisionId);
-        if (decisionIdStr != null)
-            decisionId = Integer.parseInt(decisionIdStr);
-        String decisionValue = getFormParameterSafely(postDecoder, FormParameter.decisionValue);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            String channel = getFormParameterSafely(postDecoder, FormParameter.channelNumber);
+            int channelNumber = Integer.parseInt(channel);
+            String decisionIdStr = getFormParameterSafely(postDecoder, FormParameter.decisionId);
+            Integer decisionId = (decisionIdStr == null) ? null : Integer.parseInt(decisionIdStr);
+            String decisionValue = getFormParameterSafely(postDecoder, FormParameter.decisionValue);
+            CardGameMediator gameMediator = _gameServer.getGameById(gameId);
+            gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), getAutoPassPhases(request));
 
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
-        if (gameMediator == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-        gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), getAutoPassPhases(request));
-
-        try {
             if (decisionId != null)
-                gameMediator.playerAnsweredNew(resourceOwner, channelNumber, decisionId, decisionValue);
-
-            GameCommunicationChannel commChannel = gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
+                gameMediator.playerAnswered(resourceOwner, channelNumber, decisionId, decisionValue);
+            GameCommunicationChannel commChannel =
+                    gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
             LongPollingResource pollingResource =
                     new GameUpdateLongPollingResource(commChannel, channelNumber, gameMediator, responseWriter);
             longPollingSystem.processLongPollingResource(pollingResource, commChannel);
-        } catch (SubscriptionConflictException exp) {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
-        } catch (PrivateInformationException e) {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
-        } catch (SubscriptionExpiredException e) {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_GONE); // 410
-        }
         } finally {
             postDecoder.destroy();
         }
@@ -148,19 +182,15 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void cancel(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
+    private void cancel(HttpRequest request, String gameId, ResponseWriter responseWriter)
+            throws HttpProcessingException, IOException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
-        if (gameMediator == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-        gameMediator.cancel(resourceOwner);
-
-        responseWriter.writeXmlResponse(null);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            CardGameMediator gameMediator = _gameServer.getGameById(gameId);
+            gameMediator.cancel(resourceOwner);
+            responseWriter.writeXmlResponse(null);
         } finally {
             postDecoder.destroy();
         }
@@ -169,17 +199,11 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private void concede(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
-        if (gameMediator == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-        gameMediator.concede(resourceOwner);
-
-        responseWriter.writeXmlResponse(null);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            CardGameMediator gameMediator = _gameServer.getGameById(gameId);
+            gameMediator.concede(resourceOwner);
+            responseWriter.writeXmlResponse(null);
         } finally {
             postDecoder.destroy();
         }
@@ -201,7 +225,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void getGameState(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
+    private void startGameSession(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
 

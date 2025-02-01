@@ -88,7 +88,7 @@ public class FilterFactory {
                         return Filters.and(
                                 sourceFilterable, Filters.strengthEqual(
                                         new SingleMemoryEvaluator(actionContext,
-                                                new Evaluator(actionContext) {
+                                                new Evaluator() {
                                                     @Override
                                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                                                         int minStrength = Integer.MAX_VALUE;
@@ -124,7 +124,7 @@ public class FilterFactory {
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return (Filter) (game, physicalCard) -> {
-                            for (PhysicalCard cardWithStack : Filters.filterActive(game, sourceFilterable)) {
+                            for (PhysicalCard<? super DefaultGame> cardWithStack : Filters.filterActive(game, sourceFilterable)) {
                                 for (PhysicalCard stackedCard : cardWithStack.getStackedCards(game)) {
                                     if (stackedCard.getBlueprint().getTitle().equals(physicalCard.getBlueprint().getTitle()))
                                         return true;

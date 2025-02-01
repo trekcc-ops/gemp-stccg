@@ -5,11 +5,12 @@ import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateFamineTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateFamineTribblePowerAction(TribblesActionContext actionContext, TribblePower power) {
+    public ActivateFamineTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
         super(actionContext, power);
     }
 
@@ -20,7 +21,7 @@ public class ActivateFamineTribblePowerAction extends ActivateTribblePowerAction
             return cost;
 
         if (cardGame instanceof TribblesGame game) {
-            game.getGameState().setNextTribbleInSequence(1);
+            game.getGameState().setNextTribbleInSequence(cardGame, 1);
         } else {
             throw new InvalidGameLogicException("Could not set tribble sequence in a non-Tribbles game");
         }

@@ -2,6 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.CardFilterResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -22,16 +23,15 @@ public abstract class AbstractModifier implements Modifier {
     protected final ActionCardResolver _cardResolver;
     protected final Condition _condition;
     private final ModifierEffect _effect;
-    protected final DefaultGame _game;
 
-    protected AbstractModifier(DefaultGame game, ModifierEffect effect) {
+    protected AbstractModifier(ModifierEffect effect) {
         _cardSource = null;
         _text = null;
-        _cardResolver = new ActionCardResolver(Filters.any);
+        _cardResolver = new CardFilterResolver(Filters.any);
         _condition = null;
         _effect = effect;
-        _game = game;
     }
+
 
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
         this(source, text, affectFilter, null, effect);
@@ -49,7 +49,6 @@ public abstract class AbstractModifier implements Modifier {
         _cardResolver = affectedCards;
         _condition = condition;
         _effect = effect;
-        _game = source.getGame();
     }
 
 
@@ -58,10 +57,9 @@ public abstract class AbstractModifier implements Modifier {
         _cardSource = source;
         _text = text;
         Filter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
-        _cardResolver = new ActionCardResolver(affectedFilter);
+        _cardResolver = new CardFilterResolver(affectedFilter);
         _condition = condition;
         _effect = effect;
-        _game = source.getGame();
     }
 
     @Override
@@ -80,7 +78,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public String getCardInfoText(PhysicalCard affectedCard) {
+    public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         return _text;
     }
 
@@ -90,14 +88,15 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean affectsCard(PhysicalCard physicalCard) {
+    public boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard) {
         try {
-            return _cardResolver.getCards(_game).contains(physicalCard);
+            return _cardResolver.getCards(cardGame).contains(physicalCard);
         } catch(InvalidGameLogicException exp) {
-            _game.sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return false;
         }
     }
+
 
     @Override
     public boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard) {
@@ -110,7 +109,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getAttributeModifier(PhysicalCard physicalCard) {
+    public int getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard) {
         return 0;
     }
 

@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -104,7 +105,8 @@ public class EffectFieldProcessor {
         SeedCardActionSource actionSource = new SeedCardActionSource();
         if (value.has("limit"))
             actionSource.addRequirement((actionContext) -> actionContext.getSource()
-                    .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer()) < value.get("limit").asInt());
+                    .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer(), actionContext.getGame()
+                    ) < value.get("limit").asInt());
         if (value.has("where")) {
             if (Objects.equals(value.get("where").textValue(), "table"))
                 actionSource.setSeedZone(Zone.TABLE);

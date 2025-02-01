@@ -12,12 +12,14 @@ import java.util.List;
 
 public abstract class ActionSelectionDecision extends ActionDecision {
 
-    public ActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions)
+    public ActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
+                                   DefaultGame cardGame)
             throws CardNotFoundException {
-        super(player, text, actions, AwaitingDecisionType.ACTION_CHOICE);
-        setParam("blueprintId", getBlueprintIds(player.getGame()));
-        setParam("imageUrl", getImageUrls(player.getGame()));
+        super(player, text, actions, AwaitingDecisionType.ACTION_CHOICE, cardGame);
+        setParam("blueprintId", getBlueprintIds(cardGame));
+        setParam("imageUrl", getImageUrls(cardGame));
     }
+
 
 
     private String[] getBlueprintIds(DefaultGame cardGame) throws CardNotFoundException {

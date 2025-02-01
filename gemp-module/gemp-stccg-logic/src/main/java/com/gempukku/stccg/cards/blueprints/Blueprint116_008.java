@@ -42,12 +42,12 @@ public class Blueprint116_008 extends CardBlueprint {
 
         if (fullCondition.canBeMetBy(attemptingUnit)) {
             // overcome
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         } else {
             // fail
             PhysicalCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel());
             result.add(new PlaceCardOnTopOfDrawDeckAction(attemptingUnit.getPlayer(), randomCard));
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
         }
 
         return result;

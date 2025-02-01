@@ -1,18 +1,16 @@
 package com.gempukku.stccg.actions.placecard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.EndOfPile;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
-import java.util.List;
 
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
@@ -21,13 +19,14 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
     private enum Progress { cardsSelected }
 
 
-    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, SelectCardsAction selectionAction) {
-        super(performingPlayer, ActionType.PLACE_CARD, Progress.values());
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
+                                              SelectCardsAction selectionAction) {
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD, Progress.values());
         _selectionAction = selectionAction;
     }
 
-    public PlaceCardsOnBottomOfDrawDeckAction(Player performingPlayer, Collection<PhysicalCard> cardsToPlace) {
-        super(performingPlayer, ActionType.PLACE_CARD);
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer, Collection<PhysicalCard> cardsToPlace) {
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
         _cardsToPlace = cardsToPlace;
     }
 
@@ -52,9 +51,9 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
         for (PhysicalCard card : _cardsToPlace) {
             GameState gameState = cardGame.getGameState();
-            gameState.removeCardsFromZone(card.getOwnerName(), List.of(card));
-            gameState.sendMessage(_performingPlayerId + " placed " + card + " beneath their draw deck");
-            gameState.addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
+            gameState.placeCardOnBottomOfDrawDeck(cardGame, card.getOwner(), card);
+            cardGame.sendMessage(_performingPlayerId + " placed " + card + " beneath their draw deck");
+            setAsSuccessful();
         }
         return getNextAction();
     }
