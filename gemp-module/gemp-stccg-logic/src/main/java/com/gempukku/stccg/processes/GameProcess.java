@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.st1e.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "className")

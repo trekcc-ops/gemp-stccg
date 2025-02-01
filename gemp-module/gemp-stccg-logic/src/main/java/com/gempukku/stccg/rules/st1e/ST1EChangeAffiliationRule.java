@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.modifiers.ChangeAffiliationAction;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.LinkedList;

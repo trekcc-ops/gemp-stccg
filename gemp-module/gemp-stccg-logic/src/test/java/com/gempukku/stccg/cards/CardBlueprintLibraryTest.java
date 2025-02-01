@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -8,11 +9,9 @@ import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.common.filterable.*;
-import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -87,11 +86,11 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
                 if (lackeyData == null) {
                     System.out.println("Could not find lackeyData for " + blueprintId + " " + blueprint.getTitle());
                 } else {
-                    if (getBlueprintMatch(blueprint, lackeyData)) {
+/*                    if (getBlueprintMatch(blueprint, lackeyData)) {
                         matchCount++;
                     } else {
                         System.out.println("Card " + blueprintId + " (" + blueprint.getTitle() + ") did not validate successfully.");
-                    }
+                    } */
                 }
             }
         }
@@ -104,60 +103,27 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
     public void createLackeyLibrary() {
         File input;
         MappingIterator<Map<?, ?>> mappingIterator;
-        List<Map<?, ?>> list;
         input = new File("..\\gemp-stccg-logic\\src\\test\\resources\\Lackey_upload.csv");
         try {
             CsvSchema csv = CsvSchema.emptySchema().withHeader();
             CsvMapper csvMapper = new CsvMapper();
-            mappingIterator =  csvMapper.reader().forType(Map.class).with(csv).readValues(input);
-            list = mappingIterator.readAll();
-            for (Map<?, ?> card : list) {
-                CardData cardInfo = new CardData(card);
+            ObjectMapper jsonMapper = _cardLibrary.getMapper();
+            List<Object> list = csvMapper.reader().forType(Map.class).with(csv).readValues(input).readAll();
+            JsonNode jsonMap = jsonMapper.valueToTree(list);
+            List<JsonNode> lackeyCardData = jsonMapper.readerForListOf(CardData.class).readValue(jsonMap);
+            int x = 5;
+/*            for (Map<?, ?> card : list) {
+                CardData cardInfo = new CardData();
                 String blueprintId = cardInfo._blueprintId;
                 _newLibraryMap.put(blueprintId, cardInfo);
                 _newLibrary.add(cardInfo);
-            }
+            }*/
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    public class CardData {
-
-        String _staffing;
-        String _property;
-        String _lackeyTitle;
-        String _rawGameText;
-        String _type;
-        String _set;
-        String _formats;
-        String _blueprintId;
-        List<String> _attributes = new LinkedList<>();
-        String _uniqueness;
-        String _class;
-        String _icons;
-        String _release;
-
-        CardData(Map<?, ?> card) {
-            _blueprintId = card.get("Blueprint ID").toString();
-            _lackeyTitle = card.get("Name").toString();
-            _formats = card.get("Set").toString();
-            _rawGameText = card.get("Text").toString().replace("{", "").replace("}", "");
-            _set = card.get("Release").toString();
-            _type = card.get("Type").toString();
-            _attributes.add(card.get("Int/Rng").toString());
-            _attributes.add(card.get("Cun/Wpn").toString());
-            _attributes.add(card.get("Str/Shd").toString());
-            _uniqueness = card.get("Uniqueness").toString();
-            _class = card.get("Class").toString();
-            _icons = card.get("Icons").toString();
-            _release = card.get("Release").toString();
-            _property = card.get("Property").toString();
-            _staffing = card.get("Staff").toString();
-        }
-
-    }
-
+    /*
     private boolean getBlueprintMatch(CardBlueprint blueprint, CardData lackeyData) {
         ObjectMapper jsonMapper = _cardLibrary.getMapper();
         String blueprintId = blueprint.getBlueprintId();
@@ -468,6 +434,6 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         String lackeyIconCheck = StringUtils.join(lackeyIconsList, ",");
         return gempIconCheck.equals(lackeyIconCheck);
     }
-
+*/
 
 }

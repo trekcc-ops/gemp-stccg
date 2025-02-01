@@ -7,7 +7,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 
 import java.util.List;

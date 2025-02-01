@@ -1,4 +1,4 @@
-package com.gempukku.stccg.game;
+package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
@@ -9,6 +9,8 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import org.checkerframework.checker.units.qual.C;
 

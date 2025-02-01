@@ -28,6 +28,7 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;

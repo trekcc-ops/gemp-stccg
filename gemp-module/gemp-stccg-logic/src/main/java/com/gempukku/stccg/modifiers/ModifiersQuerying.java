@@ -9,7 +9,7 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;

@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class SystemQueueAction extends ActionyAction {
 

@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.LinkedList;

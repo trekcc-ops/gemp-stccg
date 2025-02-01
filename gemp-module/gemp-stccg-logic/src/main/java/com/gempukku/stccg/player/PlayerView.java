@@ -1,4 +1,4 @@
-package com.gempukku.stccg.game;
+package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;

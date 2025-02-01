@@ -18,7 +18,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
 import com.gempukku.stccg.modifiers.attributes.RangeModifier;

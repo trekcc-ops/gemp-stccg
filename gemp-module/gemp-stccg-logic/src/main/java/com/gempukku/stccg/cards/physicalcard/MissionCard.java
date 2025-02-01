@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -9,6 +8,8 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;

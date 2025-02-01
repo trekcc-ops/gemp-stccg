@@ -2,8 +2,8 @@ package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;

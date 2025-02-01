@@ -4,16 +4,14 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
-import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
+import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.GameLocation;
-import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
 

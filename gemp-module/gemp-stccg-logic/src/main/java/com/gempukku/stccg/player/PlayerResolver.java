@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints.resolver;
+package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;

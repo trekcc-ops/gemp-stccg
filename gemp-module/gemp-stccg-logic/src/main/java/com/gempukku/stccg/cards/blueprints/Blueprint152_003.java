@@ -12,7 +12,7 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.evaluator.SkillDotCountEvaluator;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.ArrayList;

@@ -12,7 +12,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 
 import java.util.LinkedList;
 import java.util.List;

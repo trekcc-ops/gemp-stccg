@@ -5,13 +5,13 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
+import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Arrays;
 import java.util.List;

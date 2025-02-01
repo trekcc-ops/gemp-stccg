@@ -1,6 +1,6 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
+import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;

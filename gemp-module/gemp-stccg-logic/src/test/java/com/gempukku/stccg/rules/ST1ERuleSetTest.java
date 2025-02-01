@@ -4,8 +4,8 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 import org.junit.jupiter.api.Test;
 

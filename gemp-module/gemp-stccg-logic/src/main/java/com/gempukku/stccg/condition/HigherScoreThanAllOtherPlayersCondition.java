@@ -1,8 +1,8 @@
 package com.gempukku.stccg.condition;
 
-import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
+import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 
 public class HigherScoreThanAllOtherPlayersCondition implements Condition {
     private final YouPlayerResolver _playerResolver;

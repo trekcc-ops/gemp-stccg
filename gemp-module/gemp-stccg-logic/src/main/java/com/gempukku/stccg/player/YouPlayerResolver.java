@@ -1,7 +1,7 @@
-package com.gempukku.stccg.cards.blueprints.resolver;
+package com.gempukku.stccg.player;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 
 public class YouPlayerResolver {
 

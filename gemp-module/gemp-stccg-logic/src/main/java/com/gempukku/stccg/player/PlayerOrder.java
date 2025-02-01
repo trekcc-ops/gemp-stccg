@@ -1,6 +1,7 @@
-package com.gempukku.stccg.game;
+package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.game.ActionOrder;
 
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;

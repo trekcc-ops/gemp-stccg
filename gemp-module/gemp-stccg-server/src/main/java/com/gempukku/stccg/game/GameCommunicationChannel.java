@@ -6,6 +6,8 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

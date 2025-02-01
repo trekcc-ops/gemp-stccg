@@ -3,7 +3,8 @@ package com.gempukku.stccg.processes.tribbles;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.TribblesGameState;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 

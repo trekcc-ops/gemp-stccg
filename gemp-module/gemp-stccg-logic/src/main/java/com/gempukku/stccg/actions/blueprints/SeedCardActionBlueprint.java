@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 
 public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     private final Zone _seedToZone;

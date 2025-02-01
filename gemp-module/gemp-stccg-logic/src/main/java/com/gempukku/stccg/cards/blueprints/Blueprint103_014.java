@@ -15,7 +15,7 @@ import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.LinkedList;

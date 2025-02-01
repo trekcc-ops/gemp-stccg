@@ -4,10 +4,9 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.rules.UndefinedRuleException;
 import com.gempukku.stccg.rules.generic.RuleSet;
 

@@ -2,19 +2,14 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
-import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 

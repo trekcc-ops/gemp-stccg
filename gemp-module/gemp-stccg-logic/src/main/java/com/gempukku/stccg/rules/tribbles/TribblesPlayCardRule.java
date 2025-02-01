@@ -1,10 +1,8 @@
 package com.gempukku.stccg.rules.tribbles;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.LinkedList;

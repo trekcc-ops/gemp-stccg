@@ -8,9 +8,7 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerNotFoundException;
-
-import javax.xml.datatype.DatatypeConfigurationException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 
 public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {

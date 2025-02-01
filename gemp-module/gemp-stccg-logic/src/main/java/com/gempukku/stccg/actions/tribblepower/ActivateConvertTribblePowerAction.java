@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.List;
