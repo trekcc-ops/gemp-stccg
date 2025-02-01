@@ -154,7 +154,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                     return actionContext -> {
                         final Filterable sourceFilterable = filterBlueprint.getFilterable(actionContext);
                         return (CardFilter) (game, physicalCard) -> {
-                            for (PhysicalCard<? super DefaultGame> cardWithStack : Filters.filterActive(game, sourceFilterable)) {
+                            for (PhysicalCard cardWithStack : Filters.filterActive(game, sourceFilterable)) {
                                 for (PhysicalCard stackedCard : cardWithStack.getStackedCards(game)) {
                                     if (stackedCard.getBlueprint().getTitle().equals(physicalCard.getBlueprint().getTitle()))
                                         return true;

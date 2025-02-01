@@ -43,7 +43,7 @@ public class CardInfoUtils {
                 }
             }
 
-            List<PhysicalCard<? extends DefaultGame>> stackedCards = card.getStackedCards(cardGame);
+            List<PhysicalCard> stackedCards = card.getStackedCards(cardGame);
             if (!stackedCards.isEmpty()) {
                 sb.append("<br><b>Stacked cards:</b>");
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));

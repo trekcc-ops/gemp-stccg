@@ -37,7 +37,7 @@ public abstract class GameState {
     Phase _currentPhase;
     Map<String, Player> _players = new HashMap<>();
     PlayerOrder _playerOrder;
-    protected final Map<Integer, PhysicalCard<DefaultGame>> _allCards = new HashMap<>();
+    protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
     private ModifiersLogic _modifiersLogic;
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
@@ -392,8 +392,8 @@ public abstract class GameState {
         _actionsEnvironment = actionsEnvironment;
     }
 
-    public PhysicalCard<DefaultGame> getCardFromCardId(int cardId) throws CardNotFoundException {
-        PhysicalCard<DefaultGame> card = _allCards.get(cardId);
+    public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
+        PhysicalCard card = _allCards.get(cardId);
         if (card == null)
             throw new CardNotFoundException("Could not find card from id number " + cardId);
         return card;

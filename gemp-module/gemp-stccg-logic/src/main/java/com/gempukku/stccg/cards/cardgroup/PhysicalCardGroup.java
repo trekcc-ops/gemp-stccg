@@ -19,7 +19,7 @@ public class PhysicalCardGroup {
     public PhysicalCardGroup() {
     }
 
-    public void addCard(PhysicalCard<? extends DefaultGame> card) { _cards.add(card); }
+    public void addCard(PhysicalCard card) { _cards.add(card); }
 
     @JsonProperty("cardIds")
     @JsonIdentityReference(alwaysAsId=true)
