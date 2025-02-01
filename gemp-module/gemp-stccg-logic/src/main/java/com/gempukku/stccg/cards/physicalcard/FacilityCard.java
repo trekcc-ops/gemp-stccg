@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -50,7 +51,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
 
 
     @Override
-    public boolean canBeSeeded(ST1EGame game) {
+    public boolean canBeSeeded(DefaultGame game) {
         for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
             if (canSeedAtMission(location))
                 return true;
@@ -79,7 +80,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {

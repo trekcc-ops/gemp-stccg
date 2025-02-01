@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -20,7 +21,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
 
-public class ST1EPhysicalCard extends AbstractPhysicalCard<ST1EGame> {
+public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
     protected boolean _isStopped;
     public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
@@ -47,7 +48,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard<ST1EGame> {
     }
 
     @Override
-    public boolean isMisSeed(ST1EGame cardGame, MissionLocation mission) throws CardNotFoundException {
+    public boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException {
         if (_blueprint.getCardType() != CardType.DILEMMA && _blueprint.getCardType() != CardType.ARTIFACT)
             return true; // TODO - Sometimes gametext allows them to be seeded
         if (hasIcon(cardGame, CardIcon.AU_ICON))
@@ -84,7 +85,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard<ST1EGame> {
     }
 
     @Override
-    public List<Action> getEncounterActions(ST1EGame cardGame, AttemptMissionAction attemptAction,
+    public List<Action> getEncounterActions(DefaultGame cardGame, AttemptMissionAction attemptAction,
                                             AttemptingUnit attemptingUnit, MissionLocation missionLocation)
             throws InvalidGameLogicException, PlayerNotFoundException {
         return _blueprint.getEncounterSeedCardActions(this, attemptAction, cardGame, attemptingUnit,

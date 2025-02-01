@@ -14,7 +14,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TribblesPhysicalCard extends AbstractPhysicalCard<TribblesGame> {
+public class TribblesPhysicalCard extends AbstractPhysicalCard {
     private final TribblesGame _game;
     public TribblesPhysicalCard(TribblesGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
@@ -23,12 +23,12 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard<TribblesGame> {
     @Override
     public TribblesGame getGame() { return _game; }
 
-    public boolean isMisSeed(TribblesGame game, MissionLocation mission) {
+    public boolean isMisSeed(DefaultGame game, MissionLocation mission) {
         return false;
     }
 
     @Override
-    public List<Action> getEncounterActions(TribblesGame game, AttemptMissionAction attemptAction, AttemptingUnit attemptingUnit, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException {
+    public List<Action> getEncounterActions(DefaultGame game, AttemptMissionAction attemptAction, AttemptingUnit attemptingUnit, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException {
         return new LinkedList<>();
     }
 

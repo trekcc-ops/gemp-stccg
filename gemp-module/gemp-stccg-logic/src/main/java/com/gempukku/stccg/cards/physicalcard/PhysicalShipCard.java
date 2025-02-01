@@ -37,7 +37,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 // TODO - Implement land, take off, cloak
