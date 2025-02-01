@@ -621,7 +621,9 @@ export default class GempLotrDeckBuildingUI {
     }
 
     addCardToContainer(blueprintId, imageUrl, subDeck, container, tokens) {
-        var card = new Card(blueprintId, subDeck, "deck", "player", imageUrl);
+        let emptyLocationIndex = "";
+        let upsideDown = false;
+        var card = new Card(blueprintId, subDeck, "deck", "player", imageUrl, emptyLocationIndex, upsideDown);
         var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
         cardDiv.data("card", card);
         container.append(cardDiv);
@@ -667,7 +669,7 @@ export default class GempLotrDeckBuildingUI {
                 function () {
                     var cardData = $(this).data("card");
                     if (cardData.blueprintId == blueprintId) {
-                        var attDiv = that.addCardToContainer(blueprintId, imageUrl, "attached", that.drawDeckDiv, false);
+                        var attDiv = that.addCardToContainer(blueprintId, imageUrl, "ATTACHED", that.drawDeckDiv, false);
                         cardData.attachedCards.push(attDiv);
                         added = true;
                     }
@@ -809,14 +811,14 @@ export default class GempLotrDeckBuildingUI {
     addCardToCollection(type, blueprintId, count, contents, imageUrl) {
         if (type == "pack") {
             if (blueprintId.substr(0, 3) == "(S)") {
-                var card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
+                let card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
                 card.tokens = {"count":count};
                 var cardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv.data("card", card);
                 cardDiv.data("selection", contents);
                 cardDiv.addClass("selectionInCollection");
             } else {
-                var card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
+                let card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
                 card.tokens = {"count":count};
                 var cardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv.data("card", card);
@@ -824,10 +826,9 @@ export default class GempLotrDeckBuildingUI {
             }
             this.normalCollectionDiv.append(cardDiv);
         } else if (type == "card") {
-            let locationIndex;
-            let upsideDown; 
-            // TODO - "SHADOW" here is a dummy value for LotR side. Can't identify if removing it altogether will cause issues for the Card function.
-            var card = new Card(blueprintId, "SHADOW", "collection", "player", imageUrl, locationIndex, upsideDown);
+            let locationIndex = "";
+            let upsideDown = false;
+            let card = new Card(blueprintId, "VOID", "collection", "player", imageUrl, locationIndex, upsideDown);
             var countInDeck = 0;
             $(".card", this.deckDiv).each(
                     function () {
@@ -1110,7 +1111,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
                 function () {
                     var cardData = $(this).data("card");
                     if (cardData.blueprintId == blueprintId) {
-                        var attDiv = that.addCardToContainer(blueprintId, imageUrl, "attached", container, false);
+                        var attDiv = that.addCardToContainer(blueprintId, imageUrl, "ATTACHED", container, false);
                         cardData.attachedCards.push(attDiv);
                         added = true;
                     }

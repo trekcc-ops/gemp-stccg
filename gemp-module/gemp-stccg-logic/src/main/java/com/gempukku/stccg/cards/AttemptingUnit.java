@@ -18,7 +18,7 @@ public interface AttemptingUnit {
         for (PhysicalCard card : getAllPersonnel()) {
             if (card instanceof PersonnelCard personnel)
                 if (!personnel.isStopped() && !personnel.isDisabled() && !personnel.isInStasis() &&
-                        personnel.getAffiliation() != Affiliation.BORG)
+                        personnel.getCurrentAffiliation() != Affiliation.BORG)
                     personnelAttempting.add(personnel);
         }
         return personnelAttempting;

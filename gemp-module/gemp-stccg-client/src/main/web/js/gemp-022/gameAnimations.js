@@ -252,7 +252,7 @@ export default class GameAnimations {
                 }
 
                 var card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
-                var cardDiv = that.game.createCardDiv(card, null);
+                var cardDiv = that.game.createCardDivWithData(card, null);
 
                 if (zone == "DISCARD")
                     that.game.discardPileDialogs[participantId].append(cardDiv);

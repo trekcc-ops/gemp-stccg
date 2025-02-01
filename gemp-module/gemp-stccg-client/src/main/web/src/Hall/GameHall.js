@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				var horiz = false;
 				for(var i = 0; i < ids.length; i++) {
 					var blueprintId = ids[i];
-					var card = new Card(blueprintId, "SPECIAL", "hint", ""); // TODO - Card missing imageUrl and locationIndex
+					var card = new Card(blueprintId, "SPECIAL", "hint", "", "", "", false);
 					horiz = horiz || card.horizontal;
 					floatCardDiv.append(createFullCardDiv(card.imageUrl, card.foil, card.horizontal));
 				}

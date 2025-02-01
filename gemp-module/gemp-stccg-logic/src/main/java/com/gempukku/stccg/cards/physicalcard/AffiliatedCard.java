@@ -9,7 +9,7 @@ import java.util.Set;
 public interface AffiliatedCard extends PhysicalCard<ST1EGame> {
     ST1EGame getGame();
     boolean isMultiAffiliation();
-    Affiliation getAffiliation();
+    Affiliation getCurrentAffiliation();
     void setCurrentAffiliation(Affiliation affiliation);
     void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException;
     Set<Affiliation> getAffiliationOptions();
