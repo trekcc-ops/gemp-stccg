@@ -16,6 +16,6 @@ public interface AffiliatedCard extends PhysicalCard<ST1EGame> {
     String getCardLink();
 
     default boolean matchesAffiliationOf(AffiliatedCard affiliatedCard) {
-        return getAffiliation() == affiliatedCard.getAffiliation();
+        return getCurrentAffiliation() == affiliatedCard.getCurrentAffiliation();
     }
 }

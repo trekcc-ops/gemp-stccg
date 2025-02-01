@@ -61,7 +61,7 @@ public abstract class AbstractPhysicalCard<GenericGame extends DefaultGame> impl
         // TODO - Replace with a client communication method that pulls image options from the library
         String result;
         if (this instanceof AffiliatedCard affiliatedCard) {
-            String affiliatedImage = _blueprint.getAffiliationImageUrl(affiliatedCard.getAffiliation());
+            String affiliatedImage = _blueprint.getAffiliationImageUrl(affiliatedCard.getCurrentAffiliation());
             if (affiliatedImage != null)
                 result = affiliatedImage;
             else

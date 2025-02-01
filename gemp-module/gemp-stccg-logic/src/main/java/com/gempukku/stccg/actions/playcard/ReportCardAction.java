@@ -35,7 +35,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         setText("Play " + _cardEnteringPlay.getFullName());
         if (cardToPlay.getAffiliationOptions().size() == 1) {
             setProgress(Progress.affiliationSelected);
-            _affiliationTarget = new AffiliationResolver(cardToPlay.getAffiliation());
+            _affiliationTarget = new AffiliationResolver(cardToPlay.getCurrentAffiliation());
         } else if (cardToPlay.getAffiliationOptions().isEmpty() && !(cardToPlay instanceof AffiliatedCard)) {
             setProgress(Progress.affiliationSelected);
         }
@@ -166,7 +166,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
                 Zone originalZone = _cardEnteringPlay.getZone();
                 reportable.reportToFacility(getSelectedDestination(cardGame));
-                performingPlayer.addPlayedAffiliation(reportable.getAffiliation());
+                performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
             }
