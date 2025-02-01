@@ -173,7 +173,7 @@ public class GameEvent {
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
         else if (card.getAttachedTo() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
-        serializeGameState(_game.getGameState());
+//        serializeGameState(_game.getGameState());
         if (card.isPlacedOnMission()) {
                 if (card.getGameLocation() instanceof MissionLocation mission) {
                     _eventAttributes.put(Attribute.placedOnMission, "true");
