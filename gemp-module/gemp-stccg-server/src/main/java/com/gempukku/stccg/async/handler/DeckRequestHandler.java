@@ -12,7 +12,6 @@ import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.formats.SealedEventDefinition;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -155,12 +154,10 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
             User resourceOwner = getResourceOwnerSafely(request, participantId);
-
+            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
             _deckDao.deleteDeckForPlayer(resourceOwner, deckName);
-
-            responseWriter.writeXmlResponse(null);
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -171,16 +168,13 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
             String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
             String oldDeckName = getFormParameterSafely(postDecoder, FormParameter.oldDeckName);
-
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
-
             CardDeck deck = _deckDao.renameDeck(resourceOwner, oldDeckName, deckName);
             if (deck == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-            responseWriter.writeXmlResponse(serializeDeck(deck));
+            responseWriter.writeXmlResponseWithNoHeaders(serializeDeck(deck));
         } finally {
             postDecoder.destroy();
         }
@@ -208,7 +202,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             Element deckElem = doc.createElement("ok");
             doc.appendChild(deckElem);
 
-            responseWriter.writeXmlResponse(doc);
+            responseWriter.writeXmlResponseWithNoHeaders(doc);
         } finally {
             postDecoder.destroy();
         }
@@ -288,7 +282,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        responseWriter.writeXmlResponse(serializeDeck(resourceOwner, deckName));
+        responseWriter.writeXmlResponseWithNoHeaders(serializeDeck(resourceOwner, deckName));
     }
 
     private void getLibraryDeck(HttpRequest request, ResponseWriter responseWriter)
@@ -296,7 +290,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
 
-        responseWriter.writeXmlResponse(serializeDeck(getLibrarian(), deckName));
+        responseWriter.writeXmlResponseWithNoHeaders(serializeDeck(getLibrarian(), deckName));
     }
 
     private void listDecks(HttpRequest request, ResponseWriter responseWriter)
@@ -305,7 +299,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         List<Map.Entry<GameFormat, String>> decks = GetDeckNamesAndFormats(resourceOwner);
         SortDecks(decks);
         Document doc = ConvertDeckNamesToXML(decks);
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private static Document ConvertDeckNamesToXML(Iterable<? extends Map.Entry<GameFormat, String>> deckNames)
@@ -367,7 +361,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         Document doc = ConvertDeckNamesToXML(starterDecks);
 
         // Write the XML response
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private Document serializeDeck(User player, String deckName) throws ParserConfigurationException {

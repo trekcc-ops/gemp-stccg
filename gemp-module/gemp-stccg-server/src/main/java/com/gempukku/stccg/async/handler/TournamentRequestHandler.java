@@ -52,7 +52,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         if (tournament == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         appendTournamentData(doc, doc, tournament, true);
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private void getTournamentDeck(String tournamentId, String playerName, ResponseWriter responseWriter)
@@ -88,7 +88,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         for (Tournament tournament : tournamentList)
             appendTournamentData(doc, tournaments, tournament, false);
         doc.appendChild(tournaments);
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
 

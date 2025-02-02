@@ -30,7 +30,7 @@ public class RegisterRequestHandler extends DefaultServerRequestHandler implemen
                 String password = getFormParameterSafely(postDecoder, FormParameter.password);
                 if (_playerDao.registerUser(login, password, remoteIp)) {
                     Map<String, String> headers = logUserReturningHeaders(remoteIp, login);
-                    responseWriter.writeXmlResponse(null, headers);
+                    responseWriter.writeEmptyXmlResponseWithHeaders(headers);
                 } else
                     throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
             } catch (LoginInvalidException exp) {

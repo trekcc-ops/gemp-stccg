@@ -79,7 +79,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
 
             hasTester.setAttribute("result", String.valueOf(player.hasType(User.Type.PLAY_TESTER)));
 
-            responseWriter.writeXmlResponse(doc);
+            responseWriter.writeXmlResponseWithNoHeaders(doc);
 
         } finally {
             postDecoder.destroy();

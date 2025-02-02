@@ -72,6 +72,6 @@ public class DeliveryRequestHandler extends DefaultServerRequestHandler implemen
 
         doc.appendChild(deliveryElem);
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 }

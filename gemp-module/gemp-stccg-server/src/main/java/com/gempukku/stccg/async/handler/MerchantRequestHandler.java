@@ -69,7 +69,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
-                responseWriter.writeXmlResponse(marshalException(exp));
+                responseWriter.writeXmlResponseWithNoHeaders(marshalException(exp));
             }
         } finally {
             postDecoder.destroy();
@@ -89,7 +89,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
-                responseWriter.writeXmlResponse(marshalException(exp));
+                responseWriter.writeXmlResponseWithNoHeaders(marshalException(exp));
             }
         } finally {
             postDecoder.destroy();
@@ -110,7 +110,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
-                responseWriter.writeXmlResponse(marshalException(exp));
+                responseWriter.writeXmlResponseWithNoHeaders(marshalException(exp));
             }
         } finally {
             postDecoder.destroy();
@@ -184,7 +184,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             merchantElem.appendChild(elem);
         }
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private static Document marshalException(Exception e) throws ParserConfigurationException {

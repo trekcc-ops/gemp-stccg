@@ -147,12 +147,35 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         }
 
         @Override
-        public final void writeXmlResponse(Document document) {
-            writeXmlResponse(document, null);
+        public final void writeXmlResponseWithNoHeaders(Document document) {
+            try {
+                String contentType;
+                String response1;
+                if (document != null) {
+                    Source domSource = new DOMSource(document);
+                    StringWriter writer = new StringWriter();
+                    Result result = new StreamResult(writer);
+                    TransformerFactory tf = TransformerFactory.newInstance();
+                    Transformer transformer = tf.newTransformer();
+                    transformer.transform(domSource, result);
+
+                    response1 = writer.toString();
+                    contentType = "application/xml; charset=UTF-8";
+                } else {
+                    response1 = "OK";
+                    contentType = "text/plain";
+                }
+                HttpHeaders headers1 = convertToHeaders(null);
+                headers1.set(CONTENT_TYPE, contentType);
+                sendResponse(HttpResponseStatus.OK, response1.getBytes(CharsetUtil.UTF_8), headers1, ctx, request);
+            } catch (Exception exp) {
+                LOGGER.error("Error response for {}", request.uri(), exp);
+                sendResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, new byte[0], null, ctx, request);
+            }
         }
 
         @Override
-        public final void writeXmlResponse(Document document, Map<? extends CharSequence, String> addHeaders) {
+        public final void writeXmlResponseWithHeaders(Document document, Map<? extends CharSequence, String> addHeaders) {
             try {
                 String contentType;
                 String response1;
@@ -178,6 +201,34 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 sendResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, new byte[0], null, ctx, request);
             }
         }
+
+        @Override
+        public final void writeEmptyXmlResponseWithHeaders(Map<? extends CharSequence, String> addHeaders) {
+            try {
+                String response1 = "OK";
+                HttpHeaders headers1 = convertToHeaders(addHeaders);
+                headers1.set(CONTENT_TYPE, "text/plain");
+                sendResponse(HttpResponseStatus.OK, response1.getBytes(CharsetUtil.UTF_8), headers1, ctx, request);
+            } catch (Exception exp) {
+                LOGGER.error("Error response for {}", request.uri(), exp);
+                sendResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, new byte[0], null, ctx, request);
+            }
+        }
+
+        @Override
+        public final void writeXmlOkResponse() {
+            try {
+                String response1 = "OK";
+                HttpHeaders headers1 = new DefaultHttpHeaders();
+                headers1.set(CONTENT_TYPE, "text/plain");
+                sendResponse(HttpResponseStatus.OK, response1.getBytes(CharsetUtil.UTF_8), headers1, ctx, request);
+            } catch (Exception exp) {
+                LOGGER.error("Error response for {}", request.uri(), exp);
+                sendResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, new byte[0], null, ctx, request);
+            }
+        }
+
+
 
         @Override
         public final void writeHtmlResponse(String html) {

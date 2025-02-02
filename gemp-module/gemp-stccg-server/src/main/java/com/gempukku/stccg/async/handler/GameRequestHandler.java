@@ -162,7 +162,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                 try {
                     Document doc = createNewDoc();
                     _gameMediator.processVisitor(_gameCommunicationChannel, _channelNumber, doc);
-                    _responseWriter.writeXmlResponse(doc);
+                    _responseWriter.writeXmlResponseWithNoHeaders(doc);
                 } catch (Exception e) {
                     logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, "game update poller", e);
                     _responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
@@ -180,7 +180,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             CardGameMediator gameMediator = _gameServer.getGameById(gameId);
             gameMediator.cancel(resourceOwner);
-            responseWriter.writeXmlResponse(null);
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -193,7 +193,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             CardGameMediator gameMediator = _gameServer.getGameById(gameId);
             gameMediator.concede(resourceOwner);
-            responseWriter.writeXmlResponse(null);
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -227,7 +227,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         // may throw 403 error
         gameMediator.signupUserForGame(resourceOwner, doc);
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private Set<Phase> getAutoPassPhases(HttpMessage request) {

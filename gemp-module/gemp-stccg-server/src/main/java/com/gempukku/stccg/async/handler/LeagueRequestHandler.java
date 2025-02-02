@@ -52,18 +52,14 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        League league = _leagueService.getLeagueByType(leagueType);
-        if (league == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-        if (!_leagueService.playerJoinsLeague(league, resourceOwner, remoteIp))
-            throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
-
-        responseWriter.writeXmlResponse(null);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            League league = _leagueService.getLeagueByType(leagueType);
+            if (league == null)
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+            if (!_leagueService.playerJoinsLeague(league, resourceOwner, remoteIp))
+                throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -140,7 +136,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
         doc.appendChild(leagueElem);
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private List<LeagueSeriesData> getSeriesData(League league) {
@@ -170,7 +166,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
         doc.appendChild(leagues);
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private final League getLeagueByType(String type) {

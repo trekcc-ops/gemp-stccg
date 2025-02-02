@@ -85,6 +85,6 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
 
         doc.appendChild(gameHistory);
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 }

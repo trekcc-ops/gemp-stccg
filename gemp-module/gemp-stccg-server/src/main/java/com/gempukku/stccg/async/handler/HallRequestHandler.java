@@ -93,13 +93,13 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
             try {
                 _hallServer.joinTableAsPlayer(tableId, resourceOwner, deckName);
-                responseWriter.writeXmlResponse(null);
+                responseWriter.writeXmlOkResponse();
             } catch (HallException e) {
                 try {
                     //Try again assuming it's a new player using the default deck library decks
                     User libraryOwner = _playerDao.getPlayer("Librarian");
                     _hallServer.joinTableAsPlayerWithSpoofedDeck(tableId, resourceOwner, libraryOwner, deckName);
-                    responseWriter.writeXmlResponse(null);
+                    responseWriter.writeXmlOkResponse();
                     return;
                 } catch (HallException ex) {
                     if(doNotIgnoreError(ex)) {
@@ -111,7 +111,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     throw ex;
                 }
                 Document document = marshalException(e);
-                responseWriter.writeXmlResponse(document);
+                responseWriter.writeXmlResponseWithNoHeaders(document);
             }
         } finally {
             postDecoder.destroy();
@@ -121,11 +121,10 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void leaveTable(HttpRequest request, String tableId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        _hallServer.leaveAwaitingTable(resourceOwner, tableId);
-        responseWriter.writeXmlResponse(null);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            _hallServer.leaveAwaitingTable(resourceOwner, tableId);
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -151,13 +150,13 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
             if(isInviteOnly) {
                 if(desc.isEmpty()) {
-                    responseWriter.writeXmlResponse(marshalException(new HallException(
+                    responseWriter.writeXmlResponseWithNoHeaders(marshalException(new HallException(
                             "Invite-only games must have your intended opponent in the description")));
                     return;
                 }
 
                 if(desc.equalsIgnoreCase(resourceOwner.getName())) {
-                    responseWriter.writeXmlResponse(marshalException(new HallException(
+                    responseWriter.writeXmlResponseWithNoHeaders(marshalException(new HallException(
                             "Absolutely no playing with yourself!!  Private matches must be with someone else.")));
                     return;
                 }
@@ -166,14 +165,14 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     var player = _playerDao.getPlayer(desc);
                     if(player == null)
                     {
-                        responseWriter.writeXmlResponse(marshalException(new HallException(
+                        responseWriter.writeXmlResponseWithNoHeaders(marshalException(new HallException(
                                 "Cannot find player '" + desc +
                                         "'. Check your spelling and capitalization and ensure it is exact.")));
                         return;
                     }
                 }
                 catch(RuntimeException ex) {
-                    responseWriter.writeXmlResponse(marshalException(new HallException(
+                    responseWriter.writeXmlResponseWithNoHeaders(marshalException(new HallException(
                             "Cannot find player '" + desc +
                                     "'. Check your spelling and capitalization and ensure it is exact.")));
                     return;
@@ -185,7 +184,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             try {
                 _hallServer.createNewTable(
                         format, resourceOwner, deckName, timer, desc, isInviteOnly, isPrivate, !isVisible);
-                responseWriter.writeXmlResponse(null);
+                responseWriter.writeXmlOkResponse();
             }
             catch (HallException e) {
                 try
@@ -193,12 +192,12 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     //try again assuming it's a new player with one of the default library decks selected
                     _hallServer.createNewTable(format, resourceOwner, _playerDao.getPlayer("Librarian"),
                             deckName, timer, "(New Player) " + desc, isInviteOnly, isPrivate, !isVisible);
-                    responseWriter.writeXmlResponse(null);
+                    responseWriter.writeXmlOkResponse();
                     return;
                 }
                 catch (HallException ignored) { }
 
-                responseWriter.writeXmlResponse(marshalException(e));
+                responseWriter.writeXmlResponseWithNoHeaders(marshalException(e));
             }
         }
         catch (Exception ex)
@@ -207,7 +206,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             if(doNotIgnoreError(ex)) {
                 LOGGER.error("Error response for {}", request.uri(), ex);
             }
-            responseWriter.writeXmlResponse(marshalException(
+            responseWriter.writeXmlResponseWithNoHeaders(marshalException(
                     new HallException("Failed to create table. Please try again later.")));
         }
         finally {
@@ -229,12 +228,10 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        _hallServer.dropFromTournament(tournamentId, resourceOwner);
-
-        responseWriter.writeXmlResponse(null);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            _hallServer.dropFromTournament(tournamentId, resourceOwner);
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -243,35 +240,42 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void joinQueue(HttpRequest request, String queueId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-        String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        try {
-            _hallServer.joinQueue(queueId, resourceOwner, deckName);
-            responseWriter.writeXmlResponse(null);
-        } catch (HallException e) {
-            if(doNotIgnoreError(e)) {
-                LOGGER.error("Error response for {}", request.uri(), e);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            try {
+                _hallServer.joinQueue(queueId, resourceOwner, deckName);
+                responseWriter.writeXmlOkResponse();
+            } catch (HallException e) {
+                if(doNotIgnoreError(e)) {
+                    LOGGER.error("Error response for {}", request.uri(), e);
+                }
+                responseWriter.writeXmlResponseWithNoHeaders(marshalException(e));
             }
-            responseWriter.writeXmlResponse(marshalException(e));
-        }
         } finally {
             postDecoder.destroy();
+        }
+    }
+
+    private class SelfClosingPostRequestDecoder extends HttpPostRequestDecoder implements AutoCloseable {
+
+        SelfClosingPostRequestDecoder(HttpRequest request) {
+            super(request);
+        }
+
+        @Override
+        public void close() {
+            destroy();
         }
     }
 
     private void leaveQueue(HttpRequest request, String queueId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        _hallServer.leaveQueue(queueId, resourceOwner);
-
-        responseWriter.writeXmlResponse(null);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            _hallServer.leaveQueue(queueId, resourceOwner);
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -337,7 +341,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                 }
             }
             doc.appendChild(hall);
-            responseWriter.writeXmlResponse(doc);
+            responseWriter.writeXmlResponseWithNoHeaders(doc);
         } catch (HttpProcessingException exp) {
             int expStatus = exp.getStatus();
             logHttpError(LOGGER, expStatus, request.uri(), exp);
@@ -411,7 +415,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     Map<String, String> headers = new HashMap<>();
                     processDeliveryServiceNotification(_request, headers);
 
-                    _responseWriter.writeXmlResponse(doc, headers);
+                    _responseWriter.writeXmlResponseWithHeaders(doc, headers);
                 } catch (Exception exp) {
                     logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, _request.uri(), exp);
                     _responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500

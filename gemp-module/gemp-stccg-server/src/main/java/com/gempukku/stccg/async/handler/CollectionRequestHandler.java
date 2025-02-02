@@ -76,7 +76,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         Map<String, String> headers = new HashMap<>();
         processDeliveryServiceNotification(request, headers);
 
-        responseWriter.writeXmlResponse(doc, headers);
+        responseWriter.writeXmlResponseWithHeaders(doc, headers);
     }
 
     private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter)
@@ -117,7 +117,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         Map<String, String> headers = new HashMap<>();
         processDeliveryServiceNotification(request, headers);
 
-        responseWriter.writeXmlResponse(doc, headers);
+        responseWriter.writeXmlResponseWithHeaders(doc, headers);
     }
 
     private void appendCardElement(Document doc, Node collectionElem, GenericCardItem item,
@@ -184,7 +184,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
             }
         }
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
         } finally {
             postDecoder.destroy();
         }
@@ -209,7 +209,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
             }
         }
         doc.appendChild(collectionsElem);
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private record CardCount(String name, int count) { }

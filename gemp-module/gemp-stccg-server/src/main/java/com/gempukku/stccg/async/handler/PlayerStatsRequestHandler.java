@@ -43,7 +43,7 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
 
             doc.appendChild(stats);
 
-            responseWriter.writeXmlResponse(doc);
+            responseWriter.writeXmlResponseWithNoHeaders(doc);
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }

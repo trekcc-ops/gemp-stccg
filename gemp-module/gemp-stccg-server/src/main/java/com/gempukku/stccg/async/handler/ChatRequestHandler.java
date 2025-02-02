@@ -78,7 +78,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
                     if(!newMsg.startsWith("/"))
                         newMsg = HTMLUtils.parseChatMessage(newMsg);
                     chatRoom.sendMessage(resourceOwner, newMsg);
-                    responseWriter.writeXmlResponse(null);
+                    responseWriter.writeXmlOkResponse();
                 } else {
                     longPollingSystem.processLongPollingResource(
                             new ChatUpdateLongPollingResource(chatRoom, room, resourceOwner, responseWriter),
@@ -131,7 +131,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
                     Collection<String> usersInRoom = chatRoom.getUsersInRoom(admin);
                     Document doc = createNewDoc();
                     serializeChatRoomData(room, chatMessages, usersInRoom, doc);
-                    responseWriter.writeXmlResponse(doc);
+                    responseWriter.writeXmlResponseWithNoHeaders(doc);
                 } catch (SubscriptionExpiredException exp) {
                     logAndWriteError(HttpURLConnection.HTTP_GONE, "chat poller", exp); // 410
                 } catch (Exception exp) {
@@ -162,7 +162,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
             Collection<String> usersInRoom = chatRoom.getUsersInRoom(admin);
             Document doc = createNewDoc();
             serializeChatRoomData(room, chatMessages, usersInRoom, doc);
-            responseWriter.writeXmlResponse(doc);
+            responseWriter.writeXmlResponseWithNoHeaders(doc);
         } catch (PrivateInformationException exp) {
             logHttpError(LOGGER, HttpURLConnection.HTTP_FORBIDDEN, request.uri(), exp);
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403

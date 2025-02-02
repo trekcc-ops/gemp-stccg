@@ -103,7 +103,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
 
         appendAvailablePics(doc, availablePicksElem, availableChoices);
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private League findLeagueByType(String leagueType) {
@@ -200,7 +200,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
                     soloDraft.getAvailableChoices(playerSeed, stage + 1, draftPool));
         }
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
         } finally {
             postDecoder.destroy();
         }

@@ -149,7 +149,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
             doc.appendChild(players);
 
-            responseWriter.writeXmlResponse(doc);
+            responseWriter.writeXmlResponseWithNoHeaders(doc);
         } finally {
             postDecoder.destroy();
         }
@@ -394,7 +394,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             leagueElem.appendChild(seriesElem);
         }
         doc.appendChild(leagueElem);
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private void addSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter)

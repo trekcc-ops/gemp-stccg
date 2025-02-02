@@ -30,7 +30,7 @@ public class LoginRequestHandler extends DefaultServerRequestHandler implements 
             if (player != null) {
                 player.checkLogin();
                 Map<String, String> userReturningHeaders = logUserReturningHeaders(remoteIp, login);
-                responseWriter.writeXmlResponse(null, userReturningHeaders);
+                responseWriter.writeEmptyXmlResponseWithHeaders(userReturningHeaders);
             } else {
                 throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
             }

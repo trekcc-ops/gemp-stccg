@@ -1,7 +1,5 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -255,16 +253,6 @@ public class GameEvent {
 
         if (!charStr.isEmpty())
             eventElem.setAttribute("charStats", charStr.toString());
-    }
-
-    private void serializeGameState(GameState gameState) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            _eventAttributes.put(Attribute.serializedGameState, mapper.writeValueAsString(gameState));
-        } catch(JsonProcessingException exp) {
-            _game.sendMessage("Unable to create serialized game state");
-            LOGGER.error("Unable to create serialized game state", exp);
-        }
     }
 
 }
