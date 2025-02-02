@@ -1,8 +1,6 @@
 package com.gempukku.stccg;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -13,11 +11,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Element;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JsonToXmlTest {
 
@@ -37,6 +33,9 @@ public class JsonToXmlTest {
 
         String xmlString2 = xmlMapper.writeValueAsString(new EventList(testEvent, testEvent));
         System.out.println(xmlString2);
+
+        String xmlString3 = xmlMapper.writeValueAsString(new TestEventNew());
+        System.out.println(xmlString3);
     }
 
     @JacksonXmlRootElement(localName = "gameState")
@@ -177,6 +176,22 @@ public class JsonToXmlTest {
         public final String type = "P";
         @JacksonXmlProperty(localName = "notGiven", isAttribute = true)
         public String notGiven;
+
     }
+
+    @JacksonXmlRootElement(localName = "ge")
+    public class TestEventNew {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JacksonXmlProperty(localName = "ge", isAttribute = true)
+        Map<String, String> result = new HashMap<>();
+
+        TestEventNew() {
+            result.put("allParticipantIds", "qwer,asdf");
+            result.put("discardPublic", "false");
+            result.put("participantId", "qwer");
+            result.put("type", "P");
+        }
+    }
+
 
 }
