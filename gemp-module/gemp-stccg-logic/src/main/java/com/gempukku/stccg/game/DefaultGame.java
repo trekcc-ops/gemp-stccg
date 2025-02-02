@@ -152,7 +152,7 @@ public abstract class DefaultGame {
         for (Player player : getPlayers()) {
             for(PhysicalCard card : player.getCardsInDrawDeck()) {
                 for (GameStateListener listener : getAllGameStateListeners()) {
-                    getGameState().sendCreatedCardToListener(
+                    getGameState().sendCreatedCardToListener(this,
                             card, false, listener, true, true);
                 }
             }
@@ -169,7 +169,7 @@ public abstract class DefaultGame {
                 if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
 
                 try {
-                    gameState.sendCardsToClient(playerId, listener, restoreSnapshot);
+                    gameState.sendCardsToClient(this, playerId, listener, restoreSnapshot);
                 } catch (PlayerNotFoundException | InvalidGameLogicException exp) {
                     sendErrorMessage(exp);
                     cancelGame();

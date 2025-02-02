@@ -2,14 +2,12 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -130,12 +128,5 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     public final long getLastAccessed() {
         return _lastConsumed;
     }
-
-    public final void serializeConsumedEvents(Document doc, Node element) {
-        for (GameEvent event : consumeGameEvents())
-            element.appendChild(event.serialize(doc));
-    }
-
-    public DefaultGame getGame() { return _game; }
 
 }

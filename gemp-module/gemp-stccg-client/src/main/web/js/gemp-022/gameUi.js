@@ -846,7 +846,7 @@ export default class GameTableUI {
     processXml(xml, animate) {
         log(xml);
         var root = xml.documentElement;
-        if (root.tagName == 'gameState' || root.tagName == 'update') {
+        if (root.tagName == 'gameState') {
             this.processGameEventsXml(root, animate);
         }
     }

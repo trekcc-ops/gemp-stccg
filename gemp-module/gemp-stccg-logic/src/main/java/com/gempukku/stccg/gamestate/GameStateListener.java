@@ -29,5 +29,4 @@ public interface GameStateListener {
     void sendWarning(String playerId, String warning);
     long getLastAccessed();
     int getChannelNumber();
-    DefaultGame getGame();
 }

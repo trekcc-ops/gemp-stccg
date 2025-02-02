@@ -82,7 +82,8 @@ public abstract class GameState {
         return _playerOrder;
     }
 
-    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
+    public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
+                                  boolean restoreSnapshot)
             throws PlayerNotFoundException, InvalidGameLogicException {
 
         Player player = getPlayer(playerId);
@@ -110,8 +111,9 @@ public abstract class GameState {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        listener.sendEvent(new GameEvent(listener.getGame(), GameEvent.Type.GAME_STATS, this));
+        listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.GAME_STATS, this));
     }
+
 
     public void playerDecisionStarted(DefaultGame cardGame, String playerId, AwaitingDecision awaitingDecision)
             throws PlayerNotFoundException {
@@ -206,13 +208,13 @@ public abstract class GameState {
 
             Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
             for (PhysicalCard card : cards) {
-                boolean publicDiscard = card.getZone() == Zone.DISCARD && listener.getGame().isDiscardPilePublic();
+                boolean publicDiscard = card.getZone() == Zone.DISCARD && cardGame.isDiscardPilePublic();
                 if (card.getZone().isPublic() || publicDiscard ||
                         (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(listener.getPlayerId())))
                     removedCardsVisibleByPlayer.add(card);
             }
             if (!removedCardsVisibleByPlayer.isEmpty()) {
-                GameEvent event = new GameEvent(listener.getGame(), GameEvent.Type.REMOVE_CARD_FROM_PLAY,
+                GameEvent event = new GameEvent(cardGame, GameEvent.Type.REMOVE_CARD_FROM_PLAY,
                         removedCardsVisibleByPlayer, playerPerforming);
                 listener.sendEvent(event);
             }
@@ -266,11 +268,13 @@ public abstract class GameState {
 
     protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
                                              boolean animate) {
-        sendCreatedCardToListener(card, sharedMission, listener, animate, false);
+        sendCreatedCardToListener(
+                card.getGame(), card, sharedMission, listener, animate, false);
     }
 
-    public void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
-                                             boolean animate, boolean overrideOwnerVisibility) {
+    public void sendCreatedCardToListener(DefaultGame cardGame, PhysicalCard card, boolean sharedMission,
+                                          GameStateListener listener, boolean animate,
+                                          boolean overrideOwnerVisibility) {
         GameEvent.Type eventType;
 
         if (sharedMission)
@@ -282,13 +286,15 @@ public abstract class GameState {
         boolean sendGameEvent;
         if (card.getZone().isPublic())
             sendGameEvent = true;
-        else if (card.getZone() == Zone.DISCARD && listener.getGame().isDiscardPilePublic())
+        else if (card.getZone() == Zone.DISCARD && cardGame.isDiscardPilePublic())
             sendGameEvent = true;
-        else sendGameEvent = (overrideOwnerVisibility || card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
+        else sendGameEvent = (overrideOwnerVisibility || card.getZone().isVisibleByOwner()) &&
+                    card.getOwnerName().equals(listener.getPlayerId());
 
         if (sendGameEvent)
-            listener.sendEvent(new GameEvent(card.getGame(), eventType, card));
+            listener.sendEvent(new GameEvent(cardGame, eventType, card));
     }
+
 
     public void putCardOnBottomOfDeck(PhysicalCard card) {
         addCardToZone(card, Zone.DRAW_DECK, true);

@@ -11,12 +11,15 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.hall.GameTimer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -254,7 +257,7 @@ public abstract class CardGameMediator {
 
 
     public final GameCommunicationChannel getCommunicationChannel(User player, int channelNumber)
-            throws PrivateInformationException, HttpProcessingException, SubscriptionExpiredException {
+            throws HttpProcessingException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
             throw new PrivateInformationException();
@@ -276,16 +279,33 @@ public abstract class CardGameMediator {
     }
 
     public final void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber,
-                                     ParticipantCommunicationVisitor visitor) {
+                                     Document _doc) {
         _readLock.lock();
         try {
-            visitor.process(channelNumber, communicationChannel, secondsLeft());
+            Element _element = _doc.createElement("gameState");
+            _element.setAttribute("cn", String.valueOf(channelNumber));
+
+            for (GameEvent event : communicationChannel.consumeGameEvents())
+                _element.appendChild(event.serialize(_doc));
+
+            Element clocks = _doc.createElement("clocks");
+            for (Map.Entry<String, Integer> userClock : secondsLeft().entrySet()) {
+                Element clock = _doc.createElement("clock");
+                clock.setAttribute("participantId", userClock.getKey());
+                String clockString = String.valueOf(userClock.getValue());
+                clock.appendChild(_doc.createTextNode(clockString));
+                clocks.appendChild(clock);
+            }
+
+            _element.appendChild(clocks);
+            _doc.appendChild(_element);
         } finally {
             _readLock.unlock();
         }
     }
 
-    public final void signupUserForGame(User player, ParticipantCommunicationVisitor visitor)
+
+    public final void signupUserForGame(User player, Document document)
             throws PrivateInformationException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
@@ -305,7 +325,7 @@ public abstract class CardGameMediator {
         } finally {
             _readLock.unlock();
         }
-        processVisitor(channel, channelNumber, visitor);
+        processVisitor(channel, channelNumber, document);
     }
 
     private Map<String, Integer> secondsLeft() {

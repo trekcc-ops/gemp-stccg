@@ -183,7 +183,8 @@ public class ST1EGameState extends GameState {
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
     @Override
-    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
+    public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
+                                  boolean restoreSnapshot)
             throws PlayerNotFoundException, InvalidGameLogicException {
         Player player = getPlayer(playerId);
         boolean sharedMission;
@@ -246,6 +247,7 @@ public class ST1EGameState extends GameState {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
     }
+
 
     public List<AwayTeam> getAwayTeams() {
         return _awayTeams;
