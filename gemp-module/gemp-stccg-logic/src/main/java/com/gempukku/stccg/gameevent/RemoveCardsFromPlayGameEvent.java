@@ -7,6 +7,7 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.StringJoiner;
 
 public class RemoveCardsFromPlayGameEvent extends GameEvent {
 
@@ -17,12 +18,10 @@ public class RemoveCardsFromPlayGameEvent extends GameEvent {
     }
 
     private void setOtherCards(Collection<PhysicalCard> cards) {
-        int[] otherCardIds = new int[cards.size()];
-        int index = 0;
+        StringJoiner sj = new StringJoiner(",");
         for (PhysicalCard card : cards) {
-            otherCardIds[index] = card.getCardId();
-            index++;
+            sj.add(String.valueOf(card.getCardId()));
         }
-        _eventAttributes.put(Attribute.otherCardIds, TextUtils.arrayToCommaSeparated(otherCardIds));
+        _eventAttributes.put(Attribute.otherCardIds, sj.toString());
     }
 }

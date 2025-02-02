@@ -82,13 +82,4 @@ public class TextUtils {
             return sj.toString();
     }
 
-    public static String arrayToCommaSeparated(int[] integers) {
-        if (integers.length == 0)
-            return "";
-
-        StringJoiner sj = new StringJoiner(",");
-        for (int item : integers)
-            sj.add(String.valueOf(item));
-        return sj.toString();
-    }
 }
