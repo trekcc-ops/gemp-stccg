@@ -166,7 +166,14 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
                 Zone originalZone = _cardEnteringPlay.getZone();
                 reportable.reportToFacility(getSelectedDestination(cardGame));
-                performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
+                if (reportable instanceof AffiliatedCard affiliated) {
+                    Affiliation affiliation = affiliated.getCurrentAffiliation();
+                    if (affiliation == null) {
+                        throw new InvalidGameLogicException("Unable to identify affiliation for card");
+                    } else {
+                        performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
+                    }
+                }
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
             }
