@@ -15,7 +15,7 @@ public interface GameStateListener {
     void setCurrentPhase(Phase phase);
 
     void setPlayerDecked(DefaultGame cardGame, Player player);
-    void setPlayerScore(String playerId);
+    void setPlayerScore(Player player);
 
     void setTribbleSequence(String tribbleSequence);
 

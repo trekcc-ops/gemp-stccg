@@ -7,10 +7,10 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gameevent.UpdateCardImageGameEvent;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
@@ -24,6 +24,19 @@ public class ST1EGame extends DefaultGame {
     private ST1EGameState _gameState;
     private final ST1ERuleSet _rules;
 
+    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
+                    final CardBlueprintLibrary library) {
+        super(format, decks, clocks, library);
+
+        _gameState = new ST1EGameState(decks.keySet(), this);
+        _rules = new ST1ERuleSet();
+        _rules.applyRuleSet(this);
+
+        _gameState.createPhysicalCards(library, decks, this);
+        _turnProcedure = new TurnProcedure(this);
+        setCurrentProcess(new ST1EPlayerOrderProcess());
+    }
+
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         super(format, decks, library);
 
@@ -35,6 +48,7 @@ public class ST1EGame extends DefaultGame {
         _turnProcedure = new TurnProcedure(this);
         setCurrentProcess(new ST1EPlayerOrderProcess());
     }
+
 
     @Override
     public ST1EGameState getGameState() {
@@ -76,7 +90,7 @@ public class ST1EGame extends DefaultGame {
 
     public void sendUpdatedCardImageToClient(PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new UpdateCardImageGameEvent(this, card));
+            listener.sendEvent(new UpdateCardImageGameEvent(card));
     }
 
 }

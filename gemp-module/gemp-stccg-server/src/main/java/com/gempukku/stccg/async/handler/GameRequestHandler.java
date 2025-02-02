@@ -160,9 +160,8 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         public final synchronized void processIfNotProcessed() {
             if (!_processed) {
                 try {
-                    Document doc = createNewDoc();
-                    _gameMediator.processVisitor(_gameCommunicationChannel, _channelNumber, doc);
-                    _responseWriter.writeXmlResponseWithNoHeaders(doc);
+                    String xmlString = _gameMediator.serializeEventsToString(_gameCommunicationChannel);
+                    _responseWriter.writeXmlResponseWithNoHeaders(xmlString);
                 } catch (Exception e) {
                     logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, "game update poller", e);
                     _responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
@@ -216,18 +215,15 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
-
         User resourceOwner = getResourceOwnerSafely(request, participantId);
-
         CardGameMediator gameMediator = _gameServer.getGameById(gameId); // throws 404 error if not found
-
         gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), getAutoPassPhases(request));
+        gameMediator.signupUserForGame(resourceOwner); // throws 403 error if user does not have access
+        GameCommunicationChannel channel = gameMediator.getCommunicationChannel(resourceOwner);
 
-        Document doc = createNewDoc();
-
-        // may throw 403 error
-        gameMediator.signupUserForGame(resourceOwner, doc);
-        responseWriter.writeXmlResponseWithNoHeaders(doc);
+        // May throw an IOException error if there are serialization issues
+        String xmlString = gameMediator.serializeEventsToString(channel);
+        responseWriter.writeXmlResponseWithNoHeaders(xmlString);
     }
 
     private Set<Phase> getAutoPassPhases(HttpMessage request) {

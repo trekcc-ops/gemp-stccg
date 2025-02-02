@@ -1,27 +1,21 @@
 package com.gempukku.stccg.gameevent;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Phase;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.gamestate.GameLocation;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GameEvent {
+
     public enum Type {
         PARTICIPANTS("P"), GAME_PHASE_CHANGE("GPC"), TURN_CHANGE("TC"),
         PUT_SHARED_MISSION_INTO_PLAY("PUT_SHARED_MISSION_INTO_PLAY"),
@@ -54,96 +48,36 @@ public class GameEvent {
         locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
         type, zone,
         placedOnMission,
-        region, serializedGameState
+        region
     }
 
     private final Type _type;
-    private final DefaultGame _game;
+
+    @JacksonXmlProperty(localName = "type", isAttribute = true)
+    private final String _typeCode;
+
+    @JacksonXmlProperty(localName = "timeStamp", isAttribute = true)
+    private final String _timeStamp;
+
+    @JacksonXmlProperty(localName = "participantId", isAttribute = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String _playerId;
+
     private Zone _zone;
     protected final Map<Attribute, String> _eventAttributes = new HashMap<>();
 
-    public GameEvent(DefaultGame cardGame, Type type) {
+    public GameEvent(Type type) {
         _type = type;
-        _game = cardGame;
-        _eventAttributes.put(Attribute.type, type.code);
-        _eventAttributes.put(Attribute.timestamp,
-                ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS")));
+        _typeCode = type.code;
+        _timeStamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS"));
     }
 
 
-    public GameEvent(DefaultGame cardGame, Type type, Player player) {
-        this(cardGame, type);
-        _eventAttributes.put(Attribute.participantId, player.getPlayerId());
+    public GameEvent(Type type, Player player) {
+        this(type);
+        _playerId = player.getPlayerId();
     }
 
-
-    public GameEvent(DefaultGame cardGame, Type type, String message) {
-        this(cardGame, type);
-        _eventAttributes.put(Attribute.message, message);
-    }
-
-    public GameEvent(DefaultGame cardGame, Type type, PhysicalCard card) {
-        this(cardGame, type, card.getOwner());
-        setCardData(card);
-    }
-
-
-    public GameEvent(DefaultGame cardGame, Type type, Phase phase) {
-        this(cardGame, type);
-        _eventAttributes.put(Attribute.phase, phase.toString());
-    }
-    public GameEvent(Type type, PhysicalCard card, Player player) {
-        this(card.getGame(), type, player);
-        setCardData(card);
-    }
-
-    public GameEvent(DefaultGame cardGame, Type type, GameState gameState, Player player) {
-        this(cardGame, type, player);
-        _eventAttributes.put(Attribute.allParticipantIds,
-                String.join(",", (gameState.getPlayerOrder().getAllPlayers())));
-        _eventAttributes.put(Attribute.discardPublic, String.valueOf(cardGame.getFormat().discardPileIsPublic()));
-    }
-
-    private void setCardData(PhysicalCard card) {
-        _eventAttributes.put(Attribute.cardId, String.valueOf(card.getCardId()));
-        _eventAttributes.put(Attribute.blueprintId, card.getBlueprintId());
-        _eventAttributes.put(Attribute.zone, card.getZone().name());
-        _zone = card.getZone();
-        _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
-        _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
-
-        // int locationZoneIndex
-        if (card instanceof ST1EPhysicalCard stCard) {
-            GameLocation location = stCard.getGameLocation();
-            if (location instanceof MissionLocation mission) {
-                int locationZoneIndex = mission.getLocationZoneIndex(stCard.getGame());
-                _eventAttributes.put(Attribute.locationIndex, String.valueOf(locationZoneIndex));
-            } else {
-                _eventAttributes.put(Attribute.locationIndex, "-1");
-            }
-        }
-
-        if (card.getCardType() == CardType.MISSION && card.getGameLocation() instanceof MissionLocation mission) {
-            _eventAttributes.put(Attribute.quadrant, mission.getQuadrant().name());
-            if (mission.getRegion() != null)
-                _eventAttributes.put(Attribute.region, mission.getRegion().name());
-        }
-
-        if (card.getStackedOn() != null)
-            _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
-        else if (card.getAttachedTo() != null)
-            _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
-        if (card.isPlacedOnMission()) {
-                if (card.getGameLocation() instanceof MissionLocation mission) {
-                    _eventAttributes.put(Attribute.placedOnMission, "true");
-                    _eventAttributes.put(Attribute.targetCardId,
-                            String.valueOf(mission.getTopMissionCard().getCardId()));
-                } else {
-                    _game.sendErrorMessage("Tried to create game event for card placed on mission," +
-                            " but card is placed on a non-mission card");
-                }
-        }
-    }
 
     public Type getType() { return _type; }
     public Zone getZone() { return _zone; }
@@ -159,5 +93,10 @@ public class GameEvent {
         }
         return eventElem;
     }
+
+    public Map<Attribute, String> getAttributes() {
+        return _eventAttributes;
+    }
+
 
 }

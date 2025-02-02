@@ -14,10 +14,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.gameevent.GameEvent;
-import com.gempukku.stccg.gameevent.GameStateListener;
-import com.gempukku.stccg.gameevent.RemoveCardsFromPlayGameEvent;
-import com.gempukku.stccg.gameevent.SendGameStatsGameEvent;
+import com.gempukku.stccg.gameevent.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
@@ -143,24 +140,20 @@ public abstract class GameState {
     public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) {
         if (card.getZone() != Zone.ATTACHED)
             card.setZone(Zone.ATTACHED);
-
         card.attachTo(transferTo);
-        for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,card));
+        moveCard(cardGame, card);
     }
 
     public void detachCard(DefaultGame cardGame, PhysicalCard attachedCard, Zone newZone) {
         attachedCard.setZone(newZone);
         attachedCard.detach();
-        for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,attachedCard));
+        moveCard(cardGame, attachedCard);
     }
 
 
     public void attachCard(PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
         if(card == attachTo)
             throw new InvalidParameterException("Cannot attach card to itself!");
-
         card.attachTo(attachTo);
         addCardToZone(card, Zone.ATTACHED);
     }
@@ -177,7 +170,7 @@ public abstract class GameState {
 
     public void moveCard(DefaultGame cardGame, PhysicalCard card) {
         for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY, card));
+            listener.sendEvent(new MoveCardInPlayGameEvent(card));
     }
 
 
@@ -219,7 +212,7 @@ public abstract class GameState {
             }
             if (!removedCardsVisibleByPlayer.isEmpty()) {
                 GameEvent event =
-                        new RemoveCardsFromPlayGameEvent(cardGame, removedCardsVisibleByPlayer, performingPlayer);
+                        new RemoveCardsFromPlayGameEvent(removedCardsVisibleByPlayer, performingPlayer);
                 listener.sendEvent(event);
             }
         }
@@ -297,7 +290,7 @@ public abstract class GameState {
                     card.getOwnerName().equals(listener.getPlayerId());
 
         if (sendGameEvent)
-            listener.sendEvent(new GameEvent(cardGame, eventType, card));
+            listener.sendEvent(new AddNewCardGameEvent(eventType, card));
     }
 
 

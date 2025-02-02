@@ -175,6 +175,19 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         }
 
         @Override
+        public final void writeXmlResponseWithNoHeaders(String xmlString) {
+            try {
+                HttpHeaders headers1 = new DefaultHttpHeaders();
+                headers1.set(CONTENT_TYPE, "application/xml; charset=UTF-8");
+                sendResponse(HttpResponseStatus.OK, xmlString.getBytes(CharsetUtil.UTF_8), headers1, ctx, request);
+            } catch (Exception exp) {
+                LOGGER.error("Error response for {}", request.uri(), exp);
+                sendResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, new byte[0], null, ctx, request);
+            }
+        }
+
+
+        @Override
         public final void writeXmlResponseWithHeaders(Document document, Map<? extends CharSequence, String> addHeaders) {
             try {
                 String contentType;

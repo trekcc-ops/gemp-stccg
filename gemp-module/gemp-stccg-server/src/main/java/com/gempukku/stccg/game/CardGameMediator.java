@@ -1,5 +1,7 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
@@ -11,15 +13,13 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.hall.GameSettings;
-import com.gempukku.stccg.hall.GameTimer;
+import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.player.PlayerClock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.util.*;
@@ -32,7 +32,7 @@ public abstract class CardGameMediator {
     private final Map<String, GameCommunicationChannel> _communicationChannels =
             Collections.synchronizedMap(new HashMap<>());
     final Map<String, CardDeck> _playerDecks = new HashMap<>();
-    private final Map<String, Integer> _playerClocks = new HashMap<>();
+    protected final Map<String, PlayerClock> _playerClocks = new HashMap<>();
     private final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
     private final Set<String> _playersPlaying = new HashSet<>();
     private final String _gameId;
@@ -59,7 +59,7 @@ public abstract class CardGameMediator {
             String participantId = participant.getPlayerId();
             CardDeck deck = participant.getDeck();
             _playerDecks.put(participantId, deck);
-            _playerClocks.put(participantId, 0);
+            _playerClocks.put(participantId, new PlayerClock(participantId, gameSettings.getTimeSettings()));
             _playersPlaying.add(participantId);
         }
     }
@@ -175,10 +175,10 @@ public abstract class CardGameMediator {
                     }
                 }
 
-                for (Map.Entry<String, Integer> playerClock : _playerClocks.entrySet()) {
-                    String player = playerClock.getKey();
+                for (PlayerClock playerClock : _playerClocks.values()) {
+                    String player = playerClock.getPlayerId();
                     if (_timeSettings.maxSecondsPerPlayer() -
-                            playerClock.getValue() - getCurrentUserPendingTime(player) < 0) {
+                            playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
                         addTimeSpentOnDecisionToUserClock(player);
                         game.playerLost(player, "Player run out of time");
                     }
@@ -279,36 +279,42 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber,
-                                     Document _doc) {
+
+    public final GameCommunicationChannel getCommunicationChannel(User player)
+            throws HttpProcessingException {
+        String playerName = player.getName();
+        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
+            throw new PrivateInformationException();
+
         _readLock.lock();
         try {
-            Element _element = _doc.createElement("gameState");
-            _element.setAttribute("cn", String.valueOf(channelNumber));
+            GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
+            if (communicationChannel == null)
+                throw new SubscriptionExpiredException();
+            else return communicationChannel;
+        } finally {
+            _readLock.unlock();
+        }
+    }
 
-            for (GameEvent event : communicationChannel.consumeGameEvents())
-                _element.appendChild(event.serialize(_doc));
-
-            Element clocks = _doc.createElement("clocks");
-            for (Map.Entry<String, Integer> userClock : secondsLeft().entrySet()) {
-                Element clock = _doc.createElement("clock");
-                clock.setAttribute("participantId", userClock.getKey());
-                String clockString = String.valueOf(userClock.getValue());
-                clock.appendChild(_doc.createTextNode(clockString));
-                clocks.appendChild(clock);
-            }
-
-            _element.appendChild(clocks);
-            _doc.appendChild(_element);
+    public final String serializeEventsToString(GameCommunicationChannel communicationChannel)
+            throws IOException {
+        _readLock.lock();
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+            return xmlMapper.writeValueAsString(communicationChannel);
         } catch(IOException exp) {
-            getGame().sendErrorMessage("Unable to serialize decision");
+            getGame().sendErrorMessage("Unable to serialize game events");
+            throw new IOException(exp.getMessage());
         } finally {
             _readLock.unlock();
         }
     }
 
 
-    public final void signupUserForGame(User player, Document document)
+
+    public final void signupUserForGame(User player)
             throws PrivateInformationException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
@@ -328,18 +334,6 @@ public abstract class CardGameMediator {
         } finally {
             _readLock.unlock();
         }
-        processVisitor(channel, channelNumber, document);
-    }
-
-    private Map<String, Integer> secondsLeft() {
-        Map<String, Integer> secondsLeft = new HashMap<>();
-        for (String playerId : _playersPlaying) {
-            int maxSeconds = _timeSettings.maxSecondsPerPlayer();
-            Integer playerClock = _playerClocks.get(playerId);
-            int playerPendingTime = getCurrentUserPendingTime(playerId);
-            secondsLeft.put(playerId, maxSeconds - playerClock - playerPendingTime);
-        }
-        return secondsLeft;
     }
 
     private void startClocksForUsersPendingDecision() {
@@ -355,7 +349,8 @@ public abstract class CardGameMediator {
             long currentTime = System.currentTimeMillis();
             long diffSec = (currentTime - queryTime) / 1000;
             //noinspection NumericCastThatLosesPrecision
-            _playerClocks.put(participantId, _playerClocks.get(participantId) + (int) diffSec);
+            PlayerClock playerClock = _playerClocks.get(participantId);
+            playerClock.addElapsedTime((int) diffSec);
         }
     }
 
@@ -374,6 +369,12 @@ public abstract class CardGameMediator {
         return _timeSettings;
     }
 
-    final Map<String, Integer> getPlayerClocks() { return Collections.unmodifiableMap(_playerClocks); }
+    final Map<String, Integer> getPlayerClocks() {
+        Map<String, Integer> result = new HashMap<>();
+        for (String playerId : _playerClocks.keySet()) {
+            result.put(playerId, _playerClocks.get(playerId).getTimeElapsed());
+        }
+        return result;
+    }
 
 }

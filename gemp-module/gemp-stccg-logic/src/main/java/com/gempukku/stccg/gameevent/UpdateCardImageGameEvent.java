@@ -1,11 +1,24 @@
 package com.gempukku.stccg.gameevent;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 
 public class UpdateCardImageGameEvent extends GameEvent {
 
-    public UpdateCardImageGameEvent(DefaultGame cardGame, PhysicalCard card) {
-        super(cardGame, GameEvent.Type.UPDATE_CARD_IMAGE, card);
+    private final PhysicalCard _card;
+
+    public UpdateCardImageGameEvent(PhysicalCard card) {
+        super(GameEvent.Type.UPDATE_CARD_IMAGE, card.getOwner());
+        _card = card;
+    }
+
+    @JacksonXmlProperty(localName = "cardId", isAttribute = true)
+    private int getCardId() {
+        return _card.getCardId();
+    }
+
+    @JacksonXmlProperty(localName = "imageUrl", isAttribute = true)
+    private String getImageUrl() {
+        return _card.getImageUrl();
     }
 }

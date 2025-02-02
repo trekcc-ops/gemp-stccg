@@ -9,7 +9,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.gameevent.GameEvent;
-import com.gempukku.stccg.hall.GameTimer;
+import com.gempukku.stccg.common.GameTimer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
