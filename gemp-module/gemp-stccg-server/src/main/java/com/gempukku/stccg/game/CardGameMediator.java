@@ -11,9 +11,9 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.gamestate.GameEvent;
+import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.hall.GameTimer;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -299,6 +300,8 @@ public abstract class CardGameMediator {
 
             _element.appendChild(clocks);
             _doc.appendChild(_element);
+        } catch(IOException exp) {
+            getGame().sendErrorMessage("Unable to serialize decision");
         } finally {
             _readLock.unlock();
         }

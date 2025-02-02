@@ -81,7 +81,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             for (Player player : cardGame.getPlayers()) {
                 List<PhysicalCard> remainingSeeds = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeeds) {
-                    cardGame.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
+                    cardGame.removeCardsFromZone(player, Collections.singleton(card));
                     gameState.addCardToZone(card, Zone.HAND);
                 }
             }

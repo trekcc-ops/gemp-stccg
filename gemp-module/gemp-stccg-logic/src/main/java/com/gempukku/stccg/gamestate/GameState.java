@@ -14,6 +14,10 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gameevent.GameEvent;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gameevent.RemoveCardsFromPlayGameEvent;
+import com.gempukku.stccg.gameevent.SendGameStatsGameEvent;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
@@ -110,8 +114,7 @@ public abstract class GameState {
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
-
-        listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.GAME_STATS, this));
+        listener.sendEvent(new SendGameStatsGameEvent(cardGame));
     }
 
 
@@ -126,8 +129,9 @@ public abstract class GameState {
         return _playerDecisions.get(playerId);
     }
 
-    public void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) throws PlayerNotFoundException {
-        if (decision != null)
+    public void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision)
+            throws PlayerNotFoundException {
+        if (decision != null && listener.getPlayerId().equals(playerId))
             listener.decisionRequired(playerId, decision);
     }
 
@@ -168,7 +172,7 @@ public abstract class GameState {
 
 
     public void removeCardFromZone(PhysicalCard card) {
-        removeCardsFromZone(card.getGame(), card.getOwnerName(), Collections.singleton(card));
+        removeCardsFromZone(card.getGame(), card.getOwner(), Collections.singleton(card));
     }
 
     public void moveCard(DefaultGame cardGame, PhysicalCard card) {
@@ -177,7 +181,7 @@ public abstract class GameState {
     }
 
 
-    public void removeCardsFromZone(DefaultGame cardGame, String playerPerforming, Collection<PhysicalCard> cards) {
+    public void removeCardsFromZone(DefaultGame cardGame, Player performingPlayer, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
             List<PhysicalCard> zoneCards = getZoneCards(card.getOwner(), card.getZone());
             if (!zoneCards.contains(card) && card.getZone() != Zone.VOID)
@@ -214,8 +218,8 @@ public abstract class GameState {
                     removedCardsVisibleByPlayer.add(card);
             }
             if (!removedCardsVisibleByPlayer.isEmpty()) {
-                GameEvent event = new GameEvent(cardGame, GameEvent.Type.REMOVE_CARD_FROM_PLAY,
-                        removedCardsVisibleByPlayer, playerPerforming);
+                GameEvent event =
+                        new RemoveCardsFromPlayGameEvent(cardGame, removedCardsVisibleByPlayer, performingPlayer);
                 listener.sendEvent(event);
             }
         }
@@ -224,6 +228,7 @@ public abstract class GameState {
             card.setZone(Zone.VOID);
         }
     }
+
 
 
     public void addCardToZone(PhysicalCard card, Zone zone) {
@@ -356,7 +361,7 @@ public abstract class GameState {
         CardPile drawDeck = player.getDrawDeck();
         if (!drawDeck.isEmpty()) {
             PhysicalCard card = drawDeck.getTopCard();
-            removeCardsFromZone(game, player.getPlayerId(), Collections.singleton(card));
+            removeCardsFromZone(game, player, Collections.singleton(card));
             addCardToZone(card, Zone.HAND);
         }
     }
@@ -364,7 +369,7 @@ public abstract class GameState {
 
     public void sendGameStats(DefaultGame cardGame) {
         for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.GAME_STATS, this));
+            listener.sendEvent(new SendGameStatsGameEvent(cardGame));
     }
 
 
@@ -411,7 +416,7 @@ public abstract class GameState {
         if (currentZone == null) {
             throw new InvalidGameLogicException("Tried to process a card not in any zone");
         } else {
-            removeCardsFromZone(cardGame, cardBeingPlaced.getOwnerName(), List.of(cardBeingPlaced));
+            removeCardsFromZone(cardGame, cardBeingPlaced.getOwner(), List.of(cardBeingPlaced));
             cardBeingPlaced.setPlacedOnMission(true);
             cardBeingPlaced.setLocation(mission);
             addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
@@ -437,7 +442,7 @@ public abstract class GameState {
     }
 
     public void placeCardOnBottomOfDrawDeck(DefaultGame cardGame, Player owner, PhysicalCard card) {
-        removeCardsFromZone(cardGame, owner.getPlayerId(), List.of(card));
+        removeCardsFromZone(cardGame, owner, List.of(card));
         addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
     }
 

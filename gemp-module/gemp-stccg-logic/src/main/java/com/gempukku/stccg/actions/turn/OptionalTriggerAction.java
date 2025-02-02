@@ -7,6 +7,8 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class OptionalTriggerAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
@@ -38,11 +40,12 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         if (!getProgress(Progress.sentMessage)) {
             setProgress(Progress.sentMessage);
             if (_performingCard != null) {
-                cardGame.activatedCard(getPerformingPlayerId(), _performingCard);
+                cardGame.activatedCard(performingPlayer, _performingCard);
                 cardGame.sendMessage(_performingCard.getCardLink() + " optional triggered effect is used");
             }
         }

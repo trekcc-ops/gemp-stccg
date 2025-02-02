@@ -11,6 +11,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 
@@ -58,7 +59,7 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();
             if (selectionAction != null && !selectionAction.wasCarriedOut()) {
@@ -68,9 +69,11 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
             }
         }
 
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+
         Collection<PhysicalCard> cardsToDiscard = _cardTarget.getCards(cardGame);
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(cardGame, _performingPlayerId, cardsToDiscard);
+        gameState.removeCardsFromZone(cardGame, performingPlayer, cardsToDiscard);
         for (PhysicalCard cardToDiscard : cardsToDiscard) {
             if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();

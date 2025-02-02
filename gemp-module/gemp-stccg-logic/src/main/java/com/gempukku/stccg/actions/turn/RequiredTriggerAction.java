@@ -6,6 +6,8 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class RequiredTriggerAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
@@ -28,11 +30,12 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         if (!getProgress(Progress.sentMessage)) {
             setProgress(Progress.sentMessage);
             if (_performingCard != null) {
-                cardGame.activatedCard(getPerformingPlayerId(), _performingCard);
+                cardGame.activatedCard(performingPlayer, _performingCard);
                 cardGame.sendMessage(_performingCard.getCardLink() + " required triggered effect is used");
             }
         }

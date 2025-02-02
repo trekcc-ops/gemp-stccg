@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.player.Player;
 
 import java.text.DecimalFormat;
@@ -75,7 +76,7 @@ public final class TribblesGameState extends GameState {
     public void shufflePlayPileIntoDeck(DefaultGame game, Player player) {
         String playerId = player.getPlayerId();
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
-        removeCardsFromZone(game, playerId, playPile);
+        removeCardsFromZone(game, player, playPile);
         for (PhysicalCard card : playPile) {
             addCardToZone(card, Zone.DRAW_DECK);
         }

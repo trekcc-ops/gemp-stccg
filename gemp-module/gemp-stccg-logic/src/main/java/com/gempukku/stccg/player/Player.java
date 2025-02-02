@@ -11,8 +11,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.GameStateListener;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -203,14 +201,14 @@ public class Player {
     }
 
     public void discardHand(DefaultGame cardGame) {
-        cardGame.getGameState().removeCardsFromZone(cardGame, _playerId, getCardsInHand());
+        cardGame.getGameState().removeCardsFromZone(cardGame, this, getCardsInHand());
         for (PhysicalCard card : getCardsInHand()) {
             cardGame.getGameState().addCardToZone(card, Zone.DISCARD);
         }
     }
 
     public void shuffleCardsIntoDrawDeck(DefaultGame cardGame, Collection<PhysicalCard> cards) {
-        cardGame.removeCardsFromZone(_playerId, cards);
+        cardGame.removeCardsFromZone(this, cards);
         for (PhysicalCard card : cards) {
             cardGame.getGameState().addCardToZone(card, Zone.DRAW_DECK);
         }

@@ -37,7 +37,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
                 _cardEnteringPlay.getCardLink() +  " from " + playedFromZone.getHumanReadable() +
                 " to " + _destinationZone.getHumanReadable());
-        gameState.removeCardsFromZone(cardGame, _cardEnteringPlay.getOwnerName(),
+        gameState.removeCardsFromZone(cardGame, _cardEnteringPlay.getOwner(),
                 Collections.singleton(_cardEnteringPlay));
         cardGame.getGameState().addCardToZone(_cardEnteringPlay, Zone.PLAY_PILE);
         if (playedFromZone == Zone.DRAW_DECK) {

@@ -4,8 +4,9 @@ import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.gameevent.GameEvent;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gameevent.SendDecisionGameEvent;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -63,9 +64,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     public final void sendEvent(GameEvent gameEvent) {
         appendEvent(gameEvent);
     }
-    public final void sendEvent(GameEvent.Type eventType) {
-        appendEvent(new GameEvent(_game, eventType));
-    }
 
     @Override
     public final void setCurrentPhase(Phase phase) {
@@ -102,10 +100,9 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         appendEvent(new GameEvent(_game, GameEvent.Type.SEND_MESSAGE, message));
     }
 
-    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) throws PlayerNotFoundException {
-        if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(_game, GameEvent.Type.DECISION, awaitingDecision,
-                    _game.getGameState().getPlayer(playerId)));
+    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision)
+            throws PlayerNotFoundException {
+        appendEvent(new SendDecisionGameEvent(_game, awaitingDecision, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override

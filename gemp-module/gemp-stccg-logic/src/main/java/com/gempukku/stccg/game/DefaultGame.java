@@ -5,6 +5,9 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
+import com.gempukku.stccg.gameevent.FlashCardInPlayGameEvent;
+import com.gempukku.stccg.gameevent.GameEvent;
+import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -143,7 +146,7 @@ public abstract class DefaultGame {
 
     public void finish() {
         for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.sendEvent(GameEvent.Type.GAME_ENDED);
+            listener.sendEvent(new GameEvent(this, GameEvent.Type.GAME_ENDED));
         }
 
         if (getPlayers() == null || getPlayers().isEmpty())
@@ -492,16 +495,13 @@ public abstract class DefaultGame {
         return Collections.unmodifiableMap(_previousZoneSizes);
     }
 
-    public void activatedCard(String playerPerforming, PhysicalCard card) {
+    public void activatedCard(Player performingPlayer, PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners()) {
-            try {
-                GameEvent event = new GameEvent(GameEvent.Type.FLASH_CARD_IN_PLAY, card, getPlayer(playerPerforming));
-                listener.sendEvent(event);
-            } catch(PlayerNotFoundException exp) {
-                sendErrorMessage(exp);
-            }
+            GameEvent event = new FlashCardInPlayGameEvent(card, performingPlayer);
+            listener.sendEvent(event);
         }
     }
+
 
     public void sendWarning(String player, String warning) {
         for (GameStateListener listener : getAllGameStateListeners())
@@ -518,9 +518,10 @@ public abstract class DefaultGame {
             listener.sendEvent(new GameEvent(this, GameEvent.Type.GAME_STATE_CHECK));
     }
 
-    public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
-        getGameState().removeCardsFromZone(this, playerPerforming, cards);
+    public void removeCardsFromZone(Player performingPlayer, Collection<PhysicalCard> cards) {
+        getGameState().removeCardsFromZone(this, performingPlayer, cards);
     }
+
 
     public void performRevert(Player player) {
         DefaultGame thisGame = this;

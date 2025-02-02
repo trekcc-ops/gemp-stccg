@@ -1,17 +1,16 @@
-package com.gempukku.stccg.gamestate;
+package com.gempukku.stccg.gameevent;
 
-import com.gempukku.stccg.TextUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameLocation;
+import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,7 +18,6 @@ import org.w3c.dom.Node;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +30,8 @@ public class GameEvent {
         PLAYER_SCORE("PLAYER_SCORE"),
         PUT_CARD_INTO_PLAY("PCIP"),
         PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING("PCIPAR"),
-        MOVE_CARD_IN_PLAY("MCIP"), REMOVE_CARD_FROM_PLAY("RCFP"),
+        MOVE_CARD_IN_PLAY("MCIP"),
+        REMOVE_CARD_FROM_PLAY("RCFP"),
         SEND_MESSAGE("M"), SEND_WARNING("W"),
         GAME_STATS("GS"),
         CHAT_MESSAGE("CM"),
@@ -61,10 +60,7 @@ public class GameEvent {
     private final Type _type;
     private final DefaultGame _game;
     private Zone _zone;
-    private GameState _gameState;
-    private AwaitingDecision _awaitingDecision;
-    private final Map<Attribute, String> _eventAttributes = new HashMap<>();
-    private static final Logger LOGGER = LogManager.getLogger(GameEvent.class);
+    protected final Map<Attribute, String> _eventAttributes = new HashMap<>();
 
     public GameEvent(DefaultGame cardGame, Type type) {
         _type = type;
@@ -92,12 +88,6 @@ public class GameEvent {
     }
 
 
-    public GameEvent(DefaultGame cardGame, Type type, Collection<PhysicalCard> cards, String playerId) {
-        this(cardGame, type);
-        setOtherCards(cards);
-        _eventAttributes.put(Attribute.participantId, playerId);
-    }
-
     public GameEvent(DefaultGame cardGame, Type type, Phase phase) {
         this(cardGame, type);
         _eventAttributes.put(Attribute.phase, phase.toString());
@@ -107,36 +97,11 @@ public class GameEvent {
         setCardData(card);
     }
 
-    public GameEvent(DefaultGame cardGame, Type type, GameState gameState) {
-        this(cardGame, type);
-        _gameState = gameState;
-    }
-
     public GameEvent(DefaultGame cardGame, Type type, GameState gameState, Player player) {
         this(cardGame, type, player);
         _eventAttributes.put(Attribute.allParticipantIds,
                 String.join(",", (gameState.getPlayerOrder().getAllPlayers())));
         _eventAttributes.put(Attribute.discardPublic, String.valueOf(cardGame.getFormat().discardPileIsPublic()));
-    }
-
-    public GameEvent(DefaultGame cardGame, Type type, AwaitingDecision decision, Player player) {
-        this(cardGame, type, player);
-        _awaitingDecision = decision;
-        _eventAttributes.put(Attribute.id, String.valueOf(decision.getDecisionId()));
-        _eventAttributes.put(Attribute.decisionType, decision.getDecisionType().name());
-        if (decision.getText() != null)
-            _eventAttributes.put(Attribute.text, decision.getText());
-        _eventAttributes.put(Attribute.phase, cardGame.getCurrentPhase().name());
-    }
-
-    private void setOtherCards(Collection<PhysicalCard> cards) {
-        int[] otherCardIds = new int[cards.size()];
-        int index = 0;
-        for (PhysicalCard card : cards) {
-            otherCardIds[index] = card.getCardId();
-            index++;
-        }
-        _eventAttributes.put(Attribute.otherCardIds, TextUtils.arrayToCommaSeparated(otherCardIds));
     }
 
     private void setCardData(PhysicalCard card) {
@@ -149,15 +114,12 @@ public class GameEvent {
 
         // int locationZoneIndex
         if (card instanceof ST1EPhysicalCard stCard) {
-            try {
-                GameLocation location = stCard.getGameLocation();
-                if (location instanceof MissionLocation mission) {
-                    int locationZoneIndex = mission.getLocationZoneIndex(stCard.getGame());
-                    _eventAttributes.put(Attribute.locationIndex, String.valueOf(locationZoneIndex));
-                }
-            } catch(NullPointerException ignored) {
-                // Don't serialize the location if the card doesn't have one yet
-                // TODO - Eventually we'll be removing game events
+            GameLocation location = stCard.getGameLocation();
+            if (location instanceof MissionLocation mission) {
+                int locationZoneIndex = mission.getLocationZoneIndex(stCard.getGame());
+                _eventAttributes.put(Attribute.locationIndex, String.valueOf(locationZoneIndex));
+            } else {
+                _eventAttributes.put(Attribute.locationIndex, "-1");
             }
         }
 
@@ -171,7 +133,6 @@ public class GameEvent {
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
         else if (card.getAttachedTo() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
-//        serializeGameState(_game.getGameState());
         if (card.isPlacedOnMission()) {
                 if (card.getGameLocation() instanceof MissionLocation mission) {
                     _eventAttributes.put(Attribute.placedOnMission, "true");
@@ -189,70 +150,14 @@ public class GameEvent {
 
     public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }
 
-    public Node serialize(Document doc) {
+    public Node serialize(Document doc) throws JsonProcessingException {
         Element eventElem = doc.createElement("ge");
 
         for (Attribute attribute : _eventAttributes.keySet()) {
             if (getAttribute(attribute) != null)
                 eventElem.setAttribute(attribute.name(), getAttribute(attribute));
         }
-
-        if (_gameState != null)
-            serializeGameStats(doc, eventElem);
-        if (_awaitingDecision != null)
-            serializeDecision(doc, eventElem);
-
         return eventElem;
-    }
-
-    private void serializeDecision(Document doc, Element eventElem) {
-        for (Map.Entry<String, String[]> paramEntry : _awaitingDecision.getDecisionParameters().entrySet()) {
-            for (String value : paramEntry.getValue()) {
-                Element decisionParam = doc.createElement("parameter");
-                decisionParam.setAttribute("name", paramEntry.getKey());
-                decisionParam.setAttribute("value", value);
-                eventElem.appendChild(decisionParam);
-            }
-        }
-        try {
-            if (_awaitingDecision instanceof ArbitraryCardsSelectionDecision arbitrary) {
-                if (arbitrary.getValidCombinations() != null) {
-                    Element decisionParam = doc.createElement("parameter");
-                    decisionParam.setAttribute("name", "combinations");
-                    decisionParam.setAttribute("value", arbitrary.getValidCombinations());
-                    eventElem.appendChild(decisionParam);
-                }
-            }
-        } catch(Exception exp) {
-            _game.sendMessage("Unable to process decision");
-        }
-    }
-
-    private void serializeGameStats(Document doc, Element eventElem) {
-        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _game.getZoneSizes().entrySet()) {
-            final Element playerZonesElem = doc.createElement("playerZones");
-
-            playerZonesElem.setAttribute("name", playerZoneSizes.getKey());
-
-            for (Map.Entry<Zone, Integer> zoneSizes : playerZoneSizes.getValue().entrySet())
-                playerZonesElem.setAttribute(zoneSizes.getKey().name(), zoneSizes.getValue().toString());
-
-            eventElem.appendChild(playerZonesElem);
-        }
-
-        for (Player player : _game.getPlayers()) {
-            final Element playerScoreElem = doc.createElement("playerScores");
-            playerScoreElem.setAttribute("name", player.getPlayerId());
-            playerScoreElem.setAttribute("score", String.valueOf(player.getScore()));
-            eventElem.appendChild(playerScoreElem);
-        }
-
-        StringBuilder charStr = new StringBuilder();
-        if (!charStr.isEmpty())
-            charStr.delete(0, 1);
-
-        if (!charStr.isEmpty())
-            eventElem.setAttribute("charStats", charStr.toString());
     }
 
 }

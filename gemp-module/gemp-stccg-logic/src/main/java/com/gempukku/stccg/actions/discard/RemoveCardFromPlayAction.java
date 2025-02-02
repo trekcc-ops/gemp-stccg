@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,7 +36,7 @@ public class RemoveCardFromPlayAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();
             if (selectionAction != null && !selectionAction.wasCarriedOut()) {
@@ -45,11 +46,12 @@ public class RemoveCardFromPlayAction extends ActionyAction {
             }
         }
 
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         Collection<PhysicalCard> removedCards = new HashSet<>(_cardTarget.getCards(cardGame));
 
         Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
 
-        cardGame.removeCardsFromZone(_performingPlayerId, toRemoveFromZone);
+        cardGame.removeCardsFromZone(performingPlayer, toRemoveFromZone);
         for (PhysicalCard removedCard : removedCards) {
             cardGame.getGameState().addCardToZone(removedCard, Zone.REMOVED);
             if (removedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {

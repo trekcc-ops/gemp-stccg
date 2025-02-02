@@ -77,11 +77,10 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
             if (!cardGame.getFormat().isNoShuffle())
                 Collections.shuffle(missionSeeds);
             for (PhysicalCard card : missionSeeds) {
-                cardGame.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
+                cardGame.removeCardsFromZone(player, Collections.singleton(card));
                 cardGameState.addCardToZone(card, Zone.HAND);
             }
         }
-        ST1EGame stGame = getST1EGame(cardGame);
         return new ST1EMissionSeedPhaseProcess();
     }
 }

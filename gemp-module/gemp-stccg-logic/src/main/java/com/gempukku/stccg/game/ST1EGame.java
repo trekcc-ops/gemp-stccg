@@ -7,8 +7,9 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.gameevent.GameEvent;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gameevent.UpdateCardImageGameEvent;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
@@ -75,7 +76,7 @@ public class ST1EGame extends DefaultGame {
 
     public void sendUpdatedCardImageToClient(PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(this, GameEvent.Type.UPDATE_CARD_IMAGE, card));
+            listener.sendEvent(new UpdateCardImageGameEvent(this, card));
     }
 
 }
