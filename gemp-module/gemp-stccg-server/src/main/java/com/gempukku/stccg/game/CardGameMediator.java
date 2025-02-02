@@ -15,7 +15,7 @@ import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.hall.GameSettings;
-import com.gempukku.stccg.hall.GameTimer;
+import com.gempukku.stccg.common.GameTimer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;

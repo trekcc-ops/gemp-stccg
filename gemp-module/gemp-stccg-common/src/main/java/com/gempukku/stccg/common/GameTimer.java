@@ -1,4 +1,4 @@
-package com.gempukku.stccg.hall;
+package com.gempukku.stccg.common;
 
 import java.util.Locale;
 
@@ -16,12 +16,12 @@ public record GameTimer(boolean longGame, String name, int maxSecondsPerPlayer, 
             new GameTimer(true, "Glacial",
                     60 * 60 * 24 * 3, 60 * 60 * 24);
     // 5 minutes timeout, 40 minutes per game per player
-    static final GameTimer COMPETITIVE_TIMER =
+    public static final GameTimer COMPETITIVE_TIMER =
             new GameTimer(false, "Competitive", 60 * 40, 60 * 5);
-    static final GameTimer TOURNAMENT_TIMER =
+    public static final GameTimer TOURNAMENT_TIMER =
             new GameTimer(false, "Tournament", 60 * 40, 60 * 5);
 
-    static GameTimer ResolveTimer(String timer) {
+    public static GameTimer ResolveTimer(String timer) {
         if (timer == null) return DEFAULT_TIMER;
         return switch(timer.toLowerCase(Locale.ROOT)) {
             case "debug" -> DEBUG_TIMER;
