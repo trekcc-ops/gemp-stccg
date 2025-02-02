@@ -16,6 +16,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.player.PlayerClock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -32,7 +33,7 @@ public abstract class CardGameMediator {
     private final Map<String, GameCommunicationChannel> _communicationChannels =
             Collections.synchronizedMap(new HashMap<>());
     final Map<String, CardDeck> _playerDecks = new HashMap<>();
-    private final Map<String, Integer> _playerClocks = new HashMap<>();
+    protected final Map<String, PlayerClock> _playerClocks = new HashMap<>();
     private final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
     private final Set<String> _playersPlaying = new HashSet<>();
     private final String _gameId;
@@ -59,7 +60,7 @@ public abstract class CardGameMediator {
             String participantId = participant.getPlayerId();
             CardDeck deck = participant.getDeck();
             _playerDecks.put(participantId, deck);
-            _playerClocks.put(participantId, 0);
+            _playerClocks.put(participantId, new PlayerClock(participantId, gameSettings.getTimeSettings()));
             _playersPlaying.add(participantId);
         }
     }
@@ -175,10 +176,10 @@ public abstract class CardGameMediator {
                     }
                 }
 
-                for (Map.Entry<String, Integer> playerClock : _playerClocks.entrySet()) {
-                    String player = playerClock.getKey();
+                for (PlayerClock playerClock : _playerClocks.values()) {
+                    String player = playerClock.getPlayerId();
                     if (_timeSettings.maxSecondsPerPlayer() -
-                            playerClock.getValue() - getCurrentUserPendingTime(player) < 0) {
+                            playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
                         addTimeSpentOnDecisionToUserClock(player);
                         game.playerLost(player, "Player run out of time");
                     }
@@ -335,7 +336,7 @@ public abstract class CardGameMediator {
         Map<String, Integer> secondsLeft = new HashMap<>();
         for (String playerId : _playersPlaying) {
             int maxSeconds = _timeSettings.maxSecondsPerPlayer();
-            Integer playerClock = _playerClocks.get(playerId);
+            int playerClock = _playerClocks.get(playerId).getTimeElapsed();
             int playerPendingTime = getCurrentUserPendingTime(playerId);
             secondsLeft.put(playerId, maxSeconds - playerClock - playerPendingTime);
         }
@@ -355,7 +356,8 @@ public abstract class CardGameMediator {
             long currentTime = System.currentTimeMillis();
             long diffSec = (currentTime - queryTime) / 1000;
             //noinspection NumericCastThatLosesPrecision
-            _playerClocks.put(participantId, _playerClocks.get(participantId) + (int) diffSec);
+            PlayerClock playerClock = _playerClocks.get(participantId);
+            playerClock.addElapsedTime((int) diffSec);
         }
     }
 
@@ -374,6 +376,12 @@ public abstract class CardGameMediator {
         return _timeSettings;
     }
 
-    final Map<String, Integer> getPlayerClocks() { return Collections.unmodifiableMap(_playerClocks); }
+    final Map<String, Integer> getPlayerClocks() {
+        Map<String, Integer> result = new HashMap<>();
+        for (String playerId : _playerClocks.keySet()) {
+            result.put(playerId, _playerClocks.get(playerId).getTimeElapsed());
+        }
+        return result;
+    }
 
 }

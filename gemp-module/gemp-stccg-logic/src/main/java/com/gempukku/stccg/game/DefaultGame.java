@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
@@ -20,6 +21,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
@@ -29,6 +31,7 @@ import java.util.*;
 public abstract class DefaultGame {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
     private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
+    private Map<String, PlayerClock> _playerClocks = new HashMap<>();
 
     // Game parameters
     protected final GameFormat _format;
@@ -54,11 +57,24 @@ public abstract class DefaultGame {
     private int _nextSnapshotId;
     private final static int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
 
+    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
+                       final CardBlueprintLibrary library) {
+        _format = format;
+        _userFeedback = new DefaultUserFeedback(this);
+        _library = library;
+        _allPlayerIds = decks.keySet();
+        _playerClocks = clocks;
+    }
+
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         _format = format;
         _userFeedback = new DefaultUserFeedback(this);
         _library = library;
         _allPlayerIds = decks.keySet();
+        _playerClocks = new HashMap<>();
+        for (String playerId : _allPlayerIds) {
+            _playerClocks.put(playerId, new PlayerClock(playerId, GameTimer.GLACIAL_TIMER));
+        }
     }
 
     public abstract GameState getGameState();
@@ -609,6 +625,10 @@ public abstract class DefaultGame {
                 getGameState().getPlayerOrder().getPlayOrder(
                         _playOrder.getNextPlayer(), true), _consecutivePasses, _followingGameProcess); */
         return null;
+    }
+
+    public Map<String, PlayerClock> getPlayerClocks() {
+        return _playerClocks;
     }
 
 

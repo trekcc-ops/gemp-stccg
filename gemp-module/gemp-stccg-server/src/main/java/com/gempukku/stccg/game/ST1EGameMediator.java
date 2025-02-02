@@ -8,7 +8,7 @@ public class ST1EGameMediator extends CardGameMediator {
     public ST1EGameMediator(String gameId, GameParticipant[] participants, CardBlueprintLibrary library,
                             GameSettings gameSettings) {
         super(gameId, participants, gameSettings);
-        _st1egame = new ST1EGame(gameSettings.getGameFormat(), _playerDecks, library);
+        _st1egame = new ST1EGame(gameSettings.getGameFormat(), _playerDecks, _playerClocks, library);
     }
 
     @Override
