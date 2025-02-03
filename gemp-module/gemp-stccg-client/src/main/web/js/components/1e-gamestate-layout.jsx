@@ -18,6 +18,8 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
 
@@ -168,6 +170,73 @@ export default function MiniDrawer() {
                 <Divider />
                 {/* inside the drawer */}
                 <List>
+                    {/* Card Tree button */}
+                    <ListItem disablePadding sx={{display: 'block'}}
+                    >
+                        <ListItemButton sx={[
+                                    {
+                                        minHeight: 48,
+                                        px: 2.5,
+                                    },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                ]}
+                            >
+                            <ListItemIcon sx={[
+                                    {
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                    },
+                                    /* Adjust right margin when closed */
+                                    open ? {mr: 3,} : {mr: 'auto',},
+                                ]}>
+                                <AccountTreeIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Card Tree"
+                                sx={[
+                                        /* Hide text when closed */
+                                        open ? {opacity: 1,} : {opacity: 0,},
+                                    ]}
+                            />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <Divider />
+                    
+                    {/* Bookmarks button */}
+                    <ListItem disablePadding sx={{display: 'block'}}
+                    >
+                        <ListItemButton sx={[
+                                    {
+                                        minHeight: 48,
+                                        px: 2.5,
+                                    },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                ]}
+                            >
+                            <ListItemIcon sx={[
+                                    {
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                    },
+                                    /* Adjust right margin when closed */
+                                    open ? {mr: 3,} : {mr: 'auto',},
+                                ]}>
+                                <BookmarksIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Bookmarks"
+                                sx={[
+                                        /* Hide text when closed */
+                                        open ? {opacity: 1,} : {opacity: 0,},
+                                    ]}
+                            />
+                        </ListItemButton>
+                    </ListItem>
+                    
+                    {/* Built-in stuff */}
+                    
+                    {/*
                     {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
@@ -199,8 +268,11 @@ export default function MiniDrawer() {
                             </ListItemButton>
                         </ListItem>
                     ))}
+                    */}
                 </List>
                 <Divider />
+
+                {/*
                 <List>
                     {['All mail', 'Trash', 'Spam'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
@@ -234,6 +306,7 @@ export default function MiniDrawer() {
                         </ListItem>
                     ))}
                 </List>
+                */}
             </Drawer>
             {/* content */}
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
