@@ -18,6 +18,8 @@ public class InitializeBoardForPlayerGameEvent extends GameEvent {
         GameState gameState = cardGame.getGameState();
         _allParticipantIds = String.join(",", (gameState.getPlayerOrder().getAllPlayers()));
         _discardPublic = String.valueOf(cardGame.getFormat().discardPileIsPublic());
+        _eventAttributes.put(Attribute.allParticipantIds, _allParticipantIds);
+        _eventAttributes.put(Attribute.discardPublic, _discardPublic);
     }
 
 }

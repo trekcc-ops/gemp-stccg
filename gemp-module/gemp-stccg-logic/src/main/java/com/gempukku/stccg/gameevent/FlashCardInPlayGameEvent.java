@@ -12,6 +12,7 @@ public class FlashCardInPlayGameEvent extends GameEvent {
     public FlashCardInPlayGameEvent(PhysicalCard card, Player performingPlayer) {
         super(Type.FLASH_CARD_IN_PLAY, performingPlayer);
         _cardId = card.getCardId();
+        _eventAttributes.put(Attribute.cardId, String.valueOf(_cardId));
     }
 
 }

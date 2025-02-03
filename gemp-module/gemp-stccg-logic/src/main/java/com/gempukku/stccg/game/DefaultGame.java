@@ -95,31 +95,9 @@ public abstract class DefaultGame {
     public void addGameResultListener(GameResultListener listener) {
         _gameResultListeners.add(listener);
     }
-    public void addGameStateListener(String playerId, GameStateListener listener) {
-        _gameStateListeners.add(listener);
-        try {
-            GameState gameState = getGameState();
-            PlayerOrder playerOrder = gameState.getPlayerOrder();
-            if (playerOrder != null) {
-                listener.initializeBoard();
-                if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
-                if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
-
-                try {
-                    gameState.sendCardsToClient(this, playerId, listener, false);
-                } catch (PlayerNotFoundException | InvalidGameLogicException exp) {
-                    sendErrorMessage(exp);
-                    cancelGame();
-                }
-            }
-            for (String lastMessage : getMessages())
-                listener.sendMessage(lastMessage);
-
-            final AwaitingDecision awaitingDecision = gameState.getDecision(playerId);
-            gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
-        } catch(PlayerNotFoundException exp) {
-            sendErrorMessage(exp);
-        }
+    public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
+        _gameStateListeners.add(gameStateListener);
+        sendGameStateToClient(playerId, gameStateListener, false);
     }
 
     public Collection<GameStateListener> getAllGameStateListeners() {
@@ -198,6 +176,32 @@ public abstract class DefaultGame {
                             card, false, listener, true, true);
                 }
             }
+        }
+    }
+
+    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+        try {
+            GameState gameState = getGameState();
+            PlayerOrder playerOrder = gameState.getPlayerOrder();
+            if (playerOrder != null) {
+                listener.initializeBoard();
+                if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
+                if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
+
+                try {
+                    gameState.sendCardsToClient(this, playerId, listener, restoreSnapshot);
+                } catch (PlayerNotFoundException | InvalidGameLogicException exp) {
+                    sendErrorMessage(exp);
+                    cancelGame();
+                }
+            }
+            for (String lastMessage : getMessages())
+                listener.sendMessage(lastMessage);
+
+            final AwaitingDecision awaitingDecision = gameState.getDecision(playerId);
+            gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
+        } catch(PlayerNotFoundException exp) {
+            sendErrorMessage(exp);
         }
     }
 
@@ -524,7 +528,7 @@ public abstract class DefaultGame {
     public void addToPlayerScore(Player player, int points) {
         player.scorePoints(points);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerScore(player);
+            listener.setPlayerScore(player.getPlayerId());
     }
     public void sendSerializedGameStateToClient() {
         for (GameStateListener listener : getAllGameStateListeners())

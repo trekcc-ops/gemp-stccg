@@ -18,6 +18,7 @@ public class AddNewCardGameEvent extends GameEvent {
     public AddNewCardGameEvent(GameEvent.Type eventType, PhysicalCard card) {
         super(eventType, card.getOwner());
         _card = card;
+        setCardData(card);
     }
 
     @JacksonXmlProperty(localName = "cardId", isAttribute = true)

@@ -140,20 +140,24 @@ public abstract class GameState {
     public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) {
         if (card.getZone() != Zone.ATTACHED)
             card.setZone(Zone.ATTACHED);
+
         card.attachTo(transferTo);
-        moveCard(cardGame, card);
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,card));
     }
 
     public void detachCard(DefaultGame cardGame, PhysicalCard attachedCard, Zone newZone) {
         attachedCard.setZone(newZone);
         attachedCard.detach();
-        moveCard(cardGame, attachedCard);
+        for (GameStateListener listener : cardGame.getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(cardGame, GameEvent.Type.MOVE_CARD_IN_PLAY,attachedCard));
     }
 
 
     public void attachCard(PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
         if(card == attachTo)
             throw new InvalidParameterException("Cannot attach card to itself!");
+
         card.attachTo(attachTo);
         addCardToZone(card, Zone.ATTACHED);
     }

@@ -10,6 +10,7 @@ public class SendMessageGameEvent extends GameEvent {
     public SendMessageGameEvent(GameEvent.Type eventType, String message) {
         super(eventType);
         _message = message;
+        _eventAttributes.put(Attribute.message, message);
     }
 
 }

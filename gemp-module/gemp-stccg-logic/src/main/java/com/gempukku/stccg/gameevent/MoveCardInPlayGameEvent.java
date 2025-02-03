@@ -16,6 +16,7 @@ public class MoveCardInPlayGameEvent extends GameEvent {
     public MoveCardInPlayGameEvent(PhysicalCard card) {
         super(Type.MOVE_CARD_IN_PLAY, card.getOwner());
         _card = card;
+        setCardData(card);
     }
 
     @JacksonXmlProperty(localName = "cardId", isAttribute = true)

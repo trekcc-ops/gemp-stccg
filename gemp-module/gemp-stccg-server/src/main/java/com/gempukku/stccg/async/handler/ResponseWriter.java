@@ -22,7 +22,5 @@ public interface ResponseWriter {
 
     void writeXmlResponseWithNoHeaders(Document document);
 
-    void writeXmlResponseWithNoHeaders(String xmlString);
-
     void writeXmlResponseWithHeaders(Document document, Map<? extends CharSequence, String> addHeaders);
 }

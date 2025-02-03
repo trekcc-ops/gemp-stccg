@@ -13,6 +13,7 @@ public class StartOfPhaseGameEvent extends GameEvent {
     public StartOfPhaseGameEvent(Phase phase) {
         super(Type.GAME_PHASE_CHANGE);
         _phase = phase;
+        _eventAttributes.put(Attribute.phase, phase.name());
     }
 
 }

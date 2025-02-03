@@ -11,6 +11,7 @@ public class UpdateTribbleSequenceGameEvent extends GameEvent {
     public UpdateTribbleSequenceGameEvent(String tribbleSequence) {
         super(Type.TRIBBLE_SEQUENCE_UPDATE);
         _tribbleSequence = tribbleSequence;
+        _eventAttributes.put(Attribute.message, tribbleSequence);
     }
 
 }

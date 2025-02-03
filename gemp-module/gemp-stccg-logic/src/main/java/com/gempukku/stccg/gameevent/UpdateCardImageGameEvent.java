@@ -10,6 +10,8 @@ public class UpdateCardImageGameEvent extends GameEvent {
     public UpdateCardImageGameEvent(PhysicalCard card) {
         super(GameEvent.Type.UPDATE_CARD_IMAGE, card.getOwner());
         _card = card;
+        _eventAttributes.put(Attribute.cardId, String.valueOf(_card.getCardId()));
+        _eventAttributes.put(Attribute.imageUrl, String.valueOf(_card.getImageUrl()));
     }
 
     @JacksonXmlProperty(localName = "cardId", isAttribute = true)
