@@ -2,7 +2,6 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CompleteCardCollection;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -123,7 +122,7 @@ public class SortAndFilterCards {
     private static boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library,
                                     FormatLibrary formatLibrary) {
         for (String setId : sets) {
-            GameFormat format = formatLibrary.getFormat(setId);
+            GameFormat format = formatLibrary.get(setId);
 
             if (format != null) {
                 String valid = format.validateCard(library, blueprintId);

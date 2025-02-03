@@ -141,7 +141,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         pack.setAttribute("blueprintId", blueprintId);
         if (setContents) {
             if (item.getType() == CardItemType.SELECTION) {
-                List<GenericCardItem> contents = _productLibrary.GetProduct(blueprintId).openPack(_cardBlueprintLibrary);
+                List<GenericCardItem> contents = _productLibrary.get(blueprintId).openPack(_cardBlueprintLibrary);
                 StringBuilder contentsStr = new StringBuilder();
                 for (GenericCardItem content : contents)
                     contentsStr.append(content.getBlueprintId()).append("|");

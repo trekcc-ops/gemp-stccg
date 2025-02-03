@@ -41,7 +41,7 @@ public class NewConstructedLeagueData implements LeagueData {
             int duration = Integer.parseInt(params[6 + i * 3]);
             int maxMatches = Integer.parseInt(params[7 + i * 3]);
             int endDate = DateUtils.offsetDate(start, duration - 1);
-            GameFormat format = formatLibrary.getFormat(params[5 + i * 3]);
+            GameFormat format = formatLibrary.get(params[5 + i * 3]);
             _allSeries.add(new DefaultLeagueSeriesData(_leaguePrizes, false, "Series " + (i + 1),
                     start, endDate, maxMatches, format, _collectionType));
 

@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-public class CardBlueprintLibrary implements DeserializingLibrary {
+public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint> {
     private static final Logger LOGGER = LogManager.getLogger(CardBlueprintLibrary.class);
     private final Map<String, CardBlueprint> _blueprints = new HashMap<>();
     private final Map<String, String> _blueprintMapping = new HashMap<>();

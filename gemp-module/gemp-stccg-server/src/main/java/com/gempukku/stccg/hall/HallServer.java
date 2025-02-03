@@ -215,7 +215,7 @@ public class HallServer extends AbstractServer {
 
             CardDeck cardDeck = null;
             if (tournamentQueue.isRequiresDeck())
-                cardDeck = validateUserAndDeck(_formatLibrary.getFormat(tournamentQueue.getFormat()), player, deckName);
+                cardDeck = validateUserAndDeck(_formatLibrary.get(tournamentQueue.getFormat()), player, deckName);
 
             tournamentQueue.joinPlayer(_collectionsManager, player, cardDeck);
 
@@ -377,7 +377,7 @@ public class HallServer extends AbstractServer {
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
-                GameFormat gameFormat = _formatLibrary.getFormat(tournamentQueue.getFormat());
+                GameFormat gameFormat = _formatLibrary.get(tournamentQueue.getFormat());
                 visitor.visitTournamentQueue(tournamentQueue, tournamentQueueKey, gameFormat.getName(), player);
             }
 
@@ -386,7 +386,7 @@ public class HallServer extends AbstractServer {
                 Tournament tournament = tournamentEntry.getValue();
                 visitor.visitTournament(
                         tournamentKey, tournament.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournament.getFormat()).getName(), tournament.getTournamentName(),
+                        _formatLibrary.get(tournament.getFormat()).getName(), tournament.getTournamentName(),
                         tournament.getPlayOffSystem(), tournament.getTournamentStage().getHumanReadable(),
                         tournament.getCurrentRound(), tournament.getPlayersInCompetitionCount(),
                         tournament.isPlayerInCompetition(player.getName())
@@ -554,7 +554,7 @@ public class HallServer extends AbstractServer {
 
         private HallTournamentCallback(Tournament tournament) {
             _tournament = tournament;
-            tournamentGameSettings = new GameSettings(_formatLibrary.getFormat(_tournament.getFormat()),
+            tournamentGameSettings = new GameSettings(_formatLibrary.get(_tournament.getFormat()),
                     null, null, true, false, false, false,
                     GameTimer.TOURNAMENT_TIMER, null);
         }

@@ -3,7 +3,6 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.common.JsonUtils;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -56,8 +55,8 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
                 stats.StartDate = from.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 stats.EndDate = to.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 stats.Stats = _gameHistoryService.getGameHistoryStatistics(from, to);
-
-                responseWriter.writeJsonResponse(JsonUtils.toJsonString(stats));
+                String jsonString = _jsonMapper.writeValueAsString(stats);
+                responseWriter.writeJsonResponse(jsonString);
             } catch (Exception exp) {
                 logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400

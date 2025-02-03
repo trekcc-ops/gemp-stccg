@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
@@ -46,6 +47,7 @@ class DefaultServerRequestHandler {
     final CollectionsManager _collectionsManager;
     final GameHistoryService _gameHistoryService;
     final ServerObjects _serverObjects;
+    protected final ObjectMapper _jsonMapper = new ObjectMapper();
 
     protected enum FormParameter {
         availablePicks, blueprintId, cardId, channelNumber, choiceId, collectionType,

@@ -3,7 +3,6 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
@@ -89,13 +88,11 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     private void getRecentReplays(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-
             String format = getFormParameterSafely(postDecoder, FormParameter.format);
             int count = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.count));
-
             final List<DBData.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
-
-            responseWriter.writeJsonResponse(JsonUtils.toJsonString(gameHistory));
+            String jsonString = _jsonMapper.writeValueAsString(gameHistory);
+            responseWriter.writeJsonResponse(jsonString);
 
         } finally {
             postDecoder.destroy();

@@ -1,0 +1,34 @@
+[
+    {
+        "name": "1E - Debug",
+        "gameType": "First Edition",
+        "code": "debug1e",
+        "minimumDrawDeckSize": 0,
+        "maximumSeedDeckSize": 999,
+        "missions": -1,
+        "noShuffle": true,
+        "firstPlayerFixed": true,
+        "hall": true
+    },
+    {
+        "name": "1E Modern Complete",
+        "gameType": "First Edition",
+        "code": "st1emoderncomplete",
+        "minimumDrawDeckSize": 30,
+        "maximumSeedDeckSize": 30,
+        "missions": 6
+    },
+    {
+        "name": "2E All",
+        "gameType": "Second Edition",
+        "code": "st2e",
+        "minimumDrawDeckSize": 30,
+        "missions": 5
+    },
+    {
+        "name": "Tribbles",
+        "gameType": "Tribbles",
+        "code": "tribbles",
+        "minimumDrawDeckSize": 35
+    }
+]

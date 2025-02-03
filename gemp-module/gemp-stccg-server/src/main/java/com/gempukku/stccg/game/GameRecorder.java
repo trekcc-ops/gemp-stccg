@@ -1,12 +1,12 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.common.GameTimer;
@@ -172,7 +172,7 @@ public class GameRecorder {
                 doc.appendChild(gameReplay);
 
                 try(var out = new PrintWriter(getSummaryFile(gameInfo).getAbsolutePath())) {
-                    out.println(JsonUtils.toJsonString(metadata));
+                    out.println(new ObjectMapper().writeValueAsString(metadata));
                 }
 
                 try (OutputStream replayStream = getRecordingWriteStream(playerId, recordingId, gameInfo.start_date)) {

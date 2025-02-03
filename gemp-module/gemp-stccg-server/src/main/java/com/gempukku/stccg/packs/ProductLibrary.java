@@ -1,17 +1,20 @@
 package com.gempukku.stccg.packs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.DeserializingLibrary;
-import com.gempukku.stccg.common.JsonUtils;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Semaphore;
 
 
-public class ProductLibrary implements DeserializingLibrary {
+public class ProductLibrary implements DeserializingLibrary<PackBox> {
     private final Map<String, PackBox> _products = new HashMap<>();
     private final CardBlueprintLibrary _cardLibrary;
     private final File _packDirectory;
@@ -55,8 +58,9 @@ public class ProductLibrary implements DeserializingLibrary {
     private void loadPackFromFile(File file) {
         if (isNotValidJsonFile(file))
             return;
-        try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-            List<PackBox> packs = JsonUtils.readListOfClassFromReader(reader, PackBox.class);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            PackBox[] packs = mapper.readValue(file, PackBox[].class);
             for (PackBox pack : packs) {
                 String packName = pack.getName();
                 if(_products.containsKey(packName)) {
@@ -81,7 +85,7 @@ public class ProductLibrary implements DeserializingLibrary {
         }
     }
 
-    public PackBox GetProduct(String name) {
+    public PackBox get(String name) {
         try {
             collectionReady.acquire();
             var data = _products.get(name);

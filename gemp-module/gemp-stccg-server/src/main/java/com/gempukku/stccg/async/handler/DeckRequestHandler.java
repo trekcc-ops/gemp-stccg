@@ -5,7 +5,6 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
@@ -85,13 +84,13 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             String json;
 
             if("true".equalsIgnoreCase(includeEventsStr)) {
-                json = JsonUtils.toJsonString(_formatLibrary);
+                json = _jsonMapper.writeValueAsString(_formatLibrary);
             } else {
                 Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
                 Object[] output = formats.entrySet().stream()
                         .map(x -> new JSONData.ItemStub(x.getKey(), x.getValue().getName()))
                         .toArray();
-                json = JsonUtils.toJsonString(output);
+                json = _jsonMapper.writeValueAsString(output);
             }
             responseWriter.writeJsonResponse(json);
         } finally {
@@ -103,14 +102,14 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String format = getFormParameterSafely(postDecoder, FormParameter.format);
-            GameFormat currentFormat = _formatLibrary.getFormat(format);
+            GameFormat currentFormat = _formatLibrary.get(format);
 
             Map<String, String> sets = currentFormat.getValidSetsAndTheirCards(_cardBlueprintLibrary);
             Object[] output = sets.entrySet().stream()
                     .map(x -> new JSONData.ItemStub(x.getKey(), x.getValue()))
                     .toArray();
 
-            responseWriter.writeJsonResponse(JsonUtils.toJsonString(output));
+            responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(output));
         } finally {
             postDecoder.destroy();
         }
@@ -361,7 +360,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
     private GameFormat validateFormat(String name)
     {
-        GameFormat validatedFormat = _formatLibrary.getFormat(name);
+        GameFormat validatedFormat = _formatLibrary.get(name);
         if(validatedFormat == null)
         {
             try {

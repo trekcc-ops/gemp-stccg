@@ -9,7 +9,6 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.common.GameTimer;
-import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
@@ -292,7 +291,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getFormat(String format, ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
-        GameFormat gameFormat = _serverObjects.getFormatLibrary().getFormat(format);
+        GameFormat gameFormat = _serverObjects.getFormatLibrary().get(format);
         result.append(HTMLUtils.serializeFormatForHall(gameFormat, _serverObjects.getCardBlueprintLibrary()));
         responseWriter.writeHtmlResponse(result.toString());
     }
@@ -306,7 +305,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void getErrataInfo(ResponseWriter responseWriter) throws JsonProcessingException {
-        responseWriter.writeJsonResponse(JsonUtils.toJsonString(_cardBlueprintLibrary.getErrata()));
+        String jsonString = _jsonMapper.writeValueAsString(_cardBlueprintLibrary.getErrata());
+        responseWriter.writeJsonResponse(jsonString);
     }
 
     private void getHall(HttpRequest request, ResponseWriter responseWriter) {

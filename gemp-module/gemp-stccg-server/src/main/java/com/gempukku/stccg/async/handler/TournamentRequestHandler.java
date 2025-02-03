@@ -96,7 +96,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         Element tournamentElem = doc.createElement("tournament");
         tournamentElem.setAttribute("id", tournament.getTournamentId());
         tournamentElem.setAttribute("name", tournament.getTournamentName());
-        tournamentElem.setAttribute("format", _formatLibrary.getFormat(tournament.getFormat()).getName());
+        tournamentElem.setAttribute("format", _formatLibrary.get(tournament.getFormat()).getName());
         tournamentElem.setAttribute("collection", tournament.getCollectionType().getFullName());
         tournamentElem.setAttribute("round", String.valueOf(tournament.getCurrentRound()));
         tournamentElem.setAttribute("stage", tournament.getTournamentStage().getHumanReadable());

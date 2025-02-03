@@ -3,23 +3,19 @@ package com.gempukku.stccg.formats;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.DeserializingLibrary;
 import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.common.JsonUtils;
-import org.hjson.JsonValue;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
 @JsonIncludeProperties({ "Formats", "SealedTemplates" })
 @JsonPropertyOrder({ "Formats", "SealedTemplates" })
-public class FormatLibrary implements DeserializingLibrary {
+public class FormatLibrary implements DeserializingLibrary<GameFormat> {
     private final Map<String, GameFormat> _allFormats = new HashMap<>();
     private final Map<String, SealedEventDefinition> _sealedTemplates = new LinkedHashMap<>();
     private final Semaphore collectionReady = new Semaphore(1);
@@ -72,15 +68,12 @@ public class FormatLibrary implements DeserializingLibrary {
     }
 
     public void reloadFormats(CardBlueprintLibrary blueprintLibrary) {
-        try (InputStreamReader reader =
-                     new InputStreamReader(new FileInputStream(AppConfig.getFormatDefinitionsPath()),
-                             StandardCharsets.UTF_8)) {
+        try {
             collectionReady.acquire();
             _allFormats.clear();
-
-            for (JSONData.Format def : JsonUtils.readListOfClassFromReader(reader, JSONData.Format.class)) {
-                if (def == null)
-                    continue;
+            JSONData.Format[] formatList =
+                    new ObjectMapper().readValue(AppConfig.getFormatDefinitionsPath(), JSONData.Format[].class);
+            for (JSONData.Format def : formatList) {
                 GameFormat format = new DefaultGameFormat(blueprintLibrary, def);
                 _allFormats.put(format.getCode(), format);
             }
@@ -123,10 +116,10 @@ public class FormatLibrary implements DeserializingLibrary {
         }
     }
 
-    public GameFormat getFormat(String formatCode) {
+    public GameFormat get(String formatId) {
         try {
             collectionReady.acquire();
-            var data = _allFormats.get(formatCode);
+            var data = _allFormats.get(formatId);
             collectionReady.release();
             return data;
         }
@@ -166,6 +159,7 @@ public class FormatLibrary implements DeserializingLibrary {
         }
     }
 
+    @SuppressWarnings("unused") // Used in JSON serialization
     @JsonProperty("SealedTemplates")
     private Map<String, SealedEventDefinition> GetAllSealedTemplatesNew() {
         try {
@@ -181,6 +175,4 @@ public class FormatLibrary implements DeserializingLibrary {
             throw new RuntimeException("FormatLibrary.GetSealedTemplate() interrupted: ", exp);
         }
     }
-
-
 }

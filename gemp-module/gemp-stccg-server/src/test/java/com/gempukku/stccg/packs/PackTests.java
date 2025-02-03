@@ -10,7 +10,7 @@ public class PackTests extends AbstractServerTest {
 
     @Test
     public void Test1()  {
-        _productLib.GetProduct("Random Rare Foil");
+        _productLib.get("Random Rare Foil");
     }
     //protected static ProductLibrary _productLib = new ProductLibrary(_cardLibrary);
 }
