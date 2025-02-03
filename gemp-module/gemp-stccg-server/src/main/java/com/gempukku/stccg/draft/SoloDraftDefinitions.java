@@ -14,19 +14,17 @@ import java.util.concurrent.Semaphore;
 
 public class SoloDraftDefinitions {
     private final Map<String, SoloDraft> _draftTypes = new HashMap<>();
-    private final DraftChoiceBuilder _draftChoiceBuilder;
-    private final File _draftDefinitionPath;
+    private final File _draftDefinitionPath = AppConfig.getDraftPath();
     private final Semaphore collectionReady = new Semaphore(1);
+    private final CardBlueprintLibrary _cardLibrary;
+    private final FormatLibrary _formatLibrary;
+    private final CollectionsManager _collectionsManager;
 
     public SoloDraftDefinitions(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
                                 FormatLibrary formatLibrary) {
-        this(collectionsManager, cardLibrary, formatLibrary, AppConfig.getDraftPath());
-    }
-
-    public SoloDraftDefinitions(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
-                                FormatLibrary formatLibrary, File draftDefinitionPath) {
-        _draftChoiceBuilder = new DraftChoiceBuilder(collectionsManager, cardLibrary, formatLibrary);
-        _draftDefinitionPath = draftDefinitionPath;
+        _cardLibrary = cardLibrary;
+        _formatLibrary = formatLibrary;
+        _collectionsManager = collectionsManager;
         ReloadDraftsFromFile();
     }
 
@@ -65,15 +63,13 @@ public class SoloDraftDefinitions {
             JsonNode choices = node.get("choices");
             if (choices.isArray()) {
                 for (JsonNode choice : choices) {
-                    DraftChoiceDefinition draftChoiceDefinition =
-                            _draftChoiceBuilder.buildDraftChoiceDefinition(choice);
+                    DraftChoiceDefinition draftChoiceDefinition = buildDraftChoiceDefinition(choice);
                     int repeatCount = choice.get("repeat").asInt();
                     for (int i = 0; i < repeatCount; i++)
                         draftChoiceDefinitions.add(draftChoiceDefinition);
                 }
             } else {
-                DraftChoiceDefinition draftChoiceDefinition =
-                        _draftChoiceBuilder.buildDraftChoiceDefinition(choices);
+                DraftChoiceDefinition draftChoiceDefinition = buildDraftChoiceDefinition(choices);
                 int repeatCount = choices.get("repeat").asInt();
                 for (int i = 0; i < repeatCount; i++)
                     draftChoiceDefinitions.add(draftChoiceDefinition);
@@ -101,14 +97,25 @@ public class SoloDraftDefinitions {
         }
     }
 
-    public Map<String, SoloDraft> getAllSoloDrafts() {
-        try {
-            collectionReady.acquire();
-            var data = Collections.unmodifiableMap(_draftTypes);
-            collectionReady.release();
-            return data;
-        } catch (InterruptedException exp) {
-            throw new RuntimeException("SoloDraftDefinitions.getAllSoloDrafts() interrupted: ", exp);
-        }
+    public DraftChoiceDefinition buildDraftChoiceDefinition(JsonNode choiceDefinition) {
+        String choiceDefinitionType = choiceDefinition.get("type").textValue();
+        JsonNode data = choiceDefinition.get("data");
+        return switch (choiceDefinitionType) {
+            case "singleCollectionPick" -> new SingleCollectionPickDraftChoiceDefinition(data);
+            case "weightedSwitch" -> new WeightedSwitchDraftChoiceDefinition(data, this);
+            case "multipleCardPick" -> new MultipleCardPickDraftChoiceDefinition(data);
+            case "randomSwitch" -> new RandomSwitchDraftChoiceDefinition(data, this);
+            case "filterPick" -> {
+                FilterPickDraftChoiceDefinition definition = new FilterPickDraftChoiceDefinition(data);
+                definition.assignPossibleCards(_collectionsManager, _cardLibrary, _formatLibrary);
+                yield definition;
+            }
+            case "draftPoolFilterPick" ->
+                    new DraftPoolFilterPickDraftChoiceDefinition(data, _cardLibrary, _formatLibrary);
+            case "draftPoolFilterPluck" ->
+                    new DraftPoolFilterPluckDraftChoiceDefinition(data, _cardLibrary, _formatLibrary);
+            default -> throw new RuntimeException("Unknown choiceDefinitionType: " + choiceDefinitionType);
+        };
     }
+
 }

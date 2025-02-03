@@ -1,5 +1,6 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.draft.SoloDraft;
