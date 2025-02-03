@@ -311,7 +311,17 @@ export default function MiniDrawer() {
             {/* content */}
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
-                <PhaseIndicator gamestate={get_gamestate()} />
+                <div id="main-layout-grid">
+                    <div id="table">TABLE</div>
+                    <div id="hand-pane">HAND PANE</div>
+                    <div id="active-card-pane">
+                        <p>ACTIVE CARD PANE</p>
+                        <img style={{height: 240}} src="https://www.trekcc.org/1e/cardimages/premiere/PR327.jpg"></img>
+                    </div>
+                    <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
+                    <div id="chat-pane">CHAT</div>
+                </div>
+                
             </Box>
         </Box>
     );

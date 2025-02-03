@@ -2,6 +2,9 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import MobileStepper from '@mui/material/MobileStepper';
+import Stack from '@mui/material/Stack';
+import { Typography } from '@mui/material';
 
 /*
 const enum_to_friendly_text = new Map(
@@ -50,6 +53,7 @@ export default function PhaseIndicator( {gamestate} ) {
     }
 
     return(
+        /*
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={active_step} alternativeLabel>
                 {step_list.map((label) => (
@@ -59,5 +63,15 @@ export default function PhaseIndicator( {gamestate} ) {
                 ))}
             </Stepper>
         </Box>
+        */
+        <Stack>
+            <MobileStepper
+                variant="dots"
+                steps={step_list.length}
+                position="static"
+                activeStep={active_step}
+            />
+            <Typography>{step_list[active_step]}</Typography>
+        </Stack>
     );
 }
