@@ -226,8 +226,9 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         Document doc = createNewDoc();
 
         // may throw 403 error
-        gameMediator.signupUserForGame(resourceOwner, doc);
-        responseWriter.writeXmlResponseWithNoHeaders(doc);
+        gameMediator.signupUserForGame(resourceOwner);
+        String xmlString = gameMediator.serializeEventsToString(gameMediator.getCommunicationChannel(resourceOwner));
+        responseWriter.writeXmlResponseWithNoHeaders(xmlString);
     }
 
     private Set<Phase> getAutoPassPhases(HttpMessage request) {

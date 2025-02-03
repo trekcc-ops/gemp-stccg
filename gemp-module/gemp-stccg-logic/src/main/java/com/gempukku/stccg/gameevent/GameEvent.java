@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gameevent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -59,6 +60,7 @@ public class GameEvent {
         region
     }
 
+    @JsonIgnore
     private final Type _type;
 
     @JacksonXmlProperty(localName = "type", isAttribute = true)
@@ -85,51 +87,12 @@ public class GameEvent {
         _timeStamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS"));
     }
 
-    public GameEvent(DefaultGame cardGame, Type type) {
-        this(type);
-        _game = cardGame;
-    }
-
     public GameEvent(Type type, Player player) {
         this(type);
         _playerId = player.getPlayerId();
         _eventAttributes.put(Attribute.participantId, player.getPlayerId());
     }
 
-
-
-    public GameEvent(DefaultGame cardGame, Type type, Player player) {
-        this(cardGame, type);
-        _eventAttributes.put(Attribute.participantId, player.getPlayerId());
-    }
-
-
-    public GameEvent(DefaultGame cardGame, Type type, String message) {
-        this(cardGame, type);
-        _eventAttributes.put(Attribute.message, message);
-    }
-
-    public GameEvent(DefaultGame cardGame, Type type, PhysicalCard card) {
-        this(cardGame, type, card.getOwner());
-        setCardData(card);
-    }
-
-
-    public GameEvent(DefaultGame cardGame, Type type, Phase phase) {
-        this(cardGame, type);
-        _eventAttributes.put(Attribute.phase, phase.toString());
-    }
-    public GameEvent(Type type, PhysicalCard card, Player player) {
-        this(card.getGame(), type, player);
-        setCardData(card);
-    }
-
-    public GameEvent(DefaultGame cardGame, Type type, GameState gameState, Player player) {
-        this(cardGame, type, player);
-        _eventAttributes.put(Attribute.allParticipantIds,
-                String.join(",", (gameState.getPlayerOrder().getAllPlayers())));
-        _eventAttributes.put(Attribute.discardPublic, String.valueOf(cardGame.getFormat().discardPileIsPublic()));
-    }
 
     void setCardData(PhysicalCard card) {
         _eventAttributes.put(Attribute.cardId, String.valueOf(card.getCardId()));
@@ -172,9 +135,13 @@ public class GameEvent {
         }
     }
 
+    @JsonIgnore
     public Type getType() { return _type; }
+
+    @JsonIgnore
     public Zone getZone() { return _zone; }
 
+    @JsonIgnore
     public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }
 
     public Node serialize(Document doc) throws JsonProcessingException {

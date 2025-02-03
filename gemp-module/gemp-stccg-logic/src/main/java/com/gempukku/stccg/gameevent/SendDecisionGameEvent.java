@@ -5,23 +5,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SendDecisionGameEvent extends GameEvent {
 
@@ -29,7 +25,7 @@ public class SendDecisionGameEvent extends GameEvent {
     private final Phase _currentPhase;
 
     public SendDecisionGameEvent(DefaultGame cardGame, AwaitingDecision decision, Player decidingPlayer) {
-        super(cardGame,Type.DECISION, decidingPlayer);
+        super(Type.DECISION, decidingPlayer);
         _currentPhase = cardGame.getCurrentPhase();
         _decision = decision;
         _eventAttributes.put(Attribute.id, String.valueOf(decision.getDecisionId()));
@@ -44,7 +40,7 @@ public class SendDecisionGameEvent extends GameEvent {
         return String.valueOf(_decision.getDecisionId());
     }
 
-    @JacksonXmlProperty(localName = "decisionTpe", isAttribute = true)
+    @JacksonXmlProperty(localName = "decisionType", isAttribute = true)
     private AwaitingDecisionType getDecisionType() {
         return _decision.getDecisionType();
     }

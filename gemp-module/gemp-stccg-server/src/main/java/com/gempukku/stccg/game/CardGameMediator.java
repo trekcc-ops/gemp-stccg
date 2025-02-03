@@ -345,7 +345,7 @@ public abstract class CardGameMediator {
 
 
 
-    public final void signupUserForGame(User player, Document document)
+    public final void signupUserForGame(User player)
             throws PrivateInformationException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
@@ -365,7 +365,6 @@ public abstract class CardGameMediator {
         } finally {
             _readLock.unlock();
         }
-        processVisitor(channel, channelNumber, document);
     }
 
     private Map<String, Integer> secondsLeft() {
