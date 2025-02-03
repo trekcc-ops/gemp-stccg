@@ -49,7 +49,7 @@ public class FormatLibrary implements DeserializingLibrary {
         else if (path.isFile()) {
             if (isNotValidJsonFile(path))
                 return;
-            try (Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8)) {
+            try {
                 ObjectMapper mapper = new ObjectMapper();
                 SealedEventDefinition[] sealedDefinitions = mapper.readValue(path, SealedEventDefinition[].class);
                 for (SealedEventDefinition definition : sealedDefinitions) {
