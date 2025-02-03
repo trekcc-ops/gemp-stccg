@@ -1,5 +1,7 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
@@ -280,6 +282,24 @@ public abstract class CardGameMediator {
         }
     }
 
+    public final GameCommunicationChannel getCommunicationChannel(User player)
+            throws HttpProcessingException {
+        String playerName = player.getName();
+        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
+            throw new PrivateInformationException();
+
+        _readLock.lock();
+        try {
+            GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
+            if (communicationChannel == null)
+                throw new SubscriptionExpiredException();
+            else return communicationChannel;
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
+
     public final void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber,
                                      Document _doc) {
         _readLock.lock();
@@ -307,6 +327,22 @@ public abstract class CardGameMediator {
             _readLock.unlock();
         }
     }
+
+    public final String serializeEventsToString(GameCommunicationChannel communicationChannel)
+            throws IOException {
+        _readLock.lock();
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+            return xmlMapper.writeValueAsString(communicationChannel);
+        } catch(IOException exp) {
+            getGame().sendErrorMessage("Unable to serialize game events");
+            throw new IOException(exp.getMessage());
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
 
 
     public final void signupUserForGame(User player, Document document)
