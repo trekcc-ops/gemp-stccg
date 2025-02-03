@@ -19,8 +19,18 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import PhaseIndicator from './phase-indicator.jsx';
 
+// Change this function to change the JSON input source.
+function get_gamestate() {
+    let request = new XMLHttpRequest();
+    request.open("GET", "player_state.json", false);
+    request.send(null)
+    let the_state = JSON.parse(request.responseText);
+    return the_state;
+}
+
 const drawerWidth = 240;
 
+// CSS theming overrides for opening
 const openedMixin = (theme) => ({
     width: drawerWidth,
     transition: theme.transitions.create('width', {
@@ -30,6 +40,7 @@ const openedMixin = (theme) => ({
     overflowX: 'hidden',
 });
 
+// CSS theming overrides for closing
 const closedMixin = (theme) => ({
     transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
@@ -42,6 +53,7 @@ const closedMixin = (theme) => ({
     },
 });
 
+// React defintion of a <DrawerHeader> for layout purposes.
 const DrawerHeader = styled('div')(
     ({ theme }) => ({
         display: 'flex',
@@ -53,6 +65,7 @@ const DrawerHeader = styled('div')(
     })
 );
 
+// React definition of the AppBar to override MUI defaults.
 const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open', })(
     ({ theme }) => ({
         zIndex: theme.zIndex.drawer + 1,
@@ -76,6 +89,7 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open',
     })
 );
 
+// React definition of the Drawer to override MUI defaults.
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme }) => ({
         width: drawerWidth,
@@ -100,14 +114,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         ],
     }),
 );
-
-function get_gamestate() {
-    let request = new XMLHttpRequest();
-    request.open("GET", "player_state.json", false);
-    request.send(null)
-    let the_state = JSON.parse(request.responseText);
-    return the_state;
-}
 
 export default function MiniDrawer() {
     const theme = useTheme();
