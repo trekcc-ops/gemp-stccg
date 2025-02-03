@@ -17,7 +17,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PhaseIndicator from './phase-indicator.jsx';
+import { Tooltip } from '@mui/material';
 
 // Change this function to change the JSON input source.
 function get_gamestate() {
@@ -133,7 +135,6 @@ export default function MiniDrawer() {
             <AppBar position="fixed" open={open}>
                 <Toolbar>
                     <IconButton
-                        color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
@@ -146,9 +147,14 @@ export default function MiniDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Mini variant drawer
-                    </Typography>
+                    <Box sx={{flexGrow: 1}} /> {/* expanding box to push icons right */}
+                    <Tooltip title="Account">
+                        <IconButton
+                            aria-label="account"
+                        >
+                            <ManageAccountsIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Toolbar>
             </AppBar>
             {/* left side drawer */}
