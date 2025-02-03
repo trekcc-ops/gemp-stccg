@@ -160,9 +160,8 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         public final synchronized void processIfNotProcessed() {
             if (!_processed) {
                 try {
-                    Document doc = createNewDoc();
-                    _gameMediator.processVisitor(_gameCommunicationChannel, _channelNumber, doc);
-                    _responseWriter.writeXmlResponseWithNoHeaders(doc);
+                    String xmlString = _gameMediator.serializeEventsToString(_gameCommunicationChannel);
+                    _responseWriter.writeXmlResponseWithNoHeaders(xmlString);
                 } catch (Exception e) {
                     logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, "game update poller", e);
                     _responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500

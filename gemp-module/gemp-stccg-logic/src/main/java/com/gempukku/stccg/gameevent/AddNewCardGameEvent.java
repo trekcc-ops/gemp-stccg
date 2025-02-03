@@ -21,6 +21,11 @@ public class AddNewCardGameEvent extends GameEvent {
         setCardData(card);
     }
 
+    @JacksonXmlProperty(localName = "imageUrl", isAttribute = true)
+    private String getImageUrl() {
+        return _card.getImageUrl();
+    }
+
     @JacksonXmlProperty(localName = "cardId", isAttribute = true)
     private int getCardId() {
         return _card.getCardId();
