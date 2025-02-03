@@ -17,7 +17,7 @@ public class DefaultSoloDraft implements SoloDraft {
     private final List<? extends DraftChoiceDefinition> _draftChoiceDefinitions;
     public record RepeatedDefinition(int repeat, DraftChoiceDefinition choice) { }
 
-    public DefaultSoloDraft(
+    private DefaultSoloDraft(
             @JsonProperty("startingPool")
             CardCollectionProducer startingPoolProducer,
             @JsonProperty("draftPool")

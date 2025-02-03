@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class PackTests extends AbstractServerTest {
 
-    protected static final ProductLibrary _productLib = new ProductLibrary(_cardLibrary);
+    protected static final ProductLibrary _productLib = new ProductLibrary();
 
     @Test
     public void Test1()  {

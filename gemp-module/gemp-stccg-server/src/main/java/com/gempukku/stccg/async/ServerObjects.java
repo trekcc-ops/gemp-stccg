@@ -63,7 +63,7 @@ public class ServerObjects {
         //Libraries and other important prerequisite managers that are used by lots of other managers
         LOGGER.info("GempukkuServer loading prerequisites...");
         _cardBlueprintLibrary = new CardBlueprintLibrary();
-        _productLibrary = new ProductLibrary(_cardBlueprintLibrary);
+        _productLibrary = new ProductLibrary();
         _loggedUserHolder = new LoggedUserHolder();
         _loggedUserHolder.start();
 

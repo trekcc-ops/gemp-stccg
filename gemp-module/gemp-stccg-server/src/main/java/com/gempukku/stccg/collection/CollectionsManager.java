@@ -160,7 +160,8 @@ public class CollectionsManager {
                 return null;
             MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
 
-            final CardCollection packContents = mutableCardCollection.openPack(packId, selection, productLibrary);
+            final CardCollection packContents =
+                    mutableCardCollection.openPack(packId, selection, _cardLibrary, productLibrary);
             if (packContents != null) {
                 String reason = "Opened pack";
 

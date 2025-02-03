@@ -1,7 +1,6 @@
 package com.gempukku.stccg.packs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.DeserializingLibrary;
 
@@ -16,18 +15,11 @@ import java.util.concurrent.Semaphore;
 
 public class ProductLibrary implements DeserializingLibrary<PackBox> {
     private final Map<String, PackBox> _products = new HashMap<>();
-    private final CardBlueprintLibrary _cardLibrary;
-    private final File _packDirectory;
+    private final File _packDirectory = AppConfig.getProductPath();
 
     private final Semaphore collectionReady = new Semaphore(1);
 
-    public ProductLibrary(CardBlueprintLibrary cardLibrary) {
-        this(cardLibrary, AppConfig.getProductPath());
-    }
-    private ProductLibrary(CardBlueprintLibrary cardLibrary, File packDefinitionPath) {
-        _cardLibrary = cardLibrary;
-        _packDirectory = packDefinitionPath;
-
+    public ProductLibrary() {
         collectionReady.acquireUninterruptibly();
         loadPacks(_packDirectory);
         collectionReady.release();
@@ -97,7 +89,4 @@ public class ProductLibrary implements DeserializingLibrary<PackBox> {
         }
     }
 
-    public CardBlueprintLibrary getCardBlueprintLibrary() {
-        return _cardLibrary;
-    }
 }
