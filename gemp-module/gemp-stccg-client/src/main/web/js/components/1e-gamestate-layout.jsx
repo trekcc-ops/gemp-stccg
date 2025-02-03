@@ -1,22 +1,3 @@
-/* 
-
-function get_gamestate() {
-    let request = new XMLHttpRequest();
-    request.open("GET", "player_state.json", false);
-    request.send(null)
-    let the_state = JSON.parse(request.responseText);
-    return the_state;
-}
-
-export default function FirstEditionGameLayout() {
-    let the_gamestate = get_gamestate();
-
-    return(
-        
-    );
-}
-*/
-
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -61,37 +42,39 @@ const closedMixin = (theme) => ({
     },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-}));
+const DrawerHeader = styled('div')(
+    ({ theme }) => ({
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+    })
+);
 
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme }) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    variants: [
-        {
-            props: ({ open }) => open,
-            style: {
-                marginLeft: drawerWidth,
-                width: `calc(100% - ${drawerWidth}px)`,
-                transition: theme.transitions.create(['width', 'margin'], {
-                    easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
+const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open', })(
+    ({ theme }) => ({
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        variants: [
+            {
+                props: ({ open }) => open,
+                style: {
+                    marginLeft: drawerWidth,
+                    width: `calc(100% - ${drawerWidth}px)`,
+                    transition: theme.transitions.create(['width', 'margin'], {
+                        easing: theme.transitions.easing.sharp,
+                        duration: theme.transitions.duration.enteringScreen,
+                    }),
+                },
             },
-        },
-    ],
-}));
+        ],
+    })
+);
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme }) => ({
@@ -164,12 +147,14 @@ export default function MiniDrawer() {
             </AppBar>
             {/* left side drawer */}
             <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
+                <DrawerHeader>{/* box on top of drawer/padding */}
+                    {/* Close drawer button */}
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
+                {/* inside the drawer */}
                 <List>
                     {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
@@ -179,13 +164,7 @@ export default function MiniDrawer() {
                                         minHeight: 48,
                                         px: 2.5,
                                     },
-                                    open
-                                        ? {
-                                            justifyContent: 'initial',
-                                        }
-                                        : {
-                                            justifyContent: 'center',
-                                        },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
                                 ]}
                             >
                                 <ListItemIcon
@@ -194,13 +173,7 @@ export default function MiniDrawer() {
                                             minWidth: 0,
                                             justifyContent: 'center',
                                         },
-                                        open
-                                            ? {
-                                                mr: 3,
-                                            }
-                                            : {
-                                                mr: 'auto',
-                                            },
+                                        open ? {mr: 3,} : {mr: 'auto',},
                                     ]}
                                 >
                                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -208,13 +181,7 @@ export default function MiniDrawer() {
                                 <ListItemText
                                     primary={text}
                                     sx={[
-                                        open
-                                            ? {
-                                                opacity: 1,
-                                            }
-                                            : {
-                                                opacity: 0,
-                                            },
+                                        open ? {opacity: 1,} : {opacity: 0,},
                                     ]}
                                 />
                             </ListItemButton>
@@ -231,13 +198,7 @@ export default function MiniDrawer() {
                                         minHeight: 48,
                                         px: 2.5,
                                     },
-                                    open
-                                        ? {
-                                            justifyContent: 'initial',
-                                        }
-                                        : {
-                                            justifyContent: 'center',
-                                        },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
                                 ]}
                             >
                                 <ListItemIcon
@@ -246,13 +207,7 @@ export default function MiniDrawer() {
                                             minWidth: 0,
                                             justifyContent: 'center',
                                         },
-                                        open
-                                            ? {
-                                                mr: 3,
-                                            }
-                                            : {
-                                                mr: 'auto',
-                                            },
+                                        open ? {mr: 3,} : {mr: 'auto',},
                                     ]}
                                 >
                                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -260,13 +215,7 @@ export default function MiniDrawer() {
                                 <ListItemText
                                     primary={text}
                                     sx={[
-                                        open
-                                            ? {
-                                                opacity: 1,
-                                            }
-                                            : {
-                                                opacity: 0,
-                                            },
+                                        open ? {opacity: 1,} : {opacity: 0,},
                                     ]}
                                 />
                             </ListItemButton>
