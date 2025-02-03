@@ -82,12 +82,11 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter)
             throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         String filter = getQueryParameterSafely(queryDecoder, FormParameter.filter);
         int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.start));
         int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.count));
 
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
 
         CardCollection collection = _collectionsManager.getPlayerCollection(resourceOwner, collectionType);
 
@@ -157,34 +156,34 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private void openPack(HttpRequest request, String collectionType, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-        String selection = getFormParameterSafely(postDecoder, FormParameter.selection);
-        String packId = getFormParameterSafely(postDecoder, FormParameter.pack);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String selection = getFormParameterSafely(postDecoder, FormParameter.selection);
+            String packId = getFormParameterSafely(postDecoder, FormParameter.pack);
 
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        CollectionType collectionTypeObj = CollectionType.getCollectionTypeByCode(collectionType);
-        if (collectionTypeObj == null)
-            collectionTypeObj = _leagueService.getCollectionTypeByCode(collectionType);
-        CardCollection packContents = _collectionsManager.openPackInPlayerCollection(
-                resourceOwner, collectionTypeObj, selection, _productLibrary, packId);
+            CollectionType collectionTypeObj = CollectionType.getCollectionTypeByCode(collectionType);
+            if (collectionTypeObj == null)
+                collectionTypeObj = _leagueService.getCollectionTypeByCode(collectionType);
+            CardCollection packContents = _collectionsManager.openPackInPlayerCollection(
+                    resourceOwner, collectionTypeObj, selection, _productLibrary, packId);
 
-        if (packContents == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+            if (packContents == null)
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        Document doc = createNewDoc();
-        Element collectionElem = doc.createElement("pack");
-        doc.appendChild(collectionElem);
+            Document doc = createNewDoc();
+            Element collectionElem = doc.createElement("pack");
+            doc.appendChild(collectionElem);
 
-        for (GenericCardItem item : packContents.getAll()) {
-            if (item.getType() == CardItemType.CARD) {
-                appendCardElement(doc, collectionElem, item, false);
-            } else {
-                appendPackElement(doc, collectionElem, item, false);
+            for (GenericCardItem item : packContents.getAll()) {
+                if (item.getType() == CardItemType.CARD) {
+                    appendCardElement(doc, collectionElem, item, false);
+                } else {
+                    appendPackElement(doc, collectionElem, item, false);
+                }
             }
-        }
 
-        responseWriter.writeXmlResponseWithNoHeaders(doc);
+            responseWriter.writeXmlResponseWithNoHeaders(doc);
         } finally {
             postDecoder.destroy();
         }
@@ -193,7 +192,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     // This appears to be tied to "my cards", and "my trophies" selections in the Deck Builder,
     // which are now removed from the UI. Remove? If so, also remove getCollectionTypes() from comms.js.
     private void getCollectionTypes(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        User resourceOwner = getResourceOwner(request);
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
         Document doc = createNewDoc();
         Element collectionsElem = doc.createElement("collections");
 

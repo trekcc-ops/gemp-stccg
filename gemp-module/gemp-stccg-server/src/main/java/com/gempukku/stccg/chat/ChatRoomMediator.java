@@ -45,7 +45,7 @@ public class ChatRoomMediator {
     }
 
 
-    public final List<ChatMessage> joinUser(String playerId, boolean admin)
+    public final void joinUser(String playerId, boolean admin)
             throws PrivateInformationException, SQLException {
         _lock.writeLock().lock();
         try {
@@ -56,12 +56,10 @@ public class ChatRoomMediator {
                 ChatCommunicationChannel value = new ChatCommunicationChannel(usersToIgnore);
                 _listeners.put(playerId, value);
                 _chatRoom.joinChatRoom(playerId, value);
-                final List<ChatMessage> chatMessages = value.consumeMessages();
                 if (_welcomeMessage != null) {
-                    ChatMessage message = new ChatMessage(ChatStrings.SYSTEM_USER_ID, _welcomeMessage, false);
-                    chatMessages.add(message);
+                    value.messageReceived(
+                            new ChatMessage(ChatStrings.SYSTEM_USER_ID, _welcomeMessage, false));
                 }
-                return chatMessages;
             } else {
                 throw new PrivateInformationException();
             }
@@ -70,21 +68,16 @@ public class ChatRoomMediator {
         }
     }
 
-    public final ChatCommunicationChannel getChatRoomListener(String playerId) throws SubscriptionExpiredException {
+    public final ChatCommunicationChannel getChatRoomListener(User user) throws SubscriptionExpiredException {
         _lock.readLock().lock();
         try {
-            ChatCommunicationChannel chatListener = _listeners.get(playerId);
+            ChatCommunicationChannel chatListener = _listeners.get(user.getName());
             if (chatListener == null)
                 throw new SubscriptionExpiredException();
             return chatListener;
         } finally {
             _lock.readLock().unlock();
         }
-    }
-
-    public final ChatCommunicationChannel getChatRoomListener(User user) throws SubscriptionExpiredException {
-        String userName = user.getName();
-        return getChatRoomListener(userName);
     }
 
     public final void sendMessage(String playerId, String message, boolean admin)

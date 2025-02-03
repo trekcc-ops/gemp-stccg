@@ -85,4 +85,13 @@ public class CachedDeckDAO implements DeckDAO, Cached {
         _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
         _decks.put(constructDeckKey(player, name), deck);
     }
+
+    @Override
+    public final void saveDeckForPlayer(CardDeck deck, User player) {
+        String deckName = deck.getDeckName();
+        _delegate.saveDeckForPlayer(deck, player);
+        _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
+        _decks.put(constructDeckKey(player, deckName), deck);
+    }
+
 }

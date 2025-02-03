@@ -26,6 +26,14 @@ public class CardDeck {
         parseContents(contents);
     }
 
+    public CardDeck(String deckName, String contents, String targetFormat) {
+        _deckName = deckName;
+        _targetFormat = targetFormat;
+        _notes = "";
+        parseContents(contents);
+    }
+
+
     public void parseContents(String contents) {
         String[] parts = contents.split("\\|");
         for (int i = 0; i < parts.length; i += 2) {

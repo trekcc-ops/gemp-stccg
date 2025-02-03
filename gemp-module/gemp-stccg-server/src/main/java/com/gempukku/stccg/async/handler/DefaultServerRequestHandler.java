@@ -234,10 +234,11 @@ class DefaultServerRequestHandler {
         return docBuilder.newDocument();
     }
 
-    final User getResourceOwner(HttpRequest request) throws HttpProcessingException {
+    protected User getUserIdFromCookiesOrUri(HttpRequest request) throws HttpProcessingException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         return getResourceOwnerSafely(request, participantId);
     }
+
 
 }

@@ -49,6 +49,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
+        GameFormat format = formatLibrary.getFormat("debug1e");
         CardDeck testDeck = new CardDeck("Test");
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
@@ -57,7 +58,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-        GameFormat format = formatLibrary.getFormat("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();

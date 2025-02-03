@@ -25,7 +25,14 @@ public class DbDeckDAO implements DeckDAO {
     public final synchronized void saveDeckForPlayer(User player, String name, String targetFormat, String notes,
                                                      CardDeck deck) {
         boolean newDeck = getPlayerDeck(player.getId(), name) == null;
-        storeDeckToDB(player.getId(), name, targetFormat, notes, deck, newDeck);
+        storeDeckToDB(player.getId(), deck, newDeck);
+    }
+
+    @Override
+    public final synchronized void saveDeckForPlayer(CardDeck deck, User player) {
+        String deckName = deck.getDeckName();
+        boolean newDeck = getPlayerDeck(player.getId(), deckName) == null;
+        storeDeckToDB(player.getId(), deck, newDeck);
     }
 
     public final synchronized void deleteDeckForPlayer(User player, String name) {
@@ -94,9 +101,11 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    private void storeDeckToDB(int playerId, String name, String targetFormat, String notes, CardDeck deck,
-                               boolean newDeck) {
+    private void storeDeckToDB(int playerId, CardDeck deck, boolean newDeck) {
         String contents = deck.buildContentsFromDeck();
+        String targetFormat = deck.getTargetFormat();
+        String notes = deck.getNotes();
+        String name = deck.getDeckName();
         try {
             if (newDeck) {
                 String sqlStatement =

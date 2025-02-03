@@ -20,12 +20,8 @@ public class PlayerInfoRequestHandler extends DefaultServerRequestHandler implem
     public final void handleRequest(String uri, HttpRequest request,
                                     ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-            String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
-
+            User resourceOwner = getUserIdFromCookiesOrUri(request);
             responseWriter.writeJsonResponse(JsonUtils.toJsonString(resourceOwner.GetUserInfo()));
-
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }

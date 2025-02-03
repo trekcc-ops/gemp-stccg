@@ -81,7 +81,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
                             String deckName = rs.getString(2);
                             String contents = rs.getString(3);
 
-                            result.put(player, new CardDeck(deckName, contents, format, ""));
+                            result.put(player, new CardDeck(deckName, contents, format));
                         }
                         return result;
                     }

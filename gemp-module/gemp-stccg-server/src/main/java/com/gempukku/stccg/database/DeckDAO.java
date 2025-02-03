@@ -10,6 +10,8 @@ public interface DeckDAO {
 
     void saveDeckForPlayer(User player, String name, String targetFormat, String notes, CardDeck deck);
 
+    void saveDeckForPlayer(CardDeck deck, User player);
+
     void deleteDeckForPlayer(User player, String name);
 
     CardDeck renameDeck(User player, String oldName, String newName);

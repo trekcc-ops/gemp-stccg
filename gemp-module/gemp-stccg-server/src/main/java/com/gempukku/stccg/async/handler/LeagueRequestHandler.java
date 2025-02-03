@@ -67,7 +67,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
     private void getLeagueInformation(HttpRequest request, String leagueType, ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
-        User resourceOwner = getResourceOwner(request);
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
         Document doc = createNewDoc();
         League league = getLeagueByType(leagueType);
 

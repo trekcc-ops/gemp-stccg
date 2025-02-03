@@ -119,15 +119,14 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
 
     private void getMerchantOffers(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         String filter = getQueryParameterSafely(queryDecoder, FormParameter.filter);
         int ownedMin = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.ownedMin));
         int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.start));
         int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.count));
 
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        CardCollection collection = _collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode());
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
+        CardCollection collection =
+                _collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode());
 
         Collection<BasicCardItem> cardItems = new HashSet<>();
         if (ownedMin <= 0) {

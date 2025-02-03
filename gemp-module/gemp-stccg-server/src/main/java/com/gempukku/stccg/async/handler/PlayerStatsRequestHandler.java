@@ -24,7 +24,7 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
     public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
             throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            User resourceOwner = getResourceOwner(request);
+            User resourceOwner = getUserIdFromCookiesOrUri(request);
 
             List<PlayerStatistic> casualStatistics = _gameHistoryService.getCasualPlayerStatistics(resourceOwner);
             List<PlayerStatistic> competitiveStatistics =

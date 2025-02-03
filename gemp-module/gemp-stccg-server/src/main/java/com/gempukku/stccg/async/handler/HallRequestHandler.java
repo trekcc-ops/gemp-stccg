@@ -311,7 +311,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getHall(HttpRequest request, ResponseWriter responseWriter) {
         try {
-            User resourceOwner = getResourceOwner(request);
+            User resourceOwner = getUserIdFromCookiesOrUri(request);
             Document doc = createNewDoc();
             User player = getResourceOwnerSafely(request, null);
 

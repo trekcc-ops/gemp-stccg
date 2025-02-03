@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -103,17 +104,15 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
     private class ChatUpdateLongPollingResource implements LongPollingResource {
         private final ChatRoomMediator chatRoom;
         private final String room;
-        private final String playerId;
-        private final boolean admin;
         private final ResponseWriter responseWriter;
         private boolean processed;
+        private final User user;
 
         private ChatUpdateLongPollingResource(ChatRoomMediator chatRoom, String room, User user,
                                               ResponseWriter responseWriter) {
             this.chatRoom = chatRoom;
             this.room = room;
-            playerId = user.getName();
-            admin = user.hasType(User.Type.ADMIN);
+            this.user = user;
             this.responseWriter = responseWriter;
         }
 
@@ -127,10 +126,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         public final synchronized void processIfNotProcessed() {
             if (!processed) {
                 try {
-                    List<ChatMessage> chatMessages = chatRoom.getChatRoomListener(playerId).consumeMessages();
-                    Collection<String> usersInRoom = chatRoom.getUsersInRoom(admin);
-                    Document doc = createNewDoc();
-                    serializeChatRoomData(room, chatMessages, usersInRoom, doc);
+                    Document doc = serializeChatRoomData(chatRoom, user, room);
                     responseWriter.writeXmlResponseWithNoHeaders(doc);
                 } catch (SubscriptionExpiredException exp) {
                     logAndWriteError(HttpURLConnection.HTTP_GONE, "chat poller", exp); // 410
@@ -148,20 +144,14 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void getMessages(HttpRequest request, String room, ResponseWriter responseWriter) throws Exception {
-        QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
         ChatRoomMediator chatRoom = _chatServer.getChatRoom(room);
         if (chatRoom == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         try {
             final boolean admin = resourceOwner.hasType(User.Type.ADMIN);
-            List<ChatMessage> chatMessages = chatRoom.joinUser(resourceOwner.getName(), admin);
-            Collection<String> usersInRoom = chatRoom.getUsersInRoom(admin);
-            Document doc = createNewDoc();
-            serializeChatRoomData(room, chatMessages, usersInRoom, doc);
+            chatRoom.joinUser(resourceOwner.getName(), admin);
+            Document doc = serializeChatRoomData(chatRoom, resourceOwner, room);
             responseWriter.writeXmlResponseWithNoHeaders(doc);
         } catch (PrivateInformationException exp) {
             logHttpError(LOGGER, HttpURLConnection.HTTP_FORBIDDEN, request.uri(), exp);
@@ -169,8 +159,10 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void serializeChatRoomData(String room, Iterable<? extends ChatMessage> chatMessages,
-                                       Iterable<String> usersInRoom, Document doc) {
+    private Document serializeChatRoomData(ChatRoomMediator chatRoom, User user, String room)
+            throws ParserConfigurationException, SubscriptionExpiredException {
+        List<ChatMessage> chatMessages = chatRoom.getChatRoomListener(user).consumeMessages();
+        Document doc = createNewDoc();
         Element chatElem = doc.createElement("chat");
         chatElem.setAttribute("roomName", room);
         doc.appendChild(chatElem);
@@ -181,15 +173,18 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         }
 
         Collection<String> users = new TreeSet<>(new CaseInsensitiveStringComparator());
-        for (String userInRoom : usersInRoom)
+        boolean userIsAdmin = user.hasType(User.Type.ADMIN);
+        for (String userInRoom : chatRoom.getUsersInRoom(userIsAdmin))
             users.add(formatPlayerNameForChatList(userInRoom));
 
         for (String userInRoom : users) {
-            Element user = doc.createElement("user");
-            user.appendChild(doc.createTextNode(userInRoom));
-            chatElem.appendChild(user);
+            Element userElem = doc.createElement("user");
+            userElem.appendChild(doc.createTextNode(userInRoom));
+            chatElem.appendChild(userElem);
         }
+        return doc;
     }
+
 
     private static class CaseInsensitiveStringComparator implements Comparator<String> {
         @Override

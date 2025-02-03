@@ -9,7 +9,6 @@ import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import io.netty.handler.codec.http.HttpMethod;
@@ -31,13 +30,11 @@ import java.util.stream.Collectors;
 public class DeckRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final DeckDAO _deckDao;
     private final FormatLibrary _formatLibrary;
-    private final SoloDraftDefinitions _draftLibrary;
 
     DeckRequestHandler(ServerObjects objects) {
         super(objects);
         _deckDao = objects.getDeckDAO();
         _formatLibrary = objects.getFormatLibrary();
-        _draftLibrary = objects.getSoloDraftDefinitions();
     }
 
     private static CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat,
@@ -134,7 +131,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             //check for valid access
             getResourceOwnerSafely(request, participantId);
 
-            CardDeck deck = createDeckWithValidate("tempDeck", contents, targetFormat, "");
+            CardDeck deck = new CardDeck("tempDeck", contents, targetFormat);
             GameFormat format = validateFormat(targetFormat);
             if(format == null || targetFormat == null)
             {
@@ -194,9 +191,9 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
             GameFormat validatedFormat = validateFormat(targetFormat);
 
-            CardDeck deck = createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
+            CardDeck deck = new CardDeck(deckName, contents, validatedFormat.getName(), notes);
 
-            _deckDao.saveDeckForPlayer(resourceOwner, deckName, validatedFormat.getName(), notes, deck);
+            _deckDao.saveDeckForPlayer(deck, resourceOwner);
 
             Document doc = createNewDoc();
             Element deckElem = doc.createElement("ok");
@@ -210,9 +207,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
     private void shareDeck(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
 
         String code = resourceOwner.getName() + "|" + deckName;
 
@@ -277,11 +273,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private void getDeck(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
         responseWriter.writeXmlResponseWithNoHeaders(serializeDeck(resourceOwner, deckName));
     }
 
@@ -295,7 +288,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
     private void listDecks(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
-        User resourceOwner = getResourceOwner(request);
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
         List<Map.Entry<GameFormat, String>> decks = GetDeckNamesAndFormats(resourceOwner);
         SortDecks(decks);
         Document doc = ConvertDeckNamesToXML(decks);
