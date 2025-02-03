@@ -13,7 +13,6 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.hall.GameSettings;
@@ -21,8 +20,6 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.player.PlayerClock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.util.*;
@@ -300,34 +297,6 @@ public abstract class CardGameMediator {
     }
 
 
-    public final void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber,
-                                     Document _doc) {
-        _readLock.lock();
-        try {
-            Element _element = _doc.createElement("gameState");
-            _element.setAttribute("cn", String.valueOf(channelNumber));
-
-            for (GameEvent event : communicationChannel.consumeGameEvents())
-                _element.appendChild(event.serialize(_doc));
-
-            Element clocks = _doc.createElement("clocks");
-            for (Map.Entry<String, Integer> userClock : secondsLeft().entrySet()) {
-                Element clock = _doc.createElement("clock");
-                clock.setAttribute("participantId", userClock.getKey());
-                String clockString = String.valueOf(userClock.getValue());
-                clock.appendChild(_doc.createTextNode(clockString));
-                clocks.appendChild(clock);
-            }
-
-            _element.appendChild(clocks);
-            _doc.appendChild(_element);
-        } catch(IOException exp) {
-            getGame().sendErrorMessage("Unable to serialize decision");
-        } finally {
-            _readLock.unlock();
-        }
-    }
-
     public final String serializeEventsToString(GameCommunicationChannel communicationChannel)
             throws IOException {
         _readLock.lock();
@@ -365,17 +334,6 @@ public abstract class CardGameMediator {
         } finally {
             _readLock.unlock();
         }
-    }
-
-    private Map<String, Integer> secondsLeft() {
-        Map<String, Integer> secondsLeft = new HashMap<>();
-        for (String playerId : _playersPlaying) {
-            int maxSeconds = _timeSettings.maxSecondsPerPlayer();
-            int playerClock = _playerClocks.get(playerId).getTimeElapsed();
-            int playerPendingTime = getCurrentUserPendingTime(playerId);
-            secondsLeft.put(playerId, maxSeconds - playerClock - playerPendingTime);
-        }
-        return secondsLeft;
     }
 
     private void startClocksForUsersPendingDecision() {
