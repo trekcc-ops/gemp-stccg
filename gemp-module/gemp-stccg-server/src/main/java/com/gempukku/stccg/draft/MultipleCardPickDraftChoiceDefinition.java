@@ -1,36 +1,38 @@
 package com.gempukku.stccg.draft;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.common.JsonUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MultipleCardPickDraftChoiceDefinition implements DraftChoiceDefinition {
 
     private final int _count;
     private final List<String> _cards;
 
-    public MultipleCardPickDraftChoiceDefinition(JsonNode node) {
-        _count = node.get("count").asInt();
-        _cards = JsonUtils.toStringArray(node.get("availableCards"));
+    public MultipleCardPickDraftChoiceDefinition(
+            @JsonProperty("count")
+            int count,
+            @JsonProperty("availableCards")
+            List<String> cards
+    ) {
+        _count = count;
+        _cards = cards;
     }
 
     @Override
-    public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
-    DefaultCardCollection draftPool) {
+    public Iterable<DraftChoice> getDraftChoice(long seed, int stage,
+                                                DefaultCardCollection draftPool) {
         final List<String> shuffledCards = getShuffledCards(seed, stage);
 
-        List<SoloDraft.DraftChoice> eligibleCards = new ArrayList<>(_count);
+        List<DraftChoice> eligibleCards = new ArrayList<>(_count);
         for (int i = 0; i < _count; i++) {
             final int finalI = i;
             eligibleCards.add(
-                    new SoloDraft.DraftChoice() {
+                    new DraftChoice() {
                         @Override
                         public String getChoiceId() {
                             return shuffledCards.get(finalI);

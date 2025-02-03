@@ -6,9 +6,8 @@ import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
-import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.database.*;
-import com.gempukku.stccg.draft.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.game.GameRecorder;
@@ -51,7 +50,7 @@ public class ServerObjects {
     private GameHistoryService _gameHistoryService;
     private GameRecorder _gameRecorder;
     private CollectionsManager _collectionsManager;
-    private SoloDraftDefinitions _soloDraftDefinitions;
+    private DraftFormatLibrary _DraftFormatLibrary;
     private LeagueService _leagueService;
     private AdminService _adminService;
     private TournamentService _tournamentService;
@@ -107,7 +106,7 @@ public class ServerObjects {
         _gameHistoryService = new GameHistoryService(_gameHistoryDAO);
         _gameRecorder = new GameRecorder(_gameHistoryService, _playerDAO);
         _collectionsManager = new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO, _cardBlueprintLibrary);
-        _soloDraftDefinitions = new SoloDraftDefinitions(_collectionsManager, _cardBlueprintLibrary, _formatLibrary);
+        _DraftFormatLibrary = new DraftFormatLibrary(_cardBlueprintLibrary, _formatLibrary);
         _leagueService = new LeagueService(this, _leagueMatchDAO, _leagueParticipationDAO);
         _adminService = new AdminService(_playerDAO, _ipBanDAO, _loggedUserHolder);
         _tournamentService = new TournamentService(
@@ -142,7 +141,7 @@ public class ServerObjects {
     public final GameHistoryService getGameHistoryService() { return _gameHistoryService; }
     public final GameRecorder getGameRecorder() { return _gameRecorder; }
     public final CollectionsManager getCollectionsManager() { return _collectionsManager; }
-    public final SoloDraftDefinitions getSoloDraftDefinitions() { return _soloDraftDefinitions; }
+    public final DraftFormatLibrary getSoloDraftDefinitions() { return _DraftFormatLibrary; }
     public final LeagueService getLeagueService() { return _leagueService; }
     public final AdminService getAdminService() { return _adminService; }
     public final TournamentService getTournamentService() { return _tournamentService; }

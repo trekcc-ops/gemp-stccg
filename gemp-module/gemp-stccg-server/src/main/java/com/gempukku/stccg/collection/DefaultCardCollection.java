@@ -3,6 +3,7 @@ package com.gempukku.stccg.collection;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.common.CardItemType;
+import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.packs.ProductLibrary;
 
 import java.util.*;

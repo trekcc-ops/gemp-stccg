@@ -64,7 +64,7 @@ public class DefaultGameFormat implements GameFormat {
     private final GameType _gameType;
 
     DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def)
-            throws InvalidPropertiesFormatException, JsonParseException {
+            throws InvalidPropertiesFormatException {
         _name = def.name;
         _code = def.code;
         _order = def.order;
@@ -77,8 +77,8 @@ public class DefaultGameFormat implements GameFormat {
         _maximumSeedDeckSize = def.maximumSeedDeckSize;
         _noShuffle = def.noShuffle;
         _firstPlayerFixed = def.firstPlayerFixed;
-        _gameType = JsonUtils.getEnum(GameType.class, def.gameType);
-
+        _gameType =
+                Enum.valueOf(GameType.class, def.gameType.toUpperCase().replaceAll("[ '\\-.]", "_"));
         if (def.set == null) {
             for (SetDefinition set : library.getSetDefinitions().values()) {
                 if (set.getGameType() == _gameType) {

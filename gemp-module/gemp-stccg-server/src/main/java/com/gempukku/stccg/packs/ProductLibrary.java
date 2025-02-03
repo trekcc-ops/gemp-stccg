@@ -1,12 +1,9 @@
 package com.gempukku.stccg.packs;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.JSONData;
+import com.gempukku.stccg.common.DeserializingLibrary;
 import com.gempukku.stccg.common.JsonUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 
-public class ProductLibrary {
+public class ProductLibrary implements DeserializingLibrary {
     private final Map<String, PackBox> _products = new HashMap<>();
     private final CardBlueprintLibrary _cardLibrary;
     private final File _packDirectory;
@@ -56,7 +53,7 @@ public class ProductLibrary {
     }
 
     private void loadPackFromFile(File file) {
-        if (JsonUtils.isNotAValidHJSONFile(file))
+        if (isNotValidJsonFile(file))
             return;
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
             List<PackBox> packs = JsonUtils.readListOfClassFromReader(reader, PackBox.class);

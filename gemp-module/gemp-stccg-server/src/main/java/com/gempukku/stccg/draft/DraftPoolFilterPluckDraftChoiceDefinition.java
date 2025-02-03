@@ -1,6 +1,7 @@
 package com.gempukku.stccg.draft;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.handler.SortAndFilterCards;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
@@ -17,20 +18,25 @@ public class DraftPoolFilterPluckDraftChoiceDefinition implements DraftChoiceDef
 
     private final int _optionCount;
     private final String _filter;
-    private final CardBlueprintLibrary _cardLibrary;
-    private final FormatLibrary _formatLibrary;
+    @JacksonInject(value = "cardLibrary")
+    private CardBlueprintLibrary _cardLibrary;
 
-    public DraftPoolFilterPluckDraftChoiceDefinition(JsonNode data, CardBlueprintLibrary cardLibrary,
-                                                     FormatLibrary formatLibrary) {
-        _optionCount = data.get("optionCount").asInt();
-        _filter = data.get("filter").textValue();
-        _cardLibrary = cardLibrary;
-        _formatLibrary = formatLibrary;
+    @JacksonInject(value = "formatLibrary")
+    private FormatLibrary _formatLibrary;
+
+    public DraftPoolFilterPluckDraftChoiceDefinition(
+            @JsonProperty("optionCount")
+            int optionCount,
+            @JsonProperty("filter")
+            String filter
+    ) {
+        _optionCount = optionCount;
+        _filter = filter;
     }
 
     @Override
-    public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
-    DefaultCardCollection draftPool) {
+    public Iterable<DraftChoice> getDraftChoice(long seed, int stage,
+                                                DefaultCardCollection draftPool) {
         List<GenericCardItem> fullDraftPool = new ArrayList<>();
         for (GenericCardItem item : draftPool.getAll())
             for (int i = 0; i < draftPool.getItemCount(item.getBlueprintId()); i++)
@@ -41,12 +47,12 @@ public class DraftPoolFilterPluckDraftChoiceDefinition implements DraftChoiceDef
 
         final List<GenericCardItem> cards = getCards(seed, stage, possibleCards);
 
-        List<SoloDraft.DraftChoice> draftChoices = new ArrayList<>(_optionCount);
+        List<DraftChoice> draftChoices = new ArrayList<>(_optionCount);
         for (int i = 0; i < Math.min(_optionCount, possibleCards.size()); i++) {
             draftPool.removeItem(cards.get(i).getBlueprintId(),1);
             final int finalI = i;
             draftChoices.add(
-                    new SoloDraft.DraftChoice() {
+                    new DraftChoice() {
                         @Override
                         public String getChoiceId() {
                             return cards.get(finalI).getBlueprintId();

@@ -1,56 +1,32 @@
 package com.gempukku.stccg.draft;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.async.handler.SortAndFilterCards;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.formats.FormatLibrary;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SingleCollectionPickDraftChoiceDefinition implements DraftChoiceDefinition {
 
     private final Map<String, List<String>> _cardsMap = new HashMap<>();
-    private final List<SoloDraft.DraftChoice> _draftChoices = new ArrayList<>();
+    private final List<DraftChoice> _draftChoices = new ArrayList<>();
 
-    public SingleCollectionPickDraftChoiceDefinition(JsonNode node) {
-        List<JsonNode> switchResult = JsonUtils.toArray(node.get("possiblePicks"));
-
-        for (JsonNode pickDefinition : switchResult) {
-            final String choiceId = pickDefinition.get("choiceId").textValue();
-            final String url = pickDefinition.get("url").textValue();
-            List<String> cardIds = JsonUtils.toStringArray(pickDefinition.get("cards"));
-
-            _draftChoices.add(
-                    new SoloDraft.DraftChoice() {
-                        @Override
-                        public String getChoiceId() {
-                            return choiceId;
-                        }
-
-                        @Override
-                        public String getBlueprintId() {
-                            return null;
-                        }
-
-                        @Override
-                        public String getChoiceUrl() {
-                            return url;
-                        }
-                    });
-            _cardsMap.put(choiceId, cardIds);
+    public SingleCollectionPickDraftChoiceDefinition(
+            @JsonProperty("possiblePicks")
+            List<SingleCollectionPickDraftChoice> draftChoices
+    ) {
+        for (SingleCollectionPickDraftChoice choice : draftChoices) {
+            _draftChoices.addAll(draftChoices);
+            _cardsMap.put(choice.getChoiceId(), choice.getCardIds());
         }
     }
 
     @Override
-    public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
-                                                          DefaultCardCollection draftPool) {
+    public Iterable<DraftChoice> getDraftChoice(long seed, int stage,
+                                                DefaultCardCollection draftPool) {
         return _draftChoices;
     }
 

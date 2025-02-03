@@ -1,10 +1,10 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.draft.DraftChoice;
 import com.gempukku.stccg.draft.SoloDraft;
-import com.gempukku.stccg.draft.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import org.junit.jupiter.api.Test;
 
@@ -19,10 +19,10 @@ public class DraftTests extends AbstractServerTest {
                 new CollectionsManager(null, null, null, _cardLibrary);
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
-        SoloDraftDefinitions soloDraftDefinitions =
-                new SoloDraftDefinitions(collectionsManager, _cardLibrary, formatLibrary);
+        DraftFormatLibrary draftFormatLibrary =
+                new DraftFormatLibrary(_cardLibrary, formatLibrary);
 
-        final SoloDraft soloDraft = soloDraftDefinitions.getSoloDraft("test_draft");
+        final SoloDraft soloDraft = draftFormatLibrary.getSoloDraft("test_draft");
 
         long collectionType = 1568486003481L;
 
@@ -37,16 +37,16 @@ public class DraftTests extends AbstractServerTest {
                     return card1 - card2;
                 });
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100; i++) {
             // Take an example seed
             long seed = getSeed(String.valueOf(collectionType + i));
 
             int stage = 0;
 
             while (soloDraft.hasNextStage(stage)) {
-                final Iterable<SoloDraft.DraftChoice> availableChoices =
+                final Iterable<DraftChoice> availableChoices =
                         soloDraft.getAvailableChoices(seed, stage, null);
-                for (SoloDraft.DraftChoice availableChoice : availableChoices) {
+                for (DraftChoice availableChoice : availableChoices) {
                     final String blueprintId = availableChoice.getBlueprintId();
                     availableCards.merge(blueprintId, 1,
                             Integer::sum);

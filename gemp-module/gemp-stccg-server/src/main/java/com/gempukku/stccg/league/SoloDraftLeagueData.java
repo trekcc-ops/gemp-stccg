@@ -11,7 +11,7 @@ import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.draft.SoloDraft;
-import com.gempukku.stccg.draft.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.Collections;
@@ -29,11 +29,11 @@ public class SoloDraftLeagueData implements LeagueData {
     private final LeagueSeriesData _seriesData;
 
     public SoloDraftLeagueData(CardBlueprintLibrary library, FormatLibrary formatLibrary,
-                               SoloDraftDefinitions soloDraftDefinitions, String parameters) {
+                               DraftFormatLibrary draftFormatLibrary, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(library);
 
         String[] params = parameters.split(",");
-        _draft = soloDraftDefinitions.getSoloDraft(params[0]);
+        _draft = draftFormatLibrary.getSoloDraft(params[0]);
         int start = Integer.parseInt(params[1]);
         int seriesDuration = Integer.parseInt(params[2]);
         int maxMatches = Integer.parseInt(params[3]);

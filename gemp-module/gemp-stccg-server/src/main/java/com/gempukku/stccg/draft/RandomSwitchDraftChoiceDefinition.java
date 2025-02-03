@@ -1,35 +1,34 @@
 package com.gempukku.stccg.draft;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.common.JsonUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RandomSwitchDraftChoiceDefinition implements DraftChoiceDefinition {
 
-    private final List<DraftChoiceDefinition> _draftChoiceDefinitionList = new ArrayList<>();
+    private final List<DraftChoiceDefinition> _draftChoiceDefinitionList;
 
-    public RandomSwitchDraftChoiceDefinition(JsonNode node, SoloDraftDefinitions builder) {
-
-        for (JsonNode switchResultObject : JsonUtils.toArray(node.get("switchResult")))
-            _draftChoiceDefinitionList.add(builder.buildDraftChoiceDefinition(switchResultObject));
+    public RandomSwitchDraftChoiceDefinition(
+            @JsonProperty(value = "switchResult", required = true)
+            List<DraftChoiceDefinition> definitionList
+    ) {
+        _draftChoiceDefinitionList = definitionList;
     }
 
+
     @Override
-    public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
-                                                          DefaultCardCollection draftPool) {
+    public Iterable<DraftChoice> getDraftChoice(long seed, int stage,
+                                                DefaultCardCollection draftPool) {
         return TextUtils.getRandomItemsFromList(_draftChoiceDefinitionList, getRandom(seed, stage))
                 .getDraftChoice(seed, stage, draftPool);
     }
 
     @Override
-    public CardCollection getCardsForChoiceId(String choiceId, long seed, int stage) {
+    public CardCollection getCardsForChoiceId(String choiceId, long seed, int stage)
+            throws InvalidDraftResultException {
         return TextUtils.getRandomItemsFromList(_draftChoiceDefinitionList, getRandom(seed, stage))
                 .getCardsForChoiceId(choiceId, seed, stage);
     }

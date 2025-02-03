@@ -3,10 +3,14 @@ package com.gempukku.stccg.formats;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
+import com.gempukku.stccg.common.DeserializingLibrary;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
+import org.hjson.JsonValue;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +19,7 @@ import java.util.concurrent.Semaphore;
 
 @JsonIncludeProperties({ "Formats", "SealedTemplates" })
 @JsonPropertyOrder({ "Formats", "SealedTemplates" })
-public class FormatLibrary {
+public class FormatLibrary implements DeserializingLibrary {
     private final Map<String, GameFormat> _allFormats = new HashMap<>();
     private final Map<String, SealedEventDefinition> _sealedTemplates = new LinkedHashMap<>();
     private final Semaphore collectionReady = new Semaphore(1);
@@ -43,11 +47,11 @@ public class FormatLibrary {
             }
         }
         else if (path.isFile()) {
-            if (JsonUtils.isNotAValidHJSONFile(path))
+            if (isNotValidJsonFile(path))
                 return;
             try (Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8)) {
-                List<SealedEventDefinition> sealedDefinitions =
-                        JsonUtils.readListOfClassFromReader(reader, SealedEventDefinition.class);
+                ObjectMapper mapper = new ObjectMapper();
+                SealedEventDefinition[] sealedDefinitions = mapper.readValue(path, SealedEventDefinition[].class);
                 for (SealedEventDefinition definition : sealedDefinitions) {
                     String definitionId = definition.getId();
                     if(_sealedTemplates.containsKey(definitionId)) {

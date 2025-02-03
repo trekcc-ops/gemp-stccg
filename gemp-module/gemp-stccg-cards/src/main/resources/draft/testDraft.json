@@ -3,54 +3,60 @@
   "format": "st1emoderncomplete",
   "startingPool": {
     "type": "randomCardPool",
-    "data": {
-      "randomResult": [
-        ["101_056","101_057"]
-      ]
-    }
+    "randomResult": [
+      ["101_056","101_057"]
+    ]
   },
   "choices": [
     {
-      "type": "filterPick",
       "repeat": 1,
-      "data": {
+      "choice": {
+        "type": "filterPick",
         "optionCount": 1,
         "filter": "set:101 cardType:PERSONNEL"
       }
     },
     {
-      "type": "filterPick",
       "repeat": 1,
-      "data": {
+      "choice": {
+        "type": "filterPick",
+        "optionCount": 1,
+        "filter": "set:101 cardType:PERSONNEL"
+      }
+    },
+    {
+      "repeat": 1,
+      "choice": {
+        "type": "filterPick",
         "optionCount": 2,
         "filter": "set:101"
       }
     },
     {
-      "type": "weightedSwitch",
       "repeat": 5,
-      "data": {
+      "choice": {
+        "type": "weightedSwitch",
         "switchResult": [
           {
             "weight": 0.4,
-            "type": "filterPick",
-            "data": {
+            "choice": {
+              "type": "filterPick",
               "optionCount": 3,
               "filter": "set:101 cardType:MISSION"
             }
           },
           {
             "weight": 0.4,
-            "type": "filterPick",
-            "data": {
+            "choice": {
+              "type": "filterPick",
               "optionCount": 4,
               "filter": "set:101 cardType:DILEMMA"
             }
           },
           {
             "weight": 0.2,
-            "type": "filterPick",
-            "data": {
+            "choice": {
+              "type": "filterPick",
               "optionCount": 6,
               "filter": "set:101 cardType:EQUIPMENT"
             }

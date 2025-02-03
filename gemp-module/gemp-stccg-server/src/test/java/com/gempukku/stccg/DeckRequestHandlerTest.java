@@ -2,16 +2,11 @@ package com.gempukku.stccg;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.formats.SealedEventDefinition;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DeckRequestHandlerTest extends AbstractServerTest {
 

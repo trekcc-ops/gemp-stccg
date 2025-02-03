@@ -84,20 +84,16 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             String includeEventsStr = getFormParameterSafely(postDecoder, FormParameter.includeEvents);
             String json;
 
-            if("true".equalsIgnoreCase(includeEventsStr))
-            {
-                responseWriter.writeJsonResponse(JsonUtils.toJsonString(_formatLibrary));
-            }
-            else {
+            if("true".equalsIgnoreCase(includeEventsStr)) {
+                json = JsonUtils.toJsonString(_formatLibrary);
+            } else {
                 Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
-
                 Object[] output = formats.entrySet().stream()
                         .map(x -> new JSONData.ItemStub(x.getKey(), x.getValue().getName()))
                         .toArray();
-
                 json = JsonUtils.toJsonString(output);
-                responseWriter.writeJsonResponse(json);
             }
+            responseWriter.writeJsonResponse(json);
         } finally {
             postDecoder.destroy();
         }

@@ -21,14 +21,14 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hjson.JsonValue;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-public class CardBlueprintLibrary {
+public class CardBlueprintLibrary implements DeserializingLibrary {
     private static final Logger LOGGER = LogManager.getLogger(CardBlueprintLibrary.class);
     private final Map<String, CardBlueprint> _blueprints = new HashMap<>();
     private final Map<String, String> _blueprintMapping = new HashMap<>();
@@ -163,10 +163,11 @@ public class CardBlueprintLibrary {
     }
 
     private void loadSetWithCardsFromFile(File file) {
-        if (JsonUtils.isNotAValidHJSONFile(file))
+        if (isNotValidJsonFile(file))
             return;
         try {
-            JsonNode jsonNode = JsonUtils.readJsonFromFile(file);
+            Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+            JsonNode jsonNode = _jsonMapper.readTree(JsonValue.readHjson(reader).toString());
 
             // Add set
             String setId = jsonNode.get("setId").textValue();
