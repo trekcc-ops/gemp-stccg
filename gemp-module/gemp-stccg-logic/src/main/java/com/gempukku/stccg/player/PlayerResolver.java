@@ -10,9 +10,6 @@ import java.util.Locale;
 
 public class PlayerResolver {
 
-    public static PlayerSource resolvePlayer(JsonNode node) throws InvalidCardDefinitionException {
-        return resolvePlayer(node.textValue());
-    }
     public static PlayerSource resolvePlayer(String type) throws InvalidCardDefinitionException {
 
         if (type.equalsIgnoreCase("you"))

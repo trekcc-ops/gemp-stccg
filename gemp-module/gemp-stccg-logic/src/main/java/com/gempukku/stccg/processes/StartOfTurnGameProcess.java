@@ -15,6 +15,8 @@ public class StartOfTurnGameProcess extends GameProcess {
     @Override
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
         cardGame.sendMessage("\n\n========\n\nStart of " + cardGame.getCurrentPlayerId() + "'s turn.");
+        if (cardGame.getCurrentPhase() != Phase.START_OF_TURN)
+            cardGame.setCurrentPhase(Phase.START_OF_TURN);
         cardGame.getActionsEnvironment().addActionToStack(new StartTurnAction(cardGame));
     }
 

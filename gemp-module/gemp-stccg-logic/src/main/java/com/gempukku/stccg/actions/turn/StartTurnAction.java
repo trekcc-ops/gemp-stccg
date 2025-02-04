@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.turn;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;

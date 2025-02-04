@@ -522,6 +522,13 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                 playerDecided(playerId, "");
     }
 
+    protected void skipFacility() throws DecisionResultInvalidException, InvalidGameOperationException {
+        for (String playerId : _game.getAllPlayerIds())
+            if (_game.getCurrentPhase() == Phase.SEED_FACILITY && _userFeedback.getAwaitingDecision(playerId) != null)
+                playerDecided(playerId, "");
+    }
+
+
     protected void seedDilemma(PhysicalCard seedCard, PhysicalCard mission) throws DecisionResultInvalidException,
             InvalidGameOperationException {
         Player player = seedCard.getOwner();
@@ -874,6 +881,26 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throw new DecisionResultInvalidException("Could not find game text action");
         }
     }
+
+    protected void performAction(String playerId, Class<? extends Action> actionClass, PhysicalCard performingCard)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        Action choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof CardActionSelectionDecision actionDecision) {
+            for (TopLevelSelectableAction action : actionDecision.getActions()) {
+                if (action.getCardIdForActionSelection() == performingCard.getCardId() &&
+                        actionClass.isAssignableFrom(action.getClass()))
+                    choice = action;
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null) {
+            throw new DecisionResultInvalidException("Could not find game text action");
+        }
+    }
+
 
     protected void showSerializedActions() throws InvalidGameLogicException, JsonProcessingException {
 

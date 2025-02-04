@@ -1,23 +1,27 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.NullLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
     @Test
-    public void assignMissionSpecialistsTest() throws DecisionResultInvalidException, InvalidGameOperationException {
+    public void assignMissionSpecialistsTest()
+            throws DecisionResultInvalidException, InvalidGameOperationException, PlayerNotFoundException {
         initializeGameToTestAMS();
         autoSeedMissions();
 
@@ -57,6 +61,20 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
             assertTrue(specialist.isInPlay());
             assertTrue(fedOutpost.getCrew().contains(specialist));
         }
+
+        while (_game.getCurrentPhase() == Phase.SEED_FACILITY) {
+            skipFacility();
+        }
+
+        // Try to discard card at start of turn
+        assertEquals(Phase.START_OF_TURN, _game.getCurrentPhase());
+        performAction(P1, DiscardCardAction.class, ams);
+
+        assertEquals(Zone.DISCARD, ams.getZone());
+        assertTrue(_game.getPlayer(P1).getDiscardPile().contains(ams));
+        assertInstanceOf(NullLocation.class, ams.getGameLocation());
+
+        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
     }
 
 }
