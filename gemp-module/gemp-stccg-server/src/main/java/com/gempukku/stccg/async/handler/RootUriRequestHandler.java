@@ -26,25 +26,25 @@ public class RootUriRequestHandler implements UriRequestHandler {
         String originAllowedPattern = AppConfig.getProperty("origin.allowed.pattern");
         originPattern = Pattern.compile(originAllowedPattern);
 
-        requestHandlers.put(SERVER_CONTEXT_PATH + "hall", new HallRequestHandler(objects, longPollingSystem));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "deck", new DeckRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "login", new LoginRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "register", new RegisterRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "replay", new ReplayRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "gameHistory", new GameHistoryRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "stats", new ServerStatsRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "admin", new AdminRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "chat", new ChatRequestHandler(objects, longPollingSystem));
         requestHandlers.put(SERVER_CONTEXT_PATH + "collection", new CollectionRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "deck", new DeckRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "delivery", new DeliveryRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "game", new GameRequestHandler(objects, longPollingSystem));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "game/", new GameRequestHandler(objects, longPollingSystem));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "gameHistory", new GameHistoryRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "hall", new HallRequestHandler(objects, longPollingSystem));
         requestHandlers.put(SERVER_CONTEXT_PATH + "league", new LeagueRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "login", new LoginRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "merchant", new MerchantRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "tournament", new TournamentRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "soloDraft", new SoloDraftRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "player", new PlayerInfoRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "register", new RegisterRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "replay", new ReplayRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "soloDraft", new SoloDraftRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "stats", new ServerStatsRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "tournament", new TournamentRequestHandler(objects));
     }
 
     @Override

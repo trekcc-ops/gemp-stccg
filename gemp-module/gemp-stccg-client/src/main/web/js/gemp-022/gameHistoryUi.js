@@ -15,64 +15,58 @@ export default class GameHistoryUI {
     loadHistory() {
         var that = this;
         this.communication.getGameHistory(this.itemStart, this.pageSize,
-            function (xml) {
-                // BUG: Can't get this callback function to get called, despite having game history.
-                // The communications.getGameHistory function is called but returns a 404 XHR. Broken lookup?
-                that.loadedGameHistory(xml);
+            function (json) {
+                that.loadedGameHistory(json);
             });
     }
 
-    loadedGameHistory(xml) {
-        log(xml);
-        var root = xml.documentElement;
-        if (root.tagName == 'gameHistory') {
-            var historyTable = $("<table class='gameHistory'></table>");
-            historyTable.append("<tr><th>Format</th><th>Tournament</th><th>Deck</th><th>Winner</th><th>Loser</th><th>Win reason</th><th>Lose reason</th><th>Finished on</th><th>Replay link</th></tr>");
+    loadedGameHistory(json) {
+        var historyTable = $("<table class='gameHistory'></table>");
+        historyTable.append("<tr><th>Format</th><th>Tournament</th><th>Deck</th><th>Winner</th><th>Loser</th><th>Win reason</th><th>Lose reason</th><th>Finished on</th><th>Replay link</th></tr>");
 
-            var entries = root.getElementsByTagName("historyEntry");
-            for (var i = 0; i < entries.length; i++) {
-                var historyEntry = entries[i];
-                var format = historyEntry.getAttribute("formatName");
-                var tournament = historyEntry.getAttribute("tournament");
-                var deck = historyEntry.getAttribute("deckName");
-                var winner = historyEntry.getAttribute("winner");
-                var loser = historyEntry.getAttribute("loser");
-                var winReason = historyEntry.getAttribute("winReason");
-                var loseReason = historyEntry.getAttribute("loseReason");
-                var endTime = historyEntry.getAttribute("endTime"); //formatDate(new Date(parseInt(historyEntry.getAttribute("endTime"))));
-                var gameRecordingId = historyEntry.getAttribute("gameRecordingId");
+        for (var i = 0; i < json.games.length; i++) {
+            let historyEntry = json.games[i];
+            let format = historyEntry.formatName;
+            let tournament = historyEntry.tournament;
+            let deck = historyEntry.deckName;
+            let winner = historyEntry.winner;
+            let loser = historyEntry.loser;
+            let winReason = historyEntry.winReason;
+            let loseReason = historyEntry.loseReason;
+            let endTime = historyEntry.endTime;
+            let gameRecordingId = historyEntry.gameRecordingId;
+            let playerId = json.playerId;
 
-                var row = $("<tr></tr>");
-                if (format != null)
-                    row.append($("<td></td>").html(format));
-                else
-                    row.append($("<td></td>").html("&nbsp;"));
-                if (tournament != null)
-                    row.append($("<td></td>").html(tournament));
-                else
-                    row.append($("<td></td>").html("&nbsp;"));
-                if (deck != null)
-                    row.append($("<td></td>").html(deck));
-                else
-                    row.append($("<td></td>").html("&nbsp;"));
-                row.append($("<td></td>").html(winner));
-                row.append($("<td></td>").html(loser));
-                row.append($("<td></td>").html(winReason));
-                row.append($("<td></td>").html(loseReason));
-                row.append($("<td></td>").html(endTime));
-                if (gameRecordingId != null) {
-                    var link = "game.html?replayId=" + root.getAttribute("playerId") + "$" + gameRecordingId;
-                    var linkElem = $("<a>replay game</a>");
-                    linkElem.attr("href", link);
-                    row.append($("<td></td>").html(linkElem));
-                } else {
-                    row.append($("<td></td>").html("<i>not stored</i>"));
-                }
-
-                historyTable.append(row);
+            var row = $("<tr></tr>");
+            if (format != null)
+                row.append($("<td></td>").html(format));
+            else
+                row.append($("<td></td>").html("&nbsp;"));
+            if (tournament != null)
+                row.append($("<td></td>").html(tournament));
+            else
+                row.append($("<td></td>").html("&nbsp;"));
+            if (deck != null)
+                row.append($("<td></td>").html(deck));
+            else
+                row.append($("<td></td>").html("&nbsp;"));
+            row.append($("<td></td>").html(winner));
+            row.append($("<td></td>").html(loser));
+            row.append($("<td></td>").html(winReason));
+            row.append($("<td></td>").html(loseReason));
+            row.append($("<td></td>").html(endTime));
+            if (gameRecordingId != null) {
+                var link = "game.html?replayId=" + playerId + "$" + gameRecordingId;
+                var linkElem = $("<a>replay game</a>");
+                linkElem.attr("href", link);
+                row.append($("<td></td>").html(linkElem));
+            } else {
+                row.append($("<td></td>").html("<i>not stored</i>"));
             }
 
-            $("#gameHistory").append(historyTable);
+            historyTable.append(row);
         }
+
+        $("#gameHistory").append(historyTable);
     }
 }

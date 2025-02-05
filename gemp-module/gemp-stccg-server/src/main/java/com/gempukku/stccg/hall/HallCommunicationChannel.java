@@ -10,7 +10,6 @@ import java.util.*;
 public class HallCommunicationChannel implements LongPollableResource {
     private final int _channelNumber;
     private long _lastConsumed;
-    private String _lastDailyMessage;
     private final Map<String, Map<String, String>> _tournamentQueuePropsOnClient = new LinkedHashMap<>();
     private final Map<String, Map<String, String>> _tournamentPropsOnClient = new LinkedHashMap<>();
     private final Map<String, Map<String, String>> _tablePropsOnClient = new LinkedHashMap<>();
@@ -75,6 +74,7 @@ public class HallCommunicationChannel implements LongPollableResource {
         getDifferences(_tournamentPropsOnClient, tournamentsOnServer, itemsToAddToHallElem, "tournaments");
         getDifferences(_tablePropsOnClient, tablesOnServer, itemsToAddToHallElem, "tables");
 
+        String _lastDailyMessage;
         if (itemsToAddToHallElem.get("messageOfTheDay") instanceof String messageText)
                 _lastDailyMessage = messageText;
 

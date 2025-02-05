@@ -134,6 +134,7 @@ public class ServerObjects {
     public final IgnoreDAO getIgnoreDAO() { return _ignoreDAO; }
     public final DeckDAO getDeckDAO() { return _deckDAO; }
     public final PlayerDAO getPlayerDAO() { return _playerDAO; }
+    public final GameHistoryDAO getGameHistoryDAO() { return _gameHistoryDAO; }
     public final TransferDAO getTransferDAO() { return _transferDAO; }
     final IpBanDAO getIpBanDAO() { return _ipBanDAO; }
     public final CacheManager getCacheManager() { return _cacheManager; }
