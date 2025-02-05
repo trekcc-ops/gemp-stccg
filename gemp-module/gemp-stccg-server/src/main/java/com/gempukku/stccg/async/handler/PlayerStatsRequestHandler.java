@@ -6,13 +6,12 @@ import com.gempukku.stccg.database.PlayerStatistic;
 import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import java.net.HttpURLConnection;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayerStatsRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
@@ -26,42 +25,33 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             User resourceOwner = getUserIdFromCookiesOrUri(request);
 
-            List<PlayerStatistic> casualStatistics = _gameHistoryService.getCasualPlayerStatistics(resourceOwner);
-            List<PlayerStatistic> competitiveStatistics =
-                    _gameHistoryService.getCompetitivePlayerStatistics(resourceOwner);
+            Map<Object, Object> response = new HashMap<>();
 
-            Document doc = createNewDoc();
-            Element stats = doc.createElement("playerStats");
 
-            Element casual = doc.createElement("casual");
-            appendStatistics(casualStatistics, doc, casual);
-            stats.appendChild(casual);
+            List<Map<Object, Object>> casualStatistics = new ArrayList<>();
+            for (PlayerStatistic statistic : _gameHistoryService.getCasualPlayerStatistics(resourceOwner)) {
+                Map<Object, Object> statistics = new HashMap<>();
+                statistics.put("deckName", statistic.getDeckName());
+                statistics.put("format", statistic.getFormatName());
+                statistics.put("wins", statistic.getWins());
+                statistics.put("losses", statistic.getLosses());
+                casualStatistics.add(statistics);
+            }
+            response.put("casual", casualStatistics);
 
-            Element competitive = doc.createElement("competitive");
-            appendStatistics(competitiveStatistics, doc, competitive);
-            stats.appendChild(competitive);
-
-            doc.appendChild(stats);
-
-            responseWriter.writeXmlResponseWithNoHeaders(doc);
+            List<Map<Object, Object>> competitiveStatistics = new ArrayList<>();
+            for (PlayerStatistic statistic : _gameHistoryService.getCompetitivePlayerStatistics(resourceOwner)) {
+                Map<Object, Object> statistics = new HashMap<>();
+                statistics.put("deckName", statistic.getDeckName());
+                statistics.put("format", statistic.getFormatName());
+                statistics.put("wins", statistic.getWins());
+                statistics.put("losses", statistic.getLosses());
+                casualStatistics.add(statistics);
+            }
+            response.put("competitive", competitiveStatistics);
+            responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(response));
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        }
-    }
-
-    private static void appendStatistics(Iterable<? extends PlayerStatistic> statistics, Document doc, Node type) {
-        for (PlayerStatistic casualStatistic : statistics) {
-            Element entry = doc.createElement("entry");
-            int wins = casualStatistic.getWins();
-            int losses = casualStatistic.getLosses();
-
-            entry.setAttribute("deckName", casualStatistic.getDeckName());
-            entry.setAttribute("format", casualStatistic.getFormatName());
-            entry.setAttribute("wins", String.valueOf(wins));
-            entry.setAttribute("losses", String.valueOf(losses));
-            entry.setAttribute("percentage",
-                    new DecimalFormat("#0.0%").format(1.0f * wins / (losses + wins)));
-            type.appendChild(entry);
         }
     }
 

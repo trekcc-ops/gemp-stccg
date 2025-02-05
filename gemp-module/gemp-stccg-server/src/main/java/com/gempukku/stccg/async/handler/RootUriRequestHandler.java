@@ -37,7 +37,7 @@ public class RootUriRequestHandler implements UriRequestHandler {
         requestHandlers.put(SERVER_CONTEXT_PATH + "league", new LeagueRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "login", new LoginRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "merchant", new MerchantRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "player", new PlayerInfoRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "playerInfo", new PlayerInfoRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "register", new RegisterRequestHandler(objects));
