@@ -237,17 +237,17 @@ export default class GempHallUI {
 
 	updateDecks() {
 		var that = this;
-		this.comm.getDecks(function (xml) {
-			var count = xml.documentElement.getElementsByTagName("deck").length;
+		this.comm.getDecks(function (json) {
+			var count = json.length;
 			if(count == 0)
 			{
-				that.comm.getLibraryDecks(function(xml) {
-					that.processDecks(xml);
+				that.comm.getLibraryDecks(function(json) {
+					that.processDecks(json);
 				});
 			}
 			else
 			{
-				that.processDecks(xml);
+				that.processDecks(json);
 			}
 			
 		});
@@ -263,27 +263,22 @@ export default class GempHallUI {
 		}
 	}
 
-	processDecks(xml) {
-		var root = xml.documentElement;
-		
+	processDecks(json) {
 		function formatDeckName(formatName, deckName)
 		{
 			return "[" + formatName + "] - " + deckName;
 		}
-		if (root.tagName == "decks") {
-			this.decksSelect.html("");
-			var decks = root.getElementsByTagName("deck");
-			for (var i = 0; i < decks.length; i++) {
-				var deck = decks[i];
-				var deckName = deck.childNodes[0].nodeValue;
-				var formatName = deck.getAttribute("targetFormat");
-				var deckElem = $("<option/>")
-						.attr("value", deckName)
-						.text(formatDeckName(formatName, deckName));
-				this.decksSelect.append(deckElem);
-			}
-			this.decksSelect.css("display", "");
-		}
+        this.decksSelect.html("");
+        for (var i = 0; i < json.length; i++) {
+            var deck = json[i];
+            var deckName = deck.deckName;
+            var formatName = deck.targetFormat;
+            var deckElem = $("<option/>")
+                    .attr("value", deckName)
+                    .text(formatDeckName(formatName, deckName));
+            this.decksSelect.append(deckElem);
+        }
+        this.decksSelect.css("display", "");
 	}
 
 	animateRowUpdate(rowSelector) {

@@ -1,30 +1,27 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.chat.*;
+import com.gempukku.stccg.chat.ChatCommandErrorException;
+import com.gempukku.stccg.chat.ChatRoomMediator;
+import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ChatRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
@@ -42,10 +39,15 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
     @Override
     public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
             throws Exception {
-        if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
-            getMessages(request, URLDecoder.decode(uri.substring(1), StandardCharsets.UTF_8), responseWriter);
-        } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
-            postMessages(request, URLDecoder.decode(uri.substring(1), StandardCharsets.UTF_8), responseWriter);
+        if (uri.startsWith("/")) {
+            String roomName = URLDecoder.decode(uri.substring(1), StandardCharsets.UTF_8);
+            if (request.method() == HttpMethod.GET) {
+                getMessages(request, roomName, responseWriter);
+            } else if (request.method() == HttpMethod.POST) {
+                postMessages(request, roomName, responseWriter);
+            } else {
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+            }
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
@@ -126,8 +128,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         public final synchronized void processIfNotProcessed() {
             if (!processed) {
                 try {
-                    Document doc = serializeChatRoomData(chatRoom, user, room);
-                    responseWriter.writeXmlResponseWithNoHeaders(doc);
+                    responseWriter.writeJsonResponse(serializeChatRoom(chatRoom, user, room));
                 } catch (SubscriptionExpiredException exp) {
                     logAndWriteError(HttpURLConnection.HTTP_GONE, "chat poller", exp); // 410
                 } catch (Exception exp) {
@@ -151,38 +152,26 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         try {
             final boolean admin = resourceOwner.hasType(User.Type.ADMIN);
             chatRoom.joinUser(resourceOwner.getName(), admin);
-            Document doc = serializeChatRoomData(chatRoom, resourceOwner, room);
-            responseWriter.writeXmlResponseWithNoHeaders(doc);
+            responseWriter.writeJsonResponse(serializeChatRoom(chatRoom, resourceOwner, room));
         } catch (PrivateInformationException exp) {
             logHttpError(LOGGER, HttpURLConnection.HTTP_FORBIDDEN, request.uri(), exp);
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
         }
     }
 
-    private Document serializeChatRoomData(ChatRoomMediator chatRoom, User user, String room)
-            throws ParserConfigurationException, SubscriptionExpiredException {
-        List<ChatMessage> chatMessages = chatRoom.getChatRoomListener(user).consumeMessages();
-        Document doc = createNewDoc();
-        Element chatElem = doc.createElement("chat");
-        chatElem.setAttribute("roomName", room);
-        doc.appendChild(chatElem);
-
-        for (ChatMessage chatMessage : chatMessages) {
-            Element messageElem = chatMessage.serializeForDocument(doc, FormParameter.message.name());
-            chatElem.appendChild(messageElem);
-        }
+    private String serializeChatRoom(ChatRoomMediator chatRoom, User user, String roomName)
+            throws SubscriptionExpiredException, JsonProcessingException {
+        Map<Object, Object> chatMap = new HashMap<>();
+        chatMap.put("roomName", roomName);
+        chatMap.put("messages", chatRoom.getChatRoomListener(user).consumeMessages());
 
         Collection<String> users = new TreeSet<>(new CaseInsensitiveStringComparator());
         boolean userIsAdmin = user.hasType(User.Type.ADMIN);
         for (String userInRoom : chatRoom.getUsersInRoom(userIsAdmin))
             users.add(formatPlayerNameForChatList(userInRoom));
+        chatMap.put("users", users);
 
-        for (String userInRoom : users) {
-            Element userElem = doc.createElement("user");
-            userElem.appendChild(doc.createTextNode(userInRoom));
-            chatElem.appendChild(userElem);
-        }
-        return doc;
+        return _jsonMapper.writeValueAsString(chatMap);
     }
 
 

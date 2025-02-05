@@ -594,7 +594,7 @@ export default class GempClientCommunication {
                 participantId:getUrlParam("participantId")},
             success:callback,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
@@ -608,7 +608,7 @@ export default class GempClientCommunication {
             success:callback,
             timeout: 20000,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 

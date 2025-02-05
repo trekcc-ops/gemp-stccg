@@ -1,7 +1,6 @@
 package com.gempukku.stccg.chat;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ChatMessage {
     private final String _from;
@@ -17,19 +16,24 @@ public class ChatMessage {
         _fromAdmin = fromAdmin;
     }
 
+    @JsonProperty("fromUser")
     public final String getFrom() {
         return _from;
     }
 
+    @JsonProperty("timestamp")
+    public final String getTimestamp() {
+        return _messageDate;
+    }
+
+    @JsonProperty("userIsAdmin")
     final boolean isFromAdmin() {
         return _fromAdmin;
     }
 
-    public Element serializeForDocument(Document doc, String elemName) {
-        Element messageElem = doc.createElement(elemName);
-        messageElem.setAttribute("from", _from);
-        messageElem.setAttribute("date", _messageDate);
-        messageElem.appendChild(doc.createTextNode(_message));
-        return messageElem;
+    @JsonProperty("messageText")
+    final String getMessageText() {
+        return _message;
     }
+
 }
