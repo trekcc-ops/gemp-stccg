@@ -265,7 +265,7 @@ export default class GempClientCommunication {
         });
     }
 
-    getGameCardModifiers(cardId, callback, errorMap) {
+    getCardInfo(cardId, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/game/" + getUrlParam("gameId") + "/cardInfo",

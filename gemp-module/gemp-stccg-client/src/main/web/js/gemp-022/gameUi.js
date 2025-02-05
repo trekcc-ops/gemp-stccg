@@ -837,7 +837,7 @@ export default class GameTableUI {
 
     getCardModifiersFunction(cardId, func) {
         var that = this;
-        this.communication.getGameCardModifiers(cardId,
+        this.communication.getCardInfo(cardId,
             function (html) {
                 that.setCardModifiers(html);
             });
