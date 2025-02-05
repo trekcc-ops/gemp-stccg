@@ -1,7 +1,6 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.AbstractServer;
-import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
@@ -22,12 +21,12 @@ import com.gempukku.stccg.game.GameResultListener;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.tournament.*;
+import org.apache.commons.lang.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -337,12 +336,12 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public final void signupUserForHall(User player, HallChannelVisitor hallChannelVisitor) {
+    public final HallCommunicationChannel signupUserForHallAndGetChannel(User player) {
         _hallDataAccessLock.readLock().lock();
         try {
             HallCommunicationChannel channel = new HallCommunicationChannel(_nextChannelNumber++);
-            channel.processCommunicationChannel(this, player, hallChannelVisitor);
             _playerChannelCommunication.put(player, channel);
+            return channel;
         } finally {
             _hallDataAccessLock.readLock().unlock();
         }
@@ -367,36 +366,55 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    final void processHall(User player, HallInfoVisitor visitor) {
+
+    final void processHall(User player, Map<String, Map<String, String>> tournamentQueuesOnServer,
+                           Set<String> playedGamesOnServer, Map<String, Map<String, String>> tablesOnServer,
+                           Map<String, Map<String, String>> tournamentsOnServer, Map<Object, Object> itemsToSerialize) {
         final boolean isAdmin = player.isAdmin();
         _hallDataAccessLock.readLock().lock();
         try {
-            ZonedDateTime now = ZonedDateTime.now();
-            String currentTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            visitor.serverTime(currentTime);
-
+            String currentTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            itemsToSerialize.put("serverTime", currentTime);
             if (_messageOfTheDay != null)
-                visitor.setDailyMessage(_messageOfTheDay);
+                itemsToSerialize.put("messageOfTheDay", _messageOfTheDay);
 
-            tableHolder.processTables(isAdmin, player, visitor);
+            tableHolder.processTables(isAdmin, player, playedGamesOnServer, tablesOnServer);
 
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
                 GameFormat gameFormat = _formatLibrary.get(tournamentQueue.getFormat());
-                visitor.visitTournamentQueue(tournamentQueue, tournamentQueueKey, gameFormat.getName(), player);
+
+                Map<String, String> props = new HashMap<>();
+                props.put("cost", String.valueOf(tournamentQueue.getCost()));
+                props.put("collection", tournamentQueue.getCollectionType().getFullName());
+                props.put("format", gameFormat.getName());
+                props.put("queueName", tournamentQueue.getTournamentQueueName());
+                props.put("playerCount", String.valueOf(tournamentQueue.getPlayerCount()));
+                props.put("prizes", tournamentQueue.getPrizesDescription());
+                props.put("system", tournamentQueue.getPairingDescription());
+                props.put("start", tournamentQueue.getStartCondition());
+                props.put("signedUp", String.valueOf(tournamentQueue.isPlayerSignedUp(player.getName())));
+                props.put("joinable", String.valueOf(tournamentQueue.isJoinable()));
+
+                tournamentQueuesOnServer.put(tournamentQueueKey, props);
             }
 
             for (Map.Entry<String, Tournament> tournamentEntry : _runningTournaments.entrySet()) {
                 String tournamentKey = tournamentEntry.getKey();
                 Tournament tournament = tournamentEntry.getValue();
-                visitor.visitTournament(
-                        tournamentKey, tournament.getCollectionType().getFullName(),
-                        _formatLibrary.get(tournament.getFormat()).getName(), tournament.getTournamentName(),
-                        tournament.getPlayOffSystem(), tournament.getTournamentStage().getHumanReadable(),
-                        tournament.getCurrentRound(), tournament.getPlayersInCompetitionCount(),
-                        tournament.isPlayerInCompetition(player.getName())
-                );
+
+                Map<String, String> props = new HashMap<>();
+                props.put("collection", tournament.getCollectionType().getFullName());
+                props.put("format", _formatLibrary.get(tournament.getFormat()).getName());
+                props.put("name", tournament.getTournamentName());
+                props.put("system", tournament.getPlayOffSystem());
+                props.put("stage", tournament.getTournamentStage().getHumanReadable());
+                props.put("round", String.valueOf(tournament.getCurrentRound()));
+                props.put("playerCount", String.valueOf(tournament.getPlayersInCompetitionCount()));
+                props.put("signedUp", String.valueOf(tournament.isPlayerInCompetition(player.getName())));
+
+                tournamentsOnServer.put(tournamentKey, props);
             }
         } finally {
             _hallDataAccessLock.readLock().unlock();

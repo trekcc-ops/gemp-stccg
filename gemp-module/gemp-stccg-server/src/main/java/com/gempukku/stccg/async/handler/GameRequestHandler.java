@@ -19,7 +19,6 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -222,11 +221,9 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), getAutoPassPhases(request));
 
-        Document doc = createNewDoc();
-
         // may throw 403 error
-        gameMediator.signupUserForGame(resourceOwner);
-        String xmlString = gameMediator.serializeEventsToString(gameMediator.getCommunicationChannel(resourceOwner));
+        GameCommunicationChannel channel = gameMediator.signupUserForGameAndGetChannel(resourceOwner);
+        String xmlString = gameMediator.serializeEventsToString(channel);
         responseWriter.writeXmlResponseWithNoHeaders(xmlString);
     }
 

@@ -178,7 +178,8 @@ class TableHolder {
         }
     }
 
-    final void processTables(boolean isAdmin, User player, HallInfoVisitor visitor) {
+    final void processTables(boolean isAdmin, User player, Set<String> playedGamesOnServer,
+                             Map<String, Map<String, String>> tablesOnServer) {
 
         // First waiting
         for (Map.Entry<String, GameTable> tableInformation : awaitingTables.entrySet()) {
@@ -188,8 +189,10 @@ class TableHolder {
             List<String> players = (table.getGameSettings().getLeague() != null) ?
                     Collections.emptyList() : table.getPlayerNames();
 
-            if (isAdmin || isNoIgnores(players, player.getName()))
-                visitor.visitTable(table, tableId, player);
+            if (isAdmin || isNoIgnores(players, player.getName())) {
+                Map<String, String> serializedTable = table.serializeForUser(player);
+                tablesOnServer.put(tableId, serializedTable);
+            }
         }
 
         // Then non-finished
@@ -205,9 +208,10 @@ class TableHolder {
                         runningTable.setAsFinished();
                         finishedTables.put(runningGame.getKey(), runningTable);
                     } else {
-                        visitor.visitTable(runningTable, runningGame.getKey(), player);
+                        Map<String, String> serializedTable = runningTable.serializeForUser(player);
+                        tablesOnServer.put(runningGame.getKey(), serializedTable);
                         if (cardGameMediator.getPlayersPlaying().contains(player.getName()))
-                            visitor.runningPlayerGame(cardGameMediator.getGameId());
+                            playedGamesOnServer.add(cardGameMediator.getGameId());
                     }
                 }
             }
@@ -218,8 +222,10 @@ class TableHolder {
             final GameTable runningTable = nonPlayingGame.getValue();
             CardGameMediator cardGameMediator = runningTable.getMediator();
             if (cardGameMediator != null) {
-                if (isAdmin || isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))
-                    visitor.visitTable(runningTable, nonPlayingGame.getKey(), player);
+                if (isAdmin || isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName())) {
+                    Map<String, String> serializedTable = runningTable.serializeForUser(player);
+                    tablesOnServer.put(nonPlayingGame.getKey(), serializedTable);
+                }
             }
         }
     }

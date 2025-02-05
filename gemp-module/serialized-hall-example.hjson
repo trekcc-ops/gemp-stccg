@@ -1,0 +1,85 @@
+/* This data is saved as JSON (never HJSON). HJSON used in this file so that comments can be included without
+    triggering syntax errors/warnings in the IDE. */
+
+{
+    "currency": 100, // int value
+        // Formats is only included when the client first loads the hall
+    "formats": [
+        {
+            "type": "st1emoderncomplete",
+            "name": "1E Modern Complete"
+        },
+        {
+            "type": "st2e",
+            "name": "2E All"
+        }
+    ],
+    "channelNumber": "2", // string value
+    "serverTime": "2025-02-05 17:24", // string value
+    "messageOfTheDay": "Welcome to Gemp",
+    "queues": [
+        {
+            "id": "5", // string value
+            "action": "add", // This is either add, remove, or update
+                // Queue properties are outlined in HallServer.processHall method
+                // Properties only included if the action is add or update
+                // All values are strings
+            "cost": ...,
+            "collection": ...,
+            "format": ...,
+            "queueName": ...,
+            "playerCount": ...,
+            "prizes": ...,
+            "system": ...,
+            "start": ...,
+            "signedUp": ...,
+            "joinable": ...
+        },
+        // each tournament queue that has been added, removed, or updated since the last server sync will be included
+    ]
+    "tournaments": [
+        {
+            "id": "5", // string value
+            "action": "add", // This is either add, remove, or update
+                // Tournament properties are outlined in HallServer.processHall method
+                // Properties only included if the action is add or update
+                // All values are strings
+            "collection": ...,
+            "format": ...,
+            "name": ...,
+            "system": ...,
+            "stage": ...,
+            "round": ...,
+            "playerCount": ...,
+            "signedUp": ...
+        },
+        // each tournament that has been added, removed, or updated since the last server sync will be included
+    ]
+    "tables": [
+        {
+            "id": "5", // string value
+            "action": "add", // This is either add, remove, or update
+                // Table properties are outlined in GameTable.serializeForUser method
+                // Properties only included if the action is add or update
+                // All values are strings
+            "gameId": ...,
+            "watchable": ...,
+            "status": ...,
+            "statusDescription": ...,
+            "gameType": ...,
+            "format": ...,
+            "userDescription": ...,
+            "isPrivate": ...,
+            "isInviteOnly": ...,
+            "tournament": ...,
+            "players": ...,
+            "playing": ...,
+            "winner": ...
+        },
+        // each table that has been added, removed, or updated since the last server sync will be included
+    ]
+    "newGameIds": [ // list of games that have been added since the last sync with the server
+        "5",
+        "6"
+    ]
+}

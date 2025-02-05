@@ -336,6 +336,29 @@ public abstract class CardGameMediator {
         }
     }
 
+    public final GameCommunicationChannel signupUserForGameAndGetChannel(User player)
+            throws PrivateInformationException {
+        String playerName = player.getName();
+        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
+            throw new PrivateInformationException();
+        GameCommunicationChannel channel;
+        int channelNumber;
+
+        _readLock.lock();
+        try {
+            channelNumber = _channelNextIndex;
+            _channelNextIndex++;
+
+            channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
+            _communicationChannels.put(playerName, channel);
+            getGame().addGameStateListener(playerName, channel);
+            return channel;
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
+
     private void startClocksForUsersPendingDecision() {
         long currentTime = System.currentTimeMillis();
         Set<String> users = getGame().getUsersPendingDecision();

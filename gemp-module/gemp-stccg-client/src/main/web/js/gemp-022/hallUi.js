@@ -179,16 +179,16 @@ export default class GempHallUI {
 		var that = this;
 
 		this.comm.getHall(
-			function(xml) {
-				that.processHall(xml);
+			function(json) {
+				that.processHall(json);
 			}, this.hallErrorMap());
 	}
 
 	updateHall() {
 		var that = this;
 		this.comm.updateHall(
-			function (xml) {
-				that.processHall(xml);
+			function (json) {
+				that.processHall(json);
 			}, this.hallChannelId, this.hallErrorMap());
 	}
 
@@ -303,360 +303,362 @@ export default class GempHallUI {
 		});
 	}
 
-	processHall(xml) {
+	processHall(jsonFromServer) {
 		var that = this;
-		
-		var root = xml.documentElement;
-		if (root.tagName == "hall") {
-			this.hallChannelId = root.getAttribute("channelNumber");
+		this.hallChannelId = jsonFromServer.channelNumber;
+		this.pocketValue = jsonFromServer.currency;
 
-			var currency = parseInt(root.getAttribute("currency"));
-			if (currency != this.pocketValue) {
-				this.pocketValue = currency;
-			}
+        if (jsonFromServer.messageOfTheDay != null) {
+            $("#motd").html("<b>MOTD:</b> " + jsonFromServer.messageOfTheDay);
+        }
 
-			var motd = root.getAttribute("messageOfTheDay");
-			if (motd != null)
-				$("#motd").html("<b>MOTD:</b> " + motd);
+        if (jsonFromServer.serverTime != null) {
+            $(".serverTime").text("Server time: " + jsonFromServer.serverTime);
+        }
 
-			var serverTime = root.getAttribute("serverTime");
-			if (serverTime != null)
-				$(".serverTime").text("Server time: " + serverTime);
+        that.updateTournamentQueues(jsonFromServer.queues);
+        that.updateTournaments(jsonFromServer.tournaments);
+        that.updateTables(jsonFromServer.tables);
 
-			var queues = root.getElementsByTagName("queue");
-			for (var i = 0; i < queues.length; i++) {
-				var queue = queues[i];
-				var id = queue.getAttribute("id");
-				var action = queue.getAttribute("action");
-				if (action == "add" || action == "update") {
-					var actionsField = $("<td></td>");
+        $(".count", $(".eventHeader.queues")).html("(" + ($("tr", $("table.queues")).length - 1) + ")");
+        $(".count", $(".eventHeader.tournaments")).html("(" + ($("tr", $("table.tournaments")).length - 1) + ")");
+        $(".count", $(".eventHeader.waitingTables")).html("(" + ($("tr", $("table.waitingTables")).length - 1) + ")");
+        $(".count", $(".eventHeader.playingTables")).html("(" + ($("tr", $("table.playingTables")).length - 1) + ")");
+        $(".count", $(".eventHeader.finishedTables")).html("(" + ($("tr", $("table.finishedTables")).length - 1) + ")");
 
-					var joined = queue.getAttribute("signedUp");
-					if (joined != "true" && queue.getAttribute("joinable") == "true") {
-						var but = $("<button>Join Queue</button>");
-						$(but).button().click((
-							function(queueId) {
-								return function () {
-									var deck = that.decksSelect.val();
-									if (deck != null)
-										that.comm.joinQueue(queueId, deck, function (xml) {
-											that.processResponse(xml);
-										});
-								};
-							}
-							)(id));
-						actionsField.append(but);
-					} else if (joined == "true") {
-						var but = $("<button>Leave Queue</button>");
-						$(but).button().click((
-							function(queueId) {
-								return function() {
-									that.comm.leaveQueue(queueId, function (xml) {
-										that.processResponse(xml);
-									});
-								}
-							})(id));
-						actionsField.append(but);
-					}
+        var games = jsonFromServer.newGameIds;
+        for (var i=0; i< games.length; i++) {
+            var waitingGameId = games[i];
+            var participantId = getUrlParam("participantId");
+            var participantIdAppend = "";
+            if (participantId != null)
+                participantIdAppend = "&participantId=" + participantId;
+            window.open("/gemp-module/game.html?gameType=" + gameType + "&gameId=" + waitingGameId + participantIdAppend, "_blank");
+        }
+        if (games.length > 0) {
+            let audio = new Audio(fanfareAudio);
+            // Turned off this sound because it was annoying :)
+            //audio.play();
+        }
 
-					var row = $("<tr class='queue" + id + "'><td>" + queue.getAttribute("format") + "</td>" +
-						"<td>" + queue.getAttribute("collection") + "</td>" +
-						"<td>" + queue.getAttribute("queue") + "</td>" +
-						"<td>" + queue.getAttribute("start") + "</td>" +
-						"<td>" + queue.getAttribute("system") + "</td>" +
-						"<td>" + queue.getAttribute("playerCount") + "</td>" +
-						"<td align='right'>" + formatPrice(queue.getAttribute("cost")) + "</td>" +
-						"<td>" + queue.getAttribute("prizes") + "</td>" +
-						"</tr>");
+        if (!this.supportedFormatsInitialized) {
+            var formats = jsonFromServer.formats;
+            for (var i = 0; i < formats.length; i++) {
+                var format = formats[i].name;
+                var type = formats[i].type;
+                var item = "<option value='" + type + "'>" + format + "</option>"
+                this.supportedFormatsSelect.append(item);
+            }
+            this.supportedFormatsInitialized = true;
+        }
 
-					row.append(actionsField);
+        that.createTableButton.removeAttr("disabled");
+        that.createTableButton.removeClass("ui-state-disabled")
 
-					if (action == "add") {
-						$("table.queues", this.tablesDiv)
-							.append(row);
-					} else if (action == "update") {
-						$(".queue" + id, this.tablesDiv).replaceWith(row);
-					}
-
-					this.animateRowUpdate(".queue" + id);
-				} else if (action == "remove") {
-					$(".queue" + id, this.tablesDiv).remove();
-				}
-			}
-
-			var tournaments = root.getElementsByTagName("tournament");
-			for (var i = 0; i < tournaments.length; i++) {
-				var tournament = tournaments[i];
-				var id = tournament.getAttribute("id");
-				var action = tournament.getAttribute("action");
-				if (action == "add" || action == "update") {
-					var actionsField = $("<td></td>");
-
-					var joined = tournament.getAttribute("signedUp");
-					if (joined == "true") {
-						var but = $("<button>Drop from tournament</button>");
-						$(but).button().click((
-							function(tournamentId) {
-								return function () {
-									that.comm.dropFromTournament(tournamentId, function (xml) {
-										that.processResponse(xml);
-									});
-								};
-							}
-							)(id));
-						actionsField.append(but);
-					}
-
-					var row = $("<tr class='tournament" + id + "'><td>" + tournament.getAttribute("format") + "</td>" +
-						"<td>" + tournament.getAttribute("collection") + "</td>" +
-						"<td>" + tournament.getAttribute("name") + "</td>" +
-						"<td>" + tournament.getAttribute("system") + "</td>" +
-						"<td>" + tournament.getAttribute("stage") + "</td>" +
-						"<td>" + tournament.getAttribute("round") + "</td>" +
-						"<td>" + tournament.getAttribute("playerCount") + "</td>" +
-						"</tr>");
-
-					row.append(actionsField);
-
-					if (action == "add") {
-						$("table.tournaments", this.tablesDiv)
-							.append(row);
-					} else if (action == "update") {
-						$(".tournament" + id, this.tablesDiv).replaceWith(row);
-					}
-
-					this.animateRowUpdate(".tournament" + id);
-				} else if (action == "remove") {
-					$(".tournament" + id, this.tablesDiv).remove();
-				}
-			}
-
-			var tables = root.getElementsByTagName("table");
-			for (var i = 0; i < tables.length; i++) {
-				var table = tables[i];
-				var id = table.getAttribute("id");
-				var action = table.getAttribute("action");
-				if (action == "add" || action == "update") {
-					var status = table.getAttribute("status");
-
-					var gameId = table.getAttribute("gameId");
-					var statusDescription = table.getAttribute("statusDescription");
-					var watchable = table.getAttribute("watchable");
-					var playersAttr = table.getAttribute("players");
-					var gameType = table.getAttribute("gameType");
-					var formatName = table.getAttribute("format");
-					var tournamentName = table.getAttribute("tournament");
-					var userDesc = table.getAttribute("userDescription");
-					var isPrivate = (table.getAttribute("isPrivate") === "true");
-					var isInviteOnly = (table.getAttribute("isInviteOnly") === "true");
-					var inviteForYou = isInviteOnly && userDesc === chat.userName;
-					var players = new Array();
-					if (playersAttr.length > 0)
-						players = playersAttr.split(",");
-					var playing = table.getAttribute("playing");
-					var winner = table.getAttribute("winner");
-
-					var row = $("<tr class='table" + id + "'></tr>");
-
-					row.append("<td>" + formatName + "</td>");
-					var name = "<td>" + tournamentName;
-					if(isPrivate) 
-					{
-						if(!!userDesc)
-						{
-							if(isInviteOnly)
-							{
-								name += " - <i>Private match for user '" + userDesc + "'.";
-							}
-							else 
-							{
-								name += " - <i>Private match: [" + userDesc + "]</i>";
-							}
-						}
-						else {
-							name += " - <i>Private.</i>";
-						}
-					}
-					else 
-					{
-						if(!!userDesc)
-						{
-							if(isInviteOnly)
-							{
-								name += " - <i>Match for user '" + userDesc + "'.";
-							}
-							else 
-							{
-								name += " - <i>[" + userDesc + "]</i>";
-							}
-						}
-					}
-					
-					name += "</td>";
-					row.append(name);
-					row.append("<td>" + statusDescription + "</td>");
-
-					var playersStr = "";
-					for (var playerI = 0; playerI < players.length; playerI++) {
-						if (playerI > 0)
-							playersStr += ", ";
-						playersStr += players[playerI];
-					}
-					row.append("<td>" + playersStr + "</td>");
-
-					var lastField = $("<td></td>");
-					if (status == "WAITING") {
-						if (playing == "true") {
-							var that = this;
-
-							var but = $("<button>Leave Table</button>");
-							$(but).button().click((
-								function(tableId) {
-									return function() {
-										that.comm.leaveTable(tableId);
-									};
-								})(id));
-							lastField.append(but);
-						} 
-						else if(!isInviteOnly || inviteForYou) {
-							var that = this;
-
-							var but = $("<button>Join Table</button>");
-							$(but).button().click((
-								function(tableId) {
-									return function() {
-										var deck = that.decksSelect.val();
-										if (deck != null)
-											that.comm.joinTable(tableId, deck, function (xml) {
-												that.processResponse(xml);
-											});
-									};
-								})(id));
-							lastField.append(but);
-						}
-					} else if (status == "PLAYING") {
-						if (playing == "true") {
-							var participantId = getUrlParam("participantId");
-							var participantIdAppend = "";
-							if (participantId != null)
-								participantIdAppend = "&participantId=" + participantId;
-
-							var but = $("<button>Play Match</button>");
-							var link = $("<a href='game.html?gameType=" + gameType + "&gameId=" + gameId + participantIdAppend + "'></a>");
-							link.append(but);
-							but.button();
-							lastField.append(link);
-						} else if (watchable == "true") {
-							var participantId = getUrlParam("participantId");
-							var participantIdAppend = "";
-							if (participantId != null)
-								participantIdAppend = "&participantId=" + participantId;
-
-							var but = $("<button>Spectate</button>");
-							var link = $("<a target='_blank' href='game.html?gameType=" + gameType + "&gameId=" + gameId + participantIdAppend + "'></a>");
-							link.append(but);
-							but.button();
-							lastField.append(link);
-						}
-					} else if (status == "FINISHED") {
-						if (winner != null) {
-							lastField.append(winner);
-						}
-					}
-
-					row.append(lastField);
-
-					if (action == "add") {
-						if (status == "WAITING") {
-							$("table.waitingTables", this.tablesDiv)
-								.append(row);
-						} else if (status == "PLAYING") {
-							$("table.playingTables", this.tablesDiv)
-								.append(row);
-						} else if (status == "FINISHED") {
-							$("table.finishedTables", this.tablesDiv)
-								.append(row);
-						}
-					} else if (action == "update") {
-						if (status == "WAITING") {
-							if ($(".table" + id, $("table.waitingTables")).length > 0) {
-								$(".table" + id, this.tablesDiv).replaceWith(row);
-							} else {
-								$(".table" + id, this.tablesDiv).remove();
-								$("table.waitingTables", this.tablesDiv)
-									.append(row);
-							}
-						} else if (status == "PLAYING") {
-							if ($(".table" + id, $("table.playingTables")).length > 0) {
-								$(".table" + id, this.tablesDiv).replaceWith(row);
-							} else {
-								$(".table" + id, this.tablesDiv).remove();
-								$("table.playingTables", this.tablesDiv)
-									.append(row);
-							}
-						} else if (status == "FINISHED") {
-							if ($(".table" + id, $("table.finishedTables")).length > 0) {
-								$(".table" + id, this.tablesDiv).replaceWith(row);
-							} else {
-								$(".table" + id, this.tablesDiv).remove();
-								$("table.finishedTables", this.tablesDiv)
-									.append(row);
-							}
-						}
-
-						this.animateRowUpdate(".table" + id);
-					}
-
-					if (playing == "true")
-						row.addClass("played");
-					
-					if(inviteForYou)
-						row.addClass("privateForPlayer");
-				} else if (action == "remove") {
-					$(".table" + id, this.tablesDiv).remove();
-				}
-			}
-
-			$(".count", $(".eventHeader.queues")).html("(" + ($("tr", $("table.queues")).length - 1) + ")");
-			$(".count", $(".eventHeader.tournaments")).html("(" + ($("tr", $("table.tournaments")).length - 1) + ")");
-			$(".count", $(".eventHeader.waitingTables")).html("(" + ($("tr", $("table.waitingTables")).length - 1) + ")");
-			$(".count", $(".eventHeader.playingTables")).html("(" + ($("tr", $("table.playingTables")).length - 1) + ")");
-			$(".count", $(".eventHeader.finishedTables")).html("(" + ($("tr", $("table.finishedTables")).length - 1) + ")");
-
-			var games = root.getElementsByTagName("newGame");
-			for (var i=0; i<games.length; i++) {
-				var waitingGameId = games[i].getAttribute("id");
-				var participantId = getUrlParam("participantId");
-				var participantIdAppend = "";
-				if (participantId != null)
-					participantIdAppend = "&participantId=" + participantId;
-				window.open("/gemp-module/game.html?gameType=" + gameType + "&gameId=" + waitingGameId + participantIdAppend, "_blank");
-			}
-			if (games.length > 0) {
-				let audio = new Audio(fanfareAudio);
-				// Turned off this sound because it was annoying :)
-				//audio.play();
-			}
-
-			if (!this.supportedFormatsInitialized) {
-				var formats = root.getElementsByTagName("format");
-				for (var i = 0; i < formats.length; i++) {
-					var format = formats[i].childNodes[0].nodeValue;
-					var type = formats[i].getAttribute("type");
-					
-					var item = "<option value='" + type + "'>" + format + "</option>"
-					
-					this.supportedFormatsSelect.append(item);
-				}
-				this.supportedFormatsInitialized = true;
-			}
-
-			that.createTableButton.removeAttr("disabled");
-			that.createTableButton.removeClass("ui-state-disabled")
-
-			setTimeout(function () {
-				that.updateHall();
-			}, 100);
-		}
+        setTimeout(function () {
+            that.updateHall();
+        }, 100);
 	}
+
+	updateTournamentQueues(queuesJson) {
+	    var that = this;
+        for (var i = 0; i < queuesJson.length; i++) {
+            var queue = queuesJson[i];
+            var id = queue.id;
+            var action = queue.action;
+
+            if (action == "add" || action == "update") {
+                var joined = queue.signedUp;
+                var joinable = queue.joinable;
+
+                var actionsField = $("<td></td>");
+
+                if (joined != "true" && joinable == "true") {
+                    var but = $("<button>Join Queue</button>");
+                    $(but).button().click((
+                        function(queueId) {
+                            return function () {
+                                var deck = that.decksSelect.val();
+                                if (deck != null)
+                                    that.comm.joinQueue(queueId, deck, function (xml) {
+                                        that.processResponse(xml);
+                                    });
+                            };
+                        }
+                        )(id));
+                    actionsField.append(but);
+                } else if (joined == "true") {
+                    var but = $("<button>Leave Queue</button>");
+                    $(but).button().click((
+                        function(queueId) {
+                            return function() {
+                                that.comm.leaveQueue(queueId, function (xml) {
+                                    that.processResponse(xml);
+                                });
+                            }
+                        })(id));
+                    actionsField.append(but);
+                }
+
+                var row = $("<tr class='queue" + id + "'><td>" + queue.format + "</td>" +
+                    "<td>" + queue.collection + "</td>" +
+                    "<td>" + queue.queueName + "</td>" +
+                    "<td>" + queue.start + "</td>" +
+                    "<td>" + queue.system + "</td>" +
+                    "<td>" + queue.playerCount + "</td>" +
+                    "<td align='right'>" + formatPrice(queue.cost) + "</td>" +
+                    "<td>" + queue.prizes + "</td>" +
+                    "</tr>");
+
+                row.append(actionsField);
+
+                if (action == "add") {
+                    $("table.queues", this.tablesDiv)
+                        .append(row);
+                } else if (action == "update") {
+                    $(".queue" + id, this.tablesDiv).replaceWith(row);
+                }
+
+                this.animateRowUpdate(".queue" + id);
+            } else if (action == "remove") {
+                $(".queue" + id, this.tablesDiv).remove();
+            }
+        }
+	}
+
+	updateTournaments(tournamentsJson) {
+    	var that = this;
+        for (var i = 0; i < tournamentsJson.length; i++) {
+            var tournament = tournamentsJson[i];
+            var id = tournament.id;
+            var action = tournament.action;
+            if (action == "add" || action == "update") {
+                var actionsField = $("<td></td>");
+
+                var joined = tournament.signedUp;
+                if (joined == "true") {
+                    var but = $("<button>Drop from tournament</button>");
+                    $(but).button().click((
+                        function(tournamentId) {
+                            return function () {
+                                that.comm.dropFromTournament(tournamentId, function (xml) {
+                                    that.processResponse(xml);
+                                });
+                            };
+                        }
+                        )(id));
+                    actionsField.append(but);
+                }
+
+                var row = $("<tr class='tournament" + id + "'><td>" + tournament.format + "</td>" +
+                    "<td>" + tournament.collection + "</td>" +
+                    "<td>" + tournament.name + "</td>" +
+                    "<td>" + tournament.system + "</td>" +
+                    "<td>" + tournament.stage + "</td>" +
+                    "<td>" + tournament.round + "</td>" +
+                    "<td>" + tournament.playerCount + "</td>" +
+                    "</tr>");
+
+                row.append(actionsField);
+
+                if (action == "add") {
+                    $("table.tournaments", this.tablesDiv)
+                        .append(row);
+                } else if (action == "update") {
+                    $(".tournament" + id, this.tablesDiv).replaceWith(row);
+                }
+
+                this.animateRowUpdate(".tournament" + id);
+            } else if (action == "remove") {
+                $(".tournament" + id, this.tablesDiv).remove();
+            }
+        }
+    }
+
+    updateTables(tablesJson) {
+        var that = this;
+        for (var i = 0; i < tablesJson.length; i++) {
+            var table = tablesJson[i];
+            var id = table.id;
+            var action = table.action;
+            if (action == "add" || action == "update") {
+                var status = table.status;
+                var gameId = table.gameId;
+                var statusDescription = table.statusDescription;
+                var watchable = table.watchable;
+                var playersAttr = table.players;
+                var gameType = table.gameType;
+                var formatName = table.format;
+                var tournamentName = table.tournament;
+                var userDesc = table.userDescription;
+                var isPrivate = (table.isPrivate === "true");
+                var isInviteOnly = (table.isInviteOnly === "true");
+                var inviteForYou = isInviteOnly && userDesc === chat.userName;
+                var players = new Array();
+                if (playersAttr.length > 0)
+                    players = playersAttr.split(",");
+                var playing = table.playing;
+                var winner = table.winner;
+
+                var row = $("<tr class='table" + id + "'></tr>");
+
+                row.append("<td>" + formatName + "</td>");
+                var name = "<td>" + tournamentName;
+                if(isPrivate)
+                {
+                    if(!!userDesc)
+                    {
+                        if(isInviteOnly)
+                        {
+                            name += " - <i>Private match for user '" + userDesc + "'.";
+                        }
+                        else
+                        {
+                            name += " - <i>Private match: [" + userDesc + "]</i>";
+                        }
+                    }
+                    else {
+                        name += " - <i>Private.</i>";
+                    }
+                }
+                else
+                {
+                    if(!!userDesc)
+                    {
+                        if(isInviteOnly)
+                        {
+                            name += " - <i>Match for user '" + userDesc + "'.";
+                        }
+                        else
+                        {
+                            name += " - <i>[" + userDesc + "]</i>";
+                        }
+                    }
+                }
+
+                name += "</td>";
+                row.append(name);
+                row.append("<td>" + statusDescription + "</td>");
+
+                var playersStr = "";
+                for (var playerI = 0; playerI < players.length; playerI++) {
+                    if (playerI > 0)
+                        playersStr += ", ";
+                    playersStr += players[playerI];
+                }
+                row.append("<td>" + playersStr + "</td>");
+
+                var lastField = $("<td></td>");
+                if (status == "WAITING") {
+                    if (playing == "true") {
+                        var that = this;
+
+                        var but = $("<button>Leave Table</button>");
+                        $(but).button().click((
+                            function(tableId) {
+                                return function() {
+                                    that.comm.leaveTable(tableId);
+                                };
+                            })(id));
+                        lastField.append(but);
+                    }
+                    else if(!isInviteOnly || inviteForYou) {
+                        var that = this;
+
+                        var but = $("<button>Join Table</button>");
+                        $(but).button().click((
+                            function(tableId) {
+                                return function() {
+                                    var deck = that.decksSelect.val();
+                                    if (deck != null)
+                                        that.comm.joinTable(tableId, deck, function (xml) {
+                                            that.processResponse(xml);
+                                        });
+                                };
+                            })(id));
+                        lastField.append(but);
+                    }
+                } else if (status == "PLAYING") {
+                    if (playing == "true") {
+                        var participantId = getUrlParam("participantId");
+                        var participantIdAppend = "";
+                        if (participantId != null)
+                            participantIdAppend = "&participantId=" + participantId;
+
+                        var but = $("<button>Play Match</button>");
+                        var link = $("<a href='game.html?gameType=" + gameType + "&gameId=" + gameId + participantIdAppend + "'></a>");
+                        link.append(but);
+                        but.button();
+                        lastField.append(link);
+                    } else if (watchable == "true") {
+                        var participantId = getUrlParam("participantId");
+                        var participantIdAppend = "";
+                        if (participantId != null)
+                            participantIdAppend = "&participantId=" + participantId;
+
+                        var but = $("<button>Spectate</button>");
+                        var link = $("<a target='_blank' href='game.html?gameType=" + gameType + "&gameId=" + gameId + participantIdAppend + "'></a>");
+                        link.append(but);
+                        but.button();
+                        lastField.append(link);
+                    }
+                } else if (status == "FINISHED") {
+                    if (winner != null) {
+                        lastField.append(winner);
+                    }
+                }
+
+                row.append(lastField);
+
+                if (action == "add") {
+                    if (status == "WAITING") {
+                        $("table.waitingTables", this.tablesDiv)
+                            .append(row);
+                    } else if (status == "PLAYING") {
+                        $("table.playingTables", this.tablesDiv)
+                            .append(row);
+                    } else if (status == "FINISHED") {
+                        $("table.finishedTables", this.tablesDiv)
+                            .append(row);
+                    }
+                } else if (action == "update") {
+                    if (status == "WAITING") {
+                        if ($(".table" + id, $("table.waitingTables")).length > 0) {
+                            $(".table" + id, this.tablesDiv).replaceWith(row);
+                        } else {
+                            $(".table" + id, this.tablesDiv).remove();
+                            $("table.waitingTables", this.tablesDiv)
+                                .append(row);
+                        }
+                    } else if (status == "PLAYING") {
+                        if ($(".table" + id, $("table.playingTables")).length > 0) {
+                            $(".table" + id, this.tablesDiv).replaceWith(row);
+                        } else {
+                            $(".table" + id, this.tablesDiv).remove();
+                            $("table.playingTables", this.tablesDiv)
+                                .append(row);
+                        }
+                    } else if (status == "FINISHED") {
+                        if ($(".table" + id, $("table.finishedTables")).length > 0) {
+                            $(".table" + id, this.tablesDiv).replaceWith(row);
+                        } else {
+                            $(".table" + id, this.tablesDiv).remove();
+                            $("table.finishedTables", this.tablesDiv)
+                                .append(row);
+                        }
+                    }
+
+                    this.animateRowUpdate(".table" + id);
+                }
+
+                if (playing == "true")
+                    row.addClass("played");
+
+                if(inviteForYou)
+                    row.addClass("privateForPlayer");
+            } else if (action == "remove") {
+                $(".table" + id, this.tablesDiv).remove();
+            }
+        }
+    }
 }

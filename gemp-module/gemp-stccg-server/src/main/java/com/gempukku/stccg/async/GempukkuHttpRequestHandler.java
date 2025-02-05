@@ -3,7 +3,6 @@ package com.gempukku.stccg.async;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.IpBanDAO;
-import com.gempukku.stccg.hall.HallException;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -284,7 +283,17 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
 
         @Override
         public final void writeJsonResponse(String json) {
-            HttpHeaders headers = new DefaultHttpHeaders();
+            writeJsonResponseWithHeaders(json, new DefaultHttpHeaders());
+        }
+
+        @Override
+        public final void writeJsonResponseWithHeaders(String json, Map<String, String> headers) {
+            writeJsonResponseWithHeaders(json, convertToHeaders(headers));
+        }
+
+
+        @Override
+        public final void writeJsonResponseWithHeaders(String json, HttpHeaders headers) {
             headers.set(CONTENT_TYPE, "application/json; charset=UTF-8");
 
             if (json == null) json = "{}";
@@ -294,6 +303,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
 
             sendResponse(HttpResponseStatus.OK, json.getBytes(CharsetUtil.UTF_8), headers, ctx, request);
         }
+
 
         @Override
         public final void writeByteResponse(byte[] bytes, Map<? extends CharSequence, String> headers) {

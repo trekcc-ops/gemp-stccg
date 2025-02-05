@@ -12,7 +12,6 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.hall.HallChannelVisitor;
 import com.gempukku.stccg.hall.HallCommunicationChannel;
 import com.gempukku.stccg.hall.HallException;
 import com.gempukku.stccg.hall.HallServer;
@@ -21,15 +20,13 @@ import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -126,8 +123,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void createTable(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
             String format = getFormParameterSafely(postDecoder, FormParameter.format);
             String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
@@ -194,9 +190,6 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             responseWriter.writeXmlMarshalExceptionResponse(
                     "Failed to create table. Please try again later.");
         }
-        finally {
-            postDecoder.destroy();
-        }
     }
 
 
@@ -211,14 +204,11 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
     private void dropFromTournament(HttpRequest request, String tournamentId, ResponseWriter responseWriter)
             throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             _hallServer.dropFromTournament(tournamentId, resourceOwner);
             responseWriter.writeXmlOkResponse();
-        } finally {
-            postDecoder.destroy();
         }
     }
 
@@ -271,37 +261,20 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void getHall(HttpRequest request, ResponseWriter responseWriter) {
         try {
             User resourceOwner = getUserIdFromCookiesOrUri(request);
-            Document doc = createNewDoc();
             User player = getResourceOwnerSafely(request, null);
 
-            Element hall = doc.createElement("hall");
+            Map<Object, Object> hallMap = new HashMap<>();
+
             CardCollection playerCollection =
                     _collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode());
-            String currency = String.valueOf(playerCollection.getCurrency());
-            hall.setAttribute("currency", currency);
+            hallMap.put("currency", playerCollection.getCurrency());
 
-            _hallServer.signupUserForHall(resourceOwner, new SerializeHallInfoVisitor(doc, hall));
-            for (Map.Entry<String, GameFormat> format : _serverObjects.getFormatLibrary().getHallFormats().entrySet()) {
-                //playtest formats are opt-in
-                if (format.getKey().startsWith("test") && !player.getType().contains("p"))
-                    continue;
+            HallCommunicationChannel channel = _hallServer.signupUserForHallAndGetChannel(resourceOwner);
+            channel.processCommunicationChannel(_hallServer, player, hallMap);
 
-                Element formatElem = doc.createElement("format");
-                formatElem.setAttribute("type", format.getKey());
-                formatElem.appendChild(doc.createTextNode(format.getValue().getName()));
-                hall.appendChild(formatElem);
-            }
-            for (League league : _leagueService.getActiveLeagues()) {
-                final LeagueSeriesData seriesData = _leagueService.getCurrentLeagueSeries(league);
-                if (seriesData != null && _leagueService.isPlayerInLeague(league, resourceOwner)) {
-                    Element formatElem = doc.createElement("format");
-                    formatElem.setAttribute("type", league.getType());
-                    formatElem.appendChild(doc.createTextNode(league.getName()));
-                    hall.appendChild(formatElem);
-                }
-            }
-            doc.appendChild(hall);
-            responseWriter.writeXmlResponseWithNoHeaders(doc);
+            hallMap.put("formats", getFormats(player));
+            String jsonString = _jsonMapper.writeValueAsString(hallMap);
+            responseWriter.writeJsonResponse(jsonString);
         } catch (HttpProcessingException exp) {
             int expStatus = exp.getStatus();
             logHttpError(LOGGER, expStatus, request.uri(), exp);
@@ -312,12 +285,35 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
+    private List<Map<?, ?>> getFormats(User player) {
+        List<Map<?, ?>> formats = new ArrayList<>();
+        for (Map.Entry<String, GameFormat> format : _serverObjects.getFormatLibrary().getHallFormats().entrySet()) {
+
+            //playtest formats are opt-in
+            if (!format.getKey().startsWith("test") || player.getType().contains("p")) {
+
+                Map<String, String> formatsMap = new HashMap<>();
+                formatsMap.put("type", format.getKey());
+                formatsMap.put("name", format.getValue().getName());
+                formats.add(formatsMap);
+            }
+        }
+        for (League league : _leagueService.getActiveLeagues()) {
+            final LeagueSeriesData seriesData = _leagueService.getCurrentLeagueSeries(league);
+            if (seriesData != null && _leagueService.isPlayerInLeague(league, player)) {
+                Map<String, String> formatMap = new HashMap<>();
+                formatMap.put("type", league.getType());
+                formatMap.put("name", league.getName());
+                formats.add(formatMap);
+            }
+        }
+        return formats;
+    }
+
     private void updateHall(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
             int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.channelNumber));
-
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             processLoginReward(resourceOwner.getName());
 
@@ -332,8 +328,6 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                 logHttpError(LOGGER, exp.getStatus(), request.uri(), exp);
                 responseWriter.writeError(exp.getStatus());
             }
-        } finally {
-            postDecoder.destroy();
         }
     }
 
@@ -361,21 +355,20 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         public final synchronized void processIfNotProcessed() {
             if (!_processed) {
                 try {
-                    Document doc = createNewDoc();
+                    Map<Object, Object> itemsToSerialize = new HashMap<>();
 
-                    Element hall = doc.createElement("hall");
                     _hallCommunicationChannel.processCommunicationChannel(
-                            _hallServer, _resourceOwner, new SerializeHallInfoVisitor(doc, hall));
+                            _hallServer, _resourceOwner, itemsToSerialize);
+
                     CardCollection playerCollection =
                             _collectionsManager.getPlayerCollection(_resourceOwner, CollectionType.MY_CARDS.getCode());
-
-                    hall.setAttribute("currency", String.valueOf(playerCollection.getCurrency()));
-                    doc.appendChild(hall);
+                    itemsToSerialize.put("currency", playerCollection.getCurrency());
 
                     Map<String, String> headers = new HashMap<>();
                     processDeliveryServiceNotification(_request, headers);
 
-                    _responseWriter.writeXmlResponseWithHeaders(doc, headers);
+                    String jsonString = _jsonMapper.writeValueAsString(itemsToSerialize);
+                    _responseWriter.writeJsonResponseWithHeaders(jsonString, headers);
                 } catch (Exception exp) {
                     logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, _request.uri(), exp);
                     _responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
@@ -385,95 +378,4 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private static class SerializeHallInfoVisitor implements HallChannelVisitor {
-        private final Document _doc;
-        private final Element _hall;
-
-        SerializeHallInfoVisitor(Document doc, Element hall) {
-            _doc = doc;
-            _hall = hall;
-        }
-
-        @Override
-        public final void channelNumber(int channelNumber) {
-            _hall.setAttribute("channelNumber", String.valueOf(channelNumber));
-        }
-
-        @Override
-        public final void newPlayerGame(String gameId) {
-            Element newGame = _doc.createElement("newGame");
-            newGame.setAttribute("id", gameId);
-            _hall.appendChild(newGame);
-        }
-
-        @Override
-        public final void serverTime(String serverTime) {
-            _hall.setAttribute("serverTime", serverTime);
-        }
-
-        @Override
-        public final void changedDailyMessage(String message) {
-            _hall.setAttribute("messageOfTheDay", message);
-        }
-
-        @Override
-        public final void addTournamentQueue(String queueId, Map<String, String> props) {
-            appendElementWithProperties("queue", queueId, props, "add");
-        }
-
-        @Override
-        public final void updateTournamentQueue(String queueId, Map<String, String> props) {
-            appendElementWithProperties("queue", queueId, props, "update");
-        }
-
-        @Override
-        public final void removeTournamentQueue(String queueId) {
-            appendRemoveElement("queue", queueId);
-        }
-
-        @Override
-        public final void addTournament(String tournamentId, Map<String, String> props) {
-            appendElementWithProperties("tournament", tournamentId, props, "add");
-        }
-
-        @Override
-        public final void updateTournament(String tournamentId, Map<String, String> props) {
-            appendElementWithProperties("tournament", tournamentId, props, "update");
-        }
-
-        @Override
-        public final void removeTournament(String tournamentId) {
-            appendRemoveElement("tournament", tournamentId);
-        }
-
-        @Override
-        public final void addTable(String tableId, Map<String, String> props) {
-            appendElementWithProperties("table", tableId, props, "add");
-        }
-
-        @Override
-        public final void updateTable(String tableId, Map<String, String> props) {
-            appendElementWithProperties("table", tableId, props, "update");
-        }
-        @Override
-        public final void removeTable(String tableId) {
-            appendRemoveElement("table", tableId);
-        }
-
-        private void appendElementWithProperties(String tagName, String id, Map<String, String> props, String action) {
-            Element elem = _doc.createElement(tagName);
-            elem.setAttribute("action", action);
-            elem.setAttribute("id", id);
-            for (Map.Entry<String, String> attribute : props.entrySet())
-                elem.setAttribute(attribute.getKey(), attribute.getValue());
-            _hall.appendChild(elem);
-        }
-
-        private void appendRemoveElement(String tagName, String id) {
-            Element elem = _doc.createElement(tagName);
-            elem.setAttribute("action", "remove");
-            elem.setAttribute("id", id);
-            _hall.appendChild(elem);
-        }
-    }
 }
