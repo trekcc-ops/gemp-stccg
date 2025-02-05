@@ -14,7 +14,7 @@ public interface DeckDAO {
 
     void deleteDeckForPlayer(User player, String name);
 
-    CardDeck renameDeck(User player, String oldName, String newName);
+    CardDeck renameDeck(User player, String oldName, String newName) throws DeckNotFoundException;
 
     Set<Map.Entry<String, String>> getPlayerDeckNames(User player);
 

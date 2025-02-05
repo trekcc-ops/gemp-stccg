@@ -14,11 +14,6 @@ public class DateUtils {
         return Integer.parseInt(now.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
     }
 
-    public static String getCurrentDateAsString() {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
-        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
     public static int offsetDate(int start, int dayOffset) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");

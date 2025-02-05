@@ -1,7 +1,9 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.hall.HallException;
 import org.w3c.dom.Document;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.util.Map;
 
@@ -25,4 +27,9 @@ public interface ResponseWriter {
     void writeXmlResponseWithNoHeaders(String xmlString);
 
     void writeXmlResponseWithHeaders(Document document, Map<? extends CharSequence, String> addHeaders);
+
+    void writeXmlMarshalExceptionResponse(Exception e) throws ParserConfigurationException;
+    void writeXmlMarshalExceptionResponse(String errorMessage) throws ParserConfigurationException;
+
+    void writeHtmlOkResponse();
 }

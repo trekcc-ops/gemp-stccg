@@ -42,8 +42,8 @@ public class SoloDraftLeagueData implements LeagueData {
         _collectionType = new CollectionType(params[4], params[5]);
 
         _seriesData = new DefaultLeagueSeriesData(_leaguePrizes, true, "Series 1",
-                DateUtils.offsetDate(start, 0), DateUtils.offsetDate(start, seriesDuration - 1), maxMatches,
-                formatLibrary.get(_draft.getFormat()), _collectionType);
+                DateUtils.offsetDate(start, 0), DateUtils.offsetDate(start, seriesDuration - 1),
+                maxMatches, formatLibrary.get(_draft.getFormat()), _collectionType);
     }
 
     public CollectionType getCollectionType() {

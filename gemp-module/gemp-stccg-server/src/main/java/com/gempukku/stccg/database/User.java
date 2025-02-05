@@ -4,6 +4,7 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.mysql.cj.util.StringUtils;
 
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class User {
@@ -164,4 +165,17 @@ public class User {
         String lastIpPrefix = lastIp.substring(0, finalPeriodIndex + 1);
         ipBanDAO.addIpPrefixBan(lastIpPrefix);
     }
+
+    public String getStatus() {
+        if (getType().isEmpty())
+            return "Banned permanently";
+        if (getBannedUntil() != null) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            return "Banned until " + format.format(getBannedUntil());
+        }
+        if (hasType(User.Type.UNBANNED))
+            return "Unbanned";
+        return "OK";
+    }
+
 }

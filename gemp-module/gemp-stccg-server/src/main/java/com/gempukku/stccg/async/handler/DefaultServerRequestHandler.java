@@ -208,17 +208,7 @@ class DefaultServerRequestHandler {
 
     static List<String> getLoginParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder)
             throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
-        List<InterfaceHttpData> httpData = postRequestDecoder.getBodyHttpDatas("login[]");
-        if (httpData == null)
-            return null;
-        List<String> result = new LinkedList<>();
-        for (InterfaceHttpData data : httpData) {
-            if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
-                Attribute attribute = (Attribute) data;
-                result.add(attribute.getValue());
-            }
-        }
-        return result;
+        return getFormMultipleParametersSafely(postRequestDecoder,"login[]");
     }
 
     final Map<String, String> logUserReturningHeaders(String remoteIp, String login) throws SQLException {
@@ -241,6 +231,20 @@ class DefaultServerRequestHandler {
         String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         return getResourceOwnerSafely(request, participantId);
     }
+
+    protected static class SelfClosingPostRequestDecoder extends HttpPostRequestDecoder implements AutoCloseable {
+
+        SelfClosingPostRequestDecoder(HttpRequest request) {
+            super(request);
+        }
+
+        @Override
+        public void close() {
+            destroy();
+        }
+    }
+
+
 
 
 }

@@ -4,6 +4,9 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.CollectionType;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ImmediateRecurringQueue extends AbstractTournamentQueue implements TournamentQueue {
@@ -37,7 +40,10 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
         if (_players.size() >= _playerCap) {
             String tournamentId = _tournamentIdPrefix + System.currentTimeMillis();
 
-            String tournamentName = _tournamentQueueName + " - " + DateUtils.getCurrentDateAsString();
+            ZonedDateTime now = ZonedDateTime.now();
+            String currentDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+            String tournamentName = _tournamentQueueName + " - " + currentDate;
 
             for (int i=0; i<_playerCap; i++) {
                 String player = _players.poll();

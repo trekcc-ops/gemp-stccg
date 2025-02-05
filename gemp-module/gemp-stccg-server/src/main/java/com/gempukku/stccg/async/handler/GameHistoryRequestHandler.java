@@ -33,7 +33,6 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
     private void getGameHistory(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
-
         String startParameter = getQueryParameterSafely(queryDecoder, FormParameter.start);
         String countParameter = getQueryParameterSafely(queryDecoder, FormParameter.count);
 

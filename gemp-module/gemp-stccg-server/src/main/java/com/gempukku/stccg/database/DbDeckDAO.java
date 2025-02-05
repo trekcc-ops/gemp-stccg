@@ -45,14 +45,15 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    public final synchronized CardDeck renameDeck(User player, String oldName, String newName) {
+    public final synchronized CardDeck renameDeck(User player, String oldName, String newName)
+            throws DeckNotFoundException {
         CardDeck deck = getDeckForPlayer(player, oldName);
         if (deck == null)
-            return null;
-        saveDeckForPlayer(player, newName, deck.getTargetFormat(), deck.getNotes(), deck);
+            throw new DeckNotFoundException("Could not find deck '" + oldName + "'");
+        CardDeck renamedDeck = new CardDeck(deck, newName);
+        saveDeckForPlayer(renamedDeck, player);
         deleteDeckForPlayer(player, oldName);
-
-        return deck;
+        return renamedDeck;
     }
 
     public final synchronized Set<Map.Entry<String, String>> getPlayerDeckNames(User player) {

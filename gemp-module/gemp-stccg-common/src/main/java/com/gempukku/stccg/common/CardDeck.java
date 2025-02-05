@@ -5,6 +5,7 @@ import com.gempukku.stccg.common.filterable.SubDeck;
 import java.util.*;
 
 public class CardDeck {
+
     Map<SubDeck, List<String>> _subDecks = new HashMap<>();
     protected final String _deckName;
     protected String _notes;
@@ -18,6 +19,14 @@ public class CardDeck {
         _notes = deck.getNotes();
         _targetFormat = deck.getTargetFormat();
     }
+
+    public CardDeck(CardDeck deck, String newName) {
+        _deckName = newName;
+        _subDecks = deck.getSubDecks();
+        _notes = deck.getNotes();
+        _targetFormat = deck.getTargetFormat();
+    }
+
 
     public CardDeck(String deckName, String contents, String targetFormat, String notes) {
         _deckName = deckName;

@@ -69,7 +69,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
-                responseWriter.writeXmlResponseWithNoHeaders(marshalException(exp));
+                responseWriter.writeXmlMarshalExceptionResponse(exp);
             }
         } finally {
             postDecoder.destroy();
@@ -86,10 +86,10 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             try {
                 _merchantService.merchantBuysCard(resourceOwner, blueprintId, price);
-                responseWriter.writeHtmlResponse("OK");
+                responseWriter.writeHtmlOkResponse();
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
-                responseWriter.writeXmlResponseWithNoHeaders(marshalException(exp));
+                responseWriter.writeXmlMarshalExceptionResponse(exp);
             }
         } finally {
             postDecoder.destroy();
@@ -110,7 +110,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
-                responseWriter.writeXmlResponseWithNoHeaders(marshalException(exp));
+                responseWriter.writeXmlMarshalExceptionResponse(exp);
             }
         } finally {
             postDecoder.destroy();
@@ -141,7 +141,8 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             }
         }
 
-        List<BasicCardItem> filteredResult = _sortAndFilterCards.process(filter, cardItems, _cardBlueprintLibrary, _formatLibrary);
+        List<BasicCardItem> filteredResult =
+                _sortAndFilterCards.process(filter, cardItems, _cardBlueprintLibrary, _formatLibrary);
 
         Collection<CardItem> pageToDisplay = new ArrayList<>();
         for (int i = start; i < start + count; i++) {
@@ -156,7 +157,9 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
         Document doc = createNewDoc();
 
         Element merchantElem = doc.createElement("merchant");
-        merchantElem.setAttribute("currency", String.valueOf(_collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
+        int currency =
+                _collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency();
+        merchantElem.setAttribute("currency", String.valueOf(currency));
         merchantElem.setAttribute(FormParameter.count.name(), String.valueOf(filteredResult.size()));
         doc.appendChild(merchantElem);
 
@@ -184,15 +187,6 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
         }
 
         responseWriter.writeXmlResponseWithNoHeaders(doc);
-    }
-
-    private static Document marshalException(Exception e) throws ParserConfigurationException {
-        Document doc = createNewDoc();
-
-        Element error = doc.createElement("error");
-        error.setAttribute("message", e.getMessage());
-        doc.appendChild(error);
-        return doc;
     }
 
 }

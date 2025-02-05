@@ -3,6 +3,7 @@ package com.gempukku.stccg.async;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.IpBanDAO;
+import com.gempukku.stccg.hall.HallException;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +15,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -137,13 +142,16 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
 
         @Override
         public final void writeError(int status) {
-            sendResponse(HttpResponseStatus.valueOf(status), new byte[0], convertToHeaders(null), ctx,
-                    request);
+            writeError(status, new DefaultHttpHeaders());
         }
 
         @Override
         public final void writeError(int status, Map<String, String> headers) {
-            sendResponse(HttpResponseStatus.valueOf(status), new byte[0], convertToHeaders(headers), ctx, request);
+            writeError(status, convertToHeaders(headers));
+        }
+
+        private void writeError(int status, HttpHeaders headers) {
+            sendResponse(HttpResponseStatus.valueOf(status), new byte[0], headers, ctx, request);
         }
 
         @Override
@@ -216,6 +224,23 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         }
 
         @Override
+        public void writeXmlMarshalExceptionResponse(Exception e) throws ParserConfigurationException {
+            writeXmlMarshalExceptionResponse(e.getMessage());
+        }
+
+        @Override
+        public void writeXmlMarshalExceptionResponse(String errorMessage) throws ParserConfigurationException {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+            Element error = doc.createElement("error");
+            error.setAttribute("message", errorMessage);
+            doc.appendChild(error);
+            writeXmlResponseWithNoHeaders(doc);
+        }
+
+
+        @Override
         public final void writeEmptyXmlResponseWithHeaders(Map<? extends CharSequence, String> addHeaders) {
             try {
                 String response1 = "OK";
@@ -250,6 +275,12 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             if (html == null) html = "";
             sendResponse(HttpResponseStatus.OK, html.getBytes(CharsetUtil.UTF_8), headers, ctx, request);
         }
+
+        @Override
+        public final void writeHtmlOkResponse() {
+            writeHtmlResponse("OK");
+        }
+
 
         @Override
         public final void writeJsonResponse(String json) {

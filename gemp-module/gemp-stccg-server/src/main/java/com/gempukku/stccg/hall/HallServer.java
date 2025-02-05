@@ -27,6 +27,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -368,7 +371,10 @@ public class HallServer extends AbstractServer {
         final boolean isAdmin = player.isAdmin();
         _hallDataAccessLock.readLock().lock();
         try {
-            visitor.serverTime(DateUtils.getCurrentDateAsString());
+            ZonedDateTime now = ZonedDateTime.now();
+            String currentTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            visitor.serverTime(currentTime);
+
             if (_messageOfTheDay != null)
                 visitor.setDailyMessage(_messageOfTheDay);
 

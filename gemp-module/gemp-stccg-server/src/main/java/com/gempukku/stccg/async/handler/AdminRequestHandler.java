@@ -60,60 +60,79 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         String requestType = uri + request.method();
         switch(requestType) {
             case "/clearCachePOST":
-                clearCache(request, responseWriter);
+                validateAdmin(request);
+                clearCache(responseWriter);
                 break;
             case "/shutdownPOST":
+                validateAdmin(request);
                 shutdown(request, responseWriter);
                 break;
             case "/reloadCardsPOST":
-                reloadCards(request, responseWriter);
+                validateAdmin(request);
+                reloadCards(responseWriter);
                 break;
             case "/getDailyMessageGET":
+                validateAdmin(request);
                 getDailyMessage(request, responseWriter);
                 break;
             case "/setDailyMessagePOST":
+                validateAdmin(request);
                 setDailyMessage(request, responseWriter);
                 break;
             case "/previewSealedLeaguePOST":
+                validateLeagueAdmin(request);
                 previewSealedLeague(request, responseWriter);
                 break;
             case "/addSealedLeaguePOST":
+                validateLeagueAdmin(request);
                 addSealedLeague(request, responseWriter);
                 break;
             case "/previewConstructedLeaguePOST":
+                validateLeagueAdmin(request);
                 previewConstructedLeague(request, responseWriter);
                 break;
             case "/addConstructedLeaguePOST":
+                validateLeagueAdmin(request);
                 addConstructedLeague(request, responseWriter);
                 break;
             case "/previewSoloDraftLeaguePOST":
+                validateLeagueAdmin(request);
                 previewSoloDraftLeague(request, responseWriter);
                 break;
             case "/addSoloDraftLeaguePOST":
+                validateLeagueAdmin(request);
                 addSoloDraftLeague(request, responseWriter);
                 break;
             case "/addItemsPOST":
+                validateAdmin(request);
                 addItems(request, responseWriter);
                 break;
             case "/addItemsToCollectionPOST":
+                validateAdmin(request);
                 addItemsToCollection(request, responseWriter);
                 break;
             case "/banUserPOST":
+                validateAdmin(request);
                 banUser(request, responseWriter);
                 break;
             case "/resetUserPasswordPOST":
+                validateAdmin(request);
                 resetUserPassword(request, responseWriter);
                 break;
             case "/banMultiplePOST":
+                validateAdmin(request);
                 banMultiple(request, responseWriter);
                 break;
             case "/banUserTempPOST":
+                validateAdmin(request);
                 banUserTemp(request, responseWriter);
                 break;
             case "/unBanUserPOST":
+                validateAdmin(request);
                 unBanUser(request, responseWriter);
                 break;
             case "/findMultipleAccountsPOST":
+                validateAdmin(request);
                 findMultipleAccounts(request, responseWriter);
                 break;
             default:
@@ -122,147 +141,87 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     }
 
     private void findMultipleAccounts(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String login = getFormParameterSafely(postDecoder, FormParameter.login).trim();
 
             PlayerDAO playerDAO = _serverObjects.getPlayerDAO();
             List<User> similarPlayers = playerDAO.findSimilarAccounts(login);
             if (similarPlayers == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-
             Document doc = createNewDoc();
             Element players = doc.createElement("players");
-
             for (User similarPlayer : similarPlayers) {
                 Element playerElem = doc.createElement("player");
                 playerElem.setAttribute("id", String.valueOf(similarPlayer.getId()));
                 playerElem.setAttribute("name", similarPlayer.getName());
                 playerElem.setAttribute("password", similarPlayer.getPassword());
-                playerElem.setAttribute("status", getStatus(similarPlayer));
+                playerElem.setAttribute("status", similarPlayer.getStatus());
                 playerElem.setAttribute("createIp", similarPlayer.getCreateIp());
                 playerElem.setAttribute("loginIp", similarPlayer.getLastIp());
                 players.appendChild(playerElem);
             }
-
             doc.appendChild(players);
-
             responseWriter.writeXmlResponseWithNoHeaders(doc);
-        } finally {
-            postDecoder.destroy();
         }
-    }
-
-    private static String getStatus(User similarPlayer) {
-        if (similarPlayer.getType().isEmpty())
-            return "Banned permanently";
-        if (similarPlayer.getBannedUntil() != null) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            return "Banned until " + format.format(similarPlayer.getBannedUntil());
-        }
-        if (similarPlayer.hasType(User.Type.UNBANNED))
-            return "Unbanned";
-        return "OK";
     }
 
     private void resetUserPassword(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String login = getFormParameterSafely(postDecoder, FormParameter.login);
-
             if (login == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-
             if (!_adminService.resetUserPassword(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-            responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
     private void banUser(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String login = getFormParameterSafely(postDecoder, FormParameter.login);
-
             if (login==null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-
             if (!_adminService.banUser(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
             responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
         }
     }
 
     private void banMultiple(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             List<String> logins = getLoginParametersSafely(postDecoder);
-            if (logins == null)
+            if (logins.isEmpty())
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
             for (String login : logins) {
                 if (!_adminService.banUser(login))
                     throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
             }
-
-            responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
     private void banUserTemp(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String login = getFormParameterSafely(postDecoder, FormParameter.login);
             int duration = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.duration));
-
             if (!_adminService.banUserTemp(login, duration))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-            responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
     private void unBanUser(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String login = getFormParameterSafely(postDecoder, FormParameter.login);
-
             if (!_adminService.unBanUser(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-            responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
     private void addItemsToCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String reason = getFormParameterSafely(postDecoder, FormParameter.reason);
             String product = getFormParameterSafely(postDecoder, FormParameter.product);
             String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
@@ -279,17 +238,11 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             }
 
             responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
         }
     }
 
-    private void addItems(HttpRequest request, ResponseWriter responseWriter)
-            throws HttpProcessingException, IOException {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+    private void addItems(HttpRequest request, ResponseWriter responseWriter) throws IOException {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String players = getFormParameterSafely(postDecoder, FormParameter.players);
             String product = getFormParameterSafely(postDecoder, FormParameter.product);
             String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
@@ -300,14 +253,10 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
             for (String playerName : playerNames) {
                 User player = _playerDao.getPlayer(playerName);
-
-            _collectionManager.addItemsToPlayerCollection(true,
-                    "Administrator action", player, createCollectionType(collectionType), productItems);
-        }
-
-        responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
+                _collectionManager.addItemsToPlayerCollection(true,
+                        "Administrator action", player, createCollectionType(collectionType), productItems);
+            }
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
@@ -339,7 +288,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         final CollectionType result = CollectionType.getCollectionTypeByCode(collectionType);
         if (result != null)
             return result;
-
         return _leagueService.getCollectionTypeByCode(collectionType);
     }
 
@@ -356,7 +304,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
                 parameters.get("serializedParams"), leagueStart, displayEnd);
         _leagueService.clearCache();
-        responseWriter.writeHtmlResponse("OK");
+        responseWriter.writeHtmlOkResponse();
     }
 
     private void previewConstructedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
@@ -400,7 +348,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private void addSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, IOException, NumberFormatException {
         Map<String,String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        LeagueData leagueData = createNewSoloDraftLeague(parameters);
+        LeagueData leagueData = new SoloDraftLeagueData(_cardBlueprintLibrary,  _formatLibrary,
+                _serverObjects.getSoloDraftDefinitions(), parameters.get("serializedParams"));
         List<LeagueSeriesData> series = leagueData.getSeries();
         int leagueStart = series.getFirst().getStart();
         int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
@@ -413,29 +362,22 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         responseWriter.writeHtmlResponse("OK");
     }
 
-    private LeagueData createNewSoloDraftLeague(Map<String, String> parameters) {
-        return new SoloDraftLeagueData(_cardBlueprintLibrary,  _formatLibrary,
-                _serverObjects.getSoloDraftDefinitions(), parameters.get("serializedParams"));
-    }
-
     private void previewSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, IOException, ParserConfigurationException {
         Map<String, String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        LeagueData leagueData = createNewSoloDraftLeague(parameters);
+        LeagueData leagueData = new SoloDraftLeagueData(_cardBlueprintLibrary, _formatLibrary,
+                _serverObjects.getSoloDraftDefinitions(), parameters.get("serializedParams"));
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
 
     private Map<String,String> getSoloDraftOrSealedLeagueParameters(HttpRequest request)
             throws HttpProcessingException, IOException {
-        validateLeagueAdmin(request);
         FormParameter[] parameterNames = {
                 FormParameter.format, FormParameter.start, FormParameter.seriesDuration,
                 FormParameter.maxMatches, FormParameter.name, FormParameter.cost
         };
         Map<String, String> parameterMap = new HashMap<>();
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             for (FormParameter parameterName : parameterNames) {
                 String value = getFormParameterSafely(postDecoder, parameterName);
                 if (value == null || value.trim().isEmpty())
@@ -452,16 +394,12 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         } catch (RuntimeException ex) {
             logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, request.uri(), ex);
             throw new HttpProcessingException(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
-        } finally {
-            postDecoder.destroy();
         }
     }
 
     private Map<String,String> getConstructedLeagueParameters(HttpRequest request)
             throws HttpProcessingException, IOException {
-        validateLeagueAdmin(request);
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String start = getFormParameterSafely(postDecoder, FormParameter.start);
             String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
             String prizeMultiplier = getFormParameterSafely(postDecoder, FormParameter.prizeMultiplier);
@@ -500,8 +438,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         } catch (RuntimeException ex) {
             logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, request.uri(), ex);
             throw new HttpProcessingException(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
-        } finally {
-            postDecoder.destroy();
         }
     }
 
@@ -515,106 +451,75 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         Map<String, String> parameters = getSoloDraftOrSealedLeagueParameters(request);
         int cost = Integer.parseInt(parameters.get("cost"));
         String serializedParameters = serializeSealedLeagueParameters(parameters);
-        LeagueData leagueData = new NewSealedLeagueData(_cardBlueprintLibrary, _formatLibrary, serializedParameters);
+        LeagueData leagueData =
+                new NewSealedLeagueData(_cardBlueprintLibrary, _formatLibrary, serializedParameters);
         List<LeagueSeriesData> series = leagueData.getSeries();
         int leagueStart = series.getFirst().getStart();
         int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
         _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
                 serializedParameters, leagueStart, displayEnd);
         _leagueService.clearCache();
-        responseWriter.writeHtmlResponse("OK");
+        responseWriter.writeHtmlOkResponse();
     }
 
-    private void getDailyMessage(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+    private void getDailyMessage(HttpRequest request, ResponseWriter responseWriter) {
+        try(SelfClosingPostRequestDecoder ignored = new SelfClosingPostRequestDecoder(request)) {
             String dailyMessage = _hallServer.getDailyMessage();
             if(dailyMessage != null)
                 responseWriter.writeJsonResponse(HTMLUtils.replaceNewlines(dailyMessage));
-        } finally {
-            postDecoder.destroy();
         }
     }
 
-    private void setDailyMessage(HttpRequest request, ResponseWriter responseWriter)
-            throws HttpProcessingException, IOException {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+    private void setDailyMessage(HttpRequest request, ResponseWriter responseWriter) throws IOException {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, FormParameter.messageOfTheDay));
-            responseWriter.writeHtmlResponse("OK");
-        } finally {
-            postDecoder.destroy();
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
-    private void shutdown(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
-        validateAdmin(request);
-
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+    private void shutdown(HttpRequest request, ResponseWriter responseWriter) {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             boolean shutdown = Boolean.parseBoolean(getFormParameterSafely(postDecoder, FormParameter.shutdown));
-
             _hallServer.setShutdown(shutdown);
-
-            responseWriter.writeHtmlResponse("OK");
+            responseWriter.writeHtmlOkResponse();
         } catch (Exception e) {
             LOGGER.error("Error response for {}", request.uri(), e);
             responseWriter.writeHtmlResponse("Error handling request");
-        } finally {
-            postDecoder.destroy();
         }
     }
 
-    private void reloadCards(HttpMessage request, ResponseWriter responseWriter)
-            throws HttpProcessingException, InterruptedException {
-        validateAdmin(request);
-
+    private void reloadCards(ResponseWriter responseWriter) throws InterruptedException {
         ChatServer chatServer = _serverObjects.getChatServer();
         chatServer.sendSystemMessageToAllUsers(
                 "Server is reloading card definitions.  This will impact game speed until it is complete.");
-
         Thread.sleep(CARD_LOAD_SLEEP_TIME);
         _cardBlueprintLibrary.reloadAllDefinitions();
-
         _serverObjects.getProductLibrary().ReloadPacks();
-
         _formatLibrary.reloadFormats(_cardBlueprintLibrary);
         _formatLibrary.reloadSealedTemplates();
-
         chatServer.sendSystemMessageToAllUsers(
                 "Card definition reload complete.  If you are mid-game and you notice any oddities, reload the page " +
                         "and please let the mod team know in the game hall ASAP if the problem doesn't go away.");
-
-        responseWriter.writeHtmlResponse("OK");
+        responseWriter.writeHtmlOkResponse();
     }
 
-    private void clearCache(HttpMessage request, ResponseWriter responseWriter) throws HttpProcessingException {
-        validateAdmin(request);
-
+    private void clearCache(ResponseWriter responseWriter) {
         _leagueService.clearCache();
         _serverObjects.getTournamentService().clearCache();
-
         int before = _cacheManager.getTotalCount();
-
         _cacheManager.clearCaches();
-
         int after = _cacheManager.getTotalCount();
-
         responseWriter.writeHtmlResponse("Before: " + before + "<br><br>After: " + after);
     }
 
     private void validateAdmin(HttpMessage request) throws HttpProcessingException {
-        User player = getResourceOwnerSafely(request, null);
+        User player = getResourceOwnerSafely(request);
         if (!player.hasType(User.Type.ADMIN))
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
     }
 
     private void validateLeagueAdmin(HttpMessage request) throws HttpProcessingException {
-        User player = getResourceOwnerSafely(request, null);
+        User player = getResourceOwnerSafely(request);
         if (!player.hasType(User.Type.LEAGUE_ADMIN))
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
     }

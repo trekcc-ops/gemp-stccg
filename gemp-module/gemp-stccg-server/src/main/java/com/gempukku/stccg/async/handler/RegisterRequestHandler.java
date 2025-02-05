@@ -23,25 +23,21 @@ public class RegisterRequestHandler extends DefaultServerRequestHandler implemen
     @Override
     public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
             throws Exception {
-        if (uri.isEmpty() && request.method() == HttpMethod.POST) {
-            InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-            try {
-                String login = getFormParameterSafely(postDecoder, FormParameter.login);
-                String password = getFormParameterSafely(postDecoder, FormParameter.password);
-                if (_playerDao.registerUser(login, password, remoteIp)) {
-                    Map<String, String> headers = logUserReturningHeaders(remoteIp, login);
-                    responseWriter.writeEmptyXmlResponseWithHeaders(headers);
-                } else
-                    throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
-            } catch (LoginInvalidException exp) {
-                String requestUri = request.uri();
-                logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, requestUri, exp);
-                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-            } finally {
-                postDecoder.destroy();
-            }
-        } else {
+        if (!uri.isEmpty() || request.method() != HttpMethod.POST)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
+            String login = getFormParameterSafely(postDecoder, FormParameter.login);
+            String password = getFormParameterSafely(postDecoder, FormParameter.password);
+            if (_playerDao.registerUser(login, password, remoteIp)) {
+                Map<String, String> headers = logUserReturningHeaders(remoteIp, login);
+                responseWriter.writeEmptyXmlResponseWithHeaders(headers);
+            } else
+                throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
+        } catch (LoginInvalidException exp) {
+            String requestUri = request.uri();
+            logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, requestUri, exp);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
         }
     }
 }
