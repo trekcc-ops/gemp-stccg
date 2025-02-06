@@ -9,6 +9,7 @@ import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -30,7 +31,7 @@ import java.util.*;
 
 public class HTMLUtils {
 
-    static final String NEWLINE = "<br/>";
+    public static final String NEWLINE = "<br/>";
     private static final String YELLOW = "yellow";
     private static final String RED = "red";
     private static final String GREEN = "green";
@@ -62,7 +63,7 @@ public class HTMLUtils {
                 + "<span><img class=\"ttimage\" src=\"" + blueprint.getImageUrl() + "\"></span></span>";
     }
 
-    static String makeBold(String text) {
+    public static String makeBold(String text) {
         return ("<b>" + text + "</b>");
     }
 
@@ -102,12 +103,18 @@ public class HTMLUtils {
         for (String card : deck.getDrawDeckCards())
             deckCards.addItem(cardBlueprintLibrary.getBaseBlueprintId(card), 1);
 
-        result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
+        for (SubDeck subDeck : SubDeck.values()) {
+            if (deck.getSubDeck(subDeck) != null && !deck.getSubDeck(subDeck).isEmpty()) {
+
+            }
+        }
+
+/*        result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
                 deckCards,false, formatLibrary, showToolTip, cardBlueprintLibrary));
         result.append(listCards("Free Peoples Draw Deck","sort:cardType,name",
                 deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary));
         result.append(listCards("Shadow Draw Deck","sort:cardType,name",
-                deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary));
+                deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary)); */
 
         return result.toString();
     }

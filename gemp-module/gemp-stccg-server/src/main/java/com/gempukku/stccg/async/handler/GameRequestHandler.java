@@ -202,11 +202,11 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String cardIdStr = getQueryParameterSafely(queryDecoder, FormParameter.cardId);
         if (cardIdStr == null || cardIdStr.startsWith("extra")) {
-            responseWriter.writeHtmlResponse("");
+            responseWriter.writeJsonResponse("");
         } else {
             int cardId = Integer.parseInt(cardIdStr);
             CardGameMediator gameMediator = _gameServer.getGameById(gameId); // throws 404 error if not found
-            responseWriter.writeHtmlResponse(gameMediator.produceCardInfo(cardId));
+            responseWriter.writeJsonResponse(gameMediator.produceCardInfo(cardId));
         }
     }
 

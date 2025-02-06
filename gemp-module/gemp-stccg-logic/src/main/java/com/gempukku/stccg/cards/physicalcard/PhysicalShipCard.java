@@ -180,4 +180,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         return getPersonnelInCrew();
     }
 
+    public List<CardIcon> getStaffingRequirements() {
+        return _blueprint.getStaffing();
+    }
 }

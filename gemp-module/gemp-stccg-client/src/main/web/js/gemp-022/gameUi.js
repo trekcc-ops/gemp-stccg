@@ -687,7 +687,41 @@ export default class GameTableUI {
         }
     }
 
-    setCardModifiers(html) {
+    setCardModifiers(json) {
+        let modifiers = json.modifiers; // list of HTML strings
+        let affiliations = json.affiliations; // list of HTML strings
+        let icons = json.icons; // list of HTML strings
+        let crew = json.crew; // list of other cards with specific properties
+        let dockedCards = json.dockedCards; // list of other cards with specific properties
+
+        // Ships only
+        let staffingRequirements = json.staffingRequirements; // list of HTML strings
+        let isStaffed = json.isStaffed; // boolean
+        let printedRange = json.printedRange; // int
+        let rangeAvailable = json.rangeAvailable; // int
+
+        // Missions only
+        let missionRequirements = json.missionRequirements; // string
+        let awayTeams = json.awayTeams; // list of nodes with two elements (playerId and cardsInAwayTeam)
+
+        let html = "";
+
+        if (modifiers != null && modifiers.length > 0) {
+            html = html + "<b>Active Modifiers:</b><br/>";
+            for (const modifier of modifiers) {
+                html = html + modifier + "<br/>";
+            }
+            html = html + "<br/>";
+        }
+
+        if (affiliations != null && affiliations.length > 0) {
+            html = html + "<b>Affiliation:</b> ";
+            for (const affiliation of affiliations) {
+                html = html + affiliation;
+            }
+            html = html + "<br/>";
+        }
+
         $("#cardEffects").append(html);
         $("#cardEffects").addClass("cardInfoText");
     }
@@ -838,8 +872,8 @@ export default class GameTableUI {
     getCardModifiersFunction(cardId, func) {
         var that = this;
         this.communication.getCardInfo(cardId,
-            function (html) {
-                that.setCardModifiers(html);
+            function (json) {
+                that.setCardModifiers(json);
             });
     }
 

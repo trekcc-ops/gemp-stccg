@@ -134,4 +134,12 @@ public interface PhysicalCard extends Filterable {
             return mission;
         throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
     }
+
+    default Uniqueness getUniqueness() {
+        return getBlueprint().getUniqueness();
+    }
+
+    default boolean isUniversal() {
+        return getBlueprint().isUniversal();
+    }
 }

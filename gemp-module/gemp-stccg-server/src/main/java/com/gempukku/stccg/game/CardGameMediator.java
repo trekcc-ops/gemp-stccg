@@ -1,23 +1,29 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.handler.CardInfoUtils;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.async.handler.HTMLUtils;
+import com.gempukku.stccg.cards.AwayTeam;
+import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.hall.GameSettings;
-import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.PlayerClock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Stream;
 
 public abstract class CardGameMediator {
     private static final long MILLIS_TO_SECONDS = 1000L;
@@ -123,15 +130,18 @@ public abstract class CardGameMediator {
         return getGame().isFinished();
     }
 
-    public final String produceCardInfo(int cardId) {
+    public final String produceCardInfo(int cardId) throws JsonProcessingException {
         _readLock.lock();
         try {
             GameState gameState = getGame().getGameState();
             PhysicalCard card = gameState.findCardById(cardId);
             if (card == null || card.getZone() == null)
-                return null;
-            else
-                return CardInfoUtils.getCardInfoHTML(getGame(), card);
+                return "";
+            else if (!card.getZone().isInPlay() && card.getZone() != Zone.HAND) {
+                return getCardInfoJson(getGame(), card);
+            } else {
+                return "";
+            }
         } finally {
             _readLock.unlock();
         }
@@ -420,4 +430,246 @@ public abstract class CardGameMediator {
             _readLock.unlock();
         }
     }
+
+    public String getCardInfoHTML(PhysicalCard card) {
+        String info = getBasicCardInfoHTML(getGame(), card);
+        return switch (card) {
+            case PersonnelCard personnel -> info + getPersonnelInfo(getGame(), personnel);
+            case PhysicalShipCard ship -> info + getShipCardInfo(getGame(), ship);
+            case FacilityCard facility -> info + getFacilityCardInfo(facility);
+            case MissionCard mission -> info + getMissionCardInfo(mission);
+            default -> info;
+        };
+    }
+    
+    private String getCardInfoJson(DefaultGame cardGame, PhysicalCard card) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<Object, Object> itemsToSerialize = new HashMap<>();
+        if (!card.getZone().isInPlay() && card.getZone() != Zone.HAND)
+            return mapper.writeValueAsString(itemsToSerialize);
+
+        Collection<String> modifiersToAdd = new ArrayList<>();
+        for (Modifier modifier : cardGame.getModifiersQuerying().getModifiersAffecting(card)) {
+            modifiersToAdd.add(modifier.getCardInfoText(getGame(), card));
+        }
+        itemsToSerialize.put("modifiers", modifiersToAdd);
+
+        List<String> affiliationTexts = new ArrayList<>();
+        if (card instanceof AffiliatedCard affiliatedCard) {
+            for (Affiliation affiliation : Affiliation.values()) {
+                if (affiliatedCard.isAffiliation(affiliation)) {
+                    affiliationTexts.add(affiliation.toHTML());
+                }
+            }
+        }
+        itemsToSerialize.put("affiliations", affiliationTexts);
+        
+        List<String> cardIconTexts = new ArrayList<>();
+        for (CardIcon icon : CardIcon.values()) {
+            if (card.hasIcon(getGame(), icon)) {
+                cardIconTexts.add(icon.toHTML());
+            }
+        }
+        itemsToSerialize.put("icons", cardIconTexts);
+        
+
+        List<Map<Object, Object>> crew = new ArrayList<>();
+        if (card instanceof CardWithCrew cardWithCrew) {
+            for (PhysicalCard crewCard : cardWithCrew.getCrew()) {
+                crew.add(getCardProperties(crewCard));
+            }
+        }
+        itemsToSerialize.put("crew", crew);
+
+        List<Map<Object, Object>> dockedCards = new ArrayList<>();
+        if (card instanceof FacilityCard facility) {
+            for (PhysicalCard ship : facility.getDockedShips()) {
+                dockedCards.add(getCardProperties(ship));
+            }
+        }
+        itemsToSerialize.put("dockedCards", dockedCards);
+
+        if (card instanceof PhysicalShipCard ship) {
+            List<String> staffingRequirements = new ArrayList<>();
+            if (!ship.getStaffingRequirements().isEmpty()) {
+                for (CardIcon icon : ship.getStaffingRequirements()) {
+                    staffingRequirements.add(icon.toHTML());
+                }
+            }
+            itemsToSerialize.put("staffingRequirements", staffingRequirements);
+
+            itemsToSerialize.put("isStaffed", ship.isStaffed());
+            itemsToSerialize.put("printedRange", ship.getBlueprint().getRange());
+            itemsToSerialize.put("rangeAvailable", ship.getRangeAvailable());
+        }
+
+        if (card instanceof MissionCard mission) {
+            ST1EGame stGame = mission.getGame();
+            itemsToSerialize.put("missionRequirements", mission.getMissionRequirements());
+
+            List<Map<Object, Object>> serializableAwayTeams = new ArrayList<>();
+            if (mission.getGameLocation() instanceof MissionLocation missionLocation && missionLocation.isPlanet()) {
+                List<AwayTeam> awayTeamsOnPlanet = missionLocation.getAwayTeamsOnSurface(stGame).toList();
+                for (AwayTeam team : awayTeamsOnPlanet) {
+                    Map<Object, Object> awayTeamInfo = new HashMap<>();
+                    awayTeamInfo.put("playerId", team.getPlayerId());
+                    List<Map<Object, Object>> awayTeamMembers = new ArrayList<>();
+                    for (PhysicalCard member : team.getCards()) {
+                        awayTeamMembers.add(getCardProperties(member));
+                    }
+                    awayTeamInfo.put("cardsInAwayTeam", awayTeamMembers);
+                    serializableAwayTeams.add(awayTeamInfo);
+                }
+            }
+            itemsToSerialize.put("awayTeams", serializableAwayTeams);
+        }
+
+        return mapper.writeValueAsString(itemsToSerialize);
+    }
+
+    private static Map<Object, Object> getCardProperties(PhysicalCard card) {
+        List<CardType> cardTypesShowingUniversal = new ArrayList<>();
+        cardTypesShowingUniversal.add(CardType.PERSONNEL);
+        cardTypesShowingUniversal.add(CardType.SHIP);
+        cardTypesShowingUniversal.add(CardType.FACILITY);
+        cardTypesShowingUniversal.add(CardType.SITE);
+
+
+        Map<Object, Object> cardMap = new HashMap<>();
+        cardMap.put("title", card.getTitle());
+        cardMap.put("cardId", card.getCardId());
+        cardMap.put("blueprintId", card.getBlueprintId());
+        cardMap.put("uniqueness", card.getUniqueness().name());
+        cardMap.put("cardType", card.getCardType().name());
+        boolean hasUniversalIcon = card.isUniversal() &&
+                cardTypesShowingUniversal.contains(card.getCardType());
+        cardMap.put("hasUniversalIcon", hasUniversalIcon);
+        return cardMap;
+    }
+
+
+    static String getShipCardInfo(DefaultGame game, PhysicalShipCard ship) {
+        StringBuilder sb = new StringBuilder();
+        Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
+        attachedCards.put("Crew",ship.getCrew());
+        for (Map.Entry<String, Collection<PhysicalCard>> entry : attachedCards.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                sb.append(HTMLUtils.NEWLINE);
+                sb.append("<b>").append(entry.getKey()).append(" (").append(entry.getValue().size())
+                        .append("):</b> ");
+                sb.append(TextUtils.getConcatenatedCardLinks(entry.getValue()));
+                sb.append(HTMLUtils.NEWLINE);
+            }
+        }
+
+        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("Staffing requirements: "));
+        if (ship.getBlueprint().getStaffing() == null || ship.getBlueprint().getStaffing().isEmpty())
+            sb.append("<i>none</i>");
+        else {
+            sb.append(HTMLUtils.NEWLINE);
+            for (CardIcon icon : ship.getBlueprint().getStaffing())
+                sb.append("<img src='").append(icon.getIconURL()).append("'>");
+        }
+
+        String isStaffed = (ship.isStaffed()) ? "staffed" : "not staffed";
+        if (ship.isStaffed()) {
+            sb.append(HTMLUtils.NEWLINE).append("<i>(Ship is ").append(isStaffed).append("</i>");
+            sb.append(HTMLUtils.NEWLINE);
+        }
+
+        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("Printed RANGE: "))
+                .append(ship.getBlueprint().getRange());
+        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("RANGE available: "))
+                .append(ship.getRangeAvailable());
+        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(game, ship));
+
+        return sb.toString();
+    }
+
+    static String getMissionCardInfo(MissionCard mission) {
+        StringBuilder sb = new StringBuilder();
+        ST1EGame cardGame = mission.getGame();
+        if (mission.getGameLocation() instanceof MissionLocation missionLocation && missionLocation.isPlanet()) {
+            long awayTeamCount = missionLocation.getAwayTeamsOnSurface(cardGame).count();
+            sb.append(HTMLUtils.NEWLINE);
+            sb.append(HTMLUtils.makeBold("Away Teams on Planet: "));
+            sb.append(awayTeamCount);
+            if (awayTeamCount > 0) {
+                missionLocation.getAwayTeamsOnSurface(cardGame).forEach(awayTeam -> {
+                            sb.append(HTMLUtils.NEWLINE);
+                            sb.append(HTMLUtils.makeBold("Away Team: "));
+                            sb.append("(").append(awayTeam.getPlayerId()).append(") ");
+                            sb.append(TextUtils.getConcatenatedCardLinks(awayTeam.getCards()));
+                        }
+                );
+            }
+        }
+        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.NEWLINE);
+        sb.append(HTMLUtils.makeBold("Mission Requirements: "));
+        sb.append(mission.getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
+        return sb.toString();
+    }
+    
+
+    static String getPersonnelInfo(DefaultGame game, PersonnelCard personnel) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("Affiliation: "));
+        for (Affiliation affiliation : Affiliation.values())
+            if (personnel.isAffiliation(affiliation))
+                sb.append(affiliation.toHTML());
+
+        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(game, personnel));
+
+        return sb.toString();
+    }
+
+    public static String getBasicCardInfoHTML(DefaultGame cardGame, PhysicalCard card) {
+        if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
+            StringBuilder sb = new StringBuilder();
+
+            Collection<Modifier> modifiers = cardGame.getModifiersQuerying().getModifiersAffecting(card);
+            if (!modifiers.isEmpty()) {
+                sb.append(HTMLUtils.makeBold("Active modifiers:")).append(HTMLUtils.NEWLINE);
+                for (Modifier modifier : modifiers) {
+                    sb.append(modifier.getCardInfoText(cardGame, card));
+                }
+            }
+            return sb.toString();
+        } else {
+            return "";
+        }
+
+    }
+
+    private static String getCardIcons(DefaultGame game, PhysicalCard card) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(HTMLUtils.makeBold("Icons: "));
+
+        for (CardIcon icon : CardIcon.values())
+            if (card.hasIcon(game, icon))
+                sb.append(icon.toHTML());
+
+        return sb.toString();
+    }
+
+    static String getFacilityCardInfo(FacilityCard facility) {
+        StringBuilder sb = new StringBuilder();
+        Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
+        attachedCards.put("Docked ships", facility.getDockedShips());
+        attachedCards.put("Crew", facility.getCrew());
+        for (Map.Entry<String, Collection<PhysicalCard>> entry : attachedCards.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                sb.append(HTMLUtils.NEWLINE);
+                sb.append("<b>").append(entry.getKey()).append(" (").append(entry.getValue().size())
+                        .append("):</b> ").append(TextUtils.getConcatenatedCardLinks(entry.getValue()));
+                sb.append(HTMLUtils.NEWLINE);
+            }
+        }
+        return sb.toString();
+    }
+    
+    
+    
 }

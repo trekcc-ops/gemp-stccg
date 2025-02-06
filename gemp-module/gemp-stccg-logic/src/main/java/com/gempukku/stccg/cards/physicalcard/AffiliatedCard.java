@@ -8,6 +8,8 @@ import java.util.Set;
 
 public interface AffiliatedCard extends PhysicalCard {
     ST1EGame getGame();
+
+    boolean isAffiliation(Affiliation affiliation);
     boolean isMultiAffiliation();
     Affiliation getCurrentAffiliation();
     void setCurrentAffiliation(Affiliation affiliation);
