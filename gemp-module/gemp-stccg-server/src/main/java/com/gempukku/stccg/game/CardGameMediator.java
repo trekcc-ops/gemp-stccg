@@ -1,5 +1,6 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.gempukku.stccg.SubscriptionConflictException;
@@ -400,4 +401,23 @@ public abstract class CardGameMediator {
         return result;
     }
 
+    public String serializeCompleteGameState() throws JsonProcessingException {
+        _readLock.lock();
+        try {
+            GameState gameState = getGame().getGameState();
+            return gameState.serializeComplete();
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
+    public String serializeGameStateForPlayer(String playerId) throws JsonProcessingException {
+        _readLock.lock();
+        try {
+            GameState gameState = getGame().getGameState();
+            return gameState.serializeForPlayer(playerId);
+        } finally {
+            _readLock.unlock();
+        }
+    }
 }

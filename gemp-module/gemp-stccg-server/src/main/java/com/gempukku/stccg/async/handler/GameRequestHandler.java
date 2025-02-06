@@ -88,16 +88,16 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         try {
             DefaultGame cardGame = gameMediator.getGame();
-            GameState gameState = cardGame.getGameState();
             String gameStateString;
+                // Methods below may throw JsonProcessingExceptions
             if (uri.endsWith("admin")) {
-                gameStateString = gameState.serializeComplete();
+                gameStateString = gameMediator.serializeCompleteGameState();
             } else if (uri.endsWith("player")) {
-                gameStateString = gameState.serializeForPlayer(resourceOwner.getName());
+                gameStateString = gameMediator.serializeGameStateForPlayer(resourceOwner.getName());
             } else if (uri.endsWith("player1")) {
-                gameStateString = gameState.serializeForPlayer(cardGame.getPlayerId(1));
+                gameStateString = gameMediator.serializeGameStateForPlayer(cardGame.getPlayerId(1));
             } else if (uri.endsWith("player2")) {
-                gameStateString = gameState.serializeForPlayer(cardGame.getPlayerId(2));
+                gameStateString = gameMediator.serializeGameStateForPlayer(cardGame.getPlayerId(2));
             } else {
                 // Throws a 404 error if the URL provided doesn't go anywhere
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND);
