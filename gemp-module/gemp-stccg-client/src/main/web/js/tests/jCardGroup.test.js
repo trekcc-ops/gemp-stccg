@@ -142,4 +142,46 @@ describe('CardGroup', () => {
         expect(result).toEqual(expected);
     });
 
+    test('CardGroup setBounds assigns mostly static values', () => {
+        document.body.innerHTML = `
+            <div id='container'/>
+        `;
+        let jqContainer = $('#container');
+        let belongTestFunc = jest.fn();
+        let groupUnderTest = new CardGroup(jqContainer, belongTestFunc);
+        let layoutCardsTestFunc = jest.spyOn(groupUnderTest, 'layoutCards').mockImplementation(() => null);
+
+        // defaults
+        expect(groupUnderTest.x).toBe(undefined);
+        expect(groupUnderTest.y).toBe(undefined);
+        expect(groupUnderTest.width).toBe(undefined);
+        expect(groupUnderTest.height).toBe(undefined);
+        expect(groupUnderTest.descDiv.css("left")).toBe("");
+        expect(groupUnderTest.descDiv.css("top")).toBe("");
+        expect(groupUnderTest.descDiv.css("width")).toBe("0px");
+        expect(groupUnderTest.descDiv.css("height")).toBe("0px");
+        expect(groupUnderTest.descDiv.css("position")).toBe("");
+        expect(layoutCardsTestFunc.mock.calls.length).toEqual(0);
+
+        groupUnderTest.setBounds(1, 1, 20, 40);
+
+        // container padding is 3
+        expect(groupUnderTest.x).toBe(4); // x + container padding
+        expect(groupUnderTest.y).toBe(4); // y + container padding
+        expect(groupUnderTest.width).toBe(14); // width - (3*2)
+        expect(groupUnderTest.height).toBe(34); // height - (3*2)
+        // BUG: should be x but we don't use the computed value, we used the passed in value
+        expect(groupUnderTest.descDiv.css("left")).toBe("1px"); // should be x
+        // BUG: should be y but we don't use the computed value, we used the passed in value
+        expect(groupUnderTest.descDiv.css("top")).toBe("1px"); // should be y
+        // BUG: should be width but we don't use the computed value, we used the passed in value
+        expect(groupUnderTest.descDiv.css("width")).toBe("20px");
+        // BUG: should be height but we don't use the computed value, we used the passed in value
+        expect(groupUnderTest.descDiv.css("height")).toBe("40px");
+        expect(groupUnderTest.descDiv.css("position")).toBe("absolute");
+
+        // verify we have called 
+        expect(layoutCardsTestFunc.mock.calls.length).toEqual(1);
+    });
+
 });
