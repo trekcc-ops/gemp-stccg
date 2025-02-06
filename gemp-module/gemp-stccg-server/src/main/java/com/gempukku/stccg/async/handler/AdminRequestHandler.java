@@ -180,7 +180,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
             if (!_adminService.banUser(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-            responseWriter.writeHtmlResponse("OK");
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
@@ -234,7 +234,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                         true, reason, key, collectionType1, productItems);
             }
 
-            responseWriter.writeHtmlResponse("OK");
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
@@ -356,7 +356,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 leagueData.getClass().getName(), parameters.get("serializedParams"), leagueStart, displayEnd);
         _leagueService.clearCache();
 
-        responseWriter.writeHtmlResponse("OK");
+        responseWriter.writeHtmlOkResponse();
     }
 
     private void previewSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter)

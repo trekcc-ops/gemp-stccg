@@ -41,61 +41,38 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void addTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            User player = getResourceOwnerSafely(request, null);
-
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
+            User player = getResourceOwnerSafely(request);
             _playerDAO.addPlayerFlag(player.getName(), User.Type.PLAY_TESTER);
-
-            responseWriter.writeHtmlResponse("OK");
-
-        } finally {
-            postDecoder.destroy();
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
     private void removeTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            User player = getResourceOwnerSafely(request, null);
-
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
+            User player = getResourceOwnerSafely(request);
             _playerDAO.removePlayerFlag(player.getName(), User.Type.PLAY_TESTER);
-
-            responseWriter.writeHtmlResponse("OK");
-
-        } finally {
-            postDecoder.destroy();
+            responseWriter.writeHtmlOkResponse();
         }
     }
 
     private void getTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            User player = getResourceOwnerSafely(request, null);
-
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
+            User player = getResourceOwnerSafely(request);
             Document doc = createNewDoc();
             Element hasTester = doc.createElement("hasTester");
-
             hasTester.setAttribute("result", String.valueOf(player.hasType(User.Type.PLAY_TESTER)));
-
             responseWriter.writeXmlResponseWithNoHeaders(doc);
-
-        } finally {
-            postDecoder.destroy();
         }
     }
 
     private void getRecentReplays(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
+        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String format = getFormParameterSafely(postDecoder, FormParameter.format);
             int count = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.count));
             final List<DBData.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
             String jsonString = _jsonMapper.writeValueAsString(gameHistory);
             responseWriter.writeJsonResponse(jsonString);
-
-        } finally {
-            postDecoder.destroy();
         }
     }
 

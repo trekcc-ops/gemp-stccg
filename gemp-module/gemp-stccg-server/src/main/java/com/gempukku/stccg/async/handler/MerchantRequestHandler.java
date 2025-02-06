@@ -66,7 +66,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             try {
                 _merchantService.tradeForFoil(resourceOwner, blueprintId);
-                responseWriter.writeHtmlResponse("OK");
+                responseWriter.writeHtmlOkResponse();
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
                 responseWriter.writeXmlMarshalExceptionResponse(exp);
@@ -107,7 +107,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             try {
                 _merchantService.merchantSellsCard(resourceOwner, blueprintId, price);
-                responseWriter.writeHtmlResponse("OK");
+                responseWriter.writeHtmlOkResponse();
             } catch (Exception exp) {
                 LOGGER.error("Error response for {}", request.uri(), exp);
                 responseWriter.writeXmlMarshalExceptionResponse(exp);
