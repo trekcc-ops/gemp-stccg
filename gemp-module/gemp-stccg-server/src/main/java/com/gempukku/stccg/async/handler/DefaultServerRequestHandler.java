@@ -219,6 +219,16 @@ class DefaultServerRequestHandler {
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
 
+    final Map<String, String> logUserReturningHeaders(String remoteIp, String login, ServerObjects objects)
+            throws SQLException {
+        objects.getPlayerDAO().updateLastLoginIp(login, remoteIp);
+
+        String sessionId = objects.getLoggedUserHolder().logUser(login);
+        return Collections.singletonMap(
+                SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
+    }
+
+
 
     static Document createNewDoc() throws ParserConfigurationException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();

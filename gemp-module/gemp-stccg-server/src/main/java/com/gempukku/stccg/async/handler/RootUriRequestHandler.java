@@ -1,10 +1,14 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.AppConfig;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
 import java.util.Collections;
@@ -17,11 +21,13 @@ public class RootUriRequestHandler implements UriRequestHandler {
     private final Map<String, UriRequestHandler> requestHandlers = new HashMap<>();
     private final WebRequestHandler _webRequestHandler;
     private final StatusRequestHandler _statusRequestHandler;
-
+    private static final Logger LOGGER = LogManager.getLogger(RootUriRequestHandler.class);
     private final Pattern originPattern;
+    private final ServerObjects _serverObjects;
 
     public RootUriRequestHandler(LongPollingSystem longPollingSystem, ServerObjects objects) {
         _webRequestHandler = new WebRequestHandler();
+        _serverObjects = objects;
         _statusRequestHandler = new StatusRequestHandler(objects);
         String originAllowedPattern = AppConfig.getProperty("origin.allowed.pattern");
         originPattern = Pattern.compile(originAllowedPattern);
@@ -35,7 +41,6 @@ public class RootUriRequestHandler implements UriRequestHandler {
         requestHandlers.put(SERVER_CONTEXT_PATH + "gameHistory", new GameHistoryRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "hall", new HallRequestHandler(objects, longPollingSystem));
         requestHandlers.put(SERVER_CONTEXT_PATH + "league", new LeagueRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "login", new LoginRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "merchant", new MerchantRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playerInfo", new PlayerInfoRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
@@ -68,13 +73,19 @@ public class RootUriRequestHandler implements UriRequestHandler {
             }
             boolean requestHandled = false;
 
-            // These APIs are protected by same Origin protection
-            for (Map.Entry<String, UriRequestHandler> entry : requestHandlers.entrySet()) {
-                if (uri.startsWith(entry.getKey())) {
-                    entry.getValue().handleRequest(
-                            uri.substring(entry.getKey().length()), request, responseWriter, remoteIp
-                    );
-                    requestHandled = true;
+            if (uri.startsWith(SERVER_CONTEXT_PATH + "login") && request.method() == HttpMethod.POST) {
+                new LoginRequestHandler().handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
+                requestHandled = true;
+            } else {
+
+                // These APIs are protected by same Origin protection
+                for (Map.Entry<String, UriRequestHandler> entry : requestHandlers.entrySet()) {
+                    if (uri.startsWith(entry.getKey())) {
+                        entry.getValue().handleRequest(
+                                uri.substring(entry.getKey().length()), request, responseWriter, remoteIp
+                        );
+                        requestHandled = true;
+                    }
                 }
             }
             if (!requestHandled)
