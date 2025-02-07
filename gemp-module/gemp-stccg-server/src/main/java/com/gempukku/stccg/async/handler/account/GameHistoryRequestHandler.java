@@ -1,10 +1,12 @@
-package com.gempukku.stccg.async.handler;
+package com.gempukku.stccg.async.handler.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.handler.ResponseWriter;
+import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.database.GameHistoryDAO;
 import com.gempukku.stccg.database.User;
