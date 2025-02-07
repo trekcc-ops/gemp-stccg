@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingSystem;
@@ -29,6 +30,7 @@ public class RootUriRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(RootUriRequestHandler.class);
     private final Pattern originPattern;
     private final ServerObjects _serverObjects;
+    private final ObjectMapper _jsonMapper = new ObjectMapper();
 
     public RootUriRequestHandler(LongPollingSystem longPollingSystem, ServerObjects objects) {
         _webRequestHandler = new WebRequestHandler();
@@ -80,7 +82,8 @@ public class RootUriRequestHandler implements UriRequestHandler {
 
             if (uri.startsWith(SERVER_CONTEXT_PATH + "login") && request.method() == HttpMethod.POST) {
                 Map<String, String> parameters = getParameters(request);
-                LoginRequestHandler handler = new LoginRequestHandler(parameters);
+                parameters.put("type", "login");
+                UriRequestHandlerNew handler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
                 handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
                 requestHandled = true;
             } else {

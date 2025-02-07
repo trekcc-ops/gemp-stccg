@@ -1,38 +1,34 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
-import io.netty.handler.codec.http.multipart.Attribute;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpData;
-import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
-public class LoginRequestHandler implements UriRequestHandler {
+@JsonIgnoreProperties("participantId")
+public class LoginRequestHandler implements UriRequestHandlerNew {
 
     private final String _userId;
     private final String _password;
 
-    public LoginRequestHandler(Map<String, String> parameters) {
-        _userId = parameters.get("login");
-        _password = parameters.get("password");
-    }
-
-    @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
-            throws Exception {
+    public LoginRequestHandler(
+            @JsonProperty(value = "login", required = true)
+            String userId,
+            @JsonProperty(value = "password", required = true)
+            String password
+    ) {
+        _userId = userId;
+        _password = password;
     }
 
     public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
@@ -52,7 +48,8 @@ public class LoginRequestHandler implements UriRequestHandler {
         }
     }
 
-    final Map<String, String> logUserReturningHeaders(String remoteIp, String login, ServerObjects objects) throws SQLException {
+    final Map<String, String> logUserReturningHeaders(String remoteIp, String login, ServerObjects objects)
+            throws SQLException {
         objects.getPlayerDAO().updateLastLoginIp(login, remoteIp);
 
         String sessionId = objects.getLoggedUserHolder().logUser(login);
