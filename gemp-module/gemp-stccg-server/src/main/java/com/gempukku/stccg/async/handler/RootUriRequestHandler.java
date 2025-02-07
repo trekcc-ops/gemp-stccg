@@ -7,9 +7,14 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.multipart.Attribute;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,7 +79,9 @@ public class RootUriRequestHandler implements UriRequestHandler {
             boolean requestHandled = false;
 
             if (uri.startsWith(SERVER_CONTEXT_PATH + "login") && request.method() == HttpMethod.POST) {
-                new LoginRequestHandler().handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
+                Map<String, String> parameters = getParameters(request);
+                LoginRequestHandler handler = new LoginRequestHandler(parameters);
+                handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
                 requestHandled = true;
             } else {
 
@@ -91,6 +98,21 @@ public class RootUriRequestHandler implements UriRequestHandler {
             if (!requestHandled)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
+    }
+
+    private Map<String, String> getParameters(HttpRequest request) throws IOException {
+        Map<String, String> result = new HashMap<>();
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        try {
+            for (InterfaceHttpData data : postDecoder.getBodyHttpDatas()) {
+                if (data instanceof Attribute attribute) {
+                    result.put(attribute.getName(), attribute.getValue());
+                }
+            }
+        } finally {
+            postDecoder.destroy();
+        }
+        return result;
     }
 
 }

@@ -22,6 +22,14 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 public class LoginRequestHandler implements UriRequestHandler {
 
+    private final String _userId;
+    private final String _password;
+
+    public LoginRequestHandler(Map<String, String> parameters) {
+        _userId = parameters.get("login");
+        _password = parameters.get("password");
+    }
+
     @Override
     public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
             throws Exception {
@@ -31,36 +39,17 @@ public class LoginRequestHandler implements UriRequestHandler {
                                     ServerObjects serverObjects)
             throws Exception {
 
-        Map<String, String> parameters = getParameters(request);
-        String login = parameters.get("login");
-        String password = parameters.get("password");
-
-        if (login == null || password == null)
+        if (_userId == null || _password == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        User player = serverObjects.getPlayerDAO().loginUser(login, password);
+        User player = serverObjects.getPlayerDAO().loginUser(_userId, _password);
         if (player != null) {
             player.checkLogin();
-            Map<String, String> userReturningHeaders = logUserReturningHeaders(remoteIp, login, serverObjects);
+            Map<String, String> userReturningHeaders = logUserReturningHeaders(remoteIp, _userId, serverObjects);
             responseWriter.writeEmptyXmlResponseWithHeaders(userReturningHeaders);
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
         }
-    }
-
-    Map<String, String> getParameters(HttpRequest request) throws IOException {
-        Map<String, String> result = new HashMap<>();
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            for (InterfaceHttpData data : postDecoder.getBodyHttpDatas()) {
-                if (data instanceof Attribute attribute) {
-                    result.put(attribute.getName(), attribute.getValue());
-                }
-            }
-        } finally {
-            postDecoder.destroy();
-        }
-        return result;
     }
 
     final Map<String, String> logUserReturningHeaders(String remoteIp, String login, ServerObjects objects) throws SQLException {
