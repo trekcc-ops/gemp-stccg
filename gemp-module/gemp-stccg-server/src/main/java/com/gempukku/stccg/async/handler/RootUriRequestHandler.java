@@ -52,7 +52,6 @@ public class RootUriRequestHandler implements UriRequestHandler {
         requestHandlers.put(SERVER_CONTEXT_PATH + "playerInfo", new PlayerInfoRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "register", new RegisterRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "replay", new ReplayRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "soloDraft", new SoloDraftRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "stats", new ServerStatsRequestHandler(objects));
@@ -86,6 +85,12 @@ public class RootUriRequestHandler implements UriRequestHandler {
                 UriRequestHandlerNew handler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
                 handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
                 requestHandled = true;
+            } else if (uri.startsWith(SERVER_CONTEXT_PATH + "register") && request.method() == HttpMethod.POST) {
+                    Map<String, String> parameters = getParameters(request);
+                    parameters.put("type", "register");
+                    UriRequestHandlerNew handler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
+                    handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
+                    requestHandled = true;
             } else {
 
                 // These APIs are protected by same Origin protection

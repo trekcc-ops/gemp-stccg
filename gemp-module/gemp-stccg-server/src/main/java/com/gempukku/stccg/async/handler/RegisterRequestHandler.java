@@ -1,5 +1,7 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.database.LoginInvalidException;
@@ -13,24 +15,30 @@ import org.apache.logging.log4j.Logger;
 import java.net.HttpURLConnection;
 import java.util.Map;
 
-public class RegisterRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
+@JsonIgnoreProperties("participantId")
+public class RegisterRequestHandler implements UriRequestHandlerNew {
 
     private static final Logger LOGGER = LogManager.getLogger(RegisterRequestHandler.class);
-    RegisterRequestHandler(ServerObjects objects) {
-        super(objects);
+    private final String _userId;
+    private final String _password;
+
+    RegisterRequestHandler(
+        @JsonProperty(value = "login", required = true)
+        String userId,
+        @JsonProperty(value = "password", required = true)
+        String password
+    ) {
+        _userId = userId;
+        _password = password;
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+                                    ServerObjects serverObjects)
             throws Exception {
-        if (!uri.isEmpty() || request.method() != HttpMethod.POST)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            String login = getFormParameterSafely(postDecoder, FormParameter.login);
-            String password = getFormParameterSafely(postDecoder, FormParameter.password);
-            if (_playerDao.registerUser(login, password, remoteIp)) {
-                Map<String, String> headers = logUserReturningHeaders(remoteIp, login);
+        try {
+            if (serverObjects.getPlayerDAO().registerUser(_userId, _password, remoteIp)) {
+                Map<String, String> headers = logUserReturningHeaders(remoteIp, _userId, serverObjects);
                 responseWriter.writeEmptyXmlResponseWithHeaders(headers);
             } else
                 throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409

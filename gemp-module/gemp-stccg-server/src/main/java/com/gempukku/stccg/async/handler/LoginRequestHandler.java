@@ -6,14 +6,9 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
 import java.net.HttpURLConnection;
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.Map;
-
-import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 @JsonIgnoreProperties("participantId")
 public class LoginRequestHandler implements UriRequestHandlerNew {
@@ -47,17 +42,5 @@ public class LoginRequestHandler implements UriRequestHandlerNew {
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
         }
     }
-
-    final Map<String, String> logUserReturningHeaders(String remoteIp, String login, ServerObjects objects)
-            throws SQLException {
-        objects.getPlayerDAO().updateLastLoginIp(login, remoteIp);
-
-        String sessionId = objects.getLoggedUserHolder().logUser(login);
-        return Collections.singletonMap(
-                SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
-    }
-
-
-
 
 }
