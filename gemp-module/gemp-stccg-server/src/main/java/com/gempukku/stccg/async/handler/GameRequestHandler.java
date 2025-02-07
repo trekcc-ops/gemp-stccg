@@ -11,7 +11,6 @@ import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.GameCommunicationChannel;
 import com.gempukku.stccg.game.GameServer;
-import com.gempukku.stccg.gamestate.GameState;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
@@ -32,16 +31,12 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private final Set<Phase> _autoPassDefault = new HashSet<>();
     private static final Logger LOGGER = LogManager.getLogger(GameRequestHandler.class);
 
-    public GameRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
+    public GameRequestHandler(ServerObjects objects) {
         super(objects);
         _gameServer = objects.getGameServer();
-        this.longPollingSystem = longPollingSystem;
+        this.longPollingSystem = objects.getLongPollingSystem();
 
-        _autoPassDefault.add(Phase.FELLOWSHIP);
-        _autoPassDefault.add(Phase.MANEUVER);
-        _autoPassDefault.add(Phase.ARCHERY);
-        _autoPassDefault.add(Phase.ASSIGNMENT);
-        _autoPassDefault.add(Phase.REGROUP);
+        _autoPassDefault.add(Phase.EXECUTE_ORDERS);
     }
 
     @Override
@@ -49,10 +44,6 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             throws Exception {
         if (uri.startsWith("/") && uri.endsWith("/cardInfo") && request.method() == HttpMethod.GET) {
             getCardInfo(request, uri.substring(1, uri.length() - 9), responseWriter);
-        } else if (uri.startsWith("/") && uri.endsWith("/concede") && request.method() == HttpMethod.POST) {
-            concede(request, uri.substring(1, uri.length() - 8), responseWriter);
-        } else if (uri.startsWith("/") && uri.endsWith("/cancel") && request.method() == HttpMethod.POST) {
-            cancel(request, uri.substring(1, uri.length() - 7), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/gameState/admin") && request.method() == HttpMethod.GET) {
             getGameState(uri, request, uri.substring(1, uri.length() - 16), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/gameState/player") && request.method() == HttpMethod.GET) {
@@ -128,7 +119,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             GameCommunicationChannel commChannel =
                     gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
             LongPollingResource pollingResource =
-                    new GameUpdateLongPollingResource(commChannel, channelNumber, gameMediator, responseWriter);
+                    new GameUpdateLongPollingResource(commChannel, gameMediator, responseWriter);
             longPollingSystem.processLongPollingResource(pollingResource, commChannel);
         } finally {
             postDecoder.destroy();
@@ -138,14 +129,12 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private class GameUpdateLongPollingResource implements LongPollingResource {
         private final GameCommunicationChannel _gameCommunicationChannel;
         private final CardGameMediator _gameMediator;
-        private final int _channelNumber;
         private final ResponseWriter _responseWriter;
         private boolean _processed;
 
-        private GameUpdateLongPollingResource(GameCommunicationChannel commChannel, int channelNumber,
-                                              CardGameMediator gameMediator, ResponseWriter responseWriter) {
+        private GameUpdateLongPollingResource(GameCommunicationChannel commChannel, CardGameMediator gameMediator,
+                                              ResponseWriter responseWriter) {
             _gameCommunicationChannel = commChannel;
-            _channelNumber = channelNumber;
             _gameMediator = gameMediator;
             _responseWriter = responseWriter;
         }
@@ -167,33 +156,6 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                 }
                 _processed = true;
             }
-        }
-    }
-
-    private void cancel(HttpRequest request, String gameId, ResponseWriter responseWriter)
-            throws HttpProcessingException, IOException {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
-            CardGameMediator gameMediator = _gameServer.getGameById(gameId);
-            gameMediator.cancel(resourceOwner);
-            responseWriter.writeXmlOkResponse();
-        } finally {
-            postDecoder.destroy();
-        }
-    }
-
-    private void concede(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
-            CardGameMediator gameMediator = _gameServer.getGameById(gameId);
-            gameMediator.concede(resourceOwner);
-            responseWriter.writeXmlOkResponse();
-        } finally {
-            postDecoder.destroy();
         }
     }
 
@@ -237,7 +199,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                     final String[] phases = cookie.value().split("0");
                     Set<Phase> result = new HashSet<>();
                     for (String phase : phases)
-                        result.add(Phase.valueOf(phase));
+                        result.add(Phase.valueOf(phase.toUpperCase().replace(" ","_")));
                     return result;
                 }
             }

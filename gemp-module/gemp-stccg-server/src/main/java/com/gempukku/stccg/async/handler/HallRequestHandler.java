@@ -36,11 +36,11 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private final LeagueService _leagueService;
     private final LongPollingSystem _longPollingSystem;
 
-    HallRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
+    HallRequestHandler(ServerObjects objects) {
         super(objects);
         _hallServer = objects.getHallServer();
         _leagueService = objects.getLeagueService();
-        _longPollingSystem = longPollingSystem;
+        _longPollingSystem = objects.getLongPollingSystem();
     }
 
     @Override

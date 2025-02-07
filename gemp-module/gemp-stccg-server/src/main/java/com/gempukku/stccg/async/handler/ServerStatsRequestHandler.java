@@ -1,77 +1,66 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.common.JSONData;
-import io.netty.handler.codec.http.HttpMethod;
+import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
-public class ServerStatsRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
+public class ServerStatsRequestHandler implements UriRequestHandlerNew {
     private static final Logger LOGGER = LogManager.getLogger(ServerStatsRequestHandler.class);
+    private final ZonedDateTime _fromDate;
+    private final ZonedDateTime _toDate;
+    
+    ServerStatsRequestHandler(
+            @JsonProperty("startDay")
+            String startDayText,
+            @JsonProperty("length")
+            String length
+    ) throws ParseException, HttpProcessingException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-    public ServerStatsRequestHandler(ServerObjects objects) {
-        super(objects);
-    }
+        //This convoluted conversion is actually necessary, for it to be flexible enough to take
+        //human-level dates such as 2023-2-13 (note the lack of zero padding)
+        _fromDate = ZonedDateTime.ofInstant(format.parse(startDayText).toInstant(), ZoneOffset.UTC);
 
-    @Override
-    public final void handleRequest(String uri, HttpRequest request,
-                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-            String startDay = getQueryParameterSafely(queryDecoder, FormParameter.startDay);
-            String length = getQueryParameterSafely(queryDecoder, FormParameter.length);
-
-            try {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                format.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-                //This convoluted conversion is actually necessary, for it to be flexible enough to take
-                //human-level dates such as 2023-2-13 (note the lack of zero padding)
-                var from = ZonedDateTime.ofInstant(format.parse(startDay).toInstant(), ZoneOffset.UTC);
-
-                ZonedDateTime to;
-
-                switch (length) {
-                    case "month" -> to = from.plusMonths(1);
-                    case "week" -> to = from.plusDays(7);
-                    case "day" -> to = from.plusDays(1);
-                    default -> throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-                }
-
-                var stats = new PlayHistoryStats();
-                stats.ActivePlayers = _gameHistoryService.getActivePlayersCount(from, to);
-                stats.GamesCount = _gameHistoryService.getGamesPlayedCount(from, to);
-                stats.StartDate = from.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                stats.EndDate = to.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                stats.Stats = _gameHistoryService.getGameHistoryStatistics(from, to);
-                String jsonString = _jsonMapper.writeValueAsString(stats);
-                responseWriter.writeJsonResponse(jsonString);
-            } catch (Exception exp) {
-                logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);
-                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-            }
-        } else {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+        switch (length) {
+            case "month" -> _toDate = _fromDate.plusMonths(1);
+            case "week" -> _toDate = _fromDate.plusDays(7);
+            case "day" -> _toDate = _fromDate.plusDays(1);
+            default -> throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
         }
     }
 
-    private static class PlayHistoryStats {
-        public List<JSONData.FormatStats> Stats;
-        public int ActivePlayers;
-        public int GamesCount;
-        public String StartDate;
-        public String EndDate;
+    @Override
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp, 
+                                    ServerObjects serverObjects) throws Exception {
+        try {
+            GameHistoryService gameHistoryService = serverObjects.getGameHistoryService();
+            Map<Object, Object> stats = new HashMap<>();
+            stats.put("ActivePlayers", gameHistoryService.getActivePlayersCount(_fromDate, _toDate));
+            stats.put("GamesCount", gameHistoryService.getGamesPlayedCount(_fromDate, _toDate));
+            stats.put("StartDate", _fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            stats.put("EndDate", _toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            stats.put("Stats", gameHistoryService.getGameHistoryStatistics(_fromDate, _toDate));
+            responseWriter.writeJsonResponse(new ObjectMapper().writeValueAsString(stats));
+        } catch (Exception exp) {
+            logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
+        }
     }
 
 }

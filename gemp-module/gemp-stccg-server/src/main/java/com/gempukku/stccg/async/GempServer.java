@@ -29,10 +29,8 @@ public class GempServer {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
-            LongPollingSystem longPollingSystem = new LongPollingSystem();
-            longPollingSystem.start();
-
-            UriRequestHandler uriRequestHandler = new RootUriRequestHandler(longPollingSystem, objects);
+            objects.getLongPollingSystem().start();
+            UriRequestHandler uriRequestHandler = new RootUriRequestHandler(objects);
 
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)

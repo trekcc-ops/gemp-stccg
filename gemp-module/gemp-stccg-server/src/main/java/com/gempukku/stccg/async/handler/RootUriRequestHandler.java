@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 public class RootUriRequestHandler implements UriRequestHandler {
     private static final String SERVER_CONTEXT_PATH = "/gemp-stccg-server/";
-    private final Map<String, UriRequestHandler> requestHandlers = new HashMap<>();
     private final WebRequestHandler _webRequestHandler;
     private final StatusRequestHandler _statusRequestHandler;
     private static final Logger LOGGER = LogManager.getLogger(RootUriRequestHandler.class);
@@ -34,27 +33,12 @@ public class RootUriRequestHandler implements UriRequestHandler {
     private final ServerObjects _serverObjects;
     private final ObjectMapper _jsonMapper = new ObjectMapper();
 
-    public RootUriRequestHandler(LongPollingSystem longPollingSystem, ServerObjects objects) {
+    public RootUriRequestHandler(ServerObjects objects) {
         _webRequestHandler = new WebRequestHandler();
         _serverObjects = objects;
         _statusRequestHandler = new StatusRequestHandler(objects);
         String originAllowedPattern = AppConfig.getProperty("origin.allowed.pattern");
         originPattern = Pattern.compile(originAllowedPattern);
-
-        requestHandlers.put(SERVER_CONTEXT_PATH + "admin", new AdminRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "chat", new ChatRequestHandler(objects, longPollingSystem));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "collection", new CollectionRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "deck", new DeckRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "delivery", new DeliveryRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "game/", new GameRequestHandler(objects, longPollingSystem));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "hall", new HallRequestHandler(objects, longPollingSystem));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "league", new LeagueRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "merchant", new MerchantRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "replay", new ReplayRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "soloDraft", new SoloDraftRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "stats", new ServerStatsRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "tournament", new TournamentRequestHandler(objects));
     }
 
     @Override
@@ -81,9 +65,11 @@ public class RootUriRequestHandler implements UriRequestHandler {
             String afterServer = uri.substring(SERVER_CONTEXT_PATH.length());
             int nextSlashIndex = afterServer.indexOf("/");
             String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
+            String afterHandlerType = afterServer.substring(handlerType.length());
 
             Map<String, String> parameters = switch(handlerType) {
-                case "gameHistory", "login", "playerInfo", "playerStats", "register" -> {
+                case "cancelGame", "concedeGame", "gameHistory", "login", "playerInfo", "playerStats", "register",
+                        "replay", "serverStats" -> {
                     Map<String, String> result = getParameters(request);
                     result.put("type", handlerType);
                     yield result;
@@ -96,15 +82,24 @@ public class RootUriRequestHandler implements UriRequestHandler {
                 handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
                 requestHandled = true;
             } else {
-
-                // These APIs are protected by same Origin protection
-                for (Map.Entry<String, UriRequestHandler> entry : requestHandlers.entrySet()) {
-                    if (uri.startsWith(entry.getKey())) {
-                        entry.getValue().handleRequest(
-                                uri.substring(entry.getKey().length()), request, responseWriter, remoteIp
-                        );
-                        requestHandled = true;
-                    }
+                UriRequestHandler handler = switch(handlerType) {
+                    case "admin" -> new AdminRequestHandler(_serverObjects);
+                    case "chat" -> new ChatRequestHandler(_serverObjects);
+                    case "collection" -> new CollectionRequestHandler(_serverObjects);
+                    case "deck" -> new DeckRequestHandler(_serverObjects);
+                    case "delivery" -> new DeliveryRequestHandler(_serverObjects);
+                    case "game" -> new GameRequestHandler(_serverObjects);
+                    case "hall" -> new HallRequestHandler(_serverObjects);
+                    case "league" -> new LeagueRequestHandler(_serverObjects);
+                    case "merchant" -> new MerchantRequestHandler(_serverObjects);
+                    case "playtesting" -> new PlaytestRequestHandler(_serverObjects);
+                    case "soloDraft" -> new SoloDraftRequestHandler(_serverObjects);
+                    case "tournament" -> new TournamentRequestHandler(_serverObjects);
+                    default -> null;
+                };
+                if (handler != null) {
+                    handler.handleRequest(afterHandlerType, request, responseWriter, remoteIp);
+                    requestHandled = true;
                 }
             }
             if (!requestHandled)

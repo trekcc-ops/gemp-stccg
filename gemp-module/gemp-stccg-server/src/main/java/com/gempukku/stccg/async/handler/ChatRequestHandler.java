@@ -30,10 +30,10 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
 
     private static final Logger LOGGER = LogManager.getLogger(ChatRequestHandler.class);
 
-    public ChatRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
+    public ChatRequestHandler(ServerObjects objects) {
         super(objects);
         _chatServer = objects.getChatServer();
-        this.longPollingSystem = longPollingSystem;
+        this.longPollingSystem = objects.getLongPollingSystem();
     }
 
     @Override

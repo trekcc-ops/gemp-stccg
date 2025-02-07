@@ -83,7 +83,7 @@ export default class GempClientCommunication {
     getStats(startDay, length, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/stats",
+            url:this.url + "/serverStats",
             cache:false,
             data:{
                 startDay:startDay,
@@ -299,10 +299,11 @@ export default class GempClientCommunication {
     concede(errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/game/" + getUrlParam("gameId") + "/concede",
+            url:this.url + "/concedeGame",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                gameId:getUrlParam("gameId")
+            },
             error:this.errorCheck(errorMap),
             dataType:"text"
         });
@@ -311,10 +312,11 @@ export default class GempClientCommunication {
     cancel(errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/game/" + getUrlParam("gameId") + "/cancel",
+            url:this.url + "/cancelGame",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                gameId:getUrlParam("gameId")
+            },
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });

@@ -58,6 +58,7 @@ public class ServerObjects {
     private ChatServer _chatServer;
     private GameServer _gameServer;
     private HallServer _hallServer;
+    private final LongPollingSystem _longPollingSystem;
 
     public ServerObjects() {
         //Libraries and other important prerequisite managers that are used by lots of other managers
@@ -66,6 +67,7 @@ public class ServerObjects {
         _productLibrary = new ProductLibrary();
         _loggedUserHolder = new LoggedUserHolder();
         _loggedUserHolder.start();
+        _longPollingSystem = new LongPollingSystem();
 
         //Now bulk initialize various managers
         LOGGER.info("GempukkuServer loading DAOs...");
@@ -150,4 +152,8 @@ public class ServerObjects {
     public final ChatServer getChatServer() { return _chatServer; }
     public final GameServer getGameServer() { return _gameServer; }
     public final HallServer getHallServer() { return _hallServer; }
+
+    public LongPollingSystem getLongPollingSystem() {
+        return _longPollingSystem;
+    }
 }

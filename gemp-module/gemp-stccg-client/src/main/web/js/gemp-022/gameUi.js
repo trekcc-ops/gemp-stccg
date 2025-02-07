@@ -80,8 +80,7 @@ export default class GameTableUI {
         this.gameSettings.set("foilPresentation", "static");
         this.gameSettings.set("autoPass", false);
 
-            // TODO: LotR-specific. Replace with correct arrays for ST-specific implementations.
-        this.gamePhases = new Array("Fellowship", "Maneuver", "Archery", "Assignment", "Skirmish", "Regroup");
+        this.gamePhases = new Array("Execute Orders");
 
         this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
