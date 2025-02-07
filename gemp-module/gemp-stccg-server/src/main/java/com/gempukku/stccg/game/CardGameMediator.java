@@ -137,7 +137,7 @@ public abstract class CardGameMediator {
             PhysicalCard card = gameState.findCardById(cardId);
             if (card == null || card.getZone() == null)
                 return "";
-            else if (!card.getZone().isInPlay() && card.getZone() != Zone.HAND) {
+            else if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
                 return getCardInfoJson(getGame(), card);
             } else {
                 return "";
@@ -541,6 +541,7 @@ public abstract class CardGameMediator {
         cardMap.put("blueprintId", card.getBlueprintId());
         cardMap.put("uniqueness", card.getUniqueness().name());
         cardMap.put("cardType", card.getCardType().name());
+        cardMap.put("imageUrl", card.getImageUrl());
         boolean hasUniversalIcon = card.isUniversal() &&
                 cardTypesShowingUniversal.contains(card.getCardType());
         cardMap.put("hasUniversalIcon", hasUniversalIcon);

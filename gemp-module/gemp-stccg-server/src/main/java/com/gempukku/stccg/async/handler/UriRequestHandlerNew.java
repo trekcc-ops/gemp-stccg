@@ -8,6 +8,7 @@ import com.gempukku.stccg.async.handler.account.GameHistoryRequestHandler;
 import com.gempukku.stccg.async.handler.account.PlayerStatsRequestHandler;
 import com.gempukku.stccg.async.handler.game.CancelGameRequestHandler;
 import com.gempukku.stccg.async.handler.game.ConcedeGameRequestHandler;
+import com.gempukku.stccg.async.handler.game.GameCardInfoRequestHandler;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
 import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.database.User;
@@ -30,6 +31,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CancelGameRequestHandler.class, name = "cancelGame"),
+        @JsonSubTypes.Type(value = GameCardInfoRequestHandler.class, name = "gameCardInfo"),
         @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
         @JsonSubTypes.Type(value = GameHistoryRequestHandler.class, name = "gameHistory"),
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),

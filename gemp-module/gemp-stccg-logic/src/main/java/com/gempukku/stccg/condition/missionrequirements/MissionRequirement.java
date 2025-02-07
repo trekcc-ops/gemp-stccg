@@ -15,4 +15,6 @@ public interface MissionRequirement {
     default boolean canBeMetBy(AttemptingUnit attemptingUnit) {
         return canBeMetBy(attemptingUnit.getAttemptingPersonnel());
     }
+
+    String toString();
 }

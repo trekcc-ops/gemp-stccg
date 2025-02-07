@@ -68,8 +68,8 @@ public class RootUriRequestHandler implements UriRequestHandler {
             String afterHandlerType = afterServer.substring(handlerType.length());
 
             Map<String, String> parameters = switch(handlerType) {
-                case "cancelGame", "concedeGame", "gameHistory", "login", "playerInfo", "playerStats", "register",
-                        "replay", "serverStats" -> {
+                case "cancelGame", "gameCardInfo", "concedeGame", "gameHistory", "login", "playerInfo", "playerStats",
+                        "register", "replay", "serverStats" -> {
                     Map<String, String> result = getParameters(request);
                     result.put("type", handlerType);
                     yield result;

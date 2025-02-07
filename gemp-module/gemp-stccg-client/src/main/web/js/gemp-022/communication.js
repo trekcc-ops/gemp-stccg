@@ -268,11 +268,12 @@ export default class GempClientCommunication {
     getCardInfo(cardId, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/game/" + getUrlParam("gameId") + "/cardInfo",
+            url:this.url + "/gameCardInfo/",
             cache:false,
             data:{
                 cardId:cardId,
-                participantId:getUrlParam("participantId") },
+                gameId:getUrlParam("gameId")
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"

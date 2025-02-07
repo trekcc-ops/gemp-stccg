@@ -1,0 +1,33 @@
+package com.gempukku.stccg.async.handler.game;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.handler.ResponseWriter;
+import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.game.CardGameMediator;
+import io.netty.handler.codec.http.HttpRequest;
+
+public class GameCardInfoRequestHandler implements UriRequestHandlerNew {
+    private final String _gameId;
+    private final int _cardId;
+
+    GameCardInfoRequestHandler(
+            @JsonProperty(value = "gameId", required = true)
+            String gameId,
+            @JsonProperty(value = "cardId", required = true)
+            int cardId
+    ) {
+        _gameId = gameId;
+        _cardId = cardId;
+    }
+
+    @Override
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+                                    ServerObjects serverObjects)
+            throws Exception {
+            // getGameById throws 404 error if not found
+        CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
+        responseWriter.writeJsonResponse(gameMediator.produceCardInfo(_cardId));
+    }
+
+}

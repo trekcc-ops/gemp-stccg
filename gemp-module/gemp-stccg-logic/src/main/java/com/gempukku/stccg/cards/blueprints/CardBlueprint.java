@@ -235,7 +235,7 @@ public class CardBlueprint {
     public void setMissionRequirements(MissionRequirement requirement) { _missionRequirements = requirement; }
     public MissionRequirement getMissionRequirements() { return _missionRequirements; }
     public void setMissionRequirementsText(String requirements) { _missionRequirementsText = requirements;}
-    public String getMissionRequirementsText() { return _missionRequirementsText; }
+    public String getMissionRequirementsText() { return _missionRequirements.toString(); }
 
     public int getPointsShown() {
         return (_pointBox == null) ? 0 : _pointBox.getPointsShown();

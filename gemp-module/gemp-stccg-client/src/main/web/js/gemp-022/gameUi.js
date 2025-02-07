@@ -673,11 +673,16 @@ export default class GameTableUI {
     }
 
     displayCardInfo(card) {
-        var showModifiers = false;
+        let showModifiers = false;
         var cardId = card.cardId;
-        if (!this.replayMode && (cardId.length < 4 || cardId.substring(0, 4) != "temp")) {
+        if (cardId == null || (cardId.length >= 5 && cardId.substring(0, 5) == "extra")) {
+            showModifiers = false;
+        }
+        else if (!this.replayMode && (cardId.length < 4 || cardId.substring(0, 4) != "temp")) {
             showModifiers = true;
         }
+        // DEBUG: console.log("displayCardInfo for cardId " + cardId);
+        // DEBUG: console.log("showModifiers = " + showModifiers);
 
         this.displayCard(card, showModifiers);
 
@@ -687,6 +692,7 @@ export default class GameTableUI {
     }
 
     setCardModifiers(json) {
+        // DEBUG: console.log("Calling setCardModifiers");
         let modifiers = json.modifiers; // list of HTML strings
         let affiliations = json.affiliations; // list of HTML strings
         let icons = json.icons; // list of HTML strings
@@ -704,7 +710,9 @@ export default class GameTableUI {
         let awayTeams = json.awayTeams; // list of nodes with two elements (playerId and cardsInAwayTeam)
 
         let html = "";
+        console.log("Initial:" + html);
 
+        // List active modifiers
         if (modifiers != null && modifiers.length > 0) {
             html = html + "<b>Active Modifiers:</b><br/>";
             for (const modifier of modifiers) {
@@ -712,7 +720,9 @@ export default class GameTableUI {
             }
             html = html + "<br/>";
         }
+        console.log("After modifiers:" + html);
 
+        // Show icons for affiliation(s)
         if (affiliations != null && affiliations.length > 0) {
             html = html + "<b>Affiliation:</b> ";
             for (const affiliation of affiliations) {
@@ -720,9 +730,100 @@ export default class GameTableUI {
             }
             html = html + "<br/>";
         }
+        console.log("After affiliations:" + html);
+
+        // Show other card icons
+        if (icons != null && icons.length > 0) {
+            html = html + "<b>Icons:</b> ";
+            for (const icon of icons) {
+                html = html + icon;
+            }
+            html = html + "<br/>";
+        }
+        console.log("After icons:" + html);
+
+        // Show staffing requirements (if this card is a ship)
+        if (staffingRequirements != null) {
+            html = html + "<b>Staffing requirements:</b> ";
+            if (staffingRequirements.length = 0) {
+                html = html + "none";
+            } else {
+                for (const staffingRequirement of staffingRequirements) {
+                    html = html + staffingRequirement;
+                }
+            }
+            html = html + "<br/>";
+            if (isStaffed) {
+                html = html + "<i>(Ship is staffed)</i>";
+            } else {
+                html = html + "<i>(Ship is not staffed)</i>";
+            }
+            html = html + "<br/><br/>";
+        }
+        console.log("After staffing:" + html);
+
+        // Show RANGE (if this card is a ship)
+        if (printedRange != null && rangeAvailable != null) {
+            html = html + "<b>Printed RANGE:</b> " + printedRange + "<br/>";
+            html = html + "<b>RANGE available</b> " + rangeAvailable + "<br/>";
+        }
+        console.log("After RANGE:" + html);
+
+        // Show crew and docked ships if this card has them
+        html = html + this.showCommaDelimitedListOfCardLinks(crew, "Crew");
+        html = html + this.showCommaDelimitedListOfCardLinks(dockedCards, "Docked ships");
+        console.log("After crew/docked:" + html);
+
+        // Show mission requirements and away teams if this card has them
+        if (missionRequirements != null) {
+            let redMissionReqs = missionRequirements.replaceAll(" OR ", " <a style='color:red'>OR</a> ");
+            html = html + "<b>Mission requirements:</b> " + redMissionReqs + "<br/><br/>";
+        }
+        console.log("After mission requirements:" + html);
+
+        if (awayTeams != null && awayTeams.length > 0) {
+            html = html + "<b><u>Away Teams</u></b>";
+            for (const team of awayTeams) {
+                html = html + this.showCommaDelimitedListOfCardLinks(team.cardsInAwayTeam, team.playerId);
+            }
+        }
+        console.log("After away teams:" + html);
 
         $("#cardEffects").append(html);
         $("#cardEffects").addClass("cardInfoText");
+    }
+
+    showLinkableCardTitle(cardNode) {
+        // Takes a json node of card properties and creates a hyperlink that the user can click on to show the card
+        // Used in setCardModifiers method
+        let title = cardNode.title; // string
+        let hasUniversalIcon = cardNode.hasUniversalIcon; // boolean
+        let blueprintId = cardNode.blueprintId; // string
+        let imageUrl = cardNode.imageUrl; // string
+
+        let html = "";
+        html = html + "<div class='cardHint' value='" + blueprintId + "' card_img_url='" + imageUrl + "'>";
+        if (hasUniversalIcon) {
+            html = html + "&#x2756&nbsp;"; // unicode for universal symbol
+        }
+        html = html + title + "</div>";
+
+        return html;
+    }
+
+    showCommaDelimitedListOfCardLinks(jsonList, listTitle) {
+        let html = "";
+        if (jsonList != null && jsonList.length > 0) {
+            html = html + "<b>" + listTitle + " (" + jsonList.length + "):</b> ";
+            for (let i = 0; i < jsonList.length; i++) {
+                if (i > 0) {
+                    html = html + ", ";
+                }
+                html = html + this.showLinkableCardTitle(jsonList[i]);
+            }
+            html = html + "<br/><br/>";
+        }
+        return html;
     }
 
     initializeDialogs() {
@@ -872,6 +973,7 @@ export default class GameTableUI {
         var that = this;
         this.communication.getCardInfo(cardId,
             function (json) {
+                // DEBUG: console.log("Calling getCardModifiersFunction");
                 that.setCardModifiers(json);
             });
     }
@@ -2842,4 +2944,5 @@ export class ST1EGameTableUI extends GameTableUI {
                 return "";
         }
     }
+
 }
