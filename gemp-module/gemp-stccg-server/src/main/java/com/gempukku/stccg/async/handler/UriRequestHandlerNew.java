@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.handler.account.PlayerStatsRequestHandler;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
 import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.database.User;
@@ -25,8 +26,10 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = GameHistoryRequestHandler.class, name = "gameHistory"),
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),
         @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
+        @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
         @JsonSubTypes.Type(value = RegisterRequestHandler.class, name = "register")
 })
 public interface UriRequestHandlerNew {

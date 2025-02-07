@@ -47,11 +47,9 @@ public class RootUriRequestHandler implements UriRequestHandler {
         requestHandlers.put(SERVER_CONTEXT_PATH + "deck", new DeckRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "delivery", new DeliveryRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "game/", new GameRequestHandler(objects, longPollingSystem));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "gameHistory", new GameHistoryRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "hall", new HallRequestHandler(objects, longPollingSystem));
         requestHandlers.put(SERVER_CONTEXT_PATH + "league", new LeagueRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "merchant", new MerchantRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "replay", new ReplayRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "soloDraft", new SoloDraftRequestHandler(objects));
@@ -85,7 +83,7 @@ public class RootUriRequestHandler implements UriRequestHandler {
             String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
 
             Map<String, String> parameters = switch(handlerType) {
-                case "login", "playerInfo", "register" -> {
+                case "gameHistory", "login", "playerInfo", "playerStats", "register" -> {
                     Map<String, String> result = getParameters(request);
                     result.put("type", handlerType);
                     yield result;

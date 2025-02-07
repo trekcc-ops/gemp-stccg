@@ -1,35 +1,36 @@
-package com.gempukku.stccg.async.handler;
+package com.gempukku.stccg.async.handler.account;
 
-import com.gempukku.stccg.async.HttpProcessingException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.handler.ResponseWriter;
+import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.database.PlayerStatistic;
 import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpMethod;
+import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpRequest;
 
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerStatsRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-
-    public PlayerStatsRequestHandler(ServerObjects objects) {
-        super(objects);
-    }
+@JsonIgnoreProperties("participantId")
+public class PlayerStatsRequestHandler implements UriRequestHandlerNew {
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+                                    ServerObjects serverObjects)
             throws Exception {
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            User resourceOwner = getUserIdFromCookiesOrUri(request);
+
+        GameHistoryService gameHistoryService = serverObjects.getGameHistoryService();
+
+            User resourceOwner = getResourceOwnerSafely(request, serverObjects);
 
             Map<Object, Object> response = new HashMap<>();
 
-
             List<Map<Object, Object>> casualStatistics = new ArrayList<>();
-            for (PlayerStatistic statistic : _gameHistoryService.getCasualPlayerStatistics(resourceOwner)) {
+            for (PlayerStatistic statistic : gameHistoryService.getCasualPlayerStatistics(resourceOwner)) {
                 Map<Object, Object> statistics = new HashMap<>();
                 statistics.put("deckName", statistic.getDeckName());
                 statistics.put("format", statistic.getFormatName());
@@ -40,7 +41,7 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
             response.put("casual", casualStatistics);
 
             List<Map<Object, Object>> competitiveStatistics = new ArrayList<>();
-            for (PlayerStatistic statistic : _gameHistoryService.getCompetitivePlayerStatistics(resourceOwner)) {
+            for (PlayerStatistic statistic : gameHistoryService.getCompetitivePlayerStatistics(resourceOwner)) {
                 Map<Object, Object> statistics = new HashMap<>();
                 statistics.put("deckName", statistic.getDeckName());
                 statistics.put("format", statistic.getFormatName());
@@ -49,10 +50,7 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
                 casualStatistics.add(statistics);
             }
             response.put("competitive", competitiveStatistics);
-            responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(response));
-        } else {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        }
+            responseWriter.writeJsonResponse(new ObjectMapper().writeValueAsString(response));
     }
 
 }

@@ -1,13 +1,14 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.database.GameHistoryDAO;
 import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 
 import java.net.HttpURLConnection;
 import java.time.format.DateTimeFormatter;
@@ -16,40 +17,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameHistoryRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
+@JsonIgnoreProperties("participantId")
+public class GameHistoryRequestHandler implements UriRequestHandlerNew {
 
-    public GameHistoryRequestHandler(ServerObjects objects) {
-        super(objects);
+    private final int _start;
+    private final int _count;
+    GameHistoryRequestHandler(
+            @JsonProperty(value = "start", required = true)
+            int start,
+            @JsonProperty(value = "count", required = true)
+            int count
+    ) {
+        _start = start;
+        _count = count;
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+                                    ServerObjects serverObjects)
             throws Exception {
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            getGameHistory(request, responseWriter);
-        } else {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        }
-    }
 
-    private void getGameHistory(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
-        String startParameter = getQueryParameterSafely(queryDecoder, FormParameter.start);
-        String countParameter = getQueryParameterSafely(queryDecoder, FormParameter.count);
-
-        int start = Integer.parseInt(startParameter);
-        int count = Integer.parseInt(countParameter);
-
-        if (start < 0 || count < 1 || count > 100)
+        if (_start < 0 || _count < 1 || _count > 100)
             throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-        GameHistoryDAO gameHistoryDAO = _serverObjects.getGameHistoryDAO();
+        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        GameHistoryDAO gameHistoryDAO = serverObjects.getGameHistoryDAO();
 
         final List<DBData.GameHistory> playerGameHistory =
-                gameHistoryDAO.getGameHistoryForPlayer(resourceOwner, start, count);
-        int recordCount = _gameHistoryService.getGameHistoryForPlayerCount(resourceOwner);
+                gameHistoryDAO.getGameHistoryForPlayer(resourceOwner, _start, _count);
+        int recordCount = serverObjects.getGameHistoryService().getGameHistoryForPlayerCount(resourceOwner);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("count", recordCount);
@@ -83,6 +79,7 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
             historyEntries.add(historyEntry);
         }
         response.put("games", historyEntries);
-        responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(response));
+        responseWriter.writeJsonResponse(new ObjectMapper().writeValueAsString(response));
     }
+
 }
