@@ -8,6 +8,7 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -49,7 +51,6 @@ public class RootUriRequestHandler implements UriRequestHandler {
         requestHandlers.put(SERVER_CONTEXT_PATH + "hall", new HallRequestHandler(objects, longPollingSystem));
         requestHandlers.put(SERVER_CONTEXT_PATH + "league", new LeagueRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "merchant", new MerchantRequestHandler(objects));
-        requestHandlers.put(SERVER_CONTEXT_PATH + "playerInfo", new PlayerInfoRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
         requestHandlers.put(SERVER_CONTEXT_PATH + "replay", new ReplayRequestHandler(objects));
@@ -84,7 +85,7 @@ public class RootUriRequestHandler implements UriRequestHandler {
             String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
 
             Map<String, String> parameters = switch(handlerType) {
-                case "login", "register" -> {
+                case "login", "playerInfo", "register" -> {
                     Map<String, String> result = getParameters(request);
                     result.put("type", handlerType);
                     yield result;
@@ -115,15 +116,24 @@ public class RootUriRequestHandler implements UriRequestHandler {
 
     private Map<String, String> getParameters(HttpRequest request) throws IOException {
         Map<String, String> result = new HashMap<>();
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            for (InterfaceHttpData data : postDecoder.getBodyHttpDatas()) {
-                if (data instanceof Attribute attribute) {
-                    result.put(attribute.getName(), attribute.getValue());
+        if (request.method() == HttpMethod.POST) {
+            InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+            try {
+                for (InterfaceHttpData data : postDecoder.getBodyHttpDatas()) {
+                    if (data instanceof Attribute attribute) {
+                        result.put(attribute.getName(), attribute.getValue());
+                    }
+                }
+            } finally {
+                postDecoder.destroy();
+            }
+        } else if (request.method() == HttpMethod.GET) {
+            QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
+            for (Map.Entry<String, List<String>> entry : queryDecoder.parameters().entrySet()) {
+                if (entry.getValue() != null && !entry.getValue().isEmpty() && !entry.getKey().equals("_")) {
+                    result.put(entry.getKey(), entry.getValue().getFirst());
                 }
             }
-        } finally {
-            postDecoder.destroy();
         }
         return result;
     }

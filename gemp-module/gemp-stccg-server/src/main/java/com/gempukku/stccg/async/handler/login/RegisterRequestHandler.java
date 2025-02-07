@@ -1,14 +1,13 @@
-package com.gempukku.stccg.async.handler;
+package com.gempukku.stccg.async.handler.login;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.handler.ResponseWriter;
+import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.database.LoginInvalidException;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

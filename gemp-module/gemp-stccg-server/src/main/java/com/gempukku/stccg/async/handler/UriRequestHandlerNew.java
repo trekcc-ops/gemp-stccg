@@ -2,9 +2,15 @@ package com.gempukku.stccg.async.handler;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.draft.*;
+import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
+import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
+import com.gempukku.stccg.database.User;
+import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.apache.logging.log4j.Logger;
 
@@ -12,12 +18,15 @@ import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
+import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),
+        @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
         @JsonSubTypes.Type(value = RegisterRequestHandler.class, name = "register")
 })
 public interface UriRequestHandlerNew {
@@ -44,5 +53,38 @@ public interface UriRequestHandlerNew {
         return Collections.singletonMap(
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
+
+    default User getResourceOwnerSafely(HttpMessage request, ServerObjects objects)
+            throws HttpProcessingException {
+        String loggedUser = getLoggedUser(request, objects);
+
+        if (loggedUser == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
+
+        User resourceOwner = objects.getPlayerDAO().getPlayer(loggedUser);
+
+        if (resourceOwner == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
+        return resourceOwner;
+    }
+
+    default String getLoggedUser(HttpMessage request, ServerObjects serverObjects) {
+        ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
+        String cookieHeader = request.headers().get(COOKIE);
+        if (cookieHeader != null) {
+            Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
+            for (Cookie cookie : cookies) {
+                if ("loggedUser".equals(cookie.name())) {
+                    String value = cookie.value();
+                    if (value != null) {
+                        return serverObjects.getLoggedUserHolder().getLoggedUser(value);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
 
 }
