@@ -79,18 +79,23 @@ public class RootUriRequestHandler implements UriRequestHandler {
             }
             boolean requestHandled = false;
 
-            if (uri.startsWith(SERVER_CONTEXT_PATH + "login") && request.method() == HttpMethod.POST) {
-                Map<String, String> parameters = getParameters(request);
-                parameters.put("type", "login");
+            String afterServer = uri.substring(SERVER_CONTEXT_PATH.length());
+            int nextSlashIndex = afterServer.indexOf("/");
+            String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
+
+            Map<String, String> parameters = switch(handlerType) {
+                case "login", "register" -> {
+                    Map<String, String> result = getParameters(request);
+                    result.put("type", handlerType);
+                    yield result;
+                }
+                default -> null;
+            };
+
+            if (parameters != null) {
                 UriRequestHandlerNew handler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
                 handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
                 requestHandled = true;
-            } else if (uri.startsWith(SERVER_CONTEXT_PATH + "register") && request.method() == HttpMethod.POST) {
-                    Map<String, String> parameters = getParameters(request);
-                    parameters.put("type", "register");
-                    UriRequestHandlerNew handler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
-                    handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
-                    requestHandled = true;
             } else {
 
                 // These APIs are protected by same Origin protection
