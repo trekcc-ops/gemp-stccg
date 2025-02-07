@@ -241,9 +241,11 @@ export default class GempClientCommunication {
     startGameSession(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/game/" + getUrlParam("gameId"),
+            url:this.url + "/startGameSession",
             cache:false,
-            data:{ participantId:getUrlParam("participantId") },
+            data:{
+                gameId:getUrlParam("gameId")
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"

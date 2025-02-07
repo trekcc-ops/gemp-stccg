@@ -44,6 +44,9 @@ public class RootUriRequestHandler implements UriRequestHandler {
     @Override
     public final void handleRequest(String uri, HttpRequest request,
                                     ResponseWriter responseWriter, String remoteIp) throws Exception {
+        if (uri.contains("?"))
+            uri = uri.substring(0, uri.indexOf('?'));
+
         String webContextPath = "/gemp-module/";
         if (uri.startsWith(webContextPath)) {
             _webRequestHandler.handleRequest(uri.substring(webContextPath.length()), request, responseWriter, remoteIp);
@@ -69,7 +72,7 @@ public class RootUriRequestHandler implements UriRequestHandler {
 
             Map<String, String> parameters = switch(handlerType) {
                 case "cancelGame", "gameCardInfo", "concedeGame", "gameHistory", "login", "playerInfo", "playerStats",
-                        "register", "replay", "serverStats" -> {
+                        "register", "replay", "serverStats", "startGameSession" -> {
                     Map<String, String> result = getParameters(request);
                     result.put("type", handlerType);
                     yield result;

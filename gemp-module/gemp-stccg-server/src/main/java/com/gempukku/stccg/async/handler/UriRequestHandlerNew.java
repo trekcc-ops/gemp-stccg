@@ -9,6 +9,7 @@ import com.gempukku.stccg.async.handler.account.PlayerStatsRequestHandler;
 import com.gempukku.stccg.async.handler.game.CancelGameRequestHandler;
 import com.gempukku.stccg.async.handler.game.ConcedeGameRequestHandler;
 import com.gempukku.stccg.async.handler.game.GameCardInfoRequestHandler;
+import com.gempukku.stccg.async.handler.game.StartGameSessionRequestHandler;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
 import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.database.User;
@@ -39,7 +40,8 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
         @JsonSubTypes.Type(value = RegisterRequestHandler.class, name = "register"),
         @JsonSubTypes.Type(value = ReplayRequestHandler.class, name = "replay"),
-        @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats")
+        @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats"),
+        @JsonSubTypes.Type(value = StartGameSessionRequestHandler.class, name = "startGameSession")
 })
 public interface UriRequestHandlerNew {
     void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,

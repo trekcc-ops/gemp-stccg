@@ -42,9 +42,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     @Override
     public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
             throws Exception {
-        if (uri.startsWith("/") && uri.endsWith("/cardInfo") && request.method() == HttpMethod.GET) {
-            getCardInfo(request, uri.substring(1, uri.length() - 9), responseWriter);
-        } else if (uri.startsWith("/") && uri.endsWith("/gameState/admin") && request.method() == HttpMethod.GET) {
+        if (uri.startsWith("/") && uri.endsWith("/gameState/admin") && request.method() == HttpMethod.GET) {
             getGameState(uri, request, uri.substring(1, uri.length() - 16), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/gameState/player") && request.method() == HttpMethod.GET) {
             getGameState(uri, request, uri.substring(1, uri.length() - 17), responseWriter);
@@ -63,9 +61,6 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getGameState(String uri, HttpRequest request, String gameId, ResponseWriter responseWriter)
             throws HttpProcessingException {
-
-        // int = 11 + length of admin, player, player1, player2
-//        gameId = uri.substring(1, uri.length() - int)
 
         User resourceOwner = getResourceOwnerSafely(request);
 
@@ -156,19 +151,6 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                 }
                 _processed = true;
             }
-        }
-    }
-
-    private void getCardInfo(HttpRequest request, String gameId, ResponseWriter responseWriter)
-            throws Exception {
-        QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String cardIdStr = getQueryParameterSafely(queryDecoder, FormParameter.cardId);
-        if (cardIdStr == null || cardIdStr.startsWith("extra")) {
-            responseWriter.writeJsonResponse("");
-        } else {
-            int cardId = Integer.parseInt(cardIdStr);
-            CardGameMediator gameMediator = _gameServer.getGameById(gameId); // throws 404 error if not found
-            responseWriter.writeJsonResponse(gameMediator.produceCardInfo(cardId));
         }
     }
 
