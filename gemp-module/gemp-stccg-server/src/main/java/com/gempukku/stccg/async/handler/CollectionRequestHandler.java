@@ -85,8 +85,6 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         }
 
         Map<String, String> headers = new HashMap<>();
-        processDeliveryServiceNotification(request, headers);
-
         responseWriter.writeXmlResponseWithHeaders(doc, headers);
     }
 

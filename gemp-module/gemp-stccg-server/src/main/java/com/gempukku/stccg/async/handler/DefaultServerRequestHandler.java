@@ -36,8 +36,6 @@ import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 class DefaultServerRequestHandler {
-    private final static Map.Entry<String, String> HEADERS_TO_ADD =
-            new AbstractMap.SimpleEntry<>("Delivery-Service-Package", "true");
     private final static int SIGNUP_REWARD = 20000;
     private final static int WEEKLY_REWARD = 5000;
     final CardBlueprintLibrary _cardBlueprintLibrary;
@@ -111,13 +109,6 @@ class DefaultServerRequestHandler {
             }
         }
         return null;
-    }
-
-    final void processDeliveryServiceNotification(HttpMessage request,
-                                                  Map<? super String, ? super String> headersToAdd) {
-        String logged = getLoggedUser(request);
-        if (logged != null && _transferDAO.hasUndeliveredPackages(logged))
-            headersToAdd.put(HEADERS_TO_ADD.getKey(), HEADERS_TO_ADD.getValue());
     }
 
     final User getResourceOwnerSafely(HttpMessage request, String participantId)

@@ -363,7 +363,6 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     itemsToSerialize.put("currency", playerCollection.getCurrency());
 
                     Map<String, String> headers = new HashMap<>();
-                    processDeliveryServiceNotification(_request, headers);
 
                     String jsonString = _jsonMapper.writeValueAsString(itemsToSerialize);
                     _responseWriter.writeJsonResponseWithHeaders(jsonString, headers);

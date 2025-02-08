@@ -163,7 +163,6 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         }
 
         Map<String, String> headers = new HashMap<>();
-        processDeliveryServiceNotification(request, headers);
 
         responseWriter.writeXmlResponseWithHeaders(doc, headers);
     }
