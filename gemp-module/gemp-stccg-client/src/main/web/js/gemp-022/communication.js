@@ -453,11 +453,12 @@ export default class GempClientCommunication {
     importCollection(decklist, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/collection/import/",
+            url:this.url + "/deck/import/",
             cache:false,
             data:{
                 participantId:getUrlParam("participantId"),
-                decklist:decklist},
+                decklist:decklist
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -877,22 +878,6 @@ export default class GempClientCommunication {
             cache:false,
             data:{
                 motd:motd
-            },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-    
-    addItems(collectionType, product, players, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/admin/addItems",
-            cache:false,
-            data:{
-                collectionType:collectionType,
-                product:product,
-                players:players
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),

@@ -5,11 +5,7 @@ import com.gempukku.stccg.async.CacheManager;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionType;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.database.LeagueDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
@@ -27,7 +23,10 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 
 public class AdminRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final static long CARD_LOAD_SLEEP_TIME = 6000;
@@ -36,7 +35,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private final HallServer _hallServer;
     private final FormatLibrary _formatLibrary;
     private final LeagueDAO _leagueDao;
-    private final CollectionsManager _collectionManager;
     private final AdminService _adminService;
     private static final Logger LOGGER = LogManager.getLogger(AdminRequestHandler.class);
 
@@ -47,7 +45,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         _hallServer = objects.getHallServer();
         _formatLibrary = objects.getFormatLibrary();
         _leagueDao = objects.getLeagueDAO();
-        _collectionManager = objects.getCollectionsManager();
         _adminService = objects.getAdminService();
     }
 
@@ -99,14 +96,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             case "/addSoloDraftLeaguePOST":
                 validateLeagueAdmin(request);
                 addSoloDraftLeague(request, responseWriter);
-                break;
-            case "/addItemsPOST":
-                validateAdmin(request);
-                addItems(request, responseWriter);
-                break;
-            case "/addItemsToCollectionPOST":
-                validateAdmin(request);
-                addItemsToCollection(request, responseWriter);
                 break;
             case "/banUserPOST":
                 validateAdmin(request);
@@ -215,77 +204,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
             responseWriter.writeHtmlOkResponse();
         }
-    }
-
-    private void addItemsToCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            String reason = getFormParameterSafely(postDecoder, FormParameter.reason);
-            String product = getFormParameterSafely(postDecoder, FormParameter.product);
-            String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
-
-            Collection<GenericCardItem> productItems = getProductItems(product);
-
-            Map<User, CardCollection> playersCollection = _collectionManager.getPlayersCollection(collectionType);
-
-            for (Map.Entry<User, CardCollection> playerCollection : playersCollection.entrySet()) {
-                User key = playerCollection.getKey();
-                CollectionType collectionType1 = createCollectionType(collectionType);
-                _collectionManager.addItemsToPlayerCollection(
-                        true, reason, key, collectionType1, productItems);
-            }
-
-            responseWriter.writeHtmlOkResponse();
-        }
-    }
-
-    private void addItems(HttpRequest request, ResponseWriter responseWriter) throws IOException {
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            String players = getFormParameterSafely(postDecoder, FormParameter.players);
-            String product = getFormParameterSafely(postDecoder, FormParameter.product);
-            String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
-
-            Collection<GenericCardItem> productItems = getProductItems(product);
-
-            List<String> playerNames = getItems(players);
-
-            for (String playerName : playerNames) {
-                User player = _playerDao.getPlayer(playerName);
-                _collectionManager.addItemsToPlayerCollection(true,
-                        "Administrator action", player, createCollectionType(collectionType), productItems);
-            }
-            responseWriter.writeHtmlOkResponse();
-        }
-    }
-
-    private static List<String> getItems(String values) {
-        List<String> result = new LinkedList<>();
-        for (String pack : values.split("\n")) {
-            String blueprint = pack.trim();
-            if (!blueprint.isEmpty())
-                result.add(blueprint);
-        }
-        return result;
-    }
-
-    private static Collection<GenericCardItem> getProductItems(String values) {
-        Collection<GenericCardItem> result = new LinkedList<>();
-        for (String item : values.split("\n")) {
-            String strippedItem = item.strip();
-            if (!strippedItem.isEmpty()) {
-                final String[] itemSplit = strippedItem.split("x", 2);
-                if (itemSplit.length != 2)
-                    throw new RuntimeException("Unable to parse the items");
-                result.add(GenericCardItem.createItem(itemSplit[1].strip(), Integer.parseInt(itemSplit[0].strip())));
-            }
-        }
-        return result;
-    }
-
-    private CollectionType createCollectionType(String collectionType) {
-        final CollectionType result = CollectionType.getCollectionTypeByCode(collectionType);
-        if (result != null)
-            return result;
-        return _leagueService.getCollectionTypeByCode(collectionType);
     }
 
     private void addConstructedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {

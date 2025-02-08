@@ -351,21 +351,6 @@ document.addEventListener("DOMContentLoaded", function() {
 								$("#motd-text").val(json.response);
 								$("#motd-preview").html(json.response);
 							});
-							
-							
-							$("#add-items-button").button().click(
-								function () {
-									let execute = confirm("Are you sure you want to issue these items in these quantities to these players in that collection? THIS CANNOT BE UNDONE, EVEN MANUALLY.");
-									
-									if(!execute)
-										return;
-									
-									$("#add-items-response").html("Processing...");
-									
-									hall.comm.addItems($("#collectionType").val(), $("#product").val(), $("#players").val(), function (string) {
-										$("#add-items-response").html("Response: " + string);
-									});
-								});
 							break;
 						case 2:
 							// League admin
