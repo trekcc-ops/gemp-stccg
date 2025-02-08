@@ -89,7 +89,6 @@ public class RootUriRequestHandler implements UriRequestHandler {
                     case "admin" -> new AdminRequestHandler(_serverObjects);
                     case "collection" -> new CollectionRequestHandler(_serverObjects);
                     case "deck" -> new DeckRequestHandler(_serverObjects);
-                    case "delivery" -> new DeliveryRequestHandler(_serverObjects);
                     case "hall" -> new HallRequestHandler(_serverObjects);
                     case "league" -> new LeagueRequestHandler(_serverObjects);
                     case "playtesting" -> new PlaytestRequestHandler(_serverObjects);
