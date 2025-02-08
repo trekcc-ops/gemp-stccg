@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.filterable.SubDeck;
@@ -16,12 +19,17 @@ import com.gempukku.stccg.formats.GameFormat;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DeckRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
@@ -45,6 +53,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             getDeck(request, responseWriter);
         } else if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             saveDeck(request, responseWriter);
+        } else if (uri.startsWith("/import/") && request.method() == HttpMethod.GET) {
+            importCollection(request, responseWriter);
         } else if ("/library".equals(uri) && request.method() == HttpMethod.GET) {
             getLibraryDeck(request, responseWriter);
         } else if ("/share".equals(uri) && request.method() == HttpMethod.GET) {
@@ -135,6 +145,120 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             responseWriter.writeXmlOkResponse();
         }
     }
+
+    private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+        //noinspection SpellCheckingInspection
+        List<GenericCardItem> importResult = processImport(
+                getQueryParameterSafely(new QueryStringDecoder(request.uri()), FormParameter.decklist),
+                _cardBlueprintLibrary
+        );
+
+        Document doc = createNewDoc();
+        Element collectionElem = doc.createElement("collection");
+        collectionElem.setAttribute(FormParameter.count.name(), String.valueOf(importResult.size()));
+        doc.appendChild(collectionElem);
+
+        for (GenericCardItem item : importResult) {
+            appendCardElement(doc, collectionElem, item, true);
+        }
+
+        Map<String, String> headers = new HashMap<>();
+        processDeliveryServiceNotification(request, headers);
+
+        responseWriter.writeXmlResponseWithHeaders(doc, headers);
+    }
+
+    private static List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
+        Map<String, SubDeck> lackeySubDeckMap = new HashMap<>();
+        for (SubDeck subDeck : SubDeck.values()) {
+            lackeySubDeckMap.put(subDeck.getLackeyName() + ":", subDeck);
+        }
+        // Assumes formatting from Lackey txt files. "Draw deck" is not called out explicitly.
+        SubDeck currentSubDeck = SubDeck.DRAW_DECK;
+
+        List<GenericCardItem> result = new ArrayList<>();
+        for (CardCount cardCount : getDecklist(rawDeckList)) {
+            SubDeck newSubDeck = lackeySubDeckMap.get(cardCount.name);
+            if (newSubDeck != null) currentSubDeck = newSubDeck;
+            else {
+                for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
+                    String id = cardBlueprint.getKey();
+                    try {
+                        // If set is not a nonzero number, the card is not from a supported set
+                        int set = Integer.parseInt(id.split("_")[0]);
+                        if (set >= 0) {
+                            CardBlueprint blueprint = cardBlueprint.getValue();
+
+                            if (blueprint != null &&
+                                    SortAndFilterCards.replaceSpecialCharacters(blueprint.getFullName().toLowerCase())
+                                            .equals(cardCount.name())
+                            ) {
+                                result.add(GenericCardItem.createItem(id, cardCount.count(), currentSubDeck));
+                                break;
+                            }
+                        }
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+        }
+        return result;
+    }
+
+    private record CardCount(String name, int count) { }
+
+
+    private void appendCardElement(Document doc, Node collectionElem, GenericCardItem item,
+                                   boolean setSubDeckAttribute) throws Exception {
+        Element card = doc.createElement("card");
+        if (setSubDeckAttribute) {
+            String subDeck = item.getSubDeckString();
+            if (subDeck != null)
+                card.setAttribute("subDeck", subDeck);
+        }
+        card.setAttribute("count", String.valueOf(item.getCount()));
+        card.setAttribute("blueprintId", item.getBlueprintId());
+        CardBlueprint blueprint = _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId());
+        card.setAttribute("imageUrl", blueprint.getImageUrl());
+        collectionElem.appendChild(card);
+    }
+
+    private static List<CardCount> getDecklist(String rawDeckList) {
+        int quantity;
+        String cardLine;
+
+        List<CardCount> result = new ArrayList<>();
+        for (String line : rawDeckList.split("~")) {
+            if (line.isEmpty())
+                continue;
+
+            String line1 = line.toLowerCase();
+            try {
+                var matches = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$").matcher(line1);
+
+                if(matches.matches()) {
+                    if(!StringUtils.isEmpty(matches.group(1))) {
+                        quantity = Integer.parseInt(matches.group(1).replaceAll("\\D+", ""));
+                    }
+                    else if(!StringUtils.isEmpty(matches.group(3))) {
+                        quantity = Integer.parseInt(matches.group(3).replaceAll("\\D+", ""));
+                    }
+                    else {
+                        quantity = 1;
+                    }
+
+                    cardLine = matches.group(2).trim();
+                    result.add(new CardCount(SortAndFilterCards.replaceSpecialCharacters(cardLine).trim(), quantity));
+                }
+            } catch (Exception exp) {
+                System.out.println("blah");
+            }
+        }
+        return result;
+    }
+
+
+
+
 
     private void renameDeck(HttpRequest request, ResponseWriter responseWriter)
             throws IOException, HttpProcessingException {

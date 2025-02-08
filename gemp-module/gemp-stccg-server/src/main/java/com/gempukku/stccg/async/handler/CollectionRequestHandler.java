@@ -2,14 +2,12 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.common.CardItemType;
-import com.gempukku.stccg.common.filterable.SubDeck;
-import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.common.CardItemType;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
@@ -19,17 +17,14 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class CollectionRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final LeagueService _leagueService;
@@ -46,8 +41,6 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
                                     String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCollectionTypes(request, responseWriter);
-        } else if (uri.startsWith("/import/") && request.method() == HttpMethod.GET) {
-            importCollection(request, responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             openPack(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
@@ -55,28 +48,6 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
-    }
-    
-    private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        //noinspection SpellCheckingInspection
-        List<GenericCardItem> importResult = processImport(
-                getQueryParameterSafely(new QueryStringDecoder(request.uri()), FormParameter.decklist),
-                _cardBlueprintLibrary
-        );
-
-        Document doc = createNewDoc();
-        Element collectionElem = doc.createElement("collection");
-        collectionElem.setAttribute(FormParameter.count.name(), String.valueOf(importResult.size()));
-        doc.appendChild(collectionElem);
-
-        for (GenericCardItem item : importResult) {
-            appendCardElement(doc, collectionElem, item, true);
-        }
-
-        Map<String, String> headers = new HashMap<>();
-        processDeliveryServiceNotification(request, headers);
-
-        responseWriter.writeXmlResponseWithHeaders(doc, headers);
     }
 
     private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter)
@@ -210,79 +181,6 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         doc.appendChild(collectionsElem);
         responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
-
-    private record CardCount(String name, int count) { }
-
-    private static List<CardCount> getDecklist(String rawDeckList) {
-        int quantity;
-        String cardLine;
-
-        List<CardCount> result = new ArrayList<>();
-        for (String line : rawDeckList.split("~")) {
-            if (line.isEmpty())
-                continue;
-
-            String line1 = line.toLowerCase();
-            try {
-                var matches = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$").matcher(line1);
-
-                if(matches.matches()) {
-                    if(!StringUtils.isEmpty(matches.group(1))) {
-                        quantity = Integer.parseInt(matches.group(1).replaceAll("\\D+", ""));
-                    }
-                    else if(!StringUtils.isEmpty(matches.group(3))) {
-                        quantity = Integer.parseInt(matches.group(3).replaceAll("\\D+", ""));
-                    }
-                    else {
-                        quantity = 1;
-                    }
-
-                    cardLine = matches.group(2).trim();
-                    result.add(new CardCount(SortAndFilterCards.replaceSpecialCharacters(cardLine).trim(), quantity));
-                }
-            } catch (Exception exp) {
-                System.out.println("blah");
-            }
-        }
-        return result;
-    }
-
-    private static List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
-        Map<String, SubDeck> lackeySubDeckMap = new HashMap<>();
-        for (SubDeck subDeck : SubDeck.values()) {
-            lackeySubDeckMap.put(subDeck.getLackeyName() + ":", subDeck);
-        }
-        // Assumes formatting from Lackey txt files. "Draw deck" is not called out explicitly.
-        SubDeck currentSubDeck = SubDeck.DRAW_DECK;
-
-        List<GenericCardItem> result = new ArrayList<>();
-        for (CardCount cardCount : getDecklist(rawDeckList)) {
-            SubDeck newSubDeck = lackeySubDeckMap.get(cardCount.name);
-            if (newSubDeck != null) currentSubDeck = newSubDeck;
-            else {
-                for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
-                    String id = cardBlueprint.getKey();
-                    try {
-                        // If set is not a nonzero number, the card is not from a supported set
-                        int set = Integer.parseInt(id.split("_")[0]);
-                        if (set >= 0) {
-                            CardBlueprint blueprint = cardBlueprint.getValue();
-
-                            if (blueprint != null &&
-                                    SortAndFilterCards.replaceSpecialCharacters(blueprint.getFullName().toLowerCase())
-                                            .equals(cardCount.name())
-                            ) {
-                                result.add(GenericCardItem.createItem(id, cardCount.count(), currentSubDeck));
-                                break;
-                            }
-                        }
-                    } catch (NumberFormatException ignored) {}
-                }
-            }
-        }
-        return result;
-    }
-
 
 
 }
