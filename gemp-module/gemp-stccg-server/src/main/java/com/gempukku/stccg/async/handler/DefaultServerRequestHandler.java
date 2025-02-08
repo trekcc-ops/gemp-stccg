@@ -41,7 +41,6 @@ class DefaultServerRequestHandler {
     final CardBlueprintLibrary _cardBlueprintLibrary;
     final PlayerDAO _playerDao;
     private final LoggedUserHolder _loggedUserHolder;
-    private final TransferDAO _transferDAO;
     final CollectionsManager _collectionsManager;
     final GameHistoryService _gameHistoryService;
     final ServerObjects _serverObjects;
@@ -61,7 +60,6 @@ class DefaultServerRequestHandler {
         _serverObjects = objects;
         _playerDao = objects.getPlayerDAO();
         _loggedUserHolder = objects.getLoggedUserHolder();
-        _transferDAO = objects.getTransferDAO();
         _collectionsManager = objects.getCollectionsManager();
         _cardBlueprintLibrary = objects.getCardBlueprintLibrary();
         _gameHistoryService = objects.getGameHistoryService();
