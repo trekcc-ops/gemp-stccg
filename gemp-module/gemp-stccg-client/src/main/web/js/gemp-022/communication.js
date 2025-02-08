@@ -198,9 +198,16 @@ export default class GempClientCommunication {
     }
 
     async getGameState() {
-        const url = this.url + "/game/" + getUrlParam("gameId") + "/gameState";
+        const url = this.url + "/getGameState/" + getUrlParam("gameId") + "/thisPlayer";
         try {
-            let response = await fetch(url, {
+            const parameters = new URLSearchParams({
+                "gameId": getUrlParam("gameId")
+            }).toString();
+
+            const fullUrl = url + parameters;
+
+
+            let response = await fetch(fullUrl, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"

@@ -29,10 +29,11 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CancelGameRequestHandler.class, name = "cancelGame"),
+        @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
         @JsonSubTypes.Type(value = DecisionResponseRequestHandler.class, name = "decisionResponse"),
         @JsonSubTypes.Type(value = GameCardInfoRequestHandler.class, name = "gameCardInfo"),
-        @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
         @JsonSubTypes.Type(value = GameHistoryRequestHandler.class, name = "gameHistory"),
+        @JsonSubTypes.Type(value = GetGameStateRequestHandler.class, name = "getGameState"),
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),
         @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
