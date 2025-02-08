@@ -113,18 +113,9 @@ document.addEventListener("DOMContentLoaded", function() {
 							// Code of Conduct
 							break;
 						case 2:
-							// Format rules
-							hall.comm.getFormatRules(
-								function(json){
-									$("#formatRules").html(json);
-								},
-								hall.hallErrorMap()
-							);
-							break;
-						case 3:
 							// League rules
 							break;
-						case 4:
+						case 3:
 							// PC Eratta
 							// BUG: https://github.com/trekcc-ops/gemp-stccg/issues/38
 							//      This seems to throw a 500 server error;

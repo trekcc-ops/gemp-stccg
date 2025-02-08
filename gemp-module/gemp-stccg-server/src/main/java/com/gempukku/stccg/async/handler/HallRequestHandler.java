@@ -52,8 +52,6 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             createTable(request, responseWriter);
         } else if ("/update".equals(uri) && request.method() == HttpMethod.POST) {
             updateHall(request, responseWriter);
-        } else if ("/formats/html".equals(uri) && request.method() == HttpMethod.GET) {
-            getFormats(responseWriter);
         } else if ("/errata/json".equals(uri) && request.method() == HttpMethod.GET) {
             getErrataInfo(responseWriter);
         } else if (uri.startsWith("/format/") && request.method() == HttpMethod.GET) {

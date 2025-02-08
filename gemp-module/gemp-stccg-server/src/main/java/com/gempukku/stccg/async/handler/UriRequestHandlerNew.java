@@ -10,6 +10,7 @@ import com.gempukku.stccg.async.handler.chat.GetChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.SendChatMessageRequestHandler;
 import com.gempukku.stccg.async.handler.game.*;
+import com.gempukku.stccg.async.handler.hall.PlayerInfoRequestHandler;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
 import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.async.handler.server.ServerStatsRequestHandler;
