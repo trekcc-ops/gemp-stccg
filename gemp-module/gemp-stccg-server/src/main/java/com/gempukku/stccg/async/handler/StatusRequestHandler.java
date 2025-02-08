@@ -31,7 +31,7 @@ public class StatusRequestHandler extends DefaultServerRequestHandler implements
             var lastWeek = today.minusDays(7);
 
             String sb = "Tables count: " + _hallServer.getTablesCount() + ", players in hall: " +
-                    _chatServer.getChatRoom("Game Hall").getUsersInRoom(false).size() +
+                    _chatServer.getChatRoom("Game Hall").getUserIdsInRoom(false).size() +
                     ", games played in last 24 hours: " + _gameHistoryService.getGamesPlayedCount(yesterday, today) +
                     ", active players in last week: " + _gameHistoryService.getActivePlayersCount(lastWeek, today);
 

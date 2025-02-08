@@ -15,14 +15,15 @@ public class ChatServer extends AbstractServer {
         _serverObjects = serverObjects;
     }
 
-    void addChatRoom(ChatRoomMediator chatRoom, String name) {
-        _chatRooms.put(name, chatRoom);
+    public void addChatRoom(ChatRoomMediator chatRoom) {
+        _chatRooms.put(chatRoom.getName(), chatRoom);
     }
+
 
     public final void createChatRoom(String name, boolean muteJoinPartMessages, int secondsTimeoutPeriod,
                                      boolean allowIncognito) {
         ChatRoomMediator chatRoom = new ChatRoomMediator(_serverObjects, muteJoinPartMessages,
-                secondsTimeoutPeriod, allowIncognito, null);
+                secondsTimeoutPeriod, allowIncognito, null, name);
         try {
             chatRoom.sendMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + name, true);
         } catch (PrivateInformationException exp) {
@@ -30,14 +31,14 @@ public class ChatServer extends AbstractServer {
         } catch (ChatCommandErrorException e) {
             // Ignore, no command
         }
-        _chatRooms.put(name, chatRoom);
+        addChatRoom(chatRoom);
     }
 
 
     public final void createPrivateChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers,
                                             int secondsTimeoutPeriod) {
         ChatRoomMediator chatRoom = new ChatRoomMediator(_serverObjects, muteJoinPartMessages,
-                secondsTimeoutPeriod, allowedUsers, false);
+                secondsTimeoutPeriod, allowedUsers, false, name);
         try {
             chatRoom.sendMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to private room: " + name, true);
         } catch (PrivateInformationException exp) {
@@ -45,7 +46,7 @@ public class ChatServer extends AbstractServer {
         } catch (ChatCommandErrorException e) {
             // Ignore, no command
         }
-        _chatRooms.put(name, chatRoom);
+        addChatRoom(chatRoom);
     }
 
     public final void sendSystemMessageToAllUsers(String message) {

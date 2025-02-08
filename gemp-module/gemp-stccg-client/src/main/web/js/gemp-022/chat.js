@@ -422,20 +422,29 @@ export default class ChatBoxUI {
 
             this.appendMessage(prefix + postfix, msgClass);
         }
+        
+        let formattedUserNames = new Array();
+        for (let i = 0; i < json.users.length; i++) {
+            let userInRoom = json.users[i];
+            let formattedUserName = "";
+            if (userInRoom.isAdmin == true) {
+                formattedUserName = "* " + userInRoom.name;
+            } else if (userInRoom.isLeagueAdmin == true) {
+                formattedUserName = "+ " + userInRoom.name;
+            } else {
+                formattedUserName = userInRoom.name;
+            }
+            formattedUserNames.push(formattedUserName);
+        }
+        formattedUserNames.sort();
 
         if (this.playerListener != null) {
-            var players = new Array();
-            for (var i = 0; i < json.users.length; i++) {
-                var userName = json.users[i];
-                players.push(userName);
-            }
-            this.playerListener(players);
+            this.playerListener(formattedUserNames);
         }
 
         if (this.chatListDiv != null) {
             this.chatListDiv.html("");
-            for (var i = 0; i < json.users.length; i++) {
-                var userName = json.users[i];
+            for (const userName of formattedUserNames) {
                 this.chatListDiv.append("<div class='chatUser'>" + userName + "</div>");
             }
         }

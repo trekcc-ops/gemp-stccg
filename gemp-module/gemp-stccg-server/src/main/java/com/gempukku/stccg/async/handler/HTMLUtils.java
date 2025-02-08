@@ -230,7 +230,7 @@ public class HTMLUtils {
                 url + "'>please do so using this form.</a>";
     }
 
-    static String parseChatMessage(String message) {
+    public static String parseChatMessage(String message) {
         String newMsg = _renderer.render(_parser.parse(message));
         // Prevent quotes with newlines from displaying side-by-side
         newMsg = newMsg.replaceAll(

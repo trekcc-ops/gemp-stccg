@@ -65,7 +65,7 @@ public class HallServer extends AbstractServer {
         final IgnoreDAO ignoreDAO = objects.getIgnoreDAO();
         tableHolder = new TableHolder(objects);
         _hallChat = new HallChatRoomMediator(_serverObjects, HALL_TIMEOUT_PERIOD);
-        _hallChat.initialize();
+        objects.getChatServer().addChatRoom(_hallChat);
     }
 
     final void hallChanged() {

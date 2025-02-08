@@ -1,5 +1,7 @@
 package com.gempukku.stccg.chat;
 
+import com.gempukku.stccg.database.User;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,7 +62,7 @@ class ChatRoom {
         }
     }
 
-    final Collection<String> getUsersInRoom(boolean includeIncognito) {
+    final Collection<String> getUserIdsInRoom(boolean includeIncognito) {
         if (includeIncognito)
             return new ArrayList<>(_chatRoomListeners.keySet());
         else {
@@ -68,6 +70,17 @@ class ChatRoom {
                     entry -> !entry.getValue().incognito).map(Map.Entry::getKey).collect(Collectors.toList());
         }
     }
+
+    final Collection<User> getUsersInRoom(boolean includeIncognito) {
+        Collection<User> result = new ArrayList<>();
+        for (ChatRoomInfo channel : _chatRoomListeners.values()) {
+            ChatRoomListener listener = channel.chatRoomListener;
+            if (includeIncognito || !channel.incognito)
+                result.add(listener.getUser());
+        }
+        return result;
+    }
+
 
     private void shrinkLastMessages() {
         while (_lastMessages.size() > MAX_MESSAGE_HISTORY_COUNT) {

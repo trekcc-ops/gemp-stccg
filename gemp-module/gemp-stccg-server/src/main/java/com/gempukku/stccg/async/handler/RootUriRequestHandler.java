@@ -71,8 +71,8 @@ public class RootUriRequestHandler implements UriRequestHandler {
 
             Map<String, String> parameters = switch(handlerType) {
                 case "cancelGame", "gameCardInfo", "concedeGame", "decisionResponse", "getGameState", "gameHistory",
-                        "login", "playerInfo", "playerStats", "register", "replay", "serverStats", "startGameSession",
-                        "updateGameState" -> {
+                        "getChat", "login", "playerInfo", "playerStats", "postChat", "register", "replay",
+                        "sendChatMessage", "serverStats", "startGameSession", "updateGameState" -> {
                     Map<String, String> result = getParameters(request);
                     result.put("type", handlerType);
                     yield result;
@@ -87,7 +87,6 @@ public class RootUriRequestHandler implements UriRequestHandler {
             } else {
                 UriRequestHandler handler = switch(handlerType) {
                     case "admin" -> new AdminRequestHandler(_serverObjects);
-                    case "chat" -> new ChatRequestHandler(_serverObjects);
                     case "collection" -> new CollectionRequestHandler(_serverObjects);
                     case "deck" -> new DeckRequestHandler(_serverObjects);
                     case "delivery" -> new DeliveryRequestHandler(_serverObjects);

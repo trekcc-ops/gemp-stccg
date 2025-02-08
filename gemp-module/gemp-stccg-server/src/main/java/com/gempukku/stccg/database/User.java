@@ -178,4 +178,6 @@ public class User {
         return "OK";
     }
 
+    public boolean isLeagueAdmin() { return hasType(Type.LEAGUE_ADMIN); }
+
 }

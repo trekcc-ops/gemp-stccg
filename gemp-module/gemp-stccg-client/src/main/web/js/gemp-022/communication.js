@@ -601,10 +601,11 @@ export default class GempClientCommunication {
     startChat(room, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/chat/" + room,
+            url:this.url + "/getChat",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                roomName: room
+            },
             success:callback,
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -614,10 +615,11 @@ export default class GempClientCommunication {
     updateChat(room, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/chat/" + room,
+            url:this.url + "/postChat",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                roomName:room
+            },
             success:callback,
             timeout: 20000,
             error:this.errorCheck(errorMap),
@@ -628,12 +630,13 @@ export default class GempClientCommunication {
     sendChatMessage(room, messages, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/chat/" + room,
+            url:this.url + "/sendChatMessage",
             cache:false,
             async:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                message:messages},
+                roomName:room,
+                message:messages
+            },
             traditional:true,
             error:this.errorCheck(errorMap),
             dataType:"xml"
