@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gameevent;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SendGameStatsGameEvent extends GameEvent {
-
-    // Fix the freakin charstats thing
 
     private final Map<String, Map<Zone, Integer>> _playerZoneSizes;
     private final Collection<Player> _players;
@@ -39,8 +38,7 @@ public class SendGameStatsGameEvent extends GameEvent {
         return eventElem;
     }
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "playerZones")
+    @JsonProperty("playerZones")
     private List<PlayerZoneSizes> getPlayerZoneSizes() {
         List<PlayerZoneSizes> result = new ArrayList<>();
         for (Player player : _players) {
@@ -49,8 +47,7 @@ public class SendGameStatsGameEvent extends GameEvent {
         return result;
     }
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "playerScores")
+    @JsonProperty("playerScores")
     private List<PlayerScores> getPlayerScores() {
         List<PlayerScores> result = new ArrayList<>();
         for (Player player : _players) {
@@ -60,7 +57,6 @@ public class SendGameStatsGameEvent extends GameEvent {
     }
 
 
-    @JacksonXmlRootElement(localName = "playerZones")
     private class PlayerZoneSizes {
 
         final Player _zoneSizePlayer;
@@ -69,34 +65,33 @@ public class SendGameStatsGameEvent extends GameEvent {
             _zoneSizePlayer = player;
         }
 
-        @JacksonXmlProperty(localName = "name", isAttribute = true)
+        @JsonProperty("playerId")
         String getPlayerId() {
             return _zoneSizePlayer.getPlayerId();
         }
 
-        @JacksonXmlProperty(localName = "HAND", isAttribute = true)
+        @JsonProperty("hand")
         int getCardsInHand() {
             return _zoneSizePlayer.getCardsInHand().size();
         }
 
-        @JacksonXmlProperty(localName = "DISCARD", isAttribute = true)
+        @JsonProperty("discard")
         int getCardsInDiscard() {
             return _zoneSizePlayer.getDiscardPile().size();
         }
 
-        @JacksonXmlProperty(localName = "DRAW_DECK", isAttribute = true)
+        @JsonProperty("drawDeck")
         int getCardsInDrawDeck() {
             return _zoneSizePlayer.getCardsInDrawDeck().size();
         }
 
-        @JacksonXmlProperty(localName = "REMOVED", isAttribute = true)
+        @JsonProperty("removed")
         int getCardsInRemoved() {
             return _zoneSizePlayer.getRemovedPile().size();
         }
 
     }
 
-    @JacksonXmlRootElement(localName = "playerScores")
     private class PlayerScores {
 
         final Player _scorePlayer;
@@ -105,12 +100,12 @@ public class SendGameStatsGameEvent extends GameEvent {
             _scorePlayer = player;
         }
 
-        @JacksonXmlProperty(localName = "name", isAttribute = true)
+        @JsonProperty("playerId")
         String getPlayerId() {
             return _scorePlayer.getPlayerId();
         }
 
-        @JacksonXmlProperty(localName = "score", isAttribute = true)
+        @JsonProperty("score")
         int getScore() {
             return _scorePlayer.getScore();
         }
@@ -136,13 +131,6 @@ public class SendGameStatsGameEvent extends GameEvent {
             playerScoreElem.setAttribute("score", String.valueOf(player.getScore()));
             eventElem.appendChild(playerScoreElem);
         }
-
-        StringBuilder charStr = new StringBuilder();
-        if (!charStr.isEmpty())
-            charStr.delete(0, 1);
-
-        if (!charStr.isEmpty())
-            eventElem.setAttribute("charStats", charStr.toString());
     }
 
 

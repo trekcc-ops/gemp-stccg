@@ -2,8 +2,8 @@ package com.gempukku.stccg.gameevent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -35,10 +35,9 @@ public class GameEvent {
         REMOVE_CARD_FROM_PLAY("RCFP"),
         SEND_MESSAGE("M"), SEND_WARNING("W"),
         GAME_STATS("GS"),
-        CHAT_MESSAGE("CM"),
         GAME_ENDED("EG"),
         UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
-        CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"),
+        FLASH_CARD_IN_PLAY("CA"),
         DECISION("D"), GAME_STATE_CHECK("GAME_STATE_CHECK");
 
         private final String code;
@@ -61,13 +60,13 @@ public class GameEvent {
     @JsonIgnore
     private final Type _type;
 
-    @JacksonXmlProperty(localName = "type", isAttribute = true)
+    @JsonProperty("type")
     private final String _typeCode;
 
-    @JacksonXmlProperty(localName = "timeStamp", isAttribute = true)
+    @JsonProperty("timeStamp")
     private final String _timeStamp;
 
-    @JacksonXmlProperty(localName = "participantId", isAttribute = true)
+    @JsonProperty("participantId")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String _playerId;
 

@@ -877,8 +877,8 @@ export default class GameTableUI {
     startGameSession() {
         var that = this;
         this.communication.startGameSession(
-            function (xml) {
-                that.processXml(xml, false);
+            function (json) {
+                that.processGameEvents(json, false);
             }, this.gameErrorMap());
     }
 
@@ -886,8 +886,8 @@ export default class GameTableUI {
         var that = this;
         this.communication.updateGameState(
             this.channelNumber,
-            function (xml) {
-                that.processXml(xml, true);
+            function (json) {
+                that.processGameEvents(json, true);
             }, this.gameErrorMap());
     }
 
@@ -896,8 +896,8 @@ export default class GameTableUI {
         this.stopAnimatingTitle();
         this.communication.gameDecisionMade(decisionId, result,
             this.channelNumber,
-            function (xml) {
-                that.processXml(xml, true);
+            function (json) {
+                that.processGameEvents(json, true);
             }, this.gameErrorMap());
     }
 
@@ -978,14 +978,6 @@ export default class GameTableUI {
             });
     }
 
-    processXml(xml, animate) {
-        log(xml);
-        var root = xml.documentElement;
-        if (root.tagName == 'gameState') {
-            this.processGameEventsXml(root, animate);
-        }
-    }
-
     replayGameEventNextIndex = 0;
     replayGameEvents;
 
@@ -1041,53 +1033,71 @@ export default class GameTableUI {
     }
 
     processGameEvent(gameEvent, animate) {
-        var eventType = gameEvent.getAttribute("type");
-        if (eventType === "PCIP") {
-            this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType === "PUT_SHARED_MISSION_INTO_PLAY") {
-            this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType === "MCIP") {
-            this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
-        } else if (eventType === "P") {
-            this.participant(gameEvent);
-        } else if (eventType === "RCFP") {
-            this.animations.removeCardFromPlay(gameEvent, animate);
-        } else if (eventType === "UPDATE_CARD_IMAGE") {
-            this.animations.updateCardImage(gameEvent);
-        } else if (eventType === "GPC") {
-            this.animations.gamePhaseChange(gameEvent, animate);
-        } else if (eventType === "TC") {
-            this.animations.turnChange(gameEvent, animate);
-        } else if (eventType === "GS") {
-            this.animations.gameStats(gameEvent, animate);
-        } else if (eventType === "M") {
-            this.animations.message(gameEvent, animate);
-        } else if (eventType === "W") {
-            this.animations.warning(gameEvent, animate);
-        } else if (eventType === "CAC") {
-            this.animations.cardAffectsCard(gameEvent, animate);
-        } else if (eventType === "EP") {
-            this.animations.eventPlayed(gameEvent, animate);
-        } else if (eventType === "CA") {
-            this.animations.cardActivated(gameEvent, animate);
-        } else if (eventType === "D") {
-            this.animations.processDecision(gameEvent, animate);
-        } else if (eventType === "TSEQ") {
-            this.animations.tribbleSequence(gameEvent, animate);
-        } else if (eventType === "PLAYER_SCORE") {
-            this.animations.playerScore(gameEvent, animate);
-        } else if (eventType === "EG") {
-            this.processGameEnd();
-        } else {
-            console.error("Unknown game event type: '" + eventType + "'.");
+            // gameEvent is a json node
+        var eventType = gameEvent.type;
+
+        switch(eventType) {
+            case "CA":
+                this.animations.cardActivated(gameEvent, animate);
+                break;
+            case "CAC": // TODO - This game event was removed from the server side, so will never be called
+                this.animations.cardAffectsCard(gameEvent, animate);
+                break;
+            case "D":
+                this.animations.processDecision(gameEvent, animate);
+                break;
+            case "EG":
+                this.processGameEnd();
+                break;
+            case "EP": // TODO - This game event was removed from the server side, so will never be called
+                this.animations.eventPlayed(gameEvent, animate);
+                break;
+            case "GPC":
+                this.animations.gamePhaseChange(gameEvent, animate);
+                break;
+            case "GS":
+                this.animations.gameStats(gameEvent, animate);
+                break;
+            case "M":
+                this.animations.message(gameEvent, animate);
+                break;
+            case "MCIP":
+                this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
+                break;
+            case "PCIP":
+            case "PUT_SHARED_MISSION_INTO_PLAY":
+                this.animations.putCardIntoPlay(gameEvent, animate, eventType);
+                break;
+            case "PLAYER_SCORE":
+                this.animations.playerScore(gameEvent, animate);
+                break;
+            case "P":
+                this.participant(gameEvent);
+                break;
+            case "RCFP":
+                this.animations.removeCardFromPlay(gameEvent, animate);
+                break;
+            case "TC":
+                this.animations.turnChange(gameEvent, animate);
+                break;
+            case "TSEQ":
+                this.animations.tribbleSequence(gameEvent, animate);
+                break;
+            case "UPDATE_CARD_IMAGE":
+                this.animations.updateCardImage(gameEvent);
+                break;
+            case "W":
+                this.animations.warning(gameEvent, animate);
+                break;
+            default:
+                console.error("Unknown game event type: '" + eventType + "'.");
         }
     }
 
-    processGameEventsXml(element, animate) {
+    processGameEvents(jsonNode, animate) {
         try {
-            this.channelNumber = element.getAttribute("cn");
-
-            var gameEvents = element.getElementsByTagName("ge");
+            this.channelNumber = jsonNode.channelNumber;
+            var gameEvents = jsonNode.gameEvents;
 
             var hasDecision = false;
 
@@ -1095,28 +1105,27 @@ export default class GameTableUI {
             for (var i = 0; i < gameEvents.length; i++) {
                 var gameEvent = gameEvents[i];
                 this.processGameEvent(gameEvent, animate);
-                var eventType = gameEvent.getAttribute("type");
+                var eventType = gameEvent.type;
                 if (eventType == "D") {
                     hasDecision = true;
                 }
             }
 
             if (this.allPlayerIds != null) {
-                var clocksXml = element.getElementsByTagName("clocks");
-                if (clocksXml.length > 0) {
-                    var clocks = clocksXml[0].getElementsByTagName("clock");
+                let clocks = jsonNode.clocks;
+                if (clocks.length > 0) {
                     for (var i = 0; i < clocks.length; i++) {
-                        var clock = clocks[i];
-                        var participantId = clock.getAttribute("participantId");
-                        var index = this.getPlayerIndex(participantId);
+                        let clock = clocks[i];
+                        let playerId = clock.playerId;
+                        let value = clock.timeRemaining;
 
-                        var value = parseInt(clock.childNodes[0].nodeValue);
+                        let index = this.getPlayerIndex(playerId);
 
-                        var sign = (value < 0) ? "-" : "";
+                        let sign = (value < 0) ? "-" : "";
                         value = Math.abs(value);
-                        var hours = Math.floor(value / 3600);
-                        var minutes = Math.floor(value / 60) % 60;
-                        var seconds = value % 60;
+                        let hours = Math.floor(value / 3600);
+                        let minutes = Math.floor(value / 60) % 60;
+                        let seconds = value % 60;
 
                         if (hours > 0) {
                             $("#clock" + index).text(
@@ -1198,10 +1207,10 @@ export default class GameTableUI {
         }
     }
 
-    participant(element) {
-        var participantId = element.getAttribute("participantId");
-        this.allPlayerIds = element.getAttribute("allParticipantIds").split(",");
-        var discardPublic = element.getAttribute("discardPublic") === 'true';
+    participant(json) {
+        var participantId = json.participantId;
+        this.allPlayerIds = json.allParticipantIds.split(",");
+        var discardPublic = json.discardPublic;
 
         this.bottomPlayerId = participantId;
 
@@ -1315,20 +1324,20 @@ export default class GameTableUI {
     }
 
     integerDecision(decision) {
-        var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
+        let id = decision.decisionId;
+        let text = decision.text;
         var val = 0;
 
-        var min = this.getDecisionParameter(decision, "min");
+        var min = decision.min;
         if (min == null) {
             min = 0;
         }
-        var max = this.getDecisionParameter(decision, "max");
+        var max = decision.max;
         if (max == null) {
             max = 1000;
         }
 
-        var defaultValue = this.getDecisionParameter(decision, "defaultValue");
+        var defaultValue = decision.defaultValue;
         if (defaultValue != null) {
             val = parseInt(defaultValue);
         }
@@ -1357,10 +1366,10 @@ export default class GameTableUI {
     }
 
     multipleChoiceDecision(decision) {
-        var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
+        var id = decision.decisionId;
+        var text = decision.text;
 
-        var results = this.getDecisionParameters(decision, "results");
+        var results = decision.results;
 
         var that = this;
         this.smallDialog
@@ -1572,18 +1581,17 @@ export default class GameTableUI {
 
     // Choosing cards from a predefined selection (for example stating fellowship)
     arbitraryCardsDecision(decision) {
-        var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
+        var id = decision.decisionId;
+        var text = decision.text;
 
-        var min = parseInt(this.getDecisionParameter(decision, "min"));
-        var max = parseInt(this.getDecisionParameter(decision, "max"));
-        var cardIds = this.getDecisionParameters(decision, "cardId");
-        var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
-        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
-        var selectable = this.getDecisionParameters(decision, "selectable");
+        var min = parseInt(decision.min);
+        var max = parseInt(decision.max);
+
+        var displayedCards = decision.displayedCards;
 
         var that = this;
 
+        let allCardIds = new Array();
         var selectedCardIds = new Array();
 
         var selectableCardIds = new Array();
@@ -1593,14 +1601,16 @@ export default class GameTableUI {
             .dialog("option", "title", text);
 
         // Create the action cards and fill the dialog with them
-        for (var i = 0; i < blueprintIds.length; i++) {
-            var cardId = cardIds[i];
-            var blueprintId = blueprintIds[i];
-            var imageUrl = imageUrls[i];
+        for (var i = 0; i < displayedCards.length; i++) {
+            let selectableCard = displayedCards[i];
+            var cardId = selectableCard.cardId;
+            var blueprintId = selectableCard.blueprintId;
+            var imageUrl = selectableCard.imageUrl;
 
-            if (selectable[i] == "true") {
+            if (selectableCard.selectable == "true") {
                 selectableCardIds.push(cardId);
             }
+            allCardIds.push(cardId);
             var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
 
             var cardDiv = this.createCardDivWithData(card);
@@ -1623,16 +1633,16 @@ export default class GameTableUI {
         };
 
         var selectAllCards = function () {
-            selectedCardIds = Array.from(cardIds);
+            selectedCardIds = Array.from(selectableCardIds);
             that.recalculateCardSelectionOrder(selectedCardIds);
-            that.recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max);
+            that.recalculateAllowedSelectionFromMaxCSS(selectableCardIds, selectedCardIds, max);
             allowSelection();
             processButtons();
         }
 
         var processButtons = function () {
             var buttons = {};
-            if ((cardIds.length <= max) &&
+            if ((allCardIds.length <= max) &&
                 (selectedCardIds.length != max)) {
                 buttons["Select all"] = function() {
                     selectAllCards();
@@ -1670,7 +1680,7 @@ export default class GameTableUI {
                 }
                 
                 that.recalculateCardSelectionOrder(selectedCardIds);
-                that.recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max);
+                that.recalculateAllowedSelectionFromMaxCSS(selectableCardIds, selectedCardIds, max);
 
                 processButtons();
             };
@@ -1690,19 +1700,14 @@ export default class GameTableUI {
     }
 
     cardSelectionFromCombinations(decision) {
-        var id = decision.getAttribute("id");
+        var id = decision.decisionId;
 
-        var min = parseInt(this.getDecisionParameter(decision, "min"));
-        var max = parseInt(this.getDecisionParameter(decision, "max"));
-        var cardIds = this.getDecisionParameters(decision, "cardId");
-        var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
-        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
-        var selectable = this.getDecisionParameters(decision, "selectable");
+        var min = parseInt(decision.min);
+        var max = parseInt(decision.max);
+        let displayedCards = decision.displayedCards;
+        var cardIds = decision.cardIds;
 
-        var combinations = this.getDecisionParameters(decision, "combinations");
-        var jsonCombinations = JSON.parse(combinations);
-        // DEBUG: console.log(jsonCombinations);
-
+        var jsonCombinations = decision.validCombinations;
 
         var that = this;
 
@@ -1714,12 +1719,13 @@ export default class GameTableUI {
             .dialog("option", "title", `Select ${min} to ${max} cards`);
 
         // Create the action cards and fill the dialog with them
-        for (var i = 0; i < blueprintIds.length; i++) {
-            var cardId = cardIds[i];
-            var blueprintId = blueprintIds[i];
-            var imageUrl = imageUrls[i];
+        for (var i = 0; i < displayedCards.length; i++) {
+            let displayedCard = displayedCards[i];
+            var cardId = displayedCard.cardId;
+            var blueprintId = displayedCard.blueprintId;
+            var imageUrl = displayedCard.imageUrl;
 
-            if (selectable[i] == "true") {
+            if (displayedCard.selectable == "true") {
                 selectableCardIds.push(cardId);
             }
 
@@ -1798,25 +1804,20 @@ export default class GameTableUI {
 
     // Choosing one action to resolve, for example phase actions
     cardActionChoiceDecision(decision) {
-        var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
-
-        var cardIds = this.getDecisionParameters(decision, "cardId");
-        var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
-        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
-        var actionIds = this.getDecisionParameters(decision, "actionId");
-        var actionTexts = this.getDecisionParameters(decision, "actionText");
-        var actionTypes = this.getDecisionParameters(decision, "actionType");
-        var noPass = this.getDecisionParameters(decision, "noPass");
+        var id = decision.decisionId;
+        var text = decision.text;
+        let noPass = decision.noPass;
+        let selectableCards = decision.displayedCards;
 
         var that = this;
 
-        if (cardIds.length == 0 && this.gameSettings.get("autoPass") && !this.replayMode) {
+        if (selectableCards.length == 0 && this.gameSettings.get("autoPass") && !this.replayMode) {
             that.decisionFunction(id, "");
             return;
         }
 
         var selectedCardIds = new Array();
+        var allCardIds = new Array();
 
         this.alertText.html(text);
         // ****CCG League****: Border around alert box
@@ -1869,19 +1870,21 @@ export default class GameTableUI {
         var allowSelection = function () {
             var hasVirtual = false;
 
-            for (var i = 0; i < cardIds.length; i++) {
-                var cardId = cardIds[i];
-                var actionId = actionIds[i];
-                var actionText = actionTexts[i];
-                var blueprintId = blueprintIds[i];
-                var imageUrl = imageUrls[i];
-                var actionType = actionTypes[i];
+            for (var i = 0; i < selectableCards.length; i++) {
+                let selectableCard = selectableCards[i];
+                var cardId = selectableCard.cardId;
+                var actionId = selectableCard.actionId;
+                var actionText = selectableCard.actionText;
+                var blueprintId = selectableCard.blueprintId;
+                var imageUrl = selectableCard.imageUrl;
+                var actionType = selectableCard.actionType;
 
                 if (blueprintId == "inPlay") {
                     var cardIdElem = getCardDivFromId(cardId);
+                    allCardIds.push(cardId);
                 } else {
                     hasVirtual = true;
-                    cardIds[i] = "extra" + cardId;
+                    allCardIds.push("extra" + cardId);
                     var card = new Card(blueprintId, "EXTRA", "extra" + cardId, null, imageUrl);
 
                     var cardDiv = that.createCardDivWithData(card);
@@ -1930,7 +1933,7 @@ export default class GameTableUI {
                 }
             };
 
-            that.attachSelectionFunctions(cardIds, false);
+            that.attachSelectionFunctions(allCardIds, false);
         };
 
         allowSelection();
@@ -2000,13 +2003,10 @@ export default class GameTableUI {
 
     // Choosing one action to resolve, for example required triggered actions
     actionChoiceDecision(decision) {
-        var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
+        var id = decision.decisionId;
+        var text = decision.text;
 
-        var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
-        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
-        var actionIds = this.getDecisionParameters(decision, "actionId");
-        var actionTexts = this.getDecisionParameters(decision, "actionText");
+        let displayedCards = decision.displayedCards;
 
         var that = this;
 
@@ -2018,14 +2018,15 @@ export default class GameTableUI {
 
         var cardIds = new Array();
 
-        for (var i = 0; i < blueprintIds.length; i++) {
-            var blueprintId = blueprintIds[i];
-            var imageUrl = imageUrls[i];
+        for (var i = 0; i < displayedCards.length; i++) {
+            let displayedCard = displayedCards[i];
+            var blueprintId = displayedCard.blueprintId;
+            var imageUrl = displayedCard.imageUrl;
 
             cardIds.push("temp" + i);
             var card = new Card(blueprintId, "SPECIAL", "temp" + i, "", imageUrl, "", false);
 
-            var cardDiv = this.createCardDivWithData(card, actionTexts[i]);
+            var cardDiv = this.createCardDivWithData(card, displayedCard.actionText);
 
             $("#arbitraryChoice").append(cardDiv);
         }
@@ -2061,7 +2062,7 @@ export default class GameTableUI {
         var allowSelection = function () {
             that.selectionFunction = function (cardId) {
                 // DEBUG: console.log("actionChoiceDecision -> allowSelection -> selectionFunction");
-                var actionId = actionIds[parseInt(cardId.substring(4))];
+                var actionId = displayedCards[parseInt(cardId.substring(4))].actionId;
                 selectedActionIds.push(actionId);
 
                 that.clearSelection();
@@ -2090,12 +2091,12 @@ export default class GameTableUI {
 
     // Choosing some number of cards, for example to wound
     cardSelectionDecision(decision) {
-        var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
+        var id = decision.decisionId;
+        var text = decision.text;
 
-        var min = this.getDecisionParameter(decision, "min");
-        var max = this.getDecisionParameter(decision, "max");
-        var cardIds = this.getDecisionParameters(decision, "cardId");
+        var min = decision.min;
+        var max = decision.max;
+        var cardIds = decision.cardIds;
 
         var that = this;
 
@@ -2229,7 +2230,10 @@ export default class GameTableUI {
             // DEBUG: console.log(`Selected cards: ${selectedCardIds}`);
             const cardId = selectedCardIds[0];
             let this_card_allowed = new Array();
+            // DEBUG: console.log("let_this_card_allowed created");
+            // DEBUG: console.log(jsonCombinations[cardId]);
             for (const compatible_cardId of jsonCombinations[cardId]) {
+                // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
                 this_card_allowed.push(compatible_cardId);
             }
             const this_allowed_as_set = new Set(this_card_allowed);
@@ -2242,7 +2246,10 @@ export default class GameTableUI {
             // DEBUG: console.log(`Selected cards: ${selectedCardIds}`);
             for (const [index, cardId] of selectedCardIds.entries()) {
                 let this_card_allowed = new Array();
+                // DEBUG: console.log("let_this_card_allowed created");
+                // DEBUG: console.log(jsonCombinations[cardId]);
                 for (const compatible_cardId of jsonCombinations[cardId]) {
+                    // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
                     this_card_allowed.push(compatible_cardId);
                 }
                 const this_allowed_as_set = new Set(this_card_allowed);

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gameevent;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.player.Player;
@@ -9,7 +10,7 @@ import java.util.StringJoiner;
 
 public class RemoveCardsFromPlayGameEvent extends GameEvent {
 
-    @JacksonXmlProperty(localName = "otherCardIds", isAttribute = true)
+    @JsonProperty("otherCardIds")
     private String _otherCardIds;
 
     public RemoveCardsFromPlayGameEvent(Set<PhysicalCard> visibleRemovedCards, Player performingPlayer) {

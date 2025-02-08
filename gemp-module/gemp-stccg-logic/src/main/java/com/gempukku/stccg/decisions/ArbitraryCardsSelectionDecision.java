@@ -187,4 +187,9 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
             return mapper.writeValueAsString(_validCombinations);
         }
     }
+
+    public Map<String, List<String>> getValidCombinationsMap() {
+        return _validCombinations;
+    }
+
 }

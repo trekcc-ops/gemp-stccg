@@ -7,8 +7,7 @@ import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.game.CardGameMediator;
 import io.netty.handler.codec.http.HttpRequest;
 
-public class GameCardInfoRequestHandler implements UriRequestHandlerNew {
-    private final String _gameId;
+public class GameCardInfoRequestHandler extends GameRequestHandlerNew implements UriRequestHandlerNew {
     private final int _cardId;
 
     GameCardInfoRequestHandler(
@@ -17,7 +16,7 @@ public class GameCardInfoRequestHandler implements UriRequestHandlerNew {
             @JsonProperty(value = "cardId", required = true)
             int cardId
     ) {
-        _gameId = gameId;
+        super(gameId);
         _cardId = cardId;
     }
 

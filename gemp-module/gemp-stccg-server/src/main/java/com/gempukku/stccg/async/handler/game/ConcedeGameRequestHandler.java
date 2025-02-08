@@ -8,14 +8,13 @@ import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import io.netty.handler.codec.http.HttpRequest;
 
-public class ConcedeGameRequestHandler implements UriRequestHandlerNew {
-    private final String _gameId;
+public class ConcedeGameRequestHandler extends GameRequestHandlerNew implements UriRequestHandlerNew {
 
     ConcedeGameRequestHandler(
             @JsonProperty("gameId")
             String gameId
     ) {
-        _gameId = gameId;
+        super(gameId);
     }
 
     @Override

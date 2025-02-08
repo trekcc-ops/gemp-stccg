@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SuppressWarnings("MagicNumber")
 public class CardBlueprintLibraryTest extends AbstractLogicTest {
 
+    // Commented out lackey validation so that it isn't run every single time the server is built
+
     // TODO - Add check that all card images are valid URLs
     @Test
     public void AllBlueprintsAreBuilt() throws CardNotFoundException {
@@ -70,7 +72,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         assertEquals(2, _cardLibrary.getAllAlternates("113_003").size());
     }
 
-    @Test
+//    @Test
     public void checkAgainstLackey() {
         createLackeyLibrary();
         int matchCount = 0;

@@ -1,12 +1,13 @@
 package com.gempukku.stccg.gameevent;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.player.Player;
 
 public class FlashCardInPlayGameEvent extends GameEvent {
 
-    @JacksonXmlProperty(localName = "cardId", isAttribute = true)
+    @JsonProperty("cardId")
     private final int _cardId;
 
     public FlashCardInPlayGameEvent(PhysicalCard card, Player performingPlayer) {

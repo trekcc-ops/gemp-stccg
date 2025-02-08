@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -16,7 +17,6 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
-@JacksonXmlRootElement(localName = "gameState")
 public class GameCommunicationChannel implements GameStateListener, LongPollableResource {
     private List<GameEvent> _events = Collections.synchronizedList(new LinkedList<>());
     private final String _playerId;
@@ -31,7 +31,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         _channelNumber = channelNumber;
     }
 
-    @JacksonXmlProperty(localName = "cn", isAttribute = true)
+    @JsonProperty("channelNumber")
     public final int getChannelNumber() {
         return _channelNumber;
     }
@@ -116,9 +116,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
             appendEvent(new SendMessageGameEvent(GameEvent.Type.SEND_WARNING, warning));
     }
 
-    @JsonInclude
-    @JacksonXmlElementWrapper(localName = "ignoreName", useWrapping = false)
-    @JacksonXmlProperty(localName = "ge")
+    @JsonProperty("gameEvents")
     public final List<GameEvent> consumeGameEvents() {
         updateLastAccess();
         List<GameEvent> result = _events;
@@ -126,9 +124,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         return result;
     }
 
-    @JsonInclude
-    @JacksonXmlElementWrapper(localName = "clocks")
-    @JacksonXmlProperty(localName = "clock")
+    @JsonProperty("clocks")
     public Collection<PlayerClock> getPlayerClocks() {
         return _game.getPlayerClocks().values();
     }

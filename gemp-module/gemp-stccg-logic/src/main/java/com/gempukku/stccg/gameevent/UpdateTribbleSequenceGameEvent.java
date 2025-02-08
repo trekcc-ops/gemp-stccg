@@ -1,11 +1,10 @@
 package com.gempukku.stccg.gameevent;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UpdateTribbleSequenceGameEvent extends GameEvent {
 
-    @JacksonXmlProperty(localName = "message", isAttribute = true)
+    @JsonProperty("tribbleSequence")
     private final String _tribbleSequence;
 
     public UpdateTribbleSequenceGameEvent(String tribbleSequence) {

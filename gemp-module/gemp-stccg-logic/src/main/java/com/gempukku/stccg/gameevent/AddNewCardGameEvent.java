@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gameevent;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -21,29 +22,29 @@ public class AddNewCardGameEvent extends GameEvent {
         setCardData(card);
     }
 
-    @JacksonXmlProperty(localName = "imageUrl", isAttribute = true)
+    @JsonProperty("imageUrl")
     private String getImageUrl() {
         return _card.getImageUrl();
     }
 
-    @JacksonXmlProperty(localName = "cardId", isAttribute = true)
-    private int getCardId() {
-        return _card.getCardId();
+    @JsonProperty("cardId")
+    private String getCardId() {
+        return String.valueOf(_card.getCardId());
     }
 
-    @JacksonXmlProperty(localName = "zone", isAttribute = true)
+    @JsonProperty("zone")
     @Override
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Zone getZone() {
         return _card.getZone();
     }
 
-    @JacksonXmlProperty(localName = "controllerId", isAttribute = true)
+    @JsonProperty("controllerId")
     public String getControllerId() {
         return _card.getController().getPlayerId();
     }
 
-    @JacksonXmlProperty(localName = "locationIndex", isAttribute = true)
+    @JsonProperty("locationIndex")
     public String getLocationIndex() {
         if (_card instanceof ST1EPhysicalCard stCard) {
             GameLocation location = stCard.getGameLocation();
@@ -55,12 +56,12 @@ public class AddNewCardGameEvent extends GameEvent {
         return "-1";
     }
 
-    @JacksonXmlProperty(localName = "blueprintId", isAttribute = true)
+    @JsonProperty("blueprintId")
     public String getBlueprintId() {
         return _card.getBlueprintId();
     }
 
-    @JacksonXmlProperty(localName = "targetCardId", isAttribute = true)
+    @JsonProperty("targetCardId")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String getTargetCardId() {
         if (_card.getStackedOn() != null)
@@ -73,7 +74,7 @@ public class AddNewCardGameEvent extends GameEvent {
         return null;
     }
 
-    @JacksonXmlProperty(localName = "quadrant", isAttribute = true)
+    @JsonProperty("quadrant")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Quadrant getQuadrant() {
         if (_card.getCardType() == CardType.MISSION && _card.getGameLocation() instanceof MissionLocation mission) {
@@ -82,7 +83,7 @@ public class AddNewCardGameEvent extends GameEvent {
         return null;
     }
 
-    @JacksonXmlProperty(localName = "region", isAttribute = true)
+    @JsonProperty("region")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Region getRegion() {
         if (_card.getCardType() == CardType.MISSION && _card.getGameLocation() instanceof MissionLocation mission) {

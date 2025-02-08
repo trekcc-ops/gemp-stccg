@@ -5,17 +5,16 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.game.CardGameMediator;
+import com.gempukku.stccg.game.GameServer;
 import io.netty.handler.codec.http.HttpRequest;
 
-public class CancelGameRequestHandler implements UriRequestHandlerNew {
-    private final String _gameId;
+public class CancelGameRequestHandler extends GameRequestHandlerNew implements UriRequestHandlerNew {
 
     CancelGameRequestHandler(
             @JsonProperty("gameId")
             String gameId
     ) {
-        _gameId = gameId;
+        super(gameId);
     }
 
     @Override
@@ -23,8 +22,8 @@ public class CancelGameRequestHandler implements UriRequestHandlerNew {
                                     ServerObjects serverObjects)
             throws Exception {
         User resourceOwner = getResourceOwnerSafely(request, serverObjects);
-        CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
-        gameMediator.cancel(resourceOwner);
+        GameServer gameServer = serverObjects.getGameServer();
+        gameServer.cancelGame(resourceOwner, _gameId);
         responseWriter.writeXmlOkResponse();
     }
 

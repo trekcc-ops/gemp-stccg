@@ -1,8 +1,7 @@
 package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.common.GameTimer;
 
 public class PlayerClock {
@@ -20,13 +19,12 @@ public class PlayerClock {
         return _timeElapsed;
     }
 
-    @JacksonXmlText
-    private String getTimeRemainingSerialized() {
-        int maxSeconds = _settings.maxSecondsPerPlayer();
-        return String.valueOf(maxSeconds - _timeElapsed);
+    @JsonProperty("timeRemaining")
+    private int getTimeRemainingSerialized() {
+        return _settings.maxSecondsPerPlayer() - _timeElapsed;
     }
 
-    @JacksonXmlProperty(localName = "participantId", isAttribute = true)
+    @JsonProperty("playerId")
     public String getPlayerId() {
         return _playerId;
     }

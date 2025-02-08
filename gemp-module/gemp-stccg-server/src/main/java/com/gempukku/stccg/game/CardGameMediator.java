@@ -2,13 +2,9 @@ package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -31,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Stream;
 
 public abstract class CardGameMediator {
     private static final long MILLIS_TO_SECONDS = 1000L;
@@ -94,9 +89,10 @@ public abstract class CardGameMediator {
         return _allowSpectators;
     }
 
-    public final void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
-        if (_playersPlaying.contains(playerId)) {
-            getGame().setPlayerAutoPassSettings(playerId, phases);
+    public final void setPlayerAutoPassSettings(User user, Set<Phase> phases) {
+        String userId = user.getName();
+        if (_playersPlaying.contains(userId)) {
+            getGame().setPlayerAutoPassSettings(userId, phases);
         }
     }
 
@@ -290,31 +286,13 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final GameCommunicationChannel getCommunicationChannel(User player)
-            throws HttpProcessingException {
-        String playerName = player.getName();
-        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
-            throw new PrivateInformationException();
-
-        _readLock.lock();
-        try {
-            GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
-            if (communicationChannel == null)
-                throw new SubscriptionExpiredException();
-            else return communicationChannel;
-        } finally {
-            _readLock.unlock();
-        }
-    }
-
 
     public final String serializeEventsToString(GameCommunicationChannel communicationChannel)
             throws IOException {
         _readLock.lock();
         try {
-            XmlMapper xmlMapper = new XmlMapper();
-            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
-            return xmlMapper.writeValueAsString(communicationChannel);
+            ObjectMapper jsonMapper = new ObjectMapper();
+            return jsonMapper.writeValueAsString(communicationChannel);
         } catch(IOException exp) {
             getGame().sendErrorMessage("Unable to serialize game events");
             throw new IOException(exp.getMessage());
@@ -323,29 +301,6 @@ public abstract class CardGameMediator {
         }
     }
 
-
-
-    public final void signupUserForGame(User player)
-            throws PrivateInformationException {
-        String playerName = player.getName();
-        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
-            throw new PrivateInformationException();
-        GameCommunicationChannel channel;
-        int channelNumber;
-
-        _readLock.lock();
-        try {
-            channelNumber = _channelNextIndex;
-            _channelNextIndex++;
-
-            channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
-            _communicationChannels.put(playerName, channel);
-
-            getGame().addGameStateListener(playerName, channel);
-        } finally {
-            _readLock.unlock();
-        }
-    }
 
     public final GameCommunicationChannel signupUserForGameAndGetChannel(User player)
             throws PrivateInformationException {
@@ -431,17 +386,6 @@ public abstract class CardGameMediator {
         }
     }
 
-    public String getCardInfoHTML(PhysicalCard card) {
-        String info = getBasicCardInfoHTML(getGame(), card);
-        return switch (card) {
-            case PersonnelCard personnel -> info + getPersonnelInfo(getGame(), personnel);
-            case PhysicalShipCard ship -> info + getShipCardInfo(getGame(), ship);
-            case FacilityCard facility -> info + getFacilityCardInfo(facility);
-            case MissionCard mission -> info + getMissionCardInfo(mission);
-            default -> info;
-        };
-    }
-    
     private String getCardInfoJson(DefaultGame cardGame, PhysicalCard card) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Map<Object, Object> itemsToSerialize = new HashMap<>();
@@ -548,129 +492,4 @@ public abstract class CardGameMediator {
         return cardMap;
     }
 
-
-    static String getShipCardInfo(DefaultGame game, PhysicalShipCard ship) {
-        StringBuilder sb = new StringBuilder();
-        Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
-        attachedCards.put("Crew",ship.getCrew());
-        for (Map.Entry<String, Collection<PhysicalCard>> entry : attachedCards.entrySet()) {
-            if (!entry.getValue().isEmpty()) {
-                sb.append(HTMLUtils.NEWLINE);
-                sb.append("<b>").append(entry.getKey()).append(" (").append(entry.getValue().size())
-                        .append("):</b> ");
-                sb.append(TextUtils.getConcatenatedCardLinks(entry.getValue()));
-                sb.append(HTMLUtils.NEWLINE);
-            }
-        }
-
-        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("Staffing requirements: "));
-        if (ship.getBlueprint().getStaffing() == null || ship.getBlueprint().getStaffing().isEmpty())
-            sb.append("<i>none</i>");
-        else {
-            sb.append(HTMLUtils.NEWLINE);
-            for (CardIcon icon : ship.getBlueprint().getStaffing())
-                sb.append("<img src='").append(icon.getIconURL()).append("'>");
-        }
-
-        String isStaffed = (ship.isStaffed()) ? "staffed" : "not staffed";
-        if (ship.isStaffed()) {
-            sb.append(HTMLUtils.NEWLINE).append("<i>(Ship is ").append(isStaffed).append("</i>");
-            sb.append(HTMLUtils.NEWLINE);
-        }
-
-        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("Printed RANGE: "))
-                .append(ship.getBlueprint().getRange());
-        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("RANGE available: "))
-                .append(ship.getRangeAvailable());
-        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(game, ship));
-
-        return sb.toString();
-    }
-
-    static String getMissionCardInfo(MissionCard mission) {
-        StringBuilder sb = new StringBuilder();
-        ST1EGame cardGame = mission.getGame();
-        if (mission.getGameLocation() instanceof MissionLocation missionLocation && missionLocation.isPlanet()) {
-            long awayTeamCount = missionLocation.getAwayTeamsOnSurface(cardGame).count();
-            sb.append(HTMLUtils.NEWLINE);
-            sb.append(HTMLUtils.makeBold("Away Teams on Planet: "));
-            sb.append(awayTeamCount);
-            if (awayTeamCount > 0) {
-                missionLocation.getAwayTeamsOnSurface(cardGame).forEach(awayTeam -> {
-                            sb.append(HTMLUtils.NEWLINE);
-                            sb.append(HTMLUtils.makeBold("Away Team: "));
-                            sb.append("(").append(awayTeam.getPlayerId()).append(") ");
-                            sb.append(TextUtils.getConcatenatedCardLinks(awayTeam.getCards()));
-                        }
-                );
-            }
-        }
-        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.NEWLINE);
-        sb.append(HTMLUtils.makeBold("Mission Requirements: "));
-        sb.append(mission.getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
-        return sb.toString();
-    }
-    
-
-    static String getPersonnelInfo(DefaultGame game, PersonnelCard personnel) {
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("Affiliation: "));
-        for (Affiliation affiliation : Affiliation.values())
-            if (personnel.isAffiliation(affiliation))
-                sb.append(affiliation.toHTML());
-
-        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(game, personnel));
-
-        return sb.toString();
-    }
-
-    public static String getBasicCardInfoHTML(DefaultGame cardGame, PhysicalCard card) {
-        if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
-            StringBuilder sb = new StringBuilder();
-
-            Collection<Modifier> modifiers = cardGame.getModifiersQuerying().getModifiersAffecting(card);
-            if (!modifiers.isEmpty()) {
-                sb.append(HTMLUtils.makeBold("Active modifiers:")).append(HTMLUtils.NEWLINE);
-                for (Modifier modifier : modifiers) {
-                    sb.append(modifier.getCardInfoText(cardGame, card));
-                }
-            }
-            return sb.toString();
-        } else {
-            return "";
-        }
-
-    }
-
-    private static String getCardIcons(DefaultGame game, PhysicalCard card) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(HTMLUtils.makeBold("Icons: "));
-
-        for (CardIcon icon : CardIcon.values())
-            if (card.hasIcon(game, icon))
-                sb.append(icon.toHTML());
-
-        return sb.toString();
-    }
-
-    static String getFacilityCardInfo(FacilityCard facility) {
-        StringBuilder sb = new StringBuilder();
-        Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
-        attachedCards.put("Docked ships", facility.getDockedShips());
-        attachedCards.put("Crew", facility.getCrew());
-        for (Map.Entry<String, Collection<PhysicalCard>> entry : attachedCards.entrySet()) {
-            if (!entry.getValue().isEmpty()) {
-                sb.append(HTMLUtils.NEWLINE);
-                sb.append("<b>").append(entry.getKey()).append(" (").append(entry.getValue().size())
-                        .append("):</b> ").append(TextUtils.getConcatenatedCardLinks(entry.getValue()));
-                sb.append(HTMLUtils.NEWLINE);
-            }
-        }
-        return sb.toString();
-    }
-    
-    
-    
 }

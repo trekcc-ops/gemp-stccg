@@ -43,6 +43,7 @@ public class GameHistoryRequestHandler implements UriRequestHandlerNew {
             throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
         User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        String userId = resourceOwner.getName();
         GameHistoryDAO gameHistoryDAO = serverObjects.getGameHistoryDAO();
 
         final List<DBData.GameHistory> playerGameHistory =
@@ -51,7 +52,7 @@ public class GameHistoryRequestHandler implements UriRequestHandlerNew {
 
         Map<Object, Object> response = new HashMap<>();
         response.put("count", recordCount);
-        response.put("playerId", resourceOwner.getName());
+        response.put("playerId", userId);
 
         List<Map<Object, Object>> historyEntries = new ArrayList<>();
 
@@ -66,10 +67,10 @@ public class GameHistoryRequestHandler implements UriRequestHandlerNew {
                 historyEntry.put("tournament", game.tournament);
 
 
-            if (game.winner.equals(resourceOwner.getName()) && game.win_recording_id != null) {
+            if (game.winner.equals(userId) && game.win_recording_id != null) {
                 historyEntry.put("gameRecordingId", game.win_recording_id);
                 historyEntry.put("deckName", game.winner_deck_name);
-            } else if (game.loser.equals(resourceOwner.getName()) && game.lose_recording_id != null) {
+            } else if (game.loser.equals(userId) && game.lose_recording_id != null) {
                 historyEntry.put("gameRecordingId", game.lose_recording_id);
                 historyEntry.put("deckName", game.loser_deck_name);
             }

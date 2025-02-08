@@ -28,7 +28,6 @@ public class RootUriRequestHandler implements UriRequestHandler {
     private static final String SERVER_CONTEXT_PATH = "/gemp-stccg-server/";
     private final WebRequestHandler _webRequestHandler;
     private final StatusRequestHandler _statusRequestHandler;
-    private static final Logger LOGGER = LogManager.getLogger(RootUriRequestHandler.class);
     private final Pattern originPattern;
     private final ServerObjects _serverObjects;
     private final ObjectMapper _jsonMapper = new ObjectMapper();
@@ -71,8 +70,9 @@ public class RootUriRequestHandler implements UriRequestHandler {
             String afterHandlerType = afterServer.substring(handlerType.length());
 
             Map<String, String> parameters = switch(handlerType) {
-                case "cancelGame", "gameCardInfo", "concedeGame", "gameHistory", "login", "playerInfo", "playerStats",
-                        "register", "replay", "serverStats", "startGameSession" -> {
+                case "cancelGame", "gameCardInfo", "concedeGame", "decisionResponse", "gameHistory", "login",
+                        "playerInfo", "playerStats", "register", "replay", "serverStats", "startGameSession",
+                        "updateGameState" -> {
                     Map<String, String> result = getParameters(request);
                     result.put("type", handlerType);
                     yield result;

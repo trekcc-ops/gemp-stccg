@@ -1,10 +1,10 @@
 package com.gempukku.stccg.gameevent;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SendMessageGameEvent extends GameEvent {
 
-    @JacksonXmlProperty(localName = "message", isAttribute = true)
+    @JsonProperty("message")
     private final String _message;
 
     public SendMessageGameEvent(GameEvent.Type eventType, String message) {
