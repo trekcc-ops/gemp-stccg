@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.account.GameHistoryRequestHandler;
@@ -26,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
@@ -61,8 +63,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = UpdateHallRequestHandler.class, name = "updateHall")
 })
 public interface UriRequestHandlerNew {
-    void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                       ServerObjects serverObjects)
+    void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception;
 
     default void logHttpError(Logger log, int code, String uri, Exception exp) {
@@ -87,9 +88,9 @@ public interface UriRequestHandlerNew {
 
     default User getResourceOwnerSafely(HttpMessage request, ServerObjects objects)
             throws HttpProcessingException {
-        String loggedUser = getLoggedUser(request, objects);
+        String loggedUser = Objects.requireNonNullElse(getLoggedUser(request, objects), "");
 
-        if (loggedUser == null)
+        if (loggedUser.isEmpty())
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
         User resourceOwner = objects.getPlayerDAO().getPlayer(loggedUser);
@@ -108,12 +109,12 @@ public interface UriRequestHandlerNew {
                 if ("loggedUser".equals(cookie.name())) {
                     String value = cookie.value();
                     if (value != null) {
-                        return serverObjects.getLoggedUserHolder().getLoggedUser(value);
+                        return serverObjects.getLoggedUserHolder().getLoggedUserNew(value);
                     }
                 }
             }
         }
-        return null;
+        return "";
     }
 
 

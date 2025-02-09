@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler.hall;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.ServerObjects;
@@ -32,12 +33,10 @@ public class GetHallRequestHandler implements UriRequestHandlerNew {
     private static final Logger LOGGER = LogManager.getLogger(GetHallRequestHandler.class);
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
         try {
-            User user = getResourceOwnerSafely(request, serverObjects);
-
+            User user = request.user();
             Map<Object, Object> hallMap = new HashMap<>();
             HallServer _hallServer = serverObjects.getHallServer();
 

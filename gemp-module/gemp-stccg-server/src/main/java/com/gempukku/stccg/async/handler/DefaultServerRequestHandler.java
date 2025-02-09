@@ -73,21 +73,21 @@ class DefaultServerRequestHandler {
                 if ("loggedUser".equals(cookie.name())) {
                     String value = cookie.value();
                     if (value != null) {
-                        return _loggedUserHolder.getLoggedUser(value);
+                        return _loggedUserHolder.getLoggedUserNew(value);
                     }
                 }
             }
         }
-        return null;
+        return "";
     }
 
     final User getResourceOwnerSafely(HttpMessage request, String participantId)
             throws HttpProcessingException {
-        String loggedUser = getLoggedUser(request);
-        if (isTest() && loggedUser == null)
+        String loggedUser = Objects.requireNonNullElse(getLoggedUser(request), "");
+        if (isTest() && loggedUser.isEmpty())
             loggedUser = participantId;
 
-        if (loggedUser == null)
+        if (loggedUser.isEmpty())
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
         User resourceOwner = _playerDao.getPlayer(loggedUser);
@@ -106,9 +106,9 @@ class DefaultServerRequestHandler {
 
     final User getResourceOwnerSafely(HttpMessage request)
             throws HttpProcessingException {
-        String loggedUser = getLoggedUser(request);
+        String loggedUser = Objects.requireNonNullElse(getLoggedUser(request), "");
 
-        if (loggedUser == null)
+        if (loggedUser.isEmpty())
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
         User resourceOwner = _playerDao.getPlayer(loggedUser);

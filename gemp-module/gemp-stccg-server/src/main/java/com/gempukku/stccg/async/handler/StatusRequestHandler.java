@@ -3,6 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.hall.HallServer;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -11,18 +12,18 @@ import java.net.HttpURLConnection;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-public class StatusRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
+public class StatusRequestHandler {
     private final HallServer _hallServer;
     private final ChatServer _chatServer;
+    private final GameHistoryService _gameHistoryService;
 
     public StatusRequestHandler(ServerObjects objects) {
-        super(objects);
         _hallServer = objects.getHallServer();
         _chatServer = objects.getChatServer();
+        _gameHistoryService = objects.getGameHistoryService();
     }
 
-    @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
 

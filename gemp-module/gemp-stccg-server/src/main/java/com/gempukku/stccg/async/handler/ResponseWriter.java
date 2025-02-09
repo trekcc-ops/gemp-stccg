@@ -20,8 +20,6 @@ public interface ResponseWriter {
     void writeHtmlResponse(String html);
     void writeJsonResponse(String json);
 
-    void writeJsonResponseWithHeaders(String json, Map<String, String> headers);
-
     void writeJsonResponseWithHeaders(String json, HttpHeaders headers);
 
     void writeByteResponse(byte[] bytes, Map<? extends CharSequence, String> headers);

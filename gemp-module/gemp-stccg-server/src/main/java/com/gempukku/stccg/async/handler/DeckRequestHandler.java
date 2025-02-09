@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -36,15 +37,16 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private final DeckDAO _deckDao;
     private final FormatLibrary _formatLibrary;
 
-    DeckRequestHandler(ServerObjects objects) {
+    public DeckRequestHandler(ServerObjects objects) {
         super(objects);
         _deckDao = objects.getDeckDAO();
         _formatLibrary = objects.getFormatLibrary();
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request,
-                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, GempHttpRequest gempRequest,
+                                    ResponseWriter responseWriter) throws Exception {
+        HttpRequest request = gempRequest.getRequest();
         if ("/list".equals(uri) && request.method() == HttpMethod.GET) {
             listDecks(request, responseWriter);
         } else if ("/libraryList".equals(uri) && request.method() == HttpMethod.GET) {

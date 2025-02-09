@@ -10,7 +10,7 @@ import java.io.File;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 
-public class WebRequestHandler implements UriRequestHandler {
+public class WebRequestHandler {
     private final String _root;
 
     public WebRequestHandler() {
@@ -21,8 +21,7 @@ public class WebRequestHandler implements UriRequestHandler {
         _root = root;
     }
 
-    @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         if (uri.isEmpty())
             uri = "index.html";

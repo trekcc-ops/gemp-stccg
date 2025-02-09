@@ -55,14 +55,16 @@ export default class GameHistoryUI {
             row.append($("<td></td>").html(winReason));
             row.append($("<td></td>").html(loseReason));
             row.append($("<td></td>").html(endTime));
-            if (gameRecordingId != null) {
+/*            if (gameRecordingId != null) {
                 var link = "game.html?replayId=" + playerId + "$" + gameRecordingId;
                 var linkElem = $("<a>replay game</a>");
                 linkElem.attr("href", link);
                 row.append($("<td></td>").html(linkElem));
             } else {
                 row.append($("<td></td>").html("<i>not stored</i>"));
-            }
+            }*/
+                // TODO - Commenting out the game recording links for now since they don't work
+            row.append($("<td></td>").html("<i>not available</i>"));
 
             historyTable.append(row);
         }

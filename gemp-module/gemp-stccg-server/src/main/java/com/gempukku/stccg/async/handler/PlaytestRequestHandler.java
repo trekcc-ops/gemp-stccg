@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
@@ -25,8 +26,9 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
+        HttpRequest request = gempRequest.getRequest();
         if ("/addTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {
             addTesterFlag(request, responseWriter);
         } else if ("/removeTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {

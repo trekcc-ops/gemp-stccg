@@ -1,6 +1,7 @@
 package com.gempukku.stccg.async.handler.hall;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
@@ -46,15 +47,14 @@ public class CreateTableRequestHandler implements UriRequestHandlerNew {
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
 
         //To prevent annoyance, super long glacial games are hidden from everyone except
         // the participants and admins.
         boolean isVisible = _timer != GameTimer.GLACIAL_TIMER;
 
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        User resourceOwner = request.user();
         PlayerDAO playerDAO = serverObjects.getPlayerDAO();
         HallServer hallServer = serverObjects.getHallServer();
 

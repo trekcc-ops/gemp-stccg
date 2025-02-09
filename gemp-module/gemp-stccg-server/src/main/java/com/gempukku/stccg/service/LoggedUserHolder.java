@@ -42,23 +42,18 @@ public class LoggedUserHolder {
         return null;
     }
 
-    public String getLoggedUser(HttpMessage request) {
-        ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
-        HttpHeaders headers = request.headers();
-        String cookieHeader = headers.get(HttpHeaderNames.COOKIE);
-        if (cookieHeader != null) {
-            Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
-            for (Cookie cookie : cookies) {
-                String name = cookie.name();
-                if ("loggedUser".equals(name)) {
-                    String value = cookie.value();
-                    if (value != null) {
-                        return getLoggedUser(value);
-                    }
-                }
+    public String getLoggedUserNew(String sessionId) {
+        _readWriteLock.readLock().lock();
+        try {
+            String loggedUser = _sessionIdsToUsers.get(sessionId);
+            if (loggedUser != null) {
+                _lastAccess.put(sessionId, System.currentTimeMillis());
+                return loggedUser;
             }
+        } finally {
+            _readWriteLock.readLock().unlock();
         }
-        return null;
+        return "";
     }
 
 

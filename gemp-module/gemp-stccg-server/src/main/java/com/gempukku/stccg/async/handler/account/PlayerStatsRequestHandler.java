@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
@@ -19,13 +20,12 @@ import java.util.Map;
 public class PlayerStatsRequestHandler implements UriRequestHandlerNew {
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
 
         GameHistoryService gameHistoryService = serverObjects.getGameHistoryService();
 
-            User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+            User resourceOwner = request.user();
 
             Map<Object, Object> response = new HashMap<>();
 

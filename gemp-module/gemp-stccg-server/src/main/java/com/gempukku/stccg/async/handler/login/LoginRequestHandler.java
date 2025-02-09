@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler.login;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
@@ -28,7 +29,7 @@ public class LoginRequestHandler implements UriRequestHandlerNew {
         _password = password;
     }
 
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
                                     ServerObjects serverObjects)
             throws Exception {
 
@@ -38,7 +39,7 @@ public class LoginRequestHandler implements UriRequestHandlerNew {
         User player = serverObjects.getPlayerDAO().loginUser(_userId, _password);
         if (player != null) {
             player.checkLogin();
-            Map<String, String> userReturningHeaders = logUserReturningHeaders(remoteIp, _userId, serverObjects);
+            Map<String, String> userReturningHeaders = logUserReturningHeaders(request.ip(), _userId, serverObjects);
             responseWriter.writeEmptyXmlResponseWithHeaders(userReturningHeaders);
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401

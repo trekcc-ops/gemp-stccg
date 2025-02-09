@@ -1,6 +1,7 @@
 package com.gempukku.stccg.async.handler.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
@@ -32,10 +33,9 @@ public class DecisionResponseRequestHandler extends GameRequestHandlerNew implem
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        User resourceOwner = request.user();
         CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
         gameMediator.setPlayerAutoPassSettings(resourceOwner, getAutoPassPhases(request));
 

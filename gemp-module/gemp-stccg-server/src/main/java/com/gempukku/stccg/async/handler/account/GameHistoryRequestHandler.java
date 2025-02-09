@@ -3,6 +3,7 @@ package com.gempukku.stccg.async.handler.account;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
@@ -35,14 +36,13 @@ public class GameHistoryRequestHandler implements UriRequestHandlerNew {
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
 
         if (_start < 0 || _count < 1 || _count > 100)
             throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        User resourceOwner = request.user();
         String userId = resourceOwner.getName();
         GameHistoryDAO gameHistoryDAO = serverObjects.getGameHistoryDAO();
 

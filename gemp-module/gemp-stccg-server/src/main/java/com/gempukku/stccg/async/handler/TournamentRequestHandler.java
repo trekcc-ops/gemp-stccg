@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
@@ -22,15 +23,16 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
     private final TournamentService _tournamentService;
     private final FormatLibrary _formatLibrary;
 
-    TournamentRequestHandler(ServerObjects objects) {
+    public TournamentRequestHandler(ServerObjects objects) {
         super(objects);
         _tournamentService = objects.getTournamentService();
         _formatLibrary = objects.getFormatLibrary();
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
+        HttpRequest request = gempRequest.getRequest();
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCurrentTournaments(responseWriter);
         } else if ("/history".equals(uri) && request.method() == HttpMethod.GET) {

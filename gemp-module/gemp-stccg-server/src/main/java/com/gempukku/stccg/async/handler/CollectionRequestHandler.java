@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.GenericCardItem;
@@ -30,15 +31,16 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private final LeagueService _leagueService;
     private final ProductLibrary _productLibrary;
 
-    CollectionRequestHandler(ServerObjects objects) {
+    public CollectionRequestHandler(ServerObjects objects) {
         super(objects);
         _leagueService = objects.getLeagueService();
         _productLibrary = objects.getProductLibrary();
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter,
-                                    String remoteIp) throws Exception {
+    public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
+            throws Exception {
+        HttpRequest request = gempRequest.getRequest();
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCollectionTypes(request, responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {

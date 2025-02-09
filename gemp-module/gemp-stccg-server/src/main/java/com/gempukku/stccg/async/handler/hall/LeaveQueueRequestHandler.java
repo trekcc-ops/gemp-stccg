@@ -1,6 +1,7 @@
 package com.gempukku.stccg.async.handler.hall;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
@@ -19,10 +20,10 @@ public class LeaveQueueRequestHandler implements UriRequestHandlerNew {
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
                                     ServerObjects serverObjects)
             throws Exception {
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        User resourceOwner = request.user();
         HallServer hallServer = serverObjects.getHallServer();
         hallServer.leaveQueue(_queueId, resourceOwner);
         responseWriter.writeXmlOkResponse();

@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler.server;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
@@ -48,7 +49,7 @@ public class ServerStatsRequestHandler implements UriRequestHandlerNew {
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
                                     ServerObjects serverObjects) throws Exception {
         try {
             GameHistoryService gameHistoryService = serverObjects.getGameHistoryService();

@@ -3,10 +3,7 @@ package com.gempukku.stccg.async.handler.hall;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.DateUtils;
-import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.LongPollingResource;
-import com.gempukku.stccg.async.LongPollingSystem;
-import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.*;
 import com.gempukku.stccg.async.handler.*;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionType;
@@ -40,10 +37,10 @@ public class UpdateHallRequestHandler implements UriRequestHandlerNew {
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
                                     ServerObjects serverObjects)
             throws Exception {
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        User resourceOwner = request.user();
         PlayerDAO playerDAO = serverObjects.getPlayerDAO();
         CollectionsManager collectionsManager = serverObjects.getCollectionsManager();
 
@@ -88,7 +85,7 @@ public class UpdateHallRequestHandler implements UriRequestHandlerNew {
 
 
     private class HallUpdateLongPollingResource implements LongPollingResource {
-        private final HttpRequest _request;
+        private final GempHttpRequest _request;
         private final HallCommunicationChannel _hallCommunicationChannel;
         private final User _resourceOwner;
         private final ResponseWriter _responseWriter;
@@ -96,7 +93,7 @@ public class UpdateHallRequestHandler implements UriRequestHandlerNew {
         private final HallServer _hallServer;
         private final CollectionsManager _collectionsManager;
 
-        private HallUpdateLongPollingResource(HallCommunicationChannel commChannel, HttpRequest request,
+        private HallUpdateLongPollingResource(HallCommunicationChannel commChannel, GempHttpRequest request,
                                               User resourceOwner, ResponseWriter responseWriter,
                                               HallServer hallServer, CollectionsManager collectionsManager) {
             _hallCommunicationChannel = commChannel;

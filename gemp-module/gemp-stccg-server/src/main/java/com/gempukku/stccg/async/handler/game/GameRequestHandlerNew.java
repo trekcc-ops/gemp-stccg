@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler.game;
 
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.common.filterable.Phase;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMessage;
@@ -21,10 +22,10 @@ public class GameRequestHandlerNew {
     }
 
 
-    protected Set<Phase> getAutoPassPhases(HttpMessage request) {
+    protected Set<Phase> getAutoPassPhases(GempHttpRequest request) {
         ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
-        String cookieHeader = request.headers().get(HttpHeaderNames.COOKIE);
-        if (cookieHeader != null) {
+        String cookieHeader = request.cookieHeader();
+        if (!cookieHeader.isEmpty()) {
             Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
             for (Cookie cookie : cookies) {
                 if ("autoPassPhases".equals(cookie.name())) {

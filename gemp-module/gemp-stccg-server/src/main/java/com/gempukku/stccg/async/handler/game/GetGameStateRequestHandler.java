@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
@@ -23,9 +24,10 @@ public class GetGameStateRequestHandler extends GameRequestHandlerNew implements
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
+
+        String uri = request.uriWithoutParameters();
 
         String userType = uri.substring(uri.lastIndexOf("/")).replace("/","");
         String gameIdToUse = (_gameId != null)? _gameId :
@@ -34,7 +36,7 @@ public class GetGameStateRequestHandler extends GameRequestHandlerNew implements
                         .replace(userType,"")
                         .replace("/","");
 
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        User resourceOwner = request.user();
         String userId = resourceOwner.getName();
 
         boolean userCanAccess = resourceOwner.isAdmin() || userType.equals("thisPlayer");

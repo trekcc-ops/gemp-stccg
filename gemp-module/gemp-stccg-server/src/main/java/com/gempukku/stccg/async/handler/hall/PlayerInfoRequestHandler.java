@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler.hall;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
@@ -16,10 +17,9 @@ import java.net.HttpURLConnection;
 public class PlayerInfoRequestHandler implements UriRequestHandlerNew {
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request,
-                                    ResponseWriter responseWriter, String remoteIp, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+        User resourceOwner = request.user();
         String jsonString = new ObjectMapper().writeValueAsString(resourceOwner.GetUserInfo());
         responseWriter.writeJsonResponse(jsonString);
     }

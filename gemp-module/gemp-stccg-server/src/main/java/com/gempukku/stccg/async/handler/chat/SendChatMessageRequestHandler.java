@@ -3,6 +3,7 @@ package com.gempukku.stccg.async.handler.chat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.ServerObjects;
@@ -41,10 +42,10 @@ public class SendChatMessageRequestHandler implements UriRequestHandlerNew {
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
-                                    ServerObjects serverObjects) throws HttpProcessingException {
-        User resourceOwner = getResourceOwnerSafely(request, serverObjects);
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+            throws HttpProcessingException {
 
+        User resourceOwner = request.user();
         ChatRoomMediator chatRoom = serverObjects.getChatServer().getChatRoom(_roomName);
         if (chatRoom == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404

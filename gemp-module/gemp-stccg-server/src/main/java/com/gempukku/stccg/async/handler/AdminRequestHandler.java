@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.CacheManager;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -38,7 +39,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private final AdminService _adminService;
     private static final Logger LOGGER = LogManager.getLogger(AdminRequestHandler.class);
 
-    AdminRequestHandler(ServerObjects objects) {
+    public AdminRequestHandler(ServerObjects objects) {
         super(objects);
         _leagueService = objects.getLeagueService();
         _cacheManager = objects.getCacheManager();
@@ -49,8 +50,9 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request,
-                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, GempHttpRequest gempRequest,
+                                    ResponseWriter responseWriter) throws Exception {
+        HttpRequest request = gempRequest.getRequest();
         String requestType = uri + request.method();
         switch(requestType) {
             case "/clearCachePOST":

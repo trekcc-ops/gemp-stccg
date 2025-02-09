@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.game.GameRecorder;
@@ -22,9 +23,10 @@ public class ReplayRequestHandler implements UriRequestHandlerNew {
     private static final Logger LOGGER = LogManager.getLogger(ReplayRequestHandler.class);
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
                                     ServerObjects serverObjects)
             throws Exception {
+        String uri = request.uriWithoutParameters();
         String replayId = uri.substring(1);
 
         if (!replayId.contains("$") || replayId.contains("."))

@@ -1,7 +1,5 @@
 package com.gempukku.stccg.async;
 
-import com.gempukku.stccg.async.handler.RootUriRequestHandler;
-import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -30,13 +28,12 @@ public class GempServer {
 
         try {
             objects.getLongPollingSystem().start();
-            UriRequestHandler uriRequestHandler = new RootUriRequestHandler(objects);
 
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new ServerChannelInitializer(objects, uriRequestHandler))
+                    .childHandler(new ServerChannelInitializer(objects))
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childOption(ChannelOption.TCP_NODELAY, true);
             ChannelFuture bind = bootstrap.bind(httpPort);
@@ -50,11 +47,9 @@ public class GempServer {
 
     private static class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
         private final ServerObjects _objects;
-        private final UriRequestHandler _uriRequestHandler;
 
-        private ServerChannelInitializer(ServerObjects objects, UriRequestHandler uriRequestHandler) {
+        private ServerChannelInitializer(ServerObjects objects) {
             _objects = objects;
-            _uriRequestHandler = uriRequestHandler;
         }
 
         @Override
@@ -63,7 +58,7 @@ public class GempServer {
             pipeline.addLast(new HttpServerCodec());
             pipeline.addLast(new HttpObjectAggregator(Short.MAX_VALUE));
             pipeline.addLast(new HttpContentCompressor());
-            pipeline.addLast(new GempukkuHttpRequestHandler(_objects, _uriRequestHandler));
+            pipeline.addLast(new GempukkuHttpRequestHandler(_objects));
         }
     }
 }

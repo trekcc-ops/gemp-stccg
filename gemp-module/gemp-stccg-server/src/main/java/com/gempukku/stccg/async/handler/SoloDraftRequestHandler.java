@@ -1,6 +1,7 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -42,8 +43,9 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
+        HttpRequest request = gempRequest.getRequest();
         if (uri.isEmpty() || uri.charAt(0) != '/')
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         else if (request.method() == HttpMethod.POST) {
