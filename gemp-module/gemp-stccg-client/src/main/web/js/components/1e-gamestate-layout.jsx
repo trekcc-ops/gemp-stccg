@@ -22,6 +22,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
+import ActiveCardPane from './active-card-pane.jsx';
 
 // Change this function to change the JSON input source.
 function get_gamestate() {
@@ -315,8 +316,13 @@ export default function MiniDrawer() {
                     <div id="table">TABLE</div>
                     <div id="hand-pane">HAND PANE</div>
                     <div id="active-card-pane">
-                        <p>ACTIVE CARD PANE</p>
-                        <img style={{height: 240}} src="https://www.trekcc.org/1e/cardimages/premiere/PR327.jpg"></img>
+                        <ActiveCardPane style={{height: 240}} card={{imageUrl: "https://www.trekcc.org/1e/cardimages/premiere/PR327.jpg"}} />
+                        {
+                        /*
+                        For other demo cases:
+                        <ActiveCardPane style={{height: 240}} />
+                        */
+                        }
                     </div>
                     <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
                     <div id="chat-pane">CHAT</div>
