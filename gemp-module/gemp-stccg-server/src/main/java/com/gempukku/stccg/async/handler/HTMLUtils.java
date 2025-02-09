@@ -10,6 +10,7 @@ import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
+import com.gempukku.stccg.formats.DefaultGameFormat;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -172,7 +173,7 @@ public class HTMLUtils {
         return result.toString();
     }
 
-    static String getDeckValidation(CardBlueprintLibrary library, CardDeck deck, GameFormat format) {
+    public static String getDeckValidation(CardBlueprintLibrary library, CardDeck deck, DefaultGameFormat format) {
         StringBuilder sb = new StringBuilder();
 
         StringBuilder valid = new StringBuilder();
@@ -238,58 +239,6 @@ public class HTMLUtils {
         //Make all links open in a new tab
         newMsg = newMsg.replaceAll("<(a href=\".*?\")>", "<$1 target=\"blank\">");
         return newMsg;
-    }
-
-    public static String serializeFormatForHall(GameFormat format, CardBlueprintLibrary library)
-            throws CardNotFoundException {
-        StringBuilder result = new StringBuilder();
-        result.append(makeBold(format.getName()));
-        result.append("<ul>");
-        result.append("<li>valid sets: ");
-        for (String setId : format.getValidSetIdsAsStrings())
-            result.append(setId).append(", ");
-        result.append("</li>");
-        if (!format.getBannedCards().isEmpty()) {
-            result.append("<li>Banned cards (can't be played): ");
-            appendFormatCards(result, format.getBannedCards(), library);
-            result.append("</li>");
-        }
-        if (!format.getRestrictedCardNames().isEmpty()) {
-            result.append("<li>Restricted by card name: ");
-            boolean first = true;
-            for (String cardName : format.getRestrictedCardNames()) {
-                if (!first)
-                    result.append(", ");
-                result.append(cardName);
-                first = false;
-            }
-            result.append("</li>");
-        }
-        if (!format.getErrataCardMap().isEmpty()) {
-            result.append("<li>Errata: ");
-            appendFormatCards(result, new ArrayList<>(new LinkedHashSet<>(format.getErrataCardMap().values())),
-                    library);
-            result.append("</li>");
-        }
-        if (!format.getValidCards().isEmpty()) {
-            result.append("<li>Additional valid: ");
-            List<String> additionalValidCards = format.getValidCards();
-            appendFormatCards(result, additionalValidCards, library);
-            result.append("</li>");
-        }
-        result.append("</ul>");
-        return result.toString();
-    }
-
-    private static void appendFormatCards(StringBuilder result, Collection<String> additionalValidCards,
-                                          CardBlueprintLibrary blueprintLibrary)
-            throws CardNotFoundException {
-        if (!additionalValidCards.isEmpty()) {
-            for (String blueprintId : additionalValidCards)
-                result.append(blueprintLibrary.getCardBlueprint(blueprintId).getCardLink()).append(", ");
-            if (additionalValidCards.isEmpty())
-                result.append("none,");
-        }
     }
 
     public static String replaceNewlines(String message) {

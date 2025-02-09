@@ -184,7 +184,7 @@ public class GameServer extends AbstractServer {
     }
 
     public final CardDeck getParticipantDeck(User player, String deckName) {
-        return _deckDao.getDeckForPlayer(player, deckName);
+        return _deckDao.getDeckForUser(player, deckName);
     }
 
     public final CardGameMediator getGameById(String gameId) throws HttpProcessingException {

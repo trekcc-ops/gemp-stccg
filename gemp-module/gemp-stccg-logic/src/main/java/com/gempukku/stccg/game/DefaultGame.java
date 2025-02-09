@@ -231,8 +231,9 @@ public abstract class DefaultGame {
         assert getGameState() != null;
         finish();
 
-        for (GameResultListener gameResultListener : _gameResultListeners)
+        for (GameResultListener gameResultListener : _gameResultListeners) {
             gameResultListener.gameFinished(_winnerPlayerId, reason, _losers);
+        }
 
         _finished = true;
     }

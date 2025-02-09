@@ -1,5 +1,8 @@
 package com.gempukku.stccg.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.common.filterable.SubDeck;
 
 import java.util.*;
@@ -7,49 +10,57 @@ import java.util.*;
 public class CardDeck {
 
     Map<SubDeck, List<String>> _subDecks = new HashMap<>();
+
     protected final String _deckName;
-    protected String _notes;
-    protected String _targetFormat;
-    public CardDeck(String deckName) {
+    protected final String _notes;
+    protected final String _targetFormat;
+
+    public CardDeck(String deckName, AbstractGameFormat format) {
         _deckName = deckName;
+        _targetFormat = format.getName();
+        _notes = "";
     }
+
+
     public CardDeck(CardDeck deck) {
-        _deckName = deck.getDeckName();
-        _subDecks = deck.getSubDecks();
-        _notes = deck.getNotes();
-        _targetFormat = deck.getTargetFormat();
+        this(deck, deck.getDeckName());
     }
 
     public CardDeck(CardDeck deck, String newName) {
         _deckName = newName;
         _subDecks = deck.getSubDecks();
-        _notes = deck.getNotes();
+        _notes = Objects.requireNonNullElse(deck.getNotes(), "");
         _targetFormat = deck.getTargetFormat();
     }
 
 
-    public CardDeck(String deckName, String contents, String targetFormat, String notes) {
+    public CardDeck(String deckName, String contents, AbstractGameFormat format, String notes) {
         _deckName = deckName;
-        _targetFormat = targetFormat;
-        _notes = notes;
+        _targetFormat = format.getName();
+        _notes = Objects.requireNonNullElse(notes, "");
         parseContents(contents);
     }
 
-    public CardDeck(String deckName, String contents, String targetFormat) {
-        _deckName = deckName;
-        _targetFormat = targetFormat;
-        _notes = "";
-        parseContents(contents);
+
+    public CardDeck(String deckName, String contents, AbstractGameFormat format) {
+        this(deckName, contents, format, "");
     }
+
 
 
     public void parseContents(String contents) {
         String[] parts = contents.split("\\|");
         for (int i = 0; i < parts.length; i += 2) {
             List<String> cards = new ArrayList<>();
-            for (String card : parts[i+1].split(",")) {
-                if (!card.isEmpty()) {
-                    cards.add(card);
+                /* TODO
+                     if (i < parts.length - 1) condition needed to address a bug loading decks with empty
+                     subdecks. Should replace this serialization with JSON in the long-term.
+                 */
+            if (i < parts.length - 1) {
+                for (String card : parts[i + 1].split(",")) {
+                    if (!card.isEmpty()) {
+                        cards.add(card);
+                    }
                 }
             }
             _subDecks.put(SubDeck.valueOf(parts[i]), cards);
@@ -68,7 +79,7 @@ public class CardDeck {
     public String getDeckName() {
         return _deckName;
     }
-    public void addCard(String blueprintId) { addCard(SubDeck.DRAW_DECK, blueprintId); }
+
     public void addCard(SubDeck subDeck, String blueprintId) {
         _subDecks.computeIfAbsent(subDeck, k -> new LinkedList<>());
         _subDecks.get(subDeck).add(blueprintId);
@@ -90,4 +101,5 @@ public class CardDeck {
     public String getNotes() {
         return _notes;
     }
+
 }

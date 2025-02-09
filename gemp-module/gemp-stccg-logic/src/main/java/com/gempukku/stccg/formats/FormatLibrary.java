@@ -16,7 +16,7 @@ import java.util.concurrent.Semaphore;
 @JsonIncludeProperties({ "Formats", "SealedTemplates" })
 @JsonPropertyOrder({ "Formats", "SealedTemplates" })
 public class FormatLibrary implements DeserializingLibrary<GameFormat> {
-    private final Map<String, GameFormat> _allFormats = new HashMap<>();
+    private final Map<String, DefaultGameFormat> _allFormats = new HashMap<>();
     private final Map<String, SealedEventDefinition> _sealedTemplates = new LinkedHashMap<>();
     private final Semaphore collectionReady = new Semaphore(1);
 
@@ -74,7 +74,7 @@ public class FormatLibrary implements DeserializingLibrary<GameFormat> {
             JSONData.Format[] formatList =
                     new ObjectMapper().readValue(AppConfig.getFormatDefinitionsPath(), JSONData.Format[].class);
             for (JSONData.Format def : formatList) {
-                GameFormat format = new DefaultGameFormat(blueprintLibrary, def);
+                DefaultGameFormat format = new DefaultGameFormat(blueprintLibrary, def);
                 _allFormats.put(format.getCode(), format);
             }
             collectionReady.release();
@@ -89,7 +89,7 @@ public class FormatLibrary implements DeserializingLibrary<GameFormat> {
         try {
             collectionReady.acquire();
             Map<String, GameFormat> result = new HashMap<>();
-            for (Map.Entry<String, GameFormat> entry : _allFormats.entrySet()) {
+            for (Map.Entry<String, DefaultGameFormat> entry : _allFormats.entrySet()) {
                 if (entry.getValue().hallVisible()) {
                     result.put(entry.getKey(), entry.getValue());
                 }
@@ -104,7 +104,7 @@ public class FormatLibrary implements DeserializingLibrary<GameFormat> {
     }
 
     @JsonProperty("Formats")
-    public Map<String, GameFormat> getAllFormats() {
+    public Map<String, DefaultGameFormat> getAllFormats() {
         try {
             collectionReady.acquire();
             var data = Collections.unmodifiableMap(_allFormats);
@@ -116,7 +116,7 @@ public class FormatLibrary implements DeserializingLibrary<GameFormat> {
         }
     }
 
-    public GameFormat get(String formatId) {
+    public DefaultGameFormat get(String formatId) {
         try {
             collectionReady.acquire();
             var data = _allFormats.get(formatId);
@@ -128,7 +128,7 @@ public class FormatLibrary implements DeserializingLibrary<GameFormat> {
         }
     }
 
-    public GameFormat getFormatByName(String formatName) {
+    public DefaultGameFormat getFormatByName(String formatName) {
         try {
             collectionReady.acquire();
             var data = _allFormats.values().stream()

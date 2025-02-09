@@ -3,6 +3,7 @@ package com.gempukku.stccg.async;
 import com.gempukku.stccg.database.IpBanDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.UserNotFoundException;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
@@ -68,7 +69,11 @@ public class GempHttpRequest {
             }
         }
         if (!userName.isEmpty()) {
-            return playerDAO.getPlayer(userName);
+            try {
+                return playerDAO.getPlayer(userName);
+            } catch(UserNotFoundException exp) {
+                return null;
+            }
         } else {
             return null;
         }

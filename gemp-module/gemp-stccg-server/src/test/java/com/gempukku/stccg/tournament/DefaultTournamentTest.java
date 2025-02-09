@@ -4,6 +4,7 @@ import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.formats.GameFormat;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.Times;
@@ -21,16 +22,17 @@ public class DefaultTournamentTest extends AbstractServerTest {
     public void testTournament() throws InterruptedException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
         String tournamentId = "t1";
+        GameFormat format = _formatLibrary.getFormatByName("1E Modern Complete");
         Map<String, CardDeck> playerDecks = new HashMap<>();
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"));
-        playerDecks.put("p1", new CardDeck("p1"));
-        playerDecks.put("p2", new CardDeck("p2"));
-        playerDecks.put("p3", new CardDeck("p3"));
-        playerDecks.put("p4", new CardDeck("p4"));
-        playerDecks.put("p5", new CardDeck("p5"));
-        playerDecks.put("p6", new CardDeck("p6"));
-        playerDecks.put("p7", new CardDeck("p7"));
-        playerDecks.put("p8", new CardDeck("p8"));
+        playerDecks.put("p1", new CardDeck("p1", format));
+        playerDecks.put("p2", new CardDeck("p2", format));
+        playerDecks.put("p3", new CardDeck("p3", format));
+        playerDecks.put("p4", new CardDeck("p4", format));
+        playerDecks.put("p5", new CardDeck("p5", format));
+        playerDecks.put("p6", new CardDeck("p6", format));
+        playerDecks.put("p7", new CardDeck("p7", format));
+        playerDecks.put("p8", new CardDeck("p8", format));
 
         Set<String> droppedAfterRoundOne = new HashSet<>(Arrays.asList("p2", "p4", "p6", "p8"));
         Set<String> droppedAfterRoundTwo = new HashSet<>(Arrays.asList("p2", "p3", "p4", "p6", "p7", "p8"));

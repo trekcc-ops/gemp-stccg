@@ -50,7 +50,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
         GameFormat format = formatLibrary.get("debug1e");
-        CardDeck testDeck = new CardDeck("Test");
+        CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
         }
@@ -67,7 +67,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeSimple1EGameWithSharedMission(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
-        CardDeck testDeck = new CardDeck("Test");
+        GameFormat format = formatLibrary.get("debug1e");
+        CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
         }
@@ -76,7 +77,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-        GameFormat format = formatLibrary.get("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -87,7 +87,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeSimple1EGame(int deckSize, String blueprintId) {
         Map<String, CardDeck> decks = new HashMap<>();
-        CardDeck testDeck = new CardDeck("Test");
+        GameFormat format = formatLibrary.get("debug1e");
+        CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, blueprintId); // Federation Outpost
         }
@@ -95,7 +96,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-        GameFormat format = formatLibrary.get("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -106,7 +106,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeSimple1EGameWithDoorways(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
-        CardDeck testDeck = new CardDeck("Test");
+        GameFormat format = formatLibrary.get("st1emoderncomplete");
+        CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
             testDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
@@ -116,7 +117,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-        GameFormat format = formatLibrary.get("st1emoderncomplete");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -126,7 +126,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeSimpleTribblesGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
-        CardDeck testDeck = new CardDeck("Test");
+        GameFormat format = formatLibrary.get("tribbles");
+        CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "221_002"); // 1 Tribble - Kindness
         }
@@ -134,7 +135,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-        GameFormat format = formatLibrary.get("tribbles");
 
         _tribblesGame = new TribblesGame(format, decks, _cardLibrary);
         _userFeedback = _tribblesGame.getUserFeedback();
@@ -144,8 +144,10 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     private Map<String, CardDeck> getIntroTwoPlayerDecks() {
         Map<String, CardDeck> decks = new HashMap<>();
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.get("debug1e");
 
-        CardDeck fedDeck = new CardDeck("Federation");
+        CardDeck fedDeck = new CardDeck("Federation", format);
         fedDeck.addCard(SubDeck.MISSIONS, "106_004"); // Cargo Rendezvous
         fedDeck.addCard(SubDeck.MISSIONS, "106_005"); // Distress Mission
         fedDeck.addCard(SubDeck.MISSIONS, "106_007"); // Gravesworld
@@ -207,7 +209,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_339"); // U.S.S. Nebula
 
 
-        CardDeck klingonDeck = new CardDeck("Klingon");
+        CardDeck klingonDeck = new CardDeck("Klingon", format);
         klingonDeck.addCard(SubDeck.MISSIONS, "106_002"); // A Good Place to Die
         klingonDeck.addCard(SubDeck.MISSIONS, "106_003"); // Avert Danger
         klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
@@ -306,7 +308,10 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
 
-        CardDeck fedDeck = new CardDeck("Federation");
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.get("debug1e");
+
+        CardDeck fedDeck = new CardDeck("Federation", format);
         fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
         fedDeck.addCard(SubDeck.MISSIONS, "101_171"); // Investigate Rogue Comet
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
@@ -317,15 +322,13 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
         decks.put(P1, fedDeck);
 
-        CardDeck klingonDeck = new CardDeck("Klingon");
+        CardDeck klingonDeck = new CardDeck("Klingon", format);
         klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
         for (int i = 0; i < 35; i++)
             klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
         decks.put(P2, klingonDeck);
 
 
-        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.get("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -358,8 +361,10 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeGameToTestAMS() {
         Map<String, CardDeck> decks = new HashMap<>();
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.get("debug1e");
 
-        CardDeck fedDeck = new CardDeck("Federation");
+        CardDeck fedDeck = new CardDeck("Federation", format);
         fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         fedDeck.addCard(SubDeck.SEED_DECK, "109_063"); // AMS
@@ -370,15 +375,13 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
         decks.put(P1, fedDeck);
 
-        CardDeck klingonDeck = new CardDeck("Klingon");
+        CardDeck klingonDeck = new CardDeck("Klingon", format);
         klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
         for (int i = 0; i < 35; i++)
             klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
         decks.put(P2, klingonDeck);
 
 
-        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.get("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -387,8 +390,10 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeGameToTestMissionAttempt() {
         Map<String, CardDeck> decks = new HashMap<>();
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.get("debug1e");
 
-        CardDeck fedDeck = new CardDeck("Federation");
+        CardDeck fedDeck = new CardDeck("Federation", format);
         fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
         fedDeck.addCard(SubDeck.MISSIONS, "101_171"); // Investigate Rogue Comet
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
@@ -399,15 +404,13 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
         decks.put(P1, fedDeck);
 
-        CardDeck klingonDeck = new CardDeck("Klingon");
+        CardDeck klingonDeck = new CardDeck("Klingon", format);
         klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
         for (int i = 0; i < 35; i++)
             klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
         decks.put(P2, klingonDeck);
 
 
-        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.get("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -421,7 +424,11 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void initializeQuickMissionAttemptWithRisk() {
         Map<String, CardDeck> decks = new HashMap<>();
 
-        CardDeck fedDeck = new CardDeck("Federation");
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.get("debug1e");
+
+
+        CardDeck fedDeck = new CardDeck("Federation", format);
         fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         fedDeck.addCard(SubDeck.SEED_DECK, "212_019"); // Risk is Our Business
@@ -430,15 +437,13 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
         decks.put(P1, fedDeck);
 
-        CardDeck klingonDeck = new CardDeck("Klingon");
+        CardDeck klingonDeck = new CardDeck("Klingon", format);
         klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
         for (int i = 0; i < 35; i++)
             klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
         decks.put(P2, klingonDeck);
 
 
-        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.get("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
@@ -471,17 +476,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             if (!values.remove(s))
                 Assertions.fail("Arrays contents differ");
         }
-    }
-
-    protected void addPlayerDeck(String player, Map<String, CardDeck> decks, Map<String, Collection<String>> additionalCardsInDeck) {
-        CardDeck deck = new CardDeck("Some deck");
-        if (additionalCardsInDeck != null) {
-            Collection<String> extraCards = additionalCardsInDeck.get(player);
-            if (extraCards != null)
-                for (String extraCard : extraCards)
-                    deck.addCard(extraCard);
-        }
-        decks.put(player, deck);
     }
 
     protected void playerDecided(String player, String answer) throws DecisionResultInvalidException,

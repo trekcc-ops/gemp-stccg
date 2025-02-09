@@ -333,68 +333,22 @@ export default class GempClientCommunication {
         });
     }
 
-    getDeck(deckName, callback, errorMap) {
+    listUserDecks(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/deck",
+            url:this.url + "/listUserDecks",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
     }
 
-    shareDeck(deckName, callback, errorMap) {
+    listLibraryDecks(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/deck/share",
+            url:this.url + "/listLibraryDecks",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-    
-    getLibraryDeck(deckName, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/deck/library",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
-    }
-
-    getDecks(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/deck/list",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
-    }
-
-    getLibraryDecks(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/deck/libraryList",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -437,14 +391,13 @@ export default class GempClientCommunication {
         }
     }
 
-    importCollection(decklist, callback, errorMap) {
+    importCollection(deckList, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/deck/import/",
+            url:this.url + "/importDeck",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                decklist:decklist
+                deckList:deckList
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -484,15 +437,15 @@ export default class GempClientCommunication {
     saveDeck(deckName, targetFormat, notes, contents, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck",
+            url:this.url + "/saveDeck",
             cache:false,
             async:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 deckName:deckName,
                 targetFormat:targetFormat,
                 notes:notes,
-                deckContents:contents},
+                deckContents:contents
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -502,12 +455,12 @@ export default class GempClientCommunication {
     renameDeck(oldDeckName, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/rename",
+            url:this.url + "/renameDeck",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 oldDeckName:oldDeckName,
-                deckName:deckName},
+                deckName:deckName
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -517,11 +470,11 @@ export default class GempClientCommunication {
     deleteDeck(deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/delete",
+            url:this.url + "/deleteDeck",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName},
+                deckName:deckName
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -531,12 +484,12 @@ export default class GempClientCommunication {
     getDeckStats(contents, targetFormat, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/stats",
+            url:this.url + "/deckStats",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 targetFormat:targetFormat,
-                deckContents:contents},
+                deckContents:contents
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -544,7 +497,7 @@ export default class GempClientCommunication {
     }
     
     async getSets(format) {
-        const url = this.url + "/deck/sets";
+        const url = this.url + "/getSets";
         try {
             let response = await fetch(url, {
                 method: "POST",
@@ -575,7 +528,7 @@ export default class GempClientCommunication {
     getFormats(includeEvents, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/formats",
+            url:this.url + "/deckFormats",
             cache:true,
             data:{
                 includeEvents:includeEvents

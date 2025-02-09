@@ -335,7 +335,7 @@ export default class GempLotrDeckBuildingUI {
 
     loadDeckList() {
         var that = this;
-        this.comm.getDecks(function (json) {
+        this.comm.listUserDecks(function (json) {
             if (that.deckListDialog == null) {
                 that.deckListDialog = $("<div></div>")
                         .dialog({
@@ -360,7 +360,7 @@ export default class GempLotrDeckBuildingUI {
                 var deck = json[i];
                 var deckName = deck.deckName;
                 deckNames[i] = deckName;
-                var formatName = deck.targetFormat;
+                var formatName = deck.targetFormat.formatName;
                 var openDeckBut = $("<button title='Open deck'><span class='ui-icon ui-icon-folder-open'></span></button>").button();
                 var renameDeckBut = $("<button title='Rename deck'><span class='ui-icon ui-icon-pencil'></span></button>").button();
                 var deckListBut = $("<button title='Share deck list'><span class='ui-icon ui-icon-extlink'></span></button>").button();
@@ -379,10 +379,7 @@ export default class GempLotrDeckBuildingUI {
                 openDeckBut.click(
                         (function (i) {
                             return function () {
-                                that.comm.getDeck(deckNames[i],
-                                        function (json) {
-                                            that.setupDeck(json, deckNames[i]);
-                                        });
+                                that.setupDeck(json[i]);
                             };
                         })(i));
 
@@ -390,10 +387,7 @@ export default class GempLotrDeckBuildingUI {
                 deckListBut.click(
                         (function (i) {
                             return function () {
-                                that.comm.shareDeck(deckNames[i],
-                                    function(html) {
-                                        window.open('/share/deck?id=' + html, "_blank");
-                                    });
+                                that.showLibraryDeckInHtml(json[i]);
                             };
                         })(i));
 
@@ -437,7 +431,7 @@ export default class GempLotrDeckBuildingUI {
     
     loadLibraryList() {
         var that = this;
-        this.comm.getLibraryDecks(function (json) {
+        this.comm.listLibraryDecks(function (json) {
             if (that.deckListDialog == null) {
                 that.deckListDialog = $("<div></div>")
                         .dialog({
@@ -458,18 +452,18 @@ export default class GempLotrDeckBuildingUI {
             }
 
             var deckNames = [];
-            for (var i = 0; i < json.length; i++) {
-                var deck = json[i];
-                var deckName = deck.deckName;
+            for (let i = 0; i < json.length; i++) {
+                let deck = json[i];
+                let deckName = deck.deckName;
                 deckNames[i] = deckName;
-                var formatName = deck.targetFormat;
-                var openDeckBut = $("<button title='Open deck'><span class='ui-icon ui-icon-folder-open'></span></button>").button();
-                var deckListBut = $("<button title='Deck list'><span class='ui-icon ui-icon-clipboard'></span></button>").button();
+                let formatName = deck.targetFormat.formatName;
+                let openDeckBut = $("<button title='Open deck'><span class='ui-icon ui-icon-folder-open'></span></button>").button();
+                let deckListBut = $("<button title='Deck list'><span class='ui-icon ui-icon-clipboard'></span></button>").button();
 
-                var deckElem = $("<div class='deckItem'></div>");
+                let deckElem = $("<div class='deckItem'></div>");
                 deckElem.append(openDeckBut);
                 deckElem.append(deckListBut);
-                var deckNameDiv = $("<span/>").html(formatDeckName(formatName, deckName));
+                let deckNameDiv = $("<span/>").html(formatDeckName(formatName, deckName));
                 deckElem.append(deckNameDiv);
 
                 that.deckListDialog.append(deckElem);
@@ -477,11 +471,8 @@ export default class GempLotrDeckBuildingUI {
                 openDeckBut.click(
                         (function (i) {
                             return function () {
-                                that.comm.getLibraryDeck(deckNames[i],
-                                    function (json) {
-                                        that.setupDeck(json, deckNames[i]);
-                                        that.deckModified(true);
-                                    });
+                                that.setupDeck(json[i]);
+                                that.deckModified(true);
                             };
                         })(i));
 
@@ -489,7 +480,7 @@ export default class GempLotrDeckBuildingUI {
                 deckListBut.click(
                         (function (i) {
                             return function () {
-                                window.open('/gemp-stccg-server/deck/libraryHtml?deckName=' + encodeURIComponent(deckNames[i]), "_blank");
+                                that.showLibraryDeckInHtml(json[i]);
                             };
                         })(i));
             }
@@ -765,24 +756,40 @@ export default class GempLotrDeckBuildingUI {
         this.deckValidationDirty = true;
     }
 
-    setupDeck(json, deckName) {
+    setupDeck(deckJson) {
+    // Load a deck into the deck builder based on a Json object received from the server
+        console.log(deckJson);
         this.clearDeck();
-        this.deckName = deckName;
-        $("#editingDeck").text(deckName);
+        this.deckName = deckJson.deckName;
+        $("#editingDeck").text(this.deckName);
 
-        var formatName = json.targetFormat.formatName;
-        var formatCode = json.targetFormat.formatCode;
+        let formatName = deckJson.targetFormat.formatName;
+        let formatCode = deckJson.targetFormat.formatCode;
         this.formatSelect.val(formatCode);
 
-        this.notes = json.notes;
+        this.notes = deckJson.notes;
 
-        for (var i = 0; i < json.cards.length; i++) {
-            var card = json.cards[i];
-            var blueprintId = card.blueprintId;
-            var imageUrl = card.imageUrl;
-            var subDeck = card.subDeck;
-            this.addCardToDeck(blueprintId, imageUrl, subDeck);
+        for (const key in deckJson.cards) {
+            if (deckJson.cards.hasOwnProperty(key)) {
+                let subDeck = key;
+                let value = deckJson.cards[key];
+                for (const card of value) {
+                    let blueprintId = card.blueprintId;
+                    let imageUrl = card.imageUrl;
+                    let count = card.count;
+                    for (let i = 0; i < count; i++) {
+                        this.addCardToDeck(blueprintId, imageUrl, subDeck);
+                    }
+                }
+            }
         }
+
+/*        for (const card of deckJson.cards) {
+            let blueprintId = card.blueprintId;
+            let imageUrl = card.imageUrl;
+            let subDeck = card.subDeck;
+            this.addCardToDeck(blueprintId, imageUrl, subDeck);
+        } */
 
         this.layoutUI(false);
         this.cardFilter.getCollection();
@@ -1112,5 +1119,47 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
         }
 
         this.deckModified(true);
+    }
+
+    showLibraryDeckInHtml(deckJson) {
+        let deckDetailsDialog = $('<div class="deckDetailsDialog"></div>')
+            .dialog({
+                title:"Details for '" + deckJson.deckName + "' Deck",
+                autoOpen:false,
+                closeOnEscape:true,
+                resizable:true,
+                width:700,
+                height:400,
+                modal:true
+            });
+
+        let htmlText = this.getDeckHtml(deckJson);
+        deckDetailsDialog.append(htmlText);
+        deckDetailsDialog.dialog("open");
+    }
+
+
+    getDeckHtml(deckJson) {
+        let html = "";
+        html = html + "<h2>Format: " + deckJson.targetFormat.formatName + "</h2><br/>";
+        for (const key in deckJson.cards) {
+            if (deckJson.cards.hasOwnProperty(key)) {
+                let subDeck = key;
+                html = html + "<br/><b>" + subDeck + "</b><br/>";
+                let value = deckJson.cards[key];
+                for (const card of value) {
+                    let cardTitle = card.cardTitle;
+                    let imageUrl = card.imageUrl;
+                    let count = card.count;
+                    html = html + "<span class='tooltip'>" + cardTitle;
+                    html = html + "<span><img class='ttimage' src='" + imageUrl + "'></span></span>"
+                    html = html + " x" + count + "<br/>"
+                }
+            }
+        }
+        if (deckJson.notes != null && deckJson.notes != "null") {
+            html = html + "<h3>Notes:<br/>" + deckJson.notes.replaceAll("\n", "<br/>");
+        }
+        return html;
     }
 }

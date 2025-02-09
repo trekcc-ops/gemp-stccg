@@ -1,6 +1,8 @@
 package com.gempukku.stccg.database;
 
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.formats.GameFormat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,13 +15,15 @@ import java.util.Set;
 
 public class DbDeckDAO implements DeckDAO {
     private final DbAccess _dbAccess;
+    private final ServerObjects _serverObjects;
 
-    public DbDeckDAO(DbAccess dbAccess) {
+    public DbDeckDAO(ServerObjects serverObjects, DbAccess dbAccess) {
         _dbAccess = dbAccess;
+        _serverObjects = serverObjects;
     }
 
-    public final synchronized CardDeck getDeckForPlayer(User player, String name) {
-        return getPlayerDeck(player.getId(), name);
+    public final synchronized CardDeck getDeckForUser(User user, String name) {
+        return getPlayerDeck(user.getId(), name);
     }
 
     public final synchronized void saveDeckForPlayer(User player, String name, String targetFormat, String notes,
@@ -47,7 +51,7 @@ public class DbDeckDAO implements DeckDAO {
 
     public final synchronized CardDeck renameDeck(User player, String oldName, String newName)
             throws DeckNotFoundException {
-        CardDeck deck = getDeckForPlayer(player, oldName);
+        CardDeck deck = getDeckForUser(player, oldName);
         if (deck == null)
             throw new DeckNotFoundException("Could not find deck '" + oldName + "'");
         CardDeck renamedDeck = new CardDeck(deck, newName);
@@ -88,10 +92,12 @@ public class DbDeckDAO implements DeckDAO {
                     statement.setInt(1, playerId);
                     statement.setString(2, name);
                     try (ResultSet rs = statement.executeQuery()) {
-                        if (rs.next())
-                            return new CardDeck(name, rs.getString(1), rs.getString(2),
+                        if (rs.next()) {
+                            String formatName = rs.getString(2);
+                            GameFormat format = _serverObjects.getFormatLibrary().getFormatByName(formatName);
+                            return new CardDeck(name, rs.getString(1), format,
                                     rs.getString(3));
-
+                        }
                         return null;
                     }
                 }

@@ -133,12 +133,6 @@ public class DefaultGameFormat implements GameFormat {
         return _isPlaytest;
     }
 
-    @JsonIgnore
-    public List<String> getValidSetIdsAsStrings() {
-        return new LinkedList<>(_validSets);
-    }
-
-    @Override
     public Map<String, String> getValidSetsAndTheirCards(CardBlueprintLibrary library) {
             // For sending to CardFilter
         Map<String, String> sets = new LinkedHashMap<>();

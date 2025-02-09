@@ -3,6 +3,7 @@ package com.gempukku.stccg.service;
 import com.gempukku.stccg.database.IpBanDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.UserNotFoundException;
 
 import java.sql.SQLException;
 
@@ -64,18 +65,14 @@ public class AdminService {
         }
     }
 
-    public void banIp(String login) {
+    public void banIp(String login) throws UserNotFoundException {
         final User player = _playerDAO.getPlayer(login);
-        if (player == null)
-            return;
         final String lastIp = player.getLastIp();
-        
         _ipBanDAO.addIpBan(lastIp);
-
         banUser(login);
     }
 
-    public void banIpPrefix(String login) {
+    public void banIpPrefix(String login) throws UserNotFoundException {
         final User player = _playerDAO.getPlayer(login);
         if (player == null)
             return;

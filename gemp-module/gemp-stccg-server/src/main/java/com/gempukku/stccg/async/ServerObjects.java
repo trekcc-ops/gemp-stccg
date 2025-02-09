@@ -6,6 +6,7 @@ import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.*;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -26,6 +27,8 @@ import com.gempukku.stccg.tournament.TournamentPlayerDAO;
 import com.gempukku.stccg.tournament.TournamentService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Collection;
 
 public class ServerObjects {
     private static final Logger LOGGER = LogManager.getLogger(ServerObjects.class);
@@ -87,7 +90,7 @@ public class ServerObjects {
         _tournamentDAO =
                 LoggingProxy.createLoggingProxy(TournamentDAO.class, new DbTournamentDAO(dbAccess));
         _tournamentPlayerDAO =
-                LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(dbAccess));
+                LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(this, dbAccess));
         _tournamentMatchDAO =
                 LoggingProxy.createLoggingProxy(TournamentMatchDAO.class, new DbTournamentMatchDAO(dbAccess));
         _leagueDAO =
@@ -95,7 +98,7 @@ public class ServerObjects {
         _gameHistoryDAO =
                 LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess));
         _ignoreDAO = new CachedIgnoreDAO(dbAccess);
-        _deckDAO = new CachedDeckDAO(dbAccess);
+        _deckDAO = new CachedDeckDAO(this, dbAccess);
         _collectionDAO = new CachedCollectionDAO(dbAccess);
         _playerDAO = new CachedPlayerDAO(dbAccess);
         _transferDAO = new CachedTransferDAO(dbAccess);

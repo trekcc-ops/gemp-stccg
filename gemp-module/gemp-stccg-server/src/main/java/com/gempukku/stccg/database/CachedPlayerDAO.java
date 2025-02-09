@@ -104,16 +104,21 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public final User getPlayer(String playerName) {
+    public final User getPlayer(String playerName) throws UserNotFoundException {
         User player = _playerByName.get(playerName);
         if (player == null) {
             player = _delegate.getPlayer(playerName);
             if (player != null) {
-                _playerById.put(player.getId(), player);
-                _playerByName.put(player.getName(), player);
+                int playerId = player.getId();
+                _playerById.put(playerId, player);
+                _playerByName.put(playerName, player);
+                return player;
             }
         }
-        return player;
+        if (player != null)
+            return player;
+        else
+            throw new UserNotFoundException("Unable to find user '" + playerName + "'");
     }
 
     @Override

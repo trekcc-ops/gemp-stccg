@@ -3,23 +3,18 @@ package com.gempukku.stccg.async.handler;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.account.GameHistoryRequestHandler;
 import com.gempukku.stccg.async.handler.account.PlayerStatsRequestHandler;
 import com.gempukku.stccg.async.handler.chat.GetChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.SendChatMessageRequestHandler;
+import com.gempukku.stccg.async.handler.decks.*;
 import com.gempukku.stccg.async.handler.game.*;
 import com.gempukku.stccg.async.handler.hall.*;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
 import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.async.handler.server.ServerStatsRequestHandler;
-import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpMessage;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.cookie.Cookie;
-import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.apache.logging.log4j.Logger;
 
@@ -27,10 +22,7 @@ import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -39,23 +31,32 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
         @JsonSubTypes.Type(value = CreateTableRequestHandler.class, name = "createTable"),
         @JsonSubTypes.Type(value = DecisionResponseRequestHandler.class, name = "decisionResponse"),
+        @JsonSubTypes.Type(value = DeckFormatsRequestHandler.class, name = "deckFormats"),
+        @JsonSubTypes.Type(value = DeckStatsRequestHandler.class, name = "deckStats"),
+        @JsonSubTypes.Type(value = DeleteDeckRequestHandler.class, name = "deleteDeck"),
         @JsonSubTypes.Type(value = GameCardInfoRequestHandler.class, name = "gameCardInfo"),
         @JsonSubTypes.Type(value = GameHistoryRequestHandler.class, name = "gameHistory"),
         @JsonSubTypes.Type(value = GetChatRequestHandler.class, name = "getChat"),
         @JsonSubTypes.Type(value = GetErrataRequestHandler.class, name = "getErrata"),
         @JsonSubTypes.Type(value = GetHallRequestHandler.class, name = "getHall"),
         @JsonSubTypes.Type(value = GetGameStateRequestHandler.class, name = "getGameState"),
+        @JsonSubTypes.Type(value = GetSetsRequestHandler.class, name = "getSets"),
+        @JsonSubTypes.Type(value = ImportDeckRequestHandler.class, name = "importDeck"),
         @JsonSubTypes.Type(value = JoinQueueRequestHandler.class, name = "joinQueue"),
         @JsonSubTypes.Type(value = JoinTableRequestHandler.class, name = "joinTable"),
         @JsonSubTypes.Type(value = LeaveQueueRequestHandler.class, name = "leaveQueue"),
         @JsonSubTypes.Type(value = LeaveTableRequestHandler.class, name = "leaveTable"),
         @JsonSubTypes.Type(value = LeaveTournamentRequestHandler.class, name = "leaveTournament"),
+        @JsonSubTypes.Type(value = ListLibraryDecksRequestHandler.class, name = "listLibraryDecks"),
+        @JsonSubTypes.Type(value = ListUserDecksRequestHandler.class, name = "listUserDecks"),
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),
         @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
         @JsonSubTypes.Type(value = PostChatRequestHandler.class, name = "postChat"),
         @JsonSubTypes.Type(value = RegisterRequestHandler.class, name = "register"),
+        @JsonSubTypes.Type(value = RenameDeckRequestHandler.class, name = "renameDeck"),
         @JsonSubTypes.Type(value = ReplayRequestHandler.class, name = "replay"),
+        @JsonSubTypes.Type(value = SaveDeckRequestHandler.class, name = "saveDeck"),
         @JsonSubTypes.Type(value = SendChatMessageRequestHandler.class, name = "sendChatMessage"),
         @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats"),
         @JsonSubTypes.Type(value = StartGameSessionRequestHandler.class, name = "startGameSession"),
@@ -85,38 +86,6 @@ public interface UriRequestHandlerNew {
         return Collections.singletonMap(
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
-
-    default User getResourceOwnerSafely(HttpMessage request, ServerObjects objects)
-            throws HttpProcessingException {
-        String loggedUser = Objects.requireNonNullElse(getLoggedUser(request, objects), "");
-
-        if (loggedUser.isEmpty())
-            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
-
-        User resourceOwner = objects.getPlayerDAO().getPlayer(loggedUser);
-
-        if (resourceOwner == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
-        return resourceOwner;
-    }
-
-    default String getLoggedUser(HttpMessage request, ServerObjects serverObjects) {
-        ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
-        String cookieHeader = request.headers().get(COOKIE);
-        if (cookieHeader != null) {
-            Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
-            for (Cookie cookie : cookies) {
-                if ("loggedUser".equals(cookie.name())) {
-                    String value = cookie.value();
-                    if (value != null) {
-                        return serverObjects.getLoggedUserHolder().getLoggedUserNew(value);
-                    }
-                }
-            }
-        }
-        return "";
-    }
-
 
 
 }

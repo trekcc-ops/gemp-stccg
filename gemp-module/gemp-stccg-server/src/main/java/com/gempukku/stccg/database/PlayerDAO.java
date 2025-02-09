@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface PlayerDAO {
     User getPlayer(int id);
-    User getPlayer(String playerName);
+    User getPlayer(String playerName) throws UserNotFoundException;
     boolean resetUserPassword(String login) throws SQLException;
 
     boolean banPlayerPermanently(String login) throws SQLException;

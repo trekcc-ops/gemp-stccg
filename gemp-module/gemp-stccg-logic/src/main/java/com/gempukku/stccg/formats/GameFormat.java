@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.common.AbstractGameFormat;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.filterable.GameType;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="code")
-public interface GameFormat {
+public interface GameFormat extends AbstractGameFormat {
 
     boolean discardPileIsPublic();
 
@@ -32,9 +32,6 @@ public interface GameFormat {
 
 
     CardDeck applyErrata(CardBlueprintLibrary library, CardDeck deck);
-
-    List<String> getValidSetIdsAsStrings();
-    Map<String, String> getValidSetsAndTheirCards(CardBlueprintLibrary library);
 
     List<String> getBannedCards();
 

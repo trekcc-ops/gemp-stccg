@@ -237,11 +237,11 @@ export default class GempHallUI {
 
 	updateDecks() {
 		var that = this;
-		this.comm.getDecks(function (json) {
+		this.comm.listUserDecks(function (json) {
 			var count = json.length;
 			if(count == 0)
 			{
-				that.comm.getLibraryDecks(function(json) {
+				that.comm.listLibraryDecks(function(json) {
 					that.processDecks(json);
 				});
 			}
@@ -270,9 +270,12 @@ export default class GempHallUI {
 		}
         this.decksSelect.html("");
         for (var i = 0; i < json.length; i++) {
+            console.log(json[i]);
             var deck = json[i];
             var deckName = deck.deckName;
-            var formatName = deck.targetFormat;
+            console.log(deckName);
+            var formatName = deck.targetFormat.formatName;
+            console.log(formatName);
             var deckElem = $("<option/>")
                     .attr("value", deckName)
                     .text(formatDeckName(formatName, deckName));

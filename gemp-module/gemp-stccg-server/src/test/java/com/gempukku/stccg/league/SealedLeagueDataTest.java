@@ -109,7 +109,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
 
             Mockito.verify(collectionsManager, new Times(1))
                     .getPlayersCollection("test");
-            Mockito.verify(collectionsManager, new Times(1)).addItemsToPlayerCollection(
+            Mockito.verify(collectionsManager, new Times(1)).addItemsToUserCollection(
                     Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType),
                     Mockito.argThat(
                             (ArgumentMatcher<Collection<GenericCardItem>>) argument -> {

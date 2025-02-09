@@ -5,6 +5,7 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.UserNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

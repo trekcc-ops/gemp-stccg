@@ -184,7 +184,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
                 extraInformationChanges.put("draftPool",draftPoolListUpdate);
         }
 
-        _collectionsManager.addItemsToPlayerCollection(false, "Draft pick", resourceOwner,
+        _collectionsManager.addItemsToUserCollection(false, "Draft pick", resourceOwner,
                 collectionType, selectedCards.getAll(), extraInformationChanges);
 
         Document doc = createNewDoc();
