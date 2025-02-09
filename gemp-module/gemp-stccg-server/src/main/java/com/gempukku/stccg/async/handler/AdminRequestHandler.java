@@ -1,12 +1,10 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
-import com.gempukku.stccg.async.CacheManager;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.database.LeagueDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
@@ -30,9 +28,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 public class AdminRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final static long CARD_LOAD_SLEEP_TIME = 6000;
     private final LeagueService _leagueService;
-    private final CacheManager _cacheManager;
     private final HallServer _hallServer;
     private final FormatLibrary _formatLibrary;
     private final LeagueDAO _leagueDao;
@@ -42,7 +38,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     public AdminRequestHandler(ServerObjects objects) {
         super(objects);
         _leagueService = objects.getLeagueService();
-        _cacheManager = objects.getCacheManager();
         _hallServer = objects.getHallServer();
         _formatLibrary = objects.getFormatLibrary();
         _leagueDao = objects.getLeagueDAO();
@@ -55,18 +50,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         HttpRequest request = gempRequest.getRequest();
         String requestType = uri + request.method();
         switch(requestType) {
-            case "/clearCachePOST":
-                validateAdmin(request);
-                clearCache(responseWriter);
-                break;
-            case "/shutdownPOST":
-                validateAdmin(request);
-                shutdown(request, responseWriter);
-                break;
-            case "/reloadCardsPOST":
-                validateAdmin(request);
-                reloadCards(responseWriter);
-                break;
             case "/getDailyMessageGET":
                 validateAdmin(request);
                 getDailyMessage(request, responseWriter);
@@ -99,10 +82,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 validateLeagueAdmin(request);
                 addSoloDraftLeague(request, responseWriter);
                 break;
-            case "/banUserPOST":
-                validateAdmin(request);
-                banUser(request, responseWriter);
-                break;
             case "/resetUserPasswordPOST":
                 validateAdmin(request);
                 resetUserPassword(request, responseWriter);
@@ -110,14 +89,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             case "/banMultiplePOST":
                 validateAdmin(request);
                 banMultiple(request, responseWriter);
-                break;
-            case "/banUserTempPOST":
-                validateAdmin(request);
-                banUserTemp(request, responseWriter);
-                break;
-            case "/unBanUserPOST":
-                validateAdmin(request);
-                unBanUser(request, responseWriter);
                 break;
             case "/findMultipleAccountsPOST":
                 validateAdmin(request);
@@ -164,17 +135,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         }
     }
 
-    private void banUser(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            String login = getFormParameterSafely(postDecoder, FormParameter.login);
-            if (login==null)
-                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-            if (!_adminService.banUser(login))
-                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-            responseWriter.writeHtmlOkResponse();
-        }
-    }
-
     private void banMultiple(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             List<String> logins = getLoginParametersSafely(postDecoder);
@@ -185,25 +145,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 if (!_adminService.banUser(login))
                     throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
             }
-            responseWriter.writeHtmlOkResponse();
-        }
-    }
-
-    private void banUserTemp(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            String login = getFormParameterSafely(postDecoder, FormParameter.login);
-            int duration = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.duration));
-            if (!_adminService.banUserTemp(login, duration))
-                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-            responseWriter.writeHtmlOkResponse();
-        }
-    }
-
-    private void unBanUser(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            String login = getFormParameterSafely(postDecoder, FormParameter.login);
-            if (!_adminService.unBanUser(login))
-                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
             responseWriter.writeHtmlOkResponse();
         }
     }
@@ -392,41 +333,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, FormParameter.messageOfTheDay));
             responseWriter.writeHtmlOkResponse();
         }
-    }
-
-    private void shutdown(HttpRequest request, ResponseWriter responseWriter) {
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            boolean shutdown = Boolean.parseBoolean(getFormParameterSafely(postDecoder, FormParameter.shutdown));
-            _hallServer.setShutdown(shutdown);
-            responseWriter.writeHtmlOkResponse();
-        } catch (Exception e) {
-            LOGGER.error("Error response for {}", request.uri(), e);
-            responseWriter.writeHtmlResponse("Error handling request");
-        }
-    }
-
-    private void reloadCards(ResponseWriter responseWriter) throws InterruptedException {
-        ChatServer chatServer = _serverObjects.getChatServer();
-        chatServer.sendSystemMessageToAllUsers(
-                "Server is reloading card definitions.  This will impact game speed until it is complete.");
-        Thread.sleep(CARD_LOAD_SLEEP_TIME);
-        _cardBlueprintLibrary.reloadAllDefinitions();
-        _serverObjects.getProductLibrary().ReloadPacks();
-        _formatLibrary.reloadFormats(_cardBlueprintLibrary);
-        _formatLibrary.reloadSealedTemplates();
-        chatServer.sendSystemMessageToAllUsers(
-                "Card definition reload complete.  If you are mid-game and you notice any oddities, reload the page " +
-                        "and please let the mod team know in the game hall ASAP if the problem doesn't go away.");
-        responseWriter.writeHtmlOkResponse();
-    }
-
-    private void clearCache(ResponseWriter responseWriter) {
-        _leagueService.clearCache();
-        _serverObjects.getTournamentService().clearCache();
-        int before = _cacheManager.getTotalCount();
-        _cacheManager.clearCaches();
-        int after = _cacheManager.getTotalCount();
-        responseWriter.writeHtmlResponse("Before: " + before + "<br><br>After: " + after);
     }
 
     private void validateAdmin(HttpMessage request) throws HttpProcessingException {

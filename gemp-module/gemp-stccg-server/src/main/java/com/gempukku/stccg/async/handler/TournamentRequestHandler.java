@@ -33,16 +33,16 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
     public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
         HttpRequest request = gempRequest.getRequest();
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
+        if (uri.isEmpty() && request.method() == HttpMethod.GET) { // currentTournaments
             getCurrentTournaments(responseWriter);
-        } else if ("/history".equals(uri) && request.method() == HttpMethod.GET) {
+        } else if ("/history".equals(uri) && request.method() == HttpMethod.GET) { // tournamentHistory
             getTournamentHistory(responseWriter);
-        } else if (uri.startsWith("/") && uri.endsWith("/html") &&
+        } else if (uri.startsWith("/") && uri.endsWith("/html") && // this one is buried deep within the client
                 uri.contains("/deck/") && request.method() == HttpMethod.GET) {
             getTournamentDeck(uri.substring(1, uri.indexOf("/deck/")),
                     uri.substring(uri.indexOf("/deck/") + 6, uri.lastIndexOf("/html")), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
-            getTournamentInfo(uri.substring(1), responseWriter);
+            getTournamentInfo(uri.substring(1), responseWriter); // merge into getTournaments
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }

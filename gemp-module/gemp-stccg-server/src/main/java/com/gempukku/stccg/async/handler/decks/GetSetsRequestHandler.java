@@ -7,11 +7,10 @@ import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.formats.DefaultGameFormat;
-import com.gempukku.stccg.formats.GameFormat;
 
 import java.util.Map;
 
-public class GetSetsRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class GetSetsRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     private final String _format;
 

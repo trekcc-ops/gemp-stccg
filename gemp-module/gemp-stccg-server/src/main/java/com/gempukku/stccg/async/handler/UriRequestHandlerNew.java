@@ -6,6 +6,7 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.account.GameHistoryRequestHandler;
 import com.gempukku.stccg.async.handler.account.PlayerStatsRequestHandler;
+import com.gempukku.stccg.async.handler.admin.*;
 import com.gempukku.stccg.async.handler.chat.GetChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.SendChatMessageRequestHandler;
@@ -27,7 +28,10 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = BanUserRequestHandler.class, name = "banUser"),
+        @JsonSubTypes.Type(value = BanUserTemporaryRequestHandler.class, name = "banUserTemporary"),
         @JsonSubTypes.Type(value = CancelGameRequestHandler.class, name = "cancelGame"),
+        @JsonSubTypes.Type(value = ClearCacheRequestHandler.class, name = "clearCache"),
         @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
         @JsonSubTypes.Type(value = CreateTableRequestHandler.class, name = "createTable"),
         @JsonSubTypes.Type(value = DecisionResponseRequestHandler.class, name = "decisionResponse"),
@@ -54,12 +58,15 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
         @JsonSubTypes.Type(value = PostChatRequestHandler.class, name = "postChat"),
         @JsonSubTypes.Type(value = RegisterRequestHandler.class, name = "register"),
+        @JsonSubTypes.Type(value = ReloadCardLibraryRequestHandler.class, name = "reloadCardLibrary"),
         @JsonSubTypes.Type(value = RenameDeckRequestHandler.class, name = "renameDeck"),
         @JsonSubTypes.Type(value = ReplayRequestHandler.class, name = "replay"),
         @JsonSubTypes.Type(value = SaveDeckRequestHandler.class, name = "saveDeck"),
         @JsonSubTypes.Type(value = SendChatMessageRequestHandler.class, name = "sendChatMessage"),
         @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats"),
+        @JsonSubTypes.Type(value = SetShutdownRequestHandler.class, name = "setShutdown"),
         @JsonSubTypes.Type(value = StartGameSessionRequestHandler.class, name = "startGameSession"),
+        @JsonSubTypes.Type(value = UnBanUserRequestHandler.class, name = "unBanUser"),
         @JsonSubTypes.Type(value = UpdateGameStateRequestHandler.class, name = "updateGameState"),
         @JsonSubTypes.Type(value = UpdateHallRequestHandler.class, name = "updateHall")
 })

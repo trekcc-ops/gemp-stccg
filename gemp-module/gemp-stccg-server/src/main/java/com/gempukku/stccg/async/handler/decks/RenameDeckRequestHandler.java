@@ -11,7 +11,7 @@ import com.gempukku.stccg.database.User;
 
 import java.net.HttpURLConnection;
 
-public class RenameDeckRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class RenameDeckRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     private final String _newDeckName;
     private final String _oldDeckName;

@@ -11,7 +11,7 @@ import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.GameFormat;
 
 @JsonIgnoreProperties("participantId")
-public class SaveDeckRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class SaveDeckRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     private final String _deckName;
     private final String _targetFormat;

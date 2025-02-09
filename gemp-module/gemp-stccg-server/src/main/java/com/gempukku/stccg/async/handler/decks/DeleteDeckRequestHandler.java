@@ -9,7 +9,7 @@ import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.database.User;
 
 @JsonIgnoreProperties("participantId")
-public class DeleteDeckRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class DeleteDeckRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     private final String _deckName;
 

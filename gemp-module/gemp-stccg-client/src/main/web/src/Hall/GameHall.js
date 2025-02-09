@@ -305,8 +305,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									
 									$("#shutdown-response").html("Processing...");
 										
-									hall.comm.setShutdownMode(true, function (string) {
-										$("#shutdown-response").html(string);
+									hall.comm.setShutdownMode(true, function (json) {
+										$("#shutdown-response").html(json.response);
 									});
 								});
 							
@@ -315,8 +315,8 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#shutdown-response").html("Processing...");
 									
-									hall.comm.setShutdownMode(false, function (string) {
-										$("#shutdown-response").html(string);
+									hall.comm.setShutdownMode(false, function (json) {
+										$("#shutdown-response").html(json.response);
 									});
 								});
 							
@@ -324,8 +324,11 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#cache-response").html("Processing...");
 									
-									hall.comm.clearServerCache(function (string) {
-										$("#cache-response").html(string);
+									hall.comm.clearServerCache(function (json) {
+									    let beforeCount = json.before;
+									    let afterCount = json.after;
+									    let htmlText = "Before: " + beforeCount + "<br><br>After: " + afterCount;
+										$("#cache-response").html(htmlText);
 									});
 								});
 							
@@ -333,8 +336,8 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#cards-response").html("Processing...");
 									
-									hall.comm.reloadCardDefinitions(function (string) {
-										$("#cards-response").html(string);
+									hall.comm.reloadCardDefinitions(function (json) {
+										$("#cards-response").html(json.response);
 									});
 								});
 							
@@ -642,8 +645,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#permaban-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.permabanUser($("#permaban-input").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.permabanUser($("#permaban-input").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							
@@ -652,8 +655,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#tempban-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.tempbanUser($("#tempban-input").val(), $("#temp-ban-duration-select").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.tempbanUser($("#tempban-input").val(), $("#temp-ban-duration-select").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							
@@ -662,8 +665,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#unban-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.unbanUser($("#unban-input").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.unbanUser($("#unban-input").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							

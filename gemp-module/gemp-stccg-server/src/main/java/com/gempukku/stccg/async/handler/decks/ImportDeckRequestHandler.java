@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ImportDeckRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class ImportDeckRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     private final String _rawDeckList;
 

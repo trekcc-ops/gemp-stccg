@@ -11,7 +11,7 @@ import com.gempukku.stccg.formats.GameFormat;
 
 import java.util.Map;
 
-public class DeckFormatsRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class DeckFormatsRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     private final boolean _includeEvents;
 

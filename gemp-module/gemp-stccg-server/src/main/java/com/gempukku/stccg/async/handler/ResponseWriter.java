@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.netty.handler.codec.http.HttpHeaders;
 import org.w3c.dom.Document;
 
@@ -32,4 +33,7 @@ public interface ResponseWriter {
     void writeXmlMarshalExceptionResponse(String errorMessage) throws ParserConfigurationException;
 
     void writeHtmlOkResponse();
+
+    void writeJsonOkResponse() throws JsonProcessingException;
+
 }

@@ -8,12 +8,11 @@ import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.User;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
-public class ListUserDecksRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class ListUserDecksRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     @Override
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)

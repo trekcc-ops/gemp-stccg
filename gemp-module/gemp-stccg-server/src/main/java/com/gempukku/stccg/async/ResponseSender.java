@@ -1,5 +1,7 @@
 package com.gempukku.stccg.async;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -173,6 +175,13 @@ public class ResponseSender implements ResponseWriter {
     @Override
     public final void writeHtmlOkResponse() {
         writeHtmlResponse("OK");
+    }
+
+    @Override
+    public void writeJsonOkResponse() throws JsonProcessingException {
+        Map<String, String> result = new HashMap<>();
+        result.put("response", "OK");
+        writeJsonResponse(new ObjectMapper().writeValueAsString(result));
     }
 
 

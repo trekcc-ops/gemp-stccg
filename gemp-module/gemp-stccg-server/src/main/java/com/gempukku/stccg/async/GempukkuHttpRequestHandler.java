@@ -68,8 +68,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         HttpRequest rawRequest = request.getRequest();
 
         if (uri.startsWith(WEB_CONTEXT_PATH)) {
-            _webRequestHandler.handleRequest(uri.substring(WEB_CONTEXT_PATH.length() + 1),
-                    rawRequest, responseWriter);
+            _webRequestHandler.handleRequest(uri.substring(WEB_CONTEXT_PATH.length()), rawRequest, responseWriter);
         } else if (uri.replace("/","").isEmpty() ||
                 uri.replace("/","").equals(WEB_CONTEXT_PATH.replace("/",""))) {
             // 301 Moved Permanently

@@ -1,6 +1,5 @@
 package com.gempukku.stccg.async.handler.decks;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 
-public class ListLibraryDecksRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class ListLibraryDecksRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     @Override
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)

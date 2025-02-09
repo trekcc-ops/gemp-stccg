@@ -114,10 +114,8 @@ export default class GempClientCommunication {
     getLiveTournaments(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/tournament",
+            url:this.url + "/currentTournaments",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -127,10 +125,8 @@ export default class GempClientCommunication {
     getHistoryTournaments(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/tournament/history",
+            url:this.url + "/tournamentHistory",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -756,38 +752,36 @@ export default class GempClientCommunication {
     setShutdownMode(shutdown, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/shutdown",
+            url:this.url + "/setShutdown",
             cache:false,
             data:{
                 shutdown:shutdown
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
 
     clearServerCache(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/clearCache",
+            url:this.url + "/clearCache",
             cache:false,
-            data:{},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
     reloadCardDefinitions(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/reloadCards",
+            url:this.url + "/reloadCardLibrary",
             cache:false,
-            data:{},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -833,43 +827,43 @@ export default class GempClientCommunication {
     permabanUser(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/banUser",
+            url:this.url + "/banUser",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
     tempbanUser(login, duration, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/banUserTemp",
+            url:this.url + "/banUserTemporary",
             cache:false,
             data:{
-                login:login,
+                userName:login,
                 duration:duration
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
     unbanUser(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/unBanUser",
+            url:this.url + "/unBanUser",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     

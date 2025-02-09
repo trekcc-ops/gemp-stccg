@@ -9,7 +9,7 @@ import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.DefaultGameFormat;
 
-public class DeckStatsRequestHandler extends DeckRequestHandlerNew implements UriRequestHandlerNew {
+public class DeckStatsRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
 
     private final String _targetFormat;
     private final String _deckContents;
