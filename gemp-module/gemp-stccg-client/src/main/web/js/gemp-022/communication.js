@@ -30,6 +30,7 @@ export default class GempClientCommunication {
         });
     }
 
+    // TODO - As of 9 Feb 2025, this method will never be called.
     getDelivery(callback) {
         /* TODO ES6 */
         $.ajax({
@@ -47,6 +48,7 @@ export default class GempClientCommunication {
     deliveryCheck(callback) {
         var that = this;
         return function (xml, status, request) {
+            // TODO - As of 9 Feb 2025, delivery will always be false. This response header is no longer used.
             var delivery = request.getResponseHeader("Delivery-Service-Package");
             if (delivery == "true" && window.deliveryService != null)
                 that.getDelivery(window.deliveryService);
@@ -57,6 +59,7 @@ export default class GempClientCommunication {
     deliveryCheckStatus(callback) {
         var that = this;
         return function (xml, status, request) {
+            // TODO - As of 9 Feb 2025, delivery will always be false. This response header is no longer used.
             var delivery = request.getResponseHeader("Delivery-Service-Package");
             if (delivery == "true" && window.deliveryService != null)
                 that.getDelivery(window.deliveryService);
