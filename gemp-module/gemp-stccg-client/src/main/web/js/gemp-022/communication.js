@@ -647,10 +647,8 @@ export default class GempClientCommunication {
     getHall(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/hall",
+            url:this.url + "/getHall",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -660,11 +658,11 @@ export default class GempClientCommunication {
     updateHall(callback, channelNumber, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/update",
+            url:this.url + "/updateHall",
             cache:false,
             data:{
-                channelNumber:channelNumber,
-                participantId:getUrlParam("participantId") },
+                channelNumber:channelNumber
+            },
             success:this.deliveryCheck(callback),
             timeout: 20000,
             error:this.errorCheck(errorMap),
@@ -675,11 +673,12 @@ export default class GempClientCommunication {
     joinQueue(queueId, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/queue/" + queueId,
+            url:this.url + "/joinQueue",
             cache:false,
             data:{
+                queueId:queueId,
                 deckName:deckName,
-                participantId:getUrlParam("participantId")},
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -689,10 +688,11 @@ export default class GempClientCommunication {
     leaveQueue(queueId, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/queue/" + queueId + "/leave",
+            url:this.url + "/leaveQueue",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                queueId:queueId
+            },
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
@@ -701,10 +701,11 @@ export default class GempClientCommunication {
     dropFromTournament(tournamentId, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/tournament/" + tournamentId + "/leave",
+            url:this.url + "/leaveTournament",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                tournamentId:tournamentId
+            },
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
@@ -713,11 +714,12 @@ export default class GempClientCommunication {
     joinTable(tableId, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/" + tableId,
+            url:this.url + "/joinTable",
             cache:false,
             data:{
-                deckName:deckName,
-                participantId:getUrlParam("participantId")},
+                tableId:tableId,
+                deckName:deckName
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -727,10 +729,11 @@ export default class GempClientCommunication {
     leaveTable(tableId, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/"+tableId+"/leave",
+            url:this.url + "/leaveTable",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                tableId:tableId
+            },
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
@@ -739,7 +742,7 @@ export default class GempClientCommunication {
     createTable(format, deckName, timer, desc, isPrivate, isInviteOnly, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall",
+            url:this.url + "/createTable",
             cache:false,
             data:{
                 format:format,
@@ -747,34 +750,19 @@ export default class GempClientCommunication {
                 timer:timer,
                 desc:desc,
                 isPrivate:isPrivate,
-                isInviteOnly:isInviteOnly,
-                participantId:getUrlParam("participantId")},
+                isInviteOnly:isInviteOnly
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
     }
 
-    getFormat(formatCode, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/hall/format/" + formatCode,
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-
     getErrata(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/hall/errata/json",
+            url:this.url + "/getErrata",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"

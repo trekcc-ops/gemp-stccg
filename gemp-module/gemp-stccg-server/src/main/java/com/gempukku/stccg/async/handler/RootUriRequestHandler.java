@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.async.HttpProcessingException;
@@ -18,10 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class RootUriRequestHandler implements UriRequestHandler {
@@ -69,40 +67,31 @@ public class RootUriRequestHandler implements UriRequestHandler {
             String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
             String afterHandlerType = afterServer.substring(handlerType.length());
 
-            Map<String, String> parameters = switch(handlerType) {
-                case "cancelGame", "gameCardInfo", "concedeGame", "decisionResponse", "getGameState", "gameHistory",
-                        "getChat", "login", "playerInfo", "playerStats", "postChat", "register", "replay",
-                        "sendChatMessage", "serverStats", "startGameSession", "updateGameState" -> {
-                    Map<String, String> result = getParameters(request);
-                    result.put("type", handlerType);
-                    yield result;
-                }
+            UriRequestHandler handler = switch(handlerType) {
+                case "admin" -> new AdminRequestHandler(_serverObjects);
+                case "collection" -> new CollectionRequestHandler(_serverObjects);
+                case "deck" -> new DeckRequestHandler(_serverObjects);
+                case "league" -> new LeagueRequestHandler(_serverObjects);
+                case "playtesting" -> new PlaytestRequestHandler(_serverObjects);
+                case "soloDraft" -> new SoloDraftRequestHandler(_serverObjects);
+                case "tournament" -> new TournamentRequestHandler(_serverObjects);
                 default -> null;
             };
-
-            if (parameters != null) {
-                UriRequestHandlerNew handler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
-                handler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
+            if (handler != null) {
+                handler.handleRequest(afterHandlerType, request, responseWriter, remoteIp);
                 requestHandled = true;
-            } else {
-                UriRequestHandler handler = switch(handlerType) {
-                    case "admin" -> new AdminRequestHandler(_serverObjects);
-                    case "collection" -> new CollectionRequestHandler(_serverObjects);
-                    case "deck" -> new DeckRequestHandler(_serverObjects);
-                    case "hall" -> new HallRequestHandler(_serverObjects);
-                    case "league" -> new LeagueRequestHandler(_serverObjects);
-                    case "playtesting" -> new PlaytestRequestHandler(_serverObjects);
-                    case "soloDraft" -> new SoloDraftRequestHandler(_serverObjects);
-                    case "tournament" -> new TournamentRequestHandler(_serverObjects);
-                    default -> null;
-                };
-                if (handler != null) {
-                    handler.handleRequest(afterHandlerType, request, responseWriter, remoteIp);
-                    requestHandled = true;
+            }
+
+            if (!requestHandled) {
+                Map<String, String> parameters = getParameters(request);
+                parameters.put("type", handlerType);
+                try {
+                    UriRequestHandlerNew newHandler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
+                    newHandler.handleRequest(uri, request, responseWriter, remoteIp, _serverObjects);
+                } catch(JsonProcessingException exp) {
+                    throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
                 }
             }
-            if (!requestHandled)
-                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 

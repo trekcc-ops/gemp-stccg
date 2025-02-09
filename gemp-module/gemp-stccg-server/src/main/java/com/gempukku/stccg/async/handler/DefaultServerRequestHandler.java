@@ -1,7 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -28,16 +27,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 class DefaultServerRequestHandler {
-    private final static int SIGNUP_REWARD = 20000;
-    private final static int WEEKLY_REWARD = 5000;
     final CardBlueprintLibrary _cardBlueprintLibrary;
     final PlayerDAO _playerDao;
     private final LoggedUserHolder _loggedUserHolder;
@@ -67,29 +62,6 @@ class DefaultServerRequestHandler {
 
     private static boolean isTest() {
         return Boolean.parseBoolean(System.getProperty("test"));
-    }
-
-    final void processLoginReward(String loggedUser) throws Exception {
-        if (loggedUser != null) {
-            User player = _playerDao.getPlayer(loggedUser);
-            synchronized (player.getName().intern()) {
-                ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
-                int latestMonday = DateUtils.getMondayBeforeOrOn(now);
-
-                Integer lastReward = player.getLastLoginReward();
-                if (lastReward == null) {
-                    _playerDao.setLastReward(player, latestMonday);
-                    _collectionsManager.addCurrencyToPlayerCollection(true, "Signup reward", player,
-                            CollectionType.MY_CARDS, SIGNUP_REWARD);
-                } else {
-                    if (latestMonday != lastReward) {
-                        if (_playerDao.updateLastReward(player, lastReward, latestMonday))
-                            _collectionsManager.addCurrencyToPlayerCollection(true, "Weekly reward",
-                                    player, CollectionType.MY_CARDS, WEEKLY_REWARD);
-                    }
-                }
-            }
-        }
     }
 
     private String getLoggedUser(HttpMessage request) {
@@ -199,24 +171,6 @@ class DefaultServerRequestHandler {
             throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
         return getFormMultipleParametersSafely(postRequestDecoder,"login[]");
     }
-
-    final Map<String, String> logUserReturningHeaders(String remoteIp, String login) throws SQLException {
-        _playerDao.updateLastLoginIp(login, remoteIp);
-
-        String sessionId = _loggedUserHolder.logUser(login);
-        return Collections.singletonMap(
-                SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
-    }
-
-    final Map<String, String> logUserReturningHeaders(String remoteIp, String login, ServerObjects objects)
-            throws SQLException {
-        objects.getPlayerDAO().updateLastLoginIp(login, remoteIp);
-
-        String sessionId = objects.getLoggedUserHolder().logUser(login);
-        return Collections.singletonMap(
-                SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
-    }
-
 
 
     static Document createNewDoc() throws ParserConfigurationException {

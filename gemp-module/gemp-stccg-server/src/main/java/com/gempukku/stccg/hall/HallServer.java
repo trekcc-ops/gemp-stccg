@@ -132,13 +132,13 @@ public class HallServer extends AbstractServer {
             tournamentQueue.leaveAllPlayers(_collectionsManager);
     }
 
-    public final void createNewTable(String type, User deckOwner, String deckName, String timer,
+    public final void createNewTable(String type, User deckOwner, String deckName, GameTimer timer,
                                      String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         createNewTable(type, deckOwner, deckOwner, deckName, timer, description, isInviteOnly, isPrivate, isHidden);
     }
 
-    public final void createNewTable(String type, User player, User deckOwner, String deckName, String timer,
+    public final void createNewTable(String type, User player, User deckOwner, String deckName, GameTimer timer,
                                      String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         if (_shutdown)
@@ -159,13 +159,13 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private GameSettings createGameSettings(String formatSelection, String timer, String description,
+    private GameSettings createGameSettings(String formatSelection, GameTimer timer, String description,
                                             boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         League league = null;
         LeagueSeriesData seriesData = null;
         GameFormat format = _formatLibrary.getHallFormats().get(formatSelection);
-        GameTimer gameTimer = GameTimer.ResolveTimer(timer);
+        GameTimer gameTimer = timer;
 
         if (format == null) {
             // Maybe it's a league format?

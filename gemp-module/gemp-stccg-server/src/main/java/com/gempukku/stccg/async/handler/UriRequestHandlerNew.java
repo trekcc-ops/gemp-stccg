@@ -10,7 +10,7 @@ import com.gempukku.stccg.async.handler.chat.GetChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.SendChatMessageRequestHandler;
 import com.gempukku.stccg.async.handler.game.*;
-import com.gempukku.stccg.async.handler.hall.PlayerInfoRequestHandler;
+import com.gempukku.stccg.async.handler.hall.*;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
 import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.async.handler.server.ServerStatsRequestHandler;
@@ -35,11 +35,19 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CancelGameRequestHandler.class, name = "cancelGame"),
         @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
+        @JsonSubTypes.Type(value = CreateTableRequestHandler.class, name = "createTable"),
         @JsonSubTypes.Type(value = DecisionResponseRequestHandler.class, name = "decisionResponse"),
         @JsonSubTypes.Type(value = GameCardInfoRequestHandler.class, name = "gameCardInfo"),
         @JsonSubTypes.Type(value = GameHistoryRequestHandler.class, name = "gameHistory"),
         @JsonSubTypes.Type(value = GetChatRequestHandler.class, name = "getChat"),
+        @JsonSubTypes.Type(value = GetErrataRequestHandler.class, name = "getErrata"),
+        @JsonSubTypes.Type(value = GetHallRequestHandler.class, name = "getHall"),
         @JsonSubTypes.Type(value = GetGameStateRequestHandler.class, name = "getGameState"),
+        @JsonSubTypes.Type(value = JoinQueueRequestHandler.class, name = "joinQueue"),
+        @JsonSubTypes.Type(value = JoinTableRequestHandler.class, name = "joinTable"),
+        @JsonSubTypes.Type(value = LeaveQueueRequestHandler.class, name = "leaveQueue"),
+        @JsonSubTypes.Type(value = LeaveTableRequestHandler.class, name = "leaveTable"),
+        @JsonSubTypes.Type(value = LeaveTournamentRequestHandler.class, name = "leaveTournament"),
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),
         @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
@@ -49,7 +57,8 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = SendChatMessageRequestHandler.class, name = "sendChatMessage"),
         @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats"),
         @JsonSubTypes.Type(value = StartGameSessionRequestHandler.class, name = "startGameSession"),
-        @JsonSubTypes.Type(value = UpdateGameStateRequestHandler.class, name = "updateGameState")
+        @JsonSubTypes.Type(value = UpdateGameStateRequestHandler.class, name = "updateGameState"),
+        @JsonSubTypes.Type(value = UpdateHallRequestHandler.class, name = "updateHall")
 })
 public interface UriRequestHandlerNew {
     void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp,
