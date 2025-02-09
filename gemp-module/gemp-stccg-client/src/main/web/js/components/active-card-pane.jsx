@@ -12,8 +12,8 @@ export default function ActiveCardPane( {card} ) {
     }
 
     return(
-        <Box>
-            <img src={card_src} />
+        <Box sx={{height: 1, width: 1}}>
+            <img width={"100%"} src={card_src} />
         </Box>
     );
 }
