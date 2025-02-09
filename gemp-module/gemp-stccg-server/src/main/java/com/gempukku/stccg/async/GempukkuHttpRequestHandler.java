@@ -24,7 +24,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     private static final Logger LOGGER = LogManager.getLogger(GempukkuHttpRequestHandler.class);
     private final ServerObjects _serverObjects;
     private static final String SERVER_CONTEXT_PATH = "/gemp-stccg-server/";
-    private static final String WEB_CONTEXT_PATH = "/gemp-module";
+    private static final String WEB_CONTEXT_PATH = "/gemp-module/";
     private final WebRequestHandler _webRequestHandler;
     private final StatusRequestHandler _statusRequestHandler;
     private final Pattern originPattern;
@@ -56,11 +56,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 handleRequest(request, responseSender);
             }
         } catch (HttpProcessingException exp) {
-            int code = exp.getStatus();
-            String message =
-                    "HTTP " + code + " response for " + request.ip() + ":" + request.uri();
-            logHttpError(code, message, exp);
-            responseSender.writeError(exp.getStatus());
+            logHttpError(request.uri(), exp, responseSender);
         } catch (Exception exp) {
             LOGGER.error("Error response for {}", request.uri(), exp);
             responseSender.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
@@ -71,13 +67,14 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         String uri = request.uriWithoutParameters();
         HttpRequest rawRequest = request.getRequest();
 
-        if (uri.equals(WEB_CONTEXT_PATH)) {
-            // 301 Moved Permanently
-            responseWriter.writeError(
-                    HttpURLConnection.HTTP_MOVED_PERM, Collections.singletonMap("Location", WEB_CONTEXT_PATH + "/"));
-        } else if (uri.startsWith(WEB_CONTEXT_PATH)) {
+        if (uri.startsWith(WEB_CONTEXT_PATH)) {
             _webRequestHandler.handleRequest(uri.substring(WEB_CONTEXT_PATH.length() + 1),
                     rawRequest, responseWriter);
+        } else if (uri.replace("/","").isEmpty() ||
+                uri.replace("/","").equals(WEB_CONTEXT_PATH.replace("/",""))) {
+            // 301 Moved Permanently
+            responseWriter.writeError(
+                    HttpURLConnection.HTTP_MOVED_PERM, Collections.singletonMap("Location", WEB_CONTEXT_PATH));
         } else if (uri.equals(SERVER_CONTEXT_PATH)) {
             _statusRequestHandler.handleRequest(
                     uri.substring(SERVER_CONTEXT_PATH.length()), rawRequest, responseWriter);
@@ -122,7 +119,8 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     }
 
 
-    private static void logHttpError(int code, String uri, Exception exp) {
+    private static void logHttpError(String uri, HttpProcessingException exp, ResponseWriter writer) {
+        int code = exp.getStatus();
         //401, 403, 404, and other 400 errors should just do minimal logging,
         // but 400 (HTTP_BAD_REQUEST) itself should error out
         if(code < 500 && code != HttpURLConnection.HTTP_BAD_REQUEST)
@@ -131,6 +129,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             // record an HTTP 400 or 500 error
         else if((code < 600))
             GempukkuHttpRequestHandler.LOGGER.error("HTTP code {} response for {}", code, uri, exp);
+        writer.writeError(exp.getStatus());
     }
 
 
