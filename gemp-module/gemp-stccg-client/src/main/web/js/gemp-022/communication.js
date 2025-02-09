@@ -401,19 +401,6 @@ export default class GempClientCommunication {
         });
     }
 
-    getCollectionTypes(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/collection",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
     async getCollection(collectionType, participantId, filter, start, count) {
         const url = this.url + "/collection/" + collectionType + "?";
         const parameters = new URLSearchParams({
