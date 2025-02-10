@@ -301,15 +301,6 @@ public abstract class GameState {
         _playerOrder.setCurrentPlayer(playerId);
     }
 
-    public List<PhysicalCard> getAttachedCards(PhysicalCard card) {
-        List<PhysicalCard> result = new LinkedList<>();
-        for (PhysicalCard physicalCard : _inPlay) {
-            if (physicalCard.getAttachedTo() != null && physicalCard.getAttachedTo() == card)
-                result.add(physicalCard);
-        }
-        return result;
-    }
-
     public void startPlayerTurn(DefaultGame cardGame, Player player) {
         _playerOrder.setCurrentPlayer(player.getPlayerId());
         player.incrementTurnNumber();

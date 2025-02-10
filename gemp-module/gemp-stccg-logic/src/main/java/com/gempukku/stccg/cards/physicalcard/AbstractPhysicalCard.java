@@ -235,7 +235,14 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public Collection<PhysicalCard> getAttachedCards(DefaultGame game) { return game.getGameState().getAttachedCards(this); }
+    public Collection<PhysicalCard> getAttachedCards(DefaultGame game) {
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard physicalCard : game.getGameState().getAllCardsInPlay()) {
+            if (physicalCard.getAttachedTo() == this)
+                result.add(physicalCard);
+        }
+        return result;
+    }
 
     public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game) {
         if (_blueprint.getExtraPlayCosts() == null)
