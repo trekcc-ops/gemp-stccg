@@ -204,10 +204,10 @@ public class Filters {
                 return false;
             List<Affiliation> affiliationsToMatch = new LinkedList<>();
             List<Affiliation> filteredAffiliations = new LinkedList<>();
-            if (cardToMatch.getZone().isInPlay())
+            if (cardToMatch.isInPlay())
                 affiliationsToMatch.addAll(cardToMatch.getBlueprint().getAffiliations());
             else affiliationsToMatch.add(((PhysicalNounCard1E) cardToMatch).getCurrentAffiliation());
-            if (physicalCard.getZone().isInPlay())
+            if (physicalCard.isInPlay())
                 filteredAffiliations.addAll(physicalCard.getBlueprint().getAffiliations());
             else filteredAffiliations.add(((PhysicalNounCard1E) physicalCard).getCurrentAffiliation());
             for (Affiliation matchAffiliation : affiliationsToMatch)
