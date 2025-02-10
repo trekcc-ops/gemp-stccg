@@ -76,6 +76,7 @@
             "title": "Federation Outpost",
             "blueprintId": "101_104",
             "cardId": 1,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/10V.jpg",
             "owner": "player1",
             "zone": "AT_LOCATION",
             "affiliation": "FEDERATION", // only included for affiliated cards
@@ -85,6 +86,7 @@
             "title": "U.S.S. Galaxy",
             "blueprintId": "101_336",
             "cardId": 2,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/12V.jpg",
             "owner": "player1",
             "zone": "ATTACHED",
                /* Cards in the ATTACHED zone are attached to other cards. In this case, it demonstrates
@@ -100,6 +102,7 @@
             "title": "Excavation",
             "blueprintId": "101_154",
             "cardId": 3,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/13V.jpg",
             "owner": "player1",
             "zone": "SPACELINE",
             "locationId": 3, // only included if the card is on the spaceline
