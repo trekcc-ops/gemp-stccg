@@ -134,6 +134,7 @@
             "region": "Romulus System", // There will not be a region item if the location is not in one
             "locationName": "Romulus",
             "isCompleted": false,
+            "isHomeworld": true,
             "missionCardIds": [6],
             "seedCardCount": 0,
             "seedCardsIds": []

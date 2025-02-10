@@ -20,9 +20,9 @@ import java.util.stream.Stream;
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted",
+@JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted", "isHomeworld",
         "missionCardIds", "seedCardCount", "seedCardIds" })
-@JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted",
+@JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted", "isHomeworld",
         "missionCardIds", "seedCardCount", "seedCardIds" })
 @JsonFilter("missionLocationSerializerFilter")
 public class MissionLocation implements GameLocation {
@@ -302,6 +302,7 @@ public class MissionLocation implements GameLocation {
         _isCompleted = completed;
     }
 
+    @JsonProperty("isHomeworld")
     public boolean isHomeworld() {
         boolean result = false;
         for (MissionCard card : getMissionCards()) {
