@@ -24,10 +24,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "zone", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl" })
+        "imageUrl", "cardType" })
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "zone", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl" })
+        "imageUrl", "cardType" })
 public interface PhysicalCard extends Filterable {
     DefaultGame getGame();
     Zone getZone();
@@ -72,6 +72,8 @@ public interface PhysicalCard extends Filterable {
     Action getPlayCardAction(boolean forFree);
 
     boolean hasTextRemoved(DefaultGame game);
+
+    @JsonProperty("cardType")
     CardType getCardType();
     List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame);
     List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player);
