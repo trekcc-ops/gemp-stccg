@@ -85,7 +85,7 @@ public abstract class GameState {
 
     public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
                                   boolean restoreSnapshot)
-            throws PlayerNotFoundException, InvalidGameLogicException {
+            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
 
         Player player = getPlayer(playerId);
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
@@ -137,13 +137,13 @@ public abstract class GameState {
         _playerDecisions.remove(playerId);
     }
 
-    public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) {
+    public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) throws InvalidGameOperationException {
         card.setZone(Zone.ATTACHED);
         card.attachTo(transferTo);
         moveCard(cardGame, card);
     }
 
-    public void detachCard(DefaultGame cardGame, PhysicalCard attachedCard, Zone newZone) {
+    public void detachCard(DefaultGame cardGame, PhysicalCard attachedCard, Zone newZone) throws InvalidGameOperationException {
         attachedCard.setZone(newZone);
         attachedCard.detach();
         moveCard(cardGame, attachedCard);
@@ -167,7 +167,7 @@ public abstract class GameState {
         removeCardsFromZone(card.getGame(), card.getOwner(), Collections.singleton(card));
     }
 
-    public void moveCard(DefaultGame cardGame, PhysicalCard card) {
+    public void moveCard(DefaultGame cardGame, PhysicalCard card) throws InvalidGameOperationException {
         for (GameStateListener listener : cardGame.getAllGameStateListeners())
             listener.sendEvent(new MoveCardInPlayGameEvent(card));
     }
@@ -182,11 +182,10 @@ public abstract class GameState {
         }
 
         for (PhysicalCard card : cards) {
+            card.removeFromCardGroup();
             Zone zone = card.getZone();
 
-            if (zone.isInPlay()) card.stopAffectingGame(card.getGame());
-
-            getZoneCards(card.getOwner(), zone).remove(card);
+            if (card.isInPlay()) card.stopAffectingGame(card.getGame());
 
             if (card instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam() != null) {
@@ -194,7 +193,7 @@ public abstract class GameState {
                 }
             }
 
-            if (zone.isInPlay())
+            if (card.isInPlay())
                 _inPlay.remove(card);
             if (zone == Zone.ATTACHED)
                 card.detach();
@@ -255,8 +254,13 @@ public abstract class GameState {
             LOGGER.error("Card was in {} when tried to add to zone: {}", card.getZone(), zone);
 
         card.setZone(zone);
-        for (GameStateListener listener : card.getGame().getAllGameStateListeners())
-            sendCreatedCardToListener(card, sharedMission, listener,true);
+        for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
+            try {
+                sendCreatedCardToListener(card, sharedMission, listener, true);
+            } catch(InvalidGameOperationException exp) {
+                card.getGame().sendErrorMessage(exp);
+            }
+        }
 
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
@@ -264,7 +268,7 @@ public abstract class GameState {
     }
 
     protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
-                                             boolean animate) {
+                                             boolean animate) throws InvalidGameOperationException {
         GameEvent.Type eventType;
 
         if (sharedMission)
@@ -280,8 +284,9 @@ public abstract class GameState {
             sendGameEvent = true;
         else sendGameEvent = (card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
 
-        if (sendGameEvent)
+        if (sendGameEvent) {
             listener.sendEvent(new AddNewCardGameEvent(eventType, card));
+        }
     }
 
 

@@ -383,7 +383,7 @@ public abstract class CardGameMediator {
     private String getCardInfoJson(DefaultGame cardGame, PhysicalCard card) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Map<Object, Object> itemsToSerialize = new HashMap<>();
-        if (card == null || (!card.isInPlay() && !card.isInHand()))
+        if (card == null || (!card.isInPlay() && !card.isInHand(cardGame)))
             return mapper.writeValueAsString(itemsToSerialize);
 
         Collection<String> modifiersToAdd = new ArrayList<>();

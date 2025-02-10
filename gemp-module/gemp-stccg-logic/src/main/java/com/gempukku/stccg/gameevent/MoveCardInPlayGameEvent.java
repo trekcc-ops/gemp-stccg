@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -12,7 +13,7 @@ public class MoveCardInPlayGameEvent extends GameEvent {
 
     private final PhysicalCard _card;
 
-    public MoveCardInPlayGameEvent(PhysicalCard card) {
+    public MoveCardInPlayGameEvent(PhysicalCard card) throws InvalidGameOperationException {
         super(Type.MOVE_CARD_IN_PLAY, card.getOwner());
         _card = card;
         setCardData(card);
@@ -31,8 +32,8 @@ public class MoveCardInPlayGameEvent extends GameEvent {
     @JsonProperty("zone")
     @Override
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Zone getZone() {
-        return _card.getZone();
+    public Zone getZone() throws InvalidGameOperationException {
+        return getZoneForCard(_game, _card);
     }
 
     @JsonProperty("controllerId")

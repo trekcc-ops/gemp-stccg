@@ -51,7 +51,7 @@ public class ReplayMetadata {
     }
 
     public ReplayMetadata(DBData.GameHistory game, Map<String, ? extends CardDeck> decks, String player,
-                          Iterable<? extends GameEvent> events) {
+                          Iterable<? extends GameEvent> events) throws InvalidGameOperationException {
         this(game, decks);
         ParseReplay(player, events);
     }
@@ -63,7 +63,7 @@ public class ReplayMetadata {
     private final Pattern gameStartPattern = Pattern.compile("Players in the game are: ([\\w-]+), ([\\w-]+)");
     private final Pattern orderPattern = Pattern.compile("([\\w-]+) has chosen to go (.*)");
 
-    private final void ParseReplay(String player, Iterable<? extends GameEvent> events) {
+    private final void ParseReplay(String player, Iterable<? extends GameEvent> events) throws InvalidGameOperationException {
         boolean gameStarted = false;
 
         for(var event : events) {

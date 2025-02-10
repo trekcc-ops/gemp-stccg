@@ -186,7 +186,7 @@ public class ST1EGameState extends GameState {
     @Override
     public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
                                   boolean restoreSnapshot)
-            throws PlayerNotFoundException, InvalidGameLogicException {
+            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
         Player player = getPlayer(playerId);
         boolean sharedMission;
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);

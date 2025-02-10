@@ -31,7 +31,7 @@ import java.util.List;
 public interface PhysicalCard extends Filterable {
     DefaultGame getGame();
     Zone getZone();
-    boolean isInHand();
+    boolean isInHand(DefaultGame cardGame);
     void setZone(Zone zone);
     String getBlueprintId();
     @JsonProperty("imageUrl")
@@ -150,4 +150,6 @@ public interface PhysicalCard extends Filterable {
     }
 
     boolean isVisibleToPlayer(String requestingPlayerId);
+
+    void removeFromCardGroup();
 }

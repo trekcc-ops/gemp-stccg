@@ -107,7 +107,7 @@ public abstract class DefaultGame {
 
                 try {
                     gameState.sendCardsToClient(this, playerId, listener, false);
-                } catch (PlayerNotFoundException | InvalidGameLogicException exp) {
+                } catch (PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException exp) {
                     sendErrorMessage(exp);
                     cancelGame();
                 }
@@ -271,7 +271,8 @@ public abstract class DefaultGame {
         try {
             if (!_cancelled)
                 getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
-        } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
+        } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException |
+                CardNotFoundException exp) {
             sendErrorMessage(exp);
         }
     }

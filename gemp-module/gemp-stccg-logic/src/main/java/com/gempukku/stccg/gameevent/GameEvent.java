@@ -94,11 +94,11 @@ public class GameEvent {
     }
 
 
-    void setCardData(PhysicalCard card) {
+    void setCardData(PhysicalCard card) throws InvalidGameOperationException {
         _eventAttributes.put(Attribute.cardId, String.valueOf(card.getCardId()));
         _eventAttributes.put(Attribute.blueprintId, card.getBlueprintId());
-        _eventAttributes.put(Attribute.zone, card.getZone().name());
-        _zone = card.getZone();
+        _zone = getZoneForCard(card.getGame(), card);
+        _eventAttributes.put(Attribute.zone, _zone.name());
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
 
@@ -138,7 +138,7 @@ public class GameEvent {
     @JsonIgnore
     public Type getType() { return _type; }
 
-    public Zone getZone() { return _zone; }
+    public Zone getZone() throws InvalidGameOperationException { return _zone; }
 
     @JsonIgnore
     public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }

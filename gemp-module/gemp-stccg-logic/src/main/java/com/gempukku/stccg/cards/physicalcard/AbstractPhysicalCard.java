@@ -401,4 +401,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
                 isControlledBy(playerName);
     }
 
+    public void removeFromCardGroup() {
+        List<PhysicalCard> zoneCards = _owner.getCardGroupCards(_zone);
+        zoneCards.remove(this);
+    }
+
 }
