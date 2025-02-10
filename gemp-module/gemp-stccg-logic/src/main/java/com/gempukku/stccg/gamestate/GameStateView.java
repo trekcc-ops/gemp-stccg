@@ -77,7 +77,7 @@ public class GameStateView {
     }
 
     private boolean showCardInfo(PhysicalCard card) {
-        return card.getZone().isPublic() || card.getOwnerName().equals(_requestingPlayerId) || card.isControlledBy(_requestingPlayerId);
+        return card.isVisibleToPlayer(_requestingPlayerId);
     }
 
     @JsonProperty("lastAction")
