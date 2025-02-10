@@ -187,18 +187,6 @@ public abstract class DefaultGame {
         for (GameStateListener listener : getAllGameStateListeners()) {
             listener.sendEvent(new GameEvent(GameEvent.Type.GAME_ENDED));
         }
-
-        if (getPlayers() == null || getPlayers().isEmpty())
-            return;
-
-        for (Player player : getPlayers()) {
-            for(PhysicalCard card : player.getCardsInDrawDeck()) {
-                for (GameStateListener listener : getAllGameStateListeners()) {
-                    getGameState().sendCreatedCardToListener(this,
-                            card, false, listener, true, true);
-                }
-            }
-        }
     }
 
     public void setCurrentPhase(Phase phase) {
