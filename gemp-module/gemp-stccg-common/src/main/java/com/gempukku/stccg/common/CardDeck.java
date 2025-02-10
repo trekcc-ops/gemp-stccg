@@ -15,6 +15,13 @@ public class CardDeck {
     protected final String _notes;
     protected final String _targetFormat;
 
+    public CardDeck(Map<SubDeck, List<String>> subDecks) {
+        _subDecks = subDecks;
+        _deckName = "";
+        _notes = "";
+        _targetFormat = "";
+    }
+
     public CardDeck(String deckName, AbstractGameFormat format) {
         _deckName = deckName;
         _targetFormat = format.getName();

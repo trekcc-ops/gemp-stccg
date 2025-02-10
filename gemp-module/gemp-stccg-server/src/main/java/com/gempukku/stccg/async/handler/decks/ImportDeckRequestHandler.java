@@ -7,16 +7,11 @@ import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.SortAndFilterCards;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,38 +32,28 @@ public class ImportDeckRequestHandler extends DeckRequestHandler implements UriR
     @Override
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
-
-        List<GenericCardItem> importResult = processImport(_rawDeckList, serverObjects.getCardBlueprintLibrary());
-
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-        Document doc = docBuilder.newDocument();
-        Element collectionElem = doc.createElement("collection");
-        collectionElem.setAttribute("count", String.valueOf(importResult.size()));
-        doc.appendChild(collectionElem);
-
-        for (GenericCardItem item : importResult) {
-            appendCardElement(doc, collectionElem, item, true, serverObjects.getCardBlueprintLibrary());
-        }
-
-        Map<String, String> headers = new HashMap<>();
-
-        responseWriter.writeXmlResponseWithHeaders(doc, headers);
+        Map<SubDeck, List<String>> importResult = processImport(_rawDeckList, serverObjects.getCardBlueprintLibrary());
+        CardDeck deck = new CardDeck(importResult);
+        JsonSerializedDeck serializedDeck = new JsonSerializedDeck(deck, serverObjects);
+        responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(serializedDeck));
     }
 
-    private static List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
+    private static Map<SubDeck, List<String>> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
+        Map<SubDeck, List<String>> result = new HashMap<>();
         Map<String, SubDeck> lackeySubDeckMap = new HashMap<>();
         for (SubDeck subDeck : SubDeck.values()) {
             lackeySubDeckMap.put(subDeck.getLackeyName() + ":", subDeck);
         }
         // Assumes formatting from Lackey txt files. "Draw deck" is not called out explicitly.
         SubDeck currentSubDeck = SubDeck.DRAW_DECK;
+        result.put(currentSubDeck, new ArrayList<>());
 
-        List<GenericCardItem> result = new ArrayList<>();
         for (CardCount cardCount : getDecklist(rawDeckList)) {
             SubDeck newSubDeck = lackeySubDeckMap.get(cardCount.getName());
-            if (newSubDeck != null) currentSubDeck = newSubDeck;
+            if (newSubDeck != null) {
+                currentSubDeck = newSubDeck;
+                result.put(newSubDeck, new ArrayList<>());
+            }
             else {
                 for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
                     String id = cardBlueprint.getKey();
@@ -82,7 +67,9 @@ public class ImportDeckRequestHandler extends DeckRequestHandler implements UriR
                                     SortAndFilterCards.replaceSpecialCharacters(blueprint.getFullName().toLowerCase())
                                             .equals(cardCount.name())
                             ) {
-                                result.add(GenericCardItem.createItem(id, cardCount.count(), currentSubDeck));
+                                for (int i = 0; i < cardCount.count(); i++) {
+                                    result.get(currentSubDeck).add(id);
+                                }
                                 break;
                             }
                         }
@@ -91,21 +78,6 @@ public class ImportDeckRequestHandler extends DeckRequestHandler implements UriR
             }
         }
         return result;
-    }
-
-    private void appendCardElement(Document doc, Node collectionElem, GenericCardItem item,
-                                   boolean setSubDeckAttribute, CardBlueprintLibrary library) throws Exception {
-        Element card = doc.createElement("card");
-        if (setSubDeckAttribute) {
-            String subDeck = item.getSubDeckString();
-            if (subDeck != null)
-                card.setAttribute("subDeck", subDeck);
-        }
-        card.setAttribute("count", String.valueOf(item.getCount()));
-        card.setAttribute("blueprintId", item.getBlueprintId());
-        CardBlueprint blueprint = library.getCardBlueprint(item.getBlueprintId());
-        card.setAttribute("imageUrl", blueprint.getImageUrl());
-        collectionElem.appendChild(card);
     }
 
     private static List<CardCount> getDecklist(String rawDeckList) {

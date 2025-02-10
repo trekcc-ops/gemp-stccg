@@ -48,11 +48,15 @@ public abstract class DeckRequestHandler {
 
         @JsonProperty("targetFormat")
         Map<String, String> getFormat() throws HttpProcessingException {
-            GameFormat format = validateFormat(_cardDeck.getTargetFormat(), _formatLibrary);
-            Map<String, String> result = new HashMap<>();
-            result.put("formatName", format.getName());
-            result.put("formatCode", format.getCode());
-            return result;
+            if (_cardDeck.getTargetFormat().isEmpty()) {
+                return new HashMap<>();
+            } else {
+                GameFormat format = validateFormat(_cardDeck.getTargetFormat(), _formatLibrary);
+                Map<String, String> result = new HashMap<>();
+                result.put("formatName", format.getName());
+                result.put("formatCode", format.getCode());
+                return result;
+            }
         }
 
         @JsonProperty("individualCards")

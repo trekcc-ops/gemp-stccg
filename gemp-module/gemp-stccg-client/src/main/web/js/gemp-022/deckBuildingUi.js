@@ -247,25 +247,14 @@ export default class GempLotrDeckBuildingUI {
         for (var i = 0; i < rawTextList.length; i++) {
             if (rawTextList[i] != "") {
                 var line = that.removeNotes(rawTextList[i]).toLowerCase();
-                line = line.replace(/[\*•]/g,"").replace(/’/g,"'")
-                        .replace(/starting|start|ring-bearer:|ring:/g,"")
+                line = line.replace(/[\*•]/g,"").replace(/’/g,"'");
                 formattedText = formattedText + line.trim() + "~";
             }
         }
                 
-        this.importDeckCollection(formattedText, function (xml) {
-            var cards = xml.documentElement.getElementsByTagName("card");
-            for (var i = 0; i < cards.length; i++) {
-                var cardElem = cards[i];
-                var blueprintId = cardElem.getAttribute("blueprintId");
-                var subDeck = cardElem.getAttribute("subDeck");
-                var group = cardElem.getAttribute("group");
-                var imageUrl = cardElem.getAttribute("imageUrl");
-                var cardCount = parseInt(cardElem.getAttribute("count"));
-                for (var j = 0; j < cardCount; j++) {
-                    that.addCardToDeckDontLayout(blueprintId, imageUrl, subDeck);
-                }
-            }
+        this.importDeckCollection(formattedText, function (json) {
+
+            that.addAllCardsToDeck(json);
             that.deckModified(true);
             that.layoutDeck();
             $("#editingDeck").text("Imported Deck (unsaved)");
@@ -298,8 +287,8 @@ export default class GempLotrDeckBuildingUI {
     }
 
     importDeckCollection(decklist, callback) {
-        this.comm.importCollection(decklist, function (xml) {
-            callback(xml);
+        this.comm.importCollection(decklist, function (json) {
+            callback(json);
         }, {
             "414":function () {
                 alert("Deck too large to import.");
@@ -758,17 +747,23 @@ export default class GempLotrDeckBuildingUI {
 
     setupDeck(deckJson) {
     // Load a deck into the deck builder based on a Json object received from the server
-        console.log(deckJson);
         this.clearDeck();
         this.deckName = deckJson.deckName;
         $("#editingDeck").text(this.deckName);
 
         let formatName = deckJson.targetFormat.formatName;
         let formatCode = deckJson.targetFormat.formatCode;
-        this.formatSelect.val(formatCode);
-
+        if (formatCode != null) {
+            this.formatSelect.val(formatCode);
+        }
         this.notes = deckJson.notes;
+        this.addAllCardsToDeck(deckJson);
+        this.layoutUI(false);
+        this.cardFilter.getCollection();
+        this.deckModified(false);
+    }
 
+    addAllCardsToDeck(deckJson) {
         for (const key in deckJson.cards) {
             if (deckJson.cards.hasOwnProperty(key)) {
                 let subDeck = key;
@@ -783,17 +778,6 @@ export default class GempLotrDeckBuildingUI {
                 }
             }
         }
-
-/*        for (const card of deckJson.cards) {
-            let blueprintId = card.blueprintId;
-            let imageUrl = card.imageUrl;
-            let subDeck = card.subDeck;
-            this.addCardToDeck(blueprintId, imageUrl, subDeck);
-        } */
-
-        this.layoutUI(false);
-        this.cardFilter.getCollection();
-        this.deckModified(false);
     }
 
     clearCollection() {
