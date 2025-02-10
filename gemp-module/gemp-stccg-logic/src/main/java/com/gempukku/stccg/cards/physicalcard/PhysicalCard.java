@@ -23,14 +23,17 @@ import java.util.List;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="cardId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "zone", "locationId",
-        "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
+        "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
+        "imageUrl" })
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "zone", "locationId",
-        "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
+        "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
+        "imageUrl" })
 public interface PhysicalCard extends Filterable {
     DefaultGame getGame();
     Zone getZone();
     void setZone(Zone zone);
     String getBlueprintId();
+    @JsonProperty("imageUrl")
     String getImageUrl();
     int getCardId();
     Player getOwner();
