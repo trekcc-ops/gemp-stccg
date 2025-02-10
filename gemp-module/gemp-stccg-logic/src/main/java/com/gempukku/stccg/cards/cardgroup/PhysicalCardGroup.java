@@ -14,7 +14,7 @@ import java.util.List;
 @JsonPropertyOrder({ "cardCount", "cardIds" })
 @JsonView(JsonViews.Public.class)
 public class PhysicalCardGroup {
-    private final List<PhysicalCard> _cards = new LinkedList<>();
+    protected final List<PhysicalCard> _cards = new LinkedList<>();
 
     public PhysicalCardGroup() {
     }
@@ -23,7 +23,7 @@ public class PhysicalCardGroup {
 
     @JsonProperty("cardIds")
     @JsonIdentityReference(alwaysAsId=true)
-    public List<PhysicalCard> getCards() {
+    public final List<PhysicalCard> getCards() {
         return _cards;
     }
     public void setCards(List<PhysicalCard> subDeck) {
@@ -35,6 +35,8 @@ public class PhysicalCardGroup {
     public int size() {
         return _cards.size();
     }
+
+    public void remove(PhysicalCard card) { _cards.remove(card); }
 
     public PhysicalCard getFirst() {
         return _cards.getFirst();

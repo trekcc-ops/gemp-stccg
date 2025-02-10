@@ -14,6 +14,7 @@ import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
@@ -410,8 +411,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public void removeFromCardGroup() {
-        List<PhysicalCard> zoneCards = _owner.getCardGroupCards(_zone);
-        zoneCards.remove(this);
+        PhysicalCardGroup group = _owner.getCardGroup(_zone);
+        if (group != null)
+            group.remove(this);
     }
 
 }

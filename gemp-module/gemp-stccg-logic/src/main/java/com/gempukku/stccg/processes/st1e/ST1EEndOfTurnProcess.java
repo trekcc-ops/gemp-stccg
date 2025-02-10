@@ -30,7 +30,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
         Player player = cardGame.getCurrentPlayer();
         for (PhysicalCard card : Filters.filterActive(cardGame, Filters.ship))
             ((PhysicalShipCard) card).restoreRange();
-        cardGame.getGameState().playerDrawsCard(cardGame, player);
+        cardGame.getGameState().playerDrawsCard(player);
         cardGame.sendMessage(playerId + " drew their normal end-of-turn card draw");
         final List<TopLevelSelectableAction> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, player);

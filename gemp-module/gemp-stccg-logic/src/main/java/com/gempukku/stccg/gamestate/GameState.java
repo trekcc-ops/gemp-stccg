@@ -240,9 +240,6 @@ public abstract class GameState {
                 zoneCardList.addFirst(card);
         }
 
-        if (card.getZone() != null && card.getZone() != Zone.VOID)
-            LOGGER.error("Card was in {} when tried to add to zone: {}", card.getZone(), zone);
-
         card.setZone(zone);
         for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
             try {
@@ -329,12 +326,23 @@ public abstract class GameState {
         return _currentPhase;
     }
 
-    public void playerDrawsCard(DefaultGame game, Player player) {
+    public void playerDrawsCard(Player player) {
         CardPile drawDeck = player.getDrawDeck();
         if (!drawDeck.isEmpty()) {
             PhysicalCard card = drawDeck.getTopCard();
-            removeCardsFromZone(game, player, Collections.singleton(card));
+            drawDeck.remove(card);
+            sendRemovedCardToListeners(card.getGame(), card);
             addCardToZone(card, Zone.HAND);
+        }
+    }
+
+    private void sendRemovedCardToListeners(DefaultGame cardGame, PhysicalCard card) {
+        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
+            if (card.isVisibleToPlayer(listener.getPlayerId())) {
+                GameEvent event =
+                        new RemoveCardsFromPlayGameEvent(List.of(card), card.getOwner());
+                listener.sendEvent(event);
+            }
         }
     }
 
