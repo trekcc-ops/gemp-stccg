@@ -149,6 +149,8 @@ public interface PhysicalCard extends Filterable {
         return getBlueprint().isUniversal();
     }
 
+    boolean isKnownToPlayer(String requestingPlayerId);
+
     boolean isVisibleToPlayer(String requestingPlayerId);
 
     void removeFromCardGroup();

@@ -175,15 +175,7 @@ public abstract class GameState {
 
     public void removeCardsFromZone(DefaultGame cardGame, Player performingPlayer, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
-            List<PhysicalCard> zoneCards = getZoneCards(card.getOwner(), card.getZone());
-            if (!zoneCards.contains(card) && card.getZone() != Zone.VOID)
-                LOGGER.error(
-                        "Card was not found in the expected zone: " + card.getTitle() + ", " + card.getZone().name());
-        }
-
-        for (PhysicalCard card : cards) {
             card.removeFromCardGroup();
-            Zone zone = card.getZone();
 
             if (card.isInPlay()) card.stopAffectingGame(card.getGame());
 
@@ -195,7 +187,7 @@ public abstract class GameState {
 
             if (card.isInPlay())
                 _inPlay.remove(card);
-            if (zone == Zone.ATTACHED)
+            if (card.getAttachedTo() != null)
                 card.detach();
         }
 
@@ -203,9 +195,7 @@ public abstract class GameState {
 
             Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
             for (PhysicalCard card : cards) {
-                boolean publicDiscard = card.getZone() == Zone.DISCARD && cardGame.isDiscardPilePublic();
-                if (card.getZone().isPublic() || publicDiscard ||
-                        (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(listener.getPlayerId())))
+                if (card.isVisibleToPlayer(listener.getPlayerId()))
                     removedCardsVisibleByPlayer.add(card);
             }
             if (!removedCardsVisibleByPlayer.isEmpty()) {
@@ -277,14 +267,7 @@ public abstract class GameState {
             eventType = GameEvent.Type.PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING;
         else eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
 
-        boolean sendGameEvent;
-        if (card.getZone().isPublic())
-            sendGameEvent = true;
-        else if (card.getZone() == Zone.DISCARD && card.getGame().isDiscardPilePublic())
-            sendGameEvent = true;
-        else sendGameEvent = (card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
-
-        if (sendGameEvent) {
+        if (card.isVisibleToPlayer(listener.getPlayerId())) {
             listener.sendEvent(new AddNewCardGameEvent(eventType, card));
         }
     }
@@ -399,18 +382,12 @@ public abstract class GameState {
         return card;
     }
 
-    public void placeCardOnMission(DefaultGame cardGame, PhysicalCard cardBeingPlaced, MissionLocation mission)
-            throws InvalidGameLogicException {
-        Zone currentZone = cardBeingPlaced.getZone();
-        if (currentZone == null) {
-            throw new InvalidGameLogicException("Tried to process a card not in any zone");
-        } else {
-            removeCardsFromZone(cardGame, cardBeingPlaced.getOwner(), List.of(cardBeingPlaced));
-            cardBeingPlaced.setPlacedOnMission(true);
-            cardBeingPlaced.setLocation(mission);
-            addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
-            cardBeingPlaced.setLocation(mission);
-        }
+    public void placeCardOnMission(DefaultGame cardGame, PhysicalCard cardBeingPlaced, MissionLocation mission) {
+        removeCardsFromZone(cardGame, cardBeingPlaced.getOwner(), List.of(cardBeingPlaced));
+        cardBeingPlaced.setPlacedOnMission(true);
+        cardBeingPlaced.setLocation(mission);
+        addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
+        cardBeingPlaced.setLocation(mission);
     }
 
 

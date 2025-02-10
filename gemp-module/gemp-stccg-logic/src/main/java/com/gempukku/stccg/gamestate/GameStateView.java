@@ -77,7 +77,7 @@ public class GameStateView {
     }
 
     private boolean showCardInfo(PhysicalCard card) {
-        return card.isVisibleToPlayer(_requestingPlayerId);
+        return card.isKnownToPlayer(_requestingPlayerId);
     }
 
     @JsonProperty("lastAction")

@@ -396,9 +396,17 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isPlacedOnMission() { return _placedOnMission; }
 
-    public boolean isVisibleToPlayer(String playerName) {
+    public boolean isKnownToPlayer(String playerName) {
         return _zone.isPublic() || _owner.getPlayerId().equals(playerName) ||
                 isControlledBy(playerName);
+    }
+
+    public boolean isVisibleToPlayer(String playerName) {
+        if (_zone.isPublic())
+            return true;
+        if (_zone == Zone.DISCARD && getGame().isDiscardPilePublic())
+            return true;
+        return _zone.isVisibleByOwner() && Objects.equals(_owner.getPlayerId(), playerName);
     }
 
     public void removeFromCardGroup() {
