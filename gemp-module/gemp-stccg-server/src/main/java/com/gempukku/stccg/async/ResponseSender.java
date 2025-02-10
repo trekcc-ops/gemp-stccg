@@ -173,11 +173,6 @@ public class ResponseSender implements ResponseWriter {
     }
 
     @Override
-    public final void writeHtmlOkResponse() {
-        writeHtmlResponse("OK");
-    }
-
-    @Override
     public void writeJsonOkResponse() throws JsonProcessingException {
         Map<String, String> result = new HashMap<>();
         result.put("response", "OK");

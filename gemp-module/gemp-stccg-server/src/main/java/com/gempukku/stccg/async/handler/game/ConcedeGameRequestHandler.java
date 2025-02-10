@@ -24,7 +24,7 @@ public class ConcedeGameRequestHandler extends GameRequestHandlerNew implements 
         User resourceOwner = request.user();
         CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
         gameMediator.concede(resourceOwner);
-        responseWriter.writeXmlOkResponse();
+        responseWriter.writeJsonOkResponse();
     }
 
 }

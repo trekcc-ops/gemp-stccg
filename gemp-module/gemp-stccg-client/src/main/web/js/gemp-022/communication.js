@@ -315,7 +315,7 @@ export default class GempClientCommunication {
                 gameId:getUrlParam("gameId")
             },
             error:this.errorCheck(errorMap),
-            dataType:"text"
+            dataType:"json"
         });
     }
 
@@ -328,7 +328,7 @@ export default class GempClientCommunication {
                 gameId:getUrlParam("gameId")
             },
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
@@ -717,7 +717,7 @@ export default class GempClientCommunication {
                 participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -730,7 +730,7 @@ export default class GempClientCommunication {
                 participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -806,7 +806,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -820,7 +820,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -966,7 +966,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -1008,7 +1008,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     

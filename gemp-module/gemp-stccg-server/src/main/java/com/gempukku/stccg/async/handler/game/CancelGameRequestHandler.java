@@ -24,7 +24,7 @@ public class CancelGameRequestHandler extends GameRequestHandlerNew implements U
         User resourceOwner = request.user();
         GameServer gameServer = serverObjects.getGameServer();
         gameServer.cancelGame(resourceOwner, _gameId);
-        responseWriter.writeXmlOkResponse();
+        responseWriter.writeJsonOkResponse();
     }
 
 }

@@ -32,8 +32,6 @@ public interface ResponseWriter {
     void writeXmlMarshalExceptionResponse(Exception e) throws ParserConfigurationException;
     void writeXmlMarshalExceptionResponse(String errorMessage) throws ParserConfigurationException;
 
-    void writeHtmlOkResponse();
-
     void writeJsonOkResponse() throws JsonProcessingException;
 
 }

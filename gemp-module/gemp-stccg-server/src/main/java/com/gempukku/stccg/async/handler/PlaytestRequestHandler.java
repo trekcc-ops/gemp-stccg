@@ -1,15 +1,13 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,7 +44,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             User player = getResourceOwnerSafely(request);
             _playerDAO.addPlayerFlag(player.getName(), User.Type.PLAY_TESTER);
-            responseWriter.writeHtmlOkResponse();
+            responseWriter.writeJsonOkResponse();
         }
     }
 
@@ -54,7 +52,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             User player = getResourceOwnerSafely(request);
             _playerDAO.removePlayerFlag(player.getName(), User.Type.PLAY_TESTER);
-            responseWriter.writeHtmlOkResponse();
+            responseWriter.writeJsonOkResponse();
         }
     }
 

@@ -345,8 +345,8 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#motd-response").html("Processing...");
 									
-									hall.comm.setDailyMessage($("#motd-text").val(), function (string) {
-										$("#motd-response").html("Response: " + string);
+									hall.comm.setDailyMessage($("#motd-text").val(), function (json) {
+										$("#motd-response").html("Response: " + json.response);
 									});
 								});
 							
@@ -480,8 +480,8 @@ document.addEventListener("DOMContentLoaded", function() {
 										$("#solo-draft-matches").val(),
 										$("#solo-draft-name").val(),
 										$("#solo-draft-cost").val(), 
-										function (xml) {
-											resultdiv.html("OK");
+										function (json) {
+											resultdiv.html(json.response);
 										}, leagueErrorMap(resultdiv));
 									});
 		
@@ -525,8 +525,8 @@ document.addEventListener("DOMContentLoaded", function() {
 										data.format,
 										data.seriesDuration,
 										data.maxMatches,
-										function (xml) {
-											resultdiv.html("OK");
+										function (json) {
+											resultdiv.html(json.response);
 										}, leagueErrorMap(resultdiv));
 									});
 
@@ -636,8 +636,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#reset-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.resetUserPassword($("#reset-input").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.resetUserPassword($("#reset-input").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							

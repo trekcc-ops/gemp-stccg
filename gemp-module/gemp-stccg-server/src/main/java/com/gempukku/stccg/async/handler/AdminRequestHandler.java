@@ -122,7 +122,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
             if (!_adminService.resetUserPassword(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-            responseWriter.writeHtmlOkResponse();
+            responseWriter.writeJsonOkResponse();
         }
     }
 
@@ -136,7 +136,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 if (!_adminService.banUser(login))
                     throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
             }
-            responseWriter.writeHtmlOkResponse();
+            responseWriter.writeJsonOkResponse();
         }
     }
 
@@ -153,7 +153,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
                 parameters.get("serializedParams"), leagueStart, displayEnd);
         _leagueService.clearCache();
-        responseWriter.writeHtmlOkResponse();
+        responseWriter.writeJsonOkResponse();
     }
 
     private void previewConstructedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
@@ -208,7 +208,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 leagueData.getClass().getName(), parameters.get("serializedParams"), leagueStart, displayEnd);
         _leagueService.clearCache();
 
-        responseWriter.writeHtmlOkResponse();
+        responseWriter.writeJsonOkResponse();
     }
 
     private void previewSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter)
@@ -301,7 +301,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private void setDailyMessage(HttpRequest request, ResponseWriter responseWriter) throws IOException {
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, FormParameter.messageOfTheDay));
-            responseWriter.writeHtmlOkResponse();
+            responseWriter.writeJsonOkResponse();
         }
     }
 
