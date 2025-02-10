@@ -148,4 +148,6 @@ public interface PhysicalCard extends Filterable {
     default boolean isUniversal() {
         return getBlueprint().isUniversal();
     }
+
+    boolean isVisibleToPlayer(String requestingPlayerId);
 }

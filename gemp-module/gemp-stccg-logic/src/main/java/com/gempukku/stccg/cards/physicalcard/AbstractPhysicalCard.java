@@ -396,4 +396,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isPlacedOnMission() { return _placedOnMission; }
 
+    public boolean isVisibleToPlayer(String playerName) {
+        return _zone.isPublic() || _owner.getPlayerId().equals(playerName) ||
+                isControlledBy(playerName);
+    }
+
 }
