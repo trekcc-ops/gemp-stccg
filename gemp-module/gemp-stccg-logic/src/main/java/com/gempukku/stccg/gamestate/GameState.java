@@ -138,8 +138,7 @@ public abstract class GameState {
     }
 
     public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) {
-        if (card.getZone() != Zone.ATTACHED)
-            card.setZone(Zone.ATTACHED);
+        card.setZone(Zone.ATTACHED);
         card.attachTo(transferTo);
         moveCard(cardGame, card);
     }
