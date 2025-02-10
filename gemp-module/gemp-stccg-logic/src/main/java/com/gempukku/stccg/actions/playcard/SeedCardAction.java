@@ -31,7 +31,7 @@ public class SeedCardAction extends PlayCardAction {
         }
         gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
         setAsSuccessful();
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, originalZone, _cardEnteringPlay));
+        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
     }
 
 }

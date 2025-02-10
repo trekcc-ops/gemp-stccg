@@ -141,7 +141,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 else
                     gameState.addMissionLocationToSpaceline(_cardEnteringPlay, _locationZoneIndex);
                 game.getActionsEnvironment().emitEffectResult(
-                        new PlayCardResult(this, originalZone, _cardEnteringPlay));
+                        new PlayCardResult(this, _cardEnteringPlay));
                 _actionCarriedOut = true;
                 _cardPlayed = true;
                 setAsSuccessful();

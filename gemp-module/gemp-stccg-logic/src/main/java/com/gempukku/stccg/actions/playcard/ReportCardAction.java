@@ -175,7 +175,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     }
                 }
                 cardGame.getActionsEnvironment().emitEffectResult(
-                        new PlayCardResult(this, originalZone, _cardEnteringPlay));
+                        new PlayCardResult(this, _cardEnteringPlay));
             }
 
             return getNextAction();

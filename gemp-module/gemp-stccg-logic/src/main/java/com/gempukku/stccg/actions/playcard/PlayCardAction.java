@@ -74,7 +74,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         GameState gameState = game.getGameState();
         game.removeCardsFromZone(_cardEnteringPlay.getOwner(), Collections.singleton(_cardEnteringPlay));
         gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, originalZone, _cardEnteringPlay));
+        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
         game.sendMessage(_cardEnteringPlay.getOwnerName() + " played " +
                 _cardEnteringPlay.getCardLink() +  " from " + originalZone.getHumanReadable() +
                 " to " + _destinationZone.getHumanReadable());
