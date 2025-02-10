@@ -236,7 +236,7 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.getGameLocation() == location;
     }
 
-    public static final CardFilter inPlay = (game, physicalCard) -> physicalCard.getZone().isInPlay();
+    public static final CardFilter inPlay = (game, physicalCard) -> physicalCard.isInPlay();
     public static final CardFilter active = (game, physicalCard) -> game.getGameState().isCardInPlayActive(physicalCard);
     public static final CardFilter multiAffiliation = (game, physicalCard) ->
             physicalCard instanceof AffiliatedCard affilCard && affilCard.isMultiAffiliation();
