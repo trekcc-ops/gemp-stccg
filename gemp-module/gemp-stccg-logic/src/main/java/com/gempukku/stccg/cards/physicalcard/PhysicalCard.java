@@ -31,6 +31,7 @@ import java.util.List;
 public interface PhysicalCard extends Filterable {
     DefaultGame getGame();
     Zone getZone();
+    boolean isInHand();
     void setZone(Zone zone);
     String getBlueprintId();
     @JsonProperty("imageUrl")

@@ -100,7 +100,6 @@ public class SeedOutpostAction extends PlayCardAction {
             }
 
             if (!getProgress(Progress.cardWasSeeded)) {
-                Zone originalZone = _cardEnteringPlay.getZone();
                 Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
                 facility.changeAffiliation(selectedAffiliation);
 

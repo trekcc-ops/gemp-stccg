@@ -164,7 +164,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
                 cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " played " + _cardEnteringPlay.getCardLink());
 
-                Zone originalZone = _cardEnteringPlay.getZone();
                 reportable.reportToFacility(getSelectedDestination(cardGame));
                 if (reportable instanceof AffiliatedCard affiliated) {
                     Affiliation affiliation = affiliated.getCurrentAffiliation();

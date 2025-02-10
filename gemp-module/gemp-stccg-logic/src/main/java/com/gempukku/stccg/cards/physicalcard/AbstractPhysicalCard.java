@@ -54,6 +54,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _zone;
     }
 
+    public boolean isInHand(DefaultGame cardGame) {
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardsInHand().contains(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setZone(Zone zone) { _zone = zone; }
 
     public String getBlueprintId() { return _blueprint.getBlueprintId(); }

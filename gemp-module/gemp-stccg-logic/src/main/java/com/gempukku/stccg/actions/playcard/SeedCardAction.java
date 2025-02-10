@@ -19,16 +19,9 @@ public class SeedCardAction extends PlayCardAction {
 
     @Override
     protected void putCardIntoPlay(DefaultGame game) {
-
-        Zone originalZone = _cardEnteringPlay.getZone();
         GameState gameState = game.getGameState();
-
         game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
         gameState.removeCardFromZone(_cardEnteringPlay);
-        if (originalZone == Zone.DRAW_DECK) {
-            game.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            _cardEnteringPlay.getOwner().shuffleDrawDeck(game);
-        }
         gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
         setAsSuccessful();
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));

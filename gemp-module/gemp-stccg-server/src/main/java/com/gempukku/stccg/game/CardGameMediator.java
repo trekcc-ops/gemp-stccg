@@ -131,13 +131,7 @@ public abstract class CardGameMediator {
         try {
             GameState gameState = getGame().getGameState();
             PhysicalCard card = gameState.findCardById(cardId);
-            if (card == null || card.getZone() == null)
-                return "";
-            else if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
-                return getCardInfoJson(getGame(), card);
-            } else {
-                return "";
-            }
+            return getCardInfoJson(getGame(), card);
         } finally {
             _readLock.unlock();
         }
@@ -389,7 +383,7 @@ public abstract class CardGameMediator {
     private String getCardInfoJson(DefaultGame cardGame, PhysicalCard card) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Map<Object, Object> itemsToSerialize = new HashMap<>();
-        if (!card.getZone().isInPlay() && card.getZone() != Zone.HAND)
+        if (card == null || (!card.isInPlay() && !card.isInHand()))
             return mapper.writeValueAsString(itemsToSerialize);
 
         Collection<String> modifiersToAdd = new ArrayList<>();
