@@ -117,6 +117,7 @@ public class DefaultGameFormat implements GameFormat {
     public String getCode() {
         return _code;
     }
+    @JsonProperty("order")
     @Override
     public int getOrder() {
         return _order;

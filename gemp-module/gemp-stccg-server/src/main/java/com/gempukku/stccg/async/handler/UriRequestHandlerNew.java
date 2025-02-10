@@ -28,6 +28,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = AddSealedLeagueRequestHandler.class, name = "addSealedLeague"),
         @JsonSubTypes.Type(value = BanUserRequestHandler.class, name = "banUser"),
         @JsonSubTypes.Type(value = BanUserTemporaryRequestHandler.class, name = "banUserTemporary"),
         @JsonSubTypes.Type(value = CancelGameRequestHandler.class, name = "cancelGame"),
@@ -57,6 +58,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
         @JsonSubTypes.Type(value = PostChatRequestHandler.class, name = "postChat"),
+        @JsonSubTypes.Type(value = PreviewSealedLeagueRequestHandler.class, name = "previewSealedLeague"),
         @JsonSubTypes.Type(value = RegisterRequestHandler.class, name = "register"),
         @JsonSubTypes.Type(value = ReloadCardLibraryRequestHandler.class, name = "reloadCardLibrary"),
         @JsonSubTypes.Type(value = RenameDeckRequestHandler.class, name = "renameDeck"),

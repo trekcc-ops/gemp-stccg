@@ -895,29 +895,28 @@ export default class GempClientCommunication {
         });
     }
     
-    previewSealedLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
+    previewSealedLeague(format, start, seriesDuration, maxMatches, name, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/previewSealedLeague",
+            url:this.url + "/previewSealedLeague",
             cache:false,
             data:{
                 format:format,
                 start:start,
                 seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
-                name:name,
-                cost:cost
+                name:name
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
     
     addSealedLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/addSealedLeague",
+            url:this.url + "/addSealedLeague",
             cache:false,
             data:{
                 format:format,
@@ -929,7 +928,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     

@@ -4,7 +4,6 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.LeagueDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
@@ -57,14 +56,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             case "/setDailyMessagePOST":
                 validateAdmin(request);
                 setDailyMessage(request, responseWriter);
-                break;
-            case "/previewSealedLeaguePOST":
-                validateLeagueAdmin(request);
-                previewSealedLeague(request, responseWriter);
-                break;
-            case "/addSealedLeaguePOST":
-                validateLeagueAdmin(request);
-                addSealedLeague(request, responseWriter);
                 break;
             case "/previewConstructedLeaguePOST":
                 validateLeagueAdmin(request);
@@ -299,27 +290,6 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         }
     }
 
-    private String serializeSealedLeagueParameters(Map<String,String> parameters) {
-        return String.join(",", _formatLibrary.GetSealedTemplate(parameters.get("format")).getId(),
-                parameters.get("start"), parameters.get("seriesDuration"), parameters.get("maxMatches"),
-                parameters.get("code"), parameters.get("name"));
-    }
-
-    private void addSealedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        Map<String, String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        int cost = Integer.parseInt(parameters.get("cost"));
-        String serializedParameters = serializeSealedLeagueParameters(parameters);
-        LeagueData leagueData =
-                new NewSealedLeagueData(_cardBlueprintLibrary, _formatLibrary, serializedParameters);
-        List<LeagueSeriesData> series = leagueData.getSeries();
-        int leagueStart = series.getFirst().getStart();
-        int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
-        _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
-                serializedParameters, leagueStart, displayEnd);
-        _leagueService.clearCache();
-        responseWriter.writeHtmlOkResponse();
-    }
-
     private void getDailyMessage(HttpRequest request, ResponseWriter responseWriter) {
         try(SelfClosingPostRequestDecoder ignored = new SelfClosingPostRequestDecoder(request)) {
             String dailyMessage = _hallServer.getDailyMessage();
@@ -347,12 +317,4 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
     }
 
-    private void previewSealedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        Map<String,String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        String serializedParameters = parameters.get("serializedParameters");
-        CardBlueprintLibrary cardBlueprintLibrary = _serverObjects.getCardBlueprintLibrary();
-        FormatLibrary formatLibrary = _serverObjects.getFormatLibrary();
-        LeagueData leagueData = new NewSealedLeagueData(cardBlueprintLibrary, formatLibrary, serializedParameters);
-        writeLeagueDocument(responseWriter, leagueData, parameters);
-    }
 }
