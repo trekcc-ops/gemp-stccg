@@ -265,13 +265,6 @@ public abstract class GameState {
 
     protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
                                              boolean animate) {
-        sendCreatedCardToListener(
-                card.getGame(), card, sharedMission, listener, animate, false);
-    }
-
-    public void sendCreatedCardToListener(DefaultGame cardGame, PhysicalCard card, boolean sharedMission,
-                                          GameStateListener listener, boolean animate,
-                                          boolean overrideOwnerVisibility) {
         GameEvent.Type eventType;
 
         if (sharedMission)
@@ -283,10 +276,9 @@ public abstract class GameState {
         boolean sendGameEvent;
         if (card.getZone().isPublic())
             sendGameEvent = true;
-        else if (card.getZone() == Zone.DISCARD && cardGame.isDiscardPilePublic())
+        else if (card.getZone() == Zone.DISCARD && card.getGame().isDiscardPilePublic())
             sendGameEvent = true;
-        else sendGameEvent = (overrideOwnerVisibility || card.getZone().isVisibleByOwner()) &&
-                    card.getOwnerName().equals(listener.getPlayerId());
+        else sendGameEvent = (card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
 
         if (sendGameEvent)
             listener.sendEvent(new AddNewCardGameEvent(eventType, card));
