@@ -506,7 +506,7 @@ export default class GempHallUI {
                 var name = "<td>" + tournamentName;
                 if(isPrivate)
                 {
-                    if(!!userDesc)
+                    if(userDesc)
                     {
                         if(isInviteOnly)
                         {
@@ -523,7 +523,7 @@ export default class GempHallUI {
                 }
                 else
                 {
-                    if(!!userDesc)
+                    if(userDesc)
                     {
                         if(isInviteOnly)
                         {
