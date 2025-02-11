@@ -6,6 +6,12 @@
                                         requesting the information. */
     "currentPhase": "SEED_FACILITY", // name of the current phase, see stccg.common.filterable.Phase for options
     "phasesInOrder": [
+            /*
+                If it is currently a seed phase, this shows all seed phases in order.
+                If it is currently a 1E or 2E turn, this shows all turn phases in order.
+                In all other cases, this is a one-element list of the current phase.
+                    (For example, if this is a Tribbles game or if the game is between turns.)
+            */
         "SEED_DOORWAY",
         "SEED_MISSION",
         "SEED_DILEMMA",
