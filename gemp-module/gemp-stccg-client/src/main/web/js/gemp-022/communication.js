@@ -449,7 +449,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
