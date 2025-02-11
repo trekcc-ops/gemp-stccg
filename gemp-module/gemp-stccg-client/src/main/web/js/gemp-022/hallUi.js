@@ -270,12 +270,9 @@ export default class GempHallUI {
 		}
         this.decksSelect.html("");
         for (var i = 0; i < json.length; i++) {
-            console.log(json[i]);
             var deck = json[i];
             var deckName = deck.deckName;
-            console.log(deckName);
             var formatName = deck.targetFormat.formatName;
-            console.log(formatName);
             var deckElem = $("<option/>")
                     .attr("value", deckName)
                     .text(formatDeckName(formatName, deckName));
