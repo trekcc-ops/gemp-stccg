@@ -430,10 +430,6 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									let resultdiv = $("#sealed-league-result");
 									resultdiv.html("Processing...");
-									console.log("Sealed format");
-									console.log($("#sealed-format"));
-									console.log("Sealed format val");
-									console.log($("#sealed-format").val());
 
 									hall.comm.addSealedLeague(
 										$("#sealed-format").val(), 
@@ -591,11 +587,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									for (var prop in sealed) {
 										if (Object.prototype.hasOwnProperty.call(sealed, prop)) {
 										    console.log("prop:");
-										    console.log(prop);
 
 											let id = sealed[prop].id;
-											console.log("Assigning id to sealed[prop].ID:");
-											console.log(id);
 											let serieCount = sealed[prop].seriesProduct.length;
 
 											let selectFormatElement = document.getElementById("sealed-format");
@@ -610,11 +603,6 @@ document.addEventListener("DOMContentLoaded", function() {
 											$("#sealed-format").append(item); */
 										}
 									}
-                                    console.log("sealed-format after adding children");
-                                    console.log($("#sealed-format"));
-									sortOptionsByName("#sealed-format");
-                                    console.log("sealed-format after sorting");
-                                    console.log($("#sealed-format"));
 								},
 								{
 									"400":function () 
