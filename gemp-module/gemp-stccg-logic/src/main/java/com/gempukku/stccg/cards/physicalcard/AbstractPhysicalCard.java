@@ -14,6 +14,7 @@ import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
@@ -52,6 +53,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public Zone getZone() {
         return _zone;
+    }
+
+    public boolean isInHand(DefaultGame cardGame) {
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardsInHand().contains(this)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setZone(Zone zone) { _zone = zone; }
@@ -225,7 +235,14 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public Collection<PhysicalCard> getAttachedCards(DefaultGame game) { return game.getGameState().getAttachedCards(this); }
+    public Collection<PhysicalCard> getAttachedCards(DefaultGame game) {
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard physicalCard : game.getGameState().getAllCardsInPlay()) {
+            if (physicalCard.getAttachedTo() == this)
+                result.add(physicalCard);
+        }
+        return result;
+    }
 
     public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game) {
         if (_blueprint.getExtraPlayCosts() == null)
@@ -386,5 +403,24 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public boolean isPlacedOnMission() { return _placedOnMission; }
+
+    public boolean isKnownToPlayer(String playerName) {
+        return _zone.isPublic() || _owner.getPlayerId().equals(playerName) ||
+                isControlledBy(playerName);
+    }
+
+    public boolean isVisibleToPlayer(String playerName) {
+        if (_zone.isPublic())
+            return true;
+        if (_zone == Zone.DISCARD && getGame().isDiscardPilePublic())
+            return true;
+        return _zone.isVisibleByOwner() && Objects.equals(_owner.getPlayerId(), playerName);
+    }
+
+    public void removeFromCardGroup() {
+        PhysicalCardGroup group = _owner.getCardGroup(_zone);
+        if (group != null)
+            group.remove(this);
+    }
 
 }

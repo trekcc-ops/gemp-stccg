@@ -2,13 +2,13 @@ package com.gempukku.stccg.gameevent;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -16,7 +16,7 @@ public class AddNewCardGameEvent extends GameEvent {
 
     private final PhysicalCard _card;
 
-    public AddNewCardGameEvent(GameEvent.Type eventType, PhysicalCard card) {
+    public AddNewCardGameEvent(GameEvent.Type eventType, PhysicalCard card) throws InvalidGameOperationException {
         super(eventType, card.getOwner());
         _card = card;
         setCardData(card);
@@ -35,8 +35,8 @@ public class AddNewCardGameEvent extends GameEvent {
     @JsonProperty("zone")
     @Override
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Zone getZone() {
-        return _card.getZone();
+    public Zone getZone() throws InvalidGameOperationException {
+        return getZoneForCard(_card);
     }
 
     @JsonProperty("controllerId")

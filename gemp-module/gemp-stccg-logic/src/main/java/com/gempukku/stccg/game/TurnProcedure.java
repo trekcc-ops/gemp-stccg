@@ -26,7 +26,7 @@ public class TurnProcedure {
 
 
     public void carryOutPendingActionsUntilDecisionNeeded() throws PlayerNotFoundException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         int numSinceDecision = 0;
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
 
@@ -71,7 +71,7 @@ public class TurnProcedure {
     }
 
     private void executeNextSubaction() throws PlayerNotFoundException, InvalidGameLogicException,
-            CardNotFoundException {
+            CardNotFoundException, InvalidGameOperationException {
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
         Action currentAction = actionsEnvironment.getCurrentAction();
         Action nextAction = currentAction.nextAction(_game);

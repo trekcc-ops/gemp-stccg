@@ -197,7 +197,7 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
-    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException;
+    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException;
 
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType) {

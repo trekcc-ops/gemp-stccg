@@ -29,7 +29,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             _game.getGameState().setPlayerDecked(cardGame, currentPlayer, true);
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            _game.getGameState().playerDrawsCard(cardGame, currentPlayer);
+            _game.getGameState().playerDrawsCard(currentPlayer);
             _game.sendMessage(playerId + " drew a card");
             List<? extends PhysicalCard> playerHand = currentPlayer.getCardsInHand();
             PhysicalCard cardDrawn = playerHand.getLast();

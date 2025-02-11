@@ -237,7 +237,7 @@ export default class GameAnimations {
                 // If card is listed as public knowledge in server -> common/filterable/Zone.java
                 // and the card belongs to the opponent, inform UI to invert it.
                 let visible_opponent_zones = [
-                    "TABLE",
+                    "CORE",
                     "SPACELINE",
                     "AT_LOCATION",
                     "ATTACHED"

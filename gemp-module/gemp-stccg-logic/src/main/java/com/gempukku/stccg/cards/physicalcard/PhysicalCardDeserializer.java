@@ -12,9 +12,6 @@ public class PhysicalCardDeserializer {
 
     public static void deserialize(ST1EGame game, PhysicalCard card, JsonNode node) throws CardNotFoundException {
 
-        Zone zone = Zone.valueOf(node.get("zone").textValue());
-        card.setZone(zone);
-
         if (card instanceof AffiliatedCard affiliatedCard && node.has("affiliation")) {
             Affiliation affiliation = Affiliation.valueOf(node.get("affiliation").textValue());
             affiliatedCard.setCurrentAffiliation(affiliation);

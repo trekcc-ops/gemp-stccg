@@ -248,7 +248,7 @@ export default class GameTableUI {
                 $("#main"),
                 this.allPlayerIds[i],
                 function (card) {
-                    return (card.zone == "TABLE");
+                    return (card.zone == "CORE");
                 },
                 "tableAreaDiv_" + this.allPlayerIds[i]
             );

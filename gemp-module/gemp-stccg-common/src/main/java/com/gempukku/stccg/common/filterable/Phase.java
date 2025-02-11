@@ -15,14 +15,7 @@ public enum Phase {
     EXECUTE_ORDERS("Execute orders"),
     END_OF_TURN("End of turn"),
     // Tribbles
-    TRIBBLES_TURN("Tribbles turn"),
-
-    // LotR
-    FELLOWSHIP("Fellowship"),
-    MANEUVER("Maneuver"),
-    ARCHERY("Archery"),
-    ASSIGNMENT("Assignment"),
-    REGROUP("Regroup");
+    TRIBBLES_TURN("Tribbles turn");
 
     private final String humanReadable;
 

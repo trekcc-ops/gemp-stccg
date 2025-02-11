@@ -6,12 +6,14 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.player.Player;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -143,6 +145,11 @@ public final class TribblesGameState extends GameState {
 
     public void checkVictoryConditions(DefaultGame cardGame) {
         // TODO - nothing to do here for now
+    }
+
+    @Override
+    public List<Phase> getPhasesInOrder() {
+        return List.of(getCurrentPhase());
     }
 
     public void advanceRound(TribblesGame cardGame) {

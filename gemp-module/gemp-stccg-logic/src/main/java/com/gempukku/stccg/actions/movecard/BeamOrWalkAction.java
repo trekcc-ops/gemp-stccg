@@ -14,6 +14,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
@@ -74,7 +75,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, InvalidGameOperationException {
 //        if (!isAnyCostFailed()) {
 
         Action cost = getNextCost();
@@ -137,7 +138,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return null;
     }
 
-    private void processEffect(DefaultGame cardGame) {
+    private void processEffect(DefaultGame cardGame) throws InvalidGameOperationException {
         if (!_wasCarriedOut) {
             GameLocation destinationLocation = _destination.getGameLocation();
             for (PhysicalCard card : _cardsToMove) {

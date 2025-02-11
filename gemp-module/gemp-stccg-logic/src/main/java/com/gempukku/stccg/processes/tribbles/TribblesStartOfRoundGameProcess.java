@@ -25,7 +25,7 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
                 player.shuffleDrawDeck(cardGame);
             }
             for (int i = 0; i < _game.getFormat().getHandSize(); i++)
-                gameState.playerDrawsCard(cardGame, player);
+                gameState.playerDrawsCard(player);
         }
     }
 

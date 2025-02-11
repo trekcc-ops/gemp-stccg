@@ -7,11 +7,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.player.Player;
+import com.google.common.collect.Iterables;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,8 +22,7 @@ import org.w3c.dom.Node;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GameEvent {
     public enum Type {
@@ -73,8 +75,6 @@ public class GameEvent {
     private Zone _zone;
     protected final Map<Attribute, String> _eventAttributes = new HashMap<>();
 
-    DefaultGame _game;
-
     public GameEvent(Type type) {
         _type = type;
         _typeCode = type.code;
@@ -91,11 +91,11 @@ public class GameEvent {
     }
 
 
-    void setCardData(PhysicalCard card) {
+    void setCardData(PhysicalCard card) throws InvalidGameOperationException {
         _eventAttributes.put(Attribute.cardId, String.valueOf(card.getCardId()));
         _eventAttributes.put(Attribute.blueprintId, card.getBlueprintId());
-        _eventAttributes.put(Attribute.zone, card.getZone().name());
-        _zone = card.getZone();
+        _zone = getZoneForCard(card);
+        _eventAttributes.put(Attribute.zone, _zone.name());
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
 
@@ -125,8 +125,8 @@ public class GameEvent {
                     _eventAttributes.put(Attribute.placedOnMission, "true");
                     _eventAttributes.put(Attribute.targetCardId,
                             String.valueOf(mission.getTopMissionCard().getCardId()));
-                } else if (_game != null) {
-                    _game.sendErrorMessage("Tried to create game event for card placed on mission," +
+                } else {
+                    throw new InvalidGameOperationException("Tried to create game event for card placed on mission," +
                             " but card is placed on a non-mission card");
                 }
         }
@@ -135,7 +135,7 @@ public class GameEvent {
     @JsonIgnore
     public Type getType() { return _type; }
 
-    public Zone getZone() { return _zone; }
+    public Zone getZone() throws InvalidGameOperationException { return _zone; }
 
     @JsonIgnore
     public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }
@@ -154,5 +154,48 @@ public class GameEvent {
         return _eventAttributes;
     }
 
+    protected Zone getZoneForCard(PhysicalCard card) throws InvalidGameOperationException {
+        Set<Zone> possibleZones = new HashSet<>();
+        for (Player player : card.getGame().getPlayers()) {
+            if (player.getCardsInHand().contains(card))
+                possibleZones.add(Zone.HAND);
+            if (player.getCardsInDrawDeck().contains(card))
+                possibleZones.add(Zone.DRAW_DECK);
+            if (player.getDiscardPile().contains(card))
+                possibleZones.add(Zone.DISCARD);
+            if (player.getCardsInGroup(Zone.CORE).contains(card))
+                possibleZones.add(Zone.CORE);
+            if (player.getCardsInGroup(Zone.REMOVED).contains(card))
+                possibleZones.add(Zone.REMOVED);
+        }
+        if (card.getCardType() == CardType.MISSION) {
+            Zone missionZone;
+            if (card.isInPlay())
+                missionZone = Zone.SPACELINE;
+            else if (card.getGame().getCurrentPhase() == Phase.SEED_MISSION)
+                missionZone = Zone.HAND;
+            else
+                missionZone = Zone.MISSIONS_PILE;
+            possibleZones.add(missionZone);
+        }
+
+        // TODO - 1E client doesn't use SEED_DECK or PLAY_PILE
+        if (card.getAttachedTo() != null) {
+            possibleZones.add(Zone.ATTACHED);
+        } else if (card.getCardType() != CardType.MISSION && card.isInPlay() &&
+                !(card.getGameLocation() instanceof NullLocation)) {
+            possibleZones.add(Zone.AT_LOCATION);
+        }
+
+        if (!card.isInPlay() && possibleZones.isEmpty()) {
+            possibleZones.add(Zone.VOID);
+        }
+
+        if (possibleZones.size() == 1) {
+            return Iterables.getOnlyElement(possibleZones);
+        } else {
+            throw new InvalidGameOperationException("Unable to assign zone for card " + card.getTitle());
+        }
+    }
 
 }

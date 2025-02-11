@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 
 public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
@@ -23,7 +24,7 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
     public PhysicalCard getPerformingCard() { return _performingCard; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameOperationException {
 //        if (!isAnyCostFailed()) {
 
         Action cost = getNextCost();
