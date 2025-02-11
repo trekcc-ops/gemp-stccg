@@ -34,7 +34,6 @@ import java.util.*;
 @JsonPropertyOrder({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
         "awayTeams", "actions", "performedActions" })
 public abstract class GameState {
-    private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     Phase _currentPhase;
     Map<String, Player> _players = new HashMap<>();
     PlayerOrder _playerOrder;
@@ -154,7 +153,17 @@ public abstract class GameState {
         if(card == attachTo)
             throw new InvalidParameterException("Cannot attach card to itself!");
         card.attachTo(attachTo);
-        addCardToZone(card, Zone.ATTACHED);
+        _inPlay.add(card);
+        card.setZone(Zone.ATTACHED);
+
+        for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
+            try {
+                sendCreatedCardToListener(card, false, listener, true);
+            } catch(InvalidGameOperationException exp) {
+                card.getGame().sendErrorMessage(exp);
+            }
+        }
+        card.startAffectingGame(card.getGame());
     }
 
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
@@ -175,9 +184,8 @@ public abstract class GameState {
 
     public void removeCardsFromZone(DefaultGame cardGame, Player performingPlayer, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
-            card.removeFromCardGroup();
-
             if (card.isInPlay()) card.stopAffectingGame(card.getGame());
+            card.removeFromCardGroup();
 
             if (card instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam() != null) {
@@ -213,7 +221,7 @@ public abstract class GameState {
 
 
     public void addCardToZone(PhysicalCard card, Zone zone) {
-        addCardToZone(card, zone, true);
+        addCardToZone(card, zone, true, false);
     }
     public void addCardToZone(PhysicalCard card, Zone zone, EndOfPile endOfPile) {
         addCardToZone(card, zone, endOfPile != EndOfPile.TOP);
@@ -288,7 +296,9 @@ public abstract class GameState {
     }
 
     @JsonProperty("cardsInGame")
-    public Iterable<PhysicalCard> getAllCardsInGame() { return Collections.unmodifiableCollection(_allCards.values()); }
+    public Iterable<PhysicalCard> getAllCardsInGame() {
+        return Collections.unmodifiableCollection(_allCards.values());
+    }
     public List<PhysicalCard> getAllCardsInPlay() {
         return Collections.unmodifiableList(_inPlay);
     }

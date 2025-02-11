@@ -33,7 +33,7 @@ public class MoveCardInPlayGameEvent extends GameEvent {
     @Override
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Zone getZone() throws InvalidGameOperationException {
-        return getZoneForCard(_game, _card);
+        return getZoneForCard(_card);
     }
 
     @JsonProperty("controllerId")

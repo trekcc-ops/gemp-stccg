@@ -2,7 +2,6 @@ package com.gempukku.stccg.gameevent;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -37,7 +36,7 @@ public class AddNewCardGameEvent extends GameEvent {
     @Override
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Zone getZone() throws InvalidGameOperationException {
-        return getZoneForCard(_game, _card);
+        return getZoneForCard(_card);
     }
 
     @JsonProperty("controllerId")

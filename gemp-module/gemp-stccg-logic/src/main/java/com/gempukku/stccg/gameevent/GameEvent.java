@@ -76,8 +76,6 @@ public class GameEvent {
     private Zone _zone;
     protected final Map<Attribute, String> _eventAttributes = new HashMap<>();
 
-    DefaultGame _game;
-
     public GameEvent(Type type) {
         _type = type;
         _typeCode = type.code;
@@ -97,7 +95,7 @@ public class GameEvent {
     void setCardData(PhysicalCard card) throws InvalidGameOperationException {
         _eventAttributes.put(Attribute.cardId, String.valueOf(card.getCardId()));
         _eventAttributes.put(Attribute.blueprintId, card.getBlueprintId());
-        _zone = getZoneForCard(card.getGame(), card);
+        _zone = getZoneForCard(card);
         _eventAttributes.put(Attribute.zone, _zone.name());
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
         _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
@@ -128,8 +126,8 @@ public class GameEvent {
                     _eventAttributes.put(Attribute.placedOnMission, "true");
                     _eventAttributes.put(Attribute.targetCardId,
                             String.valueOf(mission.getTopMissionCard().getCardId()));
-                } else if (_game != null) {
-                    _game.sendErrorMessage("Tried to create game event for card placed on mission," +
+                } else {
+                    throw new InvalidGameOperationException("Tried to create game event for card placed on mission," +
                             " but card is placed on a non-mission card");
                 }
         }
@@ -157,9 +155,9 @@ public class GameEvent {
         return _eventAttributes;
     }
 
-    protected Zone getZoneForCard(DefaultGame cardGame, PhysicalCard card) throws InvalidGameOperationException {
+    protected Zone getZoneForCard(PhysicalCard card) throws InvalidGameOperationException {
         Set<Zone> possibleZones = new HashSet<>();
-        for (Player player : cardGame.getPlayers()) {
+        for (Player player : card.getGame().getPlayers()) {
             if (player.getCardsInHand().contains(card))
                 possibleZones.add(Zone.HAND);
             if (player.getCardsInDrawDeck().contains(card))
@@ -175,7 +173,7 @@ public class GameEvent {
             Zone missionZone;
             if (card.isInPlay())
                 missionZone = Zone.SPACELINE;
-            else if (cardGame.getCurrentPhase() == Phase.SEED_MISSION)
+            else if (card.getGame().getCurrentPhase() == Phase.SEED_MISSION)
                 missionZone = Zone.HAND;
             else
                 missionZone = Zone.MISSIONS_PILE;
@@ -185,7 +183,8 @@ public class GameEvent {
         // TODO - 1E client doesn't use SEED_DECK or PLAY_PILE
         if (card.getAttachedTo() != null) {
             possibleZones.add(Zone.ATTACHED);
-        } else if (card.isInPlay() && !(card.getGameLocation() instanceof NullLocation)) {
+        } else if (card.getCardType() != CardType.MISSION && card.isInPlay() &&
+                !(card.getGameLocation() instanceof NullLocation)) {
             possibleZones.add(Zone.AT_LOCATION);
         }
 
