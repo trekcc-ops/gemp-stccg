@@ -44,10 +44,6 @@ public class TextUtils {
         return sb.toString();
     }
 
-    public static String signed(int value) {
-        return (value >= 0 ? "+" : "") + value;
-    }
-
     public static String plural(int count, String noun) {
         return count + " " + ((count == 1) ? noun : getPluralNoun(noun));
     }
