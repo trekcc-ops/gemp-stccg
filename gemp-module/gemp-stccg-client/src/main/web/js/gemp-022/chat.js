@@ -80,7 +80,7 @@ export default class ChatBoxUI {
     
                     this.hideSystemButton = $("#showSystemButton");
                     if (showHideSystemButton) {
-                        hideSystemButton.button({
+                        this.hideSystemButton.button({
                             icon: "ui-icon-zoomin",
                             text:false
                         });

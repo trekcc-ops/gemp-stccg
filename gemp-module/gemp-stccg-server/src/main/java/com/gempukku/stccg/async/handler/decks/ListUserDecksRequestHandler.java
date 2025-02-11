@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler.decks;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
@@ -7,12 +8,16 @@ import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
 public class ListUserDecksRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
+
+    private static final Logger LOGGER = LogManager.getLogger(ListLibraryDecksRequestHandler.class);
 
     @Override
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
@@ -22,7 +27,15 @@ public class ListUserDecksRequestHandler extends DeckRequestHandler implements U
 
         TreeSet<JsonSerializedDeck> jsonDecks = new TreeSet<>(new UserJsonDeckSorter());
         userDecks.forEach(deck -> jsonDecks.add(new JsonSerializedDeck(deck, serverObjects)));
-
+        for (CardDeck deck : userDecks) {
+            JsonSerializedDeck jsonDeck = new JsonSerializedDeck(deck, serverObjects);
+            try {
+                _jsonMapper.writeValueAsString(jsonDeck);
+                jsonDecks.add(jsonDeck);
+            } catch(JsonProcessingException exp) {
+                LOGGER.error("Unable to serialize deck '" + deck.getDeckName() + "'", exp);
+            }
+        }
         String jsonString = _jsonMapper.writeValueAsString(jsonDecks);
         responseWriter.writeJsonResponse(jsonString);
     }

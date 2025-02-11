@@ -78,8 +78,14 @@
         },
         // each table that has been added, removed, or updated since the last server sync will be included
     ]
-    "newGameIds": [ // list of games that have been added since the last sync with the server
-        "5",
-        "6"
+    "newGames": [ // list of games that have been added since the last sync with the server
+        {
+            "gameId": "5",
+            "gameType": "FIRST_EDITION"
+        },
+        {
+            "gameId": "6",
+            "gameType": "SECOND_EDITION"
+        }
     ]
 }

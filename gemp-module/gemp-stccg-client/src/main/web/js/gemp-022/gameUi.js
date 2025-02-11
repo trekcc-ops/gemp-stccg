@@ -710,7 +710,6 @@ export default class GameTableUI {
         let awayTeams = json.awayTeams; // list of nodes with two elements (playerId and cardsInAwayTeam)
 
         let html = "";
-        console.log("Initial:" + html);
 
         // List active modifiers
         if (modifiers != null && modifiers.length > 0) {
@@ -720,7 +719,6 @@ export default class GameTableUI {
             }
             html = html + "<br/>";
         }
-        console.log("After modifiers:" + html);
 
         // Show icons for affiliation(s)
         if (affiliations != null && affiliations.length > 0) {
@@ -730,7 +728,6 @@ export default class GameTableUI {
             }
             html = html + "<br/>";
         }
-        console.log("After affiliations:" + html);
 
         // Show other card icons
         if (icons != null && icons.length > 0) {
@@ -740,12 +737,11 @@ export default class GameTableUI {
             }
             html = html + "<br/>";
         }
-        console.log("After icons:" + html);
 
         // Show staffing requirements (if this card is a ship)
         if (staffingRequirements != null) {
             html = html + "<b>Staffing requirements:</b> ";
-            if (staffingRequirements.length = 0) {
+            if (staffingRequirements.length == 0) {
                 html = html + "none";
             } else {
                 for (const staffingRequirement of staffingRequirements) {
@@ -760,26 +756,22 @@ export default class GameTableUI {
             }
             html = html + "<br/><br/>";
         }
-        console.log("After staffing:" + html);
 
         // Show RANGE (if this card is a ship)
         if (printedRange != null && rangeAvailable != null) {
             html = html + "<b>Printed RANGE:</b> " + printedRange + "<br/>";
             html = html + "<b>RANGE available</b> " + rangeAvailable + "<br/>";
         }
-        console.log("After RANGE:" + html);
 
         // Show crew and docked ships if this card has them
         html = html + this.showCommaDelimitedListOfCardLinks(crew, "Crew");
         html = html + this.showCommaDelimitedListOfCardLinks(dockedCards, "Docked ships");
-        console.log("After crew/docked:" + html);
 
         // Show mission requirements and away teams if this card has them
         if (missionRequirements != null) {
             let redMissionReqs = missionRequirements.replaceAll(" OR ", " <a style='color:red'>OR</a> ");
             html = html + "<b>Mission requirements:</b> " + redMissionReqs + "<br/><br/>";
         }
-        console.log("After mission requirements:" + html);
 
         if (awayTeams != null && awayTeams.length > 0) {
             html = html + "<b><u>Away Teams</u></b>";
@@ -787,7 +779,6 @@ export default class GameTableUI {
                 html = html + this.showCommaDelimitedListOfCardLinks(team.cardsInAwayTeam, team.playerId);
             }
         }
-        console.log("After away teams:" + html);
 
         $("#cardEffects").append(html);
         $("#cardEffects").addClass("cardInfoText");

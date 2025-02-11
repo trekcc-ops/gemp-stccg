@@ -19,7 +19,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class TournamentRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final static long SEVEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 7;
     private final TournamentService _tournamentService;
     private final FormatLibrary _formatLibrary;
 
@@ -33,11 +32,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
     public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
         HttpRequest request = gempRequest.getRequest();
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) { // currentTournaments
-            getCurrentTournaments(responseWriter);
-        } else if ("/history".equals(uri) && request.method() == HttpMethod.GET) { // tournamentHistory
-            getTournamentHistory(responseWriter);
-        } else if (uri.startsWith("/") && uri.endsWith("/html") && // this one is buried deep within the client
+        if (uri.startsWith("/") && uri.endsWith("/html") && // this one is buried deep within the client
                 uri.contains("/deck/") && request.method() == HttpMethod.GET) {
             getTournamentDeck(uri.substring(1, uri.indexOf("/deck/")),
                     uri.substring(uri.indexOf("/deck/") + 6, uri.lastIndexOf("/html")), responseWriter);
@@ -72,25 +67,6 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
 
         String result = HTMLUtils.getTournamentDeck(deck, playerName, _formatLibrary, _cardBlueprintLibrary);
         responseWriter.writeHtmlResponse(result);
-    }
-
-    private void getTournamentHistory(ResponseWriter responseWriter) throws Exception {
-        long sevenDaysAgo = System.currentTimeMillis() - SEVEN_DAYS_IN_MILLIS;
-        getTournamentsData(responseWriter, _tournamentService.getOldTournaments(sevenDaysAgo));
-    }
-
-    private void getCurrentTournaments(ResponseWriter responseWriter) throws Exception {
-        getTournamentsData(responseWriter, _tournamentService.getLiveTournaments());
-    }
-
-    private void getTournamentsData(ResponseWriter responseWriter, Iterable<? extends Tournament> tournamentList)
-            throws Exception {
-        Document doc = createNewDoc();
-        Element tournaments = doc.createElement("tournaments");
-        for (Tournament tournament : tournamentList)
-            appendTournamentData(doc, tournaments, tournament, false);
-        doc.appendChild(tournaments);
-        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
 

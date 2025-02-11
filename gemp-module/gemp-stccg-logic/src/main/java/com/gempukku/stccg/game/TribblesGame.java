@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.player.PlayerClock;
@@ -17,7 +18,7 @@ public class TribblesGame extends DefaultGame {
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
                         final CardBlueprintLibrary library) {
-        super(format, decks, clocks, library);
+        super(format, decks, clocks, library, GameType.TRIBBLES);
 
         _gameState = new TribblesGameState(decks.keySet(), this);
         _rules = new TribblesRuleSet();
@@ -28,7 +29,7 @@ public class TribblesGame extends DefaultGame {
     }
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
-        super(format, decks, library);
+        super(format, decks, library, GameType.TRIBBLES);
 
         _gameState = new TribblesGameState(decks.keySet(), this);
         _rules = new TribblesRuleSet();

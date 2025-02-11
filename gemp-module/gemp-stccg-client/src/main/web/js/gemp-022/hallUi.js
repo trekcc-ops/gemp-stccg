@@ -270,12 +270,9 @@ export default class GempHallUI {
 		}
         this.decksSelect.html("");
         for (var i = 0; i < json.length; i++) {
-            console.log(json[i]);
             var deck = json[i];
             var deckName = deck.deckName;
-            console.log(deckName);
             var formatName = deck.targetFormat.formatName;
-            console.log(formatName);
             var deckElem = $("<option/>")
                     .attr("value", deckName)
                     .text(formatDeckName(formatName, deckName));
@@ -329,14 +326,19 @@ export default class GempHallUI {
         $(".count", $(".eventHeader.playingTables")).html("(" + ($("tr", $("table.playingTables")).length - 1) + ")");
         $(".count", $(".eventHeader.finishedTables")).html("(" + ($("tr", $("table.finishedTables")).length - 1) + ")");
 
-        var games = jsonFromServer.newGameIds;
+        var games = jsonFromServer.newGames;
         for (var i=0; i< games.length; i++) {
-            var waitingGameId = games[i];
-            var participantId = getUrlParam("participantId");
-            var participantIdAppend = "";
+            let waitingGameId = games[i].gameId;
+            let gameType = games[i].gameType;
+            let participantId = getUrlParam("participantId");
+            let participantIdAppend = "";
             if (participantId != null)
                 participantIdAppend = "&participantId=" + participantId;
-            window.open("/gemp-module/game.html?gameType=" + gameType + "&gameId=" + waitingGameId + participantIdAppend, "_blank");
+
+            let gameLink = "/gemp-module/game.html?gameType=" + gameType;
+            gameLink = gameLink + "&gameId=" + waitingGameId + participantIdAppend;
+
+            window.open(gameLink, "_blank");
         }
         if (games.length > 0) {
             let audio = new Audio(fanfareAudio);
@@ -509,7 +511,7 @@ export default class GempHallUI {
                 var name = "<td>" + tournamentName;
                 if(isPrivate)
                 {
-                    if(!!userDesc)
+                    if(userDesc)
                     {
                         if(isInviteOnly)
                         {
@@ -526,7 +528,7 @@ export default class GempHallUI {
                 }
                 else
                 {
-                    if(!!userDesc)
+                    if(userDesc)
                     {
                         if(isInviteOnly)
                         {
