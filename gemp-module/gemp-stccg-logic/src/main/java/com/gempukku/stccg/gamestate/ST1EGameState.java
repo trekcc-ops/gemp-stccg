@@ -14,7 +14,6 @@ import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.io.IOException;
 import java.util.*;
 
 public class ST1EGameState extends GameState {
@@ -30,7 +29,7 @@ public class ST1EGameState extends GameState {
         _currentPhase = Phase.SEED_DOORWAY;
         try {
             for (Player player : _players.values()) {
-                player.addCardGroup(Zone.TABLE);
+                player.addCardGroup(Zone.CORE);
                 player.addCardGroup(Zone.MISSIONS_PILE);
                 player.addCardGroup(Zone.SEED_DECK);
             }
@@ -47,7 +46,7 @@ public class ST1EGameState extends GameState {
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
+                zone == Zone.DISCARD || zone == Zone.CORE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
             return player.getCardGroupCards(zone);
         else // This should never be accessed
             return _inPlay; // TODO - Should this just be an exception?

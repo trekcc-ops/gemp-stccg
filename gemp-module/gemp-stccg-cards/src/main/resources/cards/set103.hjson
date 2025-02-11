@@ -100,7 +100,7 @@
                 {
                     type: seedThis
                     limit: 1
-                    where: table
+                    where: core
                 }
             ]
         }

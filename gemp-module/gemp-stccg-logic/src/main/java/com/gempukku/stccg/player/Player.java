@@ -124,7 +124,7 @@ public class Player {
                 _seedDeck = new PhysicalCardGroup();
                 yield _seedDeck;
             }
-            case TABLE, HAND -> new PhysicalCardGroup();
+            case CORE, HAND -> new PhysicalCardGroup();
             case DRAW_DECK -> {
                 _drawDeck = new DrawDeck();
                 yield _drawDeck;

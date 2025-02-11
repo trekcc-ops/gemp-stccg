@@ -9,7 +9,6 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -164,8 +163,8 @@ public class GameEvent {
                 possibleZones.add(Zone.DRAW_DECK);
             if (player.getDiscardPile().contains(card))
                 possibleZones.add(Zone.DISCARD);
-            if (player.getCardsInGroup(Zone.TABLE).contains(card))
-                possibleZones.add(Zone.TABLE);
+            if (player.getCardsInGroup(Zone.CORE).contains(card))
+                possibleZones.add(Zone.CORE);
             if (player.getCardsInGroup(Zone.REMOVED).contains(card))
                 possibleZones.add(Zone.REMOVED);
         }
