@@ -19,12 +19,11 @@ export default class GempClientCommunication {
 
     logout(callback, errorMap) {
         /* TODO ES6 */
+        // TODO - As of 10 Feb 2025, this method doesn't have any related server-side functionality.
         $.ajax({
             type:"POST",
             url:this.url + "/logout",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap)
         });
@@ -37,8 +36,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/delivery",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:callback,
             error:null,
             dataType:"xml"
@@ -75,8 +72,8 @@ export default class GempClientCommunication {
             cache:false,
             data:{
                 start:start,
-                count:count,
-                participantId:getUrlParam("participantId") },
+                count:count
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -90,8 +87,8 @@ export default class GempClientCommunication {
             cache:false,
             data:{
                 startDay:startDay,
-                length:length,
-                participantId:getUrlParam("participantId") },
+                length:length
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -103,8 +100,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/playerStats",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -138,8 +133,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/tournament/" + tournamentId,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -151,8 +144,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/league",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -164,8 +155,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/league/" + type,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -177,8 +166,6 @@ export default class GempClientCommunication {
             type:"POST",
             url:this.url + "/league/" + code,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -410,8 +397,8 @@ export default class GempClientCommunication {
             url:this.url + "/collection/" + collectionType,
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                pack:pack},
+                pack:pack
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -424,9 +411,9 @@ export default class GempClientCommunication {
             url:this.url + "/collection/" + collectionType,
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 pack:pack,
-                selection:selection},
+                selection:selection
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -713,8 +700,6 @@ export default class GempClientCommunication {
             type:"POST",
             url:this.url + "/playtesting/addTesterFlag",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -726,8 +711,6 @@ export default class GempClientCommunication {
             type:"POST",
             url:this.url + "/playtesting/removeTesterFlag",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -1025,9 +1008,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/playerInfo",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")
-            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -1039,8 +1019,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -1055,8 +1033,8 @@ export default class GempClientCommunication {
             async:false,
             data:{
                 login:login,
-                password:password,
-                participantId:getUrlParam("participantId")},
+                password:password
+            },
             success:this.deliveryCheckStatus(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -1070,8 +1048,8 @@ export default class GempClientCommunication {
             cache:false,
             data:{
                 login:login,
-                password:password,
-                participantId:getUrlParam("participantId")},
+                password:password
+            },
             success:this.deliveryCheckStatus(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -1083,8 +1061,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/soloDraft/"+leagueType,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:callback,
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -1097,8 +1073,8 @@ export default class GempClientCommunication {
             url:this.url + "/soloDraft/"+leagueType,
             cache:false,
             data:{
-                choiceId:choiceId,
-                participantId:getUrlParam("participantId")},
+                choiceId:choiceId
+            },
             success:callback,
             error:this.errorCheck(errorMap),
             dataType:"xml"
