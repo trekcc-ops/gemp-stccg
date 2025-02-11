@@ -213,7 +213,7 @@ export default class GempClientCommunication {
                     */
                     alert("User cannot access this game state data.");
                 }
-                else if (response.status = 500) {
+                else if (response.status == 500) {
                     // Thrown if the gamestate encounters errors while being serialized
                     alert("Cannot create game state data.");
                 }
