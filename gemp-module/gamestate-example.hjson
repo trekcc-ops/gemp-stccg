@@ -130,6 +130,7 @@
             "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
             "locationName": "Gravesworld", // There may be multiple locations with the same name if universal
             "isCompleted": false, // Will show as true if the mission has been completed by either player
+            "isHomeworld": false,
             "missionCardIds": [4,18], /* Card IDs for the cards representing this location. Typically this will be a
                                         list with one item, but for shared missions, there will be two. The first
                                         item in the list is the mission card on the bottom. */
