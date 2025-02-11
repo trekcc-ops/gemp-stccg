@@ -45,9 +45,9 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
         Collection<PhysicalCard> cards = _cardTarget.getCards(cardGame);
         performingPlayer.shuffleCardsIntoDrawDeck(cardGame, cards);
-        cardGame.sendMessage(TextUtils.concatenateStrings(
-                cards.stream().map(PhysicalCard::getCardLink)) + " " +
-                be(cards) + " shuffled into " + _performingPlayerId + " deck");
+        String concatenatedCardLinks = TextUtils.getConcatenatedCardLinks(cards);
+        cardGame.sendMessage(
+                concatenatedCardLinks + " " + be(cards) + " shuffled into " + _performingPlayerId + " deck");
         setAsSuccessful();
         return getNextAction();
     }

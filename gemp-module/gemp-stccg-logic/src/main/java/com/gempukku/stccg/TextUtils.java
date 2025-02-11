@@ -55,10 +55,6 @@ public class TextUtils {
         };
     }
 
-    public static String concatenateStrings(Stream<String> strings) {
-        return concatenateStrings(strings.toList());
-    }
-
     public static String concatenateStrings(Collection<String> strings) {
         if (strings.isEmpty())
             return "none";
