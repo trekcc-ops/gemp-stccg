@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.cardgroup.MissionCardPile;
 import com.gempukku.stccg.cards.physicalcard.*;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
@@ -27,19 +26,14 @@ import java.util.stream.Stream;
 @JsonFilter("missionLocationSerializerFilter")
 public class MissionLocation implements GameLocation {
     @JsonProperty("quadrant")
-    @JsonView(JsonViews.Public.class)
     private final Quadrant _quadrant;
     @JsonProperty("region")
-    @JsonView(JsonViews.Public.class)
     private final Region _region;
     @JsonProperty("locationName")
-    @JsonView(JsonViews.Public.class)
     private final String _locationName;
     @JsonProperty("isCompleted")
-    @JsonView(JsonViews.Public.class)
     private boolean _isCompleted;
     @JsonProperty("locationId")
-    @JsonView(JsonViews.Public.class)
     private final int _locationId;
     private final MissionCardPile _missionCards = new MissionCardPile(Zone.SPACELINE);
     private Map<Player, CardPile> _preSeedCards = new HashMap<>();
@@ -72,14 +66,12 @@ public class MissionLocation implements GameLocation {
 
 
     @JsonProperty("missionCardIds")
-    @JsonView(JsonViews.Public.class)
     @JsonIdentityReference(alwaysAsId=true)
     public List<MissionCard> getMissionCards() {
         return _missionCards.getCards();
     }
 
     @JsonProperty("seedCardCount")
-    @JsonView(JsonViews.Public.class)
     private int getSeedCardCount() { return _seedCards.size(); }
 
     public boolean isInQuadrant(Quadrant quadrant) { return _quadrant == quadrant; }
@@ -110,7 +102,6 @@ public class MissionLocation implements GameLocation {
 
     @JsonProperty("seedCardIds")
     @JsonIdentityReference(alwaysAsId=true)
-    @JsonView(JsonViews.Private.class)
     public List<PhysicalCard> getSeedCards() {
         return _seedCards.getCards();
     }

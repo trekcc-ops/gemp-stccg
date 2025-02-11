@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.cardgroup.DiscardPile;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -21,14 +20,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 @JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
-@JsonView(JsonViews.Public.class)
 public class Player {
     @JsonProperty("playerId")
-    @JsonView(JsonViews.Public.class)
     private final String _playerId;
 
     @JsonProperty("decked")
-    @JsonView(JsonViews.Public.class)
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     @JsonProperty("cardGroups")

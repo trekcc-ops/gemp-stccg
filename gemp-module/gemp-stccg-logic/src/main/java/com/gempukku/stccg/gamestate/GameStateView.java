@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.player.PlayerView;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +17,6 @@ import java.util.List;
         "spacelineLocations", "awayTeams", "lastAction" })
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
         "awayTeams", "actions", "lastAction" })
-@JsonView(JsonViews.Public.class)
 public class GameStateView {
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
