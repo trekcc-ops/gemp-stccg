@@ -45,6 +45,7 @@ public abstract class GameState {
     int _nextCardId = 1;
     private ActionsEnvironment _actionsEnvironment;
     private GameProcess _currentGameProcess;
+    private int _currentTurnNumber;
 
     protected GameState(DefaultGame game, Iterable<String> playerIds) {
         Collection<Zone> cardGroupList = new LinkedList<>();
@@ -314,7 +315,7 @@ public abstract class GameState {
 
     public void startPlayerTurn(DefaultGame cardGame, Player player) {
         _playerOrder.setCurrentPlayer(player.getPlayerId());
-        player.incrementTurnNumber();
+        _currentTurnNumber++;
         cardGame.getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(player.getPlayerId()));
     }
 
@@ -445,4 +446,8 @@ public abstract class GameState {
 
     @JsonProperty("phasesInOrder")
     abstract public List<Phase> getPhasesInOrder();
+
+    public int getCurrentTurnNumber() {
+        return _currentTurnNumber;
+    }
 }

@@ -17,8 +17,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
-@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
+@JsonIncludeProperties({ "playerId", "score", "decked", "cardGroups" })
+@JsonPropertyOrder({ "playerId", "score", "decked", "cardGroups" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class Player {
     @JsonProperty("playerId")
@@ -32,8 +32,6 @@ public class Player {
     @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
-    @JsonProperty("turnNumber")
-    private int _turnNumber;
     @JsonProperty("drawDeck")
     CardPile _drawDeck;
     @JsonProperty("discardPile")
@@ -108,24 +106,12 @@ public class Player {
         return getCardsInGroup(Zone.REMOVED);
     }
 
-    public int getTurnNumber() {
-        return _turnNumber;
-    }
-
     public int getLastSyncedScore() {
         return _lastSyncedScore;
     }
 
     public void syncScore() {
         _lastSyncedScore = _currentScore;
-    }
-
-    public void incrementTurnNumber() {
-        _turnNumber++;
-    }
-
-    public void setTurnNumber(int turnNumber) {
-        _turnNumber = turnNumber;
     }
 
     public void setScore(int score) {

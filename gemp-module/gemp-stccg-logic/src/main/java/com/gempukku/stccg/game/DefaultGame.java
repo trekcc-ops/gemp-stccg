@@ -382,14 +382,12 @@ public abstract class DefaultGame {
         // Remove old snapshots until reaching snapshots to keep
         for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
             GameSnapshot gameSnapshot = iterator.next();
-            String snapshotCurrentPlayerId = gameSnapshot.getCurrentPlayerId();
-            Player snapshotCurrentPlayer = getPlayer(snapshotCurrentPlayerId);
             int snapshotCurrentTurnNumber = gameSnapshot.getCurrentTurnNumber();
-            int currentTurnNumber = snapshotCurrentPlayer.getTurnNumber();
+            int currentTurnNumber = getGameState().getCurrentTurnNumber();
             if (snapshotCurrentTurnNumber <= 1 && currentTurnNumber <= 1) {
                 break;
             }
-            int pruneOlderThanTurn = currentTurnNumber - (NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS / 2);
+            int pruneOlderThanTurn = currentTurnNumber - NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS;
             if (snapshotCurrentTurnNumber >= pruneOlderThanTurn) {
                 break;
             }

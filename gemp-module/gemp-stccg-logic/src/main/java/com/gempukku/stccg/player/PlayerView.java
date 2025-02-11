@@ -29,11 +29,6 @@ public class PlayerView {
         return _playerRequested.getScore();
     }
 
-    @JsonProperty("turnNumber")
-    private int getTurnNumber() {
-        return _playerRequested.getTurnNumber();
-    }
-
     @JsonProperty("decked")
     private boolean getDecked() {
         return _playerRequested.isDecked();

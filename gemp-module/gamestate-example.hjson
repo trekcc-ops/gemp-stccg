@@ -34,7 +34,6 @@
         {
             "playerId": "player2",
             "score": 0, // Player score. As of 1/25/25, no distinction between bonus and non-bonus points.
-            "turnNumber": 0, // Turn number for this player. Will be 0 if they have not had their first turn yet.
             "decked": false, // Tribbles only
             "cardGroups": {
                     /* Cards that are organized in a certain way on the table. Mostly important for piles like
@@ -45,8 +44,7 @@
                         */
                 "DRAW_DECK": {
                     "cardCount": 12,
-                        /* cardIds for draw deck are all -99 because this draw deck does not belong to the player
-                            requesting this game state information */
+                        /* cardIds for draw deck are all -99 because neither player can see the order of the draw deck */
                     "cardIds": [-99,-99,-99,-99,-99,-99,-99,-99,-99,-99,-99,-99]
                 },
                 "DISCARD": {

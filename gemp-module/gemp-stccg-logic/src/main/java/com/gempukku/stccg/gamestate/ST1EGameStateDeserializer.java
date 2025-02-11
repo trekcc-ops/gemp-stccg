@@ -61,7 +61,6 @@ public class ST1EGameStateDeserializer {
         for (JsonNode playerNode : players) {
             String playerId = playerNode.get("playerId").asText();
             Player player = game.getPlayer(playerId);
-            player.setTurnNumber(playerNode.get("turnNumber").asInt());
             player.setScore(playerNode.get("score").asInt());
             if (playerNode.has("decked"))
                 player.setDecked(playerNode.get("decked").asBoolean());
