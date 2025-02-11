@@ -77,7 +77,7 @@ export default class GempLotrDeckBuildingUI {
                 function () {
                     that.deckName = null;
                     let label = document.getElementById("editingDeck");
-                    label.textContent("New deck");
+                    label.textContent = "New deck";
                     that.clearDeck();
                 });
 
@@ -88,7 +88,7 @@ export default class GempLotrDeckBuildingUI {
                         if (that.validateDeckName(newDeckName)) {
                             that.deckName = newDeckName;
                             let label = document.getElementById("editingDeck");
-                            label.textContent(newDeckName);
+                            label.textContent = newDeckName;
                             that.saveDeck(true);
                         }
                     } else {
@@ -109,7 +109,7 @@ export default class GempLotrDeckBuildingUI {
                 function () {
                     that.deckName = null;
                     let label = document.getElementById("editingDeck");
-                    label.textContent("New deck");
+                    label.textContent = "New deck";
                 });
 
         importDeckBut.on("click",
@@ -262,7 +262,7 @@ export default class GempLotrDeckBuildingUI {
             that.deckModified(true);
             that.layoutDeck();
             let label = document.getElementById("editingDeck");
-            label.textContent("Imported Deck (unsaved)");
+            label.textContent = "Imported Deck (unsaved)";
         });
     }
 
@@ -629,13 +629,13 @@ export default class GempLotrDeckBuildingUI {
             this.deckValidationDirty = true;
             this.deckContentsDirty = true;
             let label = document.getElementById("editingDeck");
-            label.innerHTML("<font color='orange'>*" + name + " - modified</font>");
+            label.innerHTML = "<font color='orange'>*" + name + " - modified</font>";
         }
         else
         {
             this.deckContentsDirty = false;
             let label = document.getElementById("editingDeck");
-            label.textContent(name);
+            label.textContent = name;
         }
     }
 
@@ -674,7 +674,7 @@ export default class GempLotrDeckBuildingUI {
                     function (html) 
                     {
                         let deckStatsDiv = document.getElementById("deckStats");
-                        deckStatsDiv.innerHTML(html);
+                        deckStatsDiv.innerHTML = html;
                     }, 
                     {
                         "400":function () 
@@ -684,7 +684,7 @@ export default class GempLotrDeckBuildingUI {
                     });
         } else {
             let deckStatsDiv = document.getElementById("deckStats");
-            deckStatsDiv.innerHTML("Deck is empty");
+            deckStatsDiv.innerHTML = "Deck is empty";
         }
     }
     
@@ -758,7 +758,7 @@ export default class GempLotrDeckBuildingUI {
         this.clearDeck();
         this.deckName = deckJson.deckName;
         let editingDeck = document.getElementById("editingDeck");
-        editingDeck.textContent(this.deckName);
+        editingDeck.textContent = this.deckName;
 
         let formatName = deckJson.targetFormat.formatName;
         let formatCode = deckJson.targetFormat.formatCode;
