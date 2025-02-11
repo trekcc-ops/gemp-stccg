@@ -59,8 +59,6 @@ public class TextUtils {
         };
     }
 
-    public static <T> String be(Collection<T> collection) { return collection.size() > 1 ? "are" : "is"; }
-
     public static String concatenateStrings(Stream<String> strings) {
         return concatenateStrings(strings.toList());
     }

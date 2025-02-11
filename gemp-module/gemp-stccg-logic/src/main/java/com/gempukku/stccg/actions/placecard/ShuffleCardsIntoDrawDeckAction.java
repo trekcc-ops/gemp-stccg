@@ -47,7 +47,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         performingPlayer.shuffleCardsIntoDrawDeck(cardGame, cards);
         cardGame.sendMessage(TextUtils.concatenateStrings(
                 cards.stream().map(PhysicalCard::getCardLink)) + " " +
-                TextUtils.be(cards) + " shuffled into " + _performingPlayerId + " deck");
+                be(cards) + " shuffled into " + _performingPlayerId + " deck");
         setAsSuccessful();
         return getNextAction();
     }
@@ -61,4 +61,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     public int getCardIdForActionSelection() {
         return _performingCard.getCardId();
     }
+
+    private static <T> String be(Collection<T> collection) { return collection.size() > 1 ? "are" : "is"; }
+
 }
