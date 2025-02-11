@@ -741,7 +741,7 @@ export default class GameTableUI {
         // Show staffing requirements (if this card is a ship)
         if (staffingRequirements != null) {
             html = html + "<b>Staffing requirements:</b> ";
-            if (staffingRequirements.length = 0) {
+            if (staffingRequirements.length == 0) {
                 html = html + "none";
             } else {
                 for (const staffingRequirement of staffingRequirements) {
