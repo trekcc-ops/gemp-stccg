@@ -1,8 +1,10 @@
 package com.gempukku.stccg.hall;
 
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.game.DefaultGame;
 import org.apache.commons.lang.mutable.MutableObject;
 
 import java.util.*;
@@ -78,13 +80,22 @@ public class HallCommunicationChannel implements LongPollableResource {
         if (itemsToAddToHallElem.get("messageOfTheDay") instanceof String messageText)
                 _lastDailyMessage = messageText;
 
-        List<String> newGameIds = new ArrayList<>();
+        List<Map<String, String>> newGames = new ArrayList<>();
+
         for (String gameId : playedGamesOnServer) {
             if (!_playedGames.contains(gameId)) {
-                newGameIds.add(gameId);
+                try {
+                    DefaultGame cardGame = hallServer.getGameById(gameId);
+                    Map<String, String> map = new HashMap<>();
+                    map.put("gameId", gameId);
+                    map.put("gameType", cardGame.getGameType().name());
+                    newGames.add(map);
+                } catch(HttpProcessingException exp) {
+
+                }
             }
         }
-        itemsToAddToHallElem.put("newGameIds", newGameIds);
+        itemsToAddToHallElem.put("newGames", newGames);
 
         _playedGames = playedGamesOnServer;
 

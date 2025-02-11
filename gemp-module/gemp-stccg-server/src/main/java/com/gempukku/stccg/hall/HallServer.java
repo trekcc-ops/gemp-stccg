@@ -15,9 +15,7 @@ import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.CardGameMediator;
-import com.gempukku.stccg.game.GameParticipant;
-import com.gempukku.stccg.game.GameResultListener;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.tournament.*;
@@ -116,6 +114,12 @@ public class HallServer extends AbstractServer {
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
+    }
+
+    public DefaultGame getGameById(String gameId) throws HttpProcessingException {
+        GameServer gameServer = _serverObjects.getGameServer();
+        CardGameMediator mediator = gameServer.getGameById(gameId);
+        return mediator.getGame();
     }
 
     public final int getTablesCount() {

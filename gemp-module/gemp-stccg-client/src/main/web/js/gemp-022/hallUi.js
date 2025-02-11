@@ -326,14 +326,19 @@ export default class GempHallUI {
         $(".count", $(".eventHeader.playingTables")).html("(" + ($("tr", $("table.playingTables")).length - 1) + ")");
         $(".count", $(".eventHeader.finishedTables")).html("(" + ($("tr", $("table.finishedTables")).length - 1) + ")");
 
-        var games = jsonFromServer.newGameIds;
+        var games = jsonFromServer.newGames;
         for (var i=0; i< games.length; i++) {
-            var waitingGameId = games[i];
-            var participantId = getUrlParam("participantId");
-            var participantIdAppend = "";
+            let waitingGameId = games[i].gameId;
+            let gameType = games[i].gameType;
+            let participantId = getUrlParam("participantId");
+            let participantIdAppend = "";
             if (participantId != null)
                 participantIdAppend = "&participantId=" + participantId;
-            window.open("/gemp-module/game.html?gameType=" + gameType + "&gameId=" + waitingGameId + participantIdAppend, "_blank");
+
+            let gameLink = "/gemp-module/game.html?gameType=" + gameType;
+            gameLink = gameLink + "&gameId=" + waitingGameId + participantIdAppend;
+
+            window.open(gameLink, "_blank");
         }
         if (games.length > 0) {
             let audio = new Audio(fanfareAudio);
