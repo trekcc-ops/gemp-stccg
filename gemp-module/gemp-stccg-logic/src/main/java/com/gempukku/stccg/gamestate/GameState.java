@@ -25,13 +25,14 @@ import com.gempukku.stccg.processes.GameProcess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
+@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
         "awayTeams", "actions", "performedActions" })
-@JsonPropertyOrder({ "currentPhase", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
+@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
         "awayTeams", "actions", "performedActions" })
 public abstract class GameState {
     Phase _currentPhase;
@@ -442,5 +443,6 @@ public abstract class GameState {
     }
 
 
-
+    @JsonProperty("phasesInOrder")
+    abstract public List<Phase> getPhasesInOrder();
 }

@@ -10,13 +10,14 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.player.PlayerView;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame",
+@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame",
         "spacelineLocations", "awayTeams", "lastAction" })
-@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
+@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
         "awayTeams", "actions", "lastAction" })
 @JsonView(JsonViews.Public.class)
 public class GameStateView {
@@ -74,6 +75,11 @@ public class GameStateView {
             result.add(new PlayerView(player, _requestingPlayerId));
         }
         return result;
+    }
+
+    @JsonProperty("phasesInOrder")
+    private List<Phase> getPhasesInOrder() {
+        return _gameState.getPhasesInOrder();
     }
 
     private boolean showCardInfo(PhysicalCard card) {

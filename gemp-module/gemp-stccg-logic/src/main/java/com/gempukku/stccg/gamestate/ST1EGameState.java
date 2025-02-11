@@ -14,6 +14,7 @@ import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.io.IOException;
 import java.util.*;
 
 public class ST1EGameState extends GameState {
@@ -262,6 +263,18 @@ public class ST1EGameState extends GameState {
             if (score >= 100)
                 cardGame.playerWon(player.getPlayerId(), score + " points");
         }
+    }
+
+    @Override
+    public List<Phase> getPhasesInOrder() {
+        List<Phase> seedPhases = List.of(Phase.SEED_DOORWAY, Phase.SEED_MISSION, Phase.SEED_DILEMMA, Phase.SEED_FACILITY);
+        List<Phase> turnPhases = List.of(Phase.START_OF_TURN, Phase.CARD_PLAY, Phase.EXECUTE_ORDERS, Phase.END_OF_TURN);
+        Phase currentPhase = getCurrentPhase();
+        if (seedPhases.contains(currentPhase))
+            return seedPhases;
+        if (turnPhases.contains(currentPhase))
+            return turnPhases;
+        return List.of(getCurrentPhase());
     }
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {

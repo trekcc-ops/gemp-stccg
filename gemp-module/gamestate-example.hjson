@@ -5,6 +5,12 @@
     "requestingPlayer": "player1", /* Only shown in the player-specific game state. The player id of the player
                                         requesting the information. */
     "currentPhase": "SEED_FACILITY", // name of the current phase, see stccg.common.filterable.Phase for options
+    "phasesInOrder": [
+        "SEED_DOORWAY",
+        "SEED_MISSION",
+        "SEED_DILEMMA",
+        "SEED_FACILITY"
+    ]
     "currentProcess:" {
         // Class members for the value in TurnProcedure._currentGameProcess
         // Not shown in player-specific game state view
