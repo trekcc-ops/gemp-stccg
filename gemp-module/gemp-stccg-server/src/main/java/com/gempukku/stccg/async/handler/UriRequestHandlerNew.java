@@ -11,6 +11,8 @@ import com.gempukku.stccg.async.handler.chat.GetChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.SendChatMessageRequestHandler;
 import com.gempukku.stccg.async.handler.decks.*;
+import com.gempukku.stccg.async.handler.events.CurrentTournamentsRequestHandler;
+import com.gempukku.stccg.async.handler.events.TournamentHistoryRequestHandler;
 import com.gempukku.stccg.async.handler.game.*;
 import com.gempukku.stccg.async.handler.hall.*;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
@@ -35,6 +37,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = ClearCacheRequestHandler.class, name = "clearCache"),
         @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
         @JsonSubTypes.Type(value = CreateTableRequestHandler.class, name = "createTable"),
+        @JsonSubTypes.Type(value = CurrentTournamentsRequestHandler.class, name = "currentTournaments"),
         @JsonSubTypes.Type(value = DecisionResponseRequestHandler.class, name = "decisionResponse"),
         @JsonSubTypes.Type(value = DeckFormatsRequestHandler.class, name = "deckFormats"),
         @JsonSubTypes.Type(value = DeckStatsRequestHandler.class, name = "deckStats"),
@@ -68,6 +71,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats"),
         @JsonSubTypes.Type(value = SetShutdownRequestHandler.class, name = "setShutdown"),
         @JsonSubTypes.Type(value = StartGameSessionRequestHandler.class, name = "startGameSession"),
+        @JsonSubTypes.Type(value = TournamentHistoryRequestHandler.class, name = "tournamentHistory"),
         @JsonSubTypes.Type(value = UnBanUserRequestHandler.class, name = "unBanUser"),
         @JsonSubTypes.Type(value = UpdateGameStateRequestHandler.class, name = "updateGameState"),
         @JsonSubTypes.Type(value = UpdateHallRequestHandler.class, name = "updateHall")
