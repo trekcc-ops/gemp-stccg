@@ -45,14 +45,14 @@ public class TextUtils {
     }
 
     public static String plural(int count, String noun) {
-        return count + " " + ((count == 1) ? noun : getPluralNoun(noun));
-    }
-
-    public static String getPluralNoun(String noun) {
-        return switch(noun) {
-            case "series", "personnel" -> noun;
-            default -> noun + "s";
-        };
+        if (count == 1)
+            return noun;
+        else {
+            return switch (noun) {
+                case "series", "personnel" -> noun;
+                default -> noun + "s";
+            };
+        }
     }
 
     public static String concatenateStrings(Collection<String> strings) {
