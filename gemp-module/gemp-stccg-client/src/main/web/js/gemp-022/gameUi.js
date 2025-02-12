@@ -3,6 +3,7 @@ import { log, getUrlParam } from './common.js';
 import Card from './jCards.js';
 import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js';
 import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
+import { animateActionResult, communicateActionResult } from './actionResults.js';
 import GameAnimations from './gameAnimations.js';
 import ChatBoxUI from './chat.js';
 import { openSizeDialog, showLinkableCardTitle } from "./common.js";
@@ -792,7 +793,7 @@ export default class GameTableUI {
                 if (i > 0) {
                     html = html + ", ";
                 }
-                html = html + this.showLinkableCardTitle(jsonList[i]);
+                html = html + showLinkableCardTitle(jsonList[i]);
             }
             html = html + "<br/><br/>";
         }
@@ -1010,6 +1011,14 @@ export default class GameTableUI {
         var eventType = gameEvent.type;
 
         switch(eventType) {
+            case "ACTION_RESULT":
+                let gameStateNode = gameEvent.gameState;
+                let gameState = typeof gameStateNode === "string" ? JSON.parse(gameStateNode) : gameStateNode;
+                console.log(gameState);
+                let lastAction = gameState.lastAction;
+                animateActionResult(lastAction, gameState, this.animations);
+                communicateActionResult(lastAction, gameState, this.chatBox);
+                break;
             case "CA":
                 this.animations.cardActivated(gameEvent, animate);
                 break;

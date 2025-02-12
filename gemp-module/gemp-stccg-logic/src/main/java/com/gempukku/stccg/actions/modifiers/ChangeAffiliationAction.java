@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.modifiers;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -18,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ChangeAffiliationAction extends ActionyAction implements TopLevelSelectableAction {
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final AffiliatedCard _performingCard;
     private SelectAffiliationAction _selectAffiliationAction;
 
@@ -72,8 +76,6 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
 
         if (!_wasCarriedOut) {
             Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
-            cardGame.sendMessage(_performingPlayerId + " changed " +
-                    _performingCard.getCardLink() + "'s affiliation to " + selectedAffiliation.toHTML());
             _performingCard.changeAffiliation(selectedAffiliation);
             _wasCarriedOut = true;
             setAsSuccessful();

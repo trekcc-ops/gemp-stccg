@@ -382,13 +382,13 @@ export default class GameAnimations {
         }
     }
 
-    updateCardImage(json) {
+    updateCardImage(cardData) {
             $("#main").queue(
                 function (next) {
-                    var cardId = json.cardId;
-                    var imageUrl = json.imageUrl;
-                    var cardDiv = getCardDivFromId(cardId);
-                    images = document.getElementsByClassName("card_img_"+cardId);
+                    let cardId = cardData.cardId;
+                    let imageUrl = cardData.imageUrl;
+                    let cardDiv = getCardDivFromId(cardId);
+                    let images = document.getElementsByClassName("card_img_"+cardId);
                     for (var i = 0; i < images.length; i++) {
                         images[i].src = imageUrl;
                     }
