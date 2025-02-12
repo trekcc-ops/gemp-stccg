@@ -207,7 +207,7 @@ export default class GameAnimations {
     }
 
     addCardToHiddenZone(cardJson, zone, zoneOwner) {
-        // Adding card to discard, hand, or draw deck
+        // Adding card to discard, hand, removed, or draw deck
         console.log("calling addCardToHiddenZone");
         var that = this;
         let cardId = cardJson.cardId;
@@ -225,9 +225,10 @@ export default class GameAnimations {
 
                 if (zone == "DISCARD")
                     that.game.discardPileDialogs[controllerId].append(cardDiv);
-                else if (zone == "DRAW_DECK") {
+                else if (zone == "DRAW_DECK")
                     that.game.miscPileDialogs[controllerId].append(cardDiv);
-                }
+                else if (zone == "REMOVED")
+                    that.game.removedPileDialogs[participantId].append(cardDiv);
                 else
                     $("#main").append(cardDiv);
                 next();
@@ -291,10 +292,7 @@ export default class GameAnimations {
                 var card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
                 var cardDiv = that.game.createCardDivWithData(card, null);
 
-                if (zone == "REMOVED")
-                    that.game.removedPileDialogs[participantId].append(cardDiv);
-                else
-                    $("#main").append(cardDiv);
+                $("#main").append(cardDiv);
 
                 if (targetCardId != null)
                     that.attachCardDivToTargetCardId(cardDiv, targetCardId);

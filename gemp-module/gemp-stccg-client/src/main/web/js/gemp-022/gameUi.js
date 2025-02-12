@@ -1053,7 +1053,7 @@ export default class GameTableUI {
                 break;
             case "PCIP":
                 let zone = gameEvent.zone;
-                if (zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND") {
+                if (zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND" || zone == "REMOVED") {
                     let zoneOwner = (gameEvent.controllerId == null) ? gameEvent.participantId : gameEvent.controllerId;
                     this.animations.addCardToHiddenZone(gameEvent, zone, zoneOwner);
                 } else {

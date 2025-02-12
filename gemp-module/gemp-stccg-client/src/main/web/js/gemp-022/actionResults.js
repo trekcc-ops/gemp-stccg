@@ -3,6 +3,7 @@ import { showLinkableCardTitle, showLinkableCardTitles, getAffiliationHtml } fro
 export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let actionType = jsonAction.actionType;
     console.log("Calling animateActionResult for " + actionType);
+    let cardList = new Array();
 
     switch(actionType) {
         case "CHANGE_AFFILIATION":
@@ -13,11 +14,16 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             gameAnimations.updateCardImage(card);
             break;
         case "DISCARD":
-            let cardList = new Array();
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             let discardedCard = jsonGameState.visibleCardsInGame[jsonAction.targetCardId];
-            gameAnimations.addCardToHiddenZone(discardedCard, "DISCARD", jsonAction.performingPlayerId);
+            gameAnimations.addCardToHiddenZone(discardedCard, "DISCARD", discardedCard.owner);
+            break;
+        case "REMOVE_CARD_FROM_GAME":
+            cardList.push(jsonAction.targetCardId);
+            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+            let removedCard = jsonGameState.visibleCardsInGame[jsonAction.targetCardId];
+            gameAnimations.addCardToHiddenZone(removedCard, "REMOVED", removedCard.owner);
             break;
         case "ATTEMPT_MISSION":
         case "DOWNLOAD_CARD":
@@ -28,7 +34,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
-        case "REMOVE_CARD_FROM_GAME":
         case "REVEAL_SEED_CARD":
         case "SCORE_POINTS":
         case "SEED_CARD":
@@ -81,6 +86,11 @@ export function communicateActionResult(jsonAction, jsonGameState, gameChat) {
             message = performingPlayerId + " discarded " + showLinkableCardTitle(discardedCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
+        case "REMOVE_CARD_FROM_GAME":
+            let removedCard = jsonGameState.visibleCardsInGame[jsonAction.targetCardId];
+            message = performingPlayerId + " removed " + showLinkableCardTitle(removedCard) + " from the game";
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "ATTEMPT_MISSION":
         case "DOWNLOAD_CARD":
@@ -93,7 +103,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameChat) {
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
-        case "REMOVE_CARD_FROM_GAME":
         case "REVEAL_SEED_CARD":
         case "SCORE_POINTS":
         case "SEED_CARD":
