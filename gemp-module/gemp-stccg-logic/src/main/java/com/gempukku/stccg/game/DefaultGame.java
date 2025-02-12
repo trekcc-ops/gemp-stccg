@@ -113,7 +113,7 @@ public abstract class DefaultGame {
 
                 try {
                     gameState.sendCardsToClient(this, playerId, listener, false);
-                } catch (PlayerNotFoundException | InvalidGameLogicException exp) {
+                } catch (PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException exp) {
                     sendErrorMessage(exp);
                     cancelGame();
                 }
@@ -192,18 +192,6 @@ public abstract class DefaultGame {
     public void finish() {
         for (GameStateListener listener : getAllGameStateListeners()) {
             listener.sendEvent(new GameEvent(GameEvent.Type.GAME_ENDED));
-        }
-
-        if (getPlayers() == null || getPlayers().isEmpty())
-            return;
-
-        for (Player player : getPlayers()) {
-            for(PhysicalCard card : player.getCardsInDrawDeck()) {
-                for (GameStateListener listener : getAllGameStateListeners()) {
-                    getGameState().sendCreatedCardToListener(this,
-                            card, false, listener, true, true);
-                }
-            }
         }
     }
 
@@ -289,7 +277,8 @@ public abstract class DefaultGame {
         try {
             if (!_cancelled)
                 getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
-        } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
+        } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException |
+                CardNotFoundException exp) {
             sendErrorMessage(exp);
         }
     }
@@ -393,14 +382,12 @@ public abstract class DefaultGame {
         // Remove old snapshots until reaching snapshots to keep
         for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
             GameSnapshot gameSnapshot = iterator.next();
-            String snapshotCurrentPlayerId = gameSnapshot.getCurrentPlayerId();
-            Player snapshotCurrentPlayer = getPlayer(snapshotCurrentPlayerId);
             int snapshotCurrentTurnNumber = gameSnapshot.getCurrentTurnNumber();
-            int currentTurnNumber = snapshotCurrentPlayer.getTurnNumber();
+            int currentTurnNumber = getGameState().getCurrentTurnNumber();
             if (snapshotCurrentTurnNumber <= 1 && currentTurnNumber <= 1) {
                 break;
             }
-            int pruneOlderThanTurn = currentTurnNumber - (NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS / 2);
+            int pruneOlderThanTurn = currentTurnNumber - NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS;
             if (snapshotCurrentTurnNumber >= pruneOlderThanTurn) {
                 break;
             }

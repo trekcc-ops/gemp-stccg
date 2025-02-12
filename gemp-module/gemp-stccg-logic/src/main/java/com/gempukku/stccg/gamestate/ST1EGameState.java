@@ -29,7 +29,7 @@ public class ST1EGameState extends GameState {
         _currentPhase = Phase.SEED_DOORWAY;
         try {
             for (Player player : _players.values()) {
-                player.addCardGroup(Zone.TABLE);
+                player.addCardGroup(Zone.CORE);
                 player.addCardGroup(Zone.MISSIONS_PILE);
                 player.addCardGroup(Zone.SEED_DECK);
             }
@@ -46,7 +46,7 @@ public class ST1EGameState extends GameState {
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
+                zone == Zone.DISCARD || zone == Zone.CORE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
             return player.getCardGroupCards(zone);
         else // This should never be accessed
             return _inPlay; // TODO - Should this just be an exception?
@@ -186,7 +186,7 @@ public class ST1EGameState extends GameState {
     @Override
     public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
                                   boolean restoreSnapshot)
-            throws PlayerNotFoundException, InvalidGameLogicException {
+            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
         Player player = getPlayer(playerId);
         boolean sharedMission;
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
@@ -262,6 +262,18 @@ public class ST1EGameState extends GameState {
             if (score >= 100)
                 cardGame.playerWon(player.getPlayerId(), score + " points");
         }
+    }
+
+    @Override
+    public List<Phase> getPhasesInOrder() {
+        List<Phase> seedPhases = List.of(Phase.SEED_DOORWAY, Phase.SEED_MISSION, Phase.SEED_DILEMMA, Phase.SEED_FACILITY);
+        List<Phase> turnPhases = List.of(Phase.START_OF_TURN, Phase.CARD_PLAY, Phase.EXECUTE_ORDERS, Phase.END_OF_TURN);
+        Phase currentPhase = getCurrentPhase();
+        if (seedPhases.contains(currentPhase))
+            return seedPhases;
+        if (turnPhases.contains(currentPhase))
+            return turnPhases;
+        return List.of(getCurrentPhase());
     }
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {

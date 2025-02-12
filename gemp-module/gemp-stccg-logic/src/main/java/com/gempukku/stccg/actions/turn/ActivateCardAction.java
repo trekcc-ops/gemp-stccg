@@ -39,7 +39,7 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
     public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
         if (!getProgress(Progress.sentMessage)) {
             setProgress(Progress.sentMessage);
-            if (_performingCard != null && _performingCard.getZone().isInPlay()) {
+            if (_performingCard != null && _performingCard.isInPlay()) {
                 Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
                 cardGame.activatedCard(performingPlayer, _performingCard);
                 cardGame.sendMessage(_performingCard.getCardLink() + " is used");

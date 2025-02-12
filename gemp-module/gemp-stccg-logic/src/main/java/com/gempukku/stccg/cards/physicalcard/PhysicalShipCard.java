@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -81,7 +82,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         return _owner;
     }
 
-    public void undockFromFacility() {
+    public void undockFromFacility() throws InvalidGameOperationException {
         _docked = false;
         _dockedAtCardId = null;
         _game.getGameState().detachCard(_game,this, Zone.AT_LOCATION);

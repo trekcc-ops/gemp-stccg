@@ -110,7 +110,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
 
         final PhysicalCard getItDone = newCardForGame("155_026", P1);
-        gameState.addCardToZone(getItDone, Zone.TABLE);
+        gameState.addCardToZone(getItDone, Zone.CORE);
         assertTrue(getItDone.isInPlay());
 
         autoSeedFacility();

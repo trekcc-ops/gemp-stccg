@@ -2,9 +2,10 @@ package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
+import com.gempukku.stccg.cards.cardgroup.DiscardPile;
+import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -16,17 +17,14 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
-@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
+@JsonIncludeProperties({ "playerId", "score", "decked", "cardGroups" })
+@JsonPropertyOrder({ "playerId", "score", "decked", "cardGroups" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
-@JsonView(JsonViews.Public.class)
 public class Player {
     @JsonProperty("playerId")
-    @JsonView(JsonViews.Public.class)
     private final String _playerId;
 
     @JsonProperty("decked")
-    @JsonView(JsonViews.Public.class)
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     @JsonProperty("cardGroups")
@@ -34,8 +32,6 @@ public class Player {
     @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
-    @JsonProperty("turnNumber")
-    private int _turnNumber;
     @JsonProperty("drawDeck")
     CardPile _drawDeck;
     @JsonProperty("discardPile")
@@ -110,24 +106,12 @@ public class Player {
         return getCardsInGroup(Zone.REMOVED);
     }
 
-    public int getTurnNumber() {
-        return _turnNumber;
-    }
-
     public int getLastSyncedScore() {
         return _lastSyncedScore;
     }
 
     public void syncScore() {
         _lastSyncedScore = _currentScore;
-    }
-
-    public void incrementTurnNumber() {
-        _turnNumber++;
-    }
-
-    public void setTurnNumber(int turnNumber) {
-        _turnNumber = turnNumber;
     }
 
     public void setScore(int score) {
@@ -140,13 +124,13 @@ public class Player {
                 _seedDeck = new PhysicalCardGroup();
                 yield _seedDeck;
             }
-            case TABLE, HAND -> new PhysicalCardGroup();
+            case CORE, HAND -> new PhysicalCardGroup();
             case DRAW_DECK -> {
-                _drawDeck = new CardPile();
+                _drawDeck = new DrawDeck();
                 yield _drawDeck;
             }
             case DISCARD -> {
-                _discardPile = new CardPile();
+                _discardPile = new DiscardPile();
                 yield _discardPile;
             }
             case MISSIONS_PILE, PLAY_PILE, REMOVED -> new CardPile();
@@ -156,7 +140,8 @@ public class Player {
     }
 
     public List<PhysicalCard> getCardGroupCards(Zone zone) {
-        return _cardGroups.get(zone).getCards();
+        PhysicalCardGroup cardGroup = getCardGroup(zone);
+        return (cardGroup == null) ? new ArrayList<>() : cardGroup.getCards();
     }
 
     public PhysicalCardGroup getCardGroup(Zone zone) {

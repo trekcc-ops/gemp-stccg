@@ -3,14 +3,12 @@ package com.gempukku.stccg.player;
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.*;
 
 @JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
 @JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
-@JsonView(JsonViews.Public.class)
 public class PlayerView {
 
     private final String _requestingPlayerId;
@@ -31,11 +29,6 @@ public class PlayerView {
         return _playerRequested.getScore();
     }
 
-    @JsonProperty("turnNumber")
-    private int getTurnNumber() {
-        return _playerRequested.getTurnNumber();
-    }
-
     @JsonProperty("decked")
     private boolean getDecked() {
         return _playerRequested.isDecked();
@@ -46,7 +39,8 @@ public class PlayerView {
         Map<Zone, CardGroupView> result = new HashMap<>();
         for (Zone zone : _playerRequested.getCardGroupZones()) {
             PhysicalCardGroup cardGroup = _playerRequested.getCardGroup(zone);
-            if (zone.isPublic() || _playerRequested.getPlayerId().equals(_requestingPlayerId)) {
+            if (zone.isPublic() ||
+                    (_playerRequested.getPlayerId().equals(_requestingPlayerId) && zone.isVisibleByOwner())) {
                 result.put(zone, new PublicCardGroupView(cardGroup));
             } else {
                 result.put(zone, new PrivateCardGroupView(cardGroup));
@@ -57,7 +51,6 @@ public class PlayerView {
 
 
     @JsonIncludeProperties({ "cardCount", "cardIds" })
-    @JsonView(JsonViews.Public.class)
     private interface CardGroupView {
 
     }

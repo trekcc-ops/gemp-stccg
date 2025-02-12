@@ -56,7 +56,8 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
     public PhysicalCard getPerformingCard() { return _flyingCard; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame)
+            throws InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
 //        if (!isAnyCostFailed()) {
         ST1EGame stGame;
         if (cardGame instanceof ST1EGame)

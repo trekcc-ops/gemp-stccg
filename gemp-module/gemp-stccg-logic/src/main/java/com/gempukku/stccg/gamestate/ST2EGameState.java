@@ -5,6 +5,9 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST2EGame;
 
+import java.io.IOException;
+import java.util.List;
+
 public class ST2EGameState extends GameState {
 
     public ST2EGameState(Iterable<String> playerIds, ST2EGame game) {
@@ -20,6 +23,11 @@ public class ST2EGameState extends GameState {
             if (score >= 100)
                 cardGame.playerWon(player.getPlayerId(), score + " points");
         }
+    }
+
+    @Override
+    public List<Phase> getPhasesInOrder() {
+        return List.of(getCurrentPhase());
     }
 
 }

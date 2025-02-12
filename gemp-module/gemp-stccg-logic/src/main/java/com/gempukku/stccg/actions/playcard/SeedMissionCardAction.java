@@ -130,7 +130,6 @@ public class SeedMissionCardAction extends PlayCardAction {
     private void seedCard(DefaultGame game) {
         if (game.getGameState() instanceof ST1EGameState gameState) {
 
-            Zone originalZone = _cardEnteringPlay.getZone();
             game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
 
             gameState.removeCardFromZone(_cardEnteringPlay);
@@ -141,7 +140,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 else
                     gameState.addMissionLocationToSpaceline(_cardEnteringPlay, _locationZoneIndex);
                 game.getActionsEnvironment().emitEffectResult(
-                        new PlayCardResult(this, originalZone, _cardEnteringPlay));
+                        new PlayCardResult(this, _cardEnteringPlay));
                 _actionCarriedOut = true;
                 _cardPlayed = true;
                 setAsSuccessful();

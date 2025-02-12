@@ -58,9 +58,9 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         if (cost != null)
             return cost;
 
-        Zone currentZone = _cardEnteringPlay.getZone();
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
-        if (currentZone == Zone.DRAW_DECK) {
+        if (performingPlayer.getCardsInDrawDeck().contains(_cardEnteringPlay)) {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
             _cardEnteringPlay.getOwner().shuffleDrawDeck(cardGame);
         }
@@ -70,14 +70,12 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     }
     
     protected void putCardIntoPlay(DefaultGame game) {
-        Zone originalZone = _cardEnteringPlay.getZone();
         GameState gameState = game.getGameState();
         game.removeCardsFromZone(_cardEnteringPlay.getOwner(), Collections.singleton(_cardEnteringPlay));
         gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, originalZone, _cardEnteringPlay));
+        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
         game.sendMessage(_cardEnteringPlay.getOwnerName() + " played " +
-                _cardEnteringPlay.getCardLink() +  " from " + originalZone.getHumanReadable() +
-                " to " + _destinationZone.getHumanReadable());
+                _cardEnteringPlay.getCardLink());
         setAsSuccessful();
     }
 

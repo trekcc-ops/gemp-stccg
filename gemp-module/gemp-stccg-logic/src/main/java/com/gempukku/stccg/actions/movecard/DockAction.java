@@ -39,7 +39,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     public PhysicalCard getPerformingCard() { return _cardToDock; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
 //        if (!isAnyCostFailed()) {
 
         Action cost = getNextCost();

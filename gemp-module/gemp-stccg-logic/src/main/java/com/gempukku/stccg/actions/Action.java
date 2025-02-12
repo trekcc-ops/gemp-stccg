@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
@@ -17,7 +18,7 @@ public interface Action {
     void appendCost(Action costAction);
     void appendEffect(Action actionEffect);
 
-    Action nextAction(DefaultGame game) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException;
+    Action nextAction(DefaultGame game) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException;
 
     @JsonProperty("actionType")
     ActionType getActionType();

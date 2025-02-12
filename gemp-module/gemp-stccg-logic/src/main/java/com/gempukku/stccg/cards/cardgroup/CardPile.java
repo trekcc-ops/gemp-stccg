@@ -10,35 +10,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CardPile extends PhysicalCardGroup {
-    private final List<PhysicalCard> _cards = new LinkedList<>();
-
-    public CardPile() {
-    }
-
-    public void addCard(PhysicalCard card) { _cards.add(card); }
-
-    public List<PhysicalCard> getCards() {
-        return _cards;
-    }
-    public void setCards(List<PhysicalCard> subDeck) {
-        _cards.clear();
-        _cards.addAll(subDeck);
-    }
-
-    public int size() {
-        return _cards.size();
-    }
-
-    public PhysicalCard getFirst() {
-        return _cards.getFirst();
-    }
 
     public void addCardToTop(PhysicalCard card) { _cards.add(card); }
     public void addCardToBottom(PhysicalCard card) { _cards.addFirst(card); }
     public PhysicalCard getTopCard() { return _cards.getFirst(); }
     public PhysicalCard getBottomCard() { return _cards.getLast(); }
-
-    public void addCards(Collection<PhysicalCard> cards) { _cards.addAll(cards); }
 
     public void shuffle() {
         Collections.shuffle(_cards);

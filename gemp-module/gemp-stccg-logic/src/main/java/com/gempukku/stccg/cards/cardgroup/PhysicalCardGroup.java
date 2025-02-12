@@ -2,9 +2,6 @@ package com.gempukku.stccg.cards.cardgroup;
 
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonViews;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,9 +9,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "cardCount", "cardIds" })
 @JsonPropertyOrder({ "cardCount", "cardIds" })
-@JsonView(JsonViews.Public.class)
 public class PhysicalCardGroup {
-    private final List<PhysicalCard> _cards = new LinkedList<>();
+    protected final List<PhysicalCard> _cards = new LinkedList<>();
 
     public PhysicalCardGroup() {
     }
@@ -23,7 +19,7 @@ public class PhysicalCardGroup {
 
     @JsonProperty("cardIds")
     @JsonIdentityReference(alwaysAsId=true)
-    public List<PhysicalCard> getCards() {
+    public final List<PhysicalCard> getCards() {
         return _cards;
     }
     public void setCards(List<PhysicalCard> subDeck) {
@@ -35,6 +31,8 @@ public class PhysicalCardGroup {
     public int size() {
         return _cards.size();
     }
+
+    public void remove(PhysicalCard card) { _cards.remove(card); }
 
     public PhysicalCard getFirst() {
         return _cards.getFirst();

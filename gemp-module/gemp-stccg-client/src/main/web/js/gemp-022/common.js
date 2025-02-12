@@ -101,17 +101,15 @@ export var zones_all = [
     "DRAW_DECK",
     "MISSIONS_PILE",
     "SEED_DECK",
-    "TABLE",
+    "CORE",
     "SPACELINE",
     "AT_LOCATION",
-    "SUPPORT",
     "ATTACHED",
     "REMOVED",
     "PLAY_PILE",
     "HAND",
     "DISCARD",
     "VOID",
-    "VOID_FROM_HAND",
     "SPECIAL", // dialog boxes
 
 
