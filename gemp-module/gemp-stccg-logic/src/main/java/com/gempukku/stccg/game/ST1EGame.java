@@ -8,8 +8,6 @@ import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gameevent.GameStateListener;
-import com.gempukku.stccg.gameevent.UpdateCardImageGameEvent;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -87,11 +85,6 @@ public class ST1EGame extends DefaultGame {
         } catch(PlayerNotFoundException exp) {
             throw new CardNotFoundException(exp.getMessage());
         }
-    }
-
-    public void sendUpdatedCardImageToClient(PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new UpdateCardImageGameEvent(card));
     }
 
 }

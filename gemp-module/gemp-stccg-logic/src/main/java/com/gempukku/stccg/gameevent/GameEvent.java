@@ -38,7 +38,6 @@ public class GameEvent {
         SEND_MESSAGE("M"), SEND_WARNING("W"),
         GAME_STATS("GS"),
         GAME_ENDED("EG"),
-        UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
         FLASH_CARD_IN_PLAY("CA"),
         DECISION("D"), ACTION_RESULT("ACTION_RESULT");
 

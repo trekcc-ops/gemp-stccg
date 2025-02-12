@@ -1065,9 +1065,6 @@ export default class GameTableUI {
             case "TSEQ":
                 this.animations.tribbleSequence(gameEvent, animate);
                 break;
-            case "UPDATE_CARD_IMAGE":
-                this.animations.updateCardImage(gameEvent);
-                break;
             case "W":
                 this.animations.warning(gameEvent, animate);
                 break;
