@@ -140,3 +140,78 @@ export function showLinkableCardTitle(cardNode) {
 
     return html;
 }
+
+export function getAffiliationIcon(affiliationEnum) {
+    // Receives the server enum name for an affiliation and provides the TrekCC icon URL
+    switch(affiliationEnum) {
+        case "BAJORAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-BAJ.gif";
+        case "BORG":
+            return "https://www.trekcc.org/images/icons/1e/1E-BORG.gif";
+        case "CARDASSIAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-CARD.gif";
+        case "DOMINION":
+            return "https://www.trekcc.org/images/icons/1e/1E-DOM.gif";
+        case "FEDERATION":
+            return "https://www.trekcc.org/images/icons/1e/1E-FED.gif";
+        case "FERENGI":
+            return "https://www.trekcc.org/images/icons/1e/1E-FER.gif";
+        case "HIROGEN":
+            return "https://www.trekcc.org/images/icons/1e/1E-HIR.gif";
+        case "KAZON":
+            return "https://www.trekcc.org/images/icons/1e/1E-KAZ.gif";
+        case "KLINGON":
+            return "https://www.trekcc.org/images/icons/1e/1E-KLG.gif";
+        case "NEUTRAL":
+            return "https://www.trekcc.org/images/icons/1e/1E-NEU.gif";
+        case "NON_ALIGNED":
+            return "https://www.trekcc.org/images/icons/1e/1E-NON.gif";
+        case "ROMULAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-ROM.gif";
+        case "STARFLEET":
+            return "https://www.trekcc.org/images/icons/1e/1E-STF.gif";
+        case "VIDIIAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-VID.gif";
+        case "VULCAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-VUL.gif";
+        case "XINDI":
+            return "https://www.trekcc.org/images/icons/1e/1E-XIN.gif";
+        default:
+            console.error("Cannot recognize affiliation " + affiliationEnum);
+            return "";
+    }
+}
+
+export function getAffiliationName(affiliationEnum) {
+    // Receives the server enum name for an affiliation and provides a user-friendly string
+    switch(affiliationEnum) {
+        case "BAJORAN":
+        case "BORG":
+        case "CARDASSIAN":
+        case "DOMINION":
+        case "FEDERATION":
+        case "FERENGI":
+        case "HIROGEN":
+        case "KAZON":
+        case "KLINGON":
+        case "NEUTRAL":
+        case "ROMULAN":
+        case "STARFLEET":
+        case "VIDIIAN":
+        case "VULCAN":
+        case "XINDI":
+            return affiliationEnum.charAt(0).toUpperCase() + affiliationEnum.substring(1).toLowerCase();
+        case "NON_ALIGNED":
+            return "Non-Aligned";
+        default:
+            console.error("Cannot recognize affiliation " + affiliationEnum);
+            return "";
+    }
+}
+
+export function getAffiliationHtml(affiliationEnum) {
+    // Receives the server enum name for an affiliation and provides an in-line icon
+    let iconURL = getAffiliationIcon(affiliationEnum);
+    let userFriendlyName = getAffiliationName(affiliationEnum);
+    return "<img src='" + iconURL + "' class='inline-icon' title='" + userFriendlyName + "'>";
+}
