@@ -9,8 +9,10 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.player.PlayerView;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame",
@@ -38,11 +40,11 @@ public class GameStateView {
     }
 
     @JsonProperty("visibleCardsInGame")
-    private List<PhysicalCard> getCardsInGame() {
-        List<PhysicalCard> result = new LinkedList<>();
+    private Map<String, PhysicalCard> getCardsInGame() {
+        Map<String, PhysicalCard> result = new HashMap<>();
         for (PhysicalCard card : _gameState.getAllCardsInGame()) {
             if (showCardInfo(card)) {
-                result.add(card);
+                result.put(String.valueOf(card.getCardId()), card);
             }
         }
         return result;

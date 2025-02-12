@@ -298,6 +298,11 @@ public abstract class GameState {
     }
 
     @JsonProperty("cardsInGame")
+    private Map<Integer, PhysicalCard> getAllCardsForSerialization() {
+        return _allCards;
+    }
+
+    @JsonIgnore
     public Iterable<PhysicalCard> getAllCardsInGame() {
         return Collections.unmodifiableCollection(_allCards.values());
     }
