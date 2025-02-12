@@ -91,6 +91,8 @@
             "affiliation": "FEDERATION", // only included for affiliated cards
             "locationId": 3, // only included if the card is on the spaceline
             "cardType": "FACILITY"
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true
         },
         {
             "title": "U.S.S. Galaxy",
@@ -104,7 +106,9 @@
             "dockedAtCardId": 1, // only included for a docked ship
             "rangeAvailable": 3, // only included for a ship
             "isStopped": false, // only included for reportables (personnel, ships, equipment)
-            "cardType": "SHIP"
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true
         },
         {
             "title": "Excavation",
@@ -114,7 +118,9 @@
             "owner": "player1",
             "locationId": 3, // only included if the card is on the spaceline
             "stackedOnCardId": 4, // only included if the card is stacked on another
-            "cardType": "MISSION"
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false
         },
         // etc.
     ],
