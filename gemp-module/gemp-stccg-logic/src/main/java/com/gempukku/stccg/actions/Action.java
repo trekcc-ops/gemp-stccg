@@ -8,7 +8,7 @@ import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
-@JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "status", "targetCardId" })
+@JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "status", "targetCardId", "targetCardIds" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
     String getCardActionPrefix();
