@@ -220,10 +220,52 @@ public abstract class GameState {
         }
     }
 
+    public void removeCardsFromZoneWithoutSendingToClient(DefaultGame cardGame, Collection<PhysicalCard> cards) {
+        for (PhysicalCard card : cards) {
+            if (card.isInPlay()) card.stopAffectingGame(card.getGame());
+            card.removeFromCardGroup();
+
+            if (card instanceof PhysicalReportableCard1E reportable) {
+                if (reportable.getAwayTeam() != null) {
+                    reportable.leaveAwayTeam((ST1EGame) cardGame);
+                }
+            }
+
+            if (card.isInPlay())
+                _inPlay.remove(card);
+            if (card.getAttachedTo() != null)
+                card.detach();
+        }
+
+        for (PhysicalCard card : cards) {
+            card.setZone(Zone.VOID);
+        }
+    }
+
+
 
 
     public void addCardToZone(PhysicalCard card, Zone zone) {
         addCardToZone(card, zone, true, false);
+    }
+
+    public void addCardToZoneWithoutSendingToClient(PhysicalCard card, Zone zone) {
+        if (zone == Zone.DISCARD &&
+                getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
+            zone = Zone.REMOVED;
+
+        if (zone.isInPlay()) {
+            _inPlay.add(card);
+        }
+
+        if (zone.hasList()) {
+            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), zone);
+            zoneCardList.add(card);
+        }
+
+        card.setZone(zone);
+        if (zone.isInPlay())
+            card.startAffectingGame(card.getGame());
     }
     public void addCardToZone(PhysicalCard card, Zone zone, EndOfPile endOfPile) {
         addCardToZone(card, zone, endOfPile != EndOfPile.TOP);

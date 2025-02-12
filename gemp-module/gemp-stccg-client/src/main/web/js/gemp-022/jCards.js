@@ -35,8 +35,8 @@ export default class Card {
             throw new TypeError(`zone '${zone}' is not in the zones_all array.`);
         }
 
-        if (typeof(cardId) != 'string') {
-            throw new TypeError(`cardId '${cardId}' must be a string.`);
+        if (typeof(cardId) != 'string' && !(Number.isInteger(cardId))) {
+            throw new TypeError(`cardId '${cardId}' must be a string or integer.`);
         }
 
         if (typeof(owner) != 'string') {
@@ -75,7 +75,7 @@ export default class Card {
         this.hasWiki = packBlueprints[imageBlueprint] == null;
 
         this.zone = zone;
-        this.cardId = cardId;
+        this.cardId = cardId.toString();
         this.owner = owner;
         if (locationIndex !== undefined) {
             this.locationIndex = parseInt(locationIndex);

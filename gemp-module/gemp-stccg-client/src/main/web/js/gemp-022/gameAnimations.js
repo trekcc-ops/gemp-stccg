@@ -135,7 +135,7 @@ export default class GameAnimations {
                 $("#main").queue(
                     function (next) {
                         for (var i = 0; i < targetCardIds.length; i++) {
-                            var targetCardId = targetCardIds[i];
+                            let targetCardId = targetCardIds[i];
 
                             var card = new Card(blueprintId, "ANIMATION", "anim" + i, participantId, imageUrl);
                             var cardDiv = createSimpleCardDiv(card.imageUrl);
@@ -206,7 +206,44 @@ export default class GameAnimations {
         }
     }
 
+    addCardToHiddenZone(cardJson, zone, zoneOwner) {
+        // Adding card to discard, hand, or draw deck
+        console.log("calling addCardToHiddenZone");
+        var that = this;
+        let cardId = cardJson.cardId;
+        let imageUrl = cardJson.imageUrl;
+        let blueprintId = cardJson.blueprintId;
+        let locationIndex = "-1";
+        let upsideDown = false;
+        let controllerId = zoneOwner;
+
+        $("#main").queue(
+            function (next) {
+
+                let card = new Card(blueprintId, zone, cardId, controllerId, imageUrl, locationIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card, null);
+
+                if (zone == "DISCARD")
+                    that.game.discardPileDialogs[controllerId].append(cardDiv);
+                else if (zone == "DRAW_DECK") {
+                    that.game.miscPileDialogs[controllerId].append(cardDiv);
+                }
+                else
+                    $("#main").append(cardDiv);
+                next();
+            });
+
+        $("#main").queue(
+            function (next) {
+                console.log("laying out group with card from addCardToHiddenZone");
+                that.game.layoutGroupWithCard(cardId);
+                next();
+            });
+    }
+
     putCardIntoPlay(json, animate, eventType) {
+        /* This method is poorly labeled. It represents adding any visible card to the board, not just those in play.
+            For example, it may be called if a card is discarded or placed in hand. */
         var participantId = json.participantId;
         var cardId = json.cardId;
         var zone = json.zone;
@@ -218,10 +255,10 @@ export default class GameAnimations {
         var that = this;
         $("#main").queue(
             function (next) {
-                var blueprintId = json.blueprintId;
-                var imageUrl = json.imageUrl;
-                var targetCardId = json.targetCardId;
-                var controllerId = json.controllerId;
+                let blueprintId = json.blueprintId;
+                let imageUrl = json.imageUrl;
+                let targetCardId = json.targetCardId;
+                let controllerId = json.controllerId;
 
                 if (zone == "SPACELINE") {
                     if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
@@ -254,16 +291,8 @@ export default class GameAnimations {
                 var card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
                 var cardDiv = that.game.createCardDivWithData(card, null);
 
-                if (zone == "DISCARD")
-                    that.game.discardPileDialogs[participantId].append(cardDiv);
-                else if (zone == "ADVENTURE_DECK") // Todo - Safe to remove? Have removed the ADVENTURE_DECK zone from server
-                    that.game.adventureDeckDialogs[participantId].append(cardDiv);
-                else if (zone == "REMOVED")
+                if (zone == "REMOVED")
                     that.game.removedPileDialogs[participantId].append(cardDiv);
-                else if (zone == "DRAW_DECK") {
-                    that.game.miscPileDialogs[participantId].append(cardDiv);
-                    animate = false;
-                }
                 else
                     $("#main").append(cardDiv);
 
@@ -278,8 +307,7 @@ export default class GameAnimations {
                 next();
             });
 
-        if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))
-            && zone != "DISCARD" && zone != "HAND" && zone != "DRAW_DECK") {
+        if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))) {
             var final_position = {};
 
             $("#main").queue(
@@ -404,7 +432,7 @@ export default class GameAnimations {
             function (next) {
                 that.cardId = json.cardId;
                 var zone = json.zone;
-                var targetCardId = json.targetCardId;
+                let targetCardId = json.targetCardId;
                 var participantId = json.participantId;
                 var controllerId = json.controllerId;
                 var locationIndex = json.locationIndex;
@@ -445,23 +473,34 @@ export default class GameAnimations {
                 });
     }
 
-    removeCardFromPlay(json, animate) {
+    removeCardFromPlay(cardRemovedIds, performingPlayerId, animate) {
+        // This method may be called on cards that are not "in play" but visible on the board (like those in hands)
         var that = this;
-        var cardRemovedIds = json.otherCardIds.split(",");
-        var participantId = json.participantId;
+        console.log("Calling removeCardFromPlay");
+        console.log(cardRemovedIds);
+        console.log(performingPlayerId);
+        console.log(animate);
 
-        if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))) {
+        if (animate && (this.game.spectatorMode || this.game.replayMode || (performingPlayerId != this.game.bottomPlayerId))) {
             $("#main").queue(
                 function (next) {
-                    $(".card:cardId(" + cardRemovedIds + ")")
-                        .animate(
-                        {
-                            opacity:0},
-                        {
-                            duration:that.getAnimationLength(that.removeCardFromPlayDuration),
-                            easing:"easeOutQuart",
-                            queue:false});
-                    setTimeout(next, that.getAnimationLength(that.removeCardFromPlayDuration));
+                    for (const cardId of cardRemovedIds) {
+                        console.log("Removing card with cardId '" + cardId + "'");
+                        let cardDiv = getCardDivFromId(cardId);
+                        if (cardDiv.length > 0) {
+                            cardDiv.animate(
+                                {
+                                    opacity:0
+                                },
+                                {
+                                    duration:that.getAnimationLength(that.removeCardFromPlayDuration),
+                                    easing:"easeOutQuart",
+                                    queue:false
+                                }
+                            );
+                        }
+                        setTimeout(next, that.getAnimationLength(that.removeCardFromPlayDuration));
+                    }
                 });
         }
         $("#main").queue(
@@ -487,6 +526,7 @@ export default class GameAnimations {
             $("#main").queue(
                 function (next) {
                     that.game.layoutUI(false);
+                    console.log("Laying out cards within removeCardFromPlay")
                     next();
                 });
         }

@@ -188,8 +188,6 @@
         /* performedActions only includes actionIds for actions that were finished,
             whether successfully or unsuccessfully. It does not include unselected actions that players never
             attempted to initiate or actions that are still in progress.
-
-            Not included in the player-specific game state.
         */
     "performedActions": [1,2,4,3,6,7,9,8]
 }

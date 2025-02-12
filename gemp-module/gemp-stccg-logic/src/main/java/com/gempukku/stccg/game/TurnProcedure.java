@@ -3,8 +3,6 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.modifiers.StopCardsAction;
-import com.gempukku.stccg.actions.placecard.PlaceCardOnMissionAction;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
@@ -17,6 +15,7 @@ import java.util.Set;
 import java.util.Stack;
 
 public class TurnProcedure {
+
     private static final int MAXIMUM_LOOPS = 5000; // Max number of loops allowed before throwing error
     private final DefaultGame _game;
 
@@ -83,8 +82,10 @@ public class TurnProcedure {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
             ActionType actionType = currentAction.getActionType();
             switch(actionType) {
-                case CHANGE_AFFILIATION, STOP_CARDS:
+                case CHANGE_AFFILIATION, DISCARD, STOP_CARDS:
                     _game.sendActionResultToClient();
+                    System.out.println("Sending action result to client with action type " + actionType);
+                    System.out.println(_game.getActionsEnvironment().getPerformedActions().getLast().getActionType());
                     break;
                 default:
                     break;

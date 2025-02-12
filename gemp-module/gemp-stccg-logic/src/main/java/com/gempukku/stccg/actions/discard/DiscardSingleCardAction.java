@@ -76,16 +76,15 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
         if (_cardsDiscarded.size() != 1)
             throw new InvalidGameLogicException("Discarding too many cards for DiscardSingleCardAction");
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(cardGame, performingPlayer, cardsToDiscard);
-        for (PhysicalCard cardToDiscard : cardsToDiscard) {
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, _cardsDiscarded);
+        for (PhysicalCard cardToDiscard : _cardsDiscarded) {
             if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();
             }
-            gameState.addCardToZone(cardToDiscard, Zone.DISCARD);
+            gameState.addCardToZoneWithoutSendingToClient(cardToDiscard, Zone.DISCARD);
             cardGame.getActionsEnvironment().emitEffectResult(
                     new DiscardCardFromPlayResult(_performingCard, cardToDiscard));
         }
-        cardGame.sendMessage(_performingPlayerId + " discards " + TextUtils.getConcatenatedCardLinks(cardsToDiscard));
         setAsSuccessful();
         return getNextAction();
     }

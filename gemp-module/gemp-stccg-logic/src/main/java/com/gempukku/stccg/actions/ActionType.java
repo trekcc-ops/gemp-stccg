@@ -5,6 +5,7 @@ public enum ActionType {
     // Don't change these names, because they are passed directly to serialized game state
     ACTIVATE_TRIBBLE_POWER,
     ADD_MODIFIER,
+    ALL_PLAYERS_DISCARD,
     ATTEMPT_MISSION,
     BATTLE,
     CHANGE_AFFILIATION,

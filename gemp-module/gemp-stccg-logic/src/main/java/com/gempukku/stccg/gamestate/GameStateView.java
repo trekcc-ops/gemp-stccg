@@ -16,9 +16,9 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame",
-        "spacelineLocations", "awayTeams", "lastAction" })
+        "spacelineLocations", "awayTeams", "lastAction", "performedActions" })
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "lastAction" })
+        "awayTeams", "actions", "lastAction", "performedActions" })
 public class GameStateView {
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
@@ -85,9 +85,9 @@ public class GameStateView {
         return card.isKnownToPlayer(_requestingPlayerId);
     }
 
-    @JsonProperty("lastAction")
-    private Action getLastAction() {
-        return _gameState.getActionsEnvironment().getPerformedActions().getLast();
+    @JsonProperty("performedActions")
+    private List<Action> performedActions() {
+        return _gameState.getActionsEnvironment().getPerformedActions();
     }
 
 }

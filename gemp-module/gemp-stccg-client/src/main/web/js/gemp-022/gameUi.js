@@ -62,6 +62,7 @@ export default class GameTableUI {
 
     animations;
     replayPlay = false;
+    lastActionIndex;
 
     constructor(url, replayMode) {
         this.replayMode = replayMode;
@@ -1012,12 +1013,16 @@ export default class GameTableUI {
 
         switch(eventType) {
             case "ACTION_RESULT":
+                console.log("Calling process gameEvent for ACTION_RESULT");
                 let gameStateNode = gameEvent.gameState;
                 let gameState = typeof gameStateNode === "string" ? JSON.parse(gameStateNode) : gameStateNode;
                 console.log(gameState);
-                let lastAction = gameState.lastAction;
-                animateActionResult(lastAction, gameState, this.animations);
-                communicateActionResult(lastAction, gameState, this.chatBox);
+                let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
+                for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
+                    let action = gameState.performedActions[i];
+                    animateActionResult(action, gameState, this.animations);
+                    communicateActionResult(action, gameState, this.chatBox);
+                }
                 break;
             case "CA":
                 this.animations.cardActivated(gameEvent, animate);
@@ -1047,6 +1052,14 @@ export default class GameTableUI {
                 this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
                 break;
             case "PCIP":
+                let zone = gameEvent.zone;
+                if (zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND") {
+                    let zoneOwner = (gameEvent.controllerId == null) ? gameEvent.participantId : gameEvent.controllerId;
+                    this.animations.addCardToHiddenZone(gameEvent, zone, zoneOwner);
+                } else {
+                    this.animations.putCardIntoPlay(gameEvent, animate, eventType);
+                }
+                break;
             case "PUT_SHARED_MISSION_INTO_PLAY":
                 this.animations.putCardIntoPlay(gameEvent, animate, eventType);
                 break;
@@ -1057,7 +1070,7 @@ export default class GameTableUI {
                 this.participant(gameEvent);
                 break;
             case "RCFP":
-                this.animations.removeCardFromPlay(gameEvent, animate);
+                this.animations.removeCardFromPlay(gameEvent.otherCardIds, gameEvent.participantId, animate);
                 break;
             case "TC":
                 this.animations.turnChange(gameEvent, animate);

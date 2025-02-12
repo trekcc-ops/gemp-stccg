@@ -141,6 +141,17 @@ export function showLinkableCardTitle(cardNode) {
     return html;
 }
 
+export function showLinkableCardTitles(cardNodeArray) {
+    let message = "";
+    for (let i = 0; i < cardNodeArray.length; i++) {
+        if (i > 0) {
+            message = message + ", ";
+        }
+        message = message + showLinkableCardTitle(cardNodeArray[i]);
+    }
+    return message;
+}
+
 export function getAffiliationIcon(affiliationEnum) {
     // Receives the server enum name for an affiliation and provides the TrekCC icon URL
     switch(affiliationEnum) {
