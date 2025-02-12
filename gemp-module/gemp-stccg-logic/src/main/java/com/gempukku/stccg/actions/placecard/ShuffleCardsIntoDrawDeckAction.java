@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 
@@ -20,7 +20,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     private final ActionCardResolver _cardTarget;
 
     public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, Player performingPlayer,
-                                          Filter cardFilter) {
+                                          CardFilter cardFilter) {
         super(performingCard.getGame(), performingPlayer, "Shuffle cards into draw deck", ActionType.PLACE_CARD);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;

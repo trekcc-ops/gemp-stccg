@@ -7,20 +7,18 @@ import com.gempukku.stccg.service.AdminService;
 import java.util.Locale;
 
 public class HallChatRoomMediator extends ChatRoomMediator {
-    private static final String _name = "Game Hall";
     private final ServerObjects _serverObjects;
-    private final ChatServer _chatServer;
 
     private enum ChatCommandType {
         ban, banIp, banIpRange, endIncognito, help, ignore, incognito, listIgnores, noCommand, unignore
     }
 
     public HallChatRoomMediator(ServerObjects objects, int secondsTimeoutPeriod) {
-        super(objects, true, secondsTimeoutPeriod, true, HTMLUtils.HALL_WELCOME_MESSAGE);
+        super(objects, true, secondsTimeoutPeriod, true, HTMLUtils.HALL_WELCOME_MESSAGE,
+                "Game Hall");
         _serverObjects = objects;
-        _chatServer = objects.getChatServer();
         try {
-            sendMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + _name, true);
+            sendMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + _roomName, true);
         } catch (PrivateInformationException exp) {
             // Ignore, sent as admin
         } catch (ChatCommandErrorException e) {
@@ -28,11 +26,6 @@ public class HallChatRoomMediator extends ChatRoomMediator {
         }
         addCallbacks();
     }
-
-    public void initialize() {
-        _chatServer.addChatRoom(this, _name);
-    }
-    
     private void addCallbacks() {
         AdminService adminService = _serverObjects.getAdminService();
         addChatCommandCallback(ChatCommandType.ban, new BanUserCommandCallback(adminService));

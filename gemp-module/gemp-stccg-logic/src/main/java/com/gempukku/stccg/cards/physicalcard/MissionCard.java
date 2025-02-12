@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -8,6 +7,9 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class MissionCard extends ST1EPhysicalCard {
 
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
     @Override
-    public boolean canBeSeeded(ST1EGame game) { return true; }
+    public boolean canBeSeeded(DefaultGame game) { return true; }
 
     public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
 
@@ -30,13 +32,16 @@ public class MissionCard extends ST1EPhysicalCard {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         try {
             if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 try {
-                    actions.add(new AttemptMissionAction(cardGame, player, this.getLocation()));
-                    actions.add(new ShipBattleAction(cardGame, this, player, this.getLocation()));
+                    if (_currentGameLocation instanceof MissionLocation mission) {
+                        actions.add(new AttemptMissionAction(
+                                cardGame, player, mission.getCardForActionSelection(player), mission));
+                        actions.add(new ShipBattleAction(cardGame, this, player, mission));
+                    }
                 } catch (InvalidGameLogicException exp) {
                     cardGame.sendErrorMessage(exp);
                 }

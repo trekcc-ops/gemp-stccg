@@ -1,6 +1,6 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.draft.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 
@@ -37,7 +37,7 @@ public class League {
     }
 
     public synchronized LeagueData getLeagueData(CardBlueprintLibrary bpLibrary, FormatLibrary formatLibrary,
-                                                 SoloDraftDefinitions soloDraftDefinitions) {
+                                                 DraftFormatLibrary draftFormatLibrary) {
         if (_leagueData == null) {
             try {
                 if(_clazz.equals(ConstructedLeagueData.class.getName())) {
@@ -53,7 +53,7 @@ public class League {
                     _leagueData = new NewSealedLeagueData(bpLibrary, formatLibrary, _parameters);
                 }
                 else if(_clazz.equals(SoloDraftLeagueData.class.getName())) {
-                    _leagueData = new SoloDraftLeagueData(bpLibrary,  formatLibrary, soloDraftDefinitions, _parameters);
+                    _leagueData = new SoloDraftLeagueData(bpLibrary,  formatLibrary, draftFormatLibrary, _parameters);
                 }
                 else {
                     throw new IllegalArgumentException(

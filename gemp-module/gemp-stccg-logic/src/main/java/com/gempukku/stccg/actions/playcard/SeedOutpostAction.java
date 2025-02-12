@@ -10,8 +10,11 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.HashSet;
@@ -71,13 +74,9 @@ public class SeedOutpostAction extends PlayCardAction {
                         (MissionCard) Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                 if (!getProgress(Progress.affiliationSelected)) {
                     for (Affiliation affiliation : facility.getAffiliationOptions()) {
-                        try {
-                            if (facility.canSeedAtMissionAsAffiliation(selectedMission.getLocation(),
-                                    affiliation))
-                                affiliationOptions.add(affiliation);
-                        } catch (InvalidGameLogicException exp) {
-                            cardGame.sendErrorMessage(exp);
-                        }
+                        if (facility.canSeedAtMissionAsAffiliation(selectedMission.getGameLocation(),
+                                affiliation))
+                            affiliationOptions.add(affiliation);
                     }
                 }
 
@@ -109,7 +108,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 gameState.removeCardFromZone(_cardEnteringPlay);
                 performingPlayer.addPlayedAffiliation(facility.getCurrentAffiliation());
                 PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
-                MissionLocation destinationLocation = destinationCard.getLocation();
+                GameLocation destinationLocation = destinationCard.getGameLocation();
                 gameState.seedFacilityAtLocation(facility, destinationLocation);
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
@@ -124,7 +123,7 @@ public class SeedOutpostAction extends PlayCardAction {
     }
 
     public void setDestination(MissionLocation location) {
-        _destinationTarget = new FixedCardResolver(location.getTopMission());
+        _destinationTarget = new FixedCardResolver(location.getTopMissionCard());
         setProgress(Progress.placementChosen);
     }
 

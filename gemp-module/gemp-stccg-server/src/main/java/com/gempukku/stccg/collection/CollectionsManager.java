@@ -5,7 +5,10 @@ import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.database.CollectionDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.UserNotFoundException;
 import com.gempukku.stccg.packs.ProductLibrary;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,6 +21,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CollectionsManager {
+    private static final Logger LOGGER = LogManager.getLogger(CollectionsManager.class);
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
     private final PlayerDAO _playerDAO;
     private final CollectionDAO _collectionDAO;
@@ -36,10 +40,6 @@ public class CollectionsManager {
         _defaultCollection = new CompleteCardCollection(_cardLibrary);
 
         _cardLibrary.SubscribeToRefreshes(() -> _defaultCollection = new CompleteCardCollection(_cardLibrary));
-    }
-
-    public CardCollection getCompleteCardCollection() {
-        return _defaultCollection;
     }
 
     public CardCollection getPlayerCollection(User player, String collectionType) {
@@ -160,7 +160,8 @@ public class CollectionsManager {
                 return null;
             MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
 
-            final CardCollection packContents = mutableCardCollection.openPack(packId, selection, productLibrary);
+            final CardCollection packContents =
+                    mutableCardCollection.openPack(packId, selection, _cardLibrary, productLibrary);
             if (packContents != null) {
                 String reason = "Opened pack";
 
@@ -187,9 +188,23 @@ public class CollectionsManager {
         return result;
     }
 
-    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, User player,
-                                           CollectionType collectionType, Iterable<? extends GenericCardItem> items,
-                                           Map<String, Object> extraInformation){
+    public void addItemsToUserCollection(boolean notifyPlayer, String reason, User player,
+                                         CollectionType collectionType, Iterable<? extends GenericCardItem> items)  {
+        addItemsToUserCollection(notifyPlayer, reason, player, collectionType, items, null);
+    }
+
+    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, String player,
+                                           CollectionType collectionType, Iterable<? extends GenericCardItem> items) {
+        try {
+            addItemsToUserCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, items);
+        } catch(UserNotFoundException exp) {
+            LOGGER.error("Unable to find user '" + player + "' to add items to their collection");
+        }
+    }
+
+    public void addItemsToUserCollection(boolean notifyPlayer, String reason, User player,
+                                         CollectionType collectionType, Iterable<? extends GenericCardItem> items,
+                                         Map<String, Object> extraInformation){
         _readWriteLock.writeLock().lock();
         try {
             String collectionCode = collectionType.getCode();
@@ -221,15 +236,7 @@ public class CollectionsManager {
         }
     }
 
-    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, User player,
-                                           CollectionType collectionType, Iterable<? extends GenericCardItem> items)  {
-        addItemsToPlayerCollection(notifyPlayer, reason, player, collectionType, items, null);
-    }
 
-    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, String player,
-                                           CollectionType collectionType, Iterable<? extends GenericCardItem> items)  {
-        addItemsToPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, items);
-    }
 
     public boolean tradeCards(User player, CollectionType collectionType, String removeBlueprintId, int removeCount,
                               String addBlueprintId, int addCount, int currencyCost) throws SQLException, IOException {
@@ -333,7 +340,11 @@ public class CollectionsManager {
     public void addCurrencyToPlayerCollection(boolean notifyPlayer, String reason, String player,
                                               CollectionType collectionType, int currency)
             throws SQLException, IOException {
-        addCurrencyToPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, currency);
+        try {
+            addCurrencyToPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, currency);
+        } catch(UserNotFoundException exp) {
+            LOGGER.error("Unable to find player " + player);
+        }
     }
 
     public void addCurrencyToPlayerCollection(boolean notifyPlayer, String reason, User player,

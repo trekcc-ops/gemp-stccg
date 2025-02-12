@@ -9,7 +9,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Lists;
@@ -37,7 +37,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
                 // TODO - Implement land, take off, cloak
@@ -149,7 +149,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public boolean canAttemptMission(MissionLocation mission) {
-            if (_currentLocation != mission)
+            if (_currentGameLocation != mission)
                 return false;
             if (_docked)
                 return false;
@@ -180,4 +180,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         return getPersonnelInCrew();
     }
 
+    public List<CardIcon> getStaffingRequirements() {
+        return _blueprint.getStaffing();
+    }
 }

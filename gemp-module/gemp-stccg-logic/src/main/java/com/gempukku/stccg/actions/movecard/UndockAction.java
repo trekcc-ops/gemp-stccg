@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 
 public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalShipCard _performingCard;

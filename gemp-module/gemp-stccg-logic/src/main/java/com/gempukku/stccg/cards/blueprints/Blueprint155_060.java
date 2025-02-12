@@ -17,8 +17,7 @@ public class Blueprint155_060 extends CardBlueprint {
     // Geordi La Forge (The Next Generation)
 
     Blueprint155_060() {
-        super("155_060");
-        setSkillDotIcons(2);
+        _skillBox = new SkillBox(2,0, new LinkedList<>());
     }
 
     @Override

@@ -24,12 +24,12 @@ export default class GameAnimations {
         return origValue;
     }
 
-    cardActivated(element, animate) {
+    cardActivated(json, animate) {
         if (animate) {
             var that = this;
 
-            var participantId = element.getAttribute("participantId");
-            var cardId = element.getAttribute("cardId");
+            var participantId = json.participantId;
+            var cardId = json.cardId;
 
             // Play-out game event animation only if it's not the player who initiated it
             if (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
@@ -206,22 +206,22 @@ export default class GameAnimations {
         }
     }
 
-    putCardIntoPlay(element, animate, eventType) {
-        var participantId = element.getAttribute("participantId");
-        var cardId = element.getAttribute("cardId");
-        var zone = element.getAttribute("zone");
-        var imageUrl = element.getAttribute("imageUrl");
-        let region = element.getAttribute("region");
-        var quadrant = element.getAttribute("quadrant");
-        var locationIndex = element.getAttribute("locationIndex");
+    putCardIntoPlay(json, animate, eventType) {
+        var participantId = json.participantId;
+        var cardId = json.cardId;
+        var zone = json.zone;
+        var imageUrl = json.imageUrl;
+        let region = json.region;
+        var quadrant = json.quadrant;
+        var locationIndex = json.locationIndex;
 
         var that = this;
         $("#main").queue(
             function (next) {
-                var blueprintId = element.getAttribute("blueprintId");
-                var imageUrl = element.getAttribute("imageUrl");
-                var targetCardId = element.getAttribute("targetCardId");
-                var controllerId = element.getAttribute("controllerId");
+                var blueprintId = json.blueprintId;
+                var imageUrl = json.imageUrl;
+                var targetCardId = json.targetCardId;
+                var controllerId = json.controllerId;
 
                 if (zone == "SPACELINE") {
                     if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
@@ -382,11 +382,11 @@ export default class GameAnimations {
         }
     }
 
-    updateCardImage(element) {
+    updateCardImage(json) {
             $("#main").queue(
                 function (next) {
-                    var cardId = element.getAttribute("cardId");
-                    var imageUrl = element.getAttribute("imageUrl");
+                    var cardId = json.cardId;
+                    var imageUrl = json.imageUrl;
                     var cardDiv = getCardDivFromId(cardId);
                     images = document.getElementsByClassName("card_img_"+cardId);
                     for (var i = 0; i < images.length; i++) {
@@ -398,16 +398,16 @@ export default class GameAnimations {
                 });
     }
 
-    moveCardInPlay(element) {
+    moveCardInPlay(json) {
         var that = this;
         $("#main").queue(
             function (next) {
-                that.cardId = element.getAttribute("cardId");
-                var zone = element.getAttribute("zone");
-                var targetCardId = element.getAttribute("targetCardId");
-                var participantId = element.getAttribute("participantId");
-                var controllerId = element.getAttribute("controllerId");
-                var locationIndex = element.getAttribute("locationIndex");
+                that.cardId = json.cardId;
+                var zone = json.zone;
+                var targetCardId = json.targetCardId;
+                var participantId = json.participantId;
+                var controllerId = json.controllerId;
+                var locationIndex = json.locationIndex;
 
                 if (controllerId != null)
                     participantId = controllerId;
@@ -445,10 +445,10 @@ export default class GameAnimations {
                 });
     }
 
-    removeCardFromPlay(element, animate) {
+    removeCardFromPlay(json, animate) {
         var that = this;
-        var cardRemovedIds = element.getAttribute("otherCardIds").split(",");
-        var participantId = element.getAttribute("participantId");
+        var cardRemovedIds = json.otherCardIds.split(",");
+        var participantId = json.participantId;
 
         if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))) {
             $("#main").queue(
@@ -492,21 +492,21 @@ export default class GameAnimations {
         }
     }
 
-    gamePhaseChange(element, animate) {
+    gamePhaseChange(json, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var phase = element.getAttribute("phase");
+                var phase = json.phase;
                 $("#currentPhase").text(phase);
                 next();
             });
     }
 
-    tribbleSequence(element, animate) {
+    tribbleSequence(json, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var message = element.getAttribute("message");
+                var message = json.tribbleSequence;
                 // if the TribbleSequence object exists, checked via length (lol jQuery), fill it with the phase.
                 if ($("#tribbleSequence").length ) {
                     $("#tribbleSequence").html("Next Tribble in sequence:<b>" + message + "</b>");
@@ -515,11 +515,11 @@ export default class GameAnimations {
             });
     }
 
-    turnChange(element, animate) {
+    turnChange(json, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var playerId = element.getAttribute("participantId");
+                var playerId = json.participantId;
                 var playerIndex = that.game.getPlayerIndex(playerId);
                 that.game.currentPlayerId = playerId;
                 $(".player").each(function (index) {
@@ -538,12 +538,12 @@ export default class GameAnimations {
         }
     }
 
-    playerScore(element, animate) {
+    playerScore(json, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var participantId = element.getAttribute("participantId");
-                var score = element.getAttribute("score");
+                var participantId = json.participantId;
+                var score = json.score;
 
                 if (that.game.playerScores == null)
                     that.game.playerScores = new Array();
@@ -555,93 +555,44 @@ export default class GameAnimations {
             });
     }
 
-    gameStats(element, animate) {
+    gameStats(json, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var charStats = element.getAttribute("charStats");
-                if (charStats != null) {
-                    var charStatsArr = charStats.split(",");
-                    for (var i = 0; i < charStatsArr.length; i++) {
-                        var cardStats = charStatsArr[i].split("=");
-                        var cardDiv = $(".card:cardId(" + cardStats[0] + ")");
-                        that.game.ensureCardHasBoxes(cardDiv);
-                        var cardStatArr = cardStats[1].split("|");
-                        $(".cardStrength", cardDiv).html(cardStatArr[0]);
-                        $(".cardVitality", cardDiv).html(cardStatArr[1]);
-                        if (cardStatArr.length > 2) {
-                            if (cardStatArr[2].indexOf("R") == 0) {
-                                var resistanceDiv = $(".cardResistance", cardDiv);
-                                var resistance = cardStatArr[2].substring(1);
-                                if (resistance.indexOf("A") == 0) {
-                                    resistanceDiv.addClass("aragorn");
-                                    resistance = resistance.substring(1);
-                                } else if (resistance.indexOf("F") == 0) {
-                                    resistanceDiv.addClass("frodo");
-                                    resistance = resistance.substring(1);
-                                } else if (resistance.indexOf("G") == 0) {
-                                    resistanceDiv.addClass("gandalf");
-                                    resistance = resistance.substring(1);
-                                } else if (resistance.indexOf("T") == 0) {
-                                    resistanceDiv.addClass("theoden");
-                                    resistance = resistance.substring(1);
-                                } else {
-                                    $(".cardResistanceBg", cardDiv).css({display:""});
-                                }
-                                resistanceDiv.html(resistance).css({display:""});
-                            } else {
-                                $(".cardSiteNumber", cardDiv).html(cardStatArr[2]).css({display:""});
-                                $(".cardSiteNumberBg", cardDiv).css({display:""});
-                            }
-                        }
-                    }
-                }
-
-                var playerZones = element.getElementsByTagName("playerZones");
+                var playerZones = json.playerZones;
                 for (var i = 0; i < playerZones.length; i++) {
                     var playerZone = playerZones[i];
 
-                    var playerId = playerZone.getAttribute("name");
-                    var hand = playerZone.getAttribute("HAND");
-                    var discard = playerZone.getAttribute("DISCARD");
-                    var adventureDeck = playerZone.getAttribute("ADVENTURE_DECK"); // TODO - Safe to remove? Have removed Zone.ADVENTURE_DECK from server
-                    var deck = playerZone.getAttribute("DRAW_DECK");
-                    var removed = playerZone.getAttribute("REMOVED");
+                    var playerId = playerZone.playerId;
+                    var hand = playerZone.hand;
+                    var discard = playerZone.discard;
+                    var deck = playerZone.drawDeck;
+                    var removed = playerZone.removed;
 
                     $("#deck" + that.game.getPlayerIndex(playerId)).text(deck);
                     $("#hand" + that.game.getPlayerIndex(playerId)).text(hand);
                     $("#discard" + that.game.getPlayerIndex(playerId)).text(discard);
-                    $("#adventureDeck" + that.game.getPlayerIndex(playerId)).text(adventureDeck);
                     $("#removedPile" + that.game.getPlayerIndex(playerId)).text(removed);
                 }
 
-                var playerScores = element.getElementsByTagName("playerScores");
+                var playerScores = json.playerScores;
                 for (var i = 0; i < playerScores.length; i++) {
                     var playerScore = playerScores[i];
-                    var playerId = playerScore.getAttribute("name");
-                    var score = playerScore.getAttribute("score");
+                    var playerId = playerScore.playerId;
+                    var score = playerScore.score;
 
                     $("#score" + that.game.getPlayerIndex(playerId)).text("SCORE " + Number(score).toLocaleString("en-US"));
                 }
 
-
-                var playerThreats = element.getElementsByTagName("threats")
-                for (var i = 0; i < playerThreats.length; i++) {
-                    var playerThreat = playerThreats[i];
-
-                    var playerId = playerThreat.getAttribute("name");
-                    var value = playerThreat.getAttribute("value");
-                    $("#threats" + that.game.getPlayerIndex(playerId)).text(value);
-                }
                 next();
             });
     }
 
-    message(element, animate) {
+    message(json, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var message = element.getAttribute("message");
+                let message = json.message;
                 if (that.game.chatBox != null)
                     that.game.chatBox.appendMessage(message, "gameMessage");
 
@@ -649,11 +600,11 @@ export default class GameAnimations {
             });
     }
 
-    warning(element, animate) {
+    warning(json, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var message = element.getAttribute("message");
+                let message = json.message;
                 if (that.game.chatBox != null)
                     that.game.chatBox.appendMessage(message, "warningMessage");
 
@@ -665,7 +616,7 @@ export default class GameAnimations {
         var that = this;
         $("#main").queue(
             function (next) {
-                var decisionType = decision.getAttribute("decisionType");
+                var decisionType = decision.decisionType;
                 if (decisionType === "INTEGER") {
                     that.game.integerDecision(decision);
                 } else if (decisionType === "MULTIPLE_CHOICE") {

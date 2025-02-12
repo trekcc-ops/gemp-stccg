@@ -26,12 +26,9 @@
             tribble-value: 1000
             tribble-power: cheat
             image-url: https://www.trekcc.org/tribbles/cardimages/50th/126V.jpg
-            effects: {
-                type: playOutOfSequence
-                requires: {
-                    type: nextTribbleInSequence
-                    count: 100
-                }
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: nextTribbleInSequence = 100
             }
         }
         {

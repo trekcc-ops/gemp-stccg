@@ -26,8 +26,8 @@ public class Blueprint139_013 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
+    public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                                    EncounterSeedCardAction action, MissionLocation missionLocation) {
 
         List<Action> result = new LinkedList<>();
         MissionRequirement condition = new OrMissionRequirement(SkillName.GEOLOGY, SkillName.COMPUTER_SKILL);
@@ -47,7 +47,7 @@ public class Blueprint139_013 extends CardBlueprint {
             result.add(new StopCardsAction(game, thisCard.getOwner(), allSuchPersonnel));
             result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
         } else {
-            result.add(new FailDilemmaAction(game, attemptingUnit.getPlayer(), attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(game, attemptingUnit.getPlayer(), attemptingUnit, thisCard, action, false));
         }
 
         return result;

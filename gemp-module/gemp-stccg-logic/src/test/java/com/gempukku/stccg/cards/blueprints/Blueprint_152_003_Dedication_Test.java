@@ -10,7 +10,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -37,12 +37,12 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals("Dedication to Duty", dedication.getTitle());
 
         // Seed Dedication to Duty
-        MissionLocation missionLocation = _mission.getLocation();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(dedication), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
@@ -91,12 +91,12 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals("Dedication to Duty", dedication.getTitle());
 
         // Seed Dedication to Duty
-        MissionLocation missionLocation = _mission.getLocation();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(dedication), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);

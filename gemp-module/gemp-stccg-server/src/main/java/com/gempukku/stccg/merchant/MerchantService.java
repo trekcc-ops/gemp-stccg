@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
-import com.gempukku.stccg.cards.SetDefinition;
+import com.gempukku.stccg.common.SetDefinition;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.io.IOException;

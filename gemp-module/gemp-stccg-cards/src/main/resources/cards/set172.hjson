@@ -48,16 +48,10 @@
             cunning: 5
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/maquis/40V.jpg
-            image-options: [
-                {
-                    affiliation: non-aligned
-                    image-url: https://www.trekcc.org/1e/cardimages/maquis/40V.jpg
-                }
-                {
-                    affiliation: klingon
-                    image-url: https://www.trekcc.org/1e/cardimages/maquis/40VA.jpg
-                }
-            ]
+            image-options: {
+                non-aligned: https://www.trekcc.org/1e/cardimages/maquis/40V.jpg
+                klingon: https://www.trekcc.org/1e/cardimages/maquis/40VA.jpg
+            }
         }
     ]
 }

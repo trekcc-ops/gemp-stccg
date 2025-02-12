@@ -2,7 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.gamestate.GameEvent;
+import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.common.CardDeck;
 import com.mysql.cj.util.StringUtils;
 

@@ -11,6 +11,8 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.*;
@@ -23,7 +25,7 @@ import java.util.stream.Stream;
 @JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted",
         "missionCardIds", "seedCardCount", "seedCardIds" })
 @JsonFilter("missionLocationSerializerFilter")
-public class MissionLocation {
+public class MissionLocation implements GameLocation {
     @JsonProperty("quadrant")
     @JsonView(JsonViews.Public.class)
     private final Quadrant _quadrant;
@@ -80,9 +82,14 @@ public class MissionLocation {
     @JsonView(JsonViews.Public.class)
     private int getSeedCardCount() { return _seedCards.size(); }
 
+    public boolean isInQuadrant(Quadrant quadrant) { return _quadrant == quadrant; }
     public Quadrant getQuadrant() { return _quadrant; }
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
+
+    public MissionCard getCardForActionSelection(Player performingPlayer) throws InvalidGameLogicException {
+        return getMissionForPlayer(performingPlayer.getPlayerId());
+    }
 
     public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
         PhysicalCard result = null;
@@ -109,19 +116,15 @@ public class MissionLocation {
     }
 
 
-    public int getDistanceToLocation(DefaultGame cardGame, MissionLocation location, Player player)
-            throws InvalidGameLogicException {
+    public int getDistanceToLocation(ST1EGame cardGame, GameLocation location, Player player)
+            throws InvalidGameLogicException
+    {
                 // TODO - Not correct if you're calculating inter-quadrant distance (e.g., Bajoran Wormhole)
 
-        ST1EGame stGame;
-        if (cardGame instanceof ST1EGame)
-            stGame = (ST1EGame) cardGame;
-        else throw new InvalidGameLogicException("Unable to process distance between locations in this game");
-
-        if (location.getQuadrant() != _quadrant)
+        if (location.isInQuadrant(_quadrant))
             throw new InvalidGameLogicException("Tried to calculate span between quadrants");
         else {
-            List<MissionLocation> spaceline = stGame.getGameState().getSpacelineLocations();
+            List<MissionLocation> spaceline = cardGame.getGameState().getSpacelineLocations();
             int startingIndex = spaceline.indexOf(this);
             int endingIndex = spaceline.indexOf(location);
             int distance = 0;
@@ -152,6 +155,7 @@ public class MissionLocation {
         else return card.getBlueprint().getOpponentSpan();
     }
 
+    @Override
     public boolean mayBeAttemptedByPlayer(Player player, ST1EGame cardGame) throws InvalidGameLogicException {
         // Rule 7.2.1, Paragraph 1
         // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
@@ -310,7 +314,7 @@ public class MissionLocation {
     public boolean isPlanet() { return getMissionType() == MissionType.PLANET || getMissionType() == MissionType.DUAL; }
     public boolean isSpace() { return getMissionType() == MissionType.SPACE || getMissionType() == MissionType.DUAL; }
 
-    public MissionCard getTopMission() { return getMissionCards().getLast(); }
+    public MissionCard getTopMissionCard() { return getMissionCards().getLast(); }
 
     public void addMission(MissionCard newMission) {
         newMission.stackOn(_missionCards.getCards().getFirst());
@@ -356,19 +360,22 @@ public class MissionLocation {
         }
     }
 
-    public void preSeedCardsUnder(DefaultGame cardGame, Collection<PhysicalCard> cards, PhysicalCard topCard,
-                                  Player player)
+    public void preSeedCardsUnder(DefaultGame cardGame, Collection<PhysicalCard> cards, Player player)
             throws InvalidGameLogicException {
         GameState gameState = cardGame.getGameState();
         for (PhysicalCard card : cards) {
             gameState.removeCardFromZone(card);
             gameState.addCardToZone(card, Zone.VOID);
-            topCard.getLocation().addCardToTopOfPreSeedPile(card, player);
+            addCardToTopOfPreSeedPile(card, player);
         }
     }
 
 
     public int getLocationId() {
         return _locationId;
+    }
+
+    public boolean isInSameQuadrantAs(GameLocation currentLocation) {
+        return currentLocation.isInQuadrant(_quadrant);
     }
 }

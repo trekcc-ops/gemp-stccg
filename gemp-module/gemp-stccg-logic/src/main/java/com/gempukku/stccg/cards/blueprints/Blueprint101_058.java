@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
+import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;

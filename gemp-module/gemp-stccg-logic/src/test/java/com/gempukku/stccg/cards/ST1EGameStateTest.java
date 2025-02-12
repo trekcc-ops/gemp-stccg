@@ -4,8 +4,8 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class ST1EGameStateTest extends AbstractAtTest {
         ST1EGameState gameState = _game.getGameState();
 
         gameState.addMissionLocationToSpaceline(mission, 0);
-        gameState.seedFacilityAtLocation(outpost1, mission.getLocation());
+        gameState.seedFacilityAtLocation(outpost1, mission.getLocationDeprecatedOnlyUseForTests());
 
         assertTrue(outpost1.isInPlay());
 

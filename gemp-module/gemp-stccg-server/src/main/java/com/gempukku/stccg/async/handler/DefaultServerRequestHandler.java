@@ -1,6 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.DateUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -27,25 +27,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 class DefaultServerRequestHandler {
-    private final static Map.Entry<String, String> HEADERS_TO_ADD =
-            new AbstractMap.SimpleEntry<>("Delivery-Service-Package", "true");
-    private final static int SIGNUP_REWARD = 20000;
-    private final static int WEEKLY_REWARD = 5000;
     final CardBlueprintLibrary _cardBlueprintLibrary;
     final PlayerDAO _playerDao;
     private final LoggedUserHolder _loggedUserHolder;
-    private final TransferDAO _transferDAO;
     final CollectionsManager _collectionsManager;
     final GameHistoryService _gameHistoryService;
     final ServerObjects _serverObjects;
+    protected final ObjectMapper _jsonMapper = new ObjectMapper();
 
     protected enum FormParameter {
         availablePicks, blueprintId, cardId, channelNumber, choiceId, collectionType,
@@ -61,7 +55,6 @@ class DefaultServerRequestHandler {
         _serverObjects = objects;
         _playerDao = objects.getPlayerDAO();
         _loggedUserHolder = objects.getLoggedUserHolder();
-        _transferDAO = objects.getTransferDAO();
         _collectionsManager = objects.getCollectionsManager();
         _cardBlueprintLibrary = objects.getCardBlueprintLibrary();
         _gameHistoryService = objects.getGameHistoryService();
@@ -69,29 +62,6 @@ class DefaultServerRequestHandler {
 
     private static boolean isTest() {
         return Boolean.parseBoolean(System.getProperty("test"));
-    }
-
-    final void processLoginReward(String loggedUser) throws Exception {
-        if (loggedUser != null) {
-            User player = _playerDao.getPlayer(loggedUser);
-            synchronized (player.getName().intern()) {
-                ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
-                int latestMonday = DateUtils.getMondayBeforeOrOn(now);
-
-                Integer lastReward = player.getLastLoginReward();
-                if (lastReward == null) {
-                    _playerDao.setLastReward(player, latestMonday);
-                    _collectionsManager.addCurrencyToPlayerCollection(true, "Signup reward", player,
-                            CollectionType.MY_CARDS, SIGNUP_REWARD);
-                } else {
-                    if (latestMonday != lastReward) {
-                        if (_playerDao.updateLastReward(player, lastReward, latestMonday))
-                            _collectionsManager.addCurrencyToPlayerCollection(true, "Weekly reward",
-                                    player, CollectionType.MY_CARDS, WEEKLY_REWARD);
-                    }
-                }
-            }
-        }
     }
 
     private String getLoggedUser(HttpMessage request) {
@@ -103,28 +73,21 @@ class DefaultServerRequestHandler {
                 if ("loggedUser".equals(cookie.name())) {
                     String value = cookie.value();
                     if (value != null) {
-                        return _loggedUserHolder.getLoggedUser(value);
+                        return _loggedUserHolder.getLoggedUserNew(value);
                     }
                 }
             }
         }
-        return null;
-    }
-
-    final void processDeliveryServiceNotification(HttpMessage request,
-                                                  Map<? super String, ? super String> headersToAdd) {
-        String logged = getLoggedUser(request);
-        if (logged != null && _transferDAO.hasUndeliveredPackages(logged))
-            headersToAdd.put(HEADERS_TO_ADD.getKey(), HEADERS_TO_ADD.getValue());
+        return "";
     }
 
     final User getResourceOwnerSafely(HttpMessage request, String participantId)
             throws HttpProcessingException {
-        String loggedUser = getLoggedUser(request);
-        if (isTest() && loggedUser == null)
+        String loggedUser = Objects.requireNonNullElse(getLoggedUser(request), "");
+        if (isTest() && loggedUser.isEmpty())
             loggedUser = participantId;
 
-        if (loggedUser == null)
+        if (loggedUser.isEmpty())
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
         User resourceOwner = _playerDao.getPlayer(loggedUser);
@@ -143,9 +106,9 @@ class DefaultServerRequestHandler {
 
     final User getResourceOwnerSafely(HttpMessage request)
             throws HttpProcessingException {
-        String loggedUser = getLoggedUser(request);
+        String loggedUser = Objects.requireNonNullElse(getLoggedUser(request), "");
 
-        if (loggedUser == null)
+        if (loggedUser.isEmpty())
             throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
         User resourceOwner = _playerDao.getPlayer(loggedUser);
@@ -206,25 +169,7 @@ class DefaultServerRequestHandler {
 
     static List<String> getLoginParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder)
             throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
-        List<InterfaceHttpData> httpData = postRequestDecoder.getBodyHttpDatas("login[]");
-        if (httpData == null)
-            return null;
-        List<String> result = new LinkedList<>();
-        for (InterfaceHttpData data : httpData) {
-            if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
-                Attribute attribute = (Attribute) data;
-                result.add(attribute.getValue());
-            }
-        }
-        return result;
-    }
-
-    final Map<String, String> logUserReturningHeaders(String remoteIp, String login) throws SQLException {
-        _playerDao.updateLastLoginIp(login, remoteIp);
-
-        String sessionId = _loggedUserHolder.logUser(login);
-        return Collections.singletonMap(
-                SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
+        return getFormMultipleParametersSafely(postRequestDecoder,"login[]");
     }
 
 
@@ -234,10 +179,25 @@ class DefaultServerRequestHandler {
         return docBuilder.newDocument();
     }
 
-    final User getResourceOwner(HttpRequest request) throws HttpProcessingException {
+    protected User getUserIdFromCookiesOrUri(HttpRequest request) throws HttpProcessingException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         return getResourceOwnerSafely(request, participantId);
     }
+
+    protected static class SelfClosingPostRequestDecoder extends HttpPostRequestDecoder implements AutoCloseable {
+
+        SelfClosingPostRequestDecoder(HttpRequest request) {
+            super(request);
+        }
+
+        @Override
+        public void close() {
+            destroy();
+        }
+    }
+
+
+
 
 }

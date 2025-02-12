@@ -43,11 +43,11 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public final User getPlayer(String playerName) {
+    public final User getPlayer(String playerName) throws UserNotFoundException {
         try {
             return getPlayerFromDBByName(playerName);
         } catch (SQLException exp) {
-            throw new RuntimeException("Unable to get player from DB", exp);
+            throw new UserNotFoundException("Unable to find user '" + playerName + "' in database");
         }
     }
 

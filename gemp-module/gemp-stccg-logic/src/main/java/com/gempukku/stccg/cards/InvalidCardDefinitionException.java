@@ -1,6 +1,8 @@
 package com.gempukku.stccg.cards;
 
-public class InvalidCardDefinitionException extends Exception {
+import java.io.IOException;
+
+public class InvalidCardDefinitionException extends IOException {
     public InvalidCardDefinitionException(String message) {
         super(message);
     }

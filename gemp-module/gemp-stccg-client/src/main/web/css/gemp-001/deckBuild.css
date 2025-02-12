@@ -206,6 +206,10 @@ button.navigation-butt {
     display: flex;
 }
 
+.deckDetailsDialog {
+    display: none;
+}
+
 #missionsLabel,
 #seedDeckLabel,
 #drawDeckLabel {

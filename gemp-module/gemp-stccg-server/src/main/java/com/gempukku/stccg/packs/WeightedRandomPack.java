@@ -1,5 +1,7 @@
 package com.gempukku.stccg.packs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 
 import java.util.Collections;
@@ -11,9 +13,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class WeightedRandomPack implements PackBox {
     private record Reward(String name, int quantity, int weight) { }
 
+    private final String _name;
     private final Map<String, Reward> _contents = new LinkedHashMap<>();
 
-    public WeightedRandomPack(Iterable<String> items) {
+    public WeightedRandomPack(@JsonProperty(value = "items", required = true)
+                              Iterable<String> items,
+                              @JsonProperty(value = "name", required = true)
+                              String name) {
+        _name = name;
         for (String item : items) {
             item = item.trim();
             if (!item.isEmpty()) {
@@ -34,12 +41,17 @@ public class WeightedRandomPack implements PackBox {
     }
 
     @Override
-    public List<GenericCardItem> openPack() {
+    public List<GenericCardItem> openPack(CardBlueprintLibrary library) {
         int totalWeight = _contents.values().stream()
                 .mapToInt(Reward::weight)
                 .sum();
 
         return openPack(ThreadLocalRandom.current().nextInt(totalWeight) + 1);
+    }
+
+    @Override
+    public String getName() {
+        return _name;
     }
 
     private List<GenericCardItem> openPack(int roll) {

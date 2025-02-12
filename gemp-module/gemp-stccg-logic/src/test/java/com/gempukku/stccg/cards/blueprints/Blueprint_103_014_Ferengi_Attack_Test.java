@@ -9,7 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -28,7 +28,8 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
     // Unit tests for card definition of Ferengi Attack
 
     @Test
-    public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException, CardNotFoundException, InvalidGameOperationException {
+    public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Excavation");
 
         ST1EPhysicalCard ferengiAttack =
@@ -36,12 +37,12 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         ferengiAttack.setZone(Zone.VOID);
 
         // Seed Ferengi Attack
-        MissionLocation missionLocation = _mission.getLocation();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(ferengiAttack), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
@@ -81,12 +82,12 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         assertNotNull(_userFeedback.getAwaitingDecision(P2));
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P2));
 
-        Filter inAwayTeamFilter = Filters.personnelInAttemptingUnit(troi.getAwayTeam());
+        CardFilter inAwayTeamFilter = Filters.personnelInAttemptingUnit(troi.getAwayTeam());
         assertTrue(inAwayTeamFilter.accepts(_game, hobson));
 
         selectCard(P2, hobson);
         assertEquals(Zone.DISCARD, hobson.getZone());
-        assertTrue(_mission.getLocation().isCompleted());
+        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests().isCompleted());
     }
 
 }

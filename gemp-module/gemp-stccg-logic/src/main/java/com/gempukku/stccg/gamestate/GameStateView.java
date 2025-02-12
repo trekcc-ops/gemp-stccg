@@ -6,13 +6,12 @@ import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.PlayerView;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerOrder;
+import com.gempukku.stccg.player.PlayerView;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "players", "playerOrder", "visibleCardsInGame",

@@ -5,7 +5,7 @@ import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.SetDefinition;
+import com.gempukku.stccg.common.SetDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

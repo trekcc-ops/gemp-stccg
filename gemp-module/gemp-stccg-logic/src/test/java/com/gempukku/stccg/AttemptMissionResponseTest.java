@@ -10,8 +10,8 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -65,8 +65,8 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         assertTrue(risk.isInPlay());
 
         // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation.getLocation());
-        assertEquals(outpost.getLocation(), excavation.getLocation());
+        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         // Report Picard to outpost
@@ -77,7 +77,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocation()));
+        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
 
         // Attempt mission
         attemptMission(P1, picard.getAwayTeam(), excavation);
@@ -89,12 +89,12 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
                 .decisionMade(tarses);
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
-        assertFalse(excavation.getLocation().isCompleted());
+        assertFalse(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(outpost.getCrew().contains(tarses));
 
         // Confirm that mission was solved and player earned points
-        assertTrue(excavation.getLocation().isCompleted());
+        assertTrue(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
         assertEquals(excavation.getPoints(), player1.getScore());
 
         // Initiate a beam action from the outpost using all the decisions involved

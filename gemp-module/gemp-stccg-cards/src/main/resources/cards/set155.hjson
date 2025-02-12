@@ -41,54 +41,52 @@
             icons: warp-core
             property-logo: tng-logo
             image-url: https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg
+            actions: [
+                {
+                    type: seedThis
+                    where: table
+                }
+            ]
         }
         {
             blueprintId: 155_022
             title: Continuing Mission
             type: incident
             property-logo: tng-logo
-            effects: [
+            actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }
                 {
-                    type: action
-                    optional: true
+                    type: optionalTrigger
                     trigger: {
                         type: played
                         filter: self
                     }
                     effect: {
                         type: download
-                        filter: choose(warp-core)
+                        target: {
+                            type: select
+                            filter: warp-core
+                            count: 1
+                        }
                     }
                 }
                 {
-                    type: modifier
-                    modifier: {
-                        type: gainIcon
-                        filter: yoursEvenIfNotInPlay + (personnel OR ship) + (tng-logo OR generations-logo)
-                        icon: tng-icon
-                    }
-                }
-                {
-                    type: action
-                    optional: false
+                    type: requiredTrigger
                     trigger: {
                         type: played
                         player: you
                         filter: (personnel OR ship) + not(tng-icon)
                     }
                     effect: {
-                        type: discard
-                        filter: self
+                        type: discardThisCard
                     }
                 }
                 {
-                    type: action
-                    optional: true
+                    type: optionalTrigger
                     limitPerTurn: 1
                     trigger: {
                         type: played
@@ -98,6 +96,13 @@
                     effect: {
                         type: drawCards
                     }
+                }
+            ]
+            modifiers: [
+                {
+                    type: gainIcon
+                    filter: yoursEvenIfNotInPlay + (personnel OR ship) + (tng-logo OR generations-logo)
+                    icon: tng-icon
                 }
             ]
             image-url: https://www.trekcc.org/1e/cardimages/errata/Continuing-Mission.jpg
@@ -130,7 +135,7 @@
             type: mission
             mission-type: space
             location: Near Acamar system
-            affiliation-icons: any
+            anyCanAttempt: true
             lore: Mediate an end to Gatherer raids in this area.
             mission-requirements: Anthropology + Diplomacy x2 + Law OR Leadership + SECURITY + Treachery x2 OR Marouk
             point-box: 35
@@ -838,16 +843,10 @@
             cunning: 4
             strength: 10
             image-url: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
-            image-options: [
-                {
-                    affiliation: klingon
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/93AV.jpg
-                }
-                {
-                    affiliation: non-aligned
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
-                }
-            ]
+            image-options: {
+                non-aligned: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
+                klingon: https://www.trekcc.org/1e/cardimages/tng/93AV.jpg
+            }
         }
         {
             blueprintId: 155_094
@@ -878,17 +877,11 @@
             integrity: 5
             cunning: 7
             strength: 7
-            image-url: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
-            image-options: [
-                {
-                    affiliation: non-aligned
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/95AV.jpg
-                }
-                {
-                    affiliation: federation
-                    image-url: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
-                }
-            ]
+            image-url: https://www.trekcc.org/1e/cardimages/tng/95AV.jpg
+            image-options: {
+                non-aligned: https://www.trekcc.org/1e/cardimages/tng/95AV.jpg
+                federation: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
+            }
         }
         {
             blueprintId: 155_096

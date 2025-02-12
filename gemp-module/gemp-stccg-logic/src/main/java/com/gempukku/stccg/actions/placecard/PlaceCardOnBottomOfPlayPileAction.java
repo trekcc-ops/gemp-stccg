@@ -8,7 +8,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();
             if (selectionAction != null && !selectionAction.wasCarriedOut()) {
@@ -41,8 +42,9 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
         }
 
         if (!_wasCarriedOut) {
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
-                cardGame.removeCardsFromZone(_performingPlayerId, List.of(card));
+                cardGame.removeCardsFromZone(performingPlayer, List.of(card));
                 cardGame.sendMessage(_performingPlayerId + " puts " + card.getCardLink() +
                         " from hand on bottom of their play pile");
                 cardGame.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);

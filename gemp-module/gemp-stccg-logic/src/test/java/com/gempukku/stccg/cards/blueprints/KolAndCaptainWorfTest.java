@@ -1,7 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -30,7 +29,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals("Dr. Arridor", arridor.getTitle());
 
         _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocation());
+        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocationDeprecatedOnlyUseForTests());
 
         assertTrue(outpost.isInPlay());
 
@@ -74,7 +73,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals("K'Ehleyr", kehleyr2.getTitle()); // 8-7-7
 
         _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost1, mission.getLocation());
+        _game.getGameState().seedFacilityAtLocation(outpost1, mission.getLocationDeprecatedOnlyUseForTests());
 
         assertTrue(outpost1.isInPlay());
 

@@ -3,17 +3,18 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.ArrayList;
@@ -71,16 +72,7 @@ public class ST1EGameStateDeserializer {
         GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
         game.setCurrentProcess(currentProcess);
 
-        gameState.setModifiersLogic(node.get("modifiers"), game);
-
-        for (JsonNode awayTeamNode : node.get("awayTeams")) {
-            PhysicalCard parentCard = game.getCardFromCardId(awayTeamNode.get("parentCard").intValue());
-            Player player = game.getPlayer(awayTeamNode.get("playerId").textValue());
-            AwayTeam awayTeam = gameState.createNewAwayTeam(player, parentCard);
-            for (JsonNode cardInAwayTeamNode : awayTeamNode.get("cardsInAwayTeam")) {
-                awayTeam.add((PhysicalReportableCard1E) (game.getCardFromCardId(cardInAwayTeamNode.intValue())));
-            }
-        }
+        gameState.setModifiersLogic(game);
 
         for (Map.Entry<MissionLocation, List<Integer>> entry : seededUnderMap.entrySet()) {
             MissionLocation location = entry.getKey();

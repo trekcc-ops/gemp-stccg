@@ -8,10 +8,12 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collections;
 
@@ -30,7 +32,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (cardGame instanceof ST1EGame stGame) {
             ST1EGameState gameState = stGame.getGameState();
             PhysicalCard cardToRemove = _cardTarget.getCard();
@@ -41,8 +43,11 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
                 }
             }
 
-            gameState.removeCardsFromZone(cardGame, _performingPlayerId, Collections.singleton(cardToRemove));
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+
+            gameState.removeCardsFromZone(cardGame, performingPlayer, Collections.singleton(cardToRemove));
             gameState.addCardToZone(cardToRemove, Zone.REMOVED);
+            cardToRemove.setLocation(new NullLocation());
 
             cardGame.sendMessage(_performingPlayerId + " removed " + cardToRemove.getCardLink() + " from the game");
             setAsSuccessful();

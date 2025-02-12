@@ -132,7 +132,7 @@
             blueprintId: 163_054
             title: Stolen Ship
             type: ship
-            affiliation: federation,romulan
+            affiliation: romulan,federation
             property-logo: tng-logo
             uniqueness: universal
             ship-class: MERCHANT CLASS
@@ -143,16 +143,10 @@
             weapons: 6
             shields: 5
             image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
-            image-options: [
-                {
-                    affiliation: romulan
-                    image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
-                }
-                {
-                    affiliation: federation
-                    image-url: https://www.trekcc.org/1e/cardimages/tstl/54A.jpg
-                }
-            ]
+            image-options: {
+                romulan: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
+                federation: https://www.trekcc.org/1e/cardimages/tstl/54A.jpg
+            }
         }
     ]
 }

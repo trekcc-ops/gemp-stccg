@@ -1,6 +1,8 @@
 package com.gempukku.stccg.database;
 
 import com.gempukku.stccg.league.League;
+import com.gempukku.stccg.league.LeagueSeriesData;
+import com.gempukku.stccg.league.NewSealedLeagueData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +32,17 @@ public class DbLeagueDAO implements LeagueDAO {
             throw new RuntimeException("Unable to add league into DB", exp);
         }
     }
+
+    public final void addLeague(List<LeagueSeriesData> seriesData, NewSealedLeagueData data) {
+        try {
+            SQLUtils.executeStatementWithParameters(_dbAccess, INSERT_STATEMENT,
+                    data.getName(), data.getCreationTime(), data.getClass(), data.getSerializedParameters(),
+                    seriesData.getFirst().getStart(), seriesData.getLast().getEnd(), 0, 0);
+        } catch(SQLException exp) {
+            throw new RuntimeException("Unable to add league into DB", exp);
+        }
+    }
+
 
     public final List<League> loadActiveLeagues(int currentTime) throws SQLException {
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {

@@ -24,6 +24,25 @@
             lore: 'Ferengi attacked a Federation Away Team on a planet in the Delphi Ardu system using "whips" which fire discharges of high-energy plasma.'
             image-url: https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif
             rarity: C
+/*            actions: [
+                {
+                    type: encounter
+                    effect: {
+                        type: overcomeCondition
+                        requires: CUNNING+STRENGTH>68 OR Greed
+                        failEffect: {
+                            type: kill
+                            target: {
+                                type: select
+                                choice: opponent
+                                filter: personnel + encounteringThisCard
+                                count: 1
+                            }
+                        }
+                        discardDilemma: true
+                    }
+                }
+            ] */
         }
     /*    {
             blueprint: 103_016
@@ -77,9 +96,9 @@
             java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg
             rarity: C
-            effects: [
+            actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }

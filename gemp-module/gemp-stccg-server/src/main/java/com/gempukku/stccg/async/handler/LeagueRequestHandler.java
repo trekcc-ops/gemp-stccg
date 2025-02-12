@@ -1,6 +1,7 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.competitive.PlayerStanding;
@@ -28,21 +29,22 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
     private final LeagueService _leagueService;
     private final FormatLibrary _formatLibrary;
 
-    LeagueRequestHandler(ServerObjects objects) {
+    public LeagueRequestHandler(ServerObjects objects) {
         super(objects);
         _leagueService = objects.getLeagueService();
         _formatLibrary = objects.getFormatLibrary();
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
+        HttpRequest request = gempRequest.getRequest();
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getNonExpiredLeagues(responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getLeagueInformation(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
-            joinLeague(request, uri.substring(1), responseWriter, remoteIp);
+            joinLeague(request, uri.substring(1), responseWriter, gempRequest.ip());
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
@@ -52,18 +54,14 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        League league = _leagueService.getLeagueByType(leagueType);
-        if (league == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-        if (!_leagueService.playerJoinsLeague(league, resourceOwner, remoteIp))
-            throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
-
-        responseWriter.writeXmlResponse(null);
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            League league = _leagueService.getLeagueByType(leagueType);
+            if (league == null)
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+            if (!_leagueService.playerJoinsLeague(league, resourceOwner, remoteIp))
+                throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
+            responseWriter.writeXmlOkResponse();
         } finally {
             postDecoder.destroy();
         }
@@ -71,7 +69,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
     private void getLeagueInformation(HttpRequest request, String leagueType, ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
-        User resourceOwner = getResourceOwner(request);
+        User resourceOwner = getUserIdFromCookiesOrUri(request);
         Document doc = createNewDoc();
         League league = getLeagueByType(leagueType);
 
@@ -140,7 +138,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
         doc.appendChild(leagueElem);
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private List<LeagueSeriesData> getSeriesData(League league) {
@@ -170,7 +168,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
         doc.appendChild(leagues);
 
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private final League getLeagueByType(String type) {

@@ -1,23 +1,30 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.handler.CardInfoUtils;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.AwayTeam;
+import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.hall.GameSettings;
-import com.gempukku.stccg.hall.GameTimer;
+import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.player.PlayerClock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -28,7 +35,7 @@ public abstract class CardGameMediator {
     private final Map<String, GameCommunicationChannel> _communicationChannels =
             Collections.synchronizedMap(new HashMap<>());
     final Map<String, CardDeck> _playerDecks = new HashMap<>();
-    private final Map<String, Integer> _playerClocks = new HashMap<>();
+    protected final Map<String, PlayerClock> _playerClocks = new HashMap<>();
     private final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
     private final Set<String> _playersPlaying = new HashSet<>();
     private final String _gameId;
@@ -55,7 +62,7 @@ public abstract class CardGameMediator {
             String participantId = participant.getPlayerId();
             CardDeck deck = participant.getDeck();
             _playerDecks.put(participantId, deck);
-            _playerClocks.put(participantId, 0);
+            _playerClocks.put(participantId, new PlayerClock(participantId, gameSettings.getTimeSettings()));
             _playersPlaying.add(participantId);
         }
     }
@@ -82,9 +89,10 @@ public abstract class CardGameMediator {
         return _allowSpectators;
     }
 
-    public final void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
-        if (_playersPlaying.contains(playerId)) {
-            getGame().setPlayerAutoPassSettings(playerId, phases);
+    public final void setPlayerAutoPassSettings(User user, Set<Phase> phases) {
+        String userId = user.getName();
+        if (_playersPlaying.contains(userId)) {
+            getGame().setPlayerAutoPassSettings(userId, phases);
         }
     }
 
@@ -118,15 +126,18 @@ public abstract class CardGameMediator {
         return getGame().isFinished();
     }
 
-    public final String produceCardInfo(int cardId) {
+    public final String produceCardInfo(int cardId) throws JsonProcessingException {
         _readLock.lock();
         try {
             GameState gameState = getGame().getGameState();
             PhysicalCard card = gameState.findCardById(cardId);
             if (card == null || card.getZone() == null)
-                return null;
-            else
-                return CardInfoUtils.getCardInfoHTML(getGame(), card);
+                return "";
+            else if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
+                return getCardInfoJson(getGame(), card);
+            } else {
+                return "";
+            }
         } finally {
             _readLock.unlock();
         }
@@ -171,10 +182,10 @@ public abstract class CardGameMediator {
                     }
                 }
 
-                for (Map.Entry<String, Integer> playerClock : _playerClocks.entrySet()) {
-                    String player = playerClock.getKey();
+                for (PlayerClock playerClock : _playerClocks.values()) {
+                    String player = playerClock.getPlayerId();
                     if (_timeSettings.maxSecondsPerPlayer() -
-                            playerClock.getValue() - getCurrentUserPendingTime(player) < 0) {
+                            playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
                         addTimeSpentOnDecisionToUserClock(player);
                         game.playerLost(player, "Player run out of time");
                     }
@@ -254,7 +265,7 @@ public abstract class CardGameMediator {
 
 
     public final GameCommunicationChannel getCommunicationChannel(User player, int channelNumber)
-            throws PrivateInformationException, HttpProcessingException, SubscriptionExpiredException {
+            throws HttpProcessingException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
             throw new PrivateInformationException();
@@ -275,17 +286,23 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber,
-                                     ParticipantCommunicationVisitor visitor) {
+
+    public final String serializeEventsToString(GameCommunicationChannel communicationChannel)
+            throws IOException {
         _readLock.lock();
         try {
-            visitor.process(channelNumber, communicationChannel, secondsLeft());
+            ObjectMapper jsonMapper = new ObjectMapper();
+            return jsonMapper.writeValueAsString(communicationChannel);
+        } catch(IOException exp) {
+            getGame().sendErrorMessage("Unable to serialize game events");
+            throw new IOException(exp.getMessage());
         } finally {
             _readLock.unlock();
         }
     }
 
-    public final void signupUserForGame(User player, ParticipantCommunicationVisitor visitor)
+
+    public final GameCommunicationChannel signupUserForGameAndGetChannel(User player)
             throws PrivateInformationException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
@@ -300,24 +317,13 @@ public abstract class CardGameMediator {
 
             channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
             _communicationChannels.put(playerName, channel);
-
             getGame().addGameStateListener(playerName, channel);
+            return channel;
         } finally {
             _readLock.unlock();
         }
-        processVisitor(channel, channelNumber, visitor);
     }
 
-    private Map<String, Integer> secondsLeft() {
-        Map<String, Integer> secondsLeft = new HashMap<>();
-        for (String playerId : _playersPlaying) {
-            int maxSeconds = _timeSettings.maxSecondsPerPlayer();
-            Integer playerClock = _playerClocks.get(playerId);
-            int playerPendingTime = getCurrentUserPendingTime(playerId);
-            secondsLeft.put(playerId, maxSeconds - playerClock - playerPendingTime);
-        }
-        return secondsLeft;
-    }
 
     private void startClocksForUsersPendingDecision() {
         long currentTime = System.currentTimeMillis();
@@ -332,7 +338,8 @@ public abstract class CardGameMediator {
             long currentTime = System.currentTimeMillis();
             long diffSec = (currentTime - queryTime) / 1000;
             //noinspection NumericCastThatLosesPrecision
-            _playerClocks.put(participantId, _playerClocks.get(participantId) + (int) diffSec);
+            PlayerClock playerClock = _playerClocks.get(participantId);
+            playerClock.addElapsedTime((int) diffSec);
         }
     }
 
@@ -351,6 +358,138 @@ public abstract class CardGameMediator {
         return _timeSettings;
     }
 
-    final Map<String, Integer> getPlayerClocks() { return Collections.unmodifiableMap(_playerClocks); }
+    final Map<String, Integer> getPlayerClocks() {
+        Map<String, Integer> result = new HashMap<>();
+        for (String playerId : _playerClocks.keySet()) {
+            result.put(playerId, _playerClocks.get(playerId).getTimeElapsed());
+        }
+        return result;
+    }
+
+    public String serializeCompleteGameState() throws JsonProcessingException {
+        _readLock.lock();
+        try {
+            GameState gameState = getGame().getGameState();
+            return gameState.serializeComplete();
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
+    public String serializeGameStateForPlayer(String playerId) throws JsonProcessingException {
+        _readLock.lock();
+        try {
+            GameState gameState = getGame().getGameState();
+            return gameState.serializeForPlayer(playerId);
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
+    private String getCardInfoJson(DefaultGame cardGame, PhysicalCard card) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<Object, Object> itemsToSerialize = new HashMap<>();
+        if (!card.getZone().isInPlay() && card.getZone() != Zone.HAND)
+            return mapper.writeValueAsString(itemsToSerialize);
+
+        Collection<String> modifiersToAdd = new ArrayList<>();
+        for (Modifier modifier : cardGame.getModifiersQuerying().getModifiersAffecting(card)) {
+            modifiersToAdd.add(modifier.getCardInfoText(getGame(), card));
+        }
+        itemsToSerialize.put("modifiers", modifiersToAdd);
+
+        List<String> affiliationTexts = new ArrayList<>();
+        if (card instanceof AffiliatedCard affiliatedCard) {
+            for (Affiliation affiliation : Affiliation.values()) {
+                if (affiliatedCard.isAffiliation(affiliation)) {
+                    affiliationTexts.add(affiliation.toHTML());
+                }
+            }
+        }
+        itemsToSerialize.put("affiliations", affiliationTexts);
+        
+        List<String> cardIconTexts = new ArrayList<>();
+        for (CardIcon icon : CardIcon.values()) {
+            if (card.hasIcon(getGame(), icon)) {
+                cardIconTexts.add(icon.toHTML());
+            }
+        }
+        itemsToSerialize.put("icons", cardIconTexts);
+        
+
+        List<Map<Object, Object>> crew = new ArrayList<>();
+        if (card instanceof CardWithCrew cardWithCrew) {
+            for (PhysicalCard crewCard : cardWithCrew.getCrew()) {
+                crew.add(getCardProperties(crewCard));
+            }
+        }
+        itemsToSerialize.put("crew", crew);
+
+        List<Map<Object, Object>> dockedCards = new ArrayList<>();
+        if (card instanceof FacilityCard facility) {
+            for (PhysicalCard ship : facility.getDockedShips()) {
+                dockedCards.add(getCardProperties(ship));
+            }
+        }
+        itemsToSerialize.put("dockedCards", dockedCards);
+
+        if (card instanceof PhysicalShipCard ship) {
+            List<String> staffingRequirements = new ArrayList<>();
+            if (!ship.getStaffingRequirements().isEmpty()) {
+                for (CardIcon icon : ship.getStaffingRequirements()) {
+                    staffingRequirements.add(icon.toHTML());
+                }
+            }
+            itemsToSerialize.put("staffingRequirements", staffingRequirements);
+
+            itemsToSerialize.put("isStaffed", ship.isStaffed());
+            itemsToSerialize.put("printedRange", ship.getBlueprint().getRange());
+            itemsToSerialize.put("rangeAvailable", ship.getRangeAvailable());
+        }
+
+        if (card instanceof MissionCard mission) {
+            ST1EGame stGame = mission.getGame();
+            itemsToSerialize.put("missionRequirements", mission.getMissionRequirements());
+
+            List<Map<Object, Object>> serializableAwayTeams = new ArrayList<>();
+            if (mission.getGameLocation() instanceof MissionLocation missionLocation && missionLocation.isPlanet()) {
+                List<AwayTeam> awayTeamsOnPlanet = missionLocation.getAwayTeamsOnSurface(stGame).toList();
+                for (AwayTeam team : awayTeamsOnPlanet) {
+                    Map<Object, Object> awayTeamInfo = new HashMap<>();
+                    awayTeamInfo.put("playerId", team.getPlayerId());
+                    List<Map<Object, Object>> awayTeamMembers = new ArrayList<>();
+                    for (PhysicalCard member : team.getCards()) {
+                        awayTeamMembers.add(getCardProperties(member));
+                    }
+                    awayTeamInfo.put("cardsInAwayTeam", awayTeamMembers);
+                    serializableAwayTeams.add(awayTeamInfo);
+                }
+            }
+            itemsToSerialize.put("awayTeams", serializableAwayTeams);
+        }
+
+        return mapper.writeValueAsString(itemsToSerialize);
+    }
+
+    private static Map<Object, Object> getCardProperties(PhysicalCard card) {
+        List<CardType> cardTypesShowingUniversal = new ArrayList<>();
+        cardTypesShowingUniversal.add(CardType.PERSONNEL);
+        cardTypesShowingUniversal.add(CardType.SHIP);
+        cardTypesShowingUniversal.add(CardType.FACILITY);
+        cardTypesShowingUniversal.add(CardType.SITE);
+
+
+        Map<Object, Object> cardMap = new HashMap<>();
+        cardMap.put("title", card.getTitle());
+        cardMap.put("cardId", card.getCardId());
+        cardMap.put("blueprintId", card.getBlueprintId());
+        cardMap.put("uniqueness", card.getUniqueness().name());
+        cardMap.put("cardType", card.getCardType().name());
+        cardMap.put("imageUrl", card.getImageUrl());
+        boolean hasUniversalIcon = card.isUniversal() &&
+                cardTypesShowingUniversal.contains(card.getCardType());
+        cardMap.put("hasUniversalIcon", hasUniversalIcon);
+        return cardMap;
+    }
 
 }

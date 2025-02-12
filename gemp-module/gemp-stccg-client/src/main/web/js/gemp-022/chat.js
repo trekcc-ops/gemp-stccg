@@ -80,7 +80,7 @@ export default class ChatBoxUI {
     
                     this.hideSystemButton = $("#showSystemButton");
                     if (showHideSystemButton) {
-                        hideSystemButton.button({
+                        this.hideSystemButton.button({
                             icon: "ui-icon-zoomin",
                             text:false
                         });
@@ -104,8 +104,8 @@ export default class ChatBoxUI {
                     }
     
                     this.comm.startChat(this.name,
-                            function (xml) {
-                                that.processMessages(xml, true);
+                            function (json) {
+                                that.processMessages(json, true);
                                 that.scrollChatToBottom();
                             }, this.chatErrorMap());
     
@@ -168,8 +168,8 @@ export default class ChatBoxUI {
                     this.div.append(this.chatTalkDiv);
     
                     this.comm.startChat(this.name,
-                            function (xml) {
-                                that.processMessages(xml, true);
+                            function (json) {
+                                that.processMessages(json, true);
                             }, this.chatErrorMap());
     
                     this.chatTalkDiv.bind("keypress", function (e) {
@@ -400,66 +400,68 @@ export default class ChatBoxUI {
             return no;
     }
 
-    processMessages(xml, processAgain) {
-        var root = xml.documentElement;
-        if (root.tagName == 'chat') {
-            this.retryCount = 0;
-            var messages = root.getElementsByTagName("message");
-            for (var i = 0; i < messages.length; i++) {
-                var message = messages[i];
-                var from = message.getAttribute("from");
-                var text = message.childNodes[0].nodeValue;
+    processMessages(json, processAgain) {
+        this.retryCount = 0;
+        for (var i = 0; i < json.messages.length; i++) {
+            var message = json.messages[i];
+            var from = message.fromUser;
+            var text = message.messageText;
 
-                var msgClass = "chatMessage";
-                if (from == "System")
-                    msgClass = "systemMessage";
-                var prefix = "<div class='msg-identifier'>";
-                if (this.showTimestamps) {
-                    var date = new Date(parseInt(message.getAttribute("date")));
-                    var dateStr = monthNames[date.getMonth()] + " " + date.getDate() + " " + this.formatToTwoDigits(date.getHours()) + ":" + this.formatToTwoDigits(date.getMinutes()) + ":" + this.formatToTwoDigits(date.getSeconds());
-                    prefix += "<span class='timestamp'>[" + dateStr + "]</span>";
-                }
-                
-                prefix += "<span> <b>" + from + ": </b></span></div>";
-                var postfix = "<div class='msg-content'>" + text + "</div>";
-                    
-                this.appendMessage(prefix + postfix, msgClass);
+            var msgClass = "chatMessage";
+            if (from == "System")
+                msgClass = "systemMessage";
+            var prefix = "<div class='msg-identifier'>";
+            if (this.showTimestamps) {
+                var date = new Date(parseInt(message.timestamp));
+                var dateStr = monthNames[date.getMonth()] + " " + date.getDate() + " " + this.formatToTwoDigits(date.getHours()) + ":" + this.formatToTwoDigits(date.getMinutes()) + ":" + this.formatToTwoDigits(date.getSeconds());
+                prefix += "<span class='timestamp'>[" + dateStr + "]</span>";
             }
 
-            var users = root.getElementsByTagName("user");
-            if (this.playerListener != null) {
-                var players = new Array();
-                for (var i = 0; i < users.length; i++) {
-                    var user = users[i];
-                    var userName = user.childNodes[0].nodeValue;
-                    players.push(userName);
-                }
-                this.playerListener(players);
-            }
+            prefix += "<span> <b>" + from + ": </b></span></div>";
+            var postfix = "<div class='msg-content'>" + text + "</div>";
 
-            if (this.chatListDiv != null) {
-                this.chatListDiv.html("");
-                for (var i = 0; i < users.length; i++) {
-                    var user = users[i];
-                    var userName = user.childNodes[0].nodeValue;
-                    this.chatListDiv.append("<div class='chatUser'>" + userName + "</div>");
-                }
-            }
-
-            var that = this;
-
-            if (processAgain)
-                setTimeout(function () {
-                    that.updateChatMessages();
-                }, that.chatUpdateInterval);
+            this.appendMessage(prefix + postfix, msgClass);
         }
+        
+        let formattedUserNames = new Array();
+        for (let i = 0; i < json.users.length; i++) {
+            let userInRoom = json.users[i];
+            let formattedUserName = "";
+            if (userInRoom.isAdmin == true) {
+                formattedUserName = "* " + userInRoom.name;
+            } else if (userInRoom.isLeagueAdmin == true) {
+                formattedUserName = "+ " + userInRoom.name;
+            } else {
+                formattedUserName = userInRoom.name;
+            }
+            formattedUserNames.push(formattedUserName);
+        }
+        formattedUserNames.sort();
+
+        if (this.playerListener != null) {
+            this.playerListener(formattedUserNames);
+        }
+
+        if (this.chatListDiv != null) {
+            this.chatListDiv.html("");
+            for (const userName of formattedUserNames) {
+                this.chatListDiv.append("<div class='chatUser'>" + userName + "</div>");
+            }
+        }
+
+        var that = this;
+
+        if (processAgain)
+            setTimeout(function () {
+                that.updateChatMessages();
+            }, that.chatUpdateInterval);
     }
 
     updateChatMessages() {
         var that = this;
 
-        this.comm.updateChat(this.name, function (xml) {
-            that.processMessages(xml, true);
+        this.comm.updateChat(this.name, function (json) {
+            that.processMessages(json, true);
         }, this.chatErrorMap());
     }
 

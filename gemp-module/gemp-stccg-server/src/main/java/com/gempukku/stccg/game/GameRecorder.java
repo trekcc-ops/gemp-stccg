@@ -1,15 +1,19 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.async.handler.HTMLUtils;
-import com.gempukku.stccg.database.DBData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.database.PlayerDAO;
-import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.stccg.hall.GameTimer;
+import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.UserNotFoundException;
+import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.gameevent.GameEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -38,6 +42,8 @@ import java.util.zip.InflaterInputStream;
 public class GameRecorder {
     private final GameHistoryService _gameHistoryService;
     private final PlayerDAO _playerDAO;
+    private static final Logger LOGGER = LogManager.getLogger(GameRecorder.class);
+
 
     public GameRecorder(GameHistoryService gameHistoryService, PlayerDAO playerDAO) {
         _gameHistoryService = gameHistoryService;
@@ -57,19 +63,24 @@ public class GameRecorder {
         }
 
         return (winnerName, winReason, loserName, loseReason) -> {
-            final ZonedDateTime endDate = ZonedDateTime.now(ZoneOffset.UTC);
+            try {
+                final ZonedDateTime endDate = ZonedDateTime.now(ZoneOffset.UTC);
 
-            var time = game.getTimeSettings();
-            var clocks = game.getPlayerClocks();
-            var gameInfo = new MyGameHistory(game, winnerName, loserName, winReason, loseReason, startDate, endDate,
-                    format, decks, tournamentName, time, clocks);
+                var time = game.getTimeSettings();
+                var clocks = game.getPlayerClocks();
+                User winner = _playerDAO.getPlayer(winnerName);
+                User loser = _playerDAO.getPlayer(loserName);
+                var gameInfo = new MyGameHistory(game, winner, loser, winReason, loseReason, startDate, endDate,
+                        format, decks, tournamentName, time, clocks);
 
-            Map<String, String> playerRecordingId = saveRecordedChannels(recordingChannels, gameInfo, decks);
-            gameInfo.id = _gameHistoryService.addGameHistory(gameInfo);
+                Map<String, String> playerRecordingId = saveRecordedChannels(recordingChannels, gameInfo, decks);
+                gameInfo.id = _gameHistoryService.addGameHistory(gameInfo);
 
-            if(format.isPlaytest())
-            {
-                game.sendMessageToPlayers(HTMLUtils.getPlayTestMessage(playerRecordingId, winnerName, loserName));
+                if (format.isPlaytest()) {
+                    game.sendMessageToPlayers(HTMLUtils.getPlayTestMessage(playerRecordingId, winnerName, loserName));
+                }
+            } catch(UserNotFoundException exp) {
+                LOGGER.error(exp.getMessage());
             }
 
         };
@@ -172,7 +183,7 @@ public class GameRecorder {
                 doc.appendChild(gameReplay);
 
                 try(var out = new PrintWriter(getSummaryFile(gameInfo).getAbsolutePath())) {
-                    out.println(JsonUtils.toJsonString(metadata));
+                    out.println(new ObjectMapper().writeValueAsString(metadata));
                 }
 
                 try (OutputStream replayStream = getRecordingWriteStream(playerId, recordingId, gameInfo.start_date)) {
@@ -216,16 +227,14 @@ public class GameRecorder {
     }
 
     private class MyGameHistory extends DBData.GameHistory {
-        public MyGameHistory(CardGameMediator game, String winnerName, String loserName, String winReason,
+        public MyGameHistory(CardGameMediator game, User winner, User loser, String winReason,
                              String loseReason, ZonedDateTime startDate, ZonedDateTime endDate, GameFormat format,
                              Map<String, ? extends CardDeck> decks, String tournamentName, GameTimer time,
                              Map<String, Integer> clocks) {
             gameId = game.getGameId();
 
-            winner = winnerName;
-            winnerId = _playerDAO.getPlayer(winnerName).getId();
-            loser = loserName;
-            loserId = _playerDAO.getPlayer(loserName).getId();
+            winnerId = winner.getId();
+            loserId = loser.getId();
 
             win_reason = winReason;
             lose_reason = loseReason;
@@ -249,8 +258,8 @@ public class GameRecorder {
             game_length_type = time.name();
             max_game_time = time.maxSecondsPerPlayer();
             game_timeout = time.maxSecondsPerDecision();
-            winner_clock_remaining = clocks.getOrDefault(winnerName, -1);
-            loser_clock_remaining = clocks.getOrDefault(loserName, -1);
+            winner_clock_remaining = clocks.getOrDefault(winner.getName(), -1);
+            loser_clock_remaining = clocks.getOrDefault(loser.getName(), -1);
 
             //Update this version as needed; note that this is the REPLAY FORMAT, not the JSON summary
             replay_version = 1;

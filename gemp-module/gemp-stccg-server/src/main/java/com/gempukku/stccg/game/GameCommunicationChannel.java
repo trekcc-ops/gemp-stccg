@@ -1,17 +1,21 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.stccg.gamestate.GameStateListener;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.gameevent.*;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class GameCommunicationChannel implements GameStateListener, LongPollableResource {
     private List<GameEvent> _events = Collections.synchronizedList(new LinkedList<>());
@@ -27,15 +31,16 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         _channelNumber = channelNumber;
     }
 
+    @JsonProperty("channelNumber")
     public final int getChannelNumber() {
         return _channelNumber;
     }
 
     public final void initializeBoard() throws PlayerNotFoundException {
-        appendEvent(new GameEvent(_game, GameEvent.Type.PARTICIPANTS, _game.getGameState(),
-                _game.getGameState().getPlayer(_playerId)));
+        appendEvent(new InitializeBoardForPlayerGameEvent(_game, _game.getGameState().getPlayer(_playerId)));
     }
 
+    @JsonIgnore
     public final String getPlayerId() { return _playerId; }
 
     @Override
@@ -44,6 +49,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
+    @JsonIgnore
     public final synchronized boolean registerRequest(WaitingRequest waitingRequest) {
         if (!_events.isEmpty())
             return true;
@@ -63,34 +69,31 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     public final void sendEvent(GameEvent gameEvent) {
         appendEvent(gameEvent);
     }
-    public final void sendEvent(GameEvent.Type eventType) {
-        appendEvent(new GameEvent(_game, eventType));
-    }
 
     @Override
     public final void setCurrentPhase(Phase phase) {
-        appendEvent(new GameEvent(_game, GameEvent.Type.GAME_PHASE_CHANGE, phase));
+        appendEvent(new StartOfPhaseGameEvent(phase));
     }
 
     @Override
     public final void setPlayerDecked(DefaultGame cardGame, Player player) {
-        appendEvent(new GameEvent(cardGame, GameEvent.Type.PLAYER_DECKED, player));
+        appendEvent(new GameEvent(GameEvent.Type.PLAYER_DECKED, player));
     }
 
     @Override
-    public final void setPlayerScore(String playerId) {
-        appendEvent(new GameEvent(_game, GameEvent.Type.PLAYER_SCORE, playerId));
+    public final void setPlayerScore(Player player) {
+        appendEvent(new GameEvent(GameEvent.Type.PLAYER_SCORE, player));
     }
 
     @Override
     public final void setTribbleSequence(String tribbleSequence) {
-        appendEvent(new GameEvent(_game, GameEvent.Type.TRIBBLE_SEQUENCE_UPDATE, tribbleSequence));
+        appendEvent(new UpdateTribbleSequenceGameEvent(tribbleSequence));
     }
 
     @Override
     public final void setCurrentPlayerId(String playerId) {
         try {
-            appendEvent(new GameEvent(_game, GameEvent.Type.TURN_CHANGE, _game.getPlayer(playerId)));
+            appendEvent(new GameEvent(GameEvent.Type.TURN_CHANGE, _game.getPlayer(playerId)));
         } catch(PlayerNotFoundException exp) {
             _game.sendErrorMessage(exp);
             _game.cancelGame();
@@ -99,21 +102,21 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     @Override
     public final void sendMessage(String message) {
-        appendEvent(new GameEvent(_game, GameEvent.Type.SEND_MESSAGE, message));
+        appendEvent(new SendMessageGameEvent(GameEvent.Type.SEND_MESSAGE, message));
     }
 
-    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) throws PlayerNotFoundException {
-        if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(_game, GameEvent.Type.DECISION, awaitingDecision,
-                    _game.getGameState().getPlayer(playerId)));
+    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision)
+            throws PlayerNotFoundException {
+        appendEvent(new SendDecisionGameEvent(_game, awaitingDecision, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override
     public final void sendWarning(String playerId, String warning) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(_game, GameEvent.Type.SEND_WARNING, warning));
+            appendEvent(new SendMessageGameEvent(GameEvent.Type.SEND_WARNING, warning));
     }
 
+    @JsonProperty("gameEvents")
     public final List<GameEvent> consumeGameEvents() {
         updateLastAccess();
         List<GameEvent> result = _events;
@@ -121,19 +124,18 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         return result;
     }
 
+    @JsonProperty("clocks")
+    public Collection<PlayerClock> getPlayerClocks() {
+        return _game.getPlayerClocks().values();
+    }
+
     private void updateLastAccess() {
         _lastConsumed = System.currentTimeMillis();
     }
 
+    @JsonIgnore
     public final long getLastAccessed() {
         return _lastConsumed;
     }
-
-    public final void serializeConsumedEvents(Document doc, Node element) {
-        for (GameEvent event : consumeGameEvents())
-            element.appendChild(event.serialize(doc));
-    }
-
-    public DefaultGame getGame() { return _game; }
 
 }

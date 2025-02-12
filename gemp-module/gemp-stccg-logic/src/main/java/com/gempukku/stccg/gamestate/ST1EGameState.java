@@ -10,6 +10,9 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -87,10 +90,6 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) throws InvalidGameLogicException {
-        return createNewAwayTeam(player, mission.getLocation());
-    }
-
     public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
         AwayTeam result = new AwayTeam(player, location, _nextAttemptingUnitId);
         _awayTeams.add(result);
@@ -125,7 +124,7 @@ public class ST1EGameState extends GameState {
         addCardToZone(newMission, Zone.SPACELINE, true, true);
     }
 
-    public void seedFacilityAtLocation(FacilityCard card, MissionLocation location) {
+    public void seedFacilityAtLocation(FacilityCard card, GameLocation location) {
         card.setLocation(location);
         addCardToZone(card, Zone.AT_LOCATION, true);
     }
@@ -185,8 +184,9 @@ public class ST1EGameState extends GameState {
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
     @Override
-    public void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot)
-            throws PlayerNotFoundException {
+    public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
+                                  boolean restoreSnapshot)
+            throws PlayerNotFoundException, InvalidGameLogicException {
         Player player = getPlayer(playerId);
         boolean sharedMission;
         Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
@@ -212,16 +212,17 @@ public class ST1EGameState extends GameState {
                 PhysicalCard physicalCard = cardIterator.next();
                 PhysicalCard attachedTo = physicalCard.getAttachedTo();
                 if (physicalCard.isPlacedOnMission()) {
-                    try {
-                        PhysicalCard topMission = physicalCard.getLocation().getTopMission();
+                    GameLocation location = physicalCard.getGameLocation();
+                    if (location instanceof MissionLocation mission) {
+                        PhysicalCard topMission = mission.getTopMissionCard();
                         if (sentCardsFromPlay.contains(topMission)) {
                             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                             sentCardsFromPlay.add(physicalCard);
 
                             cardIterator.remove();
                         }
-                    } catch(InvalidGameLogicException exp) {
-                        listener.getGame().sendErrorMessage(exp);
+                    } else {
+                        throw new InvalidGameLogicException("Card placed on mission, but is attached to a non-mission card");
                     }
                 } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
                     sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
@@ -247,6 +248,7 @@ public class ST1EGameState extends GameState {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
     }
+
 
     public List<AwayTeam> getAwayTeams() {
         return _awayTeams;

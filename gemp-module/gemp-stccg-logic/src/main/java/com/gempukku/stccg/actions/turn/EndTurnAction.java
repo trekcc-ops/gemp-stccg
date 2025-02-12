@@ -1,9 +1,8 @@
 package com.gempukku.stccg.actions.turn;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 
 public class EndTurnAction extends SystemQueueAction {

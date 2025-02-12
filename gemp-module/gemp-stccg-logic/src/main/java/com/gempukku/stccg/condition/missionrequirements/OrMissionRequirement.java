@@ -25,10 +25,6 @@ public class OrMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(PersonnelCard personnel) {
-        return _requirements.stream().anyMatch(requirement -> requirement.canBeMetBy(personnel));
-    }
-    @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
         return _requirements.stream().anyMatch(requirement -> requirement.canBeMetBy(personnel));
     }

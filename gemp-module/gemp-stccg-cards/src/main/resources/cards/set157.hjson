@@ -18,11 +18,9 @@
             tribble-value: 10
             tribble-power: advance
             image-url: https://www.trekcc.org/tribbles/cardimages/nbt/58V.jpg
-            effects: {
-                type: playOutOfSequence
-                requires: {
-                    type: tribbleSequenceBroken
-                }
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: tribbleSequenceBroken
             }
         }
         {

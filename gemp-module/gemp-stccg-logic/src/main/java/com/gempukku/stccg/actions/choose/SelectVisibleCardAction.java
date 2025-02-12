@@ -5,11 +5,11 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         _selectableCards = new FixedCardsResolver(cards);
     }
 
-    public SelectVisibleCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, Filter cardFilter) {
+    public SelectVisibleCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, CardFilter cardFilter) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCards = new CardFilterResolver(cardFilter);
     }

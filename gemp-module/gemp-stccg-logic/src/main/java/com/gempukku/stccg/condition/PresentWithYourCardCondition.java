@@ -2,13 +2,13 @@ package com.gempukku.stccg.condition;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PresentWithYourCardCondition implements Condition {
     private final int _count;
-    private final Filter _filters;
+    private final CardFilter _filters;
     private final PhysicalCard _card;
 
     /**

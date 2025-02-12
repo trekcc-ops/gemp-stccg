@@ -14,8 +14,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 
@@ -135,15 +137,16 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return null;
     }
 
-    private void processEffect(DefaultGame cardGame) throws InvalidGameLogicException {
+    private void processEffect(DefaultGame cardGame) {
         if (!_wasCarriedOut) {
+            GameLocation destinationLocation = _destination.getGameLocation();
             for (PhysicalCard card : _cardsToMove) {
                 cardGame.getGameState().transferCard(cardGame, card, _destination); // attach card to destination card
-                card.setLocation(_destination.getLocation());
+                card.setLocation(destinationLocation);
                 if (_origin instanceof MissionCard)
                     ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
-                if (_destination instanceof MissionCard mission)
-                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission.getLocation());
+                if (destinationLocation instanceof MissionLocation missionLocation)
+                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(missionLocation);
             }
             if (!_cardsToMove.isEmpty()) {
                 cardGame.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +

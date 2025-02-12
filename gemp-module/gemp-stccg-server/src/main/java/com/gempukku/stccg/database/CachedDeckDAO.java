@@ -1,14 +1,12 @@
 package com.gempukku.stccg.database;
 
 import com.gempukku.stccg.async.Cached;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CachedDeckDAO implements DeckDAO, Cached {
 
@@ -18,8 +16,8 @@ public class CachedDeckDAO implements DeckDAO, Cached {
             Collections.synchronizedMap(new LRUMap<>(DECK_LIMIT));
     private final Map<String, CardDeck> _decks = Collections.synchronizedMap(new LRUMap<>(DECK_LIMIT));
 
-    public CachedDeckDAO(DbAccess dbAccess) {
-        _delegate = LoggingProxy.createLoggingProxy(DeckDAO.class, new DbDeckDAO(dbAccess));
+    public CachedDeckDAO(ServerObjects serverObjects, DbAccess dbAccess) {
+        _delegate = LoggingProxy.createLoggingProxy(DeckDAO.class, new DbDeckDAO(serverObjects, dbAccess));
     }
 
     @Override
@@ -48,11 +46,11 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public final CardDeck getDeckForPlayer(User player, String name) {
-        String key = constructDeckKey(player, name);
+    public final CardDeck getDeckForUser(User user, String name) {
+        String key = constructDeckKey(user, name);
         CardDeck deck = _decks.get(key);
         if (deck == null) {
-            deck = _delegate.getDeckForPlayer(player, name);
+            deck = _delegate.getDeckForUser(user, name);
             _decks.put(key, deck);
         }
         return deck;
@@ -70,13 +68,15 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public final CardDeck renameDeck(User player, String oldName, String newName) {
+    public final CardDeck renameDeck(User player, String oldName, String newName) throws DeckNotFoundException {
         CardDeck deck = _delegate.renameDeck(player, oldName, newName);
         _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
         _decks.remove(constructDeckKey(player, oldName));
         _decks.put(constructDeckKey(player, newName), deck);
-
-        return deck;
+        if (deck != null)
+            return deck;
+        else
+            throw new DeckNotFoundException("Could not find deck '" + newName + "'");
     }
 
     @Override
@@ -85,4 +85,13 @@ public class CachedDeckDAO implements DeckDAO, Cached {
         _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
         _decks.put(constructDeckKey(player, name), deck);
     }
+
+    @Override
+    public final void saveDeckForPlayer(CardDeck deck, User player) {
+        String deckName = deck.getDeckName();
+        _delegate.saveDeckForPlayer(deck, player);
+        _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
+        _decks.put(constructDeckKey(player, deckName), deck);
+    }
+
 }

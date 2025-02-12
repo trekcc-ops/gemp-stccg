@@ -14,42 +14,36 @@ export default class PlayerStatsUI {
     loadPlayerStats() {
         var that = this;
         this.communication.getPlayerStats(
-            function (xml) {
-                // BUG: Can't get this callback function to get called, despite having game history.
-                // The communications.getPlayerStats function is called but returns a 404 XHR. Broken lookup?
-                that.loadedPlayerStats(xml);
+            function (json) {
+                that.loadedPlayerStats(json);
             });
     }
 
-    loadedPlayerStats(xml) {
-        // log(xml);
-        var root = xml.documentElement;
-        if (root.tagName == 'playerStats') {
-            $("#playerStats").html("");
+    loadedPlayerStats(json) {
+        $("#playerStats").html("");
 
-            var stats = root;
-
-            var casual = stats.getElementsByTagName("casual")[0];
-            var competitive = stats.getElementsByTagName("competitive")[0];
-
-            $("#playerStats").append("<div class='playerStatHeader'>Casual statistics</div>");
-            this.appendStats(casual);
-            $("#playerStats").append("<div class='playerStatHeader'>Competitive statistics</div>");
-            this.appendStats(competitive);
-        }
+        $("#playerStats").append("<div class='playerStatHeader'>Casual statistics</div>");
+        this.appendStats(json.casual);
+        $("#playerStats").append("<div class='playerStatHeader'>Competitive statistics</div>");
+        this.appendStats(json.competitive);
     }
 
-    appendStats(stats) {
-        var entries = stats.getElementsByTagName("entry");
-        if (entries.length == 0) {
+    appendStats(jsonStats) {
+        if (jsonStats.length == 0) {
             $("#playerStats").append("<i>You have not played any games counting for this statistics</i>");
         } else {
             var table = $("<table class='tables'></table>");
             table.append("<tr><th>Format name</th><th>Deck name</th><th># of wins</th><th># of losses</th><th>% of wins</th></tr>");
-            for (var i = 0; i < entries.length; i++) {
-                var entry = entries[i];
+            for (var i = 0; i < jsonStats.length; i++) {
+                let entry = jsonStats[i];
+                let format = entry.format;
+                let deckName = entry.deckName;
+                let wins = entry.wins;
+                let losses = entry.losses;
+                let winPercentage = ((wins / (wins + losses)) * 100).toFixed(1) + "%";
 
-                table.append("<tr><td>" + entry.getAttribute("format") + "</td><td>" + entry.getAttribute("deckName") + "</td><td>" + entry.getAttribute("wins") + "</td><td>" + entry.getAttribute("losses") + "</td><td>" + entry.getAttribute("percentage") + "</td></tr>");
+
+                table.append("<tr><td>" + format + "</td><td>" + deckName + "</td><td>" + wins + "</td><td>" + losses + "</td><td>" + winPercentage + "</td></tr>");
             }
 
             $("#playerStats").append(table);

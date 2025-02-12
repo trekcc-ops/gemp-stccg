@@ -14,8 +14,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
@@ -166,7 +166,14 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
                 Zone originalZone = _cardEnteringPlay.getZone();
                 reportable.reportToFacility(getSelectedDestination(cardGame));
-                performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
+                if (reportable instanceof AffiliatedCard affiliated) {
+                    Affiliation affiliation = affiliated.getCurrentAffiliation();
+                    if (affiliation == null) {
+                        throw new InvalidGameLogicException("Unable to identify affiliation for card");
+                    } else {
+                        performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
+                    }
+                }
                 cardGame.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, originalZone, _cardEnteringPlay));
             }

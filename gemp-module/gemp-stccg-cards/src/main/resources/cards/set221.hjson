@@ -34,12 +34,9 @@
             tribble-value: 100
             tribble-power: cheat
             image-url: https://www.trekcc.org/tribbles/cardimages/toadc/143V.jpg
-            effects: {
-                type: playOutOfSequence
-                requires: {
-                    type: nextTribbleInSequence
-                    count: 10
-                }
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: nextTribbleInSequence = 10
             }
         }
         {

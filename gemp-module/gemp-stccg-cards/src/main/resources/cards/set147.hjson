@@ -10,12 +10,9 @@
             tribble-value: 10000
             tribble-power: clone
             image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/1VTP.jpg
-            effects: {
-                type: playOutOfSequence
-                requires: {
-                    type: lastTribblePlayed
-                    count: 10000
-                }
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: lastTribblePlayed = 10000
             }
         }
         {
@@ -33,12 +30,9 @@
             tribble-value: 100000
             tribble-power: clone
             image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/8VTP.jpg
-            effects: {
-                type: playOutOfSequence
-                requires: {
-                    type: lastTribblePlayed
-                    count: 100000
-                }
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: lastTribblePlayed = 100000
             }
         }
         {
@@ -48,11 +42,9 @@
             tribble-value: 10000
             tribble-power: advance
             image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/18VTP.jpg
-            effects: {
-                type: playOutOfSequence
-                requires: {
-                    type: tribbleSequenceBroken
-                }
+            playOutOfSequenceCondition: {
+                type: playOutOfSequenceCondition
+                condition: tribbleSequenceBroken
             }
         }
     ]

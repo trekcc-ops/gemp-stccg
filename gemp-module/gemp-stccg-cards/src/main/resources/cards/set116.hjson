@@ -18,9 +18,9 @@
             title: Battle Bridge Door
             type: doorway
             property-logo: tng-logo
-            effects: [
+            actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }

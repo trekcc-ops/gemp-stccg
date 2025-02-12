@@ -8,44 +8,44 @@
             title: Reshape the Quadrant
             type: incident
             property-logo: ds9-logo
-            effects: [
+            actions: [
                 {
-                    type: seed
+                    type: seedThis
                     limit: 1
                     where: table
                 }
                 {
-                    type: action
-                    optional: true
+                    type: optionalTrigger
                     trigger: {
                         type: played
                         filter: self
                     }
                     effect: {
                         type: download
-                        filter: choose(reactor-core)
+                        target: {
+                            type: select
+                            filter: reactor-core
+                            count: 1
+                        }
                     }
                 }
                 {
-                    type: modifier
-                    modifier: {
-                        type: gainIcon
-                        filter: yoursEvenIfNotInPlay + (personnel OR ship OR Nor) + ds9-logo
-                        icon: ds9-icon
-                    }
-                }
-                {
-                    type: action
-                    optional: false
+                    type: requiredTrigger
                     trigger: {
                         type: played
                         player: you
                         filter: (personnel OR ship) + not(ds9-icon)
                     }
                     effect: {
-                        type: discard
-                        filter: self
+                        type: discardThisCard
                     }
+                }
+            ]
+            modifiers: [
+                {
+                    type: gainIcon
+                    filter: yoursEvenIfNotInPlay + (personnel OR ship OR Nor) + ds9-logo
+                    icon: ds9-icon
                 }
             ]
             image-url: https://www.trekcc.org/1e/cardimages/emissary/30.jpg

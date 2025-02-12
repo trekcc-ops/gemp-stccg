@@ -1,7 +1,6 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.AbstractServer;
-import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
@@ -11,21 +10,23 @@ import com.gempukku.stccg.chat.HallChatRoomMediator;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.CardGameMediator;
-import com.gempukku.stccg.game.GameParticipant;
-import com.gempukku.stccg.game.GameResultListener;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.tournament.*;
+import org.apache.commons.lang.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -62,7 +63,7 @@ public class HallServer extends AbstractServer {
         final IgnoreDAO ignoreDAO = objects.getIgnoreDAO();
         tableHolder = new TableHolder(objects);
         _hallChat = new HallChatRoomMediator(_serverObjects, HALL_TIMEOUT_PERIOD);
-        _hallChat.initialize();
+        objects.getChatServer().addChatRoom(_hallChat);
     }
 
     final void hallChanged() {
@@ -115,6 +116,12 @@ public class HallServer extends AbstractServer {
         }
     }
 
+    public DefaultGame getGameById(String gameId) throws HttpProcessingException {
+        GameServer gameServer = _serverObjects.getGameServer();
+        CardGameMediator mediator = gameServer.getGameById(gameId);
+        return mediator.getGame();
+    }
+
     public final int getTablesCount() {
         _hallDataAccessLock.readLock().lock();
         try {
@@ -129,13 +136,13 @@ public class HallServer extends AbstractServer {
             tournamentQueue.leaveAllPlayers(_collectionsManager);
     }
 
-    public final void createNewTable(String type, User deckOwner, String deckName, String timer,
+    public final void createNewTable(String type, User deckOwner, String deckName, GameTimer timer,
                                      String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         createNewTable(type, deckOwner, deckOwner, deckName, timer, description, isInviteOnly, isPrivate, isHidden);
     }
 
-    public final void createNewTable(String type, User player, User deckOwner, String deckName, String timer,
+    public final void createNewTable(String type, User player, User deckOwner, String deckName, GameTimer timer,
                                      String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         if (_shutdown)
@@ -156,13 +163,13 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private GameSettings createGameSettings(String formatSelection, String timer, String description,
+    private GameSettings createGameSettings(String formatSelection, GameTimer timer, String description,
                                             boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         League league = null;
         LeagueSeriesData seriesData = null;
         GameFormat format = _formatLibrary.getHallFormats().get(formatSelection);
-        GameTimer gameTimer = GameTimer.ResolveTimer(timer);
+        GameTimer gameTimer = timer;
 
         if (format == null) {
             // Maybe it's a league format?
@@ -214,7 +221,7 @@ public class HallServer extends AbstractServer {
 
             CardDeck cardDeck = null;
             if (tournamentQueue.isRequiresDeck())
-                cardDeck = validateUserAndDeck(_formatLibrary.getFormat(tournamentQueue.getFormat()), player, deckName);
+                cardDeck = validateUserAndDeck(_formatLibrary.get(tournamentQueue.getFormat()), player, deckName);
 
             tournamentQueue.joinPlayer(_collectionsManager, player, cardDeck);
 
@@ -333,12 +340,12 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public final void signupUserForHall(User player, HallChannelVisitor hallChannelVisitor) {
+    public final HallCommunicationChannel signupUserForHallAndGetChannel(User player) {
         _hallDataAccessLock.readLock().lock();
         try {
             HallCommunicationChannel channel = new HallCommunicationChannel(_nextChannelNumber++);
-            channel.processCommunicationChannel(this, player, hallChannelVisitor);
             _playerChannelCommunication.put(player, channel);
+            return channel;
         } finally {
             _hallDataAccessLock.readLock().unlock();
         }
@@ -363,33 +370,55 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    final void processHall(User player, HallInfoVisitor visitor) {
+
+    final void processHall(User player, Map<String, Map<String, String>> tournamentQueuesOnServer,
+                           Set<String> playedGamesOnServer, Map<String, Map<String, String>> tablesOnServer,
+                           Map<String, Map<String, String>> tournamentsOnServer, Map<Object, Object> itemsToSerialize) {
         final boolean isAdmin = player.isAdmin();
         _hallDataAccessLock.readLock().lock();
         try {
-            visitor.serverTime(DateUtils.getCurrentDateAsString());
+            String currentTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            itemsToSerialize.put("serverTime", currentTime);
             if (_messageOfTheDay != null)
-                visitor.setDailyMessage(_messageOfTheDay);
+                itemsToSerialize.put("messageOfTheDay", _messageOfTheDay);
 
-            tableHolder.processTables(isAdmin, player, visitor);
+            tableHolder.processTables(isAdmin, player, playedGamesOnServer, tablesOnServer);
 
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
-                GameFormat gameFormat = _formatLibrary.getFormat(tournamentQueue.getFormat());
-                visitor.visitTournamentQueue(tournamentQueue, tournamentQueueKey, gameFormat.getName(), player);
+                GameFormat gameFormat = _formatLibrary.get(tournamentQueue.getFormat());
+
+                Map<String, String> props = new HashMap<>();
+                props.put("cost", String.valueOf(tournamentQueue.getCost()));
+                props.put("collection", tournamentQueue.getCollectionType().getFullName());
+                props.put("format", gameFormat.getName());
+                props.put("queueName", tournamentQueue.getTournamentQueueName());
+                props.put("playerCount", String.valueOf(tournamentQueue.getPlayerCount()));
+                props.put("prizes", tournamentQueue.getPrizesDescription());
+                props.put("system", tournamentQueue.getPairingDescription());
+                props.put("start", tournamentQueue.getStartCondition());
+                props.put("signedUp", String.valueOf(tournamentQueue.isPlayerSignedUp(player.getName())));
+                props.put("joinable", String.valueOf(tournamentQueue.isJoinable()));
+
+                tournamentQueuesOnServer.put(tournamentQueueKey, props);
             }
 
             for (Map.Entry<String, Tournament> tournamentEntry : _runningTournaments.entrySet()) {
                 String tournamentKey = tournamentEntry.getKey();
                 Tournament tournament = tournamentEntry.getValue();
-                visitor.visitTournament(
-                        tournamentKey, tournament.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournament.getFormat()).getName(), tournament.getTournamentName(),
-                        tournament.getPlayOffSystem(), tournament.getTournamentStage().getHumanReadable(),
-                        tournament.getCurrentRound(), tournament.getPlayersInCompetitionCount(),
-                        tournament.isPlayerInCompetition(player.getName())
-                );
+
+                Map<String, String> props = new HashMap<>();
+                props.put("collection", tournament.getCollectionType().getFullName());
+                props.put("format", _formatLibrary.get(tournament.getFormat()).getName());
+                props.put("name", tournament.getTournamentName());
+                props.put("system", tournament.getPlayOffSystem());
+                props.put("stage", tournament.getTournamentStage().getHumanReadable());
+                props.put("round", String.valueOf(tournament.getCurrentRound()));
+                props.put("playerCount", String.valueOf(tournament.getPlayersInCompetitionCount()));
+                props.put("signedUp", String.valueOf(tournament.isPlayerInCompetition(player.getName())));
+
+                tournamentsOnServer.put(tournamentKey, props);
             }
         } finally {
             _hallDataAccessLock.readLock().unlock();
@@ -401,8 +430,8 @@ public class HallServer extends AbstractServer {
         if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
 
-        CardDeck deck = format.applyErrata(cardDeck);
-        List<String> validations = format.validateDeck(deck);
+        CardDeck deck = format.applyErrata(_serverObjects.getCardBlueprintLibrary(), cardDeck);
+        List<String> validations = format.validateDeck(_serverObjects.getCardBlueprintLibrary(), deck);
         if(!validations.isEmpty()) {
             String firstValidation = validations.stream().findFirst().orElse(null);
             long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();
@@ -553,7 +582,7 @@ public class HallServer extends AbstractServer {
 
         private HallTournamentCallback(Tournament tournament) {
             _tournament = tournament;
-            tournamentGameSettings = new GameSettings(_formatLibrary.getFormat(_tournament.getFormat()),
+            tournamentGameSettings = new GameSettings(_formatLibrary.get(_tournament.getFormat()),
                     null, null, true, false, false, false,
                     GameTimer.TOURNAMENT_TIMER, null);
         }

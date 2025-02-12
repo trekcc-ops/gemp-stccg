@@ -76,3 +76,28 @@
     z-index: 1000;
     outline: currentcolor none 0px;
 }
+
+.tooltip {
+  border-bottom: 1px dotted black;
+  color:#0000FF;
+}
+
+.tooltip span, .tooltip title {
+    display:none;
+}
+
+.tooltip:hover span:not(.click-disabled),.tooltip:active span:not(.click-disabled) {
+    display:block;
+    position:fixed;
+    overflow:hidden;
+    background-color: #FAEBD7;
+    width:auto;
+    z-index:9999;
+    top:20%;
+    left:350px;
+}
+
+.tooltip span > img {
+    max-width:none !important;
+    overflow:hidden;
+}

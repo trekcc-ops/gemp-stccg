@@ -4,19 +4,18 @@ import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.common.JsonViews;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
-import org.apache.commons.lang.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,8 +26,8 @@ import java.util.List;
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "zone", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable" })
-public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterable {
-    GenericGame getGame();
+public interface PhysicalCard extends Filterable {
+    DefaultGame getGame();
     Zone getZone();
     void setZone(Zone zone);
     String getBlueprintId();
@@ -38,12 +37,12 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
     @JsonProperty("owner")
     String getOwnerName();
 
-    void startAffectingGame(GenericGame game);
+    void startAffectingGame(DefaultGame game);
 
-    void stopAffectingGame(GenericGame game);
+    void stopAffectingGame(DefaultGame game);
 
     CardBlueprint getBlueprint();
-    void attachTo(PhysicalCard<? extends GenericGame> physicalCard);
+    void attachTo(PhysicalCard physicalCard);
     void detach();
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("attachedToCardId")
@@ -56,31 +55,31 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
     String getTitle();
     boolean canInsertIntoSpaceline();
 
-    boolean canBeSeeded(GenericGame game);
+    boolean canBeSeeded(DefaultGame game);
 
-    boolean canBePlayed(GenericGame game);
+    boolean canBePlayed(DefaultGame game);
 
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
     String getCardLink();
-    MissionLocation getLocation() throws InvalidGameLogicException;
-    void setLocation(MissionLocation location);
+    GameLocation getGameLocation();
+    void setLocation(GameLocation location);
     String getFullName();
     TopLevelSelectableAction getPlayCardAction();
     Action getPlayCardAction(boolean forFree);
 
-    boolean hasTextRemoved(GenericGame game);
+    boolean hasTextRemoved(DefaultGame game);
     CardType getCardType();
-    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, GenericGame cardGame);
+    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame);
     List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player);
 
-    List<PhysicalCard> getStackedCards(GenericGame game);
+    List<PhysicalCard> getStackedCards(DefaultGame game);
 
-    Collection<PhysicalCard> getAttachedCards(GenericGame game);
+    Collection<PhysicalCard> getAttachedCards(DefaultGame game);
 
-    List<? extends ExtraPlayCost> getExtraCostToPlay(GenericGame game);
+    List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game);
 
-    List<TopLevelSelectableAction> getOptionalInPlayActions(ActionResult actionResult, TriggerTiming timing);
+    List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(ActionResult actionResult);
     TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
     List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) throws PlayerNotFoundException;
 
@@ -88,22 +87,27 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
 
     boolean isUnique();
 
-    Integer getNumberOfCopiesSeededByPlayer(Player player, GenericGame cardGame);
+    Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame);
 
     boolean isCopyOf(PhysicalCard card);
-    TopLevelSelectableAction createSeedCardAction();
 
-    boolean hasIcon(GenericGame game, CardIcon icon);
+    List<TopLevelSelectableAction> createSeedCardActions();
+
+
+    boolean hasIcon(DefaultGame game, CardIcon icon);
     boolean isPresentWith(PhysicalCard card);
     boolean hasSkill(SkillName skillName);
 
-    boolean checkTurnLimit(GenericGame game, int max);
+    boolean checkTurnLimit(DefaultGame game, int max);
     boolean isInPlay();
     boolean hasCharacteristic(Characteristic characteristic);
 
-    boolean isMisSeed(GenericGame cardGame, MissionLocation mission) throws CardNotFoundException;
+    boolean isMisSeed(DefaultGame cardGame, MissionLocation mission) throws CardNotFoundException;
 
-    List<Action> getEncounterActions(GenericGame game, AttemptingUnit attemptingUnit, EncounterSeedCardAction action, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException;
+    List<Action> getEncounterActions(DefaultGame game, AttemptMissionAction attemptAction,
+                                     AttemptingUnit attemptingUnit,
+                                     MissionLocation missionLocation)
+            throws InvalidGameLogicException, PlayerNotFoundException;
 
     boolean isAtSpaceLocation();
 
@@ -119,11 +123,23 @@ public interface PhysicalCard<GenericGame extends DefaultGame> extends Filterabl
 
     @JsonProperty("locationId")
     default Integer getLocationIdForSerialization() {
-        try {
-            MissionLocation location = getLocation();
-            return location.getLocationId();
-        } catch (InvalidGameLogicException | NullPointerException exp) {
-            return null;
-        }
+        GameLocation location = getGameLocation();
+        if (location instanceof MissionLocation mission)
+            return mission.getLocationId();
+        else return null;
+    }
+
+    default MissionLocation getLocationDeprecatedOnlyUseForTests() throws InvalidGameLogicException {
+        if (getGameLocation() instanceof MissionLocation mission)
+            return mission;
+        throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
+    }
+
+    default Uniqueness getUniqueness() {
+        return getBlueprint().getUniqueness();
+    }
+
+    default boolean isUniversal() {
+        return getBlueprint().isUniversal();
     }
 }

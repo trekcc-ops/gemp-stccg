@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.discard.DiscardCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadMultipleCardsToSameCompatibleOutpostAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.RegularSkill;
-import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,8 +14,8 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -25,13 +24,6 @@ public class Blueprint109_063 extends CardBlueprint {
     // Assign Mission Specialists
     Blueprint109_063() {
         super("109_063");
-    }
-
-    @Override
-    public SeedCardActionSource getSeedCardActionSource() {
-        SeedCardActionSource actionSource = new SeedCardActionSource();
-        actionSource.setSeedZone(Zone.TABLE);
-        return actionSource;
     }
 
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,

@@ -10,6 +10,9 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.beans.ConstructorProperties;
@@ -48,7 +51,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {
                                 if ("revert".equalsIgnoreCase(result))
-                                    GameUtils.performRevert(cardGame, currentPlayer);
+                                    cardGame.performRevert(currentPlayer);
                                 Action action = getSelectedAction(result);
                                 cardGame.getActionsEnvironment().addActionToStack(action);
                             } catch(InvalidGameLogicException exp) {
@@ -78,7 +81,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             for (Player player : cardGame.getPlayers()) {
                 List<PhysicalCard> remainingSeeds = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeeds) {
-                    cardGame.removeCardsFromZone(player.getPlayerId(), Collections.singleton(card));
+                    cardGame.removeCardsFromZone(player, Collections.singleton(card));
                     gameState.addCardToZone(card, Zone.HAND);
                 }
             }

@@ -2,18 +2,14 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.chat.ChatRoomMediator;
-import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.chat.*;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.chat.ChatCommandErrorException;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameSettings;
-import com.gempukku.stccg.chat.ChatStrings;
-import com.gempukku.stccg.chat.ChatServer;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -129,7 +125,7 @@ public class GameServer extends AbstractServer {
                         _finishedGamesTime.put(gameId, new Date());
                     }
                 });
-            var formatName = gameSettings.getGameFormat().getName();
+            String formatName = gameSettings.getGameFormat().getName();
             cardGameMediator.sendMessageToPlayers("You're starting a game of " + formatName);
             StringBuilder players = new StringBuilder();
             Map<String, CardDeck> decks =  new HashMap<>();
@@ -188,7 +184,7 @@ public class GameServer extends AbstractServer {
     }
 
     public final CardDeck getParticipantDeck(User player, String deckName) {
-        return _deckDao.getDeckForPlayer(player, deckName);
+        return _deckDao.getDeckForUser(player, deckName);
     }
 
     public final CardGameMediator getGameById(String gameId) throws HttpProcessingException {
@@ -204,4 +200,14 @@ public class GameServer extends AbstractServer {
         else return mediator;
     }
 
+    public void cancelGame(User user, String gameId) throws HttpProcessingException {
+        CardGameMediator gameMediator = getGameById(gameId);
+        gameMediator.cancel(user);
+    }
+
+    public void setPlayerAutoPassSettings(User resourceOwner, String gameId, Set<Phase> autoPassPhases)
+            throws HttpProcessingException {
+        CardGameMediator gameMediator = getGameById(gameId);
+        gameMediator.setPlayerAutoPassSettings(resourceOwner, autoPassPhases);
+    }
 }

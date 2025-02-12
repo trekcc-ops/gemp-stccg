@@ -1,12 +1,10 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.packs.PackBox;
 import com.gempukku.stccg.packs.ProductLibrary;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,9 +13,8 @@ public class BoosterPackTest extends AbstractServerTest {
 
     @Test
     public void openingPacks() {
-        ProductLibrary productLibrary = new ProductLibrary(_cardLibrary);
-        Map<String, PackBox> products = productLibrary.getAllProducts();
-        final List<GenericCardItem> items = products.get("Premiere - Booster").openPack();
+        ProductLibrary productLibrary = new ProductLibrary();
+        final List<GenericCardItem> items = productLibrary.get("Premiere - Booster").openPack(_cardLibrary);
         assertEquals(15, items.size());
     }
 }

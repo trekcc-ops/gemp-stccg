@@ -9,7 +9,7 @@ import LeagueResultsUI from "../../js/gemp-022/leagueResultsUi.js";
 import { gatherData, sortOptionsByName, leagueErrorMap } from "../../js/gemp-022/leagueAdmin.js";
 import { susUserPopulate, banErrorMap } from "../../js/gemp-022/manage.js";
 import TournamentResultsUI from "../../js/gemp-022/tournamentResultsUi.js";
-import { formatPrice } from "../../js/gemp-022/common.js";
+import { formatPrice, getDateString } from "../../js/gemp-022/common.js";
 
 var chat;
 var hall;
@@ -113,18 +113,9 @@ document.addEventListener("DOMContentLoaded", function() {
 							// Code of Conduct
 							break;
 						case 2:
-							// Format rules
-							hall.comm.getFormatRules(
-								function(json){
-									$("#formatRules").html(json);
-								},
-								hall.hallErrorMap()
-							);
-							break;
-						case 3:
 							// League rules
 							break;
-						case 4:
+						case 3:
 							// PC Eratta
 							// BUG: https://github.com/trekcc-ops/gemp-stccg/issues/38
 							//      This seems to throw a 500 server error;
@@ -314,8 +305,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									
 									$("#shutdown-response").html("Processing...");
 										
-									hall.comm.setShutdownMode(true, function (string) {
-										$("#shutdown-response").html(string);
+									hall.comm.setShutdownMode(true, function (json) {
+										$("#shutdown-response").html(json.response);
 									});
 								});
 							
@@ -324,8 +315,8 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#shutdown-response").html("Processing...");
 									
-									hall.comm.setShutdownMode(false, function (string) {
-										$("#shutdown-response").html(string);
+									hall.comm.setShutdownMode(false, function (json) {
+										$("#shutdown-response").html(json.response);
 									});
 								});
 							
@@ -333,8 +324,11 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#cache-response").html("Processing...");
 									
-									hall.comm.clearServerCache(function (string) {
-										$("#cache-response").html(string);
+									hall.comm.clearServerCache(function (json) {
+									    let beforeCount = json.before;
+									    let afterCount = json.after;
+									    let htmlText = "Before: " + beforeCount + "<br><br>After: " + afterCount;
+										$("#cache-response").html(htmlText);
 									});
 								});
 							
@@ -342,8 +336,8 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#cards-response").html("Processing...");
 									
-									hall.comm.reloadCardDefinitions(function (string) {
-										$("#cards-response").html(string);
+									hall.comm.reloadCardDefinitions(function (json) {
+										$("#cards-response").html(json.response);
 									});
 								});
 							
@@ -351,8 +345,8 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									$("#motd-response").html("Processing...");
 									
-									hall.comm.setDailyMessage($("#motd-text").val(), function (string) {
-										$("#motd-response").html("Response: " + string);
+									hall.comm.setDailyMessage($("#motd-text").val(), function (json) {
+										$("#motd-response").html("Response: " + json.response);
 									});
 								});
 							
@@ -360,21 +354,6 @@ document.addEventListener("DOMContentLoaded", function() {
 								$("#motd-text").val(json.response);
 								$("#motd-preview").html(json.response);
 							});
-							
-							
-							$("#add-items-button").button().click(
-								function () {
-									let execute = confirm("Are you sure you want to issue these items in these quantities to these players in that collection? THIS CANNOT BE UNDONE, EVEN MANUALLY.");
-									
-									if(!execute)
-										return;
-									
-									$("#add-items-response").html("Processing...");
-									
-									hall.comm.addItems($("#collectionType").val(), $("#product").val(), $("#players").val(), function (string) {
-										$("#add-items-response").html("Response: " + string);
-									});
-								});
 							break;
 						case 2:
 							// League admin
@@ -388,45 +367,33 @@ document.addEventListener("DOMContentLoaded", function() {
 									closeText: ''
 								});
 
-							var displayPreview = function (xml) {
-								var root = xml.documentElement;
-								if(root == null)
-								{
-									xml = new DOMParser().parseFromString(xml,"text/xml");
-									root = xml.documentElement;
-								}
-								if (root.tagName == 'league') {
-									var league = root;
+							var displayPreview = function (json) {
+                                let league = json;
 
-									var leagueName = league.getAttribute("name");
-									var cost = parseInt(league.getAttribute("cost"));
+                                let leagueName = json.name;
 
-									previewDialog.append("<div class='leagueName'>" + leagueName + "</div>");
+                                previewDialog.append("<div class='leagueName'>" + leagueName + "</div>");
 
-									var costStr = formatPrice(cost);
-									previewDialog.append("<div class='leagueCost'><b>Cost:</b> " + costStr + "</div>");
+                                let allSeries = league.series;
+                                for (let j = 0; j < allSeries.length; j++) {
+                                
+                                    let thisSeries = allSeries[j];
+                                    let seriesName = thisSeries.type;
+                                    let seriesStart = thisSeries.start;
+                                    let seriesEnd = thisSeries.end;
+                                    let maxMatches = thisSeries.maxMatches;
+                                    let format = thisSeries.format;
+                                    let collection = thisSeries.collection;
+                                    let limited = thisSeries.limited;
 
-									var series = league.getElementsByTagName("series");
-									for (var j = 0; j < series.length; j++) {
+                                    let seriesText = seriesName + " - " + seriesStart + " to " + seriesEnd;
+                                    previewDialog.append("<div class='serieName'>" + seriesText + "</div>");
 
-										var serie = series[j];
-										var serieName = serie.getAttribute("type");
-										var serieStart = serie.getAttribute("start");
-										var serieEnd = serie.getAttribute("end");
-										var maxMatches = serie.getAttribute("maxMatches");
-										var format = serie.getAttribute("format");
-										var collection = serie.getAttribute("collection");
-										var limited = serie.getAttribute("limited");
+                                    previewDialog.append("<div><b>Format:</b> " + ((limited == "true") ? "Limited" : "Constructed") + " " + format + "</div>");
+                                    previewDialog.append("<div><b>Collection:</b> " + collection + "</div>");
 
-										var serieText = serieName + " - " + getDateString(serieStart) + " to " + getDateString(serieEnd);
-										previewDialog.append("<div class='serieName'>" + serieText + "</div>");
-
-										previewDialog.append("<div><b>Format:</b> " + ((limited == "true") ? "Limited" : "Constructed") + " " + format + "</div>");
-										previewDialog.append("<div><b>Collection:</b> " + collection + "</div>");
-
-										previewDialog.append("<div>Maximum ranked matches in serie: " + maxMatches + "</div>");
-									}
-								}
+                                    previewDialog.append("<div>Maximum ranked matches in serie: " + maxMatches + "</div>");
+                                }
 							};
 		
 							var now = new Date();
@@ -444,17 +411,16 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									let resultdiv = $("#sealed-league-result");
 									resultdiv.html("Processing...");
-									
+
 									hall.comm.previewSealedLeague(
 										$("#sealed-format").val(), 
 										$("#sealed-start").val(), 
 										$("#sealed-duration").val(),
 										$("#sealed-matches").val(),
 										$("#sealed-name").val(),
-										$("#sealed-cost").val(), 
-										function (xml) {
+										function (json) {
 											previewDialog.html("");
-											displayPreview(xml);
+											displayPreview(json);
 											resultdiv.html("OK");
 											previewDialog.dialog("open");
 										}, leagueErrorMap(resultdiv));
@@ -464,7 +430,7 @@ document.addEventListener("DOMContentLoaded", function() {
 								function () {
 									let resultdiv = $("#sealed-league-result");
 									resultdiv.html("Processing...");
-									
+
 									hall.comm.addSealedLeague(
 										$("#sealed-format").val(), 
 										$("#sealed-start").val(), 
@@ -472,8 +438,8 @@ document.addEventListener("DOMContentLoaded", function() {
 										$("#sealed-matches").val(),
 										$("#sealed-name").val(),
 										$("#sealed-cost").val(), 
-										function (xml) {
-											resultdiv.html("OK");
+										function (json) {
+											resultdiv.html(json.response);
 										}, leagueErrorMap(resultdiv));
 									});
 		
@@ -510,8 +476,8 @@ document.addEventListener("DOMContentLoaded", function() {
 										$("#solo-draft-matches").val(),
 										$("#solo-draft-name").val(),
 										$("#solo-draft-cost").val(), 
-										function (xml) {
-											resultdiv.html("OK");
+										function (json) {
+											resultdiv.html(json.response);
 										}, leagueErrorMap(resultdiv));
 									});
 		
@@ -555,8 +521,8 @@ document.addEventListener("DOMContentLoaded", function() {
 										data.format,
 										data.seriesDuration,
 										data.maxMatches,
-										function (xml) {
-											resultdiv.html("OK");
+										function (json) {
+											resultdiv.html(json.response);
 										}, leagueErrorMap(resultdiv));
 									});
 
@@ -573,15 +539,13 @@ document.addEventListener("DOMContentLoaded", function() {
 										$(".serieData").last().clone().appendTo(".series");
 									});
 							
-							// BUG: getFormats causes a 500 server error, probably due to LOTR decks or something.
-							//      https://github.com/trekcc-ops/gemp-stccg/issues/39
 							hall.comm.getFormats(true,
 								function (json) 
 								{
 									//console.log(json);
 									let drafts = json.DraftTemplates;
 									let formats = json.Formats;
-									let sealed = json.SealedTemplates
+									let sealed = json.SealedTemplates;
 									//console.log(drafts);
 									for (var prop in drafts) {
 										if (Object.prototype.hasOwnProperty.call(drafts, prop)) {
@@ -622,20 +586,24 @@ document.addEventListener("DOMContentLoaded", function() {
 									//console.log(sealed);
 									for (var prop in sealed) {
 										if (Object.prototype.hasOwnProperty.call(sealed, prop)) {
-											//console.log(prop);
+										    console.log("prop:");
+
+											let id = sealed[prop].id;
+											let serieCount = sealed[prop].seriesProduct.length;
+
+											let selectFormatElement = document.getElementById("sealed-format");
+											let newOption = document.createElement("option");
+											newOption.value = id;
+											newOption.text = prop + " - " + serieCount + " Series";
+											selectFormatElement.appendChild(newOption);
 											
-											let code = sealed[prop].Format;
-											let id = sealed[prop].ID;
-											let serieCount = sealed[prop].SeriesProduct.length;
-											
-											var item = $("<option/>")
+/*											var item = $("<option/>")
 												.attr("value", id)
 												.text(prop + " - " + serieCount + " Series");
-											$("#sealed-format").append(item);
+											$("#sealed-format").append(item); */
 										}
 									}
-									sortOptionsByName("#sealed-format");
-								}, 
+								},
 								{
 									"400":function () 
 									{
@@ -656,8 +624,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#reset-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.resetUserPassword($("#reset-input").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.resetUserPassword($("#reset-input").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							
@@ -666,8 +634,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#permaban-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.permabanUser($("#permaban-input").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.permabanUser($("#permaban-input").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							
@@ -676,8 +644,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#tempban-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.tempbanUser($("#tempban-input").val(), $("#temp-ban-duration-select").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.tempbanUser($("#tempban-input").val(), $("#temp-ban-duration-select").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							
@@ -686,8 +654,8 @@ document.addEventListener("DOMContentLoaded", function() {
 									let resultdiv = $("#unban-result");
 									resultdiv.html("Processing...");
 									
-									hall.comm.unbanUser($("#unban-input").val(), function (string) {
-										resultdiv.html(string);
+									hall.comm.unbanUser($("#unban-input").val(), function (json) {
+										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));
 								});
 							

@@ -11,10 +11,6 @@ public class CharacteristicMissionRequirement implements MissionRequirement {
     public CharacteristicMissionRequirement(Characteristic characteristic) {
         _characteristic = characteristic;
     }
-    @Override
-    public boolean canBeMetBy(PersonnelCard personnel) {
-        return personnel.hasCharacteristic(_characteristic);
-    }
 
     @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel) {

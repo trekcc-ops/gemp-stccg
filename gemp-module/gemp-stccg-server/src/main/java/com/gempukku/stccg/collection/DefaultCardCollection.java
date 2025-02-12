@@ -1,5 +1,6 @@
 package com.gempukku.stccg.collection;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -84,16 +85,17 @@ public class DefaultCardCollection implements MutableCardCollection {
         return true;
     }
 
-    private void addAllItems(GenericCardItem item, DefaultCardCollection coll, ProductLibrary lib) {
+    private void addAllItems(GenericCardItem item, DefaultCardCollection coll, CardBlueprintLibrary cardLibrary,
+                             ProductLibrary lib) {
         if(item.isRecursive() && item.getType() == CardItemType.PACK) {
             for(int i = 0; i < item.getCount(); i++) {
                 var bp = item.getBlueprintId();
-                var product = lib.GetProduct(bp);
+                var product = lib.get(bp);
                 if(product == null)
                     continue;
-                var children = product.openPack();
+                var children = product.openPack(cardLibrary);
                 for(var child : children) {
-                    addAllItems(child, coll, lib);
+                    addAllItems(child, coll, cardLibrary, lib);
                 }
             }
         }
@@ -104,23 +106,25 @@ public class DefaultCardCollection implements MutableCardCollection {
 
     }
 
+
     @Override
-    public synchronized CardCollection openPack(String packId, String selection, ProductLibrary productLibrary) {
+    public synchronized CardCollection openPack(String packId, String selection, CardBlueprintLibrary cardLibrary,
+                                                ProductLibrary productLibrary) {
         GenericCardItem count = _counts.get(packId);
         if (count == null)
             return null;
         if (count.getCount() > 0) {
             List<GenericCardItem> packContents = null;
             if (packId.startsWith("(S)")) {
-                if (selection != null && hasSelection(packId, selection, productLibrary)) {
+                if (selection != null && hasSelection(packId, selection, cardLibrary, productLibrary)) {
                     packContents = new LinkedList<>();
                     packContents.add(GenericCardItem.createItem(selection, 1));
                 }
             } else {
-                var product = productLibrary.GetProduct(packId);
+                var product = productLibrary.get(packId);
                 if(product == null)
                     return null;
-                packContents = product.openPack();
+                packContents = product.openPack(cardLibrary);
             }
 
             if (packContents == null)
@@ -129,7 +133,7 @@ public class DefaultCardCollection implements MutableCardCollection {
             DefaultCardCollection packCollection = new DefaultCardCollection();
 
             for (GenericCardItem itemFromPack : packContents) {
-                addAllItems(itemFromPack, packCollection, productLibrary);
+                addAllItems(itemFromPack, packCollection, cardLibrary, productLibrary);
             }
 
             removeItem(packId, 1);
@@ -152,8 +156,9 @@ public class DefaultCardCollection implements MutableCardCollection {
         return count.getCount();
     }
 
-    private boolean hasSelection(String packId, String selection, ProductLibrary productLibrary) {
-        for (GenericCardItem item : productLibrary.GetProduct(packId).openPack()) {
+    private boolean hasSelection(String packId, String selection, CardBlueprintLibrary cardLibrary,
+                                 ProductLibrary productLibrary) {
+        for (GenericCardItem item : productLibrary.get(packId).openPack(cardLibrary)) {
             if (item.getBlueprintId().equals(selection))
                 return true;
         }

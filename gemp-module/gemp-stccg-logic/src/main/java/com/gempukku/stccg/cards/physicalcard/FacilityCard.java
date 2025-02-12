@@ -12,9 +12,11 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -36,11 +38,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
                 _game, this, mission, SeedCardAction.class, _owner, getAffiliationOptions());
     }
 
-    public boolean canSeedAtMissionAsAffiliation(MissionLocation mission, Affiliation affiliation) {
+    public boolean canSeedAtMissionAsAffiliation(GameLocation location, Affiliation affiliation) {
         // Checks if the mission is a legal reporting destination for seeding this facility
         // Assumes an affiliation has already been selected
         return _game.getRules().isLocationValidPlayCardDestinationPerRules(
-                _game, this, mission, SeedCardAction.class, _owner, List.of(affiliation));
+                _game, this, location, SeedCardAction.class, _owner, List.of(affiliation));
     }
 
     public Quadrant getNativeQuadrant() {
@@ -49,7 +51,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
 
 
     @Override
-    public boolean canBeSeeded(ST1EGame game) {
+    public boolean canBeSeeded(DefaultGame game) {
         for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
             if (canSeedAtMission(location))
                 return true;
@@ -78,7 +80,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, ST1EGame cardGame) {
+    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {
@@ -92,10 +94,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return actions;
     }
 
-    public TopLevelSelectableAction createSeedCardAction() {
-        return new SeedOutpostAction(this);
+    public List<TopLevelSelectableAction> createSeedCardActions() {
+        return List.of(new SeedOutpostAction(this));
         // TODO - Add actions for non-outposts
     }
+
 
     public Collection<PhysicalCard> getDockedShips() {
         return Filters.filter(getAttachedCards(_game), Filters.ship);

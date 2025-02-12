@@ -4,22 +4,20 @@ import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
-import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -28,12 +26,12 @@ import java.util.function.Function;
 
 public class CardResolver {
 
-    public static EffectBlueprint resolveCardsInZone(String type, FilterableSource choiceFilter,
-                                                     ValueSource countSource,
-                                                     String memory, PlayerSource selectingPlayer,
-                                                     PlayerSource targetPlayer, String choiceText,
-                                                     FilterableSource typeFilter, Zone zone,
-                                                     Function<ActionContext, List<PhysicalCard>> cardSource) {
+    public static SubActionBlueprint resolveCardsInZone(String type, FilterBlueprint choiceFilter,
+                                                        ValueSource countSource,
+                                                        String memory, PlayerSource selectingPlayer,
+                                                        PlayerSource targetPlayer, String choiceText,
+                                                        FilterBlueprint typeFilter, Zone zone,
+                                                        Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
 
@@ -49,44 +47,11 @@ public class CardResolver {
     }
 
 
-
-    public static EffectBlueprint resolveCardsInPlay(String type, ValueSource countSource, String memory,
-                                                     PlayerSource choicePlayer, String choiceText,
-                                                     FilterableSource typeFilter) {
-        final String sourceMemory =
-                type.startsWith("memory(") ? type.substring(type.indexOf("(") + 1, type.lastIndexOf(")")) : null;
-        Function<ActionContext, List<PhysicalCard>> cardSource =
-                actionContext -> Filters.filterActive(actionContext.getGame(), sourceMemory == null ? Filters.any :
-                        actionContext.getCardFromMemory(sourceMemory)).stream().toList();
-        return resolveCardsInPlay(type, typeFilter, null, null, countSource, memory,
-                choicePlayer, choiceText, cardSource);
-    }
-
-
-    public static EffectBlueprint resolveCardsInPlay(String type, FilterableSource typeFilter,
-                                                     FilterableSource choiceFilter, FilterableSource playabilityFilter,
-                                                     ValueSource countSource, String memory, PlayerSource choicePlayer,
-                                                     String choiceText,
-                                                     Function<ActionContext, List<PhysicalCard>> cardSource) {
-
-        String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
-
-        return switch (selectionType) {
-            case "self", "memory", "all", "random" ->
-                    finalTargetAppender(choiceFilter, playabilityFilter, countSource, memory, cardSource,
-                            selectionType, typeFilter);
-            case "choose" -> resolveChoiceCardsWithEffect(typeFilter, playabilityFilter, countSource, cardSource,
-                    getChoiceEffectFromInPlay(choiceText, countSource, memory, choicePlayer, cardSource, typeFilter, choiceFilter));
-            default -> throw new RuntimeException("Unable to resolve card resolver of type: " + selectionType);
-        };
-    }
-
-
-    private static Function<ActionContext, Action> getChoiceEffectFromInPlay(String choiceText, ValueSource countSource,
+    public static Function<ActionContext, Action> getChoiceEffectFromInPlay(String choiceText, ValueSource countSource,
                                                                              String memory,
                                                                              PlayerSource choicePlayer,
                                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                                             FilterableSource typeFilter, FilterableSource choiceFilter) {
+                                                                             FilterBlueprint typeFilter, FilterBlueprint choiceFilter) {
         return (actionContext) -> {
             try {
                 List<PhysicalCard> possibleCards = (List<PhysicalCard>) Filters.filter(cardSource.apply(actionContext),
@@ -132,13 +97,13 @@ public class CardResolver {
     }
 
 
-    private static DelayedEffectBlueprint finalTargetAppender(FilterableSource choiceFilter,
-                                                              FilterableSource playabilityFilter,
+    public static SubActionBlueprint finalTargetAppender(FilterBlueprint choiceFilter,
+                                                              FilterBlueprint playabilityFilter,
                                                               ValueSource countSource, String memory,
                                                               Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                              String selectionType, FilterableSource typeFilter) {
+                                                              String selectionType, FilterBlueprint typeFilter) {
 
-        return new DelayedEffectBlueprint() {
+        return new SubActionBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 switch(selectionType) {
@@ -160,7 +125,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction parentAction, ActionContext context) throws PlayerNotFoundException {
+            public List<Action> createActions(CardPerformedAction parentAction, ActionContext context) throws PlayerNotFoundException {
                 Action action = switch (selectionType) {
                     case "self", "memory" -> {
                         Collection<PhysicalCard> result = filterCards(context, choiceFilter);
@@ -203,7 +168,7 @@ public class CardResolver {
                 }
             }
 
-            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
+            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterBlueprint filter) {
                 Filterable additionalFilterable = (filter == null) ? Filters.any : filter.getFilterable(actionContext);
                 return switch (selectionType) {
                     case "self" ->
@@ -223,13 +188,13 @@ public class CardResolver {
     }
 
 
-    private static DelayedEffectBlueprint resolveChoiceCards(FilterableSource typeFilter, FilterableSource choiceFilter,
-                                                             FilterableSource playabilityFilter,
+    private static SubActionBlueprint resolveChoiceCards(FilterBlueprint typeFilter, FilterBlueprint choiceFilter,
+                                                             FilterBlueprint playabilityFilter,
                                                              ValueSource countSource,
                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
                                                              ChoiceActionSource effectSource) {
 
-        return new DelayedEffectBlueprint() {
+        return new SubActionBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 int min = countSource.getMinimum(actionContext);
@@ -237,7 +202,7 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
+            public List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
                 List<Action> result = new LinkedList<>();
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
                 Action selectionAction = effectSource.createAction(cards, action, context,
@@ -246,7 +211,7 @@ public class CardResolver {
                 return result;
             }
 
-            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
+            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterBlueprint filter) {
                 Filterable filterable = typeFilter.getFilterable(actionContext);
                 Filterable additionalFilterable = Filters.any;
                 if (filter != null)
@@ -257,12 +222,12 @@ public class CardResolver {
         };
     }
 
-    private static DelayedEffectBlueprint resolveChoiceCardsWithEffect(FilterableSource typeFilter,
-                                                                       FilterableSource playabilityFilter,
+    public static SubActionBlueprint resolveChoiceCardsWithEffect(FilterBlueprint typeFilter,
+                                                                       FilterBlueprint playabilityFilter,
                                                                        ValueSource countSource,
                                                                        Function<ActionContext, List<PhysicalCard>> cardSource,
                                                                        Function<ActionContext, Action> choiceAction) {
-        return new DelayedEffectBlueprint() {
+        return new SubActionBlueprint() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 int min = countSource.getMinimum(actionContext);
@@ -270,14 +235,14 @@ public class CardResolver {
             }
 
             @Override
-            protected List<Action> createActions(CardPerformedAction action, ActionContext context) {
+            public List<Action> createActions(CardPerformedAction action, ActionContext context) {
                 List<Action> result = new LinkedList<>();
                 Action selectionAction = choiceAction.apply(context);
                 result.add(selectionAction);
                 return result;
             }
 
-            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {
+            private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterBlueprint filter) {
                 Filterable filterable = typeFilter.getFilterable(actionContext);
                 Filterable additionalFilterable = Filters.any;
                 if (filter != null)

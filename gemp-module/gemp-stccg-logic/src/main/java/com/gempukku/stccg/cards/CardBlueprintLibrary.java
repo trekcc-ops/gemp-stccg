@@ -1,32 +1,34 @@
 package com.gempukku.stccg.cards;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintDeserializer;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardDeserializer;
-import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.common.*;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.GameType;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Uniqueness;
 import com.gempukku.stccg.game.ICallback;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hjson.JsonValue;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-public class CardBlueprintLibrary {
+public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint> {
     private static final Logger LOGGER = LogManager.getLogger(CardBlueprintLibrary.class);
     private final Map<String, CardBlueprint> _blueprints = new HashMap<>();
     private final Map<String, String> _blueprintMapping = new HashMap<>();
@@ -37,18 +39,21 @@ public class CardBlueprintLibrary {
     private final File _cardPath = AppConfig.getCardsPath();
     private final List<ICallback> _refreshCallbacks = new ArrayList<>();
     private boolean _blueprintLoadErrorEncountered;
-    private final ObjectMapper _objectMapper = new ObjectMapper();
+    private final ObjectMapper _jsonMapper;
 
     public CardBlueprintLibrary() {
         LOGGER.info("Locking blueprint library in constructor");
 
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(CardBlueprint.class, new CardBlueprintDeserializer());
-        _objectMapper.registerModule(module);
-
         //This will be released after the library has been initialized. Until then, all functional uses will be blocked.
         collectionReady.acquireUninterruptibly();
         _blueprintLoadErrorEncountered = false;
+
+        _jsonMapper = JsonMapper.builder()
+                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
+                .addHandler(new CommaSeparatedValuesDeserializationProblemHandler())
+                .addHandler(new EnumSpecialCharacterDeserializationProblemHandler())
+                .build();
 
         loadSetsWithCards(_cardPath);
         loadMappings();
@@ -158,15 +163,16 @@ public class CardBlueprintLibrary {
     }
 
     private void loadSetWithCardsFromFile(File file) {
-        if (JsonUtils.isNotAValidHJSONFile(file))
+        if (isNotValidJsonFile(file))
             return;
         try {
-            JsonNode jsonNode = JsonUtils.readJsonFromFile(file);
+            Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+            JsonNode jsonNode = _jsonMapper.readTree(JsonValue.readHjson(reader).toString());
 
             // Add set
             String setId = jsonNode.get("setId").textValue();
             String setName = jsonNode.get("setName").textValue();
-            GameType gameType = BlueprintUtils.getEnum(GameType.class, jsonNode, "gameType");
+            GameType gameType = _jsonMapper.treeToValue(jsonNode.get("gameType"), GameType.class);
             Set<String> flags = new HashSet<>();
             determineNeedsLoadingFlag(jsonNode, flags);
             SetDefinition setDefinition = new SetDefinition(setId, setName, gameType, flags);
@@ -208,10 +214,28 @@ public class CardBlueprintLibrary {
             throw new InvalidCardDefinitionException("Card has to have a title");
         if (blueprint.getCardType() == null)
             throw new InvalidCardDefinitionException("Card has to have a type");
-        if (blueprint.getUniqueness() == null)
-            throw new InvalidCardDefinitionException("Card has to have a uniqueness");
+
+        // Set uniqueness based on card type if none was specified
+        List<CardType> implicitlyUniqueTypes = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
+                CardType.SITE, CardType.MISSION, CardType.TIME_LOCATION);
+        if (blueprint.getUniqueness() == null) {
+            if (implicitlyUniqueTypes.contains(blueprint.getCardType())) {
+                blueprint.setUniqueness(Uniqueness.UNIQUE);
+            } else {
+                blueprint.setUniqueness(Uniqueness.UNIVERSAL);
+            }
+        }
+
+        // Set rarity to V if none was specified
         if (blueprint.getRarity() == null)
-            throw new InvalidCardDefinitionException("Card has to have a rarity");
+            blueprint.setRarity("V");
+
+        // Set quadrant to alpha if none was specified
+        List<CardType> implicitlyAlphaQuadrant = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
+                CardType.MISSION);
+        if (blueprint.getQuadrant() == null && implicitlyAlphaQuadrant.contains(blueprint.getCardType()))
+            blueprint.setQuadrant(Quadrant.ALPHA);
+
 
         if (blueprint.getCardType() == CardType.MISSION) {
             if (blueprint.getPropertyLogo() != null)
@@ -241,11 +265,28 @@ public class CardBlueprintLibrary {
         else if (!cardNode.get("blueprintId").textValue().equals(blueprintId))
             throw new InvalidCardDefinitionException("Non-matching card blueprint property 'blueprintId' " +
                     cardNode.get("blueprintId").textValue() + " for blueprint " + blueprintId);
-        CardBlueprint result = _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
+        CardBlueprint result = _jsonMapper.treeToValue(cardNode, getBlueprintClass(cardNode));
         result.setGameType(gameType);
         validateConsistency(result, gameType);
         return result;
     }
+
+    private Class<? extends CardBlueprint> getBlueprintClass(JsonNode node) throws InvalidCardDefinitionException {
+        String blueprintId = node.get("blueprintId").textValue();
+        if (blueprintId == null)
+            throw new InvalidCardDefinitionException("Null value for blueprintId");
+        if (node.has("java-blueprint")) {
+            try {
+                Class<?> result = Class.forName("com.gempukku.stccg.cards.blueprints.Blueprint" + blueprintId);
+                return (Class<? extends CardBlueprint>) result;
+            } catch (ClassNotFoundException exception) {
+                throw new InvalidCardDefinitionException("No valid Java class found for blueprint " + blueprintId);
+            }
+        } else {
+            return CardBlueprint.class;
+        }
+    }
+
 
     public String getBaseBlueprintId(String blueprintId) {
         String rawBlueprintId = stripBlueprintModifiers(blueprintId);
@@ -275,8 +316,8 @@ public class CardBlueprintLibrary {
         }
     }
 
-    private Map<String, JSONData.ErrataInfo> errataMappings = null;
-    public Map<String, JSONData.ErrataInfo> getErrata() {
+    private Map<String, ErrataInfo> errataMappings = null;
+    public Map<String, ErrataInfo> getErrata() {
         try {
             if(errataMappings == null) {
                 collectionReady.acquire();
@@ -285,7 +326,7 @@ public class CardBlueprintLibrary {
                     var parts = id.split("_");
                     int setID = Integer.parseInt(parts[0]);
                     String cardID = parts[1];
-                    JSONData.ErrataInfo card;
+                    ErrataInfo card;
                     String base;
                     if(setID >= 50 && setID <= 69) {
                         base = (setID - 50) + "_" + cardID;
@@ -304,7 +345,7 @@ public class CardBlueprintLibrary {
                     }
                     else {
                         CardBlueprint blueprint = _blueprints.get(base);
-                        card = new JSONData.ErrataInfo();
+                        card = new ErrataInfo();
                         card.BaseID = base;
                         card.Name = blueprint.getFullName();
                         card.LinkText = blueprint.getCardLink();
@@ -312,7 +353,7 @@ public class CardBlueprintLibrary {
                         errataMappings.put(base, card);
                     }
 
-                    card.ErrataIDs.put(JSONData.ErrataInfo.PC_Errata, id);
+                    card.ErrataIDs.put(ErrataInfo.PC_Errata, id);
                 }
 
                 collectionReady.release();
@@ -411,5 +452,17 @@ public class CardBlueprintLibrary {
     public SetDefinition getSetDefinition(String setId) {
         Map<String, SetDefinition> sets = Collections.unmodifiableMap(_allSets);
         return sets.get(setId);
+    }
+
+    private static class ErrataInfo {
+        public static final String PC_Errata = "PC";
+        public String BaseID;
+        public String Name;
+        public String LinkText;
+        public Map<String, String> ErrataIDs;
+    }
+
+    public ObjectMapper getMapper() {
+        return _jsonMapper;
     }
 }

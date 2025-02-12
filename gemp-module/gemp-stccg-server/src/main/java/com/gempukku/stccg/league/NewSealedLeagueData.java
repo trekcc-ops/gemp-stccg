@@ -12,10 +12,7 @@ import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NewSealedLeagueData implements LeagueData {
     private final String _leagueTemplateName;
@@ -23,8 +20,10 @@ public class NewSealedLeagueData implements LeagueData {
     private final CollectionType _collectionType;
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final LeaguePrizes _leaguePrizes;
-    //private final SealedLeagueProduct _leagueProduct;
     private final FormatLibrary _formatLibrary;
+    private final int _maxMatches;
+    private final String _creationTime;
+    private final String _collectionCode;
 
     public NewSealedLeagueData(CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(cardLibrary);
@@ -35,6 +34,9 @@ public class NewSealedLeagueData implements LeagueData {
         int start = Integer.parseInt(params[1]);
         int seriesDuration = Integer.parseInt(params[2]);
         int maxMatches = Integer.parseInt(params[3]);
+        _maxMatches = maxMatches;
+        _creationTime = params[4];
+        _collectionCode = params[5];
 
         _collectionType = new CollectionType(params[4], params[5]);
 
@@ -46,9 +48,35 @@ public class NewSealedLeagueData implements LeagueData {
                     new DefaultLeagueSeriesData(_leaguePrizes, true, "Series " + (i + 1),
                             DateUtils.offsetDate(start, i * seriesDuration),
                             DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
-                            def.GetFormat(), _collectionType));
+                            def.getFormat(), _collectionType));
         }
     }
+
+    public NewSealedLeagueData(CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary, String leagueName,
+                               int start, int seriesDuration, int maxMatches, long creationTime,
+                               String collectionName) {
+        _leaguePrizes = new FixedLeaguePrizes(cardLibrary);
+        _formatLibrary = formatLibrary;
+        _maxMatches = maxMatches;
+        _collectionCode = collectionName;
+
+        _leagueTemplateName = leagueName;
+        _creationTime = String.valueOf(creationTime);
+
+        _collectionType = new CollectionType(String.valueOf(creationTime), collectionName);
+
+        var def = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
+
+        _allSeries = new LinkedList<>();
+        for (int i = 0; i < def.GetSeriesCount(); i++) {
+            _allSeries.add(
+                    new DefaultLeagueSeriesData(_leaguePrizes, true, "Series " + (i + 1),
+                            DateUtils.offsetDate(start, i * seriesDuration),
+                            DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
+                            def.getFormat(), _collectionType));
+        }
+    }
+
 
     @Override
     public boolean isSoloDraftLeague() {
@@ -89,7 +117,7 @@ public class NewSealedLeagueData implements LeagueData {
                 var leagueProduct = sealedLeague.GetProductForSeries(i);
                 Map<User, CardCollection> map = collectionsManager.getPlayersCollection(_collectionType.getCode());
                 for (Map.Entry<User, CardCollection> playerCardCollectionEntry : map.entrySet()) {
-                    collectionsManager.addItemsToPlayerCollection(
+                    collectionsManager.addItemsToUserCollection(
                             true, "New sealed league product", playerCardCollectionEntry.getKey(),
                             _collectionType, leagueProduct);
                 }
@@ -113,5 +141,24 @@ public class NewSealedLeagueData implements LeagueData {
         }
 
         return status;
+    }
+
+    public String getName() {
+        return _leagueTemplateName;
+    }
+
+    public String getCreationTime() {
+        return _creationTime;
+    }
+
+    public String getSerializedParameters() {
+        StringJoiner sj = new StringJoiner(",");
+        sj.add(_collectionCode);
+        sj.add(String.valueOf(getSeries().getFirst().getStart()));
+        sj.add(String.valueOf(getSeries().getLast().getEnd()));
+        sj.add(String.valueOf(_maxMatches));
+        sj.add(_creationTime);
+        sj.add(_leagueTemplateName);
+        return sj.toString();
     }
 }

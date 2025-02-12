@@ -2,13 +2,13 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 
 public class CantDiscardFromPlayModifier extends AbstractModifier {
-    private final Filter _sourceFilter;
+    private final CardFilter _sourceFilter;
 
     public CantDiscardFromPlayModifier(PhysicalCard source, String text, Condition condition, Filterable affectFilter,
                                        Filterable sourceFilter) {

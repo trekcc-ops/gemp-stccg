@@ -29,14 +29,27 @@
         }
         {
             blueprintId: 101_015
-            title: Armus - Skin of Evil
+            title: "Armus: Skin of Evil"
             type: dilemma
             mission-type: planet
             lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR15.jpg
             rarity: R
+            actions: [
+                {
+                    type: encounter
+                    effect: {
+                        type: kill
+                        target: {
+                            type: select
+                            random: true
+                            filter: personnel + encounteringThisCard
+                            count: 1
+                        }
+                    }
+                }
+            ]
         }
     /*    {
             blueprintId: 101_024
@@ -56,9 +69,17 @@
             mission-type: planet
             lore: Forcefields across door or hallway openings are commonly used to bar entry.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR30.jpg
             rarity: C
+            actions: [
+                {
+                    type: encounter
+                    effect: {
+                        type: overcomeCondition
+                        requires: Computer Skill
+                    }
+                }
+            ]
         }
     /*    {
             blueprintId: 101_032
@@ -200,6 +221,18 @@
             shields: 30
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg
             rarity: C
+/*            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+                {
+                    type: playThis
+                    targetLocation: {
+                        filter: whereYouControl(federation engineer)
+                    }
+                }
+            ] */
         }
         {
             blueprintId: 101_105
@@ -1242,16 +1275,10 @@
             cunning: 6
             strength: 4
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
-            image-options: [
-                {
-                    affiliation: klingon
-                    image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
-                }
-                {
-                    affiliation: romulan
-                    image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
-                }
-            ]
+            image-options: {
+                klingon: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
+                romulan: image-url: https://www.trekcc.org/1e/cardimages/premiere/PR254.jpg
+            }
             rarity: U
         }
         {

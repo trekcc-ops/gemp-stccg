@@ -1,7 +1,10 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.netty.handler.codec.http.HttpHeaders;
 import org.w3c.dom.Document;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.util.Map;
 
@@ -11,12 +14,24 @@ public interface ResponseWriter {
 
     void writeFile(File file, Map<String, String> headers);
 
+    void writeEmptyXmlResponseWithHeaders(Map<? extends CharSequence, String> addHeaders);
+
+    void writeXmlOkResponse();
+
     void writeHtmlResponse(String html);
     void writeJsonResponse(String json);
 
+    void writeJsonResponseWithHeaders(String json, HttpHeaders headers);
+
     void writeByteResponse(byte[] bytes, Map<? extends CharSequence, String> headers);
 
-    void writeXmlResponse(Document document);
+    void writeXmlResponseWithNoHeaders(Document document);
 
-    void writeXmlResponse(Document document, Map<? extends CharSequence, String> addHeaders);
+    void writeXmlResponseWithHeaders(Document document, Map<? extends CharSequence, String> addHeaders);
+
+    void writeXmlMarshalExceptionResponse(Exception e) throws ParserConfigurationException;
+    void writeXmlMarshalExceptionResponse(String errorMessage) throws ParserConfigurationException;
+
+    void writeJsonOkResponse() throws JsonProcessingException;
+
 }

@@ -1,5 +1,7 @@
 package com.gempukku.stccg.competitive;
 
+import com.gempukku.stccg.database.User;
+
 public class PlayerStanding {
     private final String _playerName;
     private final int _points;
@@ -52,4 +54,5 @@ public class PlayerStanding {
     public void setStanding(int standing) {
         _standing = standing;
     }
+
 }

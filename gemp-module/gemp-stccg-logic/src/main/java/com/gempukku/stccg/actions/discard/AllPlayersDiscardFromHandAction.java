@@ -10,8 +10,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
         for (Player player : cardGame.getPlayers()) {
             Collection<PhysicalCard> hand = Filters.filter(player.getCardsInHand(), cardGame, Filters.any);
             if (hand.size() == 1) {
-                discardCards(cardGame, player.getPlayerId(), player.getCardsInHand());
+                discardCards(cardGame, player, player.getCardsInHand());
             } else {
                 cardGame.getUserFeedback().sendAwaitingDecision(
                         new CardsSelectionDecision(player, "Choose a card to discard", hand,
@@ -54,7 +54,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
-                                discardCards(cardGame, player.getPlayerId(), cards);
+                                discardCards(cardGame, player, cards);
                             }
                         });
             }
@@ -68,20 +68,23 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
         return !_forced || cardGame.getModifiersQuerying().canDiscardCardsFromHand(playerId, _performingCard);
     }
 
-    private void discardCards(DefaultGame game, String playerId, Collection<PhysicalCard> cards) {
-        if (canDiscard(game, playerId)) {
+    private void discardCards(DefaultGame game, Player discardingPlayer, Collection<PhysicalCard> cards) {
+        if (canDiscard(game, discardingPlayer.getPlayerId())) {
             GameState gameState = game.getGameState();
             Set<PhysicalCard> discardedCards = new HashSet<>(cards);
 
-            gameState.removeCardsFromZone(game, playerId, discardedCards);
+            gameState.removeCardsFromZone(game, discardingPlayer, discardedCards);
             for (PhysicalCard card : discardedCards) {
                 gameState.addCardToZone(card, Zone.DISCARD);
                 game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_performingCard, card));
             }
 
             if (!discardedCards.isEmpty())
-                game.sendMessage(playerId + " discarded " + TextUtils.getConcatenatedCardLinks(discardedCards) +
+                game.sendMessage(discardingPlayer.getPlayerId() + " discarded " +
+                        TextUtils.getConcatenatedCardLinks(discardedCards) +
                         " from " + Zone.HAND.getHumanReadable());
         }
     }
+
+
 }

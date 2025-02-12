@@ -2,12 +2,12 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -22,6 +22,11 @@ public class DefaultActionContext implements ActionContext {
     protected final ActionResult actionResult;
     protected final Multimap<String, PhysicalCard> _cardMemory = HashMultimap.create();
     protected final Map<String, String> _valueMemory = new HashMap<>();
+
+    public DefaultActionContext(DefaultGame game, PhysicalCard thisCard, Player performingPlayer) {
+        this(null, performingPlayer.getPlayerId(), game, thisCard, null);
+    }
+
 
     public DefaultActionContext(String performingPlayer, DefaultGame game, PhysicalCard source,
                                 ActionResult actionResult) {
@@ -142,18 +147,16 @@ public class DefaultActionContext implements ActionContext {
         return actionResult;
     }
 
-
-    public boolean acceptsAllRequirements(Requirement[] requirementArray) {
-        boolean result = true;
-        for (Requirement requirement : requirementArray) {
-            if (!requirement.accepts(this)) result = false;
-        }
-        return result;
+    public boolean hasActionResultType(ActionResult.Type type) {
+        return actionResult != null && actionResult.getType() == type;
     }
 
-    public boolean acceptsAllRequirements(List<Requirement> requirementList) {
+
+    public boolean acceptsAllRequirements(Iterable<Requirement> requirements) {
+        if (requirements == null)
+            return true;
         boolean result = true;
-        for (Requirement requirement : requirementList) {
+        for (Requirement requirement : requirements) {
             if (!requirement.accepts(this)) result = false;
         }
         return result;

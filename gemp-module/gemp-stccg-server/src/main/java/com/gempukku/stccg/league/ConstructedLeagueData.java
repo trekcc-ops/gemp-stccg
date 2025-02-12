@@ -39,7 +39,7 @@ public class ConstructedLeagueData implements LeagueData {
         int matchCount = Integer.parseInt(params[6]);
         int series = Integer.parseInt(params[7]);
         for (int i = 0; i < series; i++) {
-            GameFormat format = formatLibrary.getFormat(params[8 + i * 2]);
+            GameFormat format = formatLibrary.get(params[8 + i * 2]);
 
             LeagueSeriesData data = new DefaultLeagueSeriesData(_leaguePrizes, false, "Week " + (i + 1),
                     DateUtils.offsetDate(start, i * days), DateUtils.offsetDate(start, ((i + 1) * days) - 1),

@@ -24,8 +24,8 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
@@ -44,7 +44,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
         assertFalse(_outpost.getCrew().contains(geordi));
         assertTrue(runabout.getCrew().contains(geordi));
-        assertEquals(MissionType.PLANET, geordi.getLocation().getMissionType());
+        assertEquals(MissionType.PLANET, geordi.getLocationDeprecatedOnlyUseForTests().getMissionType());
         assertEquals(0, geordi.getSkillLevel(SkillName.NAVIGATION));
         assertEquals(0, geordi.getSkillLevel(SkillName.ASTROPHYSICS));
         assertEquals(0, geordi.getSkillLevel(SkillName.STELLAR_CARTOGRAPHY));
@@ -59,8 +59,8 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocation());
-        assertEquals(_outpost.getLocation(), _mission.getLocation());
+        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
@@ -79,7 +79,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
         assertFalse(_outpost.getCrew().contains(geordi));
         assertTrue(runabout.getCrew().contains(geordi));
-        assertEquals(MissionType.SPACE, geordi.getLocation().getMissionType());
+        assertEquals(MissionType.SPACE, geordi.getLocationDeprecatedOnlyUseForTests().getMissionType());
         assertEquals(1, geordi.getSkillLevel(SkillName.NAVIGATION));
         assertEquals(1, geordi.getSkillLevel(SkillName.ASTROPHYSICS));
         assertEquals(1, geordi.getSkillLevel(SkillName.STELLAR_CARTOGRAPHY));

@@ -1,4 +1,5 @@
 import GempClientCommunication from "./communication.js";
+import { getDateString } from "./common.js";
 
 export default class LeagueResultsUI {
     communication;
@@ -158,21 +159,7 @@ export default class LeagueResultsUI {
                 var serieText = serieName + " - " + getDateString(serieStart) + " to " + getDateString(serieEnd);
                 $("#leagueExtraInfo").append("<div class='serieName'>" + serieText + "</div>");
 
-                var formatName = $("<span class='clickableFormat'>" + ((limited == "true") ? "" : "Constructed ") + format + "</span>");
-                var formatDiv = $("<div><b>Format:</b> </div>");
-                formatDiv.append(formatName);
-                formatName.click(
-                    (function (ft) {
-                        return function () {
-                            that.formatDialog.html("");
-                            that.formatDialog.dialog("open");
-                            that.communication.getFormat(ft,
-                                function (html) {
-                                    that.formatDialog.html(html);
-                                });
-                        };
-                    })(formatType));
-                $("#leagueExtraInfo").append(formatDiv);
+                $("leagueExtraInfo").append("<div><b>Format:</b> " + format + "</div>");
                 $("#leagueExtraInfo").append("<div><b>Collection:</b> " + collection + "</div>");
 
                 tabContent.append("<div>Maximum ranked matches in serie: " + maxMatches + "</div>");

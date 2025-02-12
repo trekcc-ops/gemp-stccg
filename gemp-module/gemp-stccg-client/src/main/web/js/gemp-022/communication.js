@@ -19,25 +19,23 @@ export default class GempClientCommunication {
 
     logout(callback, errorMap) {
         /* TODO ES6 */
+        // TODO - As of 10 Feb 2025, this method doesn't have any related server-side functionality.
         $.ajax({
             type:"POST",
             url:this.url + "/logout",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap)
         });
     }
 
+    // TODO - As of 9 Feb 2025, this method will never be called.
     getDelivery(callback) {
         /* TODO ES6 */
         $.ajax({
             type:"GET",
             url:this.url + "/delivery",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:callback,
             error:null,
             dataType:"xml"
@@ -47,6 +45,7 @@ export default class GempClientCommunication {
     deliveryCheck(callback) {
         var that = this;
         return function (xml, status, request) {
+            // TODO - As of 9 Feb 2025, delivery will always be false. This response header is no longer used.
             var delivery = request.getResponseHeader("Delivery-Service-Package");
             if (delivery == "true" && window.deliveryService != null)
                 that.getDelivery(window.deliveryService);
@@ -57,6 +56,7 @@ export default class GempClientCommunication {
     deliveryCheckStatus(callback) {
         var that = this;
         return function (xml, status, request) {
+            // TODO - As of 9 Feb 2025, delivery will always be false. This response header is no longer used.
             var delivery = request.getResponseHeader("Delivery-Service-Package");
             if (delivery == "true" && window.deliveryService != null)
                 that.getDelivery(window.deliveryService);
@@ -72,23 +72,23 @@ export default class GempClientCommunication {
             cache:false,
             data:{
                 start:start,
-                count:count,
-                participantId:getUrlParam("participantId") },
+                count:count
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     getStats(startDay, length, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/stats",
+            url:this.url + "/serverStats",
             cache:false,
             data:{
                 startDay:startDay,
-                length:length,
-                participantId:getUrlParam("participantId") },
+                length:length
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -100,21 +100,17 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/playerStats",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
     
     getLiveTournaments(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/tournament",
+            url:this.url + "/currentTournaments",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -124,10 +120,8 @@ export default class GempClientCommunication {
     getHistoryTournaments(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/tournament/history",
+            url:this.url + "/tournamentHistory",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -139,8 +133,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/tournament/" + tournamentId,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -152,8 +144,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/league",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -165,8 +155,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/league/" + type,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -178,8 +166,6 @@ export default class GempClientCommunication {
             type:"POST",
             url:this.url + "/league/" + code,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId") },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -198,9 +184,16 @@ export default class GempClientCommunication {
     }
 
     async getGameState() {
-        const url = this.url + "/game/" + getUrlParam("gameId") + "/gameState";
+        const url = this.url + "/getGameState/" + getUrlParam("gameId") + "/thisPlayer";
         try {
-            let response = await fetch(url, {
+            const parameters = new URLSearchParams({
+                "gameId": getUrlParam("gameId")
+            }).toString();
+
+            const fullUrl = url + parameters;
+
+
+            let response = await fetch(fullUrl, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -220,7 +213,7 @@ export default class GempClientCommunication {
                     */
                     alert("User cannot access this game state data.");
                 }
-                else if (response.status = 500) {
+                else if (response.status == 500) {
                     // Thrown if the gamestate encounters errors while being serialized
                     alert("Cannot create game state data.");
                 }
@@ -241,163 +234,110 @@ export default class GempClientCommunication {
     startGameSession(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/game/" + getUrlParam("gameId"),
+            url:this.url + "/startGameSession",
             cache:false,
-            data:{ participantId:getUrlParam("participantId") },
+            data:{
+                gameId:getUrlParam("gameId")
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     updateGameState(channelNumber, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/game/" + getUrlParam("gameId"),
+            url:this.url + "/updateGameState",
             cache:false,
             data:{
-                channelNumber:channelNumber,
-                participantId:getUrlParam("participantId") },
+                gameId:getUrlParam("gameId"),
+                channelNumber:channelNumber
+            },
             success:this.deliveryCheck(callback),
             timeout: 20000,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
-    getGameCardModifiers(cardId, callback, errorMap) {
+    getCardInfo(cardId, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/game/" + getUrlParam("gameId") + "/cardInfo",
+            url:this.url + "/gameCardInfo/",
             cache:false,
             data:{
                 cardId:cardId,
-                participantId:getUrlParam("participantId") },
+                gameId:getUrlParam("gameId")
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
 
     gameDecisionMade(decisionId, response, channelNumber, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/game/" + getUrlParam("gameId"),
+            url:this.url + "/decisionResponse",
             cache:false,
             data:{
+                gameId:getUrlParam("gameId"),
                 channelNumber:channelNumber,
-                participantId:getUrlParam("participantId"),
                 decisionId:decisionId,
                 decisionValue:response },
             success:this.deliveryCheck(callback),
             timeout: 20000,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     concede(errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/game/" + getUrlParam("gameId") + "/concede",
+            url:this.url + "/concedeGame",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                gameId:getUrlParam("gameId")
+            },
             error:this.errorCheck(errorMap),
-            dataType:"text"
+            dataType:"json"
         });
     }
 
     cancel(errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/game/" + getUrlParam("gameId") + "/cancel",
+            url:this.url + "/cancelGame",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                gameId:getUrlParam("gameId")
+            },
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
-    getDeck(deckName, callback, errorMap) {
+    listUserDecks(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/deck",
+            url:this.url + "/listUserDecks",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
-    shareDeck(deckName, callback, errorMap) {
+    listLibraryDecks(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/deck/share",
+            url:this.url + "/listLibraryDecks",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-    
-    getLibraryDeck(deckName, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/deck/library",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
-    getDecks(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/deck/list",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
-    getLibraryDecks(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/deck/libraryList",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
-    getCollectionTypes(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/collection",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
@@ -437,17 +377,17 @@ export default class GempClientCommunication {
         }
     }
 
-    importCollection(decklist, callback, errorMap) {
+    importCollection(deckList, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/collection/import/",
+            url:this.url + "/importDeck",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                decklist:decklist},
+                deckList:deckList
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
@@ -457,8 +397,8 @@ export default class GempClientCommunication {
             url:this.url + "/collection/" + collectionType,
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                pack:pack},
+                pack:pack
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -471,9 +411,9 @@ export default class GempClientCommunication {
             url:this.url + "/collection/" + collectionType,
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 pack:pack,
-                selection:selection},
+                selection:selection
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -483,15 +423,15 @@ export default class GempClientCommunication {
     saveDeck(deckName, targetFormat, notes, contents, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck",
+            url:this.url + "/saveDeck",
             cache:false,
             async:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 deckName:deckName,
                 targetFormat:targetFormat,
                 notes:notes,
-                deckContents:contents},
+                deckContents:contents
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -501,26 +441,26 @@ export default class GempClientCommunication {
     renameDeck(oldDeckName, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/rename",
+            url:this.url + "/renameDeck",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 oldDeckName:oldDeckName,
-                deckName:deckName},
+                deckName:deckName
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     deleteDeck(deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/delete",
+            url:this.url + "/deleteDeck",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                deckName:deckName},
+                deckName:deckName
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -530,12 +470,12 @@ export default class GempClientCommunication {
     getDeckStats(contents, targetFormat, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/stats",
+            url:this.url + "/deckStats",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId"),
                 targetFormat:targetFormat,
-                deckContents:contents},
+                deckContents:contents
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -543,7 +483,7 @@ export default class GempClientCommunication {
     }
     
     async getSets(format) {
-        const url = this.url + "/deck/sets";
+        const url = this.url + "/getSets";
         try {
             let response = await fetch(url, {
                 method: "POST",
@@ -574,7 +514,7 @@ export default class GempClientCommunication {
     getFormats(includeEvents, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/deck/formats",
+            url:this.url + "/deckFormats",
             cache:true,
             data:{
                 includeEvents:includeEvents
@@ -588,39 +528,42 @@ export default class GempClientCommunication {
     startChat(room, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/chat/" + room,
+            url:this.url + "/getChat",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                roomName: room
+            },
             success:callback,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     updateChat(room, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/chat/" + room,
+            url:this.url + "/postChat",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                roomName:room
+            },
             success:callback,
             timeout: 20000,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     sendChatMessage(room, messages, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/chat/" + room,
+            url:this.url + "/sendChatMessage",
             cache:false,
             async:false,
             data:{
-                participantId:getUrlParam("participantId"),
-                message:messages},
+                roomName:room,
+                message:messages
+            },
             traditional:true,
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -630,39 +573,38 @@ export default class GempClientCommunication {
     getHall(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/hall",
+            url:this.url + "/getHall",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     updateHall(callback, channelNumber, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/update",
+            url:this.url + "/updateHall",
             cache:false,
             data:{
-                channelNumber:channelNumber,
-                participantId:getUrlParam("participantId") },
+                channelNumber:channelNumber
+            },
             success:this.deliveryCheck(callback),
             timeout: 20000,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     joinQueue(queueId, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/queue/" + queueId,
+            url:this.url + "/joinQueue",
             cache:false,
             data:{
+                queueId:queueId,
                 deckName:deckName,
-                participantId:getUrlParam("participantId")},
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -672,10 +614,11 @@ export default class GempClientCommunication {
     leaveQueue(queueId, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/queue/" + queueId + "/leave",
+            url:this.url + "/leaveQueue",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                queueId:queueId
+            },
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
@@ -684,10 +627,11 @@ export default class GempClientCommunication {
     dropFromTournament(tournamentId, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/tournament/" + tournamentId + "/leave",
+            url:this.url + "/leaveTournament",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                tournamentId:tournamentId
+            },
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
@@ -696,11 +640,12 @@ export default class GempClientCommunication {
     joinTable(tableId, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/" + tableId,
+            url:this.url + "/joinTable",
             cache:false,
             data:{
-                deckName:deckName,
-                participantId:getUrlParam("participantId")},
+                tableId:tableId,
+                deckName:deckName
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -710,10 +655,11 @@ export default class GempClientCommunication {
     leaveTable(tableId, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall/"+tableId+"/leave",
+            url:this.url + "/leaveTable",
             cache:false,
             data:{
-                participantId:getUrlParam("participantId")},
+                tableId:tableId
+            },
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
@@ -722,7 +668,7 @@ export default class GempClientCommunication {
     createTable(format, deckName, timer, desc, isPrivate, isInviteOnly, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/hall",
+            url:this.url + "/createTable",
             cache:false,
             data:{
                 format:format,
@@ -730,47 +676,19 @@ export default class GempClientCommunication {
                 timer:timer,
                 desc:desc,
                 isPrivate:isPrivate,
-                isInviteOnly:isInviteOnly,
-                participantId:getUrlParam("participantId")},
+                isInviteOnly:isInviteOnly
+            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
     }
 
-    getFormat(formatCode, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/hall/format/" + formatCode,
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-
-    getFormatRules(callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/hall/formats/html",
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-    
     getErrata(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/hall/errata/json",
+            url:this.url + "/getErrata",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -782,11 +700,9 @@ export default class GempClientCommunication {
             type:"POST",
             url:this.url + "/playtesting/addTesterFlag",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -795,11 +711,9 @@ export default class GempClientCommunication {
             type:"POST",
             url:this.url + "/playtesting/removeTesterFlag",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -821,38 +735,36 @@ export default class GempClientCommunication {
     setShutdownMode(shutdown, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/shutdown",
+            url:this.url + "/setShutdown",
             cache:false,
             data:{
                 shutdown:shutdown
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
 
     clearServerCache(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/clearCache",
+            url:this.url + "/clearCache",
             cache:false,
-            data:{},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
     reloadCardDefinitions(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/reloadCards",
+            url:this.url + "/reloadCardLibrary",
             cache:false,
-            data:{},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -877,23 +789,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
-        });
-    }
-    
-    addItems(collectionType, product, players, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/admin/addItems",
-            cache:false,
-            data:{
-                collectionType:collectionType,
-                product:product,
-                players:players
-            },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -907,50 +803,50 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
     permabanUser(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/banUser",
+            url:this.url + "/banUser",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
     tempbanUser(login, duration, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/banUserTemp",
+            url:this.url + "/banUserTemporary",
             cache:false,
             data:{
-                login:login,
+                userName:login,
                 duration:duration
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
     unbanUser(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/unBanUser",
+            url:this.url + "/unBanUser",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -982,29 +878,28 @@ export default class GempClientCommunication {
         });
     }
     
-    previewSealedLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
+    previewSealedLeague(format, start, seriesDuration, maxMatches, name, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/previewSealedLeague",
+            url:this.url + "/previewSealedLeague",
             cache:false,
             data:{
                 format:format,
                 start:start,
                 seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
-                name:name,
-                cost:cost
+                name:name
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
     
     addSealedLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/addSealedLeague",
+            url:this.url + "/addSealedLeague",
             cache:false,
             data:{
                 format:format,
@@ -1016,7 +911,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -1054,7 +949,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -1096,7 +991,7 @@ export default class GempClientCommunication {
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"html"
+            dataType:"json"
         });
     }
     
@@ -1111,11 +1006,8 @@ export default class GempClientCommunication {
     getPlayerInfo(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/player",
+            url:this.url + "/playerInfo",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")
-            },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"json"
@@ -1127,8 +1019,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/",
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -1143,8 +1033,8 @@ export default class GempClientCommunication {
             async:false,
             data:{
                 login:login,
-                password:password,
-                participantId:getUrlParam("participantId")},
+                password:password
+            },
             success:this.deliveryCheckStatus(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -1158,8 +1048,8 @@ export default class GempClientCommunication {
             cache:false,
             data:{
                 login:login,
-                password:password,
-                participantId:getUrlParam("participantId")},
+                password:password
+            },
             success:this.deliveryCheckStatus(callback),
             error:this.errorCheck(errorMap),
             dataType:"html"
@@ -1171,8 +1061,6 @@ export default class GempClientCommunication {
             type:"GET",
             url:this.url + "/soloDraft/"+leagueType,
             cache:false,
-            data:{
-                participantId:getUrlParam("participantId")},
             success:callback,
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -1185,8 +1073,8 @@ export default class GempClientCommunication {
             url:this.url + "/soloDraft/"+leagueType,
             cache:false,
             data:{
-                choiceId:choiceId,
-                participantId:getUrlParam("participantId")},
+                choiceId:choiceId
+            },
             success:callback,
             error:this.errorCheck(errorMap),
             dataType:"xml"

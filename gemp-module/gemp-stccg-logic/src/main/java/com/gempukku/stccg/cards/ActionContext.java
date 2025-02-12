@@ -1,13 +1,11 @@
 package com.gempukku.stccg.cards;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.GameState;
 import com.google.common.collect.Multimap;
 
@@ -31,8 +29,7 @@ public interface ActionContext {
     PhysicalCard getSource();
     ActionResult getEffectResult();
 
-    boolean acceptsAllRequirements(Requirement[] requirementArray);
-    boolean acceptsAllRequirements(List<Requirement> requirementList);
+    boolean acceptsAllRequirements(Iterable<Requirement> requirements);
     boolean acceptsAnyRequirements(Requirement[] requirementArray);
 
     ActionContext createDelegateContext(ActionResult actionResult);
@@ -40,6 +37,8 @@ public interface ActionContext {
     String substituteText(String text);
 
     List<PhysicalCard> getZoneCards(Player player, Zone zone);
+
+    boolean hasActionResultType(ActionResult.Type type);
 
 
     ActionContext getParentContext();

@@ -6,11 +6,11 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,15 +25,14 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     private final ActionCardResolver _selectableCardsTarget;
 
     public SelectCardsFromDialogAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
-                                       Filter cardFilter) {
+                                       CardFilter cardFilter) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsTarget = new CardFilterResolver(cardFilter);
         _minimum = 1;
         _maximum = 1;
     }
 
-
-    public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, Filter cardFilter, int minimum,
+    public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, CardFilter cardFilter, int minimum,
                                        int maximum, ActionContext context, String memory) {
         super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsTarget = new CardFilterResolver(cardFilter);

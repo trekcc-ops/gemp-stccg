@@ -13,10 +13,6 @@ public class AttributeMissionRequirement implements MissionRequirement {
         _attribute = attribute;
         _value = value;
     }
-    @Override
-    public boolean canBeMetBy(PersonnelCard personnel) {
-        return personnel.getAttribute(_attribute) > _value;
-    }
 
     @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel) {

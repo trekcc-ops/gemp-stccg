@@ -4,9 +4,9 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Quadrant;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.Set;
@@ -27,18 +27,18 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
     }
-    public void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException {
+    public void changeAffiliation(Affiliation affiliation) {
         setCurrentAffiliation(affiliation);
         if (getAffiliationOptions().size() > 1) {
-            if (getAttachedTo() instanceof MissionCard mission &&
-                    this instanceof PhysicalReportableCard1E reportable) {
+            if (this instanceof PhysicalReportableCard1E reportable &&
+                    _currentGameLocation instanceof MissionLocation missionLocation) {
                 if (reportable.getAwayTeam().canBeDisbanded(_game)) {
                     reportable.getAwayTeam().disband(_game);
                 } else {
                     if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(reportable))
                         reportable.leaveAwayTeam(_game);
                     if (reportable.getAwayTeam() == null)
-                        reportable.joinEligibleAwayTeam(mission.getLocation());
+                        reportable.joinEligibleAwayTeam(missionLocation);
                 }
             }
             _game.sendUpdatedCardImageToClient(this);
@@ -61,14 +61,14 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         else
             return _game.getRules().areCardsCompatiblePerRules(this, card);
     }
-    public Quadrant getCurrentQuadrant() {
-        return _currentLocation.getQuadrant();
+
+    public boolean isInQuadrant(Quadrant quadrant) {
+        return _currentGameLocation.isInQuadrant(quadrant);
     }
 
     @Override
     public boolean hasTransporters() {
-        return _blueprint.getCardType() == CardType.SHIP ||
-                _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
+        return _blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
     }
 
     public boolean isAffiliation(Affiliation affiliation) {

@@ -5,11 +5,11 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -32,7 +32,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         _minimum = minimum;
     }
 
-    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
+    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, CardFilter selectionFilter, int minimum,
                                     int maximum) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new CardFilterResolver(selectionFilter);
@@ -41,7 +41,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     }
 
 
-    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, Filter selectionFilter, int minimum,
+    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, CardFilter selectionFilter, int minimum,
                                     int maximum, ActionContext context, String memory) {
         super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new CardFilterResolver(selectionFilter);

@@ -1,13 +1,14 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.gempukku.stccg.AbstractLogicTest;
-import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.common.filterable.*;
-import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -18,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("MagicNumber")
 public class CardBlueprintLibraryTest extends AbstractLogicTest {
+
+    // Commented out lackey validation so that it isn't run every single time the server is built
 
     // TODO - Add check that all card images are valid URLs
     @Test
@@ -69,7 +72,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         assertEquals(2, _cardLibrary.getAllAlternates("113_003").size());
     }
 
-    @Test
+//    @Test
     public void checkAgainstLackey() {
         createLackeyLibrary();
         int matchCount = 0;
@@ -85,11 +88,11 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
                 if (lackeyData == null) {
                     System.out.println("Could not find lackeyData for " + blueprintId + " " + blueprint.getTitle());
                 } else {
-                    if (getBlueprintMatch(blueprint, lackeyData)) {
+/*                    if (getBlueprintMatch(blueprint, lackeyData)) {
                         matchCount++;
                     } else {
                         System.out.println("Card " + blueprintId + " (" + blueprint.getTitle() + ") did not validate successfully.");
-                    }
+                    } */
                 }
             }
         }
@@ -102,61 +105,29 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
     public void createLackeyLibrary() {
         File input;
         MappingIterator<Map<?, ?>> mappingIterator;
-        List<Map<?, ?>> list;
         input = new File("..\\gemp-stccg-logic\\src\\test\\resources\\Lackey_upload.csv");
         try {
             CsvSchema csv = CsvSchema.emptySchema().withHeader();
             CsvMapper csvMapper = new CsvMapper();
-            mappingIterator =  csvMapper.reader().forType(Map.class).with(csv).readValues(input);
-            list = mappingIterator.readAll();
-            for (Map<?, ?> card : list) {
-                CardData cardInfo = new CardData(card);
+            ObjectMapper jsonMapper = _cardLibrary.getMapper();
+            List<Object> list = csvMapper.reader().forType(Map.class).with(csv).readValues(input).readAll();
+            JsonNode jsonMap = jsonMapper.valueToTree(list);
+            List<JsonNode> lackeyCardData = jsonMapper.readerForListOf(CardData.class).readValue(jsonMap);
+            int x = 5;
+/*            for (Map<?, ?> card : list) {
+                CardData cardInfo = new CardData();
                 String blueprintId = cardInfo._blueprintId;
                 _newLibraryMap.put(blueprintId, cardInfo);
                 _newLibrary.add(cardInfo);
-            }
+            }*/
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    public class CardData {
-
-        String _staffing;
-        String _property;
-        String _lackeyTitle;
-        String _rawGameText;
-        String _type;
-        String _set;
-        String _formats;
-        String _blueprintId;
-        List<String> _attributes = new LinkedList<>();
-        String _uniqueness;
-        String _class;
-        String _icons;
-        String _release;
-
-        CardData(Map<?, ?> card) {
-            _blueprintId = card.get("Blueprint ID").toString();
-            _lackeyTitle = card.get("Name").toString();
-            _formats = card.get("Set").toString();
-            _rawGameText = card.get("Text").toString().replace("{", "").replace("}", "");
-            _set = card.get("Release").toString();
-            _type = card.get("Type").toString();
-            _attributes.add(card.get("Int/Rng").toString());
-            _attributes.add(card.get("Cun/Wpn").toString());
-            _attributes.add(card.get("Str/Shd").toString());
-            _uniqueness = card.get("Uniqueness").toString();
-            _class = card.get("Class").toString();
-            _icons = card.get("Icons").toString();
-            _release = card.get("Release").toString();
-            _property = card.get("Property").toString();
-            _staffing = card.get("Staff").toString();
-        }
-
-    }
-
+    /*
     private boolean getBlueprintMatch(CardBlueprint blueprint, CardData lackeyData) {
+        ObjectMapper jsonMapper = _cardLibrary.getMapper();
         String blueprintId = blueprint.getBlueprintId();
         if (lackeyData == null) {
             System.out.println("Could not find lackeyData for " + blueprint.getBlueprintId() + " " + blueprint.getTitle());
@@ -185,9 +156,9 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
 
         try {
-            CardType lackeyType = BlueprintUtils.getEnum(CardType.class, lackeyData._type, "card type");
+            CardType lackeyType = jsonMapper.readValue(lackeyData._type, CardType.class);
             assertEquals(blueprint.getCardType(), lackeyType);
-        } catch(InvalidCardDefinitionException exp) {
+        } catch(IOException exp) {
             System.out.println(exp.getMessage());
             return false;
         }
@@ -196,10 +167,10 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         // TODO: Affiliation
 
         try {
-            if (!checkClass(blueprint, lackeyData)) {
+            if (!checkClass(blueprint, lackeyData._class)) {
                 return false;
             }
-        } catch(InvalidCardDefinitionException exp) {
+        } catch(IOException exp) {
             System.out.println(exp.getMessage());
             return false;
         }
@@ -260,7 +231,8 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
         if (!result) {
             System.out.println(blueprint.getUniqueness() + ", " + lackeyData._uniqueness);
-            System.out.println("Uniqueness doesn't match for blueprint " + blueprint.getBlueprintId() + " " + blueprint.getTitle());
+            System.out.println("Uniqueness doesn't match for blueprint " + blueprint.getBlueprintId() + " " +
+                    blueprint.getTitle());
         }
         return result;
     }
@@ -299,10 +271,12 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
 
     }
 
-    private boolean checkClass(CardBlueprint blueprint, CardData lackeyData) throws InvalidCardDefinitionException {
+    private boolean checkClass(CardBlueprint blueprint, String lackeyClassText) throws IOException {
+        ObjectMapper jsonMapper = _cardLibrary.getMapper();
+
         if (blueprint.getCardType() == CardType.PERSONNEL) {
             SkillName gempClass = blueprint.getClassification();
-            SkillName lackeyClass = BlueprintUtils.getEnum(SkillName.class, lackeyData._class, "classification");
+            SkillName lackeyClass = jsonMapper.readValue(lackeyClassText, SkillName.class);
             if (gempClass != lackeyClass) {
                 throw new InvalidCardDefinitionException("Classification mismatch for blueprint" + blueprint.getBlueprintId() + " " + blueprint.getTitle());
             } else {
@@ -311,7 +285,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
         if (blueprint.getCardType() == CardType.FACILITY) {
             FacilityType gempType = blueprint.getFacilityType();
-            FacilityType lackeyType = BlueprintUtils.getEnum(FacilityType.class, lackeyData._class, "facility type");
+            FacilityType lackeyType = jsonMapper.readValue(lackeyClassText, FacilityType.class);
             if (gempType != lackeyType) {
                 System.out.println("Facility type mismatch for blueprint" + blueprint.getBlueprintId() + " " + blueprint.getTitle());
                 return false;
@@ -321,11 +295,11 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         }
         if (blueprint.getCardType() == CardType.SHIP) {
             ShipClass gempClass = blueprint.getShipClass();
-            String lackeyClassText = lackeyData._class.replace(" Class","");
+            lackeyClassText = lackeyClassText.replace(" Class","");
             if (lackeyClassText.startsWith("D'Kora-Class")) {
                 lackeyClassText = "D'Kora";
             }
-            ShipClass lackeyClass = BlueprintUtils.getEnum(ShipClass.class, lackeyClassText, "ship class");
+            ShipClass lackeyClass = jsonMapper.readValue(lackeyClassText, ShipClass.class);
             if (gempClass != lackeyClass) {
                 System.out.println("Ship class mismatch for blueprint" + blueprint.getBlueprintId() + " " + blueprint.getTitle());
                 return false;
@@ -333,7 +307,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
                 return true;
             }
         }
-        return Objects.equals(lackeyData._class, "");
+        return Objects.equals(lackeyClassText, "");
     }
 
     private boolean checkIcons(CardBlueprint blueprint, CardData lackeyData) throws InvalidCardDefinitionException {
@@ -462,6 +436,6 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
         String lackeyIconCheck = StringUtils.join(lackeyIconsList, ",");
         return gempIconCheck.equals(lackeyIconCheck);
     }
-
+*/
 
 }

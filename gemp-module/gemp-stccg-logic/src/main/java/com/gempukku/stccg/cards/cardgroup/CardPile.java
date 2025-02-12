@@ -15,7 +15,7 @@ public class CardPile extends PhysicalCardGroup {
     public CardPile() {
     }
 
-    public void addCard(PhysicalCard<? extends DefaultGame> card) { _cards.add(card); }
+    public void addCard(PhysicalCard card) { _cards.add(card); }
 
     public List<PhysicalCard> getCards() {
         return _cards;

@@ -6,8 +6,9 @@ import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.*;
-import com.gempukku.stccg.draft.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.game.GameRecorder;
@@ -26,6 +27,8 @@ import com.gempukku.stccg.tournament.TournamentPlayerDAO;
 import com.gempukku.stccg.tournament.TournamentService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Collection;
 
 public class ServerObjects {
     private static final Logger LOGGER = LogManager.getLogger(ServerObjects.class);
@@ -50,7 +53,7 @@ public class ServerObjects {
     private GameHistoryService _gameHistoryService;
     private GameRecorder _gameRecorder;
     private CollectionsManager _collectionsManager;
-    private SoloDraftDefinitions _soloDraftDefinitions;
+    private DraftFormatLibrary _DraftFormatLibrary;
     private LeagueService _leagueService;
     private AdminService _adminService;
     private TournamentService _tournamentService;
@@ -58,14 +61,16 @@ public class ServerObjects {
     private ChatServer _chatServer;
     private GameServer _gameServer;
     private HallServer _hallServer;
+    private final LongPollingSystem _longPollingSystem;
 
     public ServerObjects() {
         //Libraries and other important prerequisite managers that are used by lots of other managers
         LOGGER.info("GempukkuServer loading prerequisites...");
         _cardBlueprintLibrary = new CardBlueprintLibrary();
-        _productLibrary = new ProductLibrary(_cardBlueprintLibrary);
+        _productLibrary = new ProductLibrary();
         _loggedUserHolder = new LoggedUserHolder();
         _loggedUserHolder.start();
+        _longPollingSystem = new LongPollingSystem();
 
         //Now bulk initialize various managers
         LOGGER.info("GempukkuServer loading DAOs...");
@@ -85,7 +90,7 @@ public class ServerObjects {
         _tournamentDAO =
                 LoggingProxy.createLoggingProxy(TournamentDAO.class, new DbTournamentDAO(dbAccess));
         _tournamentPlayerDAO =
-                LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(dbAccess));
+                LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(this, dbAccess));
         _tournamentMatchDAO =
                 LoggingProxy.createLoggingProxy(TournamentMatchDAO.class, new DbTournamentMatchDAO(dbAccess));
         _leagueDAO =
@@ -93,7 +98,7 @@ public class ServerObjects {
         _gameHistoryDAO =
                 LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess));
         _ignoreDAO = new CachedIgnoreDAO(dbAccess);
-        _deckDAO = new CachedDeckDAO(dbAccess);
+        _deckDAO = new CachedDeckDAO(this, dbAccess);
         _collectionDAO = new CachedCollectionDAO(dbAccess);
         _playerDAO = new CachedPlayerDAO(dbAccess);
         _transferDAO = new CachedTransferDAO(dbAccess);
@@ -106,7 +111,7 @@ public class ServerObjects {
         _gameHistoryService = new GameHistoryService(_gameHistoryDAO);
         _gameRecorder = new GameRecorder(_gameHistoryService, _playerDAO);
         _collectionsManager = new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO, _cardBlueprintLibrary);
-        _soloDraftDefinitions = new SoloDraftDefinitions(_collectionsManager, _cardBlueprintLibrary, _formatLibrary);
+        _DraftFormatLibrary = new DraftFormatLibrary(_cardBlueprintLibrary, _formatLibrary);
         _leagueService = new LeagueService(this, _leagueMatchDAO, _leagueParticipationDAO);
         _adminService = new AdminService(_playerDAO, _ipBanDAO, _loggedUserHolder);
         _tournamentService = new TournamentService(
@@ -134,6 +139,7 @@ public class ServerObjects {
     public final IgnoreDAO getIgnoreDAO() { return _ignoreDAO; }
     public final DeckDAO getDeckDAO() { return _deckDAO; }
     public final PlayerDAO getPlayerDAO() { return _playerDAO; }
+    public final GameHistoryDAO getGameHistoryDAO() { return _gameHistoryDAO; }
     public final TransferDAO getTransferDAO() { return _transferDAO; }
     final IpBanDAO getIpBanDAO() { return _ipBanDAO; }
     public final CacheManager getCacheManager() { return _cacheManager; }
@@ -141,7 +147,7 @@ public class ServerObjects {
     public final GameHistoryService getGameHistoryService() { return _gameHistoryService; }
     public final GameRecorder getGameRecorder() { return _gameRecorder; }
     public final CollectionsManager getCollectionsManager() { return _collectionsManager; }
-    public final SoloDraftDefinitions getSoloDraftDefinitions() { return _soloDraftDefinitions; }
+    public final DraftFormatLibrary getSoloDraftDefinitions() { return _DraftFormatLibrary; }
     public final LeagueService getLeagueService() { return _leagueService; }
     public final AdminService getAdminService() { return _adminService; }
     public final TournamentService getTournamentService() { return _tournamentService; }
@@ -149,4 +155,9 @@ public class ServerObjects {
     public final ChatServer getChatServer() { return _chatServer; }
     public final GameServer getGameServer() { return _gameServer; }
     public final HallServer getHallServer() { return _hallServer; }
+
+    public LongPollingSystem getLongPollingSystem() {
+        return _longPollingSystem;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.cards.blueprints.resolver.YouPlayerResolver;
+import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
@@ -16,9 +16,6 @@ import java.util.List;
 public class Blueprint007_082 extends CardBlueprint {
 
     // Letek (2E)
-    Blueprint007_082() {
-        super("007_082");
-    }
 
     @Override
     protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {

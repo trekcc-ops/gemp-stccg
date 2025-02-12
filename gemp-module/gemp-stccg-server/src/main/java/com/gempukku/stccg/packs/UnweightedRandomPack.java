@@ -1,5 +1,7 @@
 package com.gempukku.stccg.packs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 
 import java.util.Collections;
@@ -8,8 +10,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class UnweightedRandomPack extends AbstractPack {
 
-    UnweightedRandomPack(Iterable<String> items) {
-        super(items);
+    UnweightedRandomPack(@JsonProperty(value = "items", required = true)
+            List<String> items,
+    @JsonProperty(value = "name", required = true)
+                         String name) {
+        super(name, items);
     }
 
     protected String[] parseItem(String item) {
@@ -17,7 +22,7 @@ public class UnweightedRandomPack extends AbstractPack {
     }
 
     @Override
-    public List<GenericCardItem> openPack() {
+    public List<GenericCardItem> openPack(CardBlueprintLibrary library) {
         int selection = ThreadLocalRandom.current().nextInt(_contents.size());
         return openPack(selection);
     }

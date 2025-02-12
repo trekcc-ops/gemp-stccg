@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
@@ -18,29 +19,25 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class TournamentRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final static long SEVEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 7;
     private final TournamentService _tournamentService;
     private final FormatLibrary _formatLibrary;
 
-    TournamentRequestHandler(ServerObjects objects) {
+    public TournamentRequestHandler(ServerObjects objects) {
         super(objects);
         _tournamentService = objects.getTournamentService();
         _formatLibrary = objects.getFormatLibrary();
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            getCurrentTournaments(responseWriter);
-        } else if ("/history".equals(uri) && request.method() == HttpMethod.GET) {
-            getTournamentHistory(responseWriter);
-        } else if (uri.startsWith("/") && uri.endsWith("/html") &&
+        HttpRequest request = gempRequest.getRequest();
+        if (uri.startsWith("/") && uri.endsWith("/html") && // this one is buried deep within the client
                 uri.contains("/deck/") && request.method() == HttpMethod.GET) {
             getTournamentDeck(uri.substring(1, uri.indexOf("/deck/")),
                     uri.substring(uri.indexOf("/deck/") + 6, uri.lastIndexOf("/html")), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
-            getTournamentInfo(uri.substring(1), responseWriter);
+            getTournamentInfo(uri.substring(1), responseWriter); // merge into getTournaments
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
@@ -52,7 +49,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         if (tournament == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         appendTournamentData(doc, doc, tournament, true);
-        responseWriter.writeXmlResponse(doc);
+        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
     private void getTournamentDeck(String tournamentId, String playerName, ResponseWriter responseWriter)
@@ -72,31 +69,12 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         responseWriter.writeHtmlResponse(result);
     }
 
-    private void getTournamentHistory(ResponseWriter responseWriter) throws Exception {
-        long sevenDaysAgo = System.currentTimeMillis() - SEVEN_DAYS_IN_MILLIS;
-        getTournamentsData(responseWriter, _tournamentService.getOldTournaments(sevenDaysAgo));
-    }
-
-    private void getCurrentTournaments(ResponseWriter responseWriter) throws Exception {
-        getTournamentsData(responseWriter, _tournamentService.getLiveTournaments());
-    }
-
-    private void getTournamentsData(ResponseWriter responseWriter, Iterable<? extends Tournament> tournamentList)
-            throws Exception {
-        Document doc = createNewDoc();
-        Element tournaments = doc.createElement("tournaments");
-        for (Tournament tournament : tournamentList)
-            appendTournamentData(doc, tournaments, tournament, false);
-        doc.appendChild(tournaments);
-        responseWriter.writeXmlResponse(doc);
-    }
-
 
     private void appendTournamentData(Document doc, Node parentNode, Tournament tournament, boolean includeStandings) {
         Element tournamentElem = doc.createElement("tournament");
         tournamentElem.setAttribute("id", tournament.getTournamentId());
         tournamentElem.setAttribute("name", tournament.getTournamentName());
-        tournamentElem.setAttribute("format", _formatLibrary.getFormat(tournament.getFormat()).getName());
+        tournamentElem.setAttribute("format", _formatLibrary.get(tournament.getFormat()).getName());
         tournamentElem.setAttribute("collection", tournament.getCollectionType().getFullName());
         tournamentElem.setAttribute("round", String.valueOf(tournament.getCurrentRound()));
         tournamentElem.setAttribute("stage", tournament.getTournamentStage().getHumanReadable());

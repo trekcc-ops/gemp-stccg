@@ -14,11 +14,6 @@ public class PersonnelNameMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(PersonnelCard personnel) {
-        return Objects.equals(personnel.getTitle(), _name.getHumanReadable());
-    }
-
-    @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
         return personnel.stream().anyMatch(card -> Objects.equals(card.getTitle(), _name.getHumanReadable()));
     }

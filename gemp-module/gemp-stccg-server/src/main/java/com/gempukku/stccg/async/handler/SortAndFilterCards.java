@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.collection.CompleteCardCollection;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
@@ -11,6 +12,11 @@ import java.text.Normalizer;
 import java.util.*;
 
 public class SortAndFilterCards {
+
+    public static List<GenericCardItem> process(String filter, CardBlueprintLibrary cardLibrary,
+                                                FormatLibrary formatLibrary) {
+        return process(filter, new CompleteCardCollection(cardLibrary).getAll(), cardLibrary, formatLibrary);
+    }
     public static <T extends CardItem> List<T> process(String filter, Iterable<? extends T> items,
                                                        CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary) {
         if (filter == null)
@@ -116,10 +122,10 @@ public class SortAndFilterCards {
     private static boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library,
                                     FormatLibrary formatLibrary) {
         for (String setId : sets) {
-            GameFormat format = formatLibrary.getFormat(setId);
+            GameFormat format = formatLibrary.get(setId);
 
             if (format != null) {
-                String valid = format.validateCard(blueprintId);
+                String valid = format.validateCard(library, blueprintId);
                 return valid == null || valid.isEmpty();
             } else {
                 if (blueprintId.startsWith(setId + "_") || library.hasAlternateInSet(blueprintId, setId))

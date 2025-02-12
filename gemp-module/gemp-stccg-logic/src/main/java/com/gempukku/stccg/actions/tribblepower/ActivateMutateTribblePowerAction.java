@@ -7,7 +7,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 
@@ -29,17 +30,17 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
 
                 // Count the number of cards in your play pile.
                 int cardsInPlayPile = playPile.size();
+                Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
                 // Shuffle your play pile into your draw deck
-                cardGame.removeCardsFromZone(_performingPlayerId, playPile);
+                cardGame.removeCardsFromZone(performingPlayer, playPile);
                 for (PhysicalCard physicalCard : playPile) {
                     gameState.putCardOnBottomOfDeck(physicalCard);
                 }
-                cardGame.getPlayer(_performingPlayerId).shuffleDrawDeck(cardGame);
+                performingPlayer.shuffleDrawDeck(cardGame);
 
                 // Then put that many cards from the top of your draw deck in your play pile
-                appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(game, game.getPlayer(_performingPlayerId),
-                        cardsInPlayPile));
+                appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(game, performingPlayer, cardsInPlayPile));
             } else {
                 throw new InvalidGameLogicException("Could not use tribble power Mutate in a non-Tribbles game");
             }

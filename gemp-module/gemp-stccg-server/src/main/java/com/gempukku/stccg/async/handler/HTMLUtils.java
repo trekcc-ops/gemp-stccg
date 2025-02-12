@@ -9,6 +9,8 @@ import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.filterable.SubDeck;
+import com.gempukku.stccg.formats.DefaultGameFormat;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -30,7 +32,7 @@ import java.util.*;
 
 public class HTMLUtils {
 
-    static final String NEWLINE = "<br/>";
+    public static final String NEWLINE = "<br/>";
     private static final String YELLOW = "yellow";
     private static final String RED = "red";
     private static final String GREEN = "green";
@@ -62,7 +64,7 @@ public class HTMLUtils {
                 + "<span><img class=\"ttimage\" src=\"" + blueprint.getImageUrl() + "\"></span></span>";
     }
 
-    static String makeBold(String text) {
+    public static String makeBold(String text) {
         return ("<b>" + text + "</b>");
     }
 
@@ -102,12 +104,18 @@ public class HTMLUtils {
         for (String card : deck.getDrawDeckCards())
             deckCards.addItem(cardBlueprintLibrary.getBaseBlueprintId(card), 1);
 
-        result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
+        for (SubDeck subDeck : SubDeck.values()) {
+            if (deck.getSubDeck(subDeck) != null && !deck.getSubDeck(subDeck).isEmpty()) {
+
+            }
+        }
+
+/*        result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
                 deckCards,false, formatLibrary, showToolTip, cardBlueprintLibrary));
         result.append(listCards("Free Peoples Draw Deck","sort:cardType,name",
                 deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary));
         result.append(listCards("Shadow Draw Deck","sort:cardType,name",
-                deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary));
+                deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary)); */
 
         return result.toString();
     }
@@ -165,17 +173,17 @@ public class HTMLUtils {
         return result.toString();
     }
 
-    static String getDeckValidation(CardDeck deck, GameFormat format) {
+    public static String getDeckValidation(CardBlueprintLibrary library, CardDeck deck, DefaultGameFormat format) {
         StringBuilder sb = new StringBuilder();
 
         StringBuilder valid = new StringBuilder();
         StringBuilder invalid = new StringBuilder();
 
-        List<String> validation = format.validateDeck(deck);
+        List<String> validation = format.validateDeck(library, deck);
         List<String> errataValidation = null;
         if (!format.getErrataCardMap().isEmpty()) {
-            CardDeck deckWithErrata = format.applyErrata(deck);
-            errataValidation = format.validateDeck(deckWithErrata);
+            CardDeck deckWithErrata = format.applyErrata(library, deck);
+            errataValidation = format.validateDeck(library, deckWithErrata);
         }
 
         String formatName = format.getName();
@@ -223,7 +231,7 @@ public class HTMLUtils {
                 url + "'>please do so using this form.</a>";
     }
 
-    static String parseChatMessage(String message) {
+    public static String parseChatMessage(String message) {
         String newMsg = _renderer.render(_parser.parse(message));
         // Prevent quotes with newlines from displaying side-by-side
         newMsg = newMsg.replaceAll(
@@ -231,58 +239,6 @@ public class HTMLUtils {
         //Make all links open in a new tab
         newMsg = newMsg.replaceAll("<(a href=\".*?\")>", "<$1 target=\"blank\">");
         return newMsg;
-    }
-
-    public static String serializeFormatForHall(GameFormat format, CardBlueprintLibrary library)
-            throws CardNotFoundException {
-        StringBuilder result = new StringBuilder();
-        result.append(makeBold(format.getName()));
-        result.append("<ul>");
-        result.append("<li>valid sets: ");
-        for (String setId : format.getValidSetIdsAsStrings())
-            result.append(setId).append(", ");
-        result.append("</li>");
-        if (!format.getBannedCards().isEmpty()) {
-            result.append("<li>Banned cards (can't be played): ");
-            appendFormatCards(result, format.getBannedCards(), library);
-            result.append("</li>");
-        }
-        if (!format.getRestrictedCardNames().isEmpty()) {
-            result.append("<li>Restricted by card name: ");
-            boolean first = true;
-            for (String cardName : format.getRestrictedCardNames()) {
-                if (!first)
-                    result.append(", ");
-                result.append(cardName);
-                first = false;
-            }
-            result.append("</li>");
-        }
-        if (!format.getErrataCardMap().isEmpty()) {
-            result.append("<li>Errata: ");
-            appendFormatCards(result, new ArrayList<>(new LinkedHashSet<>(format.getErrataCardMap().values())),
-                    library);
-            result.append("</li>");
-        }
-        if (!format.getValidCards().isEmpty()) {
-            result.append("<li>Additional valid: ");
-            List<String> additionalValidCards = format.getValidCards();
-            appendFormatCards(result, additionalValidCards, library);
-            result.append("</li>");
-        }
-        result.append("</ul>");
-        return result.toString();
-    }
-
-    private static void appendFormatCards(StringBuilder result, Collection<String> additionalValidCards,
-                                          CardBlueprintLibrary blueprintLibrary)
-            throws CardNotFoundException {
-        if (!additionalValidCards.isEmpty()) {
-            for (String blueprintId : additionalValidCards)
-                result.append(blueprintLibrary.getCardBlueprint(blueprintId).getCardLink()).append(", ");
-            if (additionalValidCards.isEmpty())
-                result.append("none,");
-        }
     }
 
     public static String replaceNewlines(String message) {

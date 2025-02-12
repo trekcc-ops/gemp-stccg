@@ -10,6 +10,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 
@@ -26,14 +28,8 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
         _cardToDock = cardToDock;
 
         _dockingTargetOptions = Filters.yourFacilitiesInPlay(cardGame, player).stream()
-                .filter(card -> {
-                    try {
-                        return card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation();
-                    } catch (InvalidGameLogicException e) {
-                        cardGame.sendErrorMessage(e);
-                        return false;
-                    }
-                })
+                .filter(card -> card.isCompatibleWith(_cardToDock) &&
+                        card.getGameLocation() == _cardToDock.getGameLocation())
                 .toList();
     }
 

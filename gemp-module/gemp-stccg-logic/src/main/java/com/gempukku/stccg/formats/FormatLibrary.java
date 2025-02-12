@@ -1,44 +1,35 @@
 package com.gempukku.stccg.formats;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
+import com.gempukku.stccg.common.DeserializingLibrary;
 import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.common.JsonUtils;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-public class FormatLibrary {
-    private final Map<String, GameFormat> _allFormats = new HashMap<>();
-    private final Map<String, GameFormat> _hallFormats = new LinkedHashMap<>();
+@JsonIncludeProperties({ "Formats", "SealedTemplates" })
+@JsonPropertyOrder({ "Formats", "SealedTemplates" })
+public class FormatLibrary implements DeserializingLibrary<GameFormat> {
+    private final Map<String, DefaultGameFormat> _allFormats = new HashMap<>();
     private final Map<String, SealedEventDefinition> _sealedTemplates = new LinkedHashMap<>();
-    private final CardBlueprintLibrary _cardLibrary;
-    private final File _formatPath;
-    private final File _sealedPath;
-
-
     private final Semaphore collectionReady = new Semaphore(1);
 
     public FormatLibrary(CardBlueprintLibrary bpLibrary) {
-        this(bpLibrary, AppConfig.getFormatDefinitionsPath(), AppConfig.getSealedPath());
+        reloadFormats(bpLibrary);
+        reloadSealedTemplates();
     }
 
-    public FormatLibrary(CardBlueprintLibrary bpLibrary, File formatPath, File sealedPath) {
-        _cardLibrary = bpLibrary;
-        _formatPath = formatPath;
-        _sealedPath = sealedPath;
-
-        ReloadFormats();
-        ReloadSealedTemplates();
-    }
-
-    public void ReloadSealedTemplates() {
+    public void reloadSealedTemplates() {
         try {
             collectionReady.acquire();
             _sealedTemplates.clear();
-            loadSealedTemplates(_sealedPath);
+            loadSealedTemplates(AppConfig.getSealedPath());
             collectionReady.release();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -52,44 +43,39 @@ public class FormatLibrary {
             }
         }
         else if (path.isFile()) {
-            if (JsonUtils.isNotAValidHJSONFile(path))
+            if (isNotValidJsonFile(path))
                 return;
-            try (Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8)) {
-                List<JSONData.SealedTemplate> defs =
-                        JsonUtils.readListOfClassFromReader(reader, JSONData.SealedTemplate.class);
-
-                for (var def : defs) {
-                    if(def == null)
-                        continue;
-                    var sealed = new SealedEventDefinition(def.name, def.id, _allFormats.get(def.format), def.seriesProduct);
-
-                    if(_sealedTemplates.containsKey(def.id)) {
-                        System.out.println("Overwriting existing sealed definition '" + def.id + "'!");
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                SealedEventDefinition[] sealedDefinitions = mapper.readValue(path, SealedEventDefinition[].class);
+                for (SealedEventDefinition definition : sealedDefinitions) {
+                    String definitionId = definition.getId();
+                    if(_sealedTemplates.containsKey(definitionId)) {
+                        System.out.println("Overwriting existing sealed definition '" + definitionId + "'!");
                     }
-                    _sealedTemplates.put(def.id, sealed);
+                    GameFormat format = _allFormats.get(definition.getFormatId());
+                    if (format != null) {
+                        definition.assignFormat(format);
+                    } else {
+                        throw new IOException("Unable to create sealed event template " + definition.getName());
+                    }
+                    _sealedTemplates.put(definitionId, definition);
                 }
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    public void ReloadFormats() {
-        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(_formatPath), StandardCharsets.UTF_8)) {
+
+    public void reloadFormats(CardBlueprintLibrary blueprintLibrary) {
+        try {
             collectionReady.acquire();
             _allFormats.clear();
-            _hallFormats.clear();
-
-            for (JSONData.Format def : JsonUtils.readListOfClassFromReader(reader, JSONData.Format.class)) {
-                if (def == null)
-                    continue;
-
-                DefaultGameFormat format = new DefaultGameFormat(_cardLibrary, def);
-
+            JSONData.Format[] formatList =
+                    new ObjectMapper().readValue(AppConfig.getFormatDefinitionsPath(), JSONData.Format[].class);
+            for (JSONData.Format def : formatList) {
+                DefaultGameFormat format = new DefaultGameFormat(blueprintLibrary, def);
                 _allFormats.put(format.getCode(), format);
-                if (format.hallVisible()) {
-                    _hallFormats.put(format.getCode(), format);
-                }
             }
             collectionReady.release();
         }
@@ -98,10 +84,17 @@ public class FormatLibrary {
         }
     }
 
+
     public Map<String, GameFormat> getHallFormats() {
         try {
             collectionReady.acquire();
-            var data = Collections.unmodifiableMap(_hallFormats);
+            Map<String, GameFormat> result = new HashMap<>();
+            for (Map.Entry<String, DefaultGameFormat> entry : _allFormats.entrySet()) {
+                if (entry.getValue().hallVisible()) {
+                    result.put(entry.getKey(), entry.getValue());
+                }
+            }
+            var data = Collections.unmodifiableMap(result);
             collectionReady.release();
             return data;
         }
@@ -110,7 +103,8 @@ public class FormatLibrary {
         }
     }
 
-    public Map<String, GameFormat> getAllFormats() {
+    @JsonProperty("Formats")
+    public Map<String, DefaultGameFormat> getAllFormats() {
         try {
             collectionReady.acquire();
             var data = Collections.unmodifiableMap(_allFormats);
@@ -122,10 +116,10 @@ public class FormatLibrary {
         }
     }
 
-    public GameFormat getFormat(String formatCode) {
+    public DefaultGameFormat get(String formatId) {
         try {
             collectionReady.acquire();
-            var data = _allFormats.get(formatCode);
+            var data = _allFormats.get(formatId);
             collectionReady.release();
             return data;
         }
@@ -134,7 +128,7 @@ public class FormatLibrary {
         }
     }
 
-    public GameFormat getFormatByName(String formatName) {
+    public DefaultGameFormat getFormatByName(String formatName) {
         try {
             collectionReady.acquire();
             var data = _allFormats.values().stream()
@@ -165,16 +159,20 @@ public class FormatLibrary {
         }
     }
 
-    public Map<String, SealedEventDefinition> GetAllSealedTemplates() {
+    @SuppressWarnings("unused") // Used in JSON serialization
+    @JsonProperty("SealedTemplates")
+    private Map<String, SealedEventDefinition> GetAllSealedTemplatesNew() {
         try {
             collectionReady.acquire();
-            var data = Collections.unmodifiableMap(_sealedTemplates);
+            Map<String, SealedEventDefinition> result = new HashMap<>();
+            for (SealedEventDefinition eventDef : _sealedTemplates.values()) {
+                result.put(eventDef.getName(), eventDef);
+            }
             collectionReady.release();
-            return data;
+            return result;
         }
         catch (InterruptedException exp) {
             throw new RuntimeException("FormatLibrary.GetSealedTemplate() interrupted: ", exp);
         }
     }
-
 }

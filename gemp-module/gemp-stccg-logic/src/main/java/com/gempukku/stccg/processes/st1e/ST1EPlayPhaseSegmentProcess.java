@@ -7,6 +7,8 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result)) {
-                                GameUtils.performRevert(cardGame, currentPlayer);
+                                cardGame.performRevert(currentPlayer);
                             } else {
                                 try {
                                     Action action = getSelectedAction(result);
@@ -54,7 +56,6 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
         GameProcess result;
-        ST1EGame stGame = getST1EGame(cardGame);
         if (_consecutivePasses > 0) {
             Phase phase = cardGame.getCurrentPhase();
             String message = "End of " + phase + " phase";
@@ -70,7 +71,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                     cardGame.setCurrentPhase(Phase.END_OF_TURN);
                     yield new ST1EEndOfTurnProcess();
                 }
-                case null, default -> throw new RuntimeException(
+                case null, default -> throw new InvalidGameLogicException(
                         "End of play phase segment process reached without being in a valid play phase segment");
             };
         } else {

@@ -7,8 +7,8 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.GameSnapshot;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +80,7 @@ public class SeedPhaseTest extends AbstractAtTest {
 
         assertNotNull(archer);
         assertNotNull(homeward);
-        MissionLocation homewardLocation = homeward.getLocation();
+        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
         assertNotNull(homewardLocation);
         assertNotEquals(homeward.getOwner(), archer.getOwner());
 

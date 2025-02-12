@@ -70,8 +70,8 @@ export function banMultiple() {
 		$("#ban-multiple-result").html("Please check one or more users to ban.");
 		return;
 	}
-	hall.comm.banMultiple(data.login, function (string) {
-			$("#ban-multiple-result").html("OK");
+	hall.comm.banMultiple(data.login, function (json) {
+			$("#ban-multiple-result").html(json.response);
 		}, banErrorMap(resultdiv));
 }
 

@@ -56,13 +56,13 @@ public class MisSeedTest extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Simon Tarses and a space dilemma under Excavation
-        MissionLocation kurl = excavation.getLocation();
+        MissionLocation kurl = excavation.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(tarses), excavation);
         seedCardsUnder(Collections.singleton(maglock), excavation);
 
         // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation.getLocation());
-        assertEquals(outpost.getLocation(), excavation.getLocation());
+        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         // Report Picard to outpost
@@ -73,7 +73,7 @@ public class MisSeedTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocation()));
+        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
 
         // Attempt mission
         attemptMission(P1, picard.getAwayTeam(), excavation);
@@ -81,6 +81,6 @@ public class MisSeedTest extends AbstractAtTest {
         // Confirm that mission was not solved and Simon Tarses was removed from play
         assertEquals(Zone.REMOVED, tarses.getZone());
         assertEquals(Zone.REMOVED, maglock.getZone());
-        assertFalse(excavation.getLocation().isCompleted());
+        assertFalse(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
     }
 }

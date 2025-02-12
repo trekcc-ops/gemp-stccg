@@ -9,8 +9,8 @@ import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SkillDotCountEvaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerNotFoundException;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class DrawCardsAction extends ActionyAction implements TopLevelSelectableAction {
 

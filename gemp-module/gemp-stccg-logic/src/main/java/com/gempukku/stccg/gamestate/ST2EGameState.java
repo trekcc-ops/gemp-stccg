@@ -2,7 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST2EGame;
 
 public class ST2EGameState extends GameState {

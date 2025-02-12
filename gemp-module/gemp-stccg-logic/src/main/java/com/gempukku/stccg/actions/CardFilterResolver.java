@@ -3,21 +3,19 @@ package com.gempukku.stccg.actions;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class CardFilterResolver implements ActionCardResolver {
 
-    private final Filter _cardFilter;
+    private final CardFilter _cardFilter;
     private Collection<PhysicalCard> _cards;
     boolean _resolved;
 
-    public CardFilterResolver(Filter cardFilter) {
+    public CardFilterResolver(CardFilter cardFilter) {
         _cardFilter = cardFilter;
     }
 
