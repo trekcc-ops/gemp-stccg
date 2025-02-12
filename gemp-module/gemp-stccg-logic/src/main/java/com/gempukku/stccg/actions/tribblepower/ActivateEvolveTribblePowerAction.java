@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
@@ -20,7 +20,7 @@ public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction
         int cardsInHand = performingPlayer.getCardsInHand().size();
 
         // Place your hand in your discard pile
-        appendEffect(new DiscardCardAction(_performingCard, performingPlayer, performingPlayer.getCardsInHand()));
+        appendEffect(new TribblesMultiDiscardActionBroken(_performingCard, performingPlayer, performingPlayer.getCardsInHand()));
 
         // Draw that many cards
         appendEffect(new DrawCardsAction(_performingCard, performingPlayer, cardsInHand, cardGame));

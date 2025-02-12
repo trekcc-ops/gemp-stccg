@@ -5,11 +5,11 @@ import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.*;
-import com.gempukku.stccg.actions.usage.UseGameTextAction;
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
+import com.gempukku.stccg.actions.modifiers.AddUntilEndOfTurnModifierAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
-import com.gempukku.stccg.actions.modifiers.AddUntilEndOfTurnModifierAction;
+import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -18,10 +18,10 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
 import com.gempukku.stccg.modifiers.attributes.RangeModifier;
+import com.gempukku.stccg.player.Player;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +64,7 @@ public class Blueprint155_026 extends CardBlueprint {
             CardFilter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
             SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(game, player,
                     "Select a card to discard", discardCardFilter);
-            Action discardAction = new DiscardCardAction(game, thisCard, player, selectCardToDiscardAction);
+            Action discardAction = new DiscardSingleCardAction(game, thisCard, player, selectCardToDiscardAction);
             getItDoneAction.appendEffect(discardAction);
 
             actions.add(getItDoneAction);

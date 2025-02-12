@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.discard;
 
-import com.gempukku.stccg.TextUtils;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -9,39 +10,41 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 
-public class DiscardCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class DiscardSingleCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardTarget;
+    private Collection<PhysicalCard> _cardsDiscarded; // may not be initialized
 
-    public DiscardCardAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
-                             SelectVisibleCardAction selectAction) {
+    public DiscardSingleCardAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
+                                   SelectVisibleCardAction selectAction) {
         super(cardGame, performingPlayer, "Discard", ActionType.DISCARD);
         _performingCard = performingCard;
         _cardTarget = new SelectCardsResolver(selectAction);
     }
 
 
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, PhysicalCard cardToDiscard) {
+    public DiscardSingleCardAction(PhysicalCard performingCard, Player performingPlayer, PhysicalCard cardToDiscard) {
         super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new FixedCardResolver(cardToDiscard);
         _performingCard = performingCard;
     }
 
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer,
-                             Collection<PhysicalCard> cardsToDiscard) {
+    public DiscardSingleCardAction(PhysicalCard performingCard, Player performingPlayer,
+                                   Collection<PhysicalCard> cardsToDiscard) {
         super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new FixedCardsResolver(cardsToDiscard);
         _performingCard = performingCard;
     }
 
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, CardFilter cardFilter) {
+    public DiscardSingleCardAction(PhysicalCard performingCard, Player performingPlayer, CardFilter cardFilter) {
         super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
@@ -69,9 +72,9 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
             }
         }
 
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
-        Collection<PhysicalCard> cardsToDiscard = _cardTarget.getCards(cardGame);
+        _cardsDiscarded = _cardTarget.getCards(cardGame);
+        if (_cardsDiscarded.size() != 1)
+            throw new InvalidGameLogicException("Discarding too many cards for DiscardSingleCardAction");
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZone(cardGame, performingPlayer, cardsToDiscard);
         for (PhysicalCard cardToDiscard : cardsToDiscard) {
@@ -91,4 +94,15 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
     public int getCardIdForActionSelection() {
         return _performingCard.getCardId();
     }
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private PhysicalCard cardsDiscarded() {
+        if (_cardsDiscarded != null && _cardsDiscarded.size() == 1) {
+            return Iterables.getOnlyElement(_cardsDiscarded);
+        } else {
+            return null;
+        }
+    }
+
 }
