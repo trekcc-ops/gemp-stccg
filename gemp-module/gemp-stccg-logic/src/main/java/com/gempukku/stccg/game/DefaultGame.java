@@ -7,7 +7,7 @@ import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.gameevent.ActionResultGameEvent;
 import com.gempukku.stccg.gameevent.FlashCardInPlayGameEvent;
 import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.gameevent.GameStateListener;
@@ -520,9 +520,9 @@ public abstract class DefaultGame {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.setPlayerScore(player);
     }
-    public void sendSerializedGameStateToClient() {
+    public void sendActionResultToClient() {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATE_CHECK));
+            listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));
     }
 
     public void removeCardsFromZone(Player performingPlayer, Collection<PhysicalCard> cards) {

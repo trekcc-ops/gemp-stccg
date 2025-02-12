@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardOnMissionAction;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
@@ -80,8 +81,13 @@ public class TurnProcedure {
             _game.getActionsEnvironment().addActionToStack(nextAction);
         } else if (currentAction.wasCompleted()) {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
-            if (currentAction instanceof StopCardsAction || currentAction instanceof PlaceCardOnMissionAction) {
-                _game.sendSerializedGameStateToClient();
+            ActionType actionType = currentAction.getActionType();
+            switch(actionType) {
+                case CHANGE_AFFILIATION, STOP_CARDS:
+                    _game.sendActionResultToClient();
+                    break;
+                default:
+                    break;
             }
         } else if (_game.isCarryingOutEffects()) {
             throw new InvalidGameLogicException("Unable to process action " + currentAction.getActionId() +
