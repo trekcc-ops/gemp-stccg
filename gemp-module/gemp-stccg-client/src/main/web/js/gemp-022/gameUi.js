@@ -5,7 +5,7 @@ import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js'
 import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
 import GameAnimations from './gameAnimations.js';
 import ChatBoxUI from './chat.js';
-import { openSizeDialog } from "./common.js";
+import { openSizeDialog, showLinkableCardTitle } from "./common.js";
 import Cookies from "js-cookie";
 import playImg from "../../images/play.png";
 import pauseImg from "../../images/pause.png";
@@ -782,24 +782,6 @@ export default class GameTableUI {
 
         $("#cardEffects").append(html);
         $("#cardEffects").addClass("cardInfoText");
-    }
-
-    showLinkableCardTitle(cardNode) {
-        // Takes a json node of card properties and creates a hyperlink that the user can click on to show the card
-        // Used in setCardModifiers method
-        let title = cardNode.title; // string
-        let hasUniversalIcon = cardNode.hasUniversalIcon; // boolean
-        let blueprintId = cardNode.blueprintId; // string
-        let imageUrl = cardNode.imageUrl; // string
-
-        let html = "";
-        html = html + "<div class='cardHint' value='" + blueprintId + "' card_img_url='" + imageUrl + "'>";
-        if (hasUniversalIcon) {
-            html = html + "&#x2756&nbsp;"; // unicode for universal symbol
-        }
-        html = html + title + "</div>";
-
-        return html;
     }
 
     showCommaDelimitedListOfCardLinks(jsonList, listTitle) {

@@ -123,3 +123,20 @@ export var zones_all = [
     "BATTLE_BRIDGE",
     "TRIBBLE"
 ]
+
+export function showLinkableCardTitle(cardNode) {
+    // Takes a json node of card properties and creates a hyperlink that the user can click on to show the card
+    let title = cardNode.title; // string
+    let hasUniversalIcon = cardNode.hasUniversalIcon; // boolean
+    let blueprintId = cardNode.blueprintId; // string
+    let imageUrl = cardNode.imageUrl; // string
+
+    let html = "";
+    html = html + "<div class='cardHint' value='" + blueprintId + "' card_img_url='" + imageUrl + "'>";
+    if (hasUniversalIcon) {
+        html = html + "&#x2756&nbsp;"; // unicode for universal symbol
+    }
+    html = html + title + "</div>";
+
+    return html;
+}
