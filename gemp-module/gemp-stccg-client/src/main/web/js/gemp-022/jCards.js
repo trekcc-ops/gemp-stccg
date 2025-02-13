@@ -47,8 +47,8 @@ export default class Card {
             throw new TypeError(`imageUrl '${imageUrl}' must be a string.`);
         }
 
-        if (typeof(locationIndex) != 'string') {
-            throw new TypeError(`locationIndex '${locationIndex}' must be a string.`);
+        if (typeof(locationIndex) != 'string' && !(Number.isInteger(locationIndex))) {
+            throw new TypeError(`locationIndex '${locationIndex}' must be a string or integer.`);
         }
 
         if (typeof(upsideDown) != 'boolean') {
