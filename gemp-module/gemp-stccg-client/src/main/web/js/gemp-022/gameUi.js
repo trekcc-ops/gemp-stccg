@@ -1080,6 +1080,8 @@ export default class GameTableUI {
             case "W":
                 this.animations.warning(gameEvent, animate);
                 break;
+            case "SERIALIZED_GAME_STATE":
+                this.animations.parseSerializedGameState(gameEvent, animate);
             default:
                 console.error("Unknown game event type: '" + eventType + "'.");
         }
