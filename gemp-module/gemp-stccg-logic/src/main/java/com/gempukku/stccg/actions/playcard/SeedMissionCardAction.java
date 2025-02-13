@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.choose.MakeDecisionAction;
@@ -14,10 +16,14 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final MissionCard _cardEnteringPlay;
     private boolean _cardPlayed;
     private boolean _placementChosen;
@@ -27,7 +33,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     private boolean _actionCarriedOut;
 
     public SeedMissionCardAction(MissionCard cardToPlay) {
-        super(cardToPlay, cardToPlay, cardToPlay.getOwner(), Zone.SPACELINE, ActionType.SEED_CARD);
+        super(cardToPlay, cardToPlay, cardToPlay.getOwner(), Zone.SPACELINE, ActionType.SEED_MISSION);
         _cardEnteringPlay = cardToPlay;
         setText("Seed " + _cardEnteringPlay.getFullName());
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
@@ -130,9 +136,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     private void seedCard(DefaultGame game) {
         if (game.getGameState() instanceof ST1EGameState gameState) {
 
-            game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
-
-            gameState.removeCardFromZone(_cardEnteringPlay);
+            gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
 
             try {
                 if (_sharedMission)

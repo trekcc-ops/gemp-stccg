@@ -1022,6 +1022,7 @@ export default class GameTableUI {
                     let action = gameState.performedActions[i];
                     animateActionResult(action, gameState, this.animations);
                     communicateActionResult(action, gameState, this);
+                    this.lastActionIndex = i;
                 }
                 break;
             case "CA":
@@ -1056,7 +1057,7 @@ export default class GameTableUI {
                 if (zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND" || zone == "REMOVED") {
                     let zoneOwner = (gameEvent.controllerId == null) ? gameEvent.participantId : gameEvent.controllerId;
                     this.animations.addCardToHiddenZone(gameEvent, zone, zoneOwner);
-                } else {
+                } else if (zone != "SPACELINE") {
                     this.animations.putCardIntoPlay(gameEvent, animate, eventType);
                 }
                 break;

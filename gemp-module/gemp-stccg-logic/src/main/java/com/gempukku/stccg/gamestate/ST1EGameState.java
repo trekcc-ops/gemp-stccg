@@ -108,7 +108,7 @@ public class ST1EGameState extends GameState {
     public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
         _spacelineLocations.add(indexNumber, new MissionLocation(newMission, _nextLocationId));
         _nextLocationId++;
-        addCardToZone(newMission, Zone.SPACELINE, true, false);
+        addCardToZoneWithoutSendingToClient(newMission, Zone.SPACELINE);
     }
 
     public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
@@ -121,7 +121,7 @@ public class ST1EGameState extends GameState {
                     newMission.getOwnerName() + " already has a mission at " +
                     newMission.getBlueprint().getLocation());
         location.addMission(newMission);
-        addCardToZone(newMission, Zone.SPACELINE, true, true);
+        addCardToZoneWithoutSendingToClient(newMission, Zone.SPACELINE);
     }
 
     public void seedFacilityAtLocation(FacilityCard card, GameLocation location) {

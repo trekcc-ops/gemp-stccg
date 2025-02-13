@@ -236,15 +236,65 @@ export default class GameAnimations {
 
         $("#main").queue(
             function (next) {
-                console.log("laying out group with card from addCardToHiddenZone");
                 that.game.layoutGroupWithCard(cardId);
                 next();
             });
     }
 
+    putMissionIntoPlay(cardJson, animate, spacelineIndex, firstMissionAtLocation) {
+        // int spacelineIndex: index of mission's location in game state spaceline array
+        // boolean firstMissionAtLocation: true if bottom or only mission card; false if card is in top of another mission card
+        console.log("Calling putMissionIntoPlay");
+        console.log(cardJson);
+        console.log(spacelineIndex);
+        var that = this;
+        let participantId = cardJson.owner;
+        let cardId = cardJson.cardId;
+        let imageUrl = cardJson.imageUrl;
+        let region = cardJson.region;
+        let quadrant = cardJson.quadrant;
+        let blueprintId = cardJson.blueprintId;
+        let upsideDown = (participantId != that.game.bottomPlayerId);
+        let thisGame = this.game;
+        let locationIndex = spacelineIndex.toString();
+
+        $("#main").queue(
+            function (next) {
+
+                if (firstMissionAtLocation) {
+                    console.log("Adding mission " + cardJson.title + " at location index " + spacelineIndex);
+                    thisGame.addLocationDiv(locationIndex, quadrant, region);
+                } else {
+                    console.log("Adding mission card " + cardJson.title + " to location index " + spacelineIndex);
+                    thisGame.addSharedMission(locationIndex, quadrant, region);
+                }
+
+                var card = new Card(blueprintId, "SPACELINE", cardId, participantId, imageUrl, locationIndex, upsideDown);
+                var cardDiv = thisGame.createCardDivWithData(card, null);
+
+                $("#main").append(cardDiv);
+                next();
+            });
+
+        $("#main").queue(
+            function (next) {
+                thisGame.layoutGroupWithCard(cardId);
+                next();
+            });
+
+        if (animate && (thisGame.spectatorMode || thisGame.replayMode || (participantId != thisGame.bottomPlayerId))) {
+            this.animateCardPlay(cardId);
+        }
+    }
+
     putCardIntoPlay(json, animate, eventType) {
         /* This method is poorly labeled. It represents adding any visible card to the board, not just those in play.
             For example, it may be called if a card is discarded or placed in hand. */
+        if (json.zone == "SPACELINE") {
+            console.log("Calling putCardIntoPlay:");
+            console.log("json:");
+            console.log(json);
+        }
         var participantId = json.participantId;
         var cardId = json.cardId;
         var zone = json.zone;
@@ -262,6 +312,7 @@ export default class GameAnimations {
                 let controllerId = json.controllerId;
 
                 if (zone == "SPACELINE") {
+                    console.log("Processing putCardIntoPlay for SPACELINE zone at locationIndex " + locationIndex);
                     if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
                         that.game.addSharedMission(locationIndex, quadrant, region);
                     } else {
@@ -306,106 +357,111 @@ export default class GameAnimations {
             });
 
         if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))) {
-            var final_position = {};
-
-            $("#main").queue(
-                // Display the card in the center of the screen
-                function (next) {
-                    // Calculate expected final position.
-                    var cardDiv = getCardDivFromId(cardId);
-                    var card = cardDiv.data("card");
-                    var pos = cardDiv.position();
-                    let card_img = $(cardDiv).children(".card_img").first();
-
-                    final_position["left"] = pos.left;
-                    final_position["top"] = pos.top;
-                    final_position["width"] = cardDiv.width();
-                    final_position["height"] = cardDiv.height();
-                    final_position["z-index"] = cardDiv.css("z-index");
-                    final_position["upside-down"] = card.upsideDown;
-
-                    if (final_position["upside-down"]) {
-                        // Don't animate a card upside down even if that's set. Class is restored in final step.
-                        $(card_img).removeClass("upside-down");
-                    }
-                    
-
-                    // Now we begin the animation
-                    var gameWidth = $("#main").width();
-                    var gameHeight = $("#main").height();
-
-                    var cardHeight = (gameHeight / 2);
-                    var cardWidth = card.getWidthForHeight(cardHeight);
-
-                    $(cardDiv).css(
-                        {
-                            position:"absolute",
-                            left: "" + (gameWidth / 2 - cardWidth / 4) + "px",
-                            top: "" + (gameHeight * (3 / 8)) + "px",
-                            width: "" + (cardWidth / 2) + "px",
-                            height: "" + (cardHeight / 2) + "px",
-                            "z-index":100,
-                            opacity:0});
-                    
-                    $(cardDiv).animate(
-                        {
-                            opacity:1},
-                        {
-                            duration:that.getAnimationLength(that.putCardIntoPlayDuration / 8),
-                            easing:"linear",
-                            step:function (now, fx) {
-                                    layoutCardElem(cardDiv,
-                                    (gameWidth / 2 - cardWidth / 4) - now * (cardWidth / 4),
-                                    gameHeight * (3 / 8) - now * (gameHeight / 8),
-                                    cardWidth / 2 + now * (cardWidth / 2),
-                                    cardHeight / 2 + now * (cardHeight / 2), 100);
-                            },
-                            complete:next});
-                }).queue(
-                function (next) {
-                    // Hold display in the center of the screen.
-                    setTimeout(next, that.getAnimationLength(that.putCardIntoPlayDuration * (5 / 8)));
-                }).queue(
-                function (next) {
-                    // Animate the card towards the final position on the play mat.
-                    var cardDiv = getCardDivFromId(cardId);
-                    $(cardDiv).animate(
-                        // properties
-                        {
-                            left:final_position["left"],
-                            top:final_position["top"],
-                            width:final_position["width"],
-                            height:final_position["height"]
-                        },
-                        // duration
-                        that.getAnimationLength(that.putCardIntoPlayDuration / 4),
-                        // easing
-                        "linear",
-                        // complete
-                        next
-                        );
-                }).queue(
-                function (next) {
-                    // Set final resting values for the card, including upside-down status.
-                    // TODO: This is required in order to ensure the border overlay and
-                    //       token overlay display correctly after the animation.
-                    //       This may not be necessary if the overlays are contained inside the
-                    //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
-                    var cardDiv = getCardDivFromId(cardId);
-                    let card_img = $(cardDiv).children(".card_img").first();
-                    layoutCardElem(cardDiv,
-                        final_position["left"],
-                        final_position["top"],
-                        final_position["width"],
-                        final_position["height"],
-                        final_position["z-index"]);
-                    
-                    if (final_position["upside-down"]) {
-                        $(card_img).addClass("upside-down");
-                    }
-                    next();
-                });
+            this.animateCardPlay(cardId);
         }
+    }
+
+    animateCardPlay(cardId) {
+        var that = this;
+        var final_position = {};
+
+        $("#main").queue(
+            // Display the card in the center of the screen
+            function (next) {
+                // Calculate expected final position.
+                var cardDiv = getCardDivFromId(cardId);
+                var card = cardDiv.data("card");
+                var pos = cardDiv.position();
+                let card_img = $(cardDiv).children(".card_img").first();
+
+                final_position["left"] = pos.left;
+                final_position["top"] = pos.top;
+                final_position["width"] = cardDiv.width();
+                final_position["height"] = cardDiv.height();
+                final_position["z-index"] = cardDiv.css("z-index");
+                final_position["upside-down"] = card.upsideDown;
+
+                if (final_position["upside-down"]) {
+                    // Don't animate a card upside down even if that's set. Class is restored in final step.
+                    $(card_img).removeClass("upside-down");
+                }
+
+
+                // Now we begin the animation
+                var gameWidth = $("#main").width();
+                var gameHeight = $("#main").height();
+
+                var cardHeight = (gameHeight / 2);
+                var cardWidth = card.getWidthForHeight(cardHeight);
+
+                $(cardDiv).css(
+                    {
+                        position:"absolute",
+                        left: "" + (gameWidth / 2 - cardWidth / 4) + "px",
+                        top: "" + (gameHeight * (3 / 8)) + "px",
+                        width: "" + (cardWidth / 2) + "px",
+                        height: "" + (cardHeight / 2) + "px",
+                        "z-index":100,
+                        opacity:0});
+
+                $(cardDiv).animate(
+                    {
+                        opacity:1},
+                    {
+                        duration:that.getAnimationLength(that.putCardIntoPlayDuration / 8),
+                        easing:"linear",
+                        step:function (now, fx) {
+                                layoutCardElem(cardDiv,
+                                (gameWidth / 2 - cardWidth / 4) - now * (cardWidth / 4),
+                                gameHeight * (3 / 8) - now * (gameHeight / 8),
+                                cardWidth / 2 + now * (cardWidth / 2),
+                                cardHeight / 2 + now * (cardHeight / 2), 100);
+                        },
+                        complete:next});
+            }).queue(
+            function (next) {
+                // Hold display in the center of the screen.
+                setTimeout(next, that.getAnimationLength(that.putCardIntoPlayDuration * (5 / 8)));
+            }).queue(
+            function (next) {
+                // Animate the card towards the final position on the play mat.
+                var cardDiv = getCardDivFromId(cardId);
+                $(cardDiv).animate(
+                    // properties
+                    {
+                        left:final_position["left"],
+                        top:final_position["top"],
+                        width:final_position["width"],
+                        height:final_position["height"]
+                    },
+                    // duration
+                    that.getAnimationLength(that.putCardIntoPlayDuration / 4),
+                    // easing
+                    "linear",
+                    // complete
+                    next
+                    );
+            }).queue(
+            function (next) {
+                // Set final resting values for the card, including upside-down status.
+                // TODO: This is required in order to ensure the border overlay and
+                //       token overlay display correctly after the animation.
+                //       This may not be necessary if the overlays are contained inside the
+                //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
+                var cardDiv = getCardDivFromId(cardId);
+                let card_img = $(cardDiv).children(".card_img").first();
+                layoutCardElem(cardDiv,
+                    final_position["left"],
+                    final_position["top"],
+                    final_position["width"],
+                    final_position["height"],
+                    final_position["z-index"]);
+
+                if (final_position["upside-down"]) {
+                    $(card_img).addClass("upside-down");
+                }
+                next();
+            });
     }
 
     updateCardImage(cardData) {
@@ -524,7 +580,6 @@ export default class GameAnimations {
             $("#main").queue(
                 function (next) {
                     that.game.layoutUI(false);
-                    console.log("Laying out cards within removeCardFromPlay")
                     next();
                 });
         }
