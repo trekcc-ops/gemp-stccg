@@ -287,14 +287,9 @@ export default class GameAnimations {
         }
     }
 
-    putCardIntoPlay(json, animate, eventType) {
+    putCardOnBoardGeneric(json, animate, eventType) {
         /* This method is poorly labeled. It represents adding any visible card to the board, not just those in play.
             For example, it may be called if a card is discarded or placed in hand. */
-        if (json.zone == "SPACELINE") {
-            console.log("Calling putCardIntoPlay:");
-            console.log("json:");
-            console.log(json);
-        }
         var participantId = json.participantId;
         var cardId = json.cardId;
         var zone = json.zone;

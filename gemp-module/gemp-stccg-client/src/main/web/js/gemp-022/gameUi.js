@@ -1057,12 +1057,12 @@ export default class GameTableUI {
                 if (zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND" || zone == "REMOVED") {
                     let zoneOwner = (gameEvent.controllerId == null) ? gameEvent.participantId : gameEvent.controllerId;
                     this.animations.addCardToHiddenZone(gameEvent, zone, zoneOwner);
-                } else if (zone != "SPACELINE") {
-                    this.animations.putCardIntoPlay(gameEvent, animate, eventType);
+                } else {
+                    this.animations.putCardOnBoardGeneric(gameEvent, animate, eventType);
                 }
                 break;
             case "PUT_SHARED_MISSION_INTO_PLAY":
-                this.animations.putCardIntoPlay(gameEvent, animate, eventType);
+                this.animations.putCardOnBoardGeneric(gameEvent, animate, eventType);
                 break;
             case "PLAYER_SCORE":
                 this.animations.playerScore(gameEvent, animate);
