@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.scorepoints;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -11,7 +13,12 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.Objects;
 
 public class ScorePointsAction extends ActionyAction {
+
+    @JsonProperty("performingCard")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _performingCard;
+
+    @JsonProperty("pointsScored")
     private final int _points;
 
     public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, Player scoringPlayer, int points)
@@ -29,7 +36,7 @@ public class ScorePointsAction extends ActionyAction {
 
     @Override
     public String getActionSelectionText(DefaultGame cardGame) {
-        return _performingPlayerId + " scored " + _points + " from " + _performingCard.getCardLink();
+        return "Score points";
     }
 
     @Override
@@ -40,7 +47,7 @@ public class ScorePointsAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        cardGame.addToPlayerScore(performingPlayer, _points);
+        performingPlayer.scorePoints(_points);
         return getNextAction();
     }
 }

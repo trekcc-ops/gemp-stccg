@@ -29,17 +29,16 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "DOWNLOAD_CARD":
         case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD":
-        case "MAKE_DECISION":
         case "MOVE_CARDS":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
-        case "SCORE_POINTS":
         case "SEED_CARD":
         case "STOP_CARDS":
             break;
             // Actions that are just wrappers for decisions
+        case "MAKE_DECISION":
         case "SELECT_ACTION":
         case "SELECT_AFFILIATION":
         case "SELECT_AWAY_TEAM":
@@ -51,10 +50,11 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "ALL_PLAYERS_DISCARD":
         case "BATTLE":
             break;
-            // Actions that don't need a specific animation
+            // Actions with no specific animations
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "FAIL_DILEMMA":
         case "KILL": // only the kill part of the action; typically this will result in a separate discard action
+        case "SCORE_POINTS":
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
         case "USE_GAME_TEXT":
@@ -64,11 +64,12 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     }
 }
 
-export function communicateActionResult(jsonAction, jsonGameState, gameChat) {
+export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
     let actionType = jsonAction.actionType;
     let performingPlayerId = jsonAction.performingPlayerId;
     let message;
     console.log("Calling communicateActionResult for " + actionType);
+    let gameChat = gameUi.chatBox;
 
     switch(actionType) {
         case "CHANGE_AFFILIATION":
@@ -91,6 +92,16 @@ export function communicateActionResult(jsonAction, jsonGameState, gameChat) {
             message = performingPlayerId + " removed " + showLinkableCardTitle(removedCard) + " from the game";
             gameChat.appendMessage(message, "gameMessage");
             break;
+        case "SCORE_POINTS":
+            for (const player of jsonGameState.players) {
+                let playerId = player.playerId;
+                let playerIndex = gameUi.getPlayerIndex(playerId);
+                gameUi.playerScores[index] = player.score;
+            }
+            message = performingPlayerId + " scored " + jsonAction.pointsScored + " points from " +
+                showLinkableCardTitle(jsonAction.performingCard));
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "ATTEMPT_MISSION":
         case "DOWNLOAD_CARD":
@@ -98,13 +109,11 @@ export function communicateActionResult(jsonAction, jsonGameState, gameChat) {
         case "ENCOUNTER_SEED_CARD":
         case "FAIL_DILEMMA":
         case "KILL":
-        case "MAKE_DECISION":
         case "MOVE_CARDS":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
-        case "SCORE_POINTS":
         case "SEED_CARD":
         case "STOP_CARDS":
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
@@ -112,6 +121,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameChat) {
         case "USE_GAME_TEXT":
             break;
             // Actions that are just wrappers for decisions
+        case "MAKE_DECISION":
         case "SELECT_ACTION":
         case "SELECT_AFFILIATION":
         case "SELECT_AWAY_TEAM":

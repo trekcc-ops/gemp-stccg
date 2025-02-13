@@ -626,4 +626,5 @@ public abstract class DefaultGame {
     public GameType getGameType() {
         return _gameType;
     }
+
 }

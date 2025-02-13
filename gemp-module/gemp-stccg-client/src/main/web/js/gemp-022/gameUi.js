@@ -1021,7 +1021,7 @@ export default class GameTableUI {
                 for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
                     let action = gameState.performedActions[i];
                     animateActionResult(action, gameState, this.animations);
-                    communicateActionResult(action, gameState, this.chatBox);
+                    communicateActionResult(action, gameState, this);
                 }
                 break;
             case "CA":
