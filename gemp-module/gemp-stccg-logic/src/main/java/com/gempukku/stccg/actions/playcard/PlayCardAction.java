@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -50,6 +51,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         return _cardEnteringPlay.getCardId();
     }
 
+    @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 

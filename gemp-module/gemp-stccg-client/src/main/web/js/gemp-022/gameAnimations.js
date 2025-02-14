@@ -228,7 +228,7 @@ export default class GameAnimations {
                 else if (zone == "DRAW_DECK")
                     that.game.miscPileDialogs[controllerId].append(cardDiv);
                 else if (zone == "REMOVED")
-                    that.game.removedPileDialogs[participantId].append(cardDiv);
+                    that.game.removedPileDialogs[controllerId].append(cardDiv);
                 else
                     $("#main").append(cardDiv);
                 next();
@@ -283,6 +283,48 @@ export default class GameAnimations {
             });
 
         if (animate && (thisGame.spectatorMode || thisGame.replayMode || (participantId != thisGame.bottomPlayerId))) {
+            this.animateCardPlay(cardId);
+        }
+    }
+
+    putNonMissionIntoPlay(cardJson, performingPlayerId, gameState, spacelineIndex, animate) {
+
+        var that = this;
+        let cardId = cardJson.cardId;
+        let imageUrl = cardJson.imageUrl;
+        let blueprintId = cardJson.blueprintId;
+        let attachedToCardId = cardJson.attachedToCardId;
+        let upsideDown = (performingPlayerId != that.game.bottomPlayerId);
+
+        let zone;
+        if (attachedToCardId != null) {
+            zone = "ATTACHED";
+        } else if (spacelineIndex.toString() === "-1") {
+            zone = "CORE";
+        } else {
+            zone = "AT_LOCATION";
+        }
+
+        $("#main").queue(
+            function (next) {
+
+                let card = new Card(blueprintId, zone, cardId, performingPlayerId, imageUrl, spacelineIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card, null);
+
+                $("#main").append(cardDiv);
+
+                if (attachedToCardId != null)
+                    that.attachCardDivToTargetCardId(cardDiv, attachedToCardId);
+                next();
+            });
+
+        $("#main").queue(
+            function (next) {
+                that.game.layoutGroupWithCard(cardId);
+                next();
+            });
+
+        if (animate && (this.game.spectatorMode || this.game.replayMode || (performingPlayerId != this.game.bottomPlayerId))) {
             this.animateCardPlay(cardId);
         }
     }

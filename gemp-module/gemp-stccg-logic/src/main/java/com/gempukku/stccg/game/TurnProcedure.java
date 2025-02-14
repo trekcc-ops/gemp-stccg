@@ -82,7 +82,7 @@ public class TurnProcedure {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
             ActionType actionType = currentAction.getActionType();
             switch(actionType) {
-                case CHANGE_AFFILIATION, DISCARD, REMOVE_CARD_FROM_GAME, SCORE_POINTS, SEED_MISSION, STOP_CARDS:
+                case CHANGE_AFFILIATION, DISCARD, REMOVE_CARD_FROM_GAME, SCORE_POINTS, SEED_CARD, STOP_CARDS:
                     _game.sendActionResultToClient();
                     break;
                 default:

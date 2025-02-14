@@ -126,7 +126,7 @@ public class ST1EGameState extends GameState {
 
     public void seedFacilityAtLocation(FacilityCard card, GameLocation location) {
         card.setLocation(location);
-        addCardToZone(card, Zone.AT_LOCATION, true);
+        addCardToZoneWithoutSendingToClient(card, Zone.AT_LOCATION);
     }
 
 

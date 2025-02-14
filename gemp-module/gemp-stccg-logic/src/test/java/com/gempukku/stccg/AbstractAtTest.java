@@ -624,7 +624,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
-                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardToSeed() == cardToSeed) {
+                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
                     choice = seedAction;
                 }
             }

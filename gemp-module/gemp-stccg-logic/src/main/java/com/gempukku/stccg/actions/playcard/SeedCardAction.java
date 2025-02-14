@@ -6,6 +6,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 
+import java.util.List;
+
 public class SeedCardAction extends PlayCardAction {
 
     public SeedCardAction(PhysicalCard cardToSeed) {
@@ -20,9 +22,8 @@ public class SeedCardAction extends PlayCardAction {
     @Override
     protected void putCardIntoPlay(DefaultGame game) {
         GameState gameState = game.getGameState();
-        game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
-        gameState.removeCardFromZone(_cardEnteringPlay);
-        gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
+        gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
+        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
         setAsSuccessful();
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
     }

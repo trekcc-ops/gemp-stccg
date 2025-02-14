@@ -22,9 +22,6 @@ import java.util.Objects;
 public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
 
-    @JsonProperty("targetCardId")
-    @JsonIdentityReference(alwaysAsId=true)
-    private final MissionCard _cardEnteringPlay;
     private boolean _cardPlayed;
     private boolean _placementChosen;
     private int _locationZoneIndex;
@@ -33,8 +30,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     private boolean _actionCarriedOut;
 
     public SeedMissionCardAction(MissionCard cardToPlay) {
-        super(cardToPlay, cardToPlay, cardToPlay.getOwner(), Zone.SPACELINE, ActionType.SEED_MISSION);
-        _cardEnteringPlay = cardToPlay;
+        super(cardToPlay, cardToPlay, cardToPlay.getOwner(), Zone.SPACELINE, ActionType.SEED_CARD);
         setText("Seed " + _cardEnteringPlay.getFullName());
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         _missionLocation = _cardEnteringPlay.getBlueprint().getLocation();
@@ -134,15 +130,15 @@ public class SeedMissionCardAction extends PlayCardAction {
     }
 
     private void seedCard(DefaultGame game) {
-        if (game.getGameState() instanceof ST1EGameState gameState) {
+        if (game.getGameState() instanceof ST1EGameState gameState && _cardEnteringPlay instanceof MissionCard mission) {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
 
             try {
                 if (_sharedMission)
-                    gameState.addMissionCardToSharedMission(_cardEnteringPlay, _locationZoneIndex);
+                    gameState.addMissionCardToSharedMission(mission, _locationZoneIndex);
                 else
-                    gameState.addMissionLocationToSpaceline(_cardEnteringPlay, _locationZoneIndex);
+                    gameState.addMissionLocationToSpaceline(mission, _locationZoneIndex);
                 game.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, _cardEnteringPlay));
                 _actionCarriedOut = true;

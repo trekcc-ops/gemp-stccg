@@ -23,15 +23,20 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.addCardToHiddenZone(targetCard, "REMOVED", targetCard.owner);
             break;
-        case "SEED_MISSION":
+        case "SEED_CARD":
+            // This action type covers seeding cards in core or at a location, but not under a mission
             cardList.push(jsonAction.targetCardId);
-            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, false);
+            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             let spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
-            let spacelineLocation = jsonGameState.spacelineLocations[spacelineIndex];
-            let missionCards = spacelineLocation.missionCardIds;
-            let firstMissionAtLocation = (missionCards[0] == targetCard.cardId);
-            gameAnimations.putMissionIntoPlay(targetCard, true, spacelineIndex, firstMissionAtLocation);
+            if (targetCard.cardType == "MISSION") {
+                let spacelineLocation = jsonGameState.spacelineLocations[spacelineIndex];
+                let missionCards = spacelineLocation.missionCardIds;
+                let firstMissionAtLocation = (missionCards[0] == targetCard.cardId);
+                gameAnimations.putMissionIntoPlay(targetCard, true, spacelineIndex, firstMissionAtLocation);
+            } else {
+                gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
+            }
             break;
         case "DOWNLOAD_CARD":
         case "DRAW_CARD":
@@ -41,7 +46,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "PLACE_CARD":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
-        case "SEED_CARD":
         case "STOP_CARDS":
             break;
             // Actions that are just wrappers for decisions
@@ -114,7 +118,8 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
                 showLinkableCardTitle(jsonAction.performingCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "SEED_MISSION":
+        case "SEED_CARD":
+            // Same message, whether the card is a mission or not
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             message = performingPlayerId + " seeded " + showLinkableCardTitle(targetCard);
             gameChat.appendMessage(message, "gameMessage");
@@ -131,7 +136,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "PLACE_CARD":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
-        case "SEED_CARD":
         case "STOP_CARDS":
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
@@ -144,6 +148,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "SELECT_AWAY_TEAM":
         case "SELECT_CARDS":
         case "SELECT_SKILL":
+            break;
             // Actions that will currently not be performed in a 1E game
         case "ACTIVATE_TRIBBLE_POWER":
         case "ALL_PLAYERS_DISCARD":
@@ -166,11 +171,9 @@ export function getSpacelineIndexFromLocationId(locationId, gameState) {
     for (let i = 0; i < gameState.spacelineLocations.length; i++) {
         let spacelineLocation = gameState.spacelineLocations[i];
         if (spacelineLocation.locationId == locationId) {
-            console.log("locationId " + locationId + " at spaceline index " + i);
-            console.log(gameState);
             return i;
         }
     }
-    console.error("Spaceline index for locationId " + locationId + " not found");
-
+    console.log("Spaceline index for locationId " + locationId + " not found");
+    return -1;
 }
