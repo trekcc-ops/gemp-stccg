@@ -24,10 +24,10 @@ export default class CardGroup {
     }
 
     getCardElems() {
-        var cardsToLayout = new Array();
+        let cardsToLayout = new Array();
         var that = this;
         $(".card", this.container).each(function (index) {
-            var card = $(this).data("card");
+            let card = $(this).data("card");
             if (that.cardBelongs(card)) {
                 cardsToLayout.push($(this));
             }
