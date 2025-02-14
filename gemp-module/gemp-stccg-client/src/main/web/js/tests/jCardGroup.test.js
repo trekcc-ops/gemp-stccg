@@ -1,6 +1,7 @@
 import {describe, beforeEach, expect, test, jest} from '@jest/globals'
-import {VerticalBarGroup, NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup, MissionCardGroup, layoutCardElem, layoutTokens} from "../gemp-022/jCardGroup.js";
+import {VerticalBarGroup, NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup, MissionCardGroup} from "../gemp-022/jCardGroup.js";
 import CardGroup from "../gemp-022/jCardGroup.js";
+import * as jCG from '../gemp-022/jCardGroup.js';
 
 describe('validity', () => {
     test('jCardGroup.js is valid syntax', () => {
@@ -184,4 +185,50 @@ describe('CardGroup', () => {
         expect(layoutCardsTestFunc.mock.calls.length).toEqual(1);
     });
 
+    test('CardGroup layoutCards complains about inheritance', () => {
+        document.body.innerHTML = `
+            <div id='container'/>
+        `;
+        let jqContainer = $('#container');
+        
+        let belongTestFunc = jest.fn();
+        let mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => null);
+
+        let _groupUnderTest = new CardGroup(jqContainer, belongTestFunc);
+        expect(mockAlert.mock.calls.length).toEqual(0); // alert not called
+        _groupUnderTest.layoutCards();
+        expect(mockAlert.mock.calls.length).toEqual(1); // alert called
+    });
+
+    // This test is skipped because the mocks do not seem to be called at all by the 
+    // function, despite the fact this works in other cases.
+    // Perhaps this is due to the functions being outside the default exported class?
+    test.skip('CardGroup layoutCard calls layoutCardElem and layoutTokens', () => {
+        document.body.innerHTML = `
+            <div id='container'>
+              <div class='card' id='the_card' />
+            </div>
+        `;
+        let jqContainer = $('#container');
+        
+        let belongTestFunc = jest.fn();
+        let mockLayoutCardElem = jest.spyOn(jCG, 'layoutCardElem').mockImplementation(() => null);
+        let mockLayoutTokens = jest.spyOn(jCG, 'layoutTokens').mockImplementation(() => null);
+
+        let _groupUnderTest = new CardGroup(jqContainer, belongTestFunc);
+        expect(mockLayoutCardElem.mock.calls.length).toEqual(0);
+        expect(mockLayoutTokens.mock.calls.length).toEqual(0);
+
+        let cardElem = $("#the_card");
+        let x = 0;
+        let y = 0;
+        let width = 240;
+        let height = 320;
+        let index = 0;
+        _groupUnderTest.layoutCard(cardElem, x, y, width, height, index);
+
+        // I don't understand why these fail
+        expect(mockLayoutCardElem.mock.calls.length).toEqual(1);
+        expect(mockLayoutTokens.mock.calls.length).toEqual(1);
+    });
 });
