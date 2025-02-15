@@ -76,6 +76,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
             assertTrue(runabout.getCrew().contains(card));
             assertFalse(_outpost.getCrew().contains(card));
         }
+        assertEquals(0, _game.getGameState().getAwayTeams().size());
 
         undockShip(P1, runabout);
         assertFalse(runabout.isDocked());
@@ -140,6 +141,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
             assertTrue(runabout.getCrew().contains(card));
             assertFalse(_outpost.getCrew().contains(card));
         }
+        assertEquals(0, _game.getGameState().getAwayTeams().size());
 
         undockShip(P1, runabout);
         assertFalse(runabout.isDocked());
