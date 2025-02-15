@@ -49,7 +49,7 @@ public class TurnProcedure {
             } else {
                 actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, actionResults));
             }
-            _game.updateGameStatsAndSendIfChanged();
+            _game.sendActionResultToClient();
 
             // Check if an unusually large number loops since user decision, which means game is probably in a loop
             if (numSinceDecision >= MAXIMUM_LOOPS)
@@ -65,7 +65,7 @@ public class TurnProcedure {
         } else {
             // TODO - This implementation seems to assume that game stats will never change during a process
             originalProcess.process(_game);
-            _game.updateGameStatsAndSendIfChanged();
+            _game.sendActionResultToClient();
             originalProcess.setFinished(true);
         }
     }

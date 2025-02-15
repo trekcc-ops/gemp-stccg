@@ -753,39 +753,6 @@ export default class GameAnimations {
             });
     }
 
-    gameStats(json, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                var playerZones = json.playerZones;
-                for (var i = 0; i < playerZones.length; i++) {
-                    var playerZone = playerZones[i];
-
-                    var playerId = playerZone.playerId;
-                    var hand = playerZone.hand;
-                    var discard = playerZone.discard;
-                    var deck = playerZone.drawDeck;
-                    var removed = playerZone.removed;
-
-                    $("#deck" + that.game.getPlayerIndex(playerId)).text(deck);
-                    $("#hand" + that.game.getPlayerIndex(playerId)).text(hand);
-                    $("#discard" + that.game.getPlayerIndex(playerId)).text(discard);
-                    $("#removedPile" + that.game.getPlayerIndex(playerId)).text(removed);
-                }
-
-                var playerScores = json.playerScores;
-                for (var i = 0; i < playerScores.length; i++) {
-                    var playerScore = playerScores[i];
-                    var playerId = playerScore.playerId;
-                    var score = playerScore.score;
-
-                    $("#score" + that.game.getPlayerIndex(playerId)).text("SCORE " + Number(score).toLocaleString("en-US"));
-                }
-
-                next();
-            });
-    }
-
     message(json, animate) {
         var that = this;
         $("#main").queue(

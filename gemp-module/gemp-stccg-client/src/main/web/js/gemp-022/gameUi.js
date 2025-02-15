@@ -1016,6 +1016,7 @@ export default class GameTableUI {
                 console.log("Calling process gameEvent for ACTION_RESULT");
                 let gameStateNode = gameEvent.gameState;
                 let gameState = typeof gameStateNode === "string" ? JSON.parse(gameStateNode) : gameStateNode;
+                this.updateGameStats(gameState);
                 console.log(gameState);
                 let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
                 for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
@@ -1044,9 +1045,6 @@ export default class GameTableUI {
                 break;
             case "GPC":
                 this.animations.gamePhaseChange(gameEvent, animate);
-                break;
-            case "GS":
-                this.animations.gameStats(gameEvent, animate);
                 break;
             case "M":
                 this.animations.message(gameEvent, animate);
@@ -2943,5 +2941,26 @@ export class ST1EGameTableUI extends GameTableUI {
                 return "";
         }
     }
+
+    updateGameStats(gameState) {
+        var that = this;
+        $("#main").queue(
+            function (next) {
+                for (const player of gameState.players) {
+                    let playerId = player.playerId;
+                    let drawDeckSize = player.cardGroups["DRAW_DECK"].cardCount;
+                    let handSize = player.cardGroups["HAND"].cardCount;
+                    let discardSize = player.cardGroups["DISCARD"].cardCount;
+                    let removedSize = player.cardGroups["REMOVED"].cardCount;
+
+                    $("#deck" + that.game.getPlayerIndex(playerId)).text(drawDeckSize);
+                    $("#hand" + that.game.getPlayerIndex(playerId)).text(handSize);
+                    $("#discard" + that.game.getPlayerIndex(playerId)).text(discardSize);
+                    $("#removedPile" + that.game.getPlayerIndex(playerId)).text(removedSize);
+                }
+                next();
+            });
+    }
+
 
 }

@@ -112,7 +112,7 @@ public abstract class GameState {
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
-        listener.sendEvent(new SendGameStatsGameEvent(cardGame));
+        cardGame.sendActionResultToClient();
     }
 
 
@@ -377,12 +377,6 @@ public abstract class GameState {
                 listener.sendEvent(event);
             }
         }
-    }
-
-
-    public void sendGameStats(DefaultGame cardGame) {
-        for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new SendGameStatsGameEvent(cardGame));
     }
 
 

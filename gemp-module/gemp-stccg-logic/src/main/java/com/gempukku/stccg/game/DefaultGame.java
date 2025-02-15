@@ -469,35 +469,6 @@ public abstract class DefaultGame {
         return environment.getActionById(actionId);
     }
 
-    public void updateGameStatsAndSendIfChanged() {
-        boolean changed = false;
-
-        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
-
-        if (getPlayers() != null) {
-            for (Player player : getPlayers()) {
-                if (player.getScore() != player.getLastSyncedScore()) {
-                    changed = true;
-                }
-                player.syncScore();
-
-                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
-                playerZoneSizes.put(Zone.HAND, player.getCardsInHand().size());
-                playerZoneSizes.put(Zone.DRAW_DECK, player.getCardsInDrawDeck().size());
-                playerZoneSizes.put(Zone.DISCARD, player.getDiscardPile().size());
-                playerZoneSizes.put(Zone.REMOVED, player.getRemovedPile().size());
-                newZoneSizes.put(player.getPlayerId(), playerZoneSizes);
-            }
-        }
-
-        if (!newZoneSizes.equals(_previousZoneSizes)) {
-            changed = true;
-            _previousZoneSizes = newZoneSizes;
-        }
-
-        if (changed) getGameState().sendGameStats(this);
-    }
-
     public Map<String, Map<Zone, Integer>> getZoneSizes() {
         return Collections.unmodifiableMap(_previousZoneSizes);
     }
