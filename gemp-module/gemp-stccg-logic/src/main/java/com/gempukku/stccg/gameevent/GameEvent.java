@@ -26,20 +26,23 @@ import java.util.*;
 
 public class GameEvent {
     public enum Type {
-        PARTICIPANTS("P"), GAME_PHASE_CHANGE("GPC"), TURN_CHANGE("TC"),
+        PARTICIPANTS("P"),
+        GAME_PHASE_CHANGE("GPC"),
+        TURN_CHANGE("TC"),
         PUT_SHARED_MISSION_INTO_PLAY("PUT_SHARED_MISSION_INTO_PLAY"),
         TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
         PLAYER_DECKED("PLAYER_DECKED"), // TODO: Not implemented in JavaScript
         PLAYER_SCORE("PLAYER_SCORE"),
         PUT_CARD_INTO_PLAY("PCIP"),
         PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING("PCIPAR"),
-        MOVE_CARD_IN_PLAY("MCIP"),
         REMOVE_CARD_FROM_PLAY("RCFP"),
-        SEND_MESSAGE("M"), SEND_WARNING("W"),
+        SEND_MESSAGE("M"),
+        SEND_WARNING("W"),
         GAME_STATS("GS"),
         GAME_ENDED("EG"),
         FLASH_CARD_IN_PLAY("CA"),
-        DECISION("D"), ACTION_RESULT("ACTION_RESULT");
+        DECISION("D"),
+        ACTION_RESULT("ACTION_RESULT");
 
         private final String code;
 

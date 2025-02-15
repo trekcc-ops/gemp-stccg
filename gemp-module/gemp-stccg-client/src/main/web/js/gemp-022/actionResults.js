@@ -26,6 +26,15 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.addCardToHiddenZone(targetCard, "DISCARD", targetCard.owner);
             break;
+        case "DOCK_SHIP":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            gameAnimations.dockShip(targetCard);
+            break;
+        case "FLY_SHIP":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
+            gameAnimations.flyShip(targetCard, spacelineIndex);
+            break;
         case "REMOVE_CARD_FROM_GAME":
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
@@ -47,10 +56,14 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             }
             break;
+        case "UNDOCK_SHIP":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            gameAnimations.undockShip(targetCard);
+            break;
+                // TODO - The actions below may have animations, but they are dictated by the client
         case "DOWNLOAD_CARD":
         case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD":
-        case "MOVE_SHIP":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
@@ -149,18 +162,20 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "ATTEMPT_MISSION":
+        case "DOCK_SHIP":
         case "DOWNLOAD_CARD":
         case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD":
         case "FAIL_DILEMMA":
+        case "FLY_SHIP":
         case "KILL":
-        case "MOVE_SHIP":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
         case "STOP_CARDS":
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
+        case "UNDOCK_SHIP":
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
         case "USE_GAME_TEXT":
             break;

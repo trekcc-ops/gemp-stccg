@@ -549,27 +549,68 @@ export default class GameAnimations {
                 });
     }
 
-    moveCardInPlay(json) {
+    flyShip(cardJson, spacelineIndex) {
         var that = this;
         $("#main").queue(
             function (next) {
-                that.cardId = json.cardId;
-                var zone = json.zone;
-                let targetCardId = json.targetCardId;
-                var participantId = json.participantId;
-                var controllerId = json.controllerId;
-                var locationIndex = json.locationIndex;
-
-                if (controllerId != null)
-                    participantId = controllerId;
+                that.cardId = cardJson.cardId;
 
                 var card = getCardDivFromId(that.cardId);
                 var cardData = card.data("card");
                 cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
-                if (cardData.zone == "ATTACHED")
-                    cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
-                else
-                    cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
+
+                // move to new zone
+                cardData.locationIndex = spacelineIndex;
+                that.cardData = cardData;
+                next();
+            });
+
+            $("#main").queue(
+                function (next) {
+                    that.game.layoutGroupWithCard(that.cardId);
+                    that.cardData.oldGroup.layoutCards();
+                    that.cardData.oldGroup = null;
+                    next();
+                });
+    }
+
+    dockShip(cardJson) {
+        var that = this;
+        $("#main").queue(
+            function (next) {
+                that.cardId = cardJson.cardId;
+                let attachedToCardId = cardJson.attachedToCardId;
+
+                var card = getCardDivFromId(that.cardId);
+                var cardData = card.data("card");
+                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
+
+                // move to new zone
+                cardData.zone = "ATTACHED";
+                that.cardData = cardData;
+                that.attachCardDivToTargetCardId(card, attachedToCardId);
+
+                next();
+            });
+
+            $("#main").queue(
+                function (next) {
+                    that.game.layoutGroupWithCard(that.cardId);
+                    that.cardData.oldGroup.layoutCards();
+                    that.cardData.oldGroup = null;
+                    next();
+                });
+    }
+
+    undockShip(json) {
+        var that = this;
+        $("#main").queue(
+            function (next) {
+                that.cardId = json.cardId;
+
+                var card = getCardDivFromId(that.cardId);
+                var cardData = card.data("card");
+                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
 
                 // Remove from where it was already attached
                 that.removeFromAttached(that.cardId);
@@ -577,13 +618,8 @@ export default class GameAnimations {
                 var card = getCardDivFromId(that.cardId);
                 var cardData = card.data("card");
                 // move to new zone
-                cardData.zone = zone;
-                cardData.owner = participantId;
-                cardData.locationIndex = locationIndex;
+                cardData.zone = "AT_LOCATION";
                 that.cardData = cardData;
-
-                if (targetCardId != null)
-                    that.attachCardDivToTargetCardId(card, targetCardId);
                 next();
             });
 

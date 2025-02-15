@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -18,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FlyShipAction extends ActionyAction implements TopLevelSelectableAction {
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalShipCard _flyingCard;
     private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
@@ -26,7 +30,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
 
     public FlyShipAction(Player player, PhysicalShipCard flyingCard, ST1EGame cardGame)
             throws InvalidGameLogicException {
-        super(cardGame, player, "Fly", ActionType.MOVE_SHIP);
+        super(cardGame, player, "Fly", ActionType.FLY_SHIP);
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
@@ -91,7 +95,6 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             setAsSuccessful();
             _flyingCard.useRange(rangeNeeded);
             _flyingCard.setLocation(destinationLocation);
-            _flyingCard.getGame().getGameState().moveCard(cardGame, _flyingCard);
             _flyingCard.getGame().sendMessage(
                     _flyingCard.getCardLink() + " flew to " + destinationLocation.getLocationName() +
                             " (using " + rangeNeeded + " RANGE)"

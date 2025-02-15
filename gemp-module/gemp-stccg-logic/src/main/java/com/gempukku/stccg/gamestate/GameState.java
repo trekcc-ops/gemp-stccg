@@ -138,16 +138,6 @@ public abstract class GameState {
         _playerDecisions.remove(playerId);
     }
 
-    public void transferCard(PhysicalCard card, PhysicalCard transferTo) {
-        card.setZone(Zone.ATTACHED);
-        card.attachTo(transferTo);
-    }
-
-    public void detachCard(PhysicalCard attachedCard, Zone newZone) {
-        attachedCard.setZone(newZone);
-        attachedCard.detach();
-    }
-
 
     public void attachCard(PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
         if(card == attachTo)
@@ -174,11 +164,6 @@ public abstract class GameState {
 
     public void removeCardFromZone(PhysicalCard card) {
         removeCardsFromZone(card.getGame(), card.getOwner(), Collections.singleton(card));
-    }
-
-    public void moveCard(DefaultGame cardGame, PhysicalCard card) throws InvalidGameOperationException {
-        for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.sendEvent(new MoveCardInPlayGameEvent(card));
     }
 
 

@@ -11,13 +11,14 @@ public enum ActionType {
     BEAM_CARDS,
     CHANGE_AFFILIATION,
     DISCARD,
+    DOCK_SHIP,
     DOWNLOAD_CARD,
     DRAW_CARD,
     ENCOUNTER_SEED_CARD,
     FAIL_DILEMMA,
+    FLY_SHIP,
     KILL,
     MAKE_DECISION,
-    MOVE_SHIP,
     OVERCOME_DILEMMA,
     PLACE_CARD, // General all-purpose term for putting cards places (like on a deck or on another card)
     PLAY_CARD,
@@ -32,6 +33,7 @@ public enum ActionType {
     SELECT_SKILL,
     STOP_CARDS,
     SYSTEM_QUEUE, // Automated Gemp actions, like asking players if they want to perform optional responses to other actions
+    UNDOCK_SHIP,
     USAGE_LIMIT, // Using a cost like normal card play or a "once per turn" limit
     USE_GAME_TEXT, // Compound game text action that consists of several sub-actions
     WALK_CARDS

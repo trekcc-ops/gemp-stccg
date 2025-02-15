@@ -1051,9 +1051,6 @@ export default class GameTableUI {
             case "M":
                 this.animations.message(gameEvent, animate);
                 break;
-            case "MCIP":
-                this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
-                break;
             case "PCIP":
                 let zone = gameEvent.zone;
                 if (zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND" || zone == "REMOVED") {

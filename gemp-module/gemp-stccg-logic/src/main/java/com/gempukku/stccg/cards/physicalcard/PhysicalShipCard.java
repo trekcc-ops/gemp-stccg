@@ -85,7 +85,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     public void undockFromFacility() throws InvalidGameOperationException {
         _docked = false;
         _dockedAtCardId = null;
-        _game.getGameState().detachCard(this, Zone.AT_LOCATION);
+        setZone(Zone.AT_LOCATION);
+        detach();
     }
 
     public PhysicalCard getDockedAtCard(DefaultGame cardGame) {
