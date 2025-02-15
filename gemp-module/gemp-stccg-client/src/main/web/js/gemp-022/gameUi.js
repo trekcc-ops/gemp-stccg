@@ -1020,8 +1020,10 @@ export default class GameTableUI {
                 let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
                 for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
                     let action = gameState.performedActions[i];
-                    animateActionResult(action, gameState, this.animations);
-                    communicateActionResult(action, gameState, this);
+                    if (action.status === "completed_success") {
+                        animateActionResult(action, gameState, this.animations);
+                        communicateActionResult(action, gameState, this);
+                    }
                     this.lastActionIndex = i;
                 }
                 break;
