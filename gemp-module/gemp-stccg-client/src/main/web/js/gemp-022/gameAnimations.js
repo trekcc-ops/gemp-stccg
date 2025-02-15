@@ -517,6 +517,38 @@ export default class GameAnimations {
                 });
     }
 
+    beamOrWalkCard(cardJson, spacelineIndex) {
+        var that = this;
+        $("#main").queue(
+            function (next) {
+                that.cardId = cardJson.cardId;
+                let attachedToCardId = cardJson.attachedToCardId;
+
+                var card = getCardDivFromId(that.cardId);
+                var cardData = card.data("card");
+                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
+
+                // Remove from where it was already attached
+                that.removeFromAttached(that.cardId);
+
+                // move to new zone
+                cardData.zone = "ATTACHED";
+                cardData.owner = cardJson.owner;
+                cardData.locationIndex = spacelineIndex;
+                that.cardData = cardData;
+                that.attachCardDivToTargetCardId(card, attachedToCardId);
+                next();
+            });
+
+            $("#main").queue(
+                function (next) {
+                    that.game.layoutGroupWithCard(that.cardId);
+                    that.cardData.oldGroup.layoutCards();
+                    that.cardData.oldGroup = null;
+                    next();
+                });
+    }
+
     moveCardInPlay(json) {
         var that = this;
         $("#main").queue(

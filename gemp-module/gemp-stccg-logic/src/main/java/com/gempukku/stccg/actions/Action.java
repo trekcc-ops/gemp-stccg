@@ -9,7 +9,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
 @JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "status", "targetCardId", "targetCardIds",
-        "performingCard", "pointsScored" })
+        "performingCard", "pointsScored", "originCardId", "destinationCardId" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
     String getCardActionPrefix();

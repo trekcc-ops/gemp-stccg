@@ -5,8 +5,17 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     console.log("Calling animateActionResult for " + actionType);
     let cardList = new Array();
     let targetCard;
+    let spacelineIndex;
 
     switch(actionType) {
+        case "BEAM_CARDS": // Same animation for both beaming and walking
+        case "WALK_CARDS":
+            for (const cardId of jsonAction.targetCardIds) {
+                targetCard = jsonGameState.visibleCardsInGame[cardId];
+                spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
+                gameAnimations.beamOrWalkCard(targetCard, spacelineIndex);
+            }
+            break;
         case "CHANGE_AFFILIATION":
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.updateCardImage(targetCard);
@@ -28,7 +37,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            let spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
+            spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
             if (targetCard.cardType == "MISSION") {
                 let spacelineLocation = jsonGameState.spacelineLocations[spacelineIndex];
                 let missionCards = spacelineLocation.missionCardIds;
@@ -41,14 +50,12 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "DOWNLOAD_CARD":
         case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD":
-        case "BEAM_CARDS":
-        case "WALK_CARDS":
         case "MOVE_SHIP":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
-        case "STOP_CARDS":
+        case "STOP_CARDS": // no animation included yet, use targetCardId property
             break;
             // Actions that are just wrappers for decisions
         case "MAKE_DECISION":
@@ -89,6 +96,13 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
     let targetCard;
 
     switch(actionType) {
+        case "BEAM_CARDS":
+            message = performingPlayerId + " beamed ";
+            message = message + jsonAction.targetCardIds.length + " cards from ";
+            message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.originCardId]);
+            message = message + " to " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.destinationCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "CHANGE_AFFILIATION":
             let targetCardId = jsonAction.targetCardId;
             console.log("targetCardId: " + targetCardId);
@@ -126,6 +140,13 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = performingPlayerId + " seeded " + showLinkableCardTitle(targetCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
+        case "WALK_CARDS":
+            message = performingPlayerId + " walked ";
+            message = message + jsonAction.targetCardIds.length + " cards from ";
+            message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.originCardId]);
+            message = message + " to " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.destinationCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "ATTEMPT_MISSION":
         case "DOWNLOAD_CARD":
@@ -133,8 +154,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ENCOUNTER_SEED_CARD":
         case "FAIL_DILEMMA":
         case "KILL":
-        case "BEAM_CARDS":
-        case "WALK_CARDS":
         case "MOVE_SHIP":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":

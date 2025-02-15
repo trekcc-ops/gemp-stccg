@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
@@ -27,9 +29,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BeamOrWalkAction extends ActionyAction implements TopLevelSelectableAction {
+
+    @JsonProperty("targetCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
     final PhysicalNounCard1E _cardSource;
-    private PhysicalCard _origin, _destination;
+
+    @JsonProperty("originCardId")
+    private PhysicalCard _origin;
+
+    @JsonProperty("destinationCardId")
+    private PhysicalCard _destination;
     private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen;
     final Player _performingPlayer;
     final Collection<PhysicalCard> _destinationOptions;
@@ -138,22 +148,16 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return null;
     }
 
-    private void processEffect(DefaultGame cardGame) throws InvalidGameOperationException {
+    private void processEffect(DefaultGame cardGame) {
         if (!_wasCarriedOut) {
             GameLocation destinationLocation = _destination.getGameLocation();
             for (PhysicalCard card : _cardsToMove) {
                 cardGame.getGameState().transferCard(card, _destination); // attach card to destination card
-                cardGame.getGameState().moveCard(cardGame, card);
                 card.setLocation(destinationLocation);
                 if (_origin instanceof MissionCard)
                     ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
                 if (destinationLocation instanceof MissionLocation missionLocation)
                     ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(missionLocation);
-            }
-            if (!_cardsToMove.isEmpty()) {
-                cardGame.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +
-                        TextUtils.plural(_cardsToMove.size(), "card") + " from " +
-                        _origin.getCardLink() + " to " + _destination.getCardLink());
             }
             _wasCarriedOut = true;
             setAsSuccessful();
