@@ -41,7 +41,9 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "DOWNLOAD_CARD":
         case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD":
-        case "MOVE_CARDS":
+        case "BEAM_CARDS":
+        case "WALK_CARDS":
+        case "MOVE_SHIP":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":
@@ -131,7 +133,9 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ENCOUNTER_SEED_CARD":
         case "FAIL_DILEMMA":
         case "KILL":
-        case "MOVE_CARDS":
+        case "BEAM_CARDS":
+        case "WALK_CARDS":
+        case "MOVE_SHIP":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD":
         case "PLAY_CARD":

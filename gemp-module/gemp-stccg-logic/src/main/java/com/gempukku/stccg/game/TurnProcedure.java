@@ -80,14 +80,7 @@ public class TurnProcedure {
             _game.getActionsEnvironment().addActionToStack(nextAction);
         } else if (currentAction.wasCompleted()) {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
-            ActionType actionType = currentAction.getActionType();
-            switch(actionType) {
-                case CHANGE_AFFILIATION, DISCARD, REMOVE_CARD_FROM_GAME, SCORE_POINTS, SEED_CARD, STOP_CARDS:
-                    _game.sendActionResultToClient();
-                    break;
-                default:
-                    break;
-            }
+            _game.sendActionResultToClient();
         } else if (_game.isCarryingOutEffects()) {
             throw new InvalidGameLogicException("Unable to process action " + currentAction.getActionId() +
                     " of type " + currentAction.getClass().getSimpleName());

@@ -138,16 +138,14 @@ public abstract class GameState {
         _playerDecisions.remove(playerId);
     }
 
-    public void transferCard(DefaultGame cardGame, PhysicalCard card, PhysicalCard transferTo) throws InvalidGameOperationException {
+    public void transferCard(PhysicalCard card, PhysicalCard transferTo) {
         card.setZone(Zone.ATTACHED);
         card.attachTo(transferTo);
-        moveCard(cardGame, card);
     }
 
-    public void detachCard(DefaultGame cardGame, PhysicalCard attachedCard, Zone newZone) throws InvalidGameOperationException {
+    public void detachCard(PhysicalCard attachedCard, Zone newZone) {
         attachedCard.setZone(newZone);
         attachedCard.detach();
-        moveCard(cardGame, attachedCard);
     }
 
 

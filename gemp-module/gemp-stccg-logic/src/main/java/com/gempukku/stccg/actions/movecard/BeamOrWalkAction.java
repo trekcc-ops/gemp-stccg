@@ -43,8 +43,8 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param player              the player
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
-    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource) {
-        super(cardGame, player, ActionType.MOVE_CARDS);
+    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource, ActionType actionType) {
+        super(cardGame, player, actionType);
         _performingPlayer = player;
         _cardSource = cardSource;
         _destinationOptions = getDestinationOptions((ST1EGame) cardGame);
@@ -142,7 +142,8 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         if (!_wasCarriedOut) {
             GameLocation destinationLocation = _destination.getGameLocation();
             for (PhysicalCard card : _cardsToMove) {
-                cardGame.getGameState().transferCard(cardGame, card, _destination); // attach card to destination card
+                cardGame.getGameState().transferCard(card, _destination); // attach card to destination card
+                cardGame.getGameState().moveCard(cardGame, card);
                 card.setLocation(destinationLocation);
                 if (_origin instanceof MissionCard)
                     ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
