@@ -112,7 +112,7 @@ public class MissionLocation implements GameLocation {
     {
                 // TODO - Not correct if you're calculating inter-quadrant distance (e.g., Bajoran Wormhole)
 
-        if (location.isInQuadrant(_quadrant))
+        if (!location.isInQuadrant(_quadrant))
             throw new InvalidGameLogicException("Tried to calculate span between quadrants");
         else {
             List<MissionLocation> spaceline = cardGame.getGameState().getSpacelineLocations();
