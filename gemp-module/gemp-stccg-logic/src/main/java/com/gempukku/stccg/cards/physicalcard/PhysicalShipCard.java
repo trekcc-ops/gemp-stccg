@@ -137,7 +137,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                 return true;
             }
         }
-        LOGGER.debug("Unable to meet staffing requirements");
+        LOGGER.debug("     Unable to meet staffing requirements");
         return false;
     }
 
