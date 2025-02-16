@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -21,7 +20,7 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
 
     public PlaceCardOnBottomOfPlayPileAction(DefaultGame cardGame, Player performingPlayer,
                                              SelectCardsAction selectCardAction) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD_IN_PLAY_PILE);
         _cardTarget = new SelectCardsResolver(selectCardAction);
     }
 

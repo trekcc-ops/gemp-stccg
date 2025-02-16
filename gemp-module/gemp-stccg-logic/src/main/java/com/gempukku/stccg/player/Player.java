@@ -192,14 +192,6 @@ public class Player {
         }
     }
 
-    public void shuffleCardsIntoDrawDeck(DefaultGame cardGame, Collection<PhysicalCard> cards) {
-        cardGame.removeCardsFromZone(this, cards);
-        for (PhysicalCard card : cards) {
-            cardGame.getGameState().addCardToZone(card, Zone.DRAW_DECK);
-        }
-        _drawDeck.shuffle();
-    }
-
     public CardPile getDrawDeck() {
         return _drawDeck;
     }

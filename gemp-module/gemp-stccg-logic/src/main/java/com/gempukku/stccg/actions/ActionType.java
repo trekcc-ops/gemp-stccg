@@ -20,7 +20,10 @@ public enum ActionType {
     KILL,
     MAKE_DECISION,
     OVERCOME_DILEMMA,
-    PLACE_CARD, // General all-purpose term for putting cards places (like on a deck or on another card)
+    PLACE_CARD_ON_MISSION, // General all-purpose term for putting cards places (like on a deck or on another card)
+    PLACE_CARDS_BENEATH_DRAW_DECK,
+    PLACE_CARD_ON_TOP_OF_DRAW_DECK,
+    PLACE_CARD_IN_PLAY_PILE, // needs to be revisited when Tribbles is implemented
     PLAY_CARD,
     REMOVE_CARD_FROM_GAME,
     REVEAL_SEED_CARD,
@@ -31,6 +34,7 @@ public enum ActionType {
     SELECT_AWAY_TEAM,
     SELECT_CARDS,
     SELECT_SKILL,
+    SHUFFLE_CARDS_INTO_DRAW_DECK,
     STOP_CARDS,
     SYSTEM_QUEUE, // Automated Gemp actions, like asking players if they want to perform optional responses to other actions
     UNDOCK_SHIP,

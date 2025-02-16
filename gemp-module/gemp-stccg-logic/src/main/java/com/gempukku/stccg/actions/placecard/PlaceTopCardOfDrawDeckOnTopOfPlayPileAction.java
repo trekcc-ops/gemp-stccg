@@ -18,7 +18,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
     private final int _count;
 
     public PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(DefaultGame cardGame, Player performingPlayer, int count) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD_IN_PLAY_PILE);
         _count = count;
     }
 

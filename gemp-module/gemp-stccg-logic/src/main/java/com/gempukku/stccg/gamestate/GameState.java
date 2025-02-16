@@ -254,25 +254,6 @@ public abstract class GameState {
         addCardToZone(card, zone, endOfPile != EndOfPile.TOP, false);
     }
 
-    public void addCardToTopOfDrawDeck(PhysicalCard card) {
-
-        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), Zone.DRAW_DECK);
-        zoneCardList.addFirst(card);
-
-        card.setZone(Zone.DRAW_DECK);
-        for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
-            try {
-                sendCreatedCardToListener(card, false, listener, true);
-            } catch(InvalidGameOperationException exp) {
-                card.getGame().sendErrorMessage(exp);
-            }
-        }
-    }
-
-    public void putCardOnBottomOfDeck(PhysicalCard card) {
-        addCardToZone(card, Zone.DRAW_DECK, true, false);
-    }
-
 
     public void addCardToBottomOfPlayPile(PhysicalCard card) {
         addCardToZone(card, Zone.PLAY_PILE, false, false);
@@ -283,7 +264,7 @@ public abstract class GameState {
                 getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
             zone = Zone.REMOVED;
 
-        if (zone.isInPlay()) {
+        if (zone.isInPlay() && !_inPlay.contains(card)) {
             _inPlay.add(card);
         }
 
@@ -455,11 +436,6 @@ public abstract class GameState {
 
     public void setCurrentPhaseNew(Phase phase) {
         _currentPhase = phase;
-    }
-
-    public void placeCardOnBottomOfDrawDeck(DefaultGame cardGame, Player owner, PhysicalCard card) {
-        removeCardsFromZone(cardGame, owner, List.of(card));
-        addCardToZone(card, Zone.DRAW_DECK, true, false);
     }
 
     public String serializeComplete() throws JsonProcessingException {

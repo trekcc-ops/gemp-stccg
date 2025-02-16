@@ -35,6 +35,21 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
             gameAnimations.flyShip(targetCard, spacelineIndex);
             break;
+        case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
+            cardList.push(jsonAction.targetCardId);
+            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
+            break;
+        case "PLACE_CARDS_BENEATH_DRAW_DECK":
+        case "SHUFFLE_CARDS_INTO_DRAW_DECK": // same animation
+            cardList = jsonAction.targetCardIds;
+            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+            for (const cardId of cardList) {
+                targetCard = jsonGameState.visibleCardsInGame[cardId];
+                gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
+            }
+            break;
         case "REMOVE_CARD_FROM_GAME":
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
@@ -60,12 +75,12 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.undockShip(targetCard);
             break;
-                // TODO - The actions below may have animations, but they are dictated by the client
+                // TODO - The actions below may have animations, but they are dictated by the server
         case "DOWNLOAD_CARD":
         case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
-        case "PLACE_CARD":
+        case "PLACE_CARD_ON_MISSION":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD": // no animation included yet, use targetCardId property
         case "STOP_CARDS": // no animation included yet, use targetCardId property
@@ -82,6 +97,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "ACTIVATE_TRIBBLE_POWER":
         case "ALL_PLAYERS_DISCARD":
         case "BATTLE":
+        case "PLACE_CARD_IN_PLAY_PILE":
             break;
             // Actions with no specific animations
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
@@ -170,9 +186,12 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "FLY_SHIP":
         case "KILL":
         case "OVERCOME_DILEMMA":
-        case "PLACE_CARD":
+        case "PLACE_CARD_ON_MISSION":
+        case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
+        case "PLACE_CARDS_BENEATH_DRAW_DECK":
         case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
+        case "SHUFFLE_CARDS_INTO_DRAW_DECK":
         case "STOP_CARDS":
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "UNDOCK_SHIP":
@@ -191,6 +210,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ACTIVATE_TRIBBLE_POWER":
         case "ALL_PLAYERS_DISCARD":
         case "BATTLE":
+        case "PLACE_CARD_IN_PLAY_PILE":
             break;
         default:
             console.error("Unknown game action type: '" + actionType + "'.");
