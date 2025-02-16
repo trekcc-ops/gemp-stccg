@@ -227,14 +227,17 @@ public class GameRecorder {
     }
 
     private class MyGameHistory extends DBData.GameHistory {
-        public MyGameHistory(CardGameMediator game, User winner, User loser, String winReason,
+        public MyGameHistory(CardGameMediator game, User winnerUser, User loserUser, String winReason,
                              String loseReason, ZonedDateTime startDate, ZonedDateTime endDate, GameFormat format,
                              Map<String, ? extends CardDeck> decks, String tournamentName, GameTimer time,
                              Map<String, Integer> clocks) {
             gameId = game.getGameId();
 
-            winnerId = winner.getId();
-            loserId = loser.getId();
+            winnerId = winnerUser.getId();
+            loserId = loserUser.getId();
+
+            winner = winnerUser.getName();
+            loser = loserUser.getName();
 
             win_reason = winReason;
             lose_reason = loseReason;
@@ -258,12 +261,11 @@ public class GameRecorder {
             game_length_type = time.name();
             max_game_time = time.maxSecondsPerPlayer();
             game_timeout = time.maxSecondsPerDecision();
-            winner_clock_remaining = clocks.getOrDefault(winner.getName(), -1);
-            loser_clock_remaining = clocks.getOrDefault(loser.getName(), -1);
+            winner_clock_remaining = clocks.getOrDefault(winner, -1);
+            loser_clock_remaining = clocks.getOrDefault(loser, -1);
 
             //Update this version as needed; note that this is the REPLAY FORMAT, not the JSON summary
             replay_version = 1;
-
         }
 
         private String getNewRecordingID() {
