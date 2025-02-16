@@ -251,11 +251,31 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
     }
     public void addCardToZone(PhysicalCard card, Zone zone, EndOfPile endOfPile) {
-        addCardToZone(card, zone, endOfPile != EndOfPile.TOP);
+        addCardToZone(card, zone, endOfPile != EndOfPile.TOP, false);
     }
 
-    public void addCardToZone(PhysicalCard card, Zone zone, boolean end) {
-        addCardToZone(card, zone, end, false);
+    public void addCardToTopOfDrawDeck(PhysicalCard card) {
+
+        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), Zone.DRAW_DECK);
+        zoneCardList.addFirst(card);
+
+        card.setZone(Zone.DRAW_DECK);
+        for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
+            try {
+                sendCreatedCardToListener(card, false, listener, true);
+            } catch(InvalidGameOperationException exp) {
+                card.getGame().sendErrorMessage(exp);
+            }
+        }
+    }
+
+    public void putCardOnBottomOfDeck(PhysicalCard card) {
+        addCardToZone(card, Zone.DRAW_DECK, true, false);
+    }
+
+
+    public void addCardToBottomOfPlayPile(PhysicalCard card) {
+        addCardToZone(card, Zone.PLAY_PILE, false, false);
     }
 
     public void addCardToZone(PhysicalCard card, Zone zone, boolean end, boolean sharedMission) {
@@ -302,11 +322,6 @@ public abstract class GameState {
         if (card.isVisibleToPlayer(listener.getPlayerId())) {
             listener.sendEvent(new AddNewCardGameEvent(eventType, card));
         }
-    }
-
-
-    public void putCardOnBottomOfDeck(PhysicalCard card) {
-        addCardToZone(card, Zone.DRAW_DECK, true);
     }
 
     public void iterateActiveCards(PhysicalCardVisitor physicalCardVisitor) {
@@ -444,7 +459,7 @@ public abstract class GameState {
 
     public void placeCardOnBottomOfDrawDeck(DefaultGame cardGame, Player owner, PhysicalCard card) {
         removeCardsFromZone(cardGame, owner, List.of(card));
-        addCardToZone(card, Zone.DRAW_DECK, EndOfPile.BOTTOM);
+        addCardToZone(card, Zone.DRAW_DECK, true, false);
     }
 
     public String serializeComplete() throws JsonProcessingException {
