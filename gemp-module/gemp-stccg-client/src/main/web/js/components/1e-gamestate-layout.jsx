@@ -33,6 +33,21 @@ function get_gamestate() {
     return the_state;
 }
 
+// DEBUG / DEMO DATA
+let card_in_active_pane = {
+    "cardId": 55,
+    "title": "Jadzia Dax",
+    "blueprintId": "112_208",
+    "owner": "andrew",
+    "locationId": 7,
+    "attachedToCardId": 48,
+    "isStopped": true,
+    "imageUrl": "https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif",
+    "cardType": "PERSONNEL",
+    "uniqueness": "UNIQUE"
+  }
+//let card_in_active_pane;
+
 const drawerWidth = 240;
 
 // CSS theming overrides for opening
@@ -316,7 +331,7 @@ export default function MiniDrawer() {
                     <div id="table">TABLE</div>
                     <div id="hand-pane">HAND PANE</div>
                     <div id="active-card-pane">
-                        <ActiveCardPane style={{height: 240}} card={{imageUrl: "https://www.trekcc.org/1e/cardimages/premiere/PR327.jpg"}} />
+                        <ActiveCardPane style={{height: 240}} card={card_in_active_pane} />
                         {
                         /*
                         For other demo cases:
