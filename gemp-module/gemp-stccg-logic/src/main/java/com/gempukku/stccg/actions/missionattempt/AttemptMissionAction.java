@@ -84,8 +84,9 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                             eligibleUnits.add(ship);
                 }
                 if (eligibleUnits.size() > 1) {
-                    _attemptingUnitTarget =
-                            new AttemptingUnitResolver(new SelectAttemptingUnitAction(cardGame, player, eligibleUnits));
+                    String selectionText = (_missionLocation.isPlanet()) ? "Choose an Away Team" : "Choose a ship";
+                    _attemptingUnitTarget = new AttemptingUnitResolver(
+                            new SelectAttemptingUnitAction(cardGame, player, eligibleUnits, selectionText));
                     return _attemptingUnitTarget.getSelectionAction();
                 } else {
                     _attemptingUnitTarget = new AttemptingUnitResolver(Iterables.getOnlyElement(eligibleUnits));
