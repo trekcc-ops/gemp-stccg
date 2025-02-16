@@ -1017,6 +1017,7 @@ export default class GameTableUI {
                 let gameStateNode = gameEvent.gameState;
                 let gameState = typeof gameStateNode === "string" ? JSON.parse(gameStateNode) : gameStateNode;
                 this.updateGameStats(gameState);
+                this.animations.gamePhaseChange(gameState.currentPhase);
                 console.log(gameState);
                 let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
                 for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
@@ -1042,9 +1043,6 @@ export default class GameTableUI {
                 break;
             case "EP": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.eventPlayed(gameEvent, animate);
-                break;
-            case "GPC":
-                this.animations.gamePhaseChange(gameEvent, animate);
                 break;
             case "M":
                 this.animations.message(gameEvent, animate);

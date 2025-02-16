@@ -91,7 +91,7 @@ public class ReplayMetadata {
                     }
                 }
             }
-            else if(!gameStarted && event.getType() == GameEvent.Type.GAME_PHASE_CHANGE) {
+            else if(!gameStarted) {
                 var phase = Phase.findPhase(event.getAttribute(GameEvent.Attribute.phase));
                 if (phase == Phase.BETWEEN_TURNS)
                 {

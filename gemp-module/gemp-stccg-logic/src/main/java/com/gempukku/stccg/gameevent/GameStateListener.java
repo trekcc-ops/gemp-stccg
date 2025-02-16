@@ -12,8 +12,6 @@ public interface GameStateListener {
 
     void initializeBoard() throws PlayerNotFoundException;
 
-    void setCurrentPhase(Phase phase);
-
     void setPlayerDecked(DefaultGame cardGame, Player player);
     void setPlayerScore(Player player);
 

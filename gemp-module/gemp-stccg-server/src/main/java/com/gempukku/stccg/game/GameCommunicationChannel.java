@@ -71,11 +71,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public final void setCurrentPhase(Phase phase) {
-        appendEvent(new StartOfPhaseGameEvent(phase));
-    }
-
-    @Override
     public final void setPlayerDecked(DefaultGame cardGame, Player player) {
         appendEvent(new GameEvent(GameEvent.Type.PLAYER_DECKED, player));
     }

@@ -226,3 +226,31 @@ export function getAffiliationHtml(affiliationEnum) {
     let userFriendlyName = getAffiliationName(affiliationEnum);
     return "<img src='" + iconURL + "' class='inline-icon' title='" + userFriendlyName + "'>";
 }
+
+export function getFriendlyPhaseName(phaseEnum) {
+    switch(phaseEnum) {
+        case "BETWEEN_TURNS":
+            return "Between turns";
+        case "CARD_PLAY":
+            return "Card play";
+        case "END_OF_TURN":
+            return "End of turn";
+        case "EXECUTE_ORDERS":
+            return "Execute orders";
+        case "SEED_DILEMMA":
+            return "Dilemma seed phase";
+        case "SEED_DOORWAY":
+            return "Doorway seed phase";
+        case "SEED_FACILITY":
+            return "Facility seed phase";
+        case "SEED_MISSION":
+            return "Mission seed phase";
+        case "START_OF_TURN":
+            return "Start of turn";
+        case "TRIBBLES_TURN":
+            return "Player turn";
+        default:
+            console.error("Cannot recognize phase " + phaseEnum);
+            return "";
+    }
+}

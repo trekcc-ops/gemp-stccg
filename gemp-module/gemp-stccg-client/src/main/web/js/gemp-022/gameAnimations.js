@@ -1,6 +1,7 @@
 import Card from "./jCards.js";
 import { getCardDivFromId } from "./jCards.js";
 import { layoutCardElem } from "./jCardGroup.js";
+import { getFriendlyPhaseName } from "./common.js";
 
 export default class GameAnimations {
     game;
@@ -690,11 +691,11 @@ export default class GameAnimations {
         }
     }
 
-    gamePhaseChange(json, animate) {
+    gamePhaseChange(currentPhase) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var phase = json.phase;
+                let phase = getFriendlyPhaseName(currentPhase);
                 $("#currentPhase").text(phase);
                 next();
             });

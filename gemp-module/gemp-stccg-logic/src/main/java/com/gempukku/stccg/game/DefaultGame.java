@@ -109,7 +109,6 @@ public abstract class DefaultGame {
             if (playerOrder != null) {
                 listener.initializeBoard();
                 if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
-                if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
 
                 try {
                     gameState.sendCardsToClient(this, playerId, listener, false);
@@ -197,8 +196,7 @@ public abstract class DefaultGame {
 
     public void setCurrentPhase(Phase phase) {
         getGameState().setCurrentPhaseNew(phase);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setCurrentPhase(phase);
+        sendActionResultToClient();
     }
 
 
