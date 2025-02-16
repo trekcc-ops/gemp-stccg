@@ -8,17 +8,17 @@ import { Stack, Typography } from "@mui/material";
 
 const root = createRoot(document.getElementById("root"));
 
-let tomalok = {
-    "cardId": 2,
-    "title": "Tomalak",
-    "blueprintId": "101_327",
-    "owner": "andrew2",
-    "zone": "ATTACHED",
-    "locationId": 5,
-    "affiliation": "ROMULAN",
-    "attachedToCardId": 29,
-    "isStopped": false,
-    "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR327.jpg"
+let dax = {
+  "cardId": 55,
+  "title": "Jadzia Dax",
+  "blueprintId": "112_208",
+  "owner": "andrew",
+  "locationId": 7,
+  "attachedToCardId": 48,
+  "isStopped": false,
+  "imageUrl": "https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif",
+  "cardType": "PERSONNEL",
+  "uniqueness": "UNIQUE"
 }
 
 root.render(
@@ -27,12 +27,12 @@ root.render(
       <CssBaseline />
       <Stack sx={{width: "250px"}}>
         <Stack direction={"row"}>
-            <Typography>No card selected:</Typography>
+            <Typography>No card in pane:</Typography>
             <ActiveCardPane />
         </Stack>
         <Stack direction={"row"}>
-            <Typography>Tomalok selected:</Typography>
-            <ActiveCardPane card={tomalok} /> 
+            <Typography>Dax in pane:</Typography>
+            <ActiveCardPane card={dax} /> 
         </Stack>
       </Stack>
     </ThemeProvider>
