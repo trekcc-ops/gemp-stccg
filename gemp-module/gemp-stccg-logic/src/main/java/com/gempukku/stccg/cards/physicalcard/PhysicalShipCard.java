@@ -107,6 +107,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
             // TODO - Ignores any staffing requirement that is not a CardIcon
             // TODO - Does not require a personnel of matching affiliation aboard
         LOGGER.debug("Evaluating staffing for " + getTitle());
+        LOGGER.debug("     Staffing requirements: " + _blueprint.getStaffing());
         Map<CardIcon, Long> staffingNeeded = frequencyMap(_blueprint.getStaffing().stream());
         List<List<CardIcon>> staffingIconsAvailable = new LinkedList<>();
         for (PhysicalCard card : getCrew()) {
