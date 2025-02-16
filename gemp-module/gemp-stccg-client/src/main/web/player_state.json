@@ -1,14 +1,116 @@
 {
-    "requestingPlayer": "andrew",
+    "requestingPlayer": "andrew2",
     "currentPhase": "EXECUTE_ORDERS",
+    "phasesInOrder": [
+        "START_OF_TURN",
+        "CARD_PLAY",
+        "EXECUTE_ORDERS",
+        "END_OF_TURN"
+    ],
     "players": [
         {
             "playerId": "andrew2",
             "score": 0,
-            "turnNumber": 6,
             "decked": false,
             "cardGroups": {
+                "CORE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
                 "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "DRAW_DECK": {
+                    "cardCount": 22,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "REMOVED": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "SEED_DECK": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "HAND": {
+                    "cardCount": 6,
+                    "cardIds": [
+                        41,
+                        38,
+                        40,
+                        34,
+                        22,
+                        21
+                    ]
+                },
+                "MISSIONS_PILE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                }
+            }
+        },
+        {
+            "playerId": "andrew",
+            "score": 0,
+            "decked": false,
+            "cardGroups": {
+                "CORE": {
+                    "cardCount": 4,
+                    "cardIds": [
+                        84,
+                        82,
+                        80,
+                        81
+                    ]
+                },
+                "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "DRAW_DECK": {
+                    "cardCount": 14,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "REMOVED": {
                     "cardCount": 0,
                     "cardIds": []
                 },
@@ -28,100 +130,7 @@
                         -99
                     ]
                 },
-                "TABLE": {
-                    "cardCount": 0,
-                    "cardIds": []
-                },
                 "MISSIONS_PILE": {
-                    "cardCount": 0,
-                    "cardIds": []
-                },
-                "DRAW_DECK": {
-                    "cardCount": 16,
-                    "cardIds": [
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99,
-                        -99
-                    ]
-                },
-                "REMOVED": {
-                    "cardCount": 0,
-                    "cardIds": []
-                }
-            }
-        },
-        {
-            "playerId": "andrew",
-            "score": 0,
-            "turnNumber": 7,
-            "decked": false,
-            "cardGroups": {
-                "DISCARD": {
-                    "cardCount": 0,
-                    "cardIds": []
-                },
-                "SEED_DECK": {
-                    "cardCount": 0,
-                    "cardIds": []
-                },
-                "HAND": {
-                    "cardCount": 6,
-                    "cardIds": [
-                        53,
-                        61,
-                        60,
-                        63,
-                        70,
-                        62
-                    ]
-                },
-                "TABLE": {
-                    "cardCount": 4,
-                    "cardIds": [
-                        78,
-                        77,
-                        74,
-                        71
-                    ]
-                },
-                "MISSIONS_PILE": {
-                    "cardCount": 0,
-                    "cardIds": []
-                },
-                "DRAW_DECK": {
-                    "cardCount": 15,
-                    "cardIds": [
-                        57,
-                        46,
-                        55,
-                        43,
-                        47,
-                        59,
-                        44,
-                        56,
-                        65,
-                        54,
-                        49,
-                        68,
-                        42,
-                        51,
-                        50
-                    ]
-                },
-                "REMOVED": {
                     "cardCount": 0,
                     "cardIds": []
                 }
@@ -130,674 +139,809 @@
     ],
     "playerOrder": {
         "turnOrder": [
-            "andrew2",
-            "andrew"
+            "andrew",
+            "andrew2"
         ],
-        "firstPlayer": "andrew2",
-        "currentPlayer": "andrew",
+        "firstPlayer": "andrew",
+        "currentPlayer": "andrew2",
         "isReversed": false
     },
     "visibleCardsInGame": [
         {
-            "cardId": 2,
-            "title": "D'Vin",
-            "blueprintId": "116_089",
-            "owner": "andrew2",
-            "zone": "ATTACHED",
-            "locationId": 5,
-            "affiliation": "ROMULAN",
-            "attachedToCardId": 29,
-            "isStopped": false
-        },
-        {
-            "cardId": 17,
-            "title": "Varel",
-            "blueprintId": "101_330",
-            "owner": "andrew2",
-            "zone": "ATTACHED",
-            "locationId": 5,
-            "affiliation": "ROMULAN",
-            "attachedToCardId": 29,
-            "isStopped": false
-        },
-        {
-            "cardId": 19,
-            "title": "Mareth",
-            "blueprintId": "161_045",
-            "owner": "andrew2",
-            "zone": "ATTACHED",
-            "locationId": 5,
-            "affiliation": "ROMULAN",
-            "attachedToCardId": 29,
-            "isStopped": false
-        },
-        {
-            "cardId": 23,
-            "title": "D'Vin",
-            "blueprintId": "116_089",
-            "owner": "andrew2",
-            "zone": "ATTACHED",
-            "locationId": 5,
-            "affiliation": "ROMULAN",
-            "attachedToCardId": 29,
-            "isStopped": false
-        },
-        {
-            "cardId": 24,
-            "title": "Sabrun",
-            "blueprintId": "159_029",
-            "owner": "andrew2",
-            "zone": "ATTACHED",
-            "locationId": 5,
-            "affiliation": "ROMULAN",
-            "attachedToCardId": 29,
-            "isStopped": false
-        },
-        {
-            "cardId": 27,
-            "title": "T'Jev",
-            "blueprintId": "161_048",
-            "owner": "andrew2",
-            "zone": "ATTACHED",
-            "locationId": 5,
-            "affiliation": "ROMULAN",
-            "attachedToCardId": 29,
-            "isStopped": false
-        },
-        {
-            "cardId": 29,
-            "title": "D'deridex",
-            "blueprintId": "101_357",
-            "owner": "andrew2",
-            "zone": "ATTACHED",
-            "locationId": 5,
-            "affiliation": "ROMULAN",
-            "attachedToCardId": 31,
-            "isStopped": false,
-            "dockedAtCardId": 31,
-            "rangeAvailable": 8
-        },
-        {
-            "cardId": 31,
-            "title": "Romulan Outpost",
-            "blueprintId": "101_106",
-            "owner": "andrew2",
-            "zone": "AT_LOCATION",
-            "locationId": 5,
-            "affiliation": "ROMULAN"
-        },
-        {
-            "cardId": 35,
-            "title": "Expose Covert Supply",
-            "blueprintId": "101_158",
-            "owner": "andrew2",
-            "zone": "SPACELINE",
-            "locationId": 11
-        },
-        {
-            "cardId": 36,
-            "title": "Iconia Investigation",
-            "blueprintId": "101_163",
-            "owner": "andrew2",
-            "zone": "SPACELINE",
-            "locationId": 1
-        },
-        {
-            "cardId": 37,
-            "title": "Investigate \"Shattered Space\"",
-            "blueprintId": "101_164",
-            "owner": "andrew2",
-            "zone": "SPACELINE",
-            "locationId": 7
-        },
-        {
-            "cardId": 38,
+            "cardId": 1,
             "title": "Covert Installation",
             "blueprintId": "101_148",
             "owner": "andrew2",
-            "zone": "SPACELINE",
-            "locationId": 3
+            "locationId": 6,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR148.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 2,
+            "title": "Covert Rescue",
+            "blueprintId": "101_149",
+            "owner": "andrew2",
+            "locationId": 8,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR149.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 3,
+            "title": "Excavation",
+            "blueprintId": "101_154",
+            "owner": "andrew2",
+            "locationId": 4,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR154.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 4,
+            "title": "Expose Covert Supply",
+            "blueprintId": "101_158",
+            "owner": "andrew2",
+            "locationId": 12,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR158.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 5,
+            "title": "Explore Typhon Expanse",
+            "blueprintId": "101_157",
+            "owner": "andrew2",
+            "locationId": 2,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR157.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 6,
+            "title": "Iconia Investigation",
+            "blueprintId": "101_163",
+            "owner": "andrew2",
+            "locationId": 10,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR163.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 7,
+            "title": "N'Vek",
+            "blueprintId": "101_312",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR312.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 8,
+            "title": "Mirok",
+            "blueprintId": "101_310",
+            "owner": "andrew2",
+            "locationId": 8,
+            "attachedToCardId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR310.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 9,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 10,
+            "title": "Toreth",
+            "blueprintId": "101_329",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR329.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 11,
+            "title": "Varel",
+            "blueprintId": "101_330",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 12,
+            "title": "Amarie",
+            "blueprintId": "101_289",
+            "owner": "andrew2",
+            "locationId": 8,
+            "attachedToCardId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR289.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 13,
+            "title": "Baran",
+            "blueprintId": "101_290",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR290.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 14,
+            "title": "Dr. Farek",
+            "blueprintId": "101_293",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR293.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 15,
+            "title": "Devinoni Ral",
+            "blueprintId": "101_292",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR292.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 16,
+            "title": "Gorta",
+            "blueprintId": "101_297",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR297.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 17,
+            "title": "Jo'Bril",
+            "blueprintId": "101_299",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR299.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 18,
+            "title": "Vekor",
+            "blueprintId": "101_303",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR303.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 19,
+            "title": "Narik",
+            "blueprintId": "101_300",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 20,
+            "title": "Gorta",
+            "blueprintId": "101_297",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR297.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 21,
+            "title": "Gorta",
+            "blueprintId": "101_297",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR297.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 22,
+            "title": "Narik",
+            "blueprintId": "101_300",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 23,
+            "title": "Narik",
+            "blueprintId": "101_300",
+            "owner": "andrew2",
+            "locationId": 8,
+            "attachedToCardId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 24,
+            "title": "Vekor",
+            "blueprintId": "101_303",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR303.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 25,
+            "title": "Vekor",
+            "blueprintId": "101_303",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR303.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 26,
+            "title": "Dr. Farek",
+            "blueprintId": "101_293",
+            "owner": "andrew2",
+            "locationId": 8,
+            "attachedToCardId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR293.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 27,
+            "title": "Dr. Farek",
+            "blueprintId": "101_293",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR293.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 28,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 29,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew2",
+            "locationId": 8,
+            "attachedToCardId": 39,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 30,
+            "title": "Varel",
+            "blueprintId": "101_330",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 31,
+            "title": "Varel",
+            "blueprintId": "101_330",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 32,
+            "title": "Tricorder",
+            "blueprintId": "101_065",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg",
+            "cardType": "EQUIPMENT",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 33,
+            "title": "Tricorder",
+            "blueprintId": "101_065",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg",
+            "cardType": "EQUIPMENT",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 34,
+            "title": "Tricorder",
+            "blueprintId": "101_065",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg",
+            "cardType": "EQUIPMENT",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 35,
+            "title": "Tricorder",
+            "blueprintId": "101_065",
+            "owner": "andrew2",
+            "locationId": 8,
+            "attachedToCardId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg",
+            "cardType": "EQUIPMENT",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 36,
+            "title": "Tricorder",
+            "blueprintId": "101_065",
+            "owner": "andrew2",
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg",
+            "cardType": "EQUIPMENT",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 37,
+            "title": "D'deridex",
+            "blueprintId": "101_357",
+            "owner": "andrew2",
+            "isStopped": false,
+            "rangeAvailable": 8,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR357.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 38,
+            "title": "Devoras",
+            "blueprintId": "101_358",
+            "owner": "andrew2",
+            "isStopped": false,
+            "rangeAvailable": 9,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR358.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIQUE"
         },
         {
             "cardId": 39,
-            "title": "Covert Incursion",
-            "blueprintId": "245_009",
+            "title": "Romulan Shuttle",
+            "blueprintId": "116_108",
             "owner": "andrew2",
-            "zone": "SPACELINE",
-            "locationId": 5
+            "locationId": 8,
+            "isStopped": false,
+            "rangeAvailable": 7,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/bog/romulanshuttle.gif",
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL"
         },
         {
             "cardId": 40,
-            "title": "Salvage Borg Ship",
-            "blueprintId": "155_044",
+            "title": "Science Vessel",
+            "blueprintId": "101_362",
             "owner": "andrew2",
-            "zone": "SPACELINE",
-            "locationId": 9
+            "isStopped": false,
+            "rangeAvailable": 8,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR362.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL"
         },
         {
             "cardId": 41,
-            "title": "U.S.S. Drake",
-            "blueprintId": "127_035",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 72,
+            "title": "Stolen Ship",
+            "blueprintId": "163_054",
+            "owner": "andrew2",
             "isStopped": false,
-            "dockedAtCardId": 72,
-            "rangeAvailable": 7
+            "rangeAvailable": 7,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tstl/54.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL"
         },
         {
             "cardId": 42,
-            "title": "Admiral McCoy",
-            "blueprintId": "106_014",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
+            "title": "Romulan Outpost",
+            "blueprintId": "101_106",
+            "owner": "andrew2",
+            "locationId": 8,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR106.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL"
         },
         {
             "cardId": 43,
-            "title": "Barron",
-            "blueprintId": "155_053",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 44,
-            "title": "Alexander Rozhenko",
-            "blueprintId": "101_196",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 45,
-            "title": "Alynna Nechayev",
-            "blueprintId": "101_197",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 40,
-            "isStopped": false
-        },
-        {
-            "cardId": 46,
-            "title": "Alyssa Ogawa",
-            "blueprintId": "109_095",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 47,
-            "title": "Beverly",
-            "blueprintId": "155_054",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 48,
-            "title": "Cal Hudson",
-            "blueprintId": "172_028",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 41,
-            "isStopped": false
-        },
-        {
-            "cardId": 49,
-            "title": "Darian Wallace",
-            "blueprintId": "101_203",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 50,
-            "title": "Simon Tarses",
-            "blueprintId": "101_236",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 51,
-            "title": "Narik",
-            "blueprintId": "101_300",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "NON_ALIGNED",
-            "isStopped": false
-        },
-        {
-            "cardId": 52,
-            "title": "Dr. Syrus",
-            "blueprintId": "155_092",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "NON_ALIGNED",
-            "attachedToCardId": 40,
-            "isStopped": false
-        },
-        {
-            "cardId": 53,
-            "title": "Dr. Farek",
-            "blueprintId": "101_293",
-            "owner": "andrew",
-            "zone": "HAND",
-            "affiliation": "NON_ALIGNED",
-            "isStopped": false
-        },
-        {
-            "cardId": 54,
-            "title": "Takket",
-            "blueprintId": "101_320",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "ROMULAN",
-            "isStopped": false
-        },
-        {
-            "cardId": 55,
-            "title": "Takket",
-            "blueprintId": "101_320",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "ROMULAN",
-            "isStopped": false
-        },
-        {
-            "cardId": 56,
-            "title": "Data",
-            "blueprintId": "101_204",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 57,
-            "title": "Deanna Troi",
-            "blueprintId": "155_058",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 58,
-            "title": "Dr. Christopher",
-            "blueprintId": "155_059",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 40,
-            "isStopped": false
-        },
-        {
-            "cardId": 59,
-            "title": "Dr. Selar",
-            "blueprintId": "101_208",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 60,
-            "title": "Erik Pressman",
-            "blueprintId": "101_209",
-            "owner": "andrew",
-            "zone": "HAND",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 61,
-            "title": "Fleet Admiral Shanthi",
-            "blueprintId": "101_211",
-            "owner": "andrew",
-            "zone": "HAND",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 62,
-            "title": "Geordi La Forge",
-            "blueprintId": "155_060",
-            "owner": "andrew",
-            "zone": "HAND",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 63,
-            "title": "Geordi La Forge",
-            "blueprintId": "101_212",
-            "owner": "andrew",
-            "zone": "HAND",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 64,
-            "title": "Giusti",
-            "blueprintId": "101_213",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 40,
-            "isStopped": false
-        },
-        {
-            "cardId": 65,
-            "title": "Hannah Bates",
-            "blueprintId": "101_214",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 66,
-            "title": "Inge Eiger",
-            "blueprintId": "109_103",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 40,
-            "isStopped": false
-        },
-        {
-            "cardId": 67,
-            "title": "Jace Michaels",
-            "blueprintId": "112_207",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 41,
-            "isStopped": false
-        },
-        {
-            "cardId": 68,
-            "title": "Jadzia Dax",
-            "blueprintId": "112_208",
-            "owner": "andrew",
-            "zone": "DRAW_DECK",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 69,
-            "title": "Jean-Luc Picard",
-            "blueprintId": "135_004",
-            "owner": "andrew",
-            "zone": "ATTACHED",
-            "locationId": 9,
-            "affiliation": "FEDERATION",
-            "attachedToCardId": 41,
-            "isStopped": false
-        },
-        {
-            "cardId": 70,
-            "title": "Jenna D'Sora",
-            "blueprintId": "101_216",
-            "owner": "andrew",
-            "zone": "HAND",
-            "affiliation": "FEDERATION",
-            "isStopped": false
-        },
-        {
-            "cardId": 71,
-            "title": "Assign Mission Specialists",
-            "blueprintId": "109_063",
-            "owner": "andrew",
-            "zone": "TABLE"
-        },
-        {
-            "cardId": 72,
-            "title": "Federation Outpost",
-            "blueprintId": "101_104",
-            "owner": "andrew",
-            "zone": "AT_LOCATION",
-            "locationId": 9,
-            "affiliation": "FEDERATION"
-        },
-        {
-            "cardId": 73,
-            "title": "Husnock Outpost",
-            "blueprintId": "111_009",
-            "owner": "andrew",
-            "zone": "AT_LOCATION",
-            "locationId": 4,
-            "affiliation": "NON_ALIGNED"
-        },
-        {
-            "cardId": 74,
-            "title": "Alternate Universe Door",
-            "blueprintId": "103_032",
-            "owner": "andrew",
-            "zone": "TABLE"
-        },
-        {
-            "cardId": 75,
-            "title": "Ferengi Attack",
-            "blueprintId": "103_014",
-            "owner": "andrew",
-            "zone": "VOID",
-            "locationId": 3
-        },
-        {
-            "cardId": 76,
-            "title": "Dedication to Duty",
-            "blueprintId": "152_003",
-            "owner": "andrew",
-            "zone": "VOID",
-            "locationId": 5
-        },
-        {
-            "cardId": 77,
-            "title": "Q-Flash",
-            "blueprintId": "105_015",
-            "owner": "andrew",
-            "zone": "TABLE"
-        },
-        {
-            "cardId": 78,
-            "title": "Battle Bridge Door",
-            "blueprintId": "116_011",
-            "owner": "andrew",
-            "zone": "TABLE"
-        },
-        {
-            "cardId": 79,
-            "title": "Botanical Research",
-            "blueprintId": "113_003",
-            "owner": "andrew",
-            "zone": "SPACELINE",
-            "locationId": 6
-        },
-        {
-            "cardId": 80,
-            "title": "Evaluate Terraforming",
-            "blueprintId": "101_153",
-            "owner": "andrew",
-            "zone": "SPACELINE",
-            "locationId": 12
-        },
-        {
-            "cardId": 81,
             "title": "Host Metaphasic Shielding Test",
             "blueprintId": "155_039",
             "owner": "andrew",
-            "zone": "SPACELINE",
-            "locationId": 4
+            "locationId": 1,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/39V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
         },
         {
-            "cardId": 82,
+            "cardId": 44,
             "title": "Investigate Rogue Comet",
             "blueprintId": "101_171",
             "owner": "andrew",
-            "zone": "SPACELINE",
-            "locationId": 10
+            "locationId": 11,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR171.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
         },
         {
-            "cardId": 83,
+            "cardId": 45,
             "title": "Wormhole Negotiations",
             "blueprintId": "101_194",
             "owner": "andrew",
-            "zone": "SPACELINE",
-            "locationId": 8
+            "locationId": 5,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR194.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
         },
         {
-            "cardId": 84,
+            "cardId": 46,
+            "title": "Evaluate Terraforming",
+            "blueprintId": "101_153",
+            "owner": "andrew",
+            "locationId": 9,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR153.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 47,
+            "title": "Botanical Research",
+            "blueprintId": "113_003",
+            "owner": "andrew",
+            "locationId": 3,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/15V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 48,
             "title": "Avert Solar Implosion",
             "blueprintId": "155_037",
             "owner": "andrew",
-            "zone": "SPACELINE",
-            "locationId": 2
+            "locationId": 7,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/37V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 49,
+            "title": "Dr. Syrus",
+            "blueprintId": "155_092",
+            "owner": "andrew",
+            "locationId": 1,
+            "attachedToCardId": 83,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/92V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 52,
+            "title": "Hannah Bates",
+            "blueprintId": "101_214",
+            "owner": "andrew",
+            "locationId": 7,
+            "attachedToCardId": 48,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR214.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 55,
+            "title": "Jadzia Dax",
+            "blueprintId": "112_208",
+            "owner": "andrew",
+            "locationId": 7,
+            "attachedToCardId": 48,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 57,
+            "title": "Alexander Rozhenko",
+            "blueprintId": "101_196",
+            "owner": "andrew",
+            "locationId": 7,
+            "attachedToCardId": 48,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR196.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 60,
+            "title": "Fleet Admiral Shanthi",
+            "blueprintId": "101_211",
+            "owner": "andrew",
+            "locationId": 7,
+            "attachedToCardId": 48,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR211.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 61,
+            "title": "Geordi La Forge",
+            "blueprintId": "101_212",
+            "owner": "andrew",
+            "locationId": 7,
+            "attachedToCardId": 62,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR212.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 62,
+            "title": "U.S.S. Drake",
+            "blueprintId": "127_035",
+            "owner": "andrew",
+            "locationId": 7,
+            "isStopped": false,
+            "rangeAvailable": 7,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/38V.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 67,
+            "title": "Jean-Luc Picard",
+            "blueprintId": "135_004",
+            "owner": "andrew",
+            "locationId": 7,
+            "attachedToCardId": 48,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/chainofcommand/jeanlucpicard.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 74,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew",
+            "locationId": 1,
+            "attachedToCardId": 83,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 79,
+            "title": "Federation Outpost",
+            "blueprintId": "101_104",
+            "owner": "andrew",
+            "locationId": 7,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 80,
+            "title": "Alternate Universe Door",
+            "blueprintId": "103_032",
+            "owner": "andrew",
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 81,
+            "title": "Assign Mission Specialists",
+            "blueprintId": "109_063",
+            "owner": "andrew",
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg",
+            "cardType": "OBJECTIVE",
+            "uniqueness": "UNIQUE"
+        },
+        {
+            "cardId": 82,
+            "title": "Battle Bridge Door",
+            "blueprintId": "116_011",
+            "owner": "andrew",
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 83,
+            "title": "Husnock Outpost",
+            "blueprintId": "111_009",
+            "owner": "andrew",
+            "locationId": 1,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/otsdr/9.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL"
+        },
+        {
+            "cardId": 84,
+            "title": "Q-Flash",
+            "blueprintId": "105_015",
+            "owner": "andrew",
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL"
         }
     ],
     "spacelineLocations": [
         {
             "locationId": 12,
             "quadrant": "ALPHA",
-            "locationName": "Velara III",
+            "locationName": "Qo'noS",
             "isCompleted": false,
+            "isHomeworld": true,
             "missionCardIds": [
-                80
+                4
             ],
             "seedCardCount": 0
         },
         {
             "locationId": 11,
             "quadrant": "ALPHA",
-            "locationName": "Qo'noS",
-            "isCompleted": false,
-            "missionCardIds": [
-                35
-            ],
-            "seedCardCount": 0
-        },
-        {
-            "locationId": 10,
-            "quadrant": "ALPHA",
             "locationName": "Sector 1156",
             "isCompleted": false,
+            "isHomeworld": false,
             "missionCardIds": [
-                82
+                44
             ],
             "seedCardCount": 0
         },
         {
             "locationId": 9,
             "quadrant": "ALPHA",
-            "region": "ARGOLIS_CLUSTER",
-            "locationName": "Small Moon",
+            "locationName": "Velara III",
             "isCompleted": false,
+            "isHomeworld": false,
             "missionCardIds": [
-                40
+                46
             ],
             "seedCardCount": 0
         },
         {
             "locationId": 8,
             "quadrant": "ALPHA",
-            "locationName": "Wormhole Terminus",
+            "locationName": "Galorndon Core",
             "isCompleted": false,
+            "isHomeworld": false,
             "missionCardIds": [
-                83
-            ],
-            "seedCardCount": 1
-        },
-        {
-            "locationId": 6,
-            "quadrant": "ALPHA",
-            "locationName": "Unexplored planet",
-            "isCompleted": false,
-            "missionCardIds": [
-                79
-            ],
-            "seedCardCount": 1
-        },
-        {
-            "locationId": 5,
-            "quadrant": "ALPHA",
-            "region": "MCALLISTER",
-            "locationName": "C-5 Nebula",
-            "isCompleted": false,
-            "missionCardIds": [
-                39
-            ],
-            "seedCardCount": 1
-        },
-        {
-            "locationId": 4,
-            "quadrant": "ALPHA",
-            "locationName": "Veytan",
-            "isCompleted": false,
-            "missionCardIds": [
-                81
-            ],
-            "seedCardCount": 0
-        },
-        {
-            "locationId": 2,
-            "quadrant": "ALPHA",
-            "locationName": "Veridian III",
-            "isCompleted": false,
-            "missionCardIds": [
-                84
+                2
             ],
             "seedCardCount": 1
         },
         {
             "locationId": 7,
             "quadrant": "ALPHA",
-            "region": "NEUTRAL_ZONE",
-            "locationName": "Near Neutral Zone",
+            "locationName": "Veridian III",
             "isCompleted": false,
+            "isHomeworld": false,
             "missionCardIds": [
-                37
+                48
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 10,
+            "quadrant": "ALPHA",
+            "region": "NEUTRAL ZONE",
+            "locationName": "Iconia",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                6
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 6,
+            "quadrant": "ALPHA",
+            "region": "NEUTRAL ZONE",
+            "locationName": "Devora",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                1
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 5,
+            "quadrant": "ALPHA",
+            "locationName": "Wormhole Terminus",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                45
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 4,
+            "quadrant": "ALPHA",
+            "locationName": "Kurl",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                3
             ],
             "seedCardCount": 0
         },
         {
             "locationId": 3,
             "quadrant": "ALPHA",
-            "region": "NEUTRAL_ZONE",
-            "locationName": "Devora",
+            "locationName": "Unexplored planet",
             "isCompleted": false,
+            "isHomeworld": false,
             "missionCardIds": [
-                38
+                47
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 2,
+            "quadrant": "ALPHA",
+            "locationName": "Typhon Expanse",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                5
             ],
             "seedCardCount": 1
         },
         {
             "locationId": 1,
             "quadrant": "ALPHA",
-            "region": "NEUTRAL_ZONE",
-            "locationName": "Iconia",
+            "locationName": "Veytan",
             "isCompleted": false,
+            "isHomeworld": false,
             "missionCardIds": [
-                36
+                43
             ],
             "seedCardCount": 0
         }
@@ -805,35 +949,66 @@
     "awayTeams": [
         {
             "awayTeamId": 1,
-            "locationId": 9,
+            "locationId": 7,
             "playerId": "andrew",
             "awayTeamCardIds": [
-                58,
+                67,
+                60,
+                55,
+                57,
                 52,
-                66,
-                45,
-                64
+                61
             ],
             "cards": [
-                58,
+                67,
+                60,
+                55,
+                57,
                 52,
-                66,
-                45,
-                64
+                61
             ],
             "attemptingPersonnel": [
-                58,
+                67,
+                60,
+                55,
+                57,
                 52,
-                66,
-                45,
-                64
+                61
+            ]
+        },
+        {
+            "awayTeamId": 2,
+            "locationId": 8,
+            "playerId": "andrew2",
+            "awayTeamCardIds": [
+                12,
+                26,
+                8,
+                35,
+                23,
+                29
+            ],
+            "cards": [
+                12,
+                26,
+                8,
+                35,
+                23,
+                29
+            ],
+            "attemptingPersonnel": [
+                12,
+                26,
+                8,
+                23,
+                29
             ]
         }
     ],
     "lastAction": {
-        "actionId": 1244,
+        "actionId": 1577,
         "status": "completed_success",
-        "actionType": "MOVE_CARDS",
-        "performingPlayerId": "andrew"
+        "performingPlayerId": "andrew2",
+        "actionType": "SELECT_CARDS"
     }
 }
