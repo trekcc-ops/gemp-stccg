@@ -141,11 +141,7 @@ public abstract class DefaultGame {
 
     public void requestCancel(String playerId) {
         _requestedCancel.add(playerId);
-        if (_requestedCancel.size() == _allPlayerIds.size())
-            cancelGameRequested();
-    }
-    public void cancelGameRequested() {
-        if (!_finished) {
+        if (_requestedCancel.size() == _allPlayerIds.size() && !_finished) {
             _cancelled = true;
 
             if (getGameState() != null)
@@ -157,7 +153,7 @@ public abstract class DefaultGame {
             _finished = true;
         }
     }
-    
+
     public UserFeedback getUserFeedback() {
         return _userFeedback;
     }
