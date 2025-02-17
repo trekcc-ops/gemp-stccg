@@ -35,7 +35,6 @@ public class UseNormalCardPlayAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         cardGame.getModifiersEnvironment().useNormalCardPlay(performingPlayer);
-        cardGame.sendMessage("Normal card play used");
         _wasCarriedOut = true;
         setAsSuccessful();
         return getNextAction();
