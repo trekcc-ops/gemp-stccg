@@ -70,9 +70,11 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (!_destinationChosen) {
-            _selectAction =
-                    new SelectVisibleCardAction(cardGame, performingPlayer,
-                            "Choose destination", _destinationOptions);
+            if (_selectAction == null) {
+                _selectAction =
+                        new SelectVisibleCardAction(cardGame, performingPlayer,
+                                "Choose destination", _destinationOptions);
+            }
             if (_selectAction.wasCarriedOut()) {
                 _destinationChosen = true;
                 _destination = _selectAction.getSelectedCard();
