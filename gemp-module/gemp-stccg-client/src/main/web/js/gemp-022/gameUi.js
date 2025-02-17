@@ -2951,10 +2951,10 @@ export class ST1EGameTableUI extends GameTableUI {
                     let discardSize = player.cardGroups["DISCARD"].cardCount;
                     let removedSize = player.cardGroups["REMOVED"].cardCount;
 
-                    $("#deck" + that.game.getPlayerIndex(playerId)).text(drawDeckSize);
-                    $("#hand" + that.game.getPlayerIndex(playerId)).text(handSize);
-                    $("#discard" + that.game.getPlayerIndex(playerId)).text(discardSize);
-                    $("#removedPile" + that.game.getPlayerIndex(playerId)).text(removedSize);
+                    $("#deck" + that.getPlayerIndex(playerId)).text(drawDeckSize);
+                    $("#hand" + that.getPlayerIndex(playerId)).text(handSize);
+                    $("#discard" + that.getPlayerIndex(playerId)).text(discardSize);
+                    $("#removedPile" + that.getPlayerIndex(playerId)).text(removedSize);
                 }
                 next();
             });
