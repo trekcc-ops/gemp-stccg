@@ -23,6 +23,7 @@ import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
 import ActiveCardPane from './active-card-pane.jsx';
+import Hand from './hand.jsx';
 
 // Change this function to change the JSON input source.
 function get_gamestate() {
@@ -329,7 +330,7 @@ export default function MiniDrawer() {
                 <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
                 <div id="main-layout-grid">
                     <div id="table">TABLE</div>
-                    <div id="hand-pane">HAND PANE</div>
+                    <div id="hand-pane"><Hand gamestate={get_gamestate()} /></div>
                     <div id="active-card-pane">
                         <ActiveCardPane style={{height: 240}} card={card_in_active_pane} />
                         {
