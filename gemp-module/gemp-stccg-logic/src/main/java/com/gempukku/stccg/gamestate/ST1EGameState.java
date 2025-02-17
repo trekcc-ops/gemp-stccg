@@ -198,7 +198,7 @@ public class ST1EGameState extends GameState {
                 sharedMission = i != 0;
                 // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
                 PhysicalCard mission = location.getMissionCards().get(i);
-                sendCreatedCardToListener(mission, sharedMission, listener, !restoreSnapshot);
+                sendCreatedCardToListener(mission, sharedMission, listener);
                 cardsLeftToSend.remove(mission);
                 sentCardsFromPlay.add(mission);
             }
@@ -216,7 +216,7 @@ public class ST1EGameState extends GameState {
                     if (location instanceof MissionLocation mission) {
                         PhysicalCard topMission = mission.getTopMissionCard();
                         if (sentCardsFromPlay.contains(topMission)) {
-                            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                            sendCreatedCardToListener(physicalCard, false, listener);
                             sentCardsFromPlay.add(physicalCard);
 
                             cardIterator.remove();
@@ -225,7 +225,7 @@ public class ST1EGameState extends GameState {
                         throw new InvalidGameLogicException("Card placed on mission, but is attached to a non-mission card");
                     }
                 } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                    sendCreatedCardToListener(physicalCard, false, listener);
                     sentCardsFromPlay.add(physicalCard);
 
                     cardIterator.remove();
@@ -234,18 +234,18 @@ public class ST1EGameState extends GameState {
         } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
         for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.HAND)) {
-            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+            sendCreatedCardToListener(physicalCard, false, listener);
         }
 
         List<PhysicalCard> missionPile = player.getCardGroupCards(Zone.MISSIONS_PILE);
         if (missionPile != null) {
             for (PhysicalCard physicalCard : missionPile) {
-                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                sendCreatedCardToListener(physicalCard, false, listener);
             }
         }
 
         for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.DISCARD)) {
-            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+            sendCreatedCardToListener(physicalCard, false, listener);
         }
     }
 

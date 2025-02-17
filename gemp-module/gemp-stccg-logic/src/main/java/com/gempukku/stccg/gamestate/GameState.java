@@ -22,10 +22,7 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -98,7 +95,7 @@ public abstract class GameState {
                 PhysicalCard physicalCard = cardIterator.next();
                 PhysicalCard attachedTo = physicalCard.getAttachedTo();
                 if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                    sendCreatedCardToListener(physicalCard, false, listener);
                     sentCardsFromPlay.add(physicalCard);
                     cardIterator.remove();
                 }
@@ -110,7 +107,7 @@ public abstract class GameState {
         cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.HAND));
         cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.DISCARD));
         for (PhysicalCard physicalCard : cardsPutIntoPlay) {
-            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+            sendCreatedCardToListener(physicalCard, false, listener);
         }
         cardGame.sendActionResultToClient();
     }
@@ -148,7 +145,7 @@ public abstract class GameState {
 
         for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
             try {
-                sendCreatedCardToListener(card, false, listener, true);
+                sendCreatedCardToListener(card, false, listener);
             } catch(InvalidGameOperationException exp) {
                 card.getGame().sendErrorMessage(exp);
             }
@@ -279,7 +276,7 @@ public abstract class GameState {
         card.setZone(zone);
         for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
             try {
-                sendCreatedCardToListener(card, sharedMission, listener, true);
+                sendCreatedCardToListener(card, sharedMission, listener);
             } catch(InvalidGameOperationException exp) {
                 card.getGame().sendErrorMessage(exp);
             }
@@ -290,15 +287,14 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
     }
 
-    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
-                                             boolean animate) throws InvalidGameOperationException {
+    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener)
+            throws InvalidGameOperationException {
         GameEvent.Type eventType;
 
         if (sharedMission)
             eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
-        else if (!animate)
-            eventType = GameEvent.Type.PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING;
-        else eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
+        else
+            eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
 
         if (card.isVisibleToPlayer(listener.getPlayerId())) {
             listener.sendEvent(new AddNewCardGameEvent(eventType, card));
