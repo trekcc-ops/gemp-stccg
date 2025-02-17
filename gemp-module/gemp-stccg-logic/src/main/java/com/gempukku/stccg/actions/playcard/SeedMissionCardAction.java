@@ -150,7 +150,7 @@ public class SeedMissionCardAction extends PlayCardAction {
         } else {
             setAsFailed();
             _actionCarriedOut = false;
-            game.sendMessage("Seed mission action attempted in a non-1E game");
+            game.sendErrorMessage("Seed mission action attempted in a non-1E game");
         }
     }
 
