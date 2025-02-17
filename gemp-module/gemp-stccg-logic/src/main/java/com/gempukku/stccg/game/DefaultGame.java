@@ -474,10 +474,6 @@ public abstract class DefaultGame {
             listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));
     }
 
-    public void removeCardsFromZone(Player performingPlayer, Collection<PhysicalCard> cards) {
-        getGameState().removeCardsFromZone(this, performingPlayer, cards);
-    }
-
 
     public void performRevert(Player player) {
         DefaultGame thisGame = this;

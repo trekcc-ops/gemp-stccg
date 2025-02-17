@@ -12,6 +12,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collections;
+import java.util.List;
 
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
 
@@ -73,7 +74,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     
     protected void putCardIntoPlay(DefaultGame game) {
         GameState gameState = game.getGameState();
-        game.removeCardsFromZone(_cardEnteringPlay.getOwner(), Collections.singleton(_cardEnteringPlay));
+        gameState.removeCardsFromZone(game, _cardEnteringPlay.getOwner(), List.of(_cardEnteringPlay));
         gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
         game.sendMessage(_cardEnteringPlay.getOwnerName() + " played " +
