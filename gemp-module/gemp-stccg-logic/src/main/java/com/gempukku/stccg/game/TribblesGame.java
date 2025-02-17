@@ -25,7 +25,7 @@ public class TribblesGame extends DefaultGame {
         _rules.applyRuleSet(this);
         _gameState.createPhysicalCards(this, library, decks);
         _turnProcedure = new TurnProcedure(this);
-        setCurrentProcess(new TribblesPlayerOrderProcess(this));
+        _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
     }
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
@@ -36,7 +36,7 @@ public class TribblesGame extends DefaultGame {
         _rules.applyRuleSet(this);
         _gameState.createPhysicalCards(this, library, decks);
         _turnProcedure = new TurnProcedure(this);
-        setCurrentProcess(new TribblesPlayerOrderProcess(this));
+        _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
     }
 
 

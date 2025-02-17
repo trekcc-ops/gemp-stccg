@@ -444,10 +444,6 @@ public abstract class DefaultGame {
             _lastMessages.removeFirst();
     }
 
-    public void setCurrentProcess(GameProcess process) {
-        getGameState().setCurrentProcess(process);
-    }
-
     public void sendErrorMessage(Exception exp) {
         String message = "ERROR: " + exp.getMessage();
         sendMessage(message);

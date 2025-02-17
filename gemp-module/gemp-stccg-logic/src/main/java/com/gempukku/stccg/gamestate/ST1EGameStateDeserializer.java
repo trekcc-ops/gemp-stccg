@@ -69,7 +69,7 @@ public class ST1EGameStateDeserializer {
         }
 
         GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
-        game.setCurrentProcess(currentProcess);
+        gameState.setCurrentProcess(currentProcess);
 
         gameState.setModifiersLogic(game);
 

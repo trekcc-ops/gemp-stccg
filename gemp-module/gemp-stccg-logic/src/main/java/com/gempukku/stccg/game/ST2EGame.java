@@ -23,7 +23,7 @@ public class ST2EGame extends DefaultGame {
         ruleSet.applyRuleSet(this);
 
         _turnProcedure = new TurnProcedure(this);
-        setCurrentProcess(null);
+        _gameState.setCurrentProcess(null);
     }
 
 

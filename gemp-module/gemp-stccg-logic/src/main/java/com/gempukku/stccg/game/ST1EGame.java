@@ -33,7 +33,7 @@ public class ST1EGame extends DefaultGame {
 
         _gameState.createPhysicalCards(library, decks, this);
         _turnProcedure = new TurnProcedure(this);
-        setCurrentProcess(new ST1EPlayerOrderProcess());
+        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
@@ -45,7 +45,7 @@ public class ST1EGame extends DefaultGame {
 
         _gameState.createPhysicalCards(library, decks, this);
         _turnProcedure = new TurnProcedure(this);
-        setCurrentProcess(new ST1EPlayerOrderProcess());
+        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
 
