@@ -24,19 +24,16 @@ function get_hand(gamestate) {
                 resolved_cards.push(matching_cards[0]);
             }
         }
-        console.log(resolved_cards);
+        // DEBUG: console.log(resolved_cards);
         return resolved_cards;
     }
 }
 
 export default function Hand( {gamestate} ) {
     let hand_from_gamestate = get_hand(gamestate);
-    const rows = [];
-    for (const card of hand_from_gamestate) {
-        // note: we are adding a key prop here to allow react to uniquely identify each
-        // element in this array. see: https://reactjs.org/docs/lists-and-keys.html
-        rows.push(<Card key={card["cardId"]} card={card} />);
-    }
+    let rows = hand_from_gamestate.map(card => 
+        <Card key={card["cardId"]} card={card} />
+    )
     return(
         <Stack direction={"row"}>
             {rows}
