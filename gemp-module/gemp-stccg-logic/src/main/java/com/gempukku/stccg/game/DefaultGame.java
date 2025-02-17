@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.GameType;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.gameevent.ActionResultGameEvent;
@@ -32,7 +31,6 @@ import java.util.*;
 
 public abstract class DefaultGame {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
-    private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
     private Map<String, PlayerClock> _playerClocks = new HashMap<>();
 
     // Game parameters
@@ -456,10 +454,6 @@ public abstract class DefaultGame {
     public Action getActionById(int actionId) {
         ActionsEnvironment environment = getActionsEnvironment();
         return environment.getActionById(actionId);
-    }
-
-    public Map<String, Map<Zone, Integer>> getZoneSizes() {
-        return Collections.unmodifiableMap(_previousZoneSizes);
     }
 
     public void activatedCard(Player performingPlayer, PhysicalCard card) {
