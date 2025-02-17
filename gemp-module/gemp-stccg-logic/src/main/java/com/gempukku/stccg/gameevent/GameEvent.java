@@ -34,7 +34,6 @@ public class GameEvent {
         REMOVE_CARD_FROM_PLAY("RCFP"),
         SEND_MESSAGE("M"),
         SEND_WARNING("W"),
-        GAME_ENDED("EG"),
         FLASH_CARD_IN_PLAY("CA"),
         DECISION("D"),
         ACTION_RESULT("ACTION_RESULT");

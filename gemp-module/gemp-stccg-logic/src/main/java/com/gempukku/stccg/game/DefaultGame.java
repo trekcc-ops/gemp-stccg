@@ -190,12 +190,6 @@ public abstract class DefaultGame {
         }
     }
 
-    public void finish() {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_ENDED));
-        }
-    }
-
     public void setCurrentPhase(Phase phase) {
         getGameState().setCurrentPhaseNew(phase);
         sendActionResultToClient();
@@ -223,7 +217,6 @@ public abstract class DefaultGame {
             sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
 
         assert getGameState() != null;
-        finish();
 
         for (GameResultListener gameResultListener : _gameResultListeners) {
             gameResultListener.gameFinished(_winnerPlayerId, reason, _losers);

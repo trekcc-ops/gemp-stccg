@@ -1037,9 +1037,6 @@ export default class GameTableUI {
             case "D":
                 this.animations.processDecision(gameEvent, animate);
                 break;
-            case "EG":
-                this.processGameEnd();
-                break;
             case "EP": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.eventPlayed(gameEvent, animate);
                 break;
