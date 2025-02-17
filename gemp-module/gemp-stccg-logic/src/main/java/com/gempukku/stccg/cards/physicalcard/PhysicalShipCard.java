@@ -113,7 +113,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         for (PhysicalCard card : getCrew()) {
             if (card instanceof PersonnelCard personnelCard) {
                 List<CardIcon> icons = personnelCard.getIcons();
-                if (icons != null) {
+                if (icons != null && !icons.isEmpty()) {
                     List<CardIcon> cardIcons = new LinkedList<>(icons);
                     if (cardIcons.contains(CardIcon.COMMAND) && !cardIcons.contains(CardIcon.STAFF))
                         cardIcons.add(CardIcon.STAFF);
