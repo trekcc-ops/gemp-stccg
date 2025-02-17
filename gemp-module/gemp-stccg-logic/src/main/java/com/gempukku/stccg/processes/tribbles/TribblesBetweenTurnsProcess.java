@@ -28,7 +28,7 @@ public class TribblesBetweenTurnsProcess extends TribblesGameProcess {
         }
 
         Player currentPlayer = cardGame.getPlayer(currentPlayerId);
-        gameState.startPlayerTurn(cardGame, currentPlayer);
+        gameState.startPlayerTurn(currentPlayer);
     }
 
     @Override

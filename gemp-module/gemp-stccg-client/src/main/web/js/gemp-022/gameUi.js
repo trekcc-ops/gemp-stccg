@@ -1013,12 +1013,11 @@ export default class GameTableUI {
 
         switch(eventType) {
             case "ACTION_RESULT":
-                console.log("Calling process gameEvent for ACTION_RESULT");
                 let gameStateNode = gameEvent.gameState;
                 let gameState = typeof gameStateNode === "string" ? JSON.parse(gameStateNode) : gameStateNode;
-                this.updateGameStats(gameState);
+                this.updateGameStats(gameState); // updates count of card piles
                 this.animations.gamePhaseChange(gameState.currentPhase);
-                console.log(gameState);
+                this.animations.turnChange(gameState, true);
                 let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
                 for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
                     let action = gameState.performedActions[i];
@@ -1059,17 +1058,11 @@ export default class GameTableUI {
             case "PUT_SHARED_MISSION_INTO_PLAY":
                 this.animations.putCardOnBoardGeneric(gameEvent, animate, eventType);
                 break;
-            case "PLAYER_SCORE":
-                this.animations.playerScore(gameEvent, animate);
-                break;
             case "P":
                 this.participant(gameEvent);
                 break;
             case "RCFP":
                 this.animations.removeCardFromPlay(gameEvent.otherCardIds, gameEvent.participantId, animate);
-                break;
-            case "TC":
-                this.animations.turnChange(gameEvent, animate);
                 break;
             case "TSEQ":
                 this.animations.tribbleSequence(gameEvent, animate);

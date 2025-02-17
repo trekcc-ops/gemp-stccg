@@ -12,12 +12,7 @@ public interface GameStateListener {
 
     void initializeBoard() throws PlayerNotFoundException;
 
-    void setPlayerDecked(DefaultGame cardGame, Player player);
-    void setPlayerScore(Player player);
-
     void setTribbleSequence(String tribbleSequence);
-
-    void setCurrentPlayerId(String playerId);
 
     void sendMessage(String message);
 

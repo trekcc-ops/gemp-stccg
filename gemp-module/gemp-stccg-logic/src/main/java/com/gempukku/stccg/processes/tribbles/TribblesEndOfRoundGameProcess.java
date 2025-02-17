@@ -1,12 +1,16 @@
 package com.gempukku.stccg.processes.tribbles;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.actions.scorepoints.PlayerWentOutResult;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
@@ -16,7 +20,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
         super(game);
     }
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
 
         Map<String, Integer> pointsScored = new HashMap<>();
         TribblesGameState gameState = _game.getGameState();
@@ -29,7 +33,10 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 gameState.playerWentOut(); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 pointsScored.put(playerId, score);
-                cardGame.addToPlayerScore(player, score);
+                ScorePointsAction scorePointsAction = new ScorePointsAction(_game, null, player, score);
+                scorePointsAction.processEffect(_game);
+                _game.getActionsEnvironment().logAction(scorePointsAction);
+                _game.sendActionResultToClient(); // for updated points
                 _game.sendMessage(playerId + " went out with " + score + " points");
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }

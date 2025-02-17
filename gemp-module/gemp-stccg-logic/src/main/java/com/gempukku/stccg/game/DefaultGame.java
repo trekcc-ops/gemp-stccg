@@ -108,7 +108,9 @@ public abstract class DefaultGame {
             PlayerOrder playerOrder = gameState.getPlayerOrder();
             if (playerOrder != null) {
                 listener.initializeBoard();
-                if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
+                if (getCurrentPlayerId() != null) {
+                    sendActionResultToClient(); // for current player
+                }
 
                 try {
                     gameState.sendCardsToClient(this, playerId, listener, false);
@@ -484,11 +486,6 @@ public abstract class DefaultGame {
             listener.sendWarning(player, warning);
     }
 
-    public void addToPlayerScore(Player player, int points) {
-        player.scorePoints(points);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerScore(player);
-    }
     public void sendActionResultToClient() {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));

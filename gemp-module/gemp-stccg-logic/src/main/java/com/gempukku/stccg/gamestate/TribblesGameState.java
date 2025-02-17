@@ -89,10 +89,8 @@ public final class TribblesGameState extends GameState {
         return Collections.unmodifiableList(_playPiles.get(playerId));
     }
 
-    public void setPlayerDecked(DefaultGame cardGame, Player player, boolean bool) {
+    public void setPlayerDecked(Player player, boolean bool) {
         player.setDecked(bool);
-        for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.setPlayerDecked(cardGame, player);
     }
 
     public void setNextTribbleInSequence(DefaultGame cardGame, int num) {

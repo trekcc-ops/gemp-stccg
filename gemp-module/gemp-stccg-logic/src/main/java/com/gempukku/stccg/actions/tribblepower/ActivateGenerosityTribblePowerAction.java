@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
+import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.TribblePower;
@@ -47,7 +48,7 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
                                 throws DecisionResultInvalidException {
                             try {
                                 playerChosen(result, cardGame);
-                            } catch(PlayerNotFoundException exp) {
+                            } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }
                         }
@@ -55,12 +56,13 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
         return getNextAction();
     }
 
-    private void playerChosen(String chosenPlayer, DefaultGame cardGame) throws PlayerNotFoundException {
+    private void playerChosen(String chosenPlayer, DefaultGame cardGame) throws PlayerNotFoundException,
+            InvalidGameLogicException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         Player chosenPlayerObj = cardGame.getPlayer(chosenPlayer);
         // You and one other player (your choice) each score 25,000 points.
-        cardGame.addToPlayerScore(performingPlayer, BONUS_POINTS);
-        cardGame.addToPlayerScore(chosenPlayerObj, BONUS_POINTS);
+        appendEffect(new ScorePointsAction(cardGame, _performingCard, performingPlayer, BONUS_POINTS));
+        appendEffect(new ScorePointsAction(cardGame, _performingCard, chosenPlayerObj, BONUS_POINTS));
 
         // Draw a card.
         appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));

@@ -339,10 +339,9 @@ public abstract class GameState {
         _playerOrder.setCurrentPlayer(playerId);
     }
 
-    public void startPlayerTurn(DefaultGame cardGame, Player player) {
+    public void startPlayerTurn(Player player) {
         _playerOrder.setCurrentPlayer(player.getPlayerId());
         _currentTurnNumber++;
-        cardGame.getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(player.getPlayerId()));
     }
 
 

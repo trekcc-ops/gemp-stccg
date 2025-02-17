@@ -69,7 +69,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
         String nextPlayerId = actionOrder.getNextPlayer();
         Player nextPlayer = cardGame.getPlayer(nextPlayerId);
-        cardGame.getGameState().startPlayerTurn(cardGame, nextPlayer);
+        cardGame.getGameState().startPlayerTurn(nextPlayer);
         return new StartOfTurnGameProcess();
     }
 }

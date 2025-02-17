@@ -718,8 +718,8 @@ export default class GameAnimations {
         var that = this;
         $("#main").queue(
             function (next) {
-                var playerId = json.participantId;
-                var playerIndex = that.game.getPlayerIndex(playerId);
+                let playerId = json.playerOrder.currentPlayer;
+                let playerIndex = that.game.getPlayerIndex(playerId);
                 that.game.currentPlayerId = playerId;
                 $(".player").each(function (index) {
                     if (index == playerIndex)
@@ -735,23 +735,6 @@ export default class GameAnimations {
                     next();
                 });
         }
-    }
-
-    playerScore(json, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                var participantId = json.participantId;
-                var score = json.score;
-
-                if (that.game.playerScores == null)
-                    that.game.playerScores = new Array();
-
-                var index = that.game.getPlayerIndex(participantId);
-                that.game.playerScores[index] = score;
-
-                next();
-            });
     }
 
     message(json, animate) {

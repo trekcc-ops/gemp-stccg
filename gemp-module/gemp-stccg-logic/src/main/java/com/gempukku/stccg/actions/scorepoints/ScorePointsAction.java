@@ -46,8 +46,16 @@ public class ScorePointsAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        Action nextAction = getNextAction();
+        if (nextAction == null) {
+            processEffect(cardGame);
+        }
+        return nextAction;
+    }
+
+    public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         performingPlayer.scorePoints(_points);
-        return getNextAction();
+        setAsSuccessful();
     }
 }

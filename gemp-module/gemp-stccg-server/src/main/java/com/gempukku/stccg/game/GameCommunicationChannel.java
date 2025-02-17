@@ -71,28 +71,8 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public final void setPlayerDecked(DefaultGame cardGame, Player player) {
-        appendEvent(new GameEvent(GameEvent.Type.PLAYER_DECKED, player));
-    }
-
-    @Override
-    public final void setPlayerScore(Player player) {
-        appendEvent(new GameEvent(GameEvent.Type.PLAYER_SCORE, player));
-    }
-
-    @Override
     public final void setTribbleSequence(String tribbleSequence) {
         appendEvent(new UpdateTribbleSequenceGameEvent(tribbleSequence));
-    }
-
-    @Override
-    public final void setCurrentPlayerId(String playerId) {
-        try {
-            appendEvent(new GameEvent(GameEvent.Type.TURN_CHANGE, _game.getPlayer(playerId)));
-        } catch(PlayerNotFoundException exp) {
-            _game.sendErrorMessage(exp);
-            _game.cancelGame();
-        }
     }
 
     @Override
