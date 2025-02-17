@@ -26,8 +26,6 @@ public class StartOfTurnGameProcess extends GameProcess {
             return new TribblesPlayerPlaysOrDraws(tribblesGame);
         } else if (cardGame instanceof ST1EGame firstEditionGame) {
             firstEditionGame.setCurrentPhase(Phase.CARD_PLAY);
-            String message = "Start of " + Phase.CARD_PLAY + " phase";
-            firstEditionGame.sendMessage("\n" + message);
             return new ST1EPlayPhaseSegmentProcess();
         }
         throw new InvalidGameLogicException("No start of turn process defined for game type");
