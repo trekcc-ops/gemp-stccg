@@ -27,7 +27,7 @@ export default function Card( {card} ) {
     }
 
     return(
-        <Box sx={{height: 1, width: 1}} >
+        <Box data-cardid={card.cardId} sx={{height: 1, width: 1}} >
             <Badge color={badge_color} badgeContent={stopped_badge}>
                 <img width={"100%"} src={card.imageUrl} style={overlay} />
             </Badge>
