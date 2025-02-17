@@ -56,7 +56,7 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
                 return cost;
 
             if (_actionBlueprint != null) {
-                cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionBlueprint).countUse();
+                cardGame.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionBlueprint).countUse();
             }
             Action action = getNextAction();
             if (action == null)

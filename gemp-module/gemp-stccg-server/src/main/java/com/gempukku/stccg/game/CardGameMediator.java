@@ -117,15 +117,6 @@ public abstract class CardGameMediator {
         return new LinkedList<>(_playersPlaying);
     }
 
-    public final String getGameStatus() {
-        DefaultGame game = getGame();
-        return game.getStatus();
-    }
-
-    public final boolean isFinished() {
-        return getGame().isFinished();
-    }
-
     public final String produceCardInfo(int cardId) throws JsonProcessingException {
         _readLock.lock();
         try {
@@ -311,7 +302,7 @@ public abstract class CardGameMediator {
 
             channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
             _communicationChannels.put(playerName, channel);
-            getGame().addGameStateListener(playerName, channel);
+            addGameStateListener(playerName, channel);
             return channel;
         } finally {
             _readLock.unlock();
@@ -387,7 +378,7 @@ public abstract class CardGameMediator {
             return mapper.writeValueAsString(itemsToSerialize);
 
         Collection<String> modifiersToAdd = new ArrayList<>();
-        for (Modifier modifier : cardGame.getModifiersQuerying().getModifiersAffecting(card)) {
+        for (Modifier modifier : cardGame.getGameState().getModifiersQuerying().getModifiersAffecting(card)) {
             modifiersToAdd.add(modifier.getCardInfoText(getGame(), card));
         }
         itemsToSerialize.put("modifiers", modifiersToAdd);

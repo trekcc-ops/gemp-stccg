@@ -102,12 +102,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
 
-    public int GetStrength(PhysicalCard card)
-    {
-        return _game.getModifiersQuerying().getStrength(card);
-    }
-
-
     public void ApplyAdHocModifier(Modifier mod)
     {
         _game.getModifiersEnvironment().addUntilEndOfTurnModifier(mod);

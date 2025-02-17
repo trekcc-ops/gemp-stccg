@@ -24,7 +24,7 @@ public class UseNormalCardPlayAction extends ActionyAction {
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            return cardGame.getModifiersQuerying().getNormalCardPlaysAvailable(performingPlayer) >= 1;
+            return cardGame.getGameState().getModifiersQuerying().getNormalCardPlaysAvailable(performingPlayer) >= 1;
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;

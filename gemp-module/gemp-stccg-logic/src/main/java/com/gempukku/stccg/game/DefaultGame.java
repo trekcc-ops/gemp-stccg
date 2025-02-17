@@ -185,7 +185,7 @@ public abstract class DefaultGame {
     }
 
     public void setCurrentPhase(Phase phase) {
-        getGameState().setCurrentPhaseNew(phase);
+        getGameState().setCurrentPhase(phase);
         sendActionResultToClient();
     }
 
@@ -251,10 +251,6 @@ public abstract class DefaultGame {
     }
 
     public ModifiersEnvironment getModifiersEnvironment() {
-        return getGameState().getModifiersLogic();
-    }
-
-    public ModifiersQuerying getModifiersQuerying() {
         return getGameState().getModifiersLogic();
     }
 

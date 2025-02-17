@@ -15,8 +15,10 @@ public class StartOfTurnGameProcess extends GameProcess {
     @Override
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
         cardGame.sendMessage("\n\n========\n\nStart of " + cardGame.getCurrentPlayerId() + "'s turn.");
-        if (cardGame.getCurrentPhase() != Phase.START_OF_TURN)
-            cardGame.setCurrentPhase(Phase.START_OF_TURN);
+        if (cardGame.getCurrentPhase() != Phase.START_OF_TURN) {
+            cardGame.getGameState().setCurrentPhase(Phase.START_OF_TURN);
+            cardGame.sendActionResultToClient(); // for phase change
+        }
         cardGame.getActionsEnvironment().addActionToStack(new StartTurnAction(cardGame));
     }
 
@@ -24,8 +26,9 @@ public class StartOfTurnGameProcess extends GameProcess {
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
         if (cardGame instanceof TribblesGame tribblesGame) {
             return new TribblesPlayerPlaysOrDraws(tribblesGame);
-        } else if (cardGame instanceof ST1EGame firstEditionGame) {
-            firstEditionGame.setCurrentPhase(Phase.CARD_PLAY);
+        } else if (cardGame instanceof ST1EGame) {
+            cardGame.getGameState().setCurrentPhase(Phase.CARD_PLAY);
+            cardGame.sendActionResultToClient(); // for phase change
             return new ST1EPlayPhaseSegmentProcess();
         }
         throw new InvalidGameLogicException("No start of turn process defined for game type");

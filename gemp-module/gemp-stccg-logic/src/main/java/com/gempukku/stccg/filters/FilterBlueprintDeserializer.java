@@ -123,7 +123,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                                                         int minStrength = Integer.MAX_VALUE;
                                                         for (PhysicalCard card : Filters.filterActive(cardAffected.getGame(), sourceFilterable))
-                                                            minStrength = Math.min(minStrength, cardAffected.getGame().getModifiersQuerying().getStrength(card));
+                                                            minStrength = Math.min(minStrength, cardAffected.getGame().getGameState().getModifiersQuerying().getStrength(card));
                                                         return minStrength;
                                                     }
                                                 }

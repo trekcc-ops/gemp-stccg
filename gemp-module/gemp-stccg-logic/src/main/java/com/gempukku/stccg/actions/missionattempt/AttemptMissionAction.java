@@ -142,7 +142,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                                 " was already encountered, but not removed from under the mission");
                     }
                 } else  {
-                    if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionLocation)) {
+                    if (cardGame.getGameState().getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionLocation)) {
                         MissionRequirement requirement = _missionLocation.getRequirements(_performingPlayerId);
                         if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel())) {
                             solveMission(_missionLocation, cardGame);

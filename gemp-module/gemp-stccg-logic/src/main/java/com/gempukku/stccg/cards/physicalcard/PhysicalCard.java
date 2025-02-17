@@ -163,4 +163,9 @@ public interface PhysicalCard extends Filterable {
     default boolean hasUniversalIcon() {
         return getBlueprint().hasUniversalIcon();
     }
+
+    @JsonIgnore
+    default Integer getStrength(DefaultGame cardGame) {
+        return cardGame.getGameState().getModifiersQuerying().getStrength(this);
+    }
 }

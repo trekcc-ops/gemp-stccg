@@ -135,7 +135,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public int getFullRange() {
-        return _game.getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
+        return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
     }
 
     public int getRangeAvailable() {

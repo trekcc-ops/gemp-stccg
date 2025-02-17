@@ -427,9 +427,9 @@ public abstract class GameState {
 
     public abstract void checkVictoryConditions(DefaultGame cardGame);
 
-    protected ModifiersQuerying getModifiersQuerying() { return _modifiersLogic; }
+    public ModifiersQuerying getModifiersQuerying() { return _modifiersLogic; }
 
-    public void setCurrentPhaseNew(Phase phase) {
+    public void setCurrentPhase(Phase phase) {
         _currentPhase = phase;
     }
 

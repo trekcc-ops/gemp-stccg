@@ -65,7 +65,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     }
 
     private boolean canDiscard(DefaultGame cardGame, String playerId) {
-        return !_forced || cardGame.getModifiersQuerying().canDiscardCardsFromHand(playerId, _performingCard);
+        return !_forced || cardGame.getGameState().getModifiersQuerying().canDiscardCardsFromHand(playerId, _performingCard);
     }
 
     private void discardCards(DefaultGame game, Player discardingPlayer, Collection<PhysicalCard> cards) {

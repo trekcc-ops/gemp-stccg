@@ -112,7 +112,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<T> result = new LinkedList<>();
         if (actions != null) {
             for (T action : actions) {
-                if (cardGame.getModifiersQuerying().canPerformAction(playerId, action) &&
+                if (cardGame.getGameState().getModifiersQuerying().canPerformAction(playerId, action) &&
                         action.canBeInitiated(cardGame))
                     result.add(action);
             }

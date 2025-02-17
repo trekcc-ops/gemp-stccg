@@ -31,7 +31,7 @@ public class ST1EGameStateDeserializer {
 
         ST1EGameState gameState = new ST1EGameState(game);
 
-        gameState.setCurrentPhaseNew(mapper.treeToValue(node.get("currentPhase"), Phase.class));
+        gameState.setCurrentPhase(mapper.treeToValue(node.get("currentPhase"), Phase.class));
         gameState.loadPlayerOrder(mapper.treeToValue(node.get("playerOrder"), PlayerOrder.class));
 
         Map<MissionLocation, List<Integer>> seededUnderMap = new HashMap<>();
