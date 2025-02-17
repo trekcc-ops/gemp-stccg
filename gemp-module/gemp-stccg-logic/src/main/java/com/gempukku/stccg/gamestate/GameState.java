@@ -81,37 +81,6 @@ public abstract class GameState {
         return _playerOrder;
     }
 
-    public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
-                                  boolean restoreSnapshot)
-            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
-
-        Player player = getPlayer(playerId);
-        Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
-        Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
-
-        do {
-            Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
-            while (cardIterator.hasNext()) {
-                PhysicalCard physicalCard = cardIterator.next();
-                PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                    sendCreatedCardToListener(physicalCard, false, listener);
-                    sentCardsFromPlay.add(physicalCard);
-                    cardIterator.remove();
-                }
-            }
-        } while (!cardsLeftToSend.isEmpty());
-
-        Collection<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
-
-        cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.HAND));
-        cardsPutIntoPlay.addAll(player.getCardsInGroup(Zone.DISCARD));
-        for (PhysicalCard physicalCard : cardsPutIntoPlay) {
-            sendCreatedCardToListener(physicalCard, false, listener);
-        }
-        cardGame.sendActionResultToClient();
-    }
-
 
     public void playerDecisionStarted(DefaultGame cardGame, String playerId, AwaitingDecision awaitingDecision)
             throws PlayerNotFoundException {
@@ -287,7 +256,7 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
     }
 
-    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener)
+    public void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener)
             throws InvalidGameOperationException {
         GameEvent.Type eventType;
 

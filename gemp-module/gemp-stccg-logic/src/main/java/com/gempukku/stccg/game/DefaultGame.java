@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.GameType;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.gameevent.ActionResultGameEvent;
@@ -111,7 +112,69 @@ public abstract class DefaultGame {
                 }
 
                 try {
-                    gameState.sendCardsToClient(this, playerId, listener, false);
+
+                    Player player = getPlayer(playerId);
+                    boolean sharedMission;
+                    Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(getGameState().getAllCardsInPlay());
+                    Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
+
+                    // Send missions in order
+                    for (MissionLocation location : ((ST1EGameState) getGameState()).getSpacelineLocations()) {
+                        for (int i = 0; i < location.getMissionCards().size(); i++) {
+                            sharedMission = i != 0;
+                            // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
+                            PhysicalCard mission = location.getMissionCards().get(i);
+                            getGameState().sendCreatedCardToListener(mission, sharedMission, listener);
+                            cardsLeftToSend.remove(mission);
+                            sentCardsFromPlay.add(mission);
+                        }
+                    }
+
+                    int cardsToSendAtLoopStart;
+                    do {
+                        cardsToSendAtLoopStart = cardsLeftToSend.size();
+                        Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
+                        while (cardIterator.hasNext()) {
+                            PhysicalCard physicalCard = cardIterator.next();
+                            PhysicalCard attachedTo = physicalCard.getAttachedTo();
+                            if (physicalCard.isPlacedOnMission()) {
+                                GameLocation location = physicalCard.getGameLocation();
+                                if (location instanceof MissionLocation mission) {
+                                    PhysicalCard topMission = mission.getTopMissionCard();
+                                    if (sentCardsFromPlay.contains(topMission)) {
+                                        getGameState().sendCreatedCardToListener(physicalCard, false, listener);
+                                        sentCardsFromPlay.add(physicalCard);
+
+                                        cardIterator.remove();
+                                    }
+                                } else {
+                                    throw new InvalidGameLogicException("Card placed on mission, but is attached to a non-mission card");
+                                }
+                            } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
+                                getGameState().sendCreatedCardToListener(physicalCard, false, listener);
+                                sentCardsFromPlay.add(physicalCard);
+
+                                cardIterator.remove();
+                            }
+                        }
+                    } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
+
+                    for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.HAND)) {
+                        getGameState().sendCreatedCardToListener(physicalCard, false, listener);
+                    }
+
+                    List<PhysicalCard> missionPile = player.getCardGroupCards(Zone.MISSIONS_PILE);
+                    if (missionPile != null) {
+                        for (PhysicalCard physicalCard : missionPile) {
+                            getGameState().sendCreatedCardToListener(physicalCard, false, listener);
+                        }
+                    }
+
+                    for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.DISCARD)) {
+                        getGameState().sendCreatedCardToListener(physicalCard, false, listener);
+                    }
+
+
                 } catch (PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException exp) {
                     sendErrorMessage(exp);
                     cancelGame();

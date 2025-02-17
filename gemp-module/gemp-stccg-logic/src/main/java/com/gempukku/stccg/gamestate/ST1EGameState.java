@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -182,72 +181,6 @@ public class ST1EGameState extends GameState {
         return x;
     }
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
-
-    @Override
-    public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
-                                  boolean restoreSnapshot)
-            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
-        Player player = getPlayer(playerId);
-        boolean sharedMission;
-        Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
-        Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
-
-        // Send missions in order
-        for (MissionLocation location : _spacelineLocations) {
-            for (int i = 0; i < location.getMissionCards().size(); i++) {
-                sharedMission = i != 0;
-                // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
-                PhysicalCard mission = location.getMissionCards().get(i);
-                sendCreatedCardToListener(mission, sharedMission, listener);
-                cardsLeftToSend.remove(mission);
-                sentCardsFromPlay.add(mission);
-            }
-        }
-
-        int cardsToSendAtLoopStart;
-        do {
-            cardsToSendAtLoopStart = cardsLeftToSend.size();
-            Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
-            while (cardIterator.hasNext()) {
-                PhysicalCard physicalCard = cardIterator.next();
-                PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                if (physicalCard.isPlacedOnMission()) {
-                    GameLocation location = physicalCard.getGameLocation();
-                    if (location instanceof MissionLocation mission) {
-                        PhysicalCard topMission = mission.getTopMissionCard();
-                        if (sentCardsFromPlay.contains(topMission)) {
-                            sendCreatedCardToListener(physicalCard, false, listener);
-                            sentCardsFromPlay.add(physicalCard);
-
-                            cardIterator.remove();
-                        }
-                    } else {
-                        throw new InvalidGameLogicException("Card placed on mission, but is attached to a non-mission card");
-                    }
-                } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                    sendCreatedCardToListener(physicalCard, false, listener);
-                    sentCardsFromPlay.add(physicalCard);
-
-                    cardIterator.remove();
-                }
-            }
-        } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
-
-        for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.HAND)) {
-            sendCreatedCardToListener(physicalCard, false, listener);
-        }
-
-        List<PhysicalCard> missionPile = player.getCardGroupCards(Zone.MISSIONS_PILE);
-        if (missionPile != null) {
-            for (PhysicalCard physicalCard : missionPile) {
-                sendCreatedCardToListener(physicalCard, false, listener);
-            }
-        }
-
-        for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.DISCARD)) {
-            sendCreatedCardToListener(physicalCard, false, listener);
-        }
-    }
 
 
     public List<AwayTeam> getAwayTeams() {
