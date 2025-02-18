@@ -8,9 +8,11 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
@@ -23,8 +25,8 @@ public class ST1EGameState extends GameState {
     private int _nextAttemptingUnitId = 1;
     private int _nextLocationId = 1;
 
-    public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
-        super(game, playerIds);
+    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, Map<String, PlayerClock> clocks) {
+        super(game, playerIds, clocks);
         _currentPhase = Phase.SEED_DOORWAY;
         try {
             for (Player player : _players.values()) {
@@ -38,9 +40,21 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public ST1EGameState(ST1EGame game) {
-        this(game.getPlayerIds(), game);
+    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, GameTimer gameTimer) {
+        super(game, playerIds, gameTimer);
+        _currentPhase = Phase.SEED_DOORWAY;
+        try {
+            for (Player player : _players.values()) {
+                player.addCardGroup(Zone.CORE);
+                player.addCardGroup(Zone.MISSIONS_PILE);
+                player.addCardGroup(Zone.SEED_DECK);
+            }
+        } catch(InvalidGameLogicException exp) {
+            game.sendErrorMessage(exp);
+            game.cancelGame();
+        }
     }
+
 
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {

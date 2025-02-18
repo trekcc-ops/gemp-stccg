@@ -6,12 +6,14 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -25,14 +27,24 @@ public final class TribblesGameState extends GameState {
     private int _currentRound;
     private boolean _currentRoundIsOver;
 
-    public TribblesGameState(Iterable<String> playerIds, TribblesGame game) {
-        super(game, playerIds);
+    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, GameTimer gameTimer) {
+        super(game, playerIds, gameTimer);
         _currentRound = 0;
         _chainBroken = false;
         setNextTribbleInSequence(game, 1);
         for (String player : playerIds)
             _playPiles.put(player, new LinkedList<>());
     }
+
+    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, Map<String, PlayerClock> clocks) {
+        super(game, playerIds, clocks);
+        _currentRound = 0;
+        _chainBroken = false;
+        setNextTribbleInSequence(game, 1);
+        for (String player : playerIds)
+            _playPiles.put(player, new LinkedList<>());
+    }
+
 
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {

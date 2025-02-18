@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
@@ -18,9 +19,8 @@ public class TribblesGame extends DefaultGame {
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
                         final CardBlueprintLibrary library) {
-        super(format, decks, clocks, library, GameType.TRIBBLES);
-
-        _gameState = new TribblesGameState(decks.keySet(), this);
+        super(format, decks, library, GameType.TRIBBLES);
+        _gameState = new TribblesGameState(decks.keySet(), this, clocks);
         _rules = new TribblesRuleSet();
         _rules.applyRuleSet(this);
         _gameState.createPhysicalCards(this, library, decks);
@@ -28,10 +28,10 @@ public class TribblesGame extends DefaultGame {
         _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
     }
 
-    public TribblesGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
+    public TribblesGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                        GameTimer gameTimer) {
         super(format, decks, library, GameType.TRIBBLES);
-
-        _gameState = new TribblesGameState(decks.keySet(), this);
+        _gameState = new TribblesGameState(decks.keySet(), this, gameTimer);
         _rules = new TribblesRuleSet();
         _rules.applyRuleSet(this);
         _gameState.createPhysicalCards(this, library, decks);

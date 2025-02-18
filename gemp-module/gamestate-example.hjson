@@ -57,7 +57,7 @@
                     "cardCount": 2,
                     "cardIds": [34,47]
                 },
-                "TABLE": {
+                "CORE": {
                     "cardCount": 2,
                     "cardIds": [6,-99] // -99 here most likely represents a hidden agenda card
                 },
@@ -189,5 +189,15 @@
             whether successfully or unsuccessfully. It does not include unselected actions that players never
             attempted to initiate or actions that are still in progress.
         */
-    "performedActions": [1,2,4,3,6,7,9,8]
+    "performedActions": [1,2,4,3,6,7,9,8],
+    "playerClocks": [
+        {
+            "playerId": "player1",
+            "timeRemaining": 3600
+        },
+        {
+            "playerId": "player2",
+            "timeRemaining": 3600
+        }
+    ]
 }

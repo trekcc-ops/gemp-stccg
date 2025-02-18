@@ -616,8 +616,8 @@ export default class GameAnimations {
                 // Remove from where it was already attached
                 that.removeFromAttached(that.cardId);
 
-                let card = getCardDivFromId(that.cardId);
-                let cardData = card.data("card");
+                card = getCardDivFromId(that.cardId);
+                cardData = card.data("card");
                 // move to new zone
                 cardData.zone = "AT_LOCATION";
                 that.cardData = cardData;
@@ -735,56 +735,6 @@ export default class GameAnimations {
                     next();
                 });
         }
-    }
-
-    playerScore(json, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                let participantId = json.participantId;
-                let score = json.score;
-
-                if (that.game.playerScores == null)
-                    that.game.playerScores = new Array();
-
-                let index = that.game.getPlayerIndex(participantId);
-                that.game.playerScores[index] = score;
-
-                next();
-            });
-    }
-
-    gameStats(json, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                let playerZones = json.playerZones;
-                for (let i = 0; i < playerZones.length; i++) {
-                    let playerZone = playerZones[i];
-
-                    let playerId = playerZone.playerId;
-                    let hand = playerZone.hand;
-                    let discard = playerZone.discard;
-                    let deck = playerZone.drawDeck;
-                    let removed = playerZone.removed;
-
-                    $("#deck" + that.game.getPlayerIndex(playerId)).text(deck);
-                    $("#hand" + that.game.getPlayerIndex(playerId)).text(hand);
-                    $("#discard" + that.game.getPlayerIndex(playerId)).text(discard);
-                    $("#removedPile" + that.game.getPlayerIndex(playerId)).text(removed);
-                }
-
-                let playerScores = json.playerScores;
-                for (let i = 0; i < playerScores.length; i++) {
-                    let playerScore = playerScores[i];
-                    let playerId = playerScore.playerId;
-                    let score = playerScore.score;
-
-                    $("#score" + that.game.getPlayerIndex(playerId)).text("SCORE " + Number(score).toLocaleString("en-US"));
-                }
-
-                next();
-            });
     }
 
     message(json, animate) {

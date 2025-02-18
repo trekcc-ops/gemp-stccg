@@ -19,6 +19,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
@@ -29,6 +30,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
@@ -59,7 +61,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -78,7 +80,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -97,7 +99,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -118,7 +120,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -135,8 +137,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-
-        _tribblesGame = new TribblesGame(format, decks, _cardLibrary);
+        _tribblesGame = new TribblesGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _tribblesGame.getUserFeedback();
         _tribblesGame.startGame();
 
@@ -280,7 +281,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.get("debug1e");
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -330,7 +331,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -383,7 +384,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -412,7 +413,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -445,7 +446,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -462,7 +463,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.get("debug1e");
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }

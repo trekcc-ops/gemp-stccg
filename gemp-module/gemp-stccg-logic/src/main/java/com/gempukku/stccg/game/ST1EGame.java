@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -25,21 +26,9 @@ public class ST1EGame extends DefaultGame {
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
                     final CardBlueprintLibrary library) {
-        super(format, decks, clocks, library, GameType.FIRST_EDITION);
-
-        _gameState = new ST1EGameState(decks.keySet(), this);
-        _rules = new ST1ERuleSet();
-        _rules.applyRuleSet(this);
-
-        _gameState.createPhysicalCards(library, decks, this);
-        _turnProcedure = new TurnProcedure(this);
-        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
-    }
-
-    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         super(format, decks, library, GameType.FIRST_EDITION);
 
-        _gameState = new ST1EGameState(decks.keySet(), this);
+        _gameState = new ST1EGameState(decks.keySet(), this, clocks);
         _rules = new ST1ERuleSet();
         _rules.applyRuleSet(this);
 
@@ -47,6 +36,20 @@ public class ST1EGame extends DefaultGame {
         _turnProcedure = new TurnProcedure(this);
         _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
     }
+
+    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                    GameTimer gameTimer) {
+        super(format, decks, library, GameType.FIRST_EDITION);
+
+        _gameState = new ST1EGameState(decks.keySet(), this, gameTimer);
+        _rules = new ST1ERuleSet();
+        _rules.applyRuleSet(this);
+
+        _gameState.createPhysicalCards(library, decks, this);
+        _turnProcedure = new TurnProcedure(this);
+        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+    }
+
 
 
     @Override

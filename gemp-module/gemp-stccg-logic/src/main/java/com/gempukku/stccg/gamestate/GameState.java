@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,6 +20,7 @@ import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
@@ -43,8 +45,36 @@ public abstract class GameState {
     private ActionsEnvironment _actionsEnvironment;
     private GameProcess _currentGameProcess;
     private int _currentTurnNumber;
+    private final Map<String, PlayerClock> _playerClocks;
 
-    protected GameState(DefaultGame game, Iterable<String> playerIds) {
+    protected GameState(DefaultGame game, Iterable<String> playerIds, GameTimer gameTimer) {
+        Collection<Zone> cardGroupList = new LinkedList<>();
+        cardGroupList.add(Zone.DRAW_DECK);
+        cardGroupList.add(Zone.HAND);
+        cardGroupList.add(Zone.DISCARD);
+        cardGroupList.add(Zone.REMOVED);
+
+        _playerClocks = new HashMap<>();
+
+        try {
+            for (String playerId : playerIds) {
+                Player player = new Player(playerId);
+                for (Zone zone : cardGroupList) {
+                    player.addCardGroup(zone);
+                }
+                _players.put(playerId, player);
+                _playerClocks.put(playerId, new PlayerClock(playerId, gameTimer));
+            }
+        } catch(InvalidGameLogicException exp) {
+            game.sendErrorMessage(exp);
+            game.cancelGame();
+        }
+        _modifiersLogic = new ModifiersLogic(game);
+        _actionsEnvironment = new DefaultActionsEnvironment();
+    }
+
+
+    protected GameState(DefaultGame game, Iterable<String> playerIds, Map<String, PlayerClock> clocks) {
         Collection<Zone> cardGroupList = new LinkedList<>();
         cardGroupList.add(Zone.DRAW_DECK);
         cardGroupList.add(Zone.HAND);
@@ -65,7 +95,9 @@ public abstract class GameState {
         }
         _modifiersLogic = new ModifiersLogic(game);
         _actionsEnvironment = new DefaultActionsEnvironment();
+        _playerClocks = clocks;
     }
+
 
     public void initializePlayerOrder(PlayerOrder playerOrder) {
         _playerOrder = playerOrder;
@@ -428,5 +460,10 @@ public abstract class GameState {
 
     public int getCurrentTurnNumber() {
         return _currentTurnNumber;
+    }
+
+    @JsonProperty("playerClocks")
+    public Map<String, PlayerClock> getPlayerClocks() {
+        return _playerClocks;
     }
 }

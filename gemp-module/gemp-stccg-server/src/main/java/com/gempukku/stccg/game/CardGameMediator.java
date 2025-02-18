@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
@@ -286,6 +287,36 @@ public abstract class CardGameMediator {
         }
     }
 
+    public final String signupUserForGameAndGetGameState(User player)
+            throws PrivateInformationException, JsonProcessingException {
+        String playerName = player.getName();
+        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
+            throw new PrivateInformationException();
+        GameCommunicationChannel channel;
+        int channelNumber;
+
+        _readLock.lock();
+        try {
+            channelNumber = _channelNextIndex;
+            _channelNextIndex++;
+
+            channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
+            _communicationChannels.put(playerName, channel);
+            addGameStateListener(playerName, channel);
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = getGame().getGameState().serializeForPlayer(player.getName());
+            JsonNode gameState = mapper.readTree(jsonString);
+            Map<String, Object> result = new HashMap<>();
+            result.put("channelNumber", channelNumber);
+            result.put("gameState", gameState);
+            String resultString = mapper.writeValueAsString(result);
+            return resultString;
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
+
 
     public final GameCommunicationChannel signupUserForGameAndGetChannel(User player)
             throws PrivateInformationException {
@@ -476,5 +507,4 @@ public abstract class CardGameMediator {
         cardMap.put("hasUniversalIcon", hasUniversalIcon);
         return cardMap;
     }
-
 }

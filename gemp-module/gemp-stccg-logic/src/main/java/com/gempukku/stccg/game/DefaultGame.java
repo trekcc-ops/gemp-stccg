@@ -32,7 +32,6 @@ import java.util.*;
 
 public abstract class DefaultGame {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
-    private Map<String, PlayerClock> _playerClocks = new HashMap<>();
 
     // Game parameters
     protected final GameFormat _format;
@@ -59,16 +58,6 @@ public abstract class DefaultGame {
     private final static int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
     protected final GameType _gameType;
 
-    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
-                       final CardBlueprintLibrary library, GameType gameType) {
-        _format = format;
-        _userFeedback = new DefaultUserFeedback(this);
-        _library = library;
-        _allPlayerIds = decks.keySet();
-        _playerClocks = clocks;
-        _gameType = gameType;
-    }
-
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
                        GameType gameType) {
         _format = format;
@@ -76,10 +65,6 @@ public abstract class DefaultGame {
         _library = library;
         _allPlayerIds = decks.keySet();
         _gameType = gameType;
-        _playerClocks = new HashMap<>();
-        for (String playerId : _allPlayerIds) {
-            _playerClocks.put(playerId, new PlayerClock(playerId, GameTimer.GLACIAL_TIMER));
-        }
     }
 
 
@@ -95,14 +80,13 @@ public abstract class DefaultGame {
     public Set<String> getPlayerIds() { return _allPlayerIds; }
 
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
-    public boolean isCancelled() { return _cancelled; }
 
     public void addGameResultListener(GameResultListener listener) {
         _gameResultListeners.add(listener);
     }
     public void addGameStateListener(String playerId, GameStateListener listener) {
         _gameStateListeners.add(listener);
-        try {
+/*        try {
             GameState gameState = getGameState();
             PlayerOrder playerOrder = gameState.getPlayerOrder();
             if (playerOrder != null) {
@@ -187,7 +171,7 @@ public abstract class DefaultGame {
             gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
         } catch(PlayerNotFoundException exp) {
             sendErrorMessage(exp);
-        }
+        } */
     }
 
     public Collection<GameStateListener> getAllGameStateListeners() {
@@ -616,10 +600,6 @@ public abstract class DefaultGame {
                 getGameState().getPlayerOrder().getPlayOrder(
                         _playOrder.getNextPlayer(), true), _consecutivePasses, _followingGameProcess); */
         return null;
-    }
-
-    public Map<String, PlayerClock> getPlayerClocks() {
-        return _playerClocks;
     }
 
 

@@ -101,7 +101,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     @JsonProperty("clocks")
     public Collection<PlayerClock> getPlayerClocks() {
-        return _game.getPlayerClocks().values();
+        return _game.getGameState().getPlayerClocks().values();
     }
 
     private void updateLastAccess() {

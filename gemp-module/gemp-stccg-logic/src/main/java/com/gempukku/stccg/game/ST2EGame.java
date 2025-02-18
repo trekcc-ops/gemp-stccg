@@ -16,9 +16,9 @@ public class ST2EGame extends DefaultGame {
 
     public ST2EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
                     final CardBlueprintLibrary library) {
-        super(format, decks, clocks, library, GameType.SECOND_EDITION);
+        super(format, decks, library, GameType.SECOND_EDITION);
 
-        _gameState = new ST2EGameState(decks.keySet(), this);
+        _gameState = new ST2EGameState(decks.keySet(), this, clocks);
         RuleSet<ST2EGame> ruleSet = new RuleSet<>();
         ruleSet.applyRuleSet(this);
 
