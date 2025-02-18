@@ -2,6 +2,7 @@ package com.gempukku.stccg.async;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.gempukku.stccg.async.handler.*;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.channel.ChannelHandlerContext;
@@ -85,33 +86,43 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             }
             boolean requestHandled = false;
 
-            String afterServer = uri.substring(SERVER_CONTEXT_PATH.length());
-            int nextSlashIndex = afterServer.indexOf("/");
-            String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
-            String afterHandlerType = afterServer.substring(handlerType.length());
+            if (uri.startsWith(SERVER_CONTEXT_PATH)) {
 
-            UriRequestHandler handler = switch(handlerType) {
-                case "admin" -> new AdminRequestHandler(_serverObjects);
-                case "collection" -> new CollectionRequestHandler(_serverObjects);
-                case "league" -> new LeagueRequestHandler(_serverObjects);
-                case "playtesting" -> new PlaytestRequestHandler(_serverObjects);
-                case "soloDraft" -> new SoloDraftRequestHandler(_serverObjects);
-                case "tournament" -> new TournamentRequestHandler(_serverObjects);
-                default -> null;
-            };
-            if (handler != null) {
-                handler.handleRequest(afterHandlerType, request, responseWriter);
-                requestHandled = true;
-            }
+                String afterServer = uri.substring(SERVER_CONTEXT_PATH.length());
+                int nextSlashIndex = afterServer.indexOf("/");
+                String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
+                String afterHandlerType = afterServer.substring(handlerType.length());
 
-            if (!requestHandled) {
-                Map<String, String> parameters = request.parameters();
-                parameters.put("type", handlerType);
-                try {
-                    UriRequestHandlerNew newHandler = _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
-                    newHandler.handleRequest(request, responseWriter, _serverObjects);
-                } catch(JsonProcessingException exp) {
-                    throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+                UriRequestHandler handler = switch (handlerType) {
+                    case "admin" -> new AdminRequestHandler(_serverObjects);
+                    case "collection" -> new CollectionRequestHandler(_serverObjects);
+                    case "league" -> new LeagueRequestHandler(_serverObjects);
+                    case "playtesting" -> new PlaytestRequestHandler(_serverObjects);
+                    case "soloDraft" -> new SoloDraftRequestHandler(_serverObjects);
+                    case "tournament" -> new TournamentRequestHandler(_serverObjects);
+                    default -> null;
+                };
+                if (handler != null) {
+                    handler.handleRequest(afterHandlerType, request, responseWriter);
+                    requestHandled = true;
+                }
+
+                if (!requestHandled) {
+                    Map<String, String> parameters = request.parameters();
+                    parameters.put("type", handlerType);
+                    try {
+                        UriRequestHandlerNew newHandler =
+                                _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
+                        newHandler.handleRequest(request, responseWriter, _serverObjects);
+                    } catch (IllegalArgumentException exp) {
+                        if (exp.getCause() instanceof InvalidTypeIdException) {
+                            // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer
+                            logHttpError(uri,
+                                    new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND), responseWriter);
+                        }
+                    } catch (JsonProcessingException exp) {
+                        throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+                    }
                 }
             }
         }

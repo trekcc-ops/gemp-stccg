@@ -63,16 +63,60 @@ describe('Constructor', () => {
         expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
-    test('constructor throws error when cardId is bad', () => {
+    test('constructor throws error when cardId is not integer or string', () => {
         let blueprintId="101_312";
         let zone="ATTACHED";
-        let cardId=1;
+        let cardId=["array", "of", "strings"];
         let owner="andrew2";
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
     
         expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+
+        cardId = undefined;
+        
+        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+    });
+
+    test('constructor accepts an integer as cardId and saves it as a string', () => {
+        let blueprintId="101_312";
+        let zone="ATTACHED";
+        let cardId=15;
+        let owner="andrew2";
+        let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
+        let locationIndex="8";
+        let upsideDown=false;
+
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+    
+        expect(cardUnderTest.blueprintId).toBe("101_312");
+        expect(cardUnderTest.zone).toBe("ATTACHED");
+        expect(cardUnderTest.cardId).toBe("15");
+        expect(cardUnderTest.owner).toBe("andrew2");
+        expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
+        expect(cardUnderTest.locationIndex).toBe(8);
+        expect(cardUnderTest.upsideDown).toBe(false);
+    });
+
+    test('constructor accepts a non-numeric string as cardId and saves it as-is', () => {
+        let blueprintId="101_312";
+        let zone="ATTACHED";
+        let cardId="thecardid";
+        let owner="andrew2";
+        let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
+        let locationIndex="8";
+        let upsideDown=false;
+    
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+    
+        expect(cardUnderTest.blueprintId).toBe("101_312");
+        expect(cardUnderTest.zone).toBe("ATTACHED");
+        expect(cardUnderTest.cardId).toBe("thecardid");
+        expect(cardUnderTest.owner).toBe("andrew2");
+        expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
+        expect(cardUnderTest.locationIndex).toBe(8);
+        expect(cardUnderTest.upsideDown).toBe(false);
     });
     
     test('constructor throws error when owner is bad', () => {
@@ -99,13 +143,78 @@ describe('Constructor', () => {
         expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
-    test('constructor throws error when locationIndex is bad', () => {
+    test('constructor throws error when locationIndex is not an integer or a string', () => {
+        let blueprintId="101_312";
+        let zone="ATTACHED";
+        let cardId="1";
+        let owner="andrew2";
+        let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
+        let locationIndex=["array", "of", "strings"];
+        let upsideDown=false;
+    
+        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+
+        locationIndex = undefined;
+
+        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+    });
+
+    test('constructor accepts a numeric string as locationIndex and saves it as a number', () => {
+        let blueprintId="101_312";
+        let zone="ATTACHED";
+        let cardId="1";
+        let owner="andrew2";
+        let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
+        let locationIndex="8";
+        let upsideDown=false;
+    
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+    
+        expect(cardUnderTest.blueprintId).toBe("101_312");
+        expect(cardUnderTest.zone).toBe("ATTACHED");
+        expect(cardUnderTest.cardId).toBe("1");
+        expect(cardUnderTest.owner).toBe("andrew2");
+        expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
+        expect(cardUnderTest.locationIndex).toBe(8);
+        expect(cardUnderTest.upsideDown).toBe(false);
+
+        locationIndex="1453.23";
+
+        cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        expect(cardUnderTest.locationIndex).toBe(1453);
+
+        locationIndex="1499,23"; // euro style
+        cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        expect(cardUnderTest.locationIndex).toBe(1499);
+    });
+
+    test('constructor accepts an integer as locationIndex and saves it as-is', () => {
         let blueprintId="101_312";
         let zone="ATTACHED";
         let cardId="1";
         let owner="andrew2";
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex=8;
+        let upsideDown=false;
+    
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+    
+        expect(cardUnderTest.blueprintId).toBe("101_312");
+        expect(cardUnderTest.zone).toBe("ATTACHED");
+        expect(cardUnderTest.cardId).toBe("1");
+        expect(cardUnderTest.owner).toBe("andrew2");
+        expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
+        expect(cardUnderTest.locationIndex).toBe(8);
+        expect(cardUnderTest.upsideDown).toBe(false);
+    });
+
+    test('constructor throws error when locationIndex is a string but not translatable to an int', () => {
+        let blueprintId="101_312";
+        let zone="ATTACHED";
+        let cardId="1";
+        let owner="andrew2";
+        let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
+        let locationIndex="invalidLocationIndex";
         let upsideDown=false;
     
         expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);

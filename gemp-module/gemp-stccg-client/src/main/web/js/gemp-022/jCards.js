@@ -50,6 +50,12 @@ export default class Card {
         if (typeof(locationIndex) != 'string' && !(Number.isInteger(locationIndex))) {
             throw new TypeError(`locationIndex '${locationIndex}' must be a string or integer.`);
         }
+        else {
+            let parsedLocationIndex = parseInt(locationIndex);
+            if(Number.isNaN(parsedLocationIndex)) {
+                throw new TypeError(`locationIndex '${locationIndex}' string is not parseable into an integer.`);
+            }
+        }
 
         if (typeof(upsideDown) != 'boolean') {
             throw new TypeError(`upsideDown '${upsideDown}' must be a boolean.`);
@@ -77,9 +83,7 @@ export default class Card {
         this.zone = zone;
         this.cardId = cardId.toString();
         this.owner = owner;
-        if (locationIndex !== undefined) {
-            this.locationIndex = parseInt(locationIndex);
-        }
+        this.locationIndex = parseInt(locationIndex);
         this.attachedCards = new Array();
         if (imageBlueprint == "rules") {
             this.imageUrl = rulesImg;
