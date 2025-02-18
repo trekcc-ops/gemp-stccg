@@ -134,7 +134,7 @@ export default class GameAnimations {
             if (this.game.spectatorMode || this.game.replayMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
                 $("#main").queue(
                     function (next) {
-                        for (var i = 0; i < targetCardIds.length; i++) {
+                        for (let i = 0; i < targetCardIds.length; i++) {
                             let targetCardId = targetCardIds[i];
 
                             let card = new Card(blueprintId, "ANIMATION", "anim" + i, participantId, imageUrl);
@@ -269,8 +269,8 @@ export default class GameAnimations {
                     thisGame.addSharedMission(locationIndex, quadrant, region);
                 }
 
-                var card = new Card(blueprintId, "SPACELINE", cardId, participantId, imageUrl, locationIndex, upsideDown);
-                var cardDiv = thisGame.createCardDivWithData(card, null);
+                let card = new Card(blueprintId, "SPACELINE", cardId, participantId, imageUrl, locationIndex, upsideDown);
+                let cardDiv = thisGame.createCardDivWithData(card, null);
 
                 $("#main").append(cardDiv);
                 next();
@@ -295,10 +295,10 @@ export default class GameAnimations {
             console.log("json:");
             console.log(json);
         }
-        var participantId = json.participantId;
-        var cardId = json.cardId;
-        var zone = json.zone;
-        var imageUrl = json.imageUrl;
+        let participantId = json.participantId;
+        let cardId = json.cardId;
+        let zone = json.zone;
+        let imageUrl = json.imageUrl;
         let region = json.region;
         let quadrant = json.quadrant;
         let locationIndex = json.locationIndex;
@@ -363,15 +363,15 @@ export default class GameAnimations {
 
     animateCardPlay(cardId) {
         var that = this;
-        var final_position = {};
+        let final_position = {};
 
         $("#main").queue(
             // Display the card in the center of the screen
             function (next) {
                 // Calculate expected final position.
-                var cardDiv = getCardDivFromId(cardId);
-                var card = cardDiv.data("card");
-                var pos = cardDiv.position();
+                let cardDiv = getCardDivFromId(cardId);
+                let card = cardDiv.data("card");
+                let pos = cardDiv.position();
                 let card_img = $(cardDiv).children(".card_img").first();
 
                 final_position["left"] = pos.left;
@@ -388,11 +388,11 @@ export default class GameAnimations {
 
 
                 // Now we begin the animation
-                var gameWidth = $("#main").width();
-                var gameHeight = $("#main").height();
+                let gameWidth = $("#main").width();
+                let gameHeight = $("#main").height();
 
-                var cardHeight = (gameHeight / 2);
-                var cardWidth = card.getWidthForHeight(cardHeight);
+                let cardHeight = (gameHeight / 2);
+                let cardWidth = card.getWidthForHeight(cardHeight);
 
                 $(cardDiv).css(
                     {
@@ -425,7 +425,7 @@ export default class GameAnimations {
             }).queue(
             function (next) {
                 // Animate the card towards the final position on the play mat.
-                var cardDiv = getCardDivFromId(cardId);
+                let cardDiv = getCardDivFromId(cardId);
                 $(cardDiv).animate(
                     // properties
                     {
@@ -448,7 +448,7 @@ export default class GameAnimations {
                 //       token overlay display correctly after the animation.
                 //       This may not be necessary if the overlays are contained inside the
                 //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
-                var cardDiv = getCardDivFromId(cardId);
+                let cardDiv = getCardDivFromId(cardId);
                 let card_img = $(cardDiv).children(".card_img").first();
                 layoutCardElem(cardDiv,
                     final_position["left"],
@@ -471,7 +471,7 @@ export default class GameAnimations {
                     let imageUrl = cardData.imageUrl;
                     let cardDiv = getCardDivFromId(cardId);
                     let images = document.getElementsByClassName("card_img_"+cardId);
-                    for (var i = 0; i < images.length; i++) {
+                    for (let i = 0; i < images.length; i++) {
                         images[i].src = imageUrl;
                     }
                     if (cardDiv.data("card") != null)
@@ -485,11 +485,11 @@ export default class GameAnimations {
         $("#main").queue(
             function (next) {
                 that.cardId = json.cardId;
-                var zone = json.zone;
+                let zone = json.zone;
                 let targetCardId = json.targetCardId;
-                var participantId = json.participantId;
-                var controllerId = json.controllerId;
-                var locationIndex = json.locationIndex;
+                let participantId = json.participantId;
+                let controllerId = json.controllerId;
+                let locationIndex = json.locationIndex;
 
                 if (controllerId != null)
                     participantId = controllerId;
