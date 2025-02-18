@@ -13,6 +13,8 @@ import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -25,6 +27,8 @@ import java.util.stream.Stream;
         "missionCardIds", "seedCardCount", "seedCardIds" })
 @JsonFilter("missionLocationSerializerFilter")
 public class MissionLocation implements GameLocation {
+
+    private static final Logger LOGGER = LogManager.getLogger(MissionLocation.class);
     @JsonProperty("quadrant")
     private final Quadrant _quadrant;
     @JsonProperty("region")
@@ -110,11 +114,16 @@ public class MissionLocation implements GameLocation {
     public int getDistanceToLocation(ST1EGame cardGame, GameLocation location, Player player)
             throws InvalidGameLogicException
     {
-                // TODO - Not correct if you're calculating inter-quadrant distance (e.g., Bajoran Wormhole)
-
-        if (location.isInQuadrant(_quadrant))
+        if (!location.isInQuadrant(_quadrant)) {
+            // TODO - Not correct if you're calculating inter-quadrant distance (e.g., Bajoran Wormhole)
+            StringBuilder errorMessage = new StringBuilder();
+            errorMessage.append("Tried to calculate span between quadrants for ");
+            errorMessage.append(_locationName);
+            errorMessage.append(" (").append(_quadrant).append(") and ");
+            errorMessage.append(location.getLocationName());
+            LOGGER.error(errorMessage);
             throw new InvalidGameLogicException("Tried to calculate span between quadrants");
-        else {
+        } else {
             List<MissionLocation> spaceline = cardGame.getGameState().getSpacelineLocations();
             int startingIndex = spaceline.indexOf(this);
             int endingIndex = spaceline.indexOf(location);
