@@ -1071,6 +1071,8 @@ export default class GameTableUI {
     }
 
     initializeGameState(jsonNode) {
+            // TODO - Still need to process pending decisions and chat messages
+
         try {
             this.channelNumber = jsonNode.channelNumber;
             let hasDecision = false;
@@ -1156,20 +1158,6 @@ export default class GameTableUI {
             if (cardsStillToAdd.length > 0) {
                 console.error("Was unable to add all cards");
             }
-
-            /* TODO - Steps to this:
-
-                - send pending decision
-                    - set hasDecision to true if there is a pending decision
-
-            DO THE FOLLOWING WHETHER THERE'S A PLAYER ORDER OR NOT:
-            for (String lastMessage : getMessages())
-                listener.sendMessage(lastMessage);
-
-            final AwaitingDecision awaitingDecision = gameState.getDecision(playerId);
-            gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
-
-            */
 
             if (this.allPlayerIds != null) {
                 let clocks = jsonNode.playerClocks;
