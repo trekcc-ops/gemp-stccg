@@ -207,6 +207,21 @@ export default class GameAnimations {
         }
     }
 
+    drawCard(performingPlayerId, gameState) {
+        this.game.updateGameStats(gameState); // update card counts in draw decks
+        for (const player of gameState.players) {
+            if (player.playerId == performingPlayerId && player.playerId == this.game.bottomPlayerId) {
+                for (const cardId of player.cardGroups["HAND"].cardIds) {
+                    let cardDiv = getCardDivFromId(cardId);
+                    if (cardDiv.length == 0) {
+                        let card = gameState.visibleCardsInGame[cardId];
+                        this.addCardToHiddenZone(card, "HAND", performingPlayerId);
+                    }
+                }
+            }
+        }
+    }
+
     addCardToHiddenZone(cardJson, zone, zoneOwner) {
         // Adding card to discard, hand, removed, or draw deck
         console.log("calling addCardToHiddenZone");

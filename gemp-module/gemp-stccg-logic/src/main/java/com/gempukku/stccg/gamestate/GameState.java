@@ -160,11 +160,6 @@ public abstract class GameState {
     }
 
 
-    public void removeCardFromZone(PhysicalCard card) {
-        removeCardsFromZone(card.getGame(), card.getOwner(), Collections.singleton(card));
-    }
-
-
     public void removeCardsFromZone(DefaultGame cardGame, Player performingPlayer, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
             if (card.isInPlay()) card.stopAffectingGame(card.getGame());
@@ -190,9 +185,7 @@ public abstract class GameState {
                     removedCardsVisibleByPlayer.add(card);
             }
             if (!removedCardsVisibleByPlayer.isEmpty()) {
-                GameEvent event =
-                        new RemoveCardsFromPlayGameEvent(removedCardsVisibleByPlayer, performingPlayer);
-                listener.sendEvent(event);
+                listener.sendEvent(new RemoveCardsFromPlayGameEvent(removedCardsVisibleByPlayer, performingPlayer));
             }
         }
 
@@ -349,18 +342,7 @@ public abstract class GameState {
         if (!drawDeck.isEmpty()) {
             PhysicalCard card = drawDeck.getTopCard();
             drawDeck.remove(card);
-            sendRemovedCardToListeners(card.getGame(), card);
-            addCardToZone(card, Zone.HAND);
-        }
-    }
-
-    private void sendRemovedCardToListeners(DefaultGame cardGame, PhysicalCard card) {
-        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
-            if (card.isVisibleToPlayer(listener.getPlayerId())) {
-                GameEvent event =
-                        new RemoveCardsFromPlayGameEvent(List.of(card), card.getOwner());
-                listener.sendEvent(event);
-            }
+            addCardToZoneWithoutSendingToClient(card, Zone.HAND);
         }
     }
 

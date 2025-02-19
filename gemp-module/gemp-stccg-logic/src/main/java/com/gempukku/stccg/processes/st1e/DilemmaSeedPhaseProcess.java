@@ -19,6 +19,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
@@ -130,7 +131,8 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                         try {
                             for (PhysicalCard card : selectedCards) {
                                 mission.removePreSeedCard(card, player);
-                                cardGame.getGameState().removeCardFromZone(card);
+                                cardGame.getGameState().removeCardsFromZone(
+                                        card.getGame(), card.getOwner(), Collections.singleton(card));
                                 cardGame.getGameState().addCardToZone(card, Zone.HAND);
                             }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);

@@ -3,6 +3,8 @@ package com.gempukku.stccg.processes.st1e;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.draw.DrawCardsAction;
+import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -26,12 +28,13 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
-        String playerId = cardGame.getCurrentPlayerId();
         Player player = cardGame.getCurrentPlayer();
         for (PhysicalCard card : Filters.filterActive(cardGame, Filters.ship))
             ((PhysicalShipCard) card).restoreRange();
-        cardGame.getGameState().playerDrawsCard(player);
-        cardGame.sendMessage(playerId + " drew their normal end-of-turn card draw");
+        DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, player);
+        drawAction.processEffect(cardGame);
+        cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
+        cardGame.sendActionResultToClient();
         final List<TopLevelSelectableAction> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, player);
         Phase phase = cardGame.getCurrentPhase();

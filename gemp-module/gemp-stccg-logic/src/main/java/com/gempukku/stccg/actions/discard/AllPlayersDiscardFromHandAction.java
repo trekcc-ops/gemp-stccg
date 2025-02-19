@@ -73,7 +73,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             GameState gameState = game.getGameState();
             Set<PhysicalCard> discardedCards = new HashSet<>(cards);
 
-            gameState.removeCardsFromZone(game, discardingPlayer, discardedCards);
+            gameState.removeCardsFromZoneWithoutSendingToClient(game, discardedCards);
             for (PhysicalCard card : discardedCards) {
                 gameState.addCardToZone(card, Zone.DISCARD);
                 game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_performingCard, card));

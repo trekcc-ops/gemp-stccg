@@ -53,4 +53,6 @@ public interface ActionsEnvironment {
     void logAction(Action action);
 
     Map<Integer, Action> getAllActions();
+
+    void logCompletedActionNotInStack(Action action);
 }

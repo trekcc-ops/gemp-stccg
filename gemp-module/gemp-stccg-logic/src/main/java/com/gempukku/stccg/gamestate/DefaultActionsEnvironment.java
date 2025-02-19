@@ -188,6 +188,11 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _createdActionMap.put(action.getActionId(), action);
     }
 
+    public void logCompletedActionNotInStack(Action action) {
+        logAction(action);
+        _performedActions.add(action);
+    }
+
     public Map<Integer, Action> getAllActions() {
         return _createdActionMap;
     }

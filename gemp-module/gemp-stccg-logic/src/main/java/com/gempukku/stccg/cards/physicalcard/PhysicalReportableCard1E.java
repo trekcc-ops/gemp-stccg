@@ -14,6 +14,8 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
+import java.util.Collections;
+
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     private AwayTeam _awayTeam;
     public PhysicalReportableCard1E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
@@ -50,7 +52,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     }
 
     public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
-        _game.getGameState().removeCardFromZone(this);
+        _game.getGameState().removeCardsFromZone(_game, _owner, Collections.singleton(this));
         setLocation(facility.getGameLocation());
         _game.getGameState().attachCard(this, facility);
     }

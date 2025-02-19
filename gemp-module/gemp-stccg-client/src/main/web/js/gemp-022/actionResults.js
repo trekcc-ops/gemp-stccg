@@ -30,6 +30,9 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.dockShip(targetCard);
             break;
+        case "DRAW_CARD":
+            gameAnimations.drawCard(jsonAction.performingPlayerId, jsonGameState);
+            break;
         case "FLY_SHIP":
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
@@ -77,7 +80,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             break;
                 // TODO - The actions below may have animations, but they are dictated by the server
         case "DOWNLOAD_CARD":
-        case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
         case "PLACE_CARD_ON_MISSION":
@@ -147,6 +149,10 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = performingPlayerId + " discarded " + showLinkableCardTitle(discardedCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
+        case "DRAW_CARD":
+            message = performingPlayerId + " drew a card";
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "REMOVE_CARD_FROM_GAME":
             let removedCard = jsonGameState.visibleCardsInGame[jsonAction.targetCardId];
             message = performingPlayerId + " removed " + showLinkableCardTitle(removedCard) + " from the game";
@@ -180,7 +186,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ATTEMPT_MISSION":
         case "DOCK_SHIP":
         case "DOWNLOAD_CARD":
-        case "DRAW_CARD":
         case "ENCOUNTER_SEED_CARD":
         case "FAIL_DILEMMA":
         case "FLY_SHIP":

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes.tribbles;
 
+import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -24,8 +25,12 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
             if (gameState.getRoundNum() == 1) {
                 player.shuffleDrawDeck(cardGame);
             }
-            for (int i = 0; i < _game.getFormat().getHandSize(); i++)
-                gameState.playerDrawsCard(player);
+            for (int i = 0; i < _game.getFormat().getHandSize(); i++) {
+                DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, player);
+                drawAction.processEffect(cardGame);
+                cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
+                cardGame.sendActionResultToClient();
+            }
         }
     }
 

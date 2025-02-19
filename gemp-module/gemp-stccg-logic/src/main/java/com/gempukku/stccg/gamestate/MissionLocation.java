@@ -365,7 +365,7 @@ public class MissionLocation implements GameLocation {
             throws InvalidGameLogicException {
         GameState gameState = cardGame.getGameState();
         for (PhysicalCard card : cards) {
-            gameState.removeCardFromZone(card);
+            gameState.removeCardsFromZone(card.getGame(), card.getOwner(), Collections.singleton(card));
             gameState.addCardToZone(card, Zone.VOID);
             addCardToTopOfPreSeedPile(card, player);
         }
