@@ -1087,7 +1087,7 @@ export default class GameTableUI {
             }
 
             for (const player of gameState.players) {
-                for (const cardId of player.cardGroups["CORE"]) {
+                for (const cardId of player.cardGroups["CORE"].cardIds) {
                     cardToAdd = gameState.visibleCardsInGame[cardId];
                     if (cardToAdd == null) {
                         console.error("Unable to find card of cardId '" + cardId + "'");
@@ -1099,7 +1099,7 @@ export default class GameTableUI {
                         cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
                     }
                 }
-                for (const cardId of player.cardGroups["HAND"]) {
+                for (const cardId of player.cardGroups["HAND"].cardIds) {
                     cardToAdd = gameState.visibleCardsInGame[cardId];
                     if (cardToAdd == null) {
                         console.error("Unable to find card of cardId '" + cardId + "'");
@@ -1111,7 +1111,7 @@ export default class GameTableUI {
                         cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
                     }
                 }
-                for (const cardId of player.cardGroups["DISCARD"]) {
+                for (const cardId of player.cardGroups["DISCARD"].cardIds) {
                     cardToAdd = gameState.visibleCardsInGame[cardId];
                     if (cardToAdd == null) {
                         console.error("Unable to find card of cardId '" + cardId + "'");
@@ -3078,11 +3078,11 @@ export class ST1EGameTableUI extends GameTableUI {
                 this.addCardRecursively(attachedToCard, gameState);
             } else {
                 let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId);
-                this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false) {
+                this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
             }
         } else {
             let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId);
-            this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false) {
+            this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
         }
     }
 
