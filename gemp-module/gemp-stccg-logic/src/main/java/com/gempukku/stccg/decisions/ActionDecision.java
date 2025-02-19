@@ -27,14 +27,14 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
     }
 
 
-    private String[] getActionIds() {
+    protected String[] getActionIds() {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
             result[i] = String.valueOf(i);
         return result;
     }
 
-    private String[] getActionTexts(DefaultGame game) throws InvalidGameLogicException {
+    protected String[] getActionTexts(DefaultGame game) throws InvalidGameLogicException {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
             result[i] = _actions.get(i).getActionSelectionText(game);

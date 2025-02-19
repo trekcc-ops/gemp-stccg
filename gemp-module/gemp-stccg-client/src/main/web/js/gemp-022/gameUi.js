@@ -1008,11 +1008,10 @@ export default class GameTableUI {
     processGameEvent(gameEvent, animate) {
             // gameEvent is a json node
         var eventType = gameEvent.type;
+        let gameState = typeof gameEvent.gameState === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
 
         switch(eventType) {
             case "ACTION_RESULT":
-                let gameStateNode = gameEvent.gameState;
-                let gameState = typeof gameStateNode === "string" ? JSON.parse(gameStateNode) : gameStateNode;
                 this.updateGameStats(gameState); // updates count of card piles
                 this.animations.gamePhaseChange(gameState.currentPhase);
                 this.animations.turnChange(gameState, true);
@@ -1033,7 +1032,7 @@ export default class GameTableUI {
                 this.animations.cardAffectsCard(gameEvent, animate);
                 break;
             case "D":
-                this.animations.processDecision(gameEvent, animate);
+                this.animations.processDecision(gameState.pendingDecision, animate);
                 break;
             case "EP": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.eventPlayed(gameEvent, animate);
@@ -1075,7 +1074,6 @@ export default class GameTableUI {
 
         try {
             this.channelNumber = jsonNode.channelNumber;
-            let hasDecision = false;
 
             let gameState = jsonNode.gameState;
             let cardsAdded = new Array();
@@ -1131,7 +1129,7 @@ export default class GameTableUI {
             for (const location of gameState.spacelineLocations) {
                 let bottomMissionCardId = location.missionCardIds[0];
                 let bottomMissionCard = gameState.visibleCardsInGame[bottomMissionCardId];
-                let spacelineIndex = getSpacelineIndexFromLocationId(bottomMissionCard.locationId);
+                let spacelineIndex = getSpacelineIndexFromLocationId(bottomMissionCard.locationId, gameState);
                 this.animations.putMissionIntoPlay(bottomMissionCard, false, spacelineIndex, true);
                 cardsAdded.push(bottomMissionCardId);
                 cardsStillToAdd = removeFromArray(cardsStillToAdd, bottomMissionCardId);
@@ -1194,11 +1192,14 @@ export default class GameTableUI {
                 }
             }
 
-            if (!hasDecision) {
-                this.animations.updateGameState(false);
-            } else {
+            let pendingDecision = gameState.pendingDecision;
+            if (pendingDecision != null) {
+                this.animations.processDecision(pendingDecision, true);
                 this.startAnimatingTitle();
+            } else {
+                this.animations.updateGameState(false);
             }
+
         } catch (e) {
             console.error(e);
             this.showErrorDialog(
@@ -1907,7 +1908,7 @@ export default class GameTableUI {
     cardActionChoiceDecision(decision) {
         var id = decision.decisionId;
         var text = decision.text;
-        let noPass = decision.noPass;
+        let noPass = decision.noPass; // boolean
         let selectableCards = decision.displayedCards;
 
         var that = this;
@@ -1926,7 +1927,7 @@ export default class GameTableUI {
 
         var processButtons = function () {
             that.alertButtons.html("");
-            if (noPass != "true" && selectedCardIds.length == 0) {
+            if (!noPass && selectedCardIds.length == 0) {
                 that.alertButtons.append("<button id='Pass'>Pass</button>");
                 $("#Pass").button().click(function () {
                     finishChoice();
@@ -3075,7 +3076,7 @@ export class ST1EGameTableUI extends GameTableUI {
 
     addNonMissionInPlayToClientRecursively(card, gameState) {
         // Assumes that all missions in play already have a div
-        if (card.attachedToCardId != null) {
+        if (card.attachedToCardId != null && card.attachedToCarId != undefined) {
             let attachedToCardDiv = getCardDivFromId(card.attachedToCardId);
             if (attachedToCardDiv.length == 0) {
                 let attachedToCard = gameState.visibleCardsInGame[attachedToCardId];

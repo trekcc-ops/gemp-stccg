@@ -370,14 +370,7 @@ export default class GameAnimations {
                     "ATTACHED"
                 ];
 
-                if (visible_opponent_zones.includes(zone) &&
-                    (participantId != that.game.bottomPlayerId)
-                ) {
-                    upsideDown = true;
-                } else {
-                    upsideDown = false;
-                }
-
+                let upsideDown = (visible_opponent_zones.includes(zone) && participantId != that.game.bottomPlayerId);
                 let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
                 let cardDiv = that.game.createCardDivWithData(card, null);
 

@@ -598,7 +598,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         while (_game.getGameState().getCurrentPhase() == Phase.SEED_FACILITY) {
             if (_userFeedback.getAwaitingDecision(P1) != null) {
                 if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getCardIds()).toList());
                     try {
                         playerDecided(P1, cardIdList.getFirst());
                     } catch(Exception exp) {
@@ -610,7 +610,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     playerDecided(P1, "0");
             } else if (_userFeedback.getAwaitingDecision(P2) != null) {
                 if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getCardIds()).toList());
                     playerDecided(P2, cardIdList.getFirst());
                 }
                 else

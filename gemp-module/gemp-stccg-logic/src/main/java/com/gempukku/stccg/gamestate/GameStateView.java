@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerOrder;
@@ -14,9 +15,9 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame",
-        "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks" })
+        "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "lastAction", "performedActions", "playerClocks" })
+        "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
 public class GameStateView {
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
@@ -91,6 +92,11 @@ public class GameStateView {
     @JsonProperty("playerClocks")
     private Collection<PlayerClock> playerClocks() {
         return _gameState.getPlayerClocks().values();
+    }
+
+    @JsonProperty("pendingDecision")
+    private AwaitingDecision decision() {
+        return _gameState.getDecision(_requestingPlayerId);
     }
 
 }
