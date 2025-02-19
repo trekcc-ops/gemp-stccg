@@ -26,7 +26,6 @@ import java.util.*;
 
 public class GameEvent {
     public enum Type {
-        TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
         PUT_CARD_INTO_PLAY("PCIP"),
         REMOVE_CARD_FROM_PLAY("RCFP"),
         SEND_MESSAGE("M"),

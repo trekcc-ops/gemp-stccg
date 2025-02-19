@@ -64,11 +64,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public final void setTribbleSequence(String tribbleSequence) {
-        appendEvent(new UpdateTribbleSequenceGameEvent(tribbleSequence));
-    }
-
-    @Override
     public final void sendMessage(String message) {
         appendEvent(new SendMessageGameEvent(GameEvent.Type.SEND_MESSAGE, message));
     }

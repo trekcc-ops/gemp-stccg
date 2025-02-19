@@ -43,7 +43,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setLastTribblePlayed(tribbleValue);
 
         int nextTribble = (tribbleValue == 100000) ? 1 : (tribbleValue * 10);
-        gameState.setNextTribbleInSequence(cardGame, nextTribble);
+        gameState.setNextTribbleInSequence(nextTribble);
 
         gameState.setChainBroken((TribblesGame) cardGame, false);
         cardGame.getActionsEnvironment().emitEffectResult(

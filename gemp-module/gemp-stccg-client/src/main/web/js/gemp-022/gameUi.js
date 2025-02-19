@@ -1056,9 +1056,6 @@ export default class GameTableUI {
             case "RCFP":
                 this.animations.removeCardFromPlay(gameEvent.otherCardIds, gameEvent.participantId, animate);
                 break;
-            case "TSEQ":
-                this.animations.tribbleSequence(gameEvent, animate);
-                break;
             case "W":
                 this.animations.warning(gameEvent, animate);
                 break;

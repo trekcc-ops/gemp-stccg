@@ -7,8 +7,6 @@ public interface GameStateListener {
     String getPlayerId();
     void sendEvent(GameEvent gameEvent);
 
-    void setTribbleSequence(String tribbleSequence);
-
     void sendMessage(String message);
 
     void decisionRequired(String playerId, AwaitingDecision awaitingDecision) throws PlayerNotFoundException;
