@@ -1083,6 +1083,7 @@ export default class GameTableUI {
             let cardToAdd;
 
             if (gameState.players != null && gameState.players.length > 0) {
+                console.log("Calling initializePlayerOrder from initializeGameState");
                 this.initializePlayerOrder(gameState);
             }
 
@@ -1101,7 +1102,9 @@ export default class GameTableUI {
                 }
                 for (const cardId of player.cardGroups["HAND"].cardIds) {
                     cardToAdd = gameState.visibleCardsInGame[cardId];
-                    if (cardToAdd == null) {
+                    if (cardId == "-99") {
+                        console.log("Card is hidden information");
+                    } else if (cardToAdd == null) {
                         console.error("Unable to find card of cardId '" + cardId + "'");
                     } else if (cardsAdded.includes(cardId)) {
                         console.error("Trying to add a card to hand, but it's already been added");
@@ -1143,15 +1146,16 @@ export default class GameTableUI {
                 }
             }
 
-            for (let [cardId, cardData] of gameState.visibleCardsInGame.entries()) {
-                if (!cardsAdded.includes(cardId)) {
+            for (let [cardId, cardData] of Object.entries(gameState.visibleCardsInGame)) {
+                if (!cardData.isInPlay && cardsStillToAdd.includes(cardId)) {
+                    cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
+                } else if (!cardsAdded.includes(cardId)) {
                     let cardDiv = getCardDivFromId(cardId);
-                    if (cardDiv.length > 0) {
-                        cardsAdded.push(cardId);
-                        cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
-                    } else {
+                    if (cardDiv.length == 0) {
                         this.addNonMissionInPlayToClientRecursively(cardData, gameState);
                     }
+                    cardsAdded.push(cardId);
+                    cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
                 }
             }
 
@@ -1160,7 +1164,7 @@ export default class GameTableUI {
             }
 
             if (this.allPlayerIds != null) {
-                let clocks = jsonNode.playerClocks;
+                let clocks = jsonNode.gameState.playerClocks;
                 for (var i = 0; i < clocks.length; i++) {
                     let clock = clocks[i];
                     let playerId = clock.playerId;
@@ -1322,6 +1326,13 @@ export default class GameTableUI {
         this.bottomPlayerId = gameState.requestingPlayer;
         this.allPlayerIds = new Array();
 
+        for (var i =0; i < gameState.players.length; i++) {
+            let playerId = gameState.players[i].playerId;
+            this.allPlayerIds.push(playerId);
+            this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
+            this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
+        }
+
         var index = this.getPlayerIndex(this.bottomPlayerId);
         if (index == -1) {
             this.bottomPlayerId = gameState.players[1].playerId;
@@ -1329,13 +1340,6 @@ export default class GameTableUI {
         } else {
             this.spectatorMode = false;
             this.createPile(this.bottomPlayerId, "Draw Deck", "miscPileDialogs", "miscPileGroups");
-        }
-
-        for (var i = 0; i < gameState.players.length; i++) {
-            let playerId = gameState.players[i].playerId;
-            this.allPlayerIds.push(playerId);
-            this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
-            this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
         }
 
         this.initializeGameUI(true);
@@ -3077,11 +3081,11 @@ export class ST1EGameTableUI extends GameTableUI {
                 let attachedToCard = gameState.visibleCardsInGame[attachedToCardId];
                 this.addCardRecursively(attachedToCard, gameState);
             } else {
-                let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId);
+                let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId, gameState);
                 this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
             }
         } else {
-            let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId);
+            let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId, gameState);
             this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
         }
     }

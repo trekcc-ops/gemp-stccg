@@ -30,9 +30,9 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "performedActions" })
+        "awayTeams", "actions", "performedActions", "playerClocks" })
 @JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "performedActions" })
+        "awayTeams", "actions", "performedActions", "playerClocks" })
 public abstract class GameState {
     Phase _currentPhase;
     Map<String, Player> _players = new HashMap<>();
@@ -462,8 +462,13 @@ public abstract class GameState {
         return _currentTurnNumber;
     }
 
-    @JsonProperty("playerClocks")
+    @JsonIgnore
     public Map<String, PlayerClock> getPlayerClocks() {
         return _playerClocks;
+    }
+
+    @JsonProperty("playerClocks")
+    private Collection<PlayerClock> playerClockList() {
+        return _playerClocks.values();
     }
 }
