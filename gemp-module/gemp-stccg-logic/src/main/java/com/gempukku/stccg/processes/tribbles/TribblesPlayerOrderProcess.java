@@ -70,7 +70,7 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
                 playersSelecting.subList(1, playersSelecting.size()).clear();
             }
         }
-        _game.initializePlayerOrder(new PlayerOrder(playersInOrder));
+        _game.getGameState().initializePlayerOrder(new PlayerOrder(playersInOrder));
     }
     
     private Integer playerOnlyHasOneTribbleValue(Player player) {

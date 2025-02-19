@@ -1,21 +1,18 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.gameevent.*;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GameCommunicationChannel implements GameStateListener, LongPollableResource {
     private List<GameEvent> _events = Collections.synchronizedList(new LinkedList<>());
@@ -34,10 +31,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @JsonProperty("channelNumber")
     public final int getChannelNumber() {
         return _channelNumber;
-    }
-
-    public final void initializeBoard() throws PlayerNotFoundException {
-        appendEvent(new InitializeBoardForPlayerGameEvent(_game, _game.getGameState().getPlayer(_playerId)));
     }
 
     @JsonIgnore

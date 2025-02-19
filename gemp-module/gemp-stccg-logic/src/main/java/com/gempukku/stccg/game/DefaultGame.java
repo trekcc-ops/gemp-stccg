@@ -1,31 +1,28 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.GameTimer;
-import com.gempukku.stccg.common.filterable.GameType;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.decisions.YesNoDecision;
-import com.gempukku.stccg.gameevent.ActionResultGameEvent;
-import com.gempukku.stccg.gameevent.FlashCardInPlayGameEvent;
-import com.gempukku.stccg.gameevent.GameEvent;
-import com.gempukku.stccg.gameevent.GameStateListener;
-import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
+import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.gameevent.ActionResultGameEvent;
+import com.gempukku.stccg.gameevent.FlashCardInPlayGameEvent;
+import com.gempukku.stccg.gameevent.GameEvent;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.DefaultUserFeedback;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
@@ -90,13 +87,6 @@ public abstract class DefaultGame {
 
     public Collection<GameStateListener> getAllGameStateListeners() {
         return Collections.unmodifiableSet(_gameStateListeners);
-    }
-
-    public void initializePlayerOrder(PlayerOrder playerOrder) throws PlayerNotFoundException {
-        getGameState().initializePlayerOrder(playerOrder);
-        for (GameStateListener listener : _gameStateListeners) {
-            listener.initializeBoard();
-        }
     }
 
 

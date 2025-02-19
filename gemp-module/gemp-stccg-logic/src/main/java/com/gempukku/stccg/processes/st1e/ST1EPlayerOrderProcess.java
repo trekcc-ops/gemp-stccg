@@ -20,7 +20,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
             playerOrder = getPlayerOrderByRollingDice(cardGame);
         }
         cardGame.sendMessage(playerOrder.getFirst() + " will go first");
-        cardGame.initializePlayerOrder(new PlayerOrder(playerOrder));
+        cardGame.getGameState().initializePlayerOrder(new PlayerOrder(playerOrder));
     }
 
     private List<String> getPlayerOrderByRollingDice(DefaultGame cardGame) {

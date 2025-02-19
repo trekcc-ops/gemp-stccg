@@ -26,7 +26,6 @@ import java.util.*;
 
 public class GameEvent {
     public enum Type {
-        PARTICIPANTS("P"),
         TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
         PUT_CARD_INTO_PLAY("PCIP"),
         REMOVE_CARD_FROM_PLAY("RCFP"),
@@ -45,8 +44,7 @@ public class GameEvent {
     }
 
     public enum Attribute {
-        /* Don't change these names without editing the client code, as it relies on the .name() method */
-        allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
+        blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
         locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
         type, zone,
         placedOnMission,

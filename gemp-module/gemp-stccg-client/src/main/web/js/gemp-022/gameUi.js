@@ -1010,6 +1010,10 @@ export default class GameTableUI {
         var eventType = gameEvent.type;
         let gameState = typeof gameEvent.gameState === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
 
+        if (this.allPlayerIds == null || this.allPlayerIds.length == 0) {
+            this.initializePlayerOrder(gameState);
+        }
+
         switch(eventType) {
             case "ACTION_RESULT":
                 this.updateGameStats(gameState); // updates count of card piles
@@ -1049,9 +1053,6 @@ export default class GameTableUI {
                     this.animations.putCardOnBoardGeneric(gameEvent, animate, eventType);
                 }
                 break;
-            case "P":
-                this.initializePlayerOrder(gameEvent.gameState);
-                break;
             case "RCFP":
                 this.animations.removeCardFromPlay(gameEvent.otherCardIds, gameEvent.participantId, animate);
                 break;
@@ -1080,6 +1081,7 @@ export default class GameTableUI {
             if (gameState.players != null && gameState.players.length > 0) {
                 console.log("Calling initializePlayerOrder from initializeGameState");
                 this.initializePlayerOrder(gameState);
+                this.updateGameStats(gameState);
             }
 
             for (const player of gameState.players) {
