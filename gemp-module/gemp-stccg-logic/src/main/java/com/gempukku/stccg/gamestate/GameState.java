@@ -146,7 +146,7 @@ public abstract class GameState {
 
         for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
             try {
-                sendCreatedCardToListener(card, false, listener);
+                sendCreatedCardToListener(card, listener);
             } catch(InvalidGameOperationException exp) {
                 card.getGame().sendErrorMessage(exp);
             }
@@ -227,7 +227,7 @@ public abstract class GameState {
 
 
     public void addCardToZone(PhysicalCard card, Zone zone) {
-        addCardToZone(card, zone, true, false);
+        addCardToZone(card, zone, true);
     }
 
     public void addCardToZoneWithoutSendingToClient(PhysicalCard card, Zone zone) {
@@ -249,15 +249,15 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
     }
     public void addCardToZone(PhysicalCard card, Zone zone, EndOfPile endOfPile) {
-        addCardToZone(card, zone, endOfPile != EndOfPile.TOP, false);
+        addCardToZone(card, zone, endOfPile != EndOfPile.TOP);
     }
 
 
     public void addCardToBottomOfPlayPile(PhysicalCard card) {
-        addCardToZone(card, Zone.PLAY_PILE, false, false);
+        addCardToZone(card, Zone.PLAY_PILE, false);
     }
 
-    public void addCardToZone(PhysicalCard card, Zone zone, boolean end, boolean sharedMission) {
+    public void addCardToZone(PhysicalCard card, Zone zone, boolean end) {
         if (zone == Zone.DISCARD &&
                 getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
             zone = Zone.REMOVED;
@@ -277,7 +277,7 @@ public abstract class GameState {
         card.setZone(zone);
         for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
             try {
-                sendCreatedCardToListener(card, sharedMission, listener);
+                sendCreatedCardToListener(card, listener);
             } catch(InvalidGameOperationException exp) {
                 card.getGame().sendErrorMessage(exp);
             }
@@ -288,17 +288,10 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
     }
 
-    public void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener)
+    public void sendCreatedCardToListener(PhysicalCard card, GameStateListener listener)
             throws InvalidGameOperationException {
-        GameEvent.Type eventType;
-
-        if (sharedMission)
-            eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
-        else
-            eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
-
         if (card.isVisibleToPlayer(listener.getPlayerId())) {
-            listener.sendEvent(new AddNewCardGameEvent(eventType, card));
+            listener.sendEvent(new AddNewCardGameEvent(card));
         }
     }
 

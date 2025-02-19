@@ -351,11 +351,7 @@ export default class GameAnimations {
 
                 if (zone == "SPACELINE") {
                     console.log("Processing putCardIntoPlay for SPACELINE zone at locationIndex " + locationIndex);
-                    if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
-                        that.game.addSharedMission(locationIndex, quadrant, region);
-                    } else {
-                        that.game.addLocationDiv(locationIndex, quadrant, region);
-                    }
+                    that.game.addLocationDiv(locationIndex, quadrant, region);
                 }
 
                 if (controllerId != null)

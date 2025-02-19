@@ -58,7 +58,7 @@ public class GameRecorder {
         final Map<String, GameCommunicationChannel> recordingChannels = new HashMap<>();
         for (String playerId : game.getPlayersPlaying()) {
             var recordChannel = new GameCommunicationChannel(game.getGame(), playerId, 0);
-            game.addGameStateListener(playerId, recordChannel);
+            game.addGameStateListener(recordChannel);
             recordingChannels.put(playerId, recordChannel);
         }
 

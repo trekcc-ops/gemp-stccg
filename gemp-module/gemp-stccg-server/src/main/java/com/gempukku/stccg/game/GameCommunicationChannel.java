@@ -99,7 +99,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         return result;
     }
 
-    @JsonProperty("clocks")
+    @JsonProperty("playerClocks")
     public Collection<PlayerClock> getPlayerClocks() {
         return _game.getGameState().getPlayerClocks().values();
     }

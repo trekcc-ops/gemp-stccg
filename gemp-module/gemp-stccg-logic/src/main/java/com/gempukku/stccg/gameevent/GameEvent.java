@@ -27,7 +27,6 @@ import java.util.*;
 public class GameEvent {
     public enum Type {
         PARTICIPANTS("P"),
-        PUT_SHARED_MISSION_INTO_PLAY("PUT_SHARED_MISSION_INTO_PLAY"),
         TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
         PUT_CARD_INTO_PLAY("PCIP"),
         REMOVE_CARD_FROM_PLAY("RCFP"),

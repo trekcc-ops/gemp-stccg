@@ -1049,9 +1049,6 @@ export default class GameTableUI {
                     this.animations.putCardOnBoardGeneric(gameEvent, animate, eventType);
                 }
                 break;
-            case "PUT_SHARED_MISSION_INTO_PLAY":
-                this.animations.putCardOnBoardGeneric(gameEvent, animate, eventType);
-                break;
             case "P":
                 this.initializePlayerOrder(gameEvent.gameState);
                 break;
@@ -1070,7 +1067,7 @@ export default class GameTableUI {
     }
 
     initializeGameState(jsonNode) {
-            // TODO - Still need to process pending decisions and chat messages
+            // TODO - Still need to process chat messages
 
         try {
             this.channelNumber = jsonNode.channelNumber;
@@ -1127,20 +1124,14 @@ export default class GameTableUI {
             }
 
             for (const location of gameState.spacelineLocations) {
-                let bottomMissionCardId = location.missionCardIds[0];
-                let bottomMissionCard = gameState.visibleCardsInGame[bottomMissionCardId];
-                let spacelineIndex = getSpacelineIndexFromLocationId(bottomMissionCard.locationId, gameState);
-                this.animations.putMissionIntoPlay(bottomMissionCard, false, spacelineIndex, true);
-                cardsAdded.push(bottomMissionCardId);
-                cardsStillToAdd = removeFromArray(cardsStillToAdd, bottomMissionCardId);
-
-
-                if (location.missionCardIds.length > 0) {
-                    let topMissionCardId = location.missionCardIds[0];
-                    let topMissionCard = gameState.visibleCardsInGame[topMissionCardId];
-                    this.animations.putMissionIntoPlay(topMissionCard, false, spacelineIndex, false);
-                    cardsAdded.push(topMissionCardId);
-                    cardsStillToAdd = removeFromArray(cardsStillToAdd, topMissionCardId);
+                for (let i = 0; i < location.missionCardIds.length; i++) {
+                    let missionCardId = location.missionCardIds[i];
+                    let missionCard = gameState.visibleCardsInGame[missionCardId];
+                    let spacelineIndex = getSpacelineIndexFromLocationId(missionCard.locationId, gameState);
+                    let firstMissionAtLocation = (i == 0);
+                    this.animations.putMissionIntoPlay(missionCard, false, spacelineIndex, firstMissionAtLocation);
+                    cardsAdded.push(missionCardId);
+                    cardsStillToAdd = removeFromArray(cardsStillToAdd, missionCardId);
                 }
             }
 
@@ -1161,36 +1152,8 @@ export default class GameTableUI {
                 console.error("Was unable to add all cards");
             }
 
-            if (this.allPlayerIds != null) {
-                let clocks = jsonNode.gameState.playerClocks;
-                for (var i = 0; i < clocks.length; i++) {
-                    let clock = clocks[i];
-                    let playerId = clock.playerId;
-                    let value = clock.timeRemaining;
-
-                    let index = this.getPlayerIndex(playerId);
-
-                    let sign = (value < 0) ? "-" : "";
-                    value = Math.abs(value);
-                    let hours = Math.floor(value / 3600);
-                    let minutes = Math.floor(value / 60) % 60;
-                    let seconds = value % 60;
-
-                    if (hours > 0) {
-                        $("#clock" + index).text(
-                            sign + hours + ":" +
-                            ((minutes < 10) ? ("0" + minutes) : minutes) + ":" +
-                            ((seconds < 10) ? ("0" + seconds) : seconds)
-                        );
-                    }
-                    else {
-                        $("#clock" + index).text(
-                            sign + minutes + ":" +
-                            ((seconds < 10) ? ("0" + seconds) : seconds)
-                        );
-                    }
-                }
-            }
+            this.setupClocks(jsonNode.gameState);
+            this.lastActionIndex = jsonNode.gameState.performedActions.length - 1;
 
             let pendingDecision = gameState.pendingDecision;
             if (pendingDecision != null) {
@@ -1210,55 +1173,53 @@ export default class GameTableUI {
         }
     }
 
+    setupClocks(gameState) {
+        if (this.allPlayerIds != null) {
+            let clocks = gameState.playerClocks;
+            for (var i = 0; i < clocks.length; i++) {
+                let clock = clocks[i];
+                let playerId = clock.playerId;
+                let value = clock.timeRemaining;
+
+                let index = this.getPlayerIndex(playerId);
+
+                let sign = (value < 0) ? "-" : "";
+                value = Math.abs(value);
+                let hours = Math.floor(value / 3600);
+                let minutes = Math.floor(value / 60) % 60;
+                let seconds = value % 60;
+
+                if (hours > 0) {
+                    $("#clock" + index).text(
+                        sign + hours + ":" +
+                        ((minutes < 10) ? ("0" + minutes) : minutes) + ":" +
+                        ((seconds < 10) ? ("0" + seconds) : seconds)
+                    );
+                }
+                else {
+                    $("#clock" + index).text(
+                        sign + minutes + ":" +
+                        ((seconds < 10) ? ("0" + seconds) : seconds)
+                    );
+                }
+            }
+        }
+    }
+
     processGameEvents(jsonNode, animate) {
         try {
             this.channelNumber = jsonNode.channelNumber;
-            var gameEvents = jsonNode.gameEvents;
-
-            var hasDecision = false;
+            let hasDecision = false;
 
             // Go through all the events
-            for (var i = 0; i < gameEvents.length; i++) {
-                var gameEvent = gameEvents[i];
+            for (const gameEvent of jsonNode.gameEvents) {
                 this.processGameEvent(gameEvent, animate);
-                var eventType = gameEvent.type;
-                if (eventType == "D") {
+                if (gameEvent.type == "D") {
                     hasDecision = true;
                 }
             }
 
-            if (this.allPlayerIds != null) {
-                let clocks = jsonNode.clocks;
-                if (clocks.length > 0) {
-                    for (var i = 0; i < clocks.length; i++) {
-                        let clock = clocks[i];
-                        let playerId = clock.playerId;
-                        let value = clock.timeRemaining;
-
-                        let index = this.getPlayerIndex(playerId);
-
-                        let sign = (value < 0) ? "-" : "";
-                        value = Math.abs(value);
-                        let hours = Math.floor(value / 3600);
-                        let minutes = Math.floor(value / 60) % 60;
-                        let seconds = value % 60;
-
-                        if (hours > 0) {
-                            $("#clock" + index).text(
-                                sign + hours + ":" +
-                                ((minutes < 10) ? ("0" + minutes) : minutes) + ":" +
-                                ((seconds < 10) ? ("0" + seconds) : seconds)
-                            );
-                        }
-                        else {
-                            $("#clock" + index).text(
-                                sign + minutes + ":" +
-                                ((seconds < 10) ? ("0" + seconds) : seconds)
-                            );
-                        }
-                    }
-                }
-            }
+            this.setupClocks(jsonNode);
 
             if (!hasDecision) {
                 this.animations.updateGameState(animate);
@@ -3045,7 +3006,7 @@ export class ST1EGameTableUI extends GameTableUI {
             case "TELLUN":
                 return "Tellun Region";
             case "VALO":
-                return "Valo Region Region";
+                return "Valo Region";
             // 2E regions
             case "QO_NOS_SYSTEM":
                 return "Qo'noS Region";
@@ -3075,20 +3036,17 @@ export class ST1EGameTableUI extends GameTableUI {
     }
 
     addNonMissionInPlayToClientRecursively(card, gameState) {
+        let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId, gameState);
+        let attachedToCardId = card.attachedToCardId;
         // Assumes that all missions in play already have a div
-        if (card.attachedToCardId != null && card.attachedToCarId != undefined) {
-            let attachedToCardDiv = getCardDivFromId(card.attachedToCardId);
+        if (attachedToCardId != null && typeof attachedToCardId != "undefined") {
+            let attachedToCardDiv = getCardDivFromId(attachedToCardId);
             if (attachedToCardDiv.length == 0) {
                 let attachedToCard = gameState.visibleCardsInGame[attachedToCardId];
-                this.addCardRecursively(attachedToCard, gameState);
-            } else {
-                let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId, gameState);
-                this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
+                this.addNonMissionInPlayToClientRecursively(attachedToCard, gameState);
             }
-        } else {
-            let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId, gameState);
-            this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
         }
+        this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
     }
 
 }

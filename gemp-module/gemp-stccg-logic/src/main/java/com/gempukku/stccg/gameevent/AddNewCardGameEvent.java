@@ -16,8 +16,8 @@ public class AddNewCardGameEvent extends GameEvent {
 
     private final PhysicalCard _card;
 
-    public AddNewCardGameEvent(GameEvent.Type eventType, PhysicalCard card) throws InvalidGameOperationException {
-        super(eventType, card.getOwner());
+    public AddNewCardGameEvent(PhysicalCard card) throws InvalidGameOperationException {
+        super(Type.PUT_CARD_INTO_PLAY, card.getOwner());
         _card = card;
         setCardData(card);
     }

@@ -101,9 +101,9 @@ public abstract class CardGameMediator {
         getGame().sendMessage(message);
     }
 
-    final void addGameStateListener(String playerId, GameStateListener listener) {
+    final void addGameStateListener(GameStateListener listener) {
         DefaultGame game = getGame();
-        game.addGameStateListener(playerId, listener);
+        game.addGameStateListener(listener);
     }
 
     public final void addGameResultListener(GameResultListener listener) {
@@ -302,7 +302,7 @@ public abstract class CardGameMediator {
 
             channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
             _communicationChannels.put(playerName, channel);
-            addGameStateListener(playerName, channel);
+            addGameStateListener(channel);
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = getGame().getGameState().serializeForPlayer(player.getName());
             JsonNode gameState = mapper.readTree(jsonString);
@@ -333,7 +333,7 @@ public abstract class CardGameMediator {
 
             channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
             _communicationChannels.put(playerName, channel);
-            addGameStateListener(playerName, channel);
+            addGameStateListener(channel);
             return channel;
         } finally {
             _readLock.unlock();
