@@ -47,7 +47,7 @@ public class PlaceCardOnMissionAction extends ActionyAction {
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
         _cardBeingPlaced.setPlacedOnMission(true);
         _cardBeingPlaced.setLocation(_mission);
-        gameState.addCardToZone(_cardBeingPlaced, Zone.AT_LOCATION, true);
+        gameState.addCardToZoneWithoutSendingToClient(_cardBeingPlaced, Zone.AT_LOCATION);
 
         for (MissionLocation location : gameState.getSpacelineLocations()) {
             if (location.getSeedCards().contains(_cardBeingPlaced)) {

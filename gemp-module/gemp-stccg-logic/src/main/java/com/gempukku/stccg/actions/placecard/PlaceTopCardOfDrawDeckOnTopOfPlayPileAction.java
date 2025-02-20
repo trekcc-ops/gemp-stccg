@@ -42,7 +42,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
         while ((drawn < _count) && (!performingPlayer.getCardsInDrawDeck().isEmpty())) {
             PhysicalCard card = performingPlayer.getCardsInDrawDeck().getFirst();
             cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
-            cardGame.getGameState().addCardToZone(card, Zone.PLAY_PILE, true);
+            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.PLAY_PILE);
             cardGame.sendMessage(card.getOwnerName() + " puts " + card.getCardLink() +
                     " from the top of their draw deck on top of their play pile");
             drawn++;
