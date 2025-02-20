@@ -58,17 +58,16 @@ export default function PhaseIndicator( {gamestate} ) {
     let phase_data = get_phase_data(gamestate);
 
     return(
-        /*
         <Box sx={{ width: '100%' }}>
-            <Stepper activeStep={active_step} alternativeLabel>
-                {step_list.map((label) => (
+            <Stepper activeStep={phase_data.active_step} alternativeLabel>
+                {gamestate["phasesInOrder"].map((label) => (
                 <Step key={label}>
-                    <StepLabel>{label}</StepLabel>
+                    <StepLabel>{enum_to_friendly_text.get(label)}</StepLabel>
                 </Step>
                 ))}
             </Stepper>
         </Box>
-        */
+        /*
         <Stack>
             <MobileStepper
                 variant="dots"
@@ -78,5 +77,6 @@ export default function PhaseIndicator( {gamestate} ) {
             />
             <Typography>{phase_data.friendly_name}</Typography>
         </Stack>
+        */
     );
 }
