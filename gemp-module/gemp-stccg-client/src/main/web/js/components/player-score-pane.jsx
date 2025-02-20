@@ -50,7 +50,8 @@ function get_your_player_data(gamestate) {
 function get_opponent_player_data(gamestate) {
     let your_player_id = gamestate["requestingPlayer"];
     let opponent_player_data = gamestate["players"].filter((data) => data["playerId"] != your_player_id);
-    return get_player_data(opponent_player_data, gamestate);
+    let opponent_player_id = opponent_player_data[0]["playerId"];
+    return get_player_data(opponent_player_id, gamestate);
 }
 
 export default function PlayerScorePane ( {gamestate} ) {
