@@ -11,7 +11,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class OptionalTriggerAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
-    private enum Progress { sentMessage }
+    private enum Progress {}
     private ActionBlueprint _actionBlueprint;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
@@ -40,13 +40,6 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        if (!getProgress(Progress.sentMessage)) {
-            setProgress(Progress.sentMessage);
-            if (_performingCard != null) {
-                cardGame.sendMessage(_performingCard.getCardLink() + " optional triggered effect is used");
-            }
-        }
-
         if (!isCostFailed()) {
             Action cost = getNextCost();
             if (cost != null)

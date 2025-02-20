@@ -9,7 +9,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public class ActivateCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
-    private enum Progress { sentMessage, activated, prevented }
+    private enum Progress {activated, prevented }
 
     public ActivateCardAction(DefaultGame cardGame, PhysicalCard physicalCard) {
         super(cardGame, physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.USE_GAME_TEXT,
@@ -37,13 +37,6 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        if (!getProgress(Progress.sentMessage)) {
-            setProgress(Progress.sentMessage);
-            if (_performingCard != null && _performingCard.isInPlay()) {
-                cardGame.sendMessage(_performingCard.getCardLink() + " is used");
-            }
-        }
-
         if (!isCostFailed()) {
             Action cost = getNextCost();
             if (cost != null)

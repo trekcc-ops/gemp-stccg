@@ -85,13 +85,12 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.undockShip(targetCard);
             break;
-                // TODO - The actions below may have animations, but they are dictated by the server
-        case "DOWNLOAD_CARD":
+        case "DOWNLOAD_CARD": // no animation, currently this is just a wrapper for PLAY_CARD
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
-        case "PLACE_CARD_ON_MISSION":
-        case "REVEAL_SEED_CARD": // no animation included yet, use targetCardId property
-        case "STOP_CARDS": // no animation included yet, use targetCardId property
+        case "PLACE_CARD_ON_MISSION": // no animation included yet
+        case "REVEAL_SEED_CARD": // no animation included yet
+        case "STOP_CARDS": // no animation included yet
             break;
             // Actions that are just wrappers for decisions
         case "MAKE_DECISION":
@@ -196,7 +195,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "ATTEMPT_MISSION":
         case "DOCK_SHIP":
-        case "DOWNLOAD_CARD":
+        case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
         case "ENCOUNTER_SEED_CARD":
         case "FAIL_DILEMMA":
         case "FLY_SHIP":

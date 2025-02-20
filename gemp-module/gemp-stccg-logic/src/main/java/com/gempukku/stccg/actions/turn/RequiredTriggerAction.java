@@ -10,7 +10,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class RequiredTriggerAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
-    private enum Progress { sentMessage }
+    private enum Progress {}
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
         super(physicalCard.getGame(), physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(),
@@ -30,13 +30,6 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        if (!getProgress(Progress.sentMessage)) {
-            setProgress(Progress.sentMessage);
-            if (_performingCard != null) {
-                cardGame.sendMessage(_performingCard.getCardLink() + " required triggered effect is used");
-            }
-        }
-
         if (isCostFailed()) {
             return null;
         } else {
