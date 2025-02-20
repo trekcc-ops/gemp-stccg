@@ -1,14 +1,14 @@
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
 import Tooltip from '@mui/material/Tooltip';
-import decipher_card_deck from '../../images/decipher_card_deck.svg';
-import decipher_card_discard from '../../images/decipher_card_discard.svg';
-import decipher_card_hand from '../../images/decipher_card_hand.svg';
-import decipher_card_logo_only from '../../images/decipher_card_logo_only.svg';
-
-// TODO: Probably going to have to rework this to use divs and the CSS grid from the css file,
-//       since this isn't scaling as expected with the auto React grid.
+import decipher_card_deck from '../../images/decipher_card_deck.svg?no-inline';
+import decipher_card_discard from '../../images/decipher_card_discard.svg?no-inline';
+import decipher_card_hand from '../../images/decipher_card_hand.svg?no-inline';
+import decipher_card_logo_only from '../../images/decipher_card_logo_only.svg?no-inline';
+import '../../css/player-score-pane.css';
 
 function get_player_data(player_id, gamestate) {
     let player_data = gamestate["players"].filter((data) => data["playerId"] === player_id);
@@ -60,75 +60,68 @@ export default function PlayerScorePane ( {gamestate} ) {
     let opponent_player_data = get_opponent_player_data(gamestate);
 
     return(
-        <Grid container spacing={1} columns={8}>
-            <Grid size={2}>
+        <Box id="PlayerScorePane">
+            {/* YOUR ROW */}
+            <Box id="yourPlayerName">
                 <Typography>{your_player_data.username}</Typography>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={your_player_data.drawsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Draw deck size">
-                        <img src={decipher_card_deck} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={your_player_data.handsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Hand size">
-                        <img src={decipher_card_hand} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={your_player_data.discardsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Discard size">
-                        <img src={decipher_card_discard} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={your_player_data.removedsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Removed from game">
-                        <img src={decipher_card_logo_only} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={2}>
-                <Typography>SCORE: {your_player_data.score}</Typography>
-            </Grid>
-            <Grid size={2}>
+            </Box>
+            <Box>
+                <Typography>YOUR CLOCK</Typography>
+            </Box>
+            <Box id="yourDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Draw deck size">
+                    <Typography align='center'>{your_player_data.drawsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="yourHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Hand size">
+                    <Typography align='center'>{your_player_data.handsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="yourDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Discard size">
+                    <Typography align='center'>{your_player_data.discardsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="yourRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Removed from game">
+                    <Typography align='center'>{your_player_data.removedsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="yourScore">
+                <Typography align='center'>SCORE: {your_player_data.score}</Typography>
+            </Box>
+
+            {/* OPPONENT ROW */}
+            <Box id="opponentPlayerName">
                 <Typography>{opponent_player_data.username}</Typography>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={opponent_player_data.drawsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Draw deck size">
-                        <img src={decipher_card_deck} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={opponent_player_data.handsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Hand size">
-                        <img src={decipher_card_hand} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={opponent_player_data.discardsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Discard size">
-                        <img src={decipher_card_discard} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={1}>
-                <Badge color={badge_color} badgeContent={opponent_player_data.removedsize} showZero anchorOrigin={{vertical: 'top', horizontal: 'left',}}>
-                    <Tooltip title="Removed from game">
-                        <img src={decipher_card_logo_only} style={{height: 'inherit', width: 'inherit', minHeight: '30px', minWidth: '20px'}} />
-                    </Tooltip>
-                </Badge>
-            </Grid>
-            <Grid size={2}>
-                <Typography>SCORE: {opponent_player_data.score}</Typography>
-            </Grid>
-        </Grid>
+            </Box>
+            <Box>
+                <Typography>THEIR CLOCK</Typography>
+            </Box>
+            <Box id="opponentDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Draw deck size">
+                    <Typography align='center'>{opponent_player_data.drawsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="opponentHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Hand size">
+                    <Typography align='center'>{opponent_player_data.handsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="opponentDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Discard size">
+                    <Typography align='center'>{opponent_player_data.discardsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="opponentRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+                <Tooltip title="Removed from game">
+                    <Typography align='center'>{opponent_player_data.removedsize}</Typography>
+                </Tooltip>
+            </Box>
+            <Box id="opponentScore">
+                <Typography align='center'>SCORE: {opponent_player_data.score}</Typography>
+            </Box>
+        </Box>
     );
 }

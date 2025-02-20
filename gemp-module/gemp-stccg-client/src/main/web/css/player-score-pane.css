@@ -1,0 +1,84 @@
+#PlayerScorePane {
+    display: grid;
+    grid-template-columns: [name] 1fr [clock] 1fr [draw] 42px [hand] 42px [discard] 42px [removed] 42px [score] 1fr;
+    grid-template-rows: [yours] 50px [opponents] 50px;
+}
+/*
+.playerStats .clickable {
+    cursor: pointer;
+}
+
+.player.current {
+    background-color: #191970;
+}
+*/
+
+#yourPlayerName {
+    grid-column-start: name;
+    grid-row-start: yours;
+}
+
+#yourClock {
+    grid-column-start: clock;
+    grid-row-start: yours;
+}
+
+#yourDrawDeckSize {
+    grid-column-start: draw;
+    grid-row-start: yours;
+}
+
+#yourHandSize {
+    grid-column-start: hand;
+    grid-row-start: yours;
+}
+
+#yourDiscardSize {
+    grid-column-start: discard;
+    grid-row-start: yours;
+}
+
+#yourRemovedSize {
+    grid-column-start: removed;
+    grid-row-start: yours;
+}
+
+#yourScore {
+    grid-column-start: score;
+    grid-row-start: yours;
+}
+
+#opponentPlayerName {
+    grid-column-start: name;
+    grid-row-start: opponents;
+}
+
+#opponentClock {
+    grid-column-start: clock;
+    grid-row-start: opponents;
+}
+
+#opponentDrawDeckSize {
+    grid-column-start: draw;
+    grid-row-start: opponents;
+}
+
+#opponentHandSize {
+    grid-column-start: hand;
+    grid-row-start: opponents;
+}
+
+#opponentDiscardSize {
+    grid-column-start: discard;
+    grid-row-start: opponents;
+}
+
+#opponentRemovedSize {
+    grid-column-start: removed;
+    grid-row-start: opponents;
+}
+
+#opponentScore {
+    grid-column-start: score;
+    grid-row-start: opponents;
+}
