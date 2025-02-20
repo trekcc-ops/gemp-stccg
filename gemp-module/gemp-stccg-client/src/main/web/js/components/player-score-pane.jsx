@@ -4,7 +4,7 @@ import Tooltip from '@mui/material/Tooltip';
 import decipher_card_deck from '../../images/decipher_card_deck.svg?no-inline';
 import decipher_card_discard from '../../images/decipher_card_discard.svg?no-inline';
 import decipher_card_hand from '../../images/decipher_card_hand.svg?no-inline';
-import decipher_card_logo_only from '../../images/decipher_card_logo_only.svg?no-inline';
+import decipher_card_removed from '../../images/decipher_card_removed.svg?no-inline';
 import '../../css/player-score-pane.css';
 
 function get_player_data(player_id, gamestate) {
@@ -84,7 +84,7 @@ export default function PlayerScorePane ( {gamestate} ) {
                     <Typography align='center'>{your_player_data.discardsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box id="yourRemovedSize" sx={{backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Removed from game">
                     <Typography align='center'>{your_player_data.removedsize}</Typography>
                 </Tooltip>
@@ -117,7 +117,7 @@ export default function PlayerScorePane ( {gamestate} ) {
                     <Typography align='center'>{opponent_player_data.discardsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="opponentRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box id="opponentRemovedSize" sx={{backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Removed from game">
                     <Typography align='center'>{opponent_player_data.removedsize}</Typography>
                 </Tooltip>
