@@ -21,7 +21,8 @@ function get_player_data(player_id, gamestate) {
             "handsize": 0,
             "discardsize": 0,
             "removedsize": 0,
-            "score": 0
+            "score": 0,
+            "clock": "0:00"
         };
     }
     else {
@@ -33,11 +34,12 @@ function get_player_data(player_id, gamestate) {
         let thescore = player_data[0]["score"];
         return {
             "username": username,
+            "clock": "0:00", // TODO: Clock from Game State, which may not be player specific.
             "drawsize": drawsize,
             "handsize": handsize,
             "discardsize": discardsize,
             "removedsize": removedsize,
-            "score": thescore
+            "score": thescore,
         };
     }
 }
@@ -67,7 +69,7 @@ export default function PlayerScorePane ( {gamestate} ) {
             </Box>
             <Box>
                 <Tooltip title="Your remaining clock">
-                    <Typography>0:00</Typography>
+                    <Typography>{your_player_data.clock}</Typography>
                 </Tooltip>
             </Box>
             <Box id="yourDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
@@ -100,7 +102,7 @@ export default function PlayerScorePane ( {gamestate} ) {
             </Box>
             <Box>
                 <Tooltip title="Opponent's remaining clock">
-                    <Typography>0:00</Typography>
+                    <Typography>{opponent_player_data.clock}</Typography>
                 </Tooltip>
             </Box>
             <Box id="opponentDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
