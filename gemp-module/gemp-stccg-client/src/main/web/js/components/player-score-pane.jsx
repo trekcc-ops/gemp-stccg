@@ -68,22 +68,22 @@ export default function PlayerScorePane ( {gamestate} ) {
             <Box>
                 <Typography>YOUR CLOCK</Typography>
             </Box>
-            <Box id="yourDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="yourDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Draw deck size">
                     <Typography align='center'>{your_player_data.drawsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="yourHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Hand size">
                     <Typography align='center'>{your_player_data.handsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="yourDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Discard size">
                     <Typography align='center'>{your_player_data.discardsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="yourRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Removed from game">
                     <Typography align='center'>{your_player_data.removedsize}</Typography>
                 </Tooltip>
@@ -99,22 +99,22 @@ export default function PlayerScorePane ( {gamestate} ) {
             <Box>
                 <Typography>THEIR CLOCK</Typography>
             </Box>
-            <Box id="opponentDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="opponentDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Draw deck size">
                     <Typography align='center'>{opponent_player_data.drawsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="opponentHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="opponentHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Hand size">
                     <Typography align='center'>{opponent_player_data.handsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="opponentDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="opponentDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Discard size">
                     <Typography align='center'>{opponent_player_data.discardsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="opponentRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat'}}>
+            <Box id="opponentRemovedSize" sx={{backgroundImage: `url(${decipher_card_logo_only})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Removed from game">
                     <Typography align='center'>{opponent_player_data.removedsize}</Typography>
                 </Tooltip>

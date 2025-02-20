@@ -1,6 +1,6 @@
 #PlayerScorePane {
     display: grid;
-    grid-template-columns: [name] 1fr [clock] 1fr [draw] 42px [hand] 42px [discard] 42px [removed] 42px [score] 1fr;
+    grid-template-columns: [name] 2fr [clock] 2fr [draw] 1fr [hand] 1fr [discard] 1fr [removed] 1fr [score] 2fr;
     grid-template-rows: [yours] 50px [opponents] 50px;
 }
 /*
