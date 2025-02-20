@@ -66,7 +66,9 @@ export default function PlayerScorePane ( {gamestate} ) {
                 <Typography>{your_player_data.username}</Typography>
             </Box>
             <Box>
-                <Typography>YOUR CLOCK</Typography>
+                <Tooltip title="Your remaining clock">
+                    <Typography>0:00</Typography>
+                </Tooltip>
             </Box>
             <Box id="yourDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Draw deck size">
@@ -97,7 +99,9 @@ export default function PlayerScorePane ( {gamestate} ) {
                 <Typography>{opponent_player_data.username}</Typography>
             </Box>
             <Box>
-                <Typography>THEIR CLOCK</Typography>
+                <Tooltip title="Opponent's remaining clock">
+                    <Typography>0:00</Typography>
+                </Tooltip>
             </Box>
             <Box id="opponentDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Draw deck size">
