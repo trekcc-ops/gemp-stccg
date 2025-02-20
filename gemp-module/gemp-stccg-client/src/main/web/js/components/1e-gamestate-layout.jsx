@@ -19,12 +19,14 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import CardTree from './card-tree.jsx';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
 import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
 import Hand from './hand.jsx';
+import Card from './card.jsx';
 
 // Change this function to change the JSON input source.
 function get_gamestate() {
@@ -205,17 +207,23 @@ export default function MiniDrawer() {
                                         justifyContent: 'center',
                                     },
                                     /* Adjust right margin when closed */
-                                    open ? {mr: 3,} : {mr: 'auto',},
+                                    open ? {mr: 3,} : {mr: 'auto',}, // BUG: Offset with new list item
                                 ]}>
                                 <AccountTreeIcon />
                             </ListItemIcon>
+                            <ListItem sx={[
+                                        open ? {opacity: 1,} : {opacity: 0,},
+                                    ]} >
+                                <CardTree gamestate={get_gamestate()} ></CardTree>
+                            </ListItem>
+                            {/*
                             <ListItemText
                                 primary="Card Tree"
                                 sx={[
-                                        /* Hide text when closed */
                                         open ? {opacity: 1,} : {opacity: 0,},
                                     ]}
                             />
+                            */}
                         </ListItemButton>
                     </ListItem>
 
