@@ -25,8 +25,23 @@ function cards_to_treeitems (gamestate) {
 
     let visible_cards_in_game = gamestate["visibleCardsInGame"];
 
+    let card_ids_on_table = [];
+    for (const visible_card of visible_cards_in_game) {
+        if( card_ids_in_your_hand.indexOf(visible_card["cardId"]) === -1 &&
+            card_ids_in_your_core.indexOf(visible_card["cardId"]) === -1 &&
+            card_ids_in_your_discard.indexOf(visible_card["cardId"]) === -1 &&
+            card_ids_in_your_removed.indexOf(visible_card["cardId"]) === -1 &&
+            card_ids_in_opponent_core.indexOf(visible_card["cardId"]) === -1 &&
+            card_ids_in_opponent_discard.indexOf(visible_card["cardId"]) === -1 &&
+            card_ids_in_opponent_removed.indexOf(visible_card["cardId"]) === -1
+        ){
+            card_ids_on_table.push(visible_card["cardId"]);
+        }
+    }
+
     let card_tree = [];
 
+    card_tree.push(build_cards_on_table_treeitems(card_ids_on_table, visible_cards_in_game));
     card_tree.push(build_your_hand_treeitems(card_ids_in_your_hand, visible_cards_in_game));
     card_tree.push(build_your_core_treeitems(card_ids_in_your_core, visible_cards_in_game));
     card_tree.push(build_your_discard_treeitems(card_ids_in_your_discard, visible_cards_in_game));
@@ -36,6 +51,19 @@ function cards_to_treeitems (gamestate) {
     card_tree.push(build_opponent_removed_treeitems(card_ids_in_opponent_removed, visible_cards_in_game));
 
     return card_tree;
+}
+
+function build_cards_on_table_treeitems(table_arr, visible_cards) {
+    let table_item = {id: 'table', label: 'On Table', children: []};
+
+    for (const table_cardid of table_arr) {
+        let matching_card = visible_cards.filter((card) => card["cardId"] === table_cardid);
+        if (matching_card.length === 1) {
+            table_item.children.push(card_to_treeitem(matching_card[0]));
+        }
+    }
+
+    return table_item;
 }
 
 function build_your_hand_treeitems(hand_arr, visible_cards) {
