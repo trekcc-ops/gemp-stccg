@@ -133,7 +133,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                                 mission.removePreSeedCard(card, player);
                                 cardGame.getGameState().removeCardsFromZone(
                                         card.getGame(), card.getOwner(), Collections.singleton(card));
-                                cardGame.getGameState().addCardToZone(card, Zone.HAND);
+                                cardGame.getGameState().addCardToZone(card, Zone.HAND, true);
                             }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {

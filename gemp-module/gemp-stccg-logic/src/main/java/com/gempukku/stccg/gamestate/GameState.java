@@ -9,7 +9,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.GameTimer;
-import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -116,19 +115,19 @@ public abstract class GameState {
 
     public void playerDecisionStarted(DefaultGame cardGame, String playerId, AwaitingDecision awaitingDecision)
             throws PlayerNotFoundException {
-        _playerDecisions.put(playerId, awaitingDecision);
-        for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
+        if (awaitingDecision != null) {
+            _playerDecisions.put(playerId, awaitingDecision);
+            for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
+                if (listener.getPlayerId().equals(playerId)) {
+                    GameEvent decisionEvent = new SendDecisionGameEvent(cardGame, awaitingDecision, getPlayer(playerId));
+                    listener.sendEvent(decisionEvent);
+                }
+            }
+        }
     }
 
     public AwaitingDecision getDecision(String playerId) {
         return _playerDecisions.get(playerId);
-    }
-
-    public void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision)
-            throws PlayerNotFoundException {
-        if (decision != null && listener.getPlayerId().equals(playerId))
-            listener.decisionRequired(playerId, decision);
     }
 
     public void playerDecisionFinished(String playerId, UserFeedback userFeedback) {
@@ -217,12 +216,6 @@ public abstract class GameState {
     }
 
 
-
-
-    public void addCardToZone(PhysicalCard card, Zone zone) {
-        addCardToZone(card, zone, true);
-    }
-
     public void addCardToZoneWithoutSendingToClient(PhysicalCard card, Zone zone) {
         if (zone == Zone.DISCARD &&
                 getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
@@ -241,14 +234,19 @@ public abstract class GameState {
         if (zone.isInPlay())
             card.startAffectingGame(card.getGame());
     }
-    public void addCardToZone(PhysicalCard card, Zone zone, EndOfPile endOfPile) {
-        addCardToZone(card, zone, endOfPile != EndOfPile.TOP);
+    public void addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(PhysicalCard card, Zone zone) {
+        if (zone == Zone.DISCARD &&
+                getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
+            zone = Zone.REMOVED;
+
+        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), zone);
+        zoneCardList.addFirst(card);
+
+        card.setZone(zone);
+        if (zone.isInPlay())
+            card.startAffectingGame(card.getGame());
     }
 
-
-    public void addCardToBottomOfPlayPile(PhysicalCard card) {
-        addCardToZone(card, Zone.PLAY_PILE, false);
-    }
 
     public void addCardToZone(PhysicalCard card, Zone zone, boolean end) {
         if (zone == Zone.DISCARD &&

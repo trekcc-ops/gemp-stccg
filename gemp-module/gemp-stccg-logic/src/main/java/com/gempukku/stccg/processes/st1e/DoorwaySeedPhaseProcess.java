@@ -32,9 +32,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
 
     @Override
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
-        ST1EGame stGame = getST1EGame(cardGame);
         for (Player player : cardGame.getPlayers()) {
-            String playerId = player.getPlayerId();
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
             // TODO - Doorway seeding is a bit more complicated for cards like Bajoran Wormhole, or non-seedable doors
             for (PhysicalCard seedCard : player.getCardsInGroup(Zone.SEED_DECK)) {
@@ -78,7 +76,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                 Collections.shuffle(missionSeeds);
             for (PhysicalCard card : missionSeeds) {
                 cardGameState.removeCardsFromZone(cardGame, player, List.of(card));
-                cardGameState.addCardToZone(card, Zone.HAND);
+                cardGameState.addCardToZone(card, Zone.HAND, true);
             }
         }
         return new ST1EMissionSeedPhaseProcess();

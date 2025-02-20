@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -41,12 +42,11 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
         }
 
         if (!_wasCarriedOut) {
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
                 cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
                 cardGame.sendMessage(_performingPlayerId + " puts " + card.getCardLink() +
                         " from hand on bottom of their play pile");
-                cardGame.getGameState().addCardToBottomOfPlayPile(card);
+                cardGame.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);
                 _wasCarriedOut = true;
                 setAsSuccessful();
             }

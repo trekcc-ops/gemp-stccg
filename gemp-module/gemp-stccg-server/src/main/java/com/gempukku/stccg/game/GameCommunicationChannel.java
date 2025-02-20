@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.gameevent.*;
 import com.gempukku.stccg.player.PlayerClock;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -66,11 +64,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public final void sendMessage(String message) {
         appendEvent(new SendMessageGameEvent(GameEvent.Type.SEND_MESSAGE, message));
-    }
-
-    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision)
-            throws PlayerNotFoundException {
-        appendEvent(new SendDecisionGameEvent(_game, awaitingDecision, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override

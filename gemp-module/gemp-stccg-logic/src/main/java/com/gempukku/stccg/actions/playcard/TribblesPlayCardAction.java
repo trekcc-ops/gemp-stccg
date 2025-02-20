@@ -37,7 +37,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
                 _cardEnteringPlay.getCardLink());
         gameState.removeCardsFromZone(cardGame, _cardEnteringPlay.getOwner(),
                 Collections.singleton(_cardEnteringPlay));
-        cardGame.getGameState().addCardToZone(_cardEnteringPlay, Zone.PLAY_PILE);
+        cardGame.getGameState().addCardToZone(_cardEnteringPlay, Zone.PLAY_PILE, true);
 
         int tribbleValue = _cardEnteringPlay.getBlueprint().getTribbleValue();
         gameState.setLastTribblePlayed(tribbleValue);

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.draw.DrawMultipleCardsUnrespondableAction;
-import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -79,7 +80,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                 Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInHand());
                 for (PhysicalCard card : remainingSeedCards) {
                     gameState.removeCardsFromZone(cardGame, card.getOwner(), Collections.singleton(card));
-                    gameState.addCardToZone(card, Zone.REMOVED);
+                    gameState.addCardToZone(card, Zone.REMOVED, true);
                 }
             }
 

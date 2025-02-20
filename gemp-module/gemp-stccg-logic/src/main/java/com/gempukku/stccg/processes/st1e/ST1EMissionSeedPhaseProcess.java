@@ -8,7 +8,9 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -16,7 +18,6 @@ import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.beans.ConstructorProperties;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,7 +83,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
                 List<PhysicalCard> remainingSeeds = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeeds) {
                     gameState.removeCardsFromZone(cardGame, player, List.of(card));
-                    gameState.addCardToZone(card, Zone.HAND);
+                    gameState.addCardToZone(card, Zone.HAND, true);
                 }
             }
             cardGame.takeSnapshot("Start of dilemma seed phase");

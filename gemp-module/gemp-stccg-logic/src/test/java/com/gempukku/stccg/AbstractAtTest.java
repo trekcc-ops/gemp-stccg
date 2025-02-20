@@ -20,7 +20,6 @@ import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.GameTimer;
-import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -30,7 +29,6 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerClock;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
@@ -336,11 +334,11 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.startGame();
 
         _klingonOutpost = (FacilityCard) _game.addCardToGame("101_105", _cardLibrary, P1);
-        _game.getGameState().addCardToZone(_klingonOutpost, Zone.SEED_DECK);
+        _game.getGameState().addCardToZone(_klingonOutpost, Zone.SEED_DECK, true);
 
         for (String blueprintId : blueprintIds) {
             PhysicalCard card = _game.addCardToGame(blueprintId, _cardLibrary, P1);
-            _game.getGameState().addCardToZone(card, Zone.DRAW_DECK, EndOfPile.TOP);
+            _game.getGameState().addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(card, Zone.DRAW_DECK);
         }
 
         autoSeedMissions();
@@ -927,7 +925,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
             _game.getGameState().removeCardsFromZone(_game, card.getOwner(), Collections.singleton(card));
-            _game.getGameState().addCardToZone(card, Zone.VOID);
+            _game.getGameState().addCardToZone(card, Zone.VOID, true);
             topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(topCard.getLocationDeprecatedOnlyUseForTests(), card);
         }
     }

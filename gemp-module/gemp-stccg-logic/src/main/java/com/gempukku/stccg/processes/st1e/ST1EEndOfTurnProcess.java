@@ -3,7 +3,6 @@ package com.gempukku.stccg.processes.st1e;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
@@ -11,7 +10,9 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.ActionOrder;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
@@ -63,7 +64,6 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     public GameProcess getNextProcess(DefaultGame cardGame) throws PlayerNotFoundException {
         cardGame.getModifiersEnvironment().signalEndOfTurn(); // Remove "until end of turn" modifiers
         cardGame.getActionsEnvironment().signalEndOfTurn(); // Remove "until end of turn" permitted actions
-        cardGame.sendMessage(cardGame.getCurrentPlayerId() + " ended their turn");
         cardGame.setCurrentPhase(Phase.BETWEEN_TURNS);
         Player currentPlayer = cardGame.getCurrentPlayer();
         ActionOrder actionOrder =
