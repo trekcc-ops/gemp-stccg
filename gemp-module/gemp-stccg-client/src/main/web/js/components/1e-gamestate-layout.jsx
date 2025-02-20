@@ -23,6 +23,7 @@ import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
 import ActiveCardPane from './active-card-pane.jsx';
+import PlayerScorePane from './player-score-pane.jsx';
 import Hand from './hand.jsx';
 
 // Change this function to change the JSON input source.
@@ -341,6 +342,7 @@ export default function MiniDrawer() {
                         }
                     </div>
                     <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
+                    <div id="player-score-pane"><PlayerScorePane gamestate={get_gamestate()}/></div>
                     <div id="chat-pane">CHAT</div>
                 </div>
                 
