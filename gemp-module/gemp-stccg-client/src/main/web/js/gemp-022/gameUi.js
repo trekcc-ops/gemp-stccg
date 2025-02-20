@@ -1029,7 +1029,7 @@ export default class GameTableUI {
                     this.lastActionIndex = i;
                 }
                 break;
-            case "CA":
+            case "CA": // TODO - This game event flashes the border around the card. No longer called in server.
                 this.animations.cardActivated(gameEvent, animate);
                 break;
             case "CAC": // TODO - This game event was removed from the server side, so will never be called

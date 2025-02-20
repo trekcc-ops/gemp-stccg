@@ -14,8 +14,6 @@ import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.ActionResultGameEvent;
-import com.gempukku.stccg.gameevent.FlashCardInPlayGameEvent;
-import com.gempukku.stccg.gameevent.GameEvent;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
@@ -397,13 +395,6 @@ public abstract class DefaultGame {
     public Action getActionById(int actionId) {
         ActionsEnvironment environment = getActionsEnvironment();
         return environment.getActionById(actionId);
-    }
-
-    public void activatedCard(Player performingPlayer, PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            GameEvent event = new FlashCardInPlayGameEvent(card, performingPlayer);
-            listener.sendEvent(event);
-        }
     }
 
 
