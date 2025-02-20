@@ -86,16 +86,6 @@ public final class TribblesGameState extends GameState {
     }
 
 
-    public void shufflePlayPileIntoDeck(DefaultGame game, Player player) {
-        String playerId = player.getPlayerId();
-        List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
-        removeCardsFromZone(game, player, playPile);
-        for (PhysicalCard card : playPile) {
-            addCardToZone(card, Zone.DRAW_DECK);
-        }
-        player.shuffleDrawDeck(game);
-    }
-
     public List<PhysicalCard> getPlayPile(String playerId) {
         return Collections.unmodifiableList(_playPiles.get(playerId));
     }

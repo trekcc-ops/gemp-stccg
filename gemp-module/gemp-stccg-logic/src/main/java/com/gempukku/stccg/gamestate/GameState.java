@@ -342,7 +342,9 @@ public abstract class GameState {
         if (!drawDeck.isEmpty()) {
             PhysicalCard card = drawDeck.getTopCard();
             drawDeck.remove(card);
-            addCardToZoneWithoutSendingToClient(card, Zone.HAND);
+            List<PhysicalCard> zoneCardList = getZoneCards(player, Zone.HAND);
+            zoneCardList.add(card);
+            card.setZone(Zone.HAND);
         }
     }
 
@@ -385,10 +387,10 @@ public abstract class GameState {
     }
 
     public void placeCardOnMission(DefaultGame cardGame, PhysicalCard cardBeingPlaced, MissionLocation mission) {
-        removeCardsFromZone(cardGame, cardBeingPlaced.getOwner(), List.of(cardBeingPlaced));
+        removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(cardBeingPlaced));
         cardBeingPlaced.setPlacedOnMission(true);
         cardBeingPlaced.setLocation(mission);
-        addCardToZone(cardBeingPlaced, Zone.AT_LOCATION);
+        addCardToZoneWithoutSendingToClient(cardBeingPlaced, Zone.AT_LOCATION);
         cardBeingPlaced.setLocation(mission);
     }
 

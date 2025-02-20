@@ -366,7 +366,7 @@ public class MissionLocation implements GameLocation {
         GameState gameState = cardGame.getGameState();
         for (PhysicalCard card : cards) {
             gameState.removeCardsFromZone(card.getGame(), card.getOwner(), Collections.singleton(card));
-            gameState.addCardToZone(card, Zone.VOID);
+            gameState.addCardToZoneWithoutSendingToClient(card, Zone.VOID);
             addCardToTopOfPreSeedPile(card, player);
         }
     }

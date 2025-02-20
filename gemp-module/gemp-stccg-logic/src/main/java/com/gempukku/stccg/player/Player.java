@@ -185,13 +185,6 @@ public class Player {
         return _cardGroups.keySet();
     }
 
-    public void discardHand(DefaultGame cardGame) {
-        cardGame.getGameState().removeCardsFromZone(cardGame, this, getCardsInHand());
-        for (PhysicalCard card : getCardsInHand()) {
-            cardGame.getGameState().addCardToZone(card, Zone.DISCARD);
-        }
-    }
-
     public CardPile getDrawDeck() {
         return _drawDeck;
     }

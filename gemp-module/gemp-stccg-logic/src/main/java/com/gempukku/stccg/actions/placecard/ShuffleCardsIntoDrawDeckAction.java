@@ -50,21 +50,10 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
             }
         }
 
-        _targetCards = _cardTarget.getCards(cardGame);
-
-        cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, _targetCards);
-        for (PhysicalCard card : _targetCards) {
-            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.DRAW_DECK);
-        }
-        CardPile drawDeck = performingPlayer.getDrawDeck();
-        drawDeck.shuffle();
-
-
-        cardGame.sendMessage(TextUtils.concatenateStrings(
-                _targetCards.stream().map(PhysicalCard::getCardLink)) + " " +
-                TextUtils.be(_targetCards) + " shuffled into " + _performingPlayerId + " deck");
-        setAsSuccessful();
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            processEffect(cardGame);
+        return nextAction;
     }
 
     @Override
@@ -75,6 +64,22 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @Override
     public int getCardIdForActionSelection() {
         return _performingCard.getCardId();
+    }
+
+    public void processEffect(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+
+        _targetCards = _cardTarget.getCards(cardGame);
+
+        cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, _targetCards);
+        for (PhysicalCard card : _targetCards) {
+            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.DRAW_DECK);
+        }
+        CardPile drawDeck = performingPlayer.getDrawDeck();
+        drawDeck.shuffle();
+
+        setAsSuccessful();
     }
 
 }

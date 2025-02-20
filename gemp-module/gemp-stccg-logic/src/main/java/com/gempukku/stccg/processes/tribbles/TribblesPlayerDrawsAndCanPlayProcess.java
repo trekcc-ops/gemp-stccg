@@ -24,9 +24,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Player currentPlayer = _game.getCurrentPlayer();
-        String playerId = currentPlayer.getPlayerId();
         if (currentPlayer.getCardsInDrawDeck().isEmpty()) {
-            _game.sendMessage(playerId + " can't draw a card");
             _game.getGameState().setPlayerDecked(currentPlayer, true);
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"

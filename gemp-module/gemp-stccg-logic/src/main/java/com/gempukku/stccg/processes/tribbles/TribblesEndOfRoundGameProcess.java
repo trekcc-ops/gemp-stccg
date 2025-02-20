@@ -1,8 +1,11 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -42,10 +45,14 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
             }
 
             // Each player places the cards remaining in their hand into their discard pile.
-            player.discardHand(cardGame);
+            // TODO - Removing for now since Tribbles is not the focus. Need to rebuild later.
 
             // Each player then shuffles their play pile into their decks.
-            gameState.shufflePlayPileIntoDeck(cardGame, player);
+            ShuffleCardsIntoDrawDeckAction action = new ShuffleCardsIntoDrawDeckAction(null, player,
+                    Filters.in(player.getCardGroupCards(Zone.PLAY_PILE)));
+            action.processEffect(cardGame);
+            cardGame.getActionsEnvironment().logCompletedActionNotInStack(action);
+            cardGame.sendActionResultToClient();
         }
 
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfRound();
@@ -77,7 +84,6 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                     first player. Tribbles rules are inconclusive about what should happen in this case.
                  */
             String firstPlayer = firstPlayerList.get(new Random().nextInt(firstPlayerList.size()));
-            cardGame.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
 
             gameState.setCurrentPlayerId(firstPlayer);
         }

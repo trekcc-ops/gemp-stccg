@@ -40,7 +40,6 @@ public class TribblesPlayerOrderProcess extends TribblesGameProcess {
                 List<PhysicalCard> deckCards = _game.getGameState().getZoneCards(cardGame.getPlayer(player), Zone.DRAW_DECK);
                 PhysicalCard randomCard = deckCards.get(new Random().nextInt(deckCards.size()));
                 CardBlueprint randomBlueprint = randomCard.getBlueprint();
-                _game.sendMessage(player + " drew " + randomBlueprint.getTitle());
                 int randomTribbleCount = randomBlueprint.getTribbleValue();
                 startingTribbles.put(player, randomTribbleCount);
             }
