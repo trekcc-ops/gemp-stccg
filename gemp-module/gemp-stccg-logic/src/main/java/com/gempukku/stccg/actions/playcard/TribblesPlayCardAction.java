@@ -33,11 +33,8 @@ public class TribblesPlayCardAction extends PlayCardAction {
     public Action nextAction(DefaultGame cardGame) {
         TribblesGameState gameState = (TribblesGameState) cardGame.getGameState();
 
-        cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
-                _cardEnteringPlay.getCardLink());
-        gameState.removeCardsFromZone(cardGame, _cardEnteringPlay.getOwner(),
-                Collections.singleton(_cardEnteringPlay));
-        cardGame.getGameState().addCardToZone(_cardEnteringPlay, Zone.PLAY_PILE, true);
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(_cardEnteringPlay));
+        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, Zone.PLAY_PILE);
 
         int tribbleValue = _cardEnteringPlay.getBlueprint().getTribbleValue();
         gameState.setLastTribblePlayed(tribbleValue);
@@ -46,8 +43,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setNextTribbleInSequence(nextTribble);
 
         gameState.setChainBroken((TribblesGame) cardGame, false);
-        cardGame.getActionsEnvironment().emitEffectResult(
-                new PlayCardResult(this, _cardEnteringPlay));
+        cardGame.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
         _wasCarriedOut = true;
         setAsSuccessful();
         return null;

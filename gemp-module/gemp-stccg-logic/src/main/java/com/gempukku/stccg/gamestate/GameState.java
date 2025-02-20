@@ -136,23 +136,6 @@ public abstract class GameState {
     }
 
 
-    public void attachCard(PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
-        if(card == attachTo)
-            throw new InvalidParameterException("Cannot attach card to itself!");
-        card.attachTo(attachTo);
-        _inPlay.add(card);
-        card.setZone(Zone.ATTACHED);
-
-        for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
-            try {
-                sendCreatedCardToListener(card, listener);
-            } catch(InvalidGameOperationException exp) {
-                card.getGame().sendErrorMessage(exp);
-            }
-        }
-        card.startAffectingGame(card.getGame());
-    }
-
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
         List<PhysicalCard> zoneCards = player.getCardGroupCards(zone);
         return Objects.requireNonNullElse(zoneCards, _inPlay);
@@ -445,5 +428,12 @@ public abstract class GameState {
     @JsonProperty("playerClocks")
     private Collection<PlayerClock> playerClockList() {
         return _playerClocks.values();
+    }
+
+    public void addCardToInPlay(PhysicalCard card) {
+        if (!_inPlay.contains(card)) {
+            _inPlay.add(card);
+            card.startAffectingGame(card.getGame());
+        }
     }
 }

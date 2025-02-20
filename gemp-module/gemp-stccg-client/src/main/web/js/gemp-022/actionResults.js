@@ -53,6 +53,13 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
             }
             break;
+        case "PLAY_CARD":
+            cardList.push(jsonAction.targetCardId);
+            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
+            gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
+            break;
         case "REMOVE_CARD_FROM_GAME":
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
@@ -83,7 +90,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
         case "PLACE_CARD_ON_MISSION":
-        case "PLAY_CARD":
         case "REVEAL_SEED_CARD": // no animation included yet, use targetCardId property
         case "STOP_CARDS": // no animation included yet, use targetCardId property
             break;
@@ -151,6 +157,11 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         case "DRAW_CARD":
             message = performingPlayerId + " drew a card";
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        case "PLAY_CARD":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            message = performingPlayerId + " played " + showLinkableCardTitle(targetCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
         case "REMOVE_CARD_FROM_GAME":

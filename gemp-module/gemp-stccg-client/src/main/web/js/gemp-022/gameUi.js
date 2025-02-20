@@ -1029,14 +1029,14 @@ export default class GameTableUI {
                     this.lastActionIndex = i;
                 }
                 break;
+            case "D":
+                this.animations.processDecision(gameState.pendingDecision, animate);
+                break;
             case "CA": // TODO - This game event flashes the border around the card. No longer called in server.
                 this.animations.cardActivated(gameEvent, animate);
                 break;
             case "CAC": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.cardAffectsCard(gameEvent, animate);
-                break;
-            case "D":
-                this.animations.processDecision(gameState.pendingDecision, animate);
                 break;
             case "EP": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.eventPlayed(gameEvent, animate);
@@ -1065,7 +1065,6 @@ export default class GameTableUI {
     }
 
     initializeGameState(jsonNode) {
-            // TODO - Still need to process chat messages
 
         try {
             this.channelNumber = jsonNode.channelNumber;

@@ -9,11 +9,16 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
+import java.security.InvalidParameterException;
 import java.util.Collections;
 
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
@@ -52,9 +57,18 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     }
 
     public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
-        _game.getGameState().removeCardsFromZone(_game, _owner, Collections.singleton(this));
+        ST1EGameState gameState = _game.getGameState();
+
+        gameState.removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(this));
         setLocation(facility.getGameLocation());
-        _game.getGameState().attachCard(this, facility);
+
+        attachTo(facility);
+        gameState.addCardToInPlay(this);
+        _zone = Zone.ATTACHED;
+
+        if (this instanceof PhysicalShipCard ship) {
+            ship.dockAtFacility(facility);
+        }
     }
 
     @Override

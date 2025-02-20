@@ -26,6 +26,7 @@ import java.util.Set;
 public class ReportCardAction extends STCCGPlayCardAction {
     private ActionCardResolver _destinationTarget;
     private AffiliationResolver _affiliationTarget;
+
     private enum Progress { destinationOptionsIdentified, destinationSelected, affiliationSelected, cardPlayed }
 
     public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree) {
@@ -160,8 +161,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 }
                 setProgress(Progress.cardPlayed);
                 setAsSuccessful();
-
-                cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " played " + _cardEnteringPlay.getCardLink());
 
                 reportable.reportToFacility(getSelectedDestination(cardGame));
                 if (reportable instanceof AffiliatedCard affiliated) {
