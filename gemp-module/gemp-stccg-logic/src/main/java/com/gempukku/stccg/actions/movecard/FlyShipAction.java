@@ -40,15 +40,11 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
         for (MissionLocation location : allLocations) {
             if (location.isInSameQuadrantAs(currentLocation) && location != currentLocation) {
-                try {
-                    int rangeNeeded = currentLocation.getDistanceToLocation(cardGame, location, player);
-                    if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
-                        PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
-                        _destinationOptions.add(destination);
-                        _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
-                    }
-                } catch(InvalidGameLogicException exp) {
-                    cardGame.sendMessage(exp.getMessage());
+                int rangeNeeded = currentLocation.getDistanceToLocation(cardGame, location, player);
+                if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
+                    PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
+                    _destinationOptions.add(destination);
+                    _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
                 }
             }
         }
