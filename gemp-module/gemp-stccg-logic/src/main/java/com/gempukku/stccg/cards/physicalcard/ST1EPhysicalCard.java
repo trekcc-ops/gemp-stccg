@@ -29,12 +29,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         _game = game;
     }
 
-    // For testing
-    public ST1EPhysicalCard(ST1EGame game, Player owner, String title, String set) throws CardNotFoundException {
-        super(game.getGameState().getAndIncrementNextCardId(), owner,
-                game.getBlueprintLibrary().getBlueprintByName(title, set));
-        _game = game;
-    }
     @Override
     public ST1EGame getGame() { return _game; }
 

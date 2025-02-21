@@ -16,10 +16,10 @@ public interface ActionsEnvironment {
 
     List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
 
-    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, String playerId,
+    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, Player player,
                                                        Collection<? extends ActionResult> effectResults);
 
-    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId,
+    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, Player player,
                                                            Collection<? extends ActionResult> effectResults);
 
     void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);

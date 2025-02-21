@@ -2,13 +2,10 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
 import java.util.Set;
@@ -40,12 +37,13 @@ public class TurnProcedure {
             if (actionResults.isEmpty()) {
                 if (actionsEnvironment.hasNoActionsInProgress())
                     try {
-                        continueCurrentProcess();
+                        _game.getGameState().getCurrentProcess().continueProcess(_game);
+                        _game.sendActionResultToClient();
                     } catch(InvalidGameLogicException exp) {
                         _game.sendErrorMessage(exp);
                     }
                 else
-                    executeNextSubaction();
+                    executeNextSubaction(actionsEnvironment);
             } else {
                 actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, actionResults));
             }
@@ -57,27 +55,14 @@ public class TurnProcedure {
         }
     }
 
-    private void continueCurrentProcess() throws InvalidGameLogicException, PlayerNotFoundException {
-        GameState gameState = _game.getGameState();
-        GameProcess originalProcess = gameState.getCurrentProcess();
-        if (originalProcess.isFinished()) {
-            gameState.setCurrentProcess(originalProcess.getNextProcess(_game));
-        } else {
-            // TODO - This implementation seems to assume that game stats will never change during a process
-            originalProcess.process(_game);
-            _game.sendActionResultToClient();
-            originalProcess.setFinished(true);
-        }
-    }
+    private void executeNextSubaction(ActionsEnvironment actionsEnvironment) throws PlayerNotFoundException,
+            InvalidGameLogicException, CardNotFoundException, InvalidGameOperationException {
 
-    private void executeNextSubaction() throws PlayerNotFoundException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException {
-        ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
         Action currentAction = actionsEnvironment.getCurrentAction();
         Action nextAction = currentAction.nextAction(_game);
 
         if (currentAction.isInProgress() && nextAction != null) {
-            _game.getActionsEnvironment().addActionToStack(nextAction);
+            actionsEnvironment.addActionToStack(nextAction);
         } else if (currentAction.wasCompleted()) {
             actionsEnvironment.removeCompletedActionFromStack(currentAction);
             _game.sendActionResultToClient();

@@ -3,7 +3,6 @@ package com.gempukku.stccg.gameevent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -22,7 +21,10 @@ import org.w3c.dom.Node;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class GameEvent {
     public enum Type {
@@ -130,7 +132,7 @@ public class GameEvent {
     @JsonIgnore
     public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }
 
-    public Node serialize(Document doc) throws JsonProcessingException {
+    public Node serialize(Document doc) {
         Element eventElem = doc.createElement("ge");
 
         for (Attribute attribute : _eventAttributes.keySet()) {
@@ -138,10 +140,6 @@ public class GameEvent {
                 eventElem.setAttribute(attribute.name(), getAttribute(attribute));
         }
         return eventElem;
-    }
-
-    public Map<Attribute, String> getAttributes() {
-        return _eventAttributes;
     }
 
     protected Zone getZoneForCard(PhysicalCard card) throws InvalidGameOperationException {
