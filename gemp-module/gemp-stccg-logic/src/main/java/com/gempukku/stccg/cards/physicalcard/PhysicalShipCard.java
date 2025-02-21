@@ -10,9 +10,9 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -108,7 +108,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         for (PhysicalCard card : getCrew()) {
             if (card instanceof PersonnelCard personnelCard) {
                 List<CardIcon> icons = personnelCard.getIcons();
-                if (icons != null) {
+                if (icons != null && !icons.isEmpty()) {
                     List<CardIcon> cardIcons = new LinkedList<>(icons);
                     if (cardIcons.contains(CardIcon.COMMAND) && !cardIcons.contains(CardIcon.STAFF))
                         cardIcons.add(CardIcon.STAFF);
@@ -120,11 +120,15 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
             boolean staffed = true;
             Map<CardIcon, Long> staffingAvailable = frequencyMap(combination.stream());
             for (CardIcon icon : staffingNeeded.keySet()) {
-                if (staffingAvailable.get(icon) == null || staffingAvailable.get(icon) < staffingNeeded.get(icon))
+                if (staffingAvailable.get(icon) == null) {
                     staffed = false;
+                } else if (staffingAvailable.get(icon) < staffingNeeded.get(icon)) {
+                    staffed = false;
+                }
             }
-            if (staffed)
+            if (staffed) {
                 return true;
+            }
         }
         return false;
     }
