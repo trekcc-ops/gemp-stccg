@@ -10,12 +10,10 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -29,7 +27,6 @@ import java.util.stream.Stream;
 public class PhysicalShipCard extends PhysicalReportableCard1E
         implements AffiliatedCard, AttemptingUnit, CardWithCrew {
 
-    private static final Logger LOGGER = LogManager.getLogger(PhysicalShipCard.class);
     private boolean _docked = false;
     @JsonProperty("dockedAtCardId")
     private Integer _dockedAtCardId;
@@ -106,8 +103,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     public boolean isStaffed() {
             // TODO - Ignores any staffing requirement that is not a CardIcon
             // TODO - Does not require a personnel of matching affiliation aboard
-        LOGGER.debug("Evaluating staffing for " + getTitle());
-        LOGGER.debug("     Staffing requirements: " + _blueprint.getStaffing());
         Map<CardIcon, Long> staffingNeeded = frequencyMap(_blueprint.getStaffing().stream());
         List<List<CardIcon>> staffingIconsAvailable = new LinkedList<>();
         for (PhysicalCard card : getCrew()) {
@@ -118,7 +113,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                     if (cardIcons.contains(CardIcon.COMMAND) && !cardIcons.contains(CardIcon.STAFF))
                         cardIcons.add(CardIcon.STAFF);
                     staffingIconsAvailable.add(cardIcons);
-                    LOGGER.debug("     " + card.getTitle() + " can contribute any of these icons: " + cardIcons);
                 }
             }
         }
@@ -133,11 +127,9 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                 }
             }
             if (staffed) {
-                LOGGER.debug("     able to meet staffing requirements with " + combination);
                 return true;
             }
         }
-        LOGGER.debug("     Unable to meet staffing requirements");
         return false;
     }
 
