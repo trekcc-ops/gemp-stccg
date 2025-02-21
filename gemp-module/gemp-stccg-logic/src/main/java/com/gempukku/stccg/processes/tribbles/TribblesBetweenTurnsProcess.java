@@ -22,7 +22,6 @@ public class TribblesBetweenTurnsProcess extends TribblesGameProcess {
         String currentPlayerId = actionOrder.getNextPlayer();
 
         while (cardGame.getPlayer(currentPlayerId).isDecked()) {
-            cardGame.sendMessage(currentPlayerId + " is decked. Skipping their turn.");
             actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(currentPlayerId, false);
             currentPlayerId = actionOrder.getNextPlayer();
         }
