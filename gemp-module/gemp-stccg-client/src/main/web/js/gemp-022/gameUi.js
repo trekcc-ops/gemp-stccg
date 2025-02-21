@@ -1029,7 +1029,7 @@ export default class GameTableUI {
                     this.lastActionIndex = i;
                 }
                 break;
-            case "D":
+            case "DECISION":
                 this.animations.processDecision(gameState.pendingDecision, animate);
                 break;
             case "CA": // TODO - This game event flashes the border around the card. No longer called in server.
@@ -1212,7 +1212,7 @@ export default class GameTableUI {
             // Go through all the events
             for (const gameEvent of jsonNode.gameEvents) {
                 this.processGameEvent(gameEvent, animate);
-                if (gameEvent.type == "D") {
+                if (gameEvent.type == "DECISION") {
                     hasDecision = true;
                 }
             }
