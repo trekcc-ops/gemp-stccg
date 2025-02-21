@@ -44,8 +44,6 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
         if (!_wasCarriedOut) {
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
                 cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
-                cardGame.sendMessage(_performingPlayerId + " puts " + card.getCardLink() +
-                        " from hand on bottom of their play pile");
                 cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.PLAY_PILE);
                 _wasCarriedOut = true;
                 setAsSuccessful();

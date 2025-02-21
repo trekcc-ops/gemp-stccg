@@ -107,14 +107,13 @@ public final class TribblesGameState extends GameState {
 
     public int getNextTribbleInSequence() { return _nextTribbleInSequence; }
 
-    public void breakChain(TribblesGame cardGame) {
+    public void breakChain() {
         _chainBroken = true;
-        cardGame.sendMessage("The chain has been broken.");
     }
 
 
-    public void setChainBroken(TribblesGame game, boolean chainBroken) {
-        if (chainBroken) breakChain(game);
+    public void setChainBroken(boolean chainBroken) {
+        if (chainBroken) breakChain();
         else _chainBroken = false;
     }
 
@@ -143,7 +142,7 @@ public final class TribblesGameState extends GameState {
         return List.of(getCurrentPhase());
     }
 
-    public void advanceRound(TribblesGame cardGame) {
+    public void advanceRound() {
         // Each new round begins with a new "chain" (starting with a card worth 1 Tribble) and play proceeds clockwise.
         _chainBroken = false;
         setNextTribbleInSequence(1);
@@ -154,7 +153,6 @@ public final class TribblesGameState extends GameState {
         // Increment round number
         _currentRound++;
         _currentRoundIsOver = false;
-        cardGame.sendMessage("Beginning Round " + _currentRound);
     }
 
     public void endRound() {

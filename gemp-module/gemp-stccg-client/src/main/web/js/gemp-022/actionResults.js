@@ -158,6 +158,24 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = performingPlayerId + " drew a card";
             gameChat.appendMessage(message, "gameMessage");
             break;
+        case "FLY_SHIP":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            let newLocationId = targetCard.locationId;
+            let newLocationName;
+            for (const location of jsonGameState.spacelineLocations) {
+                if (location.locationId == newLocationId) {
+                    newLocationName = location.locationName;
+                }
+            }
+            message = showLinkableCardTitle(targetCard) + " flew to " + newLocationName;
+            break;
+        case "KILL":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            message = performingPlayerId + " killed ";
+            message = message + showLinkableCardTitle(targetCard) + " using ";
+            message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "PLAY_CARD":
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             message = performingPlayerId + " played " + showLinkableCardTitle(targetCard);
@@ -176,7 +194,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
                 gameUi.playerScores[index] = player.score;
             }
             message = performingPlayerId + " scored " + jsonAction.pointsScored + " points from " +
-                showLinkableCardTitle(jsonAction.performingCard);
+                showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
         case "SEED_CARD":
@@ -198,13 +216,10 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
         case "ENCOUNTER_SEED_CARD":
         case "FAIL_DILEMMA":
-        case "FLY_SHIP":
-        case "KILL":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD_ON_MISSION":
         case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
         case "PLACE_CARDS_BENEATH_DRAW_DECK":
-        case "PLAY_CARD":
         case "REVEAL_SEED_CARD":
         case "SHUFFLE_CARDS_INTO_DRAW_DECK":
         case "STOP_CARDS":

@@ -60,8 +60,6 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
-        ST1EGame stGame = getST1EGame(cardGame);
-        cardGame.takeSnapshot("Start of game");
-        return new DoorwaySeedPhaseProcess(stGame.getPlayerIds());
+        return new DoorwaySeedPhaseProcess(cardGame.getPlayerIds());
     }
 }

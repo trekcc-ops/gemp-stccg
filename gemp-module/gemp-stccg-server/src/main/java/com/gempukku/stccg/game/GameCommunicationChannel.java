@@ -62,7 +62,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public final void sendMessage(String message) {
+    public final void sendMessageEvent(String message) {
         appendEvent(new SendMessageGameEvent(GameEvent.Type.SEND_MESSAGE, message));
     }
 

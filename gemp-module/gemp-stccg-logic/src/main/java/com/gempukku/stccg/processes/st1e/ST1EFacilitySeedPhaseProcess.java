@@ -74,7 +74,6 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             Collection<Player> players = cardGame.getPlayers();
 
             ST1EGameState gameState = stGame.getGameState();
-            cardGame.takeSnapshot("Start of play phase");
 
             for (Player player : players) {
                 Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInHand());

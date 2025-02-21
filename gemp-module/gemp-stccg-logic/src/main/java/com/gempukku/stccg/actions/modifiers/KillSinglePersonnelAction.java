@@ -75,11 +75,6 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
                 throw new InvalidGameLogicException("Too many cards selected for KillSinglePersonnelAction");
             } else {
                 PhysicalCard victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
-                StringBuilder message = new StringBuilder();
-                message.append(_performingPlayerId).append(" killed ").append(victim.getCardLink());
-                if (_performingCard != null)
-                    message.append(" using ").append(_performingCard.getCardLink());
-                cardGame.sendMessage(message.toString());
 
                 if (victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
                     reportable.leaveAwayTeam((ST1EGame) cardGame);

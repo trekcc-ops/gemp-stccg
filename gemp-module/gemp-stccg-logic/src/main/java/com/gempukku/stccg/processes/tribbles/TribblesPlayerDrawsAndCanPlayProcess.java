@@ -69,7 +69,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     private void playerPassed() {
-        _game.getGameState().breakChain(_game);
+        _game.getGameState().breakChain();
     }
 
     @Override

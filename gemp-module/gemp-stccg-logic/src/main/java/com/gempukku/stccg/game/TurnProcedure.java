@@ -90,22 +90,18 @@ public class TurnProcedure {
     private void breakExcessiveLoop(int numSinceDecision) {
         String errorMessage = "There's been " + numSinceDecision +
                 " actions/effects since last user decision. Game is probably looping, so ending game.";
-        sendMessage(errorMessage);
+        _game.sendErrorMessage(errorMessage);
 
         Stack<Action> actionStack = _game.getActionsEnvironment().getActionStack();
-        sendMessage("Action stack size: " + actionStack.size());
-        actionStack.forEach(action -> sendMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
+        _game.sendErrorMessage("Action stack size: " + actionStack.size());
+        actionStack.forEach(action -> _game.sendErrorMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
                 action.getClass().getSimpleName()));
 
         List<ActionResult> actionResults =
                 _game.getActionsEnvironment().consumeEffectResults().stream().toList();
-        actionResults.forEach(effectResult -> sendMessage(
+        actionResults.forEach(effectResult -> _game.sendErrorMessage(
                 "EffectResult " + (actionResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
         throw new UnsupportedOperationException(errorMessage);
-    }
-
-    private void sendMessage(String message) {
-        _game.sendMessage(message);
     }
 
 }

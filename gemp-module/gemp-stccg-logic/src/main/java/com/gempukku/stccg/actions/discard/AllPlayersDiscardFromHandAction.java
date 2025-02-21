@@ -78,11 +78,6 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
                 gameState.addCardToZone(card, Zone.DISCARD, true);
                 game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_performingCard, card));
             }
-
-            if (!discardedCards.isEmpty())
-                game.sendMessage(discardingPlayer.getPlayerId() + " discarded " +
-                        TextUtils.getConcatenatedCardLinks(discardedCards) +
-                        " from " + Zone.HAND.getHumanReadable());
         }
     }
 

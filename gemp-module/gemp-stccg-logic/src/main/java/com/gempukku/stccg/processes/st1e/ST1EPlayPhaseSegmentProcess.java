@@ -32,19 +32,15 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                             playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            if ("revert".equalsIgnoreCase(result)) {
-                                cardGame.performRevert(currentPlayer);
-                            } else {
-                                try {
-                                    Action action = getSelectedAction(result);
-                                    if (action != null) {
-                                        cardGame.getActionsEnvironment().addActionToStack(action);
-                                    } else {
-                                        _consecutivePasses++;
-                                    }
-                                } catch(InvalidGameLogicException exp) {
-                                    throw new DecisionResultInvalidException(exp.getMessage());
+                            try {
+                                Action action = getSelectedAction(result);
+                                if (action != null) {
+                                    cardGame.getActionsEnvironment().addActionToStack(action);
+                                } else {
+                                    _consecutivePasses++;
                                 }
+                            } catch (InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
                             }
                         }
                     });

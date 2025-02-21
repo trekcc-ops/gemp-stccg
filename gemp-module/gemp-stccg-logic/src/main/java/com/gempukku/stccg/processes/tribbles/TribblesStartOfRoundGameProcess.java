@@ -18,7 +18,7 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         TribblesGameState gameState = _game.getGameState();
-        gameState.advanceRound(_game);
+        gameState.advanceRound();
 
         // Draw new hands. Shuffle only on first round, since shuffling is already done at end of every round.
         for (Player player : cardGame.getPlayers()) {

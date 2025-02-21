@@ -40,7 +40,6 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 scorePointsAction.processEffect(_game);
                 _game.getActionsEnvironment().logCompletedActionNotInStack(scorePointsAction);
                 _game.sendActionResultToClient(); // for updated points
-                _game.sendMessage(playerId + " went out with " + score + " points");
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
 

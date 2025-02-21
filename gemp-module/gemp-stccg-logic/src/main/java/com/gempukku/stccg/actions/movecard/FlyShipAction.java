@@ -24,6 +24,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalShipCard _flyingCard;
     private boolean _destinationChosen, _cardMoved;
+
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
     private SelectVisibleCardAction _selectAction;
@@ -97,10 +98,6 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             setAsSuccessful();
             _flyingCard.useRange(rangeNeeded);
             _flyingCard.setLocation(destinationLocation);
-            _flyingCard.getGame().sendMessage(
-                    _flyingCard.getCardLink() + " flew to " + destinationLocation.getLocationName() +
-                            " (using " + rangeNeeded + " RANGE)"
-            );
         }
 
         return getNextAction();

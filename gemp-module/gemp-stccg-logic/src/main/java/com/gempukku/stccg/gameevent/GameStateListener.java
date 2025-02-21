@@ -4,7 +4,7 @@ public interface GameStateListener {
     String getPlayerId();
     void sendEvent(GameEvent gameEvent);
 
-    void sendMessage(String message);
+    void sendMessageEvent(String message);
 
     void sendWarning(String playerId, String warning);
     long getLastAccessed();

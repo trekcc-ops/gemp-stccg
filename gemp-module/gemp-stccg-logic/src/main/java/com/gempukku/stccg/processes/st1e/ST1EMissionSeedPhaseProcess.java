@@ -51,8 +51,6 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {
-                                if ("revert".equalsIgnoreCase(result))
-                                    cardGame.performRevert(currentPlayer);
                                 Action action = getSelectedAction(result);
                                 cardGame.getActionsEnvironment().addActionToStack(action);
                             } catch(InvalidGameLogicException exp) {
@@ -86,7 +84,6 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
                     gameState.addCardToZone(card, Zone.HAND, true);
                 }
             }
-            cardGame.takeSnapshot("Start of dilemma seed phase");
             return new DilemmaSeedPhaseOpponentsMissionsProcess(stGame);
         } else {
             playerOrder.advancePlayer();

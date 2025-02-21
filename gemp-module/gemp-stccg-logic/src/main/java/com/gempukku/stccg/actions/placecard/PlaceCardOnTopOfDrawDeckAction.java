@@ -37,11 +37,9 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
         PhysicalCard cardBeingPlaced = _cardTarget.getCard();
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(cardBeingPlaced));
-        cardGame.sendMessage(_performingPlayerId + " placed " + cardBeingPlaced + " on top of their draw deck");
 
         CardPile drawDeck = cardBeingPlaced.getOwner().getDrawDeck();
         drawDeck.addCardToTop(cardBeingPlaced);
-        cardBeingPlaced.setZone(Zone.DRAW_DECK);
 
         setAsSuccessful();
         return getNextAction();
