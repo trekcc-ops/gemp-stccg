@@ -3,10 +3,14 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -189,6 +193,44 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     public Map<Integer, Action> getAllActions() {
         return _createdActionMap;
+    }
+
+    public void executeNextSubAction(DefaultGame cardGame) throws InvalidGameOperationException,
+            PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException {
+        Action currentAction = getCurrentAction();
+        Action nextAction = currentAction.nextAction(cardGame);
+
+        if (currentAction.isInProgress() && nextAction != null) {
+            addActionToStack(nextAction);
+        } else if (currentAction.wasCompleted()) {
+            removeCompletedActionFromStack(currentAction);
+            cardGame.sendActionResultToClient();
+        } else if (cardGame.isCarryingOutEffects()) {
+            throw new InvalidGameLogicException("Unable to process action");
+        }
+
+    }
+
+    public void carryOutPendingActions(DefaultGame cardGame) throws PlayerNotFoundException,
+            InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
+        Set<ActionResult> actionResults = consumeEffectResults();
+        for (ActionResult result : actionResults) {
+            result.createOptionalAfterTriggerActions(cardGame);
+        }
+        if (actionResults.isEmpty()) {
+            if (hasNoActionsInProgress())
+                try {
+                    cardGame.continueCurrentProcess();
+                    cardGame.sendActionResultToClient();
+                } catch(InvalidGameLogicException exp) {
+                    cardGame.sendErrorMessage(exp);
+                }
+            else {
+                executeNextSubAction(cardGame);
+            }
+        } else {
+            addActionToStack(new PlayOutEffectResults(cardGame, actionResults));
+        }
     }
 
 }

@@ -8,7 +8,6 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
-import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 
 import java.util.Map;
@@ -24,7 +23,6 @@ public class TribblesGame extends DefaultGame {
         _rules = new TribblesRuleSet();
         _rules.applyRuleSet(this);
         _gameState.createPhysicalCards(this, library, decks);
-        _turnProcedure = new TurnProcedure(this);
         _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
     }
 
@@ -35,7 +33,6 @@ public class TribblesGame extends DefaultGame {
         _rules = new TribblesRuleSet();
         _rules.applyRuleSet(this);
         _gameState.createPhysicalCards(this, library, decks);
-        _turnProcedure = new TurnProcedure(this);
         _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
     }
 
@@ -44,6 +41,5 @@ public class TribblesGame extends DefaultGame {
     public TribblesGameState getGameState() {
         return _gameState;
     }
-    public TurnProcedure getTurnProcedure() { return _turnProcedure; }
 
 }

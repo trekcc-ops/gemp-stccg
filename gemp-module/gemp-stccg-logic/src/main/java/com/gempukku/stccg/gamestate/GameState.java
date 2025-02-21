@@ -436,4 +436,8 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
         }
     }
+
+    public void continueCurrentProcess(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
+        _currentGameProcess.continueProcess(cardGame);
+    }
 }

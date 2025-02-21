@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -29,7 +30,6 @@ public abstract class DefaultGame {
     protected final CardBlueprintLibrary _library;
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
-    protected TurnProcedure _turnProcedure;
     final List<String> _lastMessages = new LinkedList<>();
 
     // Endgame operations
@@ -42,10 +42,7 @@ public abstract class DefaultGame {
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
     protected final UserFeedback _userFeedback;
-    private final List<GameSnapshot> _snapshots = new LinkedList<>();
-    protected GameSnapshot _snapshotToRestore;
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
-    private final static int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
     protected final GameType _gameType;
 
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
@@ -198,14 +195,10 @@ public abstract class DefaultGame {
         return getGameState().getModifiersLogic();
     }
 
-    public abstract TurnProcedure getTurnProcedure();
-
     public void startGame() {
         try {
-            if (!_cancelled)
-                getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
-        } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException |
-                CardNotFoundException exp) {
+            carryOutPendingActionsUntilDecisionNeeded();
+        } catch(InvalidGameOperationException exp) {
             sendErrorMessage(exp);
         }
     }
@@ -213,17 +206,41 @@ public abstract class DefaultGame {
     public void carryOutPendingActionsUntilDecisionNeeded() throws InvalidGameOperationException {
         try {
             if (!_cancelled) {
-                getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
+                int numSinceDecision = 0;
+                ActionsEnvironment actionsEnvironment = getActionsEnvironment();
 
-                while (_snapshotToRestore != null) {
-//                restoreSnapshot();
-                    carryOutPendingActionsUntilDecisionNeeded();
+                while (isCarryingOutEffects()) {
+                    numSinceDecision++;
+                    actionsEnvironment.carryOutPendingActions(this);
+                    sendActionResultToClient();
+
+                    // Check if an unusually large number loops since user decision, which means game is probably in a loop
+                    if (numSinceDecision >= 5000)
+                        breakExcessiveLoop(numSinceDecision);
                 }
             }
         } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
             throw new InvalidGameOperationException(exp);
         }
     }
+
+    private void breakExcessiveLoop(int numSinceDecision) {
+        String errorMessage = "There's been " + numSinceDecision +
+                " actions/effects since last user decision. Game is probably looping, so ending game.";
+        sendErrorMessage(errorMessage);
+
+        Stack<Action> actionStack = getActionsEnvironment().getActionStack();
+        sendErrorMessage("Action stack size: " + actionStack.size());
+        actionStack.forEach(action -> sendErrorMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
+                action.getClass().getSimpleName()));
+
+        List<ActionResult> actionResults =
+                getActionsEnvironment().consumeEffectResults().stream().toList();
+        actionResults.forEach(effectResult -> sendErrorMessage(
+                "EffectResult " + (actionResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
+        throw new UnsupportedOperationException(errorMessage);
+    }
+    
 
     public Player getPlayer(int index) throws PlayerNotFoundException {
         return getPlayer(getPlayerId(index));
@@ -246,10 +263,6 @@ public abstract class DefaultGame {
         return gameState.getCurrentPlayer();
     }
 
-    public List<GameSnapshot> getSnapshots() {
-        return Collections.unmodifiableList(_snapshots);
-    }
-
     public String getOpponent(String playerId) {
             // TODO - Only works for 2-player games
             return getAllPlayerIds()[0].equals(playerId) ?
@@ -258,14 +271,6 @@ public abstract class DefaultGame {
 
     public Player getOpponent(Player player) throws PlayerNotFoundException {
         return getPlayer(getOpponent(player.getPlayerId()));
-    }
-
-    /**
-     * Determines if a snapshot is pending to be restored.
-     * @return true or false
-     */
-    public boolean isRestoreSnapshotPending() {
-        return false;
     }
 
     public void sendMessage(String message) {
@@ -352,4 +357,7 @@ public abstract class DefaultGame {
         return _gameType;
     }
 
+    public void continueCurrentProcess() throws PlayerNotFoundException, InvalidGameLogicException {
+        getGameState().continueCurrentProcess(this);
+    }
 }

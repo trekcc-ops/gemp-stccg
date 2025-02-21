@@ -33,7 +33,6 @@ public class ST1EGame extends DefaultGame {
         _rules.applyRuleSet(this);
 
         _gameState.createPhysicalCards(library, decks, this);
-        _turnProcedure = new TurnProcedure(this);
         _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
@@ -46,7 +45,6 @@ public class ST1EGame extends DefaultGame {
         _rules.applyRuleSet(this);
 
         _gameState.createPhysicalCards(library, decks, this);
-        _turnProcedure = new TurnProcedure(this);
         _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
@@ -56,8 +54,6 @@ public class ST1EGame extends DefaultGame {
     public ST1EGameState getGameState() {
         return _gameState;
     }
-
-    public TurnProcedure getTurnProcedure() { return _turnProcedure; }
 
     public void setAffiliationAttackRestrictions(AffiliationAttackRestrictions restrictions) {
     }
