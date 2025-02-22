@@ -48,7 +48,29 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         Tournament tournament = _tournamentService.getTournamentById(tournamentId);
         if (tournament == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        appendTournamentData(doc, doc, tournament, true);
+
+        Element tournamentElem = doc.createElement("tournament");
+        tournamentElem.setAttribute("id", tournament.getTournamentId());
+        tournamentElem.setAttribute("name", tournament.getTournamentName());
+        tournamentElem.setAttribute("format", _formatLibrary.get(tournament.getFormat()).getName());
+        tournamentElem.setAttribute("collection", tournament.getCollectionType().getFullName());
+        tournamentElem.setAttribute("round", String.valueOf(tournament.getCurrentRound()));
+        tournamentElem.setAttribute("stage", tournament.getTournamentStage().getHumanReadable());
+        doc.appendChild(tournamentElem);
+
+        List<PlayerStanding> leagueStandings = tournament.getCurrentStandings();
+        for (PlayerStanding standing : leagueStandings) {
+            Element standingElem = doc.createElement("tournamentStanding");
+            standingElem.setAttribute("player", standing.getPlayerName());
+            standingElem.setAttribute("standing", String.valueOf(standing.getStanding()));
+            standingElem.setAttribute("points", String.valueOf(standing.getPoints()));
+            standingElem.setAttribute("gamesPlayed", String.valueOf(standing.getGamesPlayed()));
+            DecimalFormat format = new DecimalFormat("##0.00%");
+            standingElem.setAttribute("opponentWin", format.format(standing.getOpponentWin()));
+            tournamentElem.appendChild(standingElem);
+        }
+
+
         responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
@@ -65,33 +87,9 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         if (deck == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        String result = HTMLUtils.getTournamentDeck(deck, playerName, _formatLibrary, _cardBlueprintLibrary);
+        String result = HTMLUtils.getTournamentDeck(deck, playerName, _cardBlueprintLibrary);
         responseWriter.writeHtmlResponse(result);
     }
 
 
-    private void appendTournamentData(Document doc, Node parentNode, Tournament tournament, boolean includeStandings) {
-        Element tournamentElem = doc.createElement("tournament");
-        tournamentElem.setAttribute("id", tournament.getTournamentId());
-        tournamentElem.setAttribute("name", tournament.getTournamentName());
-        tournamentElem.setAttribute("format", _formatLibrary.get(tournament.getFormat()).getName());
-        tournamentElem.setAttribute("collection", tournament.getCollectionType().getFullName());
-        tournamentElem.setAttribute("round", String.valueOf(tournament.getCurrentRound()));
-        tournamentElem.setAttribute("stage", tournament.getTournamentStage().getHumanReadable());
-        parentNode.appendChild(tournamentElem);
-
-        if (includeStandings) {
-            List<PlayerStanding> leagueStandings = tournament.getCurrentStandings();
-            for (PlayerStanding standing : leagueStandings) {
-                Element standingElem = doc.createElement("tournamentStanding");
-                standingElem.setAttribute("player", standing.getPlayerName());
-                standingElem.setAttribute("standing", String.valueOf(standing.getStanding()));
-                standingElem.setAttribute("points", String.valueOf(standing.getPoints()));
-                standingElem.setAttribute("gamesPlayed", String.valueOf(standing.getGamesPlayed()));
-                DecimalFormat format = new DecimalFormat("##0.00%");
-                standingElem.setAttribute("opponentWin", format.format(standing.getOpponentWin()));
-                tournamentElem.appendChild(standingElem);
-            }
-        }
-    }
 }

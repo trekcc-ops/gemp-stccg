@@ -2,17 +2,12 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.formats.DefaultGameFormat;
-import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.formats.GameFormat;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
@@ -59,11 +54,6 @@ public class HTMLUtils {
     private HTMLUtils() {
     }
 
-    static String generateCardTooltip(CardBlueprint blueprint) {
-        return "<span class=\"tooltip\">" + blueprint.getFullName()
-                + "<span><img class=\"ttimage\" src=\"" + blueprint.getImageUrl() + "\"></span></span>";
-    }
-
     public static String makeBold(String text) {
         return ("<b>" + text + "</b>");
     }
@@ -72,31 +62,7 @@ public class HTMLUtils {
         return "<font color='" + color + "'>" + text + "</font>";
     }
 
-    static final String listCards(String deckName, String filter, CardCollection deckCards, boolean countCards,
-                                  FormatLibrary formatLibrary, boolean showToolTip, CardBlueprintLibrary cardLibrary)
-            throws CardNotFoundException {
-        StringBuilder sb = new StringBuilder();
-        sb.append(NEWLINE).append(makeBold(deckName)).append(":").append(NEWLINE);
-        for (GenericCardItem item :
-                SortAndFilterCards.process(filter, deckCards.getAll(), cardLibrary, formatLibrary)) {
-            if (countCards)
-                sb.append(item.getCount()).append("x ");
-            String blueprintId = item.getBlueprintId();
-            CardBlueprint blueprint = cardLibrary.getCardBlueprint(blueprintId);
-            String cardText;
-            if (showToolTip) {
-                cardText = generateCardTooltip(blueprint);
-            } else {
-                cardText = blueprint.getFullName();
-            }
-            sb.append(cardText).append(NEWLINE);
-        }
-        return sb.toString();
-    }
-
-    public static final String getHTMLDeck(CardDeck deck, boolean showToolTip, FormatLibrary formatLibrary,
-                                           CardBlueprintLibrary cardBlueprintLibrary)
-            throws CardNotFoundException {
+    public static final String getHTMLDeck(CardDeck deck, CardBlueprintLibrary cardBlueprintLibrary) {
 
         StringBuilder result = new StringBuilder();
 
@@ -109,66 +75,6 @@ public class HTMLUtils {
 
             }
         }
-
-/*        result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
-                deckCards,false, formatLibrary, showToolTip, cardBlueprintLibrary));
-        result.append(listCards("Free Peoples Draw Deck","sort:cardType,name",
-                deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary));
-        result.append(listCards("Shadow Draw Deck","sort:cardType,name",
-                deckCards,true, formatLibrary, showToolTip, cardBlueprintLibrary)); */
-
-        return result.toString();
-    }
-
-    static final String convertDeckToHTML(CardDeck deck, String author, FormatLibrary formatLibrary,
-                                          CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
-
-        if (deck == null)
-            return null;
-
-        StringBuilder result = new StringBuilder();
-        result.append("""
-<html>
-    <style>
-        body {
-            margin:50;
-        }
-        
-        .tooltip {
-          border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-          color:#0000FF;
-        }
-        
-        .tooltip span, .tooltip title {
-            display:none;
-        }
-        .tooltip:hover span:not(.click-disabled),.tooltip:active span:not(.click-disabled) {
-            display:block;
-            position:fixed;
-            overflow:hidden;
-            background-color: #FAEBD7;
-            width:auto;
-            z-index:9999;
-            top:20%;
-            left:350px;
-        }
-        /* This prevents tooltip images from automatically shrinking if they are near the window edge.*/
-        .tooltip span > img {
-            max-width:none !important;
-            overflow:hidden;
-        }
-                        
-    </style>
-    <body>""");
-        result.append("<h1>").append(StringEscapeUtils.escapeHtml(deck.getDeckName())).append("</h1>");
-        result.append("<h2>Format: ").append(StringEscapeUtils.escapeHtml(deck.getTargetFormat())).append("</h2>");
-        if(author != null) {
-            result.append("<h2>Author: ").append(StringEscapeUtils.escapeHtml(author)).append("</h2>");
-        }
-
-        result.append(getHTMLDeck(deck, true, formatLibrary, blueprintLibrary));
-        result.append("<h3>Notes</h3>").append(NEWLINE).append(replaceNewlines(deck.getNotes()));
-        result.append("</body></html>");
 
         return result.toString();
     }
@@ -211,12 +117,12 @@ public class HTMLUtils {
         return sb.toString();
     }
 
-    static String getTournamentDeck(CardDeck deck, String playerName, FormatLibrary formatLibrary,
+    static String getTournamentDeck(CardDeck deck, String playerName,
                                     CardBlueprintLibrary cardBlueprintLibrary) throws CardNotFoundException {
         return "<html><body>" +
                 "<h1>" + StringEscapeUtils.escapeHtml(deck.getDeckName()) + "</h1>" +
                 "<h2>by " + playerName + "</h2>" +
-                getHTMLDeck(deck, false, formatLibrary, cardBlueprintLibrary) +
+                getHTMLDeck(deck, cardBlueprintLibrary) +
                 "</body></html>";
     }
 
