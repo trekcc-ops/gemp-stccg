@@ -701,9 +701,11 @@ export default class GameAnimations {
             function (next) {
                 let newPhase = gameState.currentPhase;
                 let newPhaseName = getFriendlyPhaseName(newPhase);
-                if (newPhaseName != $("#currentPhase").text()) { // if moving to a new phase
-                    let uiPlayer = that.game.bottomPlayerId;
-                    if (newPhase === "SEED_MISSION" && that.game.allPlayerIds.includes(uiPlayer)) {
+                let uiPlayer = that.game.bottomPlayerId;
+                let currentPhaseName = $("#currentPhase").text();
+                if (that.game.allPlayerIds.includes(uiPlayer)) {
+                    if (newPhase === "SEED_MISSION" && newPhaseName != currentPhaseName) {
+                        // if initializing mission seed phase
                         for (const player of gameState.players) {
                             if (player.playerId === uiPlayer) {
                                 let missionPileCardIds = player.cardGroups["MISSIONS_PILE"].cardIds;
@@ -713,9 +715,23 @@ export default class GameAnimations {
                                 }
                             }
                         }
+                    } else if ((newPhase === "SEED_DILEMMA" || newPhase === "SEED_FACILITY") &&
+                            currentPhaseName != "Facility seed phase" && currentPhaseName != "Dilemma seed phase") {
+                            /* All dilemma and facility phase cards are put in the hand group at the beginning of
+                                the dilemma seed phase, so this shouldn't be run again when the phase moves from
+                                dilemma phase to facility phase. */
+                        for (const player of gameState.players) {
+                            if (player.playerId === uiPlayer) {
+                                let seedDeckCardIds = player.cardGroups["SEED_DECK"].cardIds;
+                                for (const cardId of seedDeckCardIds) {
+                                    let card = gameState.visibleCardsInGame[cardId];
+                                    that.addCardToHiddenZone(card, "SEED_DECK", uiPlayer);
+                                }
+                            }
+                        }
                     }
-                    $("#currentPhase").text(newPhaseName);
                 }
+                $("#currentPhase").text(newPhaseName);
                 next();
             });
     }

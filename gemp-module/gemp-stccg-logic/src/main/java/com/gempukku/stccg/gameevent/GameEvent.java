@@ -167,7 +167,7 @@ public class GameEvent {
             possibleZones.add(missionZone);
         }
 
-        // TODO - 1E client doesn't use SEED_DECK or PLAY_PILE
+        // TODO - 1E client doesn't use PLAY_PILE
         if (card.getAttachedTo() != null) {
             possibleZones.add(Zone.ATTACHED);
         } else if (card.getCardType() != CardType.MISSION && card.isInPlay() &&
@@ -175,7 +175,15 @@ public class GameEvent {
             possibleZones.add(Zone.AT_LOCATION);
         }
 
-        if (!card.isInPlay() && possibleZones.isEmpty()) {
+        boolean inSeedDeck = false;
+        for (Player player : card.getGame().getPlayers()) {
+            if (player.getCardGroupCards(Zone.SEED_DECK).contains(card)) {
+                inSeedDeck = true;
+                possibleZones.add(Zone.SEED_DECK);
+            }
+        }
+
+        if (!inSeedDeck && !card.isInPlay() && possibleZones.isEmpty()) {
             possibleZones.add(Zone.VOID);
         }
 

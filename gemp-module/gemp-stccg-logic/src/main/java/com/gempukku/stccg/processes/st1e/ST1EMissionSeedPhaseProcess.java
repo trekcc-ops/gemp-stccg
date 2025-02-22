@@ -75,15 +75,8 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
 
         if (areAllMissionsSeeded) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
-            ST1EGameState gameState = getST1EGame(cardGame).getGameState();
             cardGame.setCurrentPhase(Phase.SEED_DILEMMA);
-            for (Player player : cardGame.getPlayers()) {
-                List<PhysicalCard> remainingSeeds = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
-                for (PhysicalCard card : remainingSeeds) {
-                    gameState.removeCardsFromZone(cardGame, player, List.of(card));
-                    gameState.addCardToZone(card, Zone.HAND, true);
-                }
-            }
+            cardGame.sendActionResultToClient();
             return new DilemmaSeedPhaseOpponentsMissionsProcess(stGame);
         } else {
             playerOrder.advancePlayer();

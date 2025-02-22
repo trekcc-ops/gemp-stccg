@@ -3,6 +3,7 @@ package com.gempukku.stccg.processes.st1e;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
 import com.gempukku.stccg.actions.draw.DrawMultipleCardsUnrespondableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -66,20 +67,20 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        ST1EGame stGame = getST1EGame(cardGame);
         PlayerOrder playerOrder = cardGame.getGameState().getPlayerOrder();
         if (_consecutivePasses >= playerOrder.getPlayerCount()) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
 
             Collection<Player> players = cardGame.getPlayers();
 
-            ST1EGameState gameState = stGame.getGameState();
-
             for (Player player : players) {
-                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInHand());
+                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeedCards) {
-                    gameState.removeCardsFromZone(cardGame, card.getOwner(), Collections.singleton(card));
-                    gameState.addCardToZone(card, Zone.REMOVED, true);
+                    RemoveCardFromPlayAction removeAction =
+                            new RemoveCardFromPlayAction(cardGame, card.getOwner(), card);
+                    removeAction.processEffect(cardGame);
+                    cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
+                    cardGame.sendActionResultToClient();
                 }
             }
 

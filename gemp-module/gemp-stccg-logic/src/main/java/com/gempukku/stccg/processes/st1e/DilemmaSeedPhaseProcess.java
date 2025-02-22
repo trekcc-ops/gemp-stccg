@@ -55,7 +55,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             List<MissionCard> availableMissions = getAvailableMissions(cardGame, playerId);
             for (MissionCard mission : availableMissions) {
                 // TODO - These actions are red herrings and are never actually used
-                if (!player.getCardsInHand().isEmpty()) {
+                if (!player.getCardsInGroup(Zone.SEED_DECK).isEmpty()) {
                     TopLevelSelectableAction seedCardsAction = new AddSeedCardsAction(player, mission);
                     seedActions.add(seedCardsAction);
                 }
@@ -99,7 +99,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     protected abstract String getDecisionText(DefaultGame cardGame, Player player);
 
     private void selectCardsToSeed(Player player, ST1EGame cardGame, PhysicalCard topCard) {
-        Collection<PhysicalCard> availableCards = player.getCardsInHand();
+        Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK);
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new CardsSelectionDecision(player, "Select cards to seed under " + topCard.getTitle(),
                         availableCards, cardGame) {
@@ -133,7 +133,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                                 mission.removePreSeedCard(card, player);
                                 cardGame.getGameState().removeCardsFromZone(
                                         card.getGame(), card.getOwner(), Collections.singleton(card));
-                                cardGame.getGameState().addCardToZone(card, Zone.HAND, true);
+                                cardGame.getGameState().addCardToZone(card, Zone.SEED_DECK, true);
                             }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {

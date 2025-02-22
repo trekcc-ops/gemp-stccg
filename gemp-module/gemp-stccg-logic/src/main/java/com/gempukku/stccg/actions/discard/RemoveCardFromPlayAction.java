@@ -42,6 +42,18 @@ public class RemoveCardFromPlayAction extends ActionyAction {
             }
         }
 
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            processEffect(cardGame);
+        return nextAction;
+    }
+
+    @JsonProperty("targetCardId")
+    private int targetCardId() {
+        return _cardTarget.getCard().getCardId();
+    }
+
+    public void processEffect(DefaultGame cardGame) {
         Collection<PhysicalCard> removedCards = List.of(_cardTarget.getCard());
 
         Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
@@ -55,12 +67,5 @@ public class RemoveCardFromPlayAction extends ActionyAction {
         }
 
         setAsSuccessful();
-
-        return getNextAction();
-    }
-
-    @JsonProperty("targetCardId")
-    private int targetCardId() {
-        return _cardTarget.getCard().getCardId();
     }
 }

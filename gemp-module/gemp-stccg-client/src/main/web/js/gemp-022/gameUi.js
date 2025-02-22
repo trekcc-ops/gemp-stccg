@@ -285,7 +285,7 @@ export default class GameTableUI {
 
         if (!this.spectatorMode) {
             this.hand = new NormalCardGroup($("#main"), function (card) {
-                return (card.zone === "HAND" || card.zone === "EXTRA" || card.zone === "MISSIONS_PILE");
+                return (card.zone === "HAND" || card.zone === "EXTRA" || card.zone === "MISSIONS_PILE" || card.zone === "SEED_DECK");
             });
             if(!discardPublic) {
                 $("#discard" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
@@ -1046,7 +1046,7 @@ export default class GameTableUI {
                 break;
             case "PCIP":
                 let zone = gameEvent.zone;
-                if (zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND" || zone == "REMOVED") {
+                if (zone == "MISSIONS_PILE" || zone == "SEED_DECK" || zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND" || zone == "REMOVED") {
                     let zoneOwner = (gameEvent.controllerId == null) ? gameEvent.participantId : gameEvent.controllerId;
                     this.animations.addCardToHiddenZone(gameEvent, zone, zoneOwner);
                 } else {

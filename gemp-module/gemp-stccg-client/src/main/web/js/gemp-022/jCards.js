@@ -51,10 +51,12 @@ export default class Card {
             throw new TypeError(`locationIndex '${locationIndex}' must be a string or integer.`);
         }
         else {
-            let parsedLocationIndex = parseInt(locationIndex);
+                /* TODO - This is a reasonable error catch, but a number of client methods pass an empty string
+                    for locationIndex. */
+/*            let parsedLocationIndex = parseInt(locationIndex);
             if(Number.isNaN(parsedLocationIndex)) {
                 throw new TypeError(`locationIndex '${locationIndex}' string is not parseable into an integer.`);
-            }
+            } */
         }
 
         if (typeof(upsideDown) != 'boolean') {
