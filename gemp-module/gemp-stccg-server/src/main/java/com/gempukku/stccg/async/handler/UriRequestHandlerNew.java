@@ -6,6 +6,8 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.account.GameHistoryRequestHandler;
 import com.gempukku.stccg.async.handler.account.PlayerStatsRequestHandler;
+import com.gempukku.stccg.async.handler.account.PlaytestReplaysRequestHandler;
+import com.gempukku.stccg.async.handler.account.SetTesterFlagRequestHandler;
 import com.gempukku.stccg.async.handler.admin.*;
 import com.gempukku.stccg.async.handler.chat.GetChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
@@ -60,6 +62,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),
         @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
+        @JsonSubTypes.Type(value = PlaytestReplaysRequestHandler.class, name = "playtestReplays"),
         @JsonSubTypes.Type(value = PostChatRequestHandler.class, name = "postChat"),
         @JsonSubTypes.Type(value = PreviewSealedLeagueRequestHandler.class, name = "previewSealedLeague"),
         @JsonSubTypes.Type(value = RegisterRequestHandler.class, name = "register"),
@@ -70,6 +73,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = SendChatMessageRequestHandler.class, name = "sendChatMessage"),
         @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats"),
         @JsonSubTypes.Type(value = SetShutdownRequestHandler.class, name = "setShutdown"),
+        @JsonSubTypes.Type(value = SetTesterFlagRequestHandler.class, name = "setTesterFlag"),
         @JsonSubTypes.Type(value = StartGameSessionRequestHandler.class, name = "startGameSession"),
         @JsonSubTypes.Type(value = TournamentHistoryRequestHandler.class, name = "tournamentHistory"),
         @JsonSubTypes.Type(value = UnBanUserRequestHandler.class, name = "unBanUser"),

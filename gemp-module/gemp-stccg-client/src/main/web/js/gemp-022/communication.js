@@ -687,7 +687,10 @@ export default class GempClientCommunication {
     addTesterFlag(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/playtesting/addTesterFlag",
+            url:this.url + "/setTesterFlag",
+            data:{
+                testerFlag:true
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -698,7 +701,10 @@ export default class GempClientCommunication {
     removeTesterFlag(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/playtesting/removeTesterFlag",
+            url:this.url + "/setTesterFlag",
+            data:{
+                testerFlag:false
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -709,7 +715,7 @@ export default class GempClientCommunication {
     getRecentReplays(format, count, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/playtesting/getRecentReplays",
+            url:this.url + "/playtestReplays",
             cache:false,
             data:{
                 format:format,
