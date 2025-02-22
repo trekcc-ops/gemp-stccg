@@ -41,9 +41,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
         HttpRequest request = gempRequest.getRequest();
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            getCollectionTypes(request, responseWriter);
-        } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
+        if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             openPack(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getCollection(request, uri.substring(1), responseWriter);
@@ -158,28 +156,6 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         } finally {
             postDecoder.destroy();
         }
-    }
-
-    // This appears to be tied to "my cards", and "my trophies" selections in the Deck Builder,
-    // which are now removed from the UI. Remove? If so, also remove getCollectionTypes() from comms.js.
-    private void getCollectionTypes(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        User resourceOwner = getUserIdFromCookiesOrUri(request);
-        Document doc = createNewDoc();
-        Element collectionsElem = doc.createElement("collections");
-
-        for (League league : _leagueService.getActiveLeagues()) {
-            LeagueSeriesData seriesData = _leagueService.getCurrentLeagueSeries(league);
-            if (seriesData != null && seriesData.isLimited() &&
-                    _leagueService.isPlayerInLeague(league, resourceOwner)) {
-                CollectionType collectionType = seriesData.getCollectionType();
-                Element collectionElem = doc.createElement("collection");
-                collectionElem.setAttribute("type", collectionType.getCode());
-                collectionElem.setAttribute("name", collectionType.getFullName());
-                collectionsElem.appendChild(collectionElem);
-            }
-        }
-        doc.appendChild(collectionsElem);
-        responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
 
