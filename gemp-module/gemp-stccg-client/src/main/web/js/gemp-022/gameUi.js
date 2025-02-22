@@ -1032,6 +1032,12 @@ export default class GameTableUI {
             case "DECISION":
                 this.animations.processDecision(gameState.pendingDecision, animate);
                 break;
+            case "M":
+                this.animations.message(gameEvent, animate);
+                break;
+            case "W":
+                this.animations.warning(gameEvent, animate);
+                break;
             case "CA": // TODO - This game event flashes the border around the card. No longer called in server.
                 this.animations.cardActivated(gameEvent, animate);
                 break;
@@ -1040,24 +1046,6 @@ export default class GameTableUI {
                 break;
             case "EP": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.eventPlayed(gameEvent, animate);
-                break;
-            case "M":
-                this.animations.message(gameEvent, animate);
-                break;
-            case "PCIP":
-                let zone = gameEvent.zone;
-                if (zone == "MISSIONS_PILE" || zone == "SEED_DECK" || zone == "DISCARD" || zone == "DRAW_DECK" || zone == "HAND" || zone == "REMOVED") {
-                    let zoneOwner = (gameEvent.controllerId == null) ? gameEvent.participantId : gameEvent.controllerId;
-                    this.animations.addCardToHiddenZone(gameEvent, zone, zoneOwner);
-                } else {
-                    this.animations.putCardOnBoardGeneric(gameEvent, animate, eventType);
-                }
-                break;
-            case "RCFP":
-                this.animations.removeCardFromPlay(gameEvent.otherCardIds, gameEvent.participantId, animate);
-                break;
-            case "W":
-                this.animations.warning(gameEvent, animate);
                 break;
             default:
                 console.error("Unknown game event type: '" + eventType + "'.");

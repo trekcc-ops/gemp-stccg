@@ -24,7 +24,6 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
-import java.security.InvalidParameterException;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -142,40 +141,6 @@ public abstract class GameState {
     }
 
 
-    public void removeCardsFromZone(DefaultGame cardGame, Player performingPlayer, Collection<PhysicalCard> cards) {
-        for (PhysicalCard card : cards) {
-            if (card.isInPlay()) card.stopAffectingGame(card.getGame());
-            card.removeFromCardGroup();
-
-            if (card instanceof PhysicalReportableCard1E reportable) {
-                if (reportable.getAwayTeam() != null) {
-                    reportable.leaveAwayTeam((ST1EGame) cardGame);
-                }
-            }
-
-            if (card.isInPlay())
-                _inPlay.remove(card);
-            if (card.getAttachedTo() != null)
-                card.detach();
-        }
-
-        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
-
-            Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
-            for (PhysicalCard card : cards) {
-                if (card.isVisibleToPlayer(listener.getPlayerId()))
-                    removedCardsVisibleByPlayer.add(card);
-            }
-            if (!removedCardsVisibleByPlayer.isEmpty()) {
-                listener.sendEvent(new RemoveCardsFromPlayGameEvent(removedCardsVisibleByPlayer, performingPlayer));
-            }
-        }
-
-        for (PhysicalCard card : cards) {
-            card.setZone(Zone.VOID);
-        }
-    }
-
     public void removeCardsFromZoneWithoutSendingToClient(DefaultGame cardGame, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
             if (card.isInPlay()) card.stopAffectingGame(card.getGame());
@@ -230,44 +195,6 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
     }
 
-
-    public void addCardToZone(PhysicalCard card, Zone zone, boolean end) {
-        if (zone == Zone.DISCARD &&
-                getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
-            zone = Zone.REMOVED;
-
-        if (zone.isInPlay() && !_inPlay.contains(card)) {
-            _inPlay.add(card);
-        }
-
-        if (zone.hasList()) {
-            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), zone);
-            if (end)
-                zoneCardList.add(card);
-            else
-                zoneCardList.addFirst(card);
-        }
-
-        card.setZone(zone);
-        for (GameStateListener listener : card.getGame().getAllGameStateListeners()) {
-            try {
-                sendCreatedCardToListener(card, listener);
-            } catch(InvalidGameOperationException exp) {
-                card.getGame().sendErrorMessage(exp);
-            }
-        }
-
-//        if (_currentPhase.isCardsAffectGame()) {
-        if (zone.isInPlay())
-            card.startAffectingGame(card.getGame());
-    }
-
-    public void sendCreatedCardToListener(PhysicalCard card, GameStateListener listener)
-            throws InvalidGameOperationException {
-        if (card.isVisibleToPlayer(listener.getPlayerId())) {
-            listener.sendEvent(new AddNewCardGameEvent(card));
-        }
-    }
 
     public void iterateActiveCards(PhysicalCardVisitor physicalCardVisitor) {
         for (PhysicalCard physicalCard : _inPlay) {

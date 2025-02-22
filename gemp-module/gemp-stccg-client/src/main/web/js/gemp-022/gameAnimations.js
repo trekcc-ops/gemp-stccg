@@ -345,64 +345,6 @@ export default class GameAnimations {
         }
     }
 
-    putCardOnBoardGeneric(json, animate, eventType) {
-        /* This method is poorly labeled. It represents adding any visible card to the board, not just those in play.
-            For example, it may be called if a card is discarded or placed in hand. */
-        let participantId = json.participantId;
-        let cardId = json.cardId;
-        let zone = json.zone;
-        let imageUrl = json.imageUrl;
-        let region = json.region;
-        let quadrant = json.quadrant;
-        let locationIndex = json.locationIndex;
-
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                let blueprintId = json.blueprintId;
-                let imageUrl = json.imageUrl;
-                let targetCardId = json.targetCardId;
-                let controllerId = json.controllerId;
-
-                if (zone == "SPACELINE") {
-                    console.log("Processing putCardIntoPlay for SPACELINE zone at locationIndex " + locationIndex);
-                    that.game.addLocationDiv(locationIndex, quadrant, region);
-                }
-
-                if (controllerId != null)
-                    participantId = controllerId;
-
-                // If card is listed as public knowledge in server -> common/filterable/Zone.java
-                // and the card belongs to the opponent, inform UI to invert it.
-                let visible_opponent_zones = [
-                    "CORE",
-                    "SPACELINE",
-                    "AT_LOCATION",
-                    "ATTACHED"
-                ];
-
-                let upsideDown = (visible_opponent_zones.includes(zone) && participantId != that.game.bottomPlayerId);
-                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
-                let cardDiv = that.game.createCardDivWithData(card, null);
-
-                $("#main").append(cardDiv);
-
-                if (targetCardId != null)
-                    that.attachCardDivToTargetCardId(cardDiv, targetCardId);
-                next();
-            });
-
-        $("#main").queue(
-            function (next) {
-                that.game.layoutGroupWithCard(cardId);
-                next();
-            });
-
-        if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))) {
-            this.animateCardPlay(cardId);
-        }
-    }
-
     animateCardPlay(cardId) {
         var that = this;
         let final_position = {};

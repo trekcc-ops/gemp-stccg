@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.placecard.AddCardToSeedCardStack;
+import com.gempukku.stccg.actions.placecard.RemoveCardFromPreSeedStack;
 import com.gempukku.stccg.actions.playcard.AddSeedCardsAction;
 import com.gempukku.stccg.actions.playcard.RemoveSeedCardsAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -139,10 +140,11 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                         Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                         try {
                             for (PhysicalCard card : selectedCards) {
-                                mission.removePreSeedCard(card, player);
-                                cardGame.getGameState().removeCardsFromZone(
-                                        card.getGame(), card.getOwner(), Collections.singleton(card));
-                                cardGame.getGameState().addCardToZone(card, Zone.SEED_DECK, true);
+                                RemoveCardFromPreSeedStack removeAction =
+                                        new RemoveCardFromPreSeedStack(cardGame, player, card, mission);
+                                removeAction.processEffect(card.getOwner(), cardGame);
+                                cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
+                                cardGame.sendActionResultToClient();
                             }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {

@@ -98,22 +98,6 @@ public class ReplayMetadata {
                     gameStarted = true;
                 }
             }
-
-            else if(event.getType() == GameEvent.Type.PUT_CARD_INTO_PLAY) {
-
-                var bpID = event.getAttribute(GameEvent.Attribute.blueprintId);
-                var cardId = event.getAttribute(GameEvent.Attribute.cardId);
-                var participantId = event.getAttribute(GameEvent.Attribute.participantId);
-                var zone = event.getZone();
-
-                if (bpID != null && cardId != null && participantId != null && participantId.equals(player)) {
-                    AllCards.put(cardId, bpID);
-                    SeenCards.add(cardId);
-                    if (zone.isInPlay())
-                        PlayedCards.add(cardId);
-
-                }
-            }
         }
     }
 }

@@ -28,8 +28,6 @@ import java.util.Set;
 
 public class GameEvent {
     public enum Type {
-        PUT_CARD_INTO_PLAY("PCIP"),
-        REMOVE_CARD_FROM_PLAY("RCFP"),
         SEND_MESSAGE("M"),
         SEND_WARNING("W"),
         DECISION("DECISION"),
