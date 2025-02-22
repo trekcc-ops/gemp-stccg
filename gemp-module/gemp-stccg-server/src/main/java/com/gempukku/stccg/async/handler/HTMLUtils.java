@@ -1,14 +1,9 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.formats.DefaultGameFormat;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -62,23 +57,6 @@ public class HTMLUtils {
         return "<font color='" + color + "'>" + text + "</font>";
     }
 
-    public static final String getHTMLDeck(CardDeck deck, CardBlueprintLibrary cardBlueprintLibrary) {
-
-        StringBuilder result = new StringBuilder();
-
-        MutableCardCollection deckCards = new DefaultCardCollection();
-        for (String card : deck.getDrawDeckCards())
-            deckCards.addItem(cardBlueprintLibrary.getBaseBlueprintId(card), 1);
-
-        for (SubDeck subDeck : SubDeck.values()) {
-            if (deck.getSubDeck(subDeck) != null && !deck.getSubDeck(subDeck).isEmpty()) {
-
-            }
-        }
-
-        return result.toString();
-    }
-
     public static String getDeckValidation(CardBlueprintLibrary library, CardDeck deck, DefaultGameFormat format) {
         StringBuilder sb = new StringBuilder();
 
@@ -115,15 +93,6 @@ public class HTMLUtils {
         sb.append(valid);
         sb.append(invalid);
         return sb.toString();
-    }
-
-    static String getTournamentDeck(CardDeck deck, String playerName,
-                                    CardBlueprintLibrary cardBlueprintLibrary) throws CardNotFoundException {
-        return "<html><body>" +
-                "<h1>" + StringEscapeUtils.escapeHtml(deck.getDeckName()) + "</h1>" +
-                "<h2>by " + playerName + "</h2>" +
-                getHTMLDeck(deck, cardBlueprintLibrary) +
-                "</body></html>";
     }
 
     public static String getPlayTestMessage(Map<String, String> playerRecordingId, String winnerName,

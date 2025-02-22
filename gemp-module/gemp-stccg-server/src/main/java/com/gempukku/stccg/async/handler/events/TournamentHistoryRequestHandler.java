@@ -6,17 +6,8 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
-import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.tournament.Tournament;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.text.DecimalFormat;
 import java.util.List;
 
 @JsonIgnoreProperties("participantId")

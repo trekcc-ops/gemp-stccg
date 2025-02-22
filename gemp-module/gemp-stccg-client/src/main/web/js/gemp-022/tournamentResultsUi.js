@@ -24,16 +24,16 @@ export default class TournamentResultsUI {
     loadLiveTournaments() {
         var that = this;
         this.communication.getLiveTournaments(
-            function (xml) {
-                that.loadedTournaments(xml);
+            function (json) {
+                that.loadedTournaments(json);
             });
     }
 
     loadHistoryTournaments() {
         var that = this;
         this.communication.getHistoryTournaments(
-            function (xml) {
-                that.loadedTournaments(xml);
+            function (json) {
+                that.loadedTournaments(json);
             });
     }
 
