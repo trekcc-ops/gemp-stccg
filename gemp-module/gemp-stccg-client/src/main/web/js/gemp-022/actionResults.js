@@ -71,10 +71,12 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             gameAnimations.addCardToHiddenZone(targetCard, "REMOVED", targetCard.owner);
             break;
         case "REMOVE_CARD_FROM_PRESEED_STACK": // preparing for dilemma seeds; returns card to seed deck pile
-            cardList.push(jsonAction.targetCardId);
-            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            gameAnimations.addCardToHiddenZone(targetCard, "SEED_DECK", targetCard.owner);
+            if (jsonAction.performingPlayerId === gameAnimations.game.bottomPlayerId) {
+                cardList.push(jsonAction.targetCardId);
+                gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+                targetCard = getActionTargetCard(jsonAction, jsonGameState);
+                gameAnimations.addCardToHiddenZone(targetCard, "SEED_DECK", targetCard.owner);
+            }
             break;
         case "SEED_CARD":
             // This action type covers seeding cards in core or at a location, but not under a mission
