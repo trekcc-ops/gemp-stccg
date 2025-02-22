@@ -231,6 +231,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "PLACE_CARD_ON_MISSION":
         case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
         case "PLACE_CARDS_BENEATH_DRAW_DECK":
+        case "REMOVE_CARD_FROM_PRESEED_STACK":
         case "REVEAL_SEED_CARD":
         case "SHUFFLE_CARDS_INTO_DRAW_DECK":
         case "STOP_CARDS":
