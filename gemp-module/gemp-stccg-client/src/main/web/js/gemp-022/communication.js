@@ -124,18 +124,7 @@ export default class GempClientCommunication {
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
-    getTournament(tournamentId, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/tournament/" + tournamentId,
-            cache:false,
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 

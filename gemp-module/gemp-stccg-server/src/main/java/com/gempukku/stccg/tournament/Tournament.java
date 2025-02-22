@@ -1,5 +1,7 @@
 package com.gempukku.stccg.tournament;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.collection.CollectionType;
@@ -22,14 +24,32 @@ public interface Tournament {
         }
     }
 
+    @JsonProperty("tournamentId")
     String getTournamentId();
+
+    @JsonProperty("formatName")
     String getFormat();
+
+    @JsonIgnore
     CollectionType getCollectionType();
+
+    @JsonProperty("collectionName")
+    default String getCollectionName() {
+        return getCollectionType().getFullName();
+    }
+    @JsonProperty("tournamentName")
     String getTournamentName();
+
+    @JsonIgnore
     String getPlayOffSystem();
 
+    @JsonProperty("currentStage")
     Stage getTournamentStage();
+
+    @JsonProperty("currentRound")
     int getCurrentRound();
+
+    @JsonIgnore
     int getPlayersInCompetitionCount();
 
     boolean advanceTournament(TournamentCallback tournamentCallback, CollectionsManager collectionsManager);
@@ -38,6 +58,7 @@ public interface Tournament {
 
     void dropPlayer(String player);
 
+    @JsonProperty("standings")
     List<PlayerStanding> getCurrentStandings();
 
     boolean isPlayerInCompetition(String player);

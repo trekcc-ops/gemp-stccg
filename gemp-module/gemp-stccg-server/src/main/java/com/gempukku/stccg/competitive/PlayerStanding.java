@@ -1,14 +1,25 @@
 package com.gempukku.stccg.competitive;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.database.User;
 
 public class PlayerStanding {
+
+    @JsonProperty("playerName")
     private final String _playerName;
+
+    @JsonProperty("points")
     private final int _points;
+
+    @JsonProperty("gamesPlayed")
     private final int _gamesPlayed;
     private final int _playerWins;
     private final int _playerByes;
+
+    @JsonProperty("opponentWin")
     private float _opponentWin;
+
+    @JsonProperty("currentStanding")
     private int _standing;
 
     public PlayerStanding(String playerName, int points, int gamesPlayed, int playerWins, int playerByes) {

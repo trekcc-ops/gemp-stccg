@@ -99,7 +99,6 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                     case "league" -> new LeagueRequestHandler(_serverObjects);
                     case "playtesting" -> new PlaytestRequestHandler(_serverObjects);
                     case "soloDraft" -> new SoloDraftRequestHandler(_serverObjects);
-                    case "tournament" -> new TournamentRequestHandler(_serverObjects);
                     default -> null;
                 };
                 if (handler != null) {

@@ -37,113 +37,81 @@ export default class TournamentResultsUI {
             });
     }
 
-    loadedTournament(xml) {
+    loadedTournament(json) {
         var that = this;
-        //log(xml);
-        var root = xml.documentElement;
-        if (root.tagName == 'tournament') {
-            $("#tournamentExtraInfo").html("");
+        $("#tournamentExtraInfo").html("");
 
-            var tournament = root;
+        let tournamentId = json.tournamentId;
+        let tournamentName = json.tournamentName;
+        let tournamentFormat = json.formatName;
+        let tournamentCollection = json.collectionName;
+        let tournamentRound = json.currentRound;
+        let tournamentStage = json.currentStage;
+        let standings = json.standings;
 
-            var tournamentId = tournament.getAttribute("id");
-            var tournamentName = tournament.getAttribute("name");
-            var tournamentFormat = tournament.getAttribute("format");
-            var tournamentCollection = tournament.getAttribute("collection");
-            var tournamentRound = tournament.getAttribute("round");
-            var tournamentStage = tournament.getAttribute("stage");
+        $("#tournamentExtraInfo").append("<div class='tournamentName'>" + tournamentName + "</div>");
+        $("#tournamentExtraInfo").append("<div class='tournamentFormat'><b>Format:</b> " + tournamentFormat + "</div>");
+        $("#tournamentExtraInfo").append("<div class='tournamentCollection'><b>Collection:</b> " + tournamentCollection + "</div>");
+        if (tournamentStage == "Playing games")
+            $("#tournamentExtraInfo").append("<div class='tournamentRound'><b>Round:</b> " + tournamentRound + "</div>");
 
-            $("#tournamentExtraInfo").append("<div class='tournamentName'>" + tournamentName + "</div>");
-            $("#tournamentExtraInfo").append("<div class='tournamentFormat'><b>Format:</b> " + tournamentFormat + "</div>");
-            $("#tournamentExtraInfo").append("<div class='tournamentCollection'><b>Collection:</b> " + tournamentCollection + "</div>");
-            if (tournamentStage == "Playing games")
-                $("#tournamentExtraInfo").append("<div class='tournamentRound'><b>Round:</b> " + tournamentRound + "</div>");
-
-            var standings = tournament.getElementsByTagName("tournamentStanding");
-            if (standings.length > 0)
-                $("#tournamentExtraInfo").append(this.createStandingsTable(standings, tournamentId, tournamentStage));
-        }
+        if (standings.length > 0)
+            $("#tournamentExtraInfo").append(this.createStandingsTable(standings, tournamentId, tournamentStage));
     }
 
-    loadedTournaments(xml) {
+    loadedTournaments(json) {
         var that = this;
-        //log(xml);
-        var root = xml.documentElement;
-        if (root.tagName == 'tournaments') {
-            $("#tournamentResults").html("");
+        $("#tournamentResults").html("");
+        let tournaments = json;
 
-            var tournaments = root.getElementsByTagName("tournament");
-            for (var i = 0; i < tournaments.length; i++) {
-                var tournament = tournaments[i];
-                var tournamentId = tournament.getAttribute("id");
-                var tournamentName = tournament.getAttribute("name");
-                var tournamentFormat = tournament.getAttribute("format");
-                var tournamentCollection = tournament.getAttribute("collection");
-                var tournamentRound = tournament.getAttribute("round");
-                var tournamentStage = tournament.getAttribute("stage");
+        for (let i = 0; i < tournaments.length; i++) {
+            let tournament = tournaments[i];
+            let tournamentId = tournament.tournamentId;
+            let tournamentName = tournament.tournamentName;
+            let tournamentFormat = tournament.formatName;
+            let tournamentCollection = tournament.collectionName;
+            let tournamentRound = tournament.currentRound;
+            let tournamentStage = tournament.currentStage;
 
-                $("#tournamentResults").append("<div class='tournamentName'>" + tournamentName + "</div>");
-                $("#tournamentResults").append("<div class='tournamentRound'><b>Round:</b> " + tournamentRound + "</div>");
+            $("#tournamentResults").append("<div class='tournamentName'>" + tournamentName + "</div>");
+            $("#tournamentResults").append("<div class='tournamentRound'><b>Round:</b> " + tournamentRound + "</div>");
 
-                var detailsBut = $("<button>See details</button>").button();
-                detailsBut.click(
-                    (function (id) {
-                        return function () {
-                            that.communication.getTournament(id,
-                                function (xml) {
-                                    that.loadedTournament(xml);
-                                });
-                        };
-                    })(tournamentId));
-                $("#tournamentResults").append(detailsBut);
-            }
-            if (tournaments.length == 0)
-                $("#tournamentResults").append("<i>There is no running tournaments at the moment</i>");
-
-            $("#tournamentResults").append("<hr />");
-            $("#tournamentResults").append("<div id='tournamentExtraInfo'></div>");
+            var detailsBut = $("<button>See details</button>").button();
+            detailsBut.click(
+                (function (tournament) {
+                    return function () {
+                        that.loadedTournament(tournament);
+                    };
+                })(tournament));
+            $("#tournamentResults").append(detailsBut);
         }
+        if (tournaments.length == 0)
+            $("#tournamentResults").append("<i>There is no running tournaments at the moment</i>");
+
+        $("#tournamentResults").append("<hr />");
+        $("#tournamentResults").append("<div id='tournamentExtraInfo'></div>");
     }
 
     createStandingsTable(standings, tournamentId, tournamentStage) {
-        var standingsTable = $("<table class='standings'></table>");
+        let standingsTable = $("<table class='standings'></table>");
 
         standingsTable.append("<tr><th>Standing</th><th>Player</th><th>Points</th><th>Games played</th><th>Opp. Win %</th><th></th><th>Standing</th><th>Player</th><th>Points</th><th>Games played</th><th>Opp. Win %</th></tr>");
 
-        var secondColumnBaseIndex = Math.ceil(standings.length / 2);
+        let secondColumnBaseIndex = Math.ceil(standings.length / 2);
 
-        for (var k = 0; k < secondColumnBaseIndex; k++) {
-            var standing = standings[k];
-            var currentStanding = standing.getAttribute("standing");
-            var player = standing.getAttribute("player");
-            var points = parseInt(standing.getAttribute("points"));
-            var gamesPlayed = parseInt(standing.getAttribute("gamesPlayed"));
-            var opponentWinPerc = standing.getAttribute("opponentWin");
+        for (let k = 0; k < standings.length; k++) {
+            let standing = standings[k];
+            let currentStanding = standing.currentStanding;
+            let player = standing.player;
+            let points = standing.points;
+            let gamesPlayed = standing.gamesPlayed;
+            let opponentWinPerc = standing.opponentWin;
 
-            var playerStr;
-            if (tournamentStage == "Finished")
-                playerStr = "<a target='_blank' href='/gemp-stccg-server/tournament/" + tournamentId + "/deck/" + player + "/html'>" + player + "</a>";
-            else
-                playerStr = player;
-
-            standingsTable.append("<tr><td>" + currentStanding + "</td><td>" + playerStr + "</td><td>" + points + "</td><td>" + gamesPlayed + "</td><td>" + opponentWinPerc + "</td></tr>");
-        }
-
-        for (var k = secondColumnBaseIndex; k < standings.length; k++) {
-            var standing = standings[k];
-            var currentStanding = standing.getAttribute("standing");
-            var player = standing.getAttribute("player");
-            var points = parseInt(standing.getAttribute("points"));
-            var gamesPlayed = parseInt(standing.getAttribute("gamesPlayed"));
-            var opponentWinPerc = standing.getAttribute("opponentWin");
-
-            var playerStr;
-            if (tournamentStage == "Finished")
-                playerStr = "<a target='_blank' href='/gemp-stccg-server/tournament/" + tournamentId + "/deck/" + player + "/html'>" + player + "</a>";
-            else
-                playerStr = player;
-
-            $("tr:eq(" + (k - secondColumnBaseIndex + 1) + ")", standingsTable).append("<td></td><td>" + currentStanding + "</td><td>" + playerStr + "</td><td>" + points + "</td><td>" + gamesPlayed + "</td><td>" + opponentWinPerc + "</td>");
+            if (k < secondColumnBaseIndex) {
+               standingsTable.append("<tr><td>" + currentStanding + "</td><td>" + player + "</td><td>" + points + "</td><td>" + gamesPlayed + "</td><td>" + opponentWinPerc + "</td></tr>");
+            } else {
+                $("tr:eq(" + (k - secondColumnBaseIndex + 1) + ")", standingsTable).append("<td></td><td>" + currentStanding + "</td><td>" + player + "</td><td>" + points + "</td><td>" + gamesPlayed + "</td><td>" + opponentWinPerc + "</td>");
+            }
         }
 
         return standingsTable;
