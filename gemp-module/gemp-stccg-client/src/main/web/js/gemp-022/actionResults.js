@@ -144,6 +144,16 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
     let targetCard;
 
     switch(actionType) {
+        case "ATTEMPT_MISSION":
+            if (jsonAction.status === "completed_success") {
+                message = performingPlayerId + " solved ";
+            } else if (jsonAction.status === "completed_failure") {
+                message = performingPlayerId + " failed ";
+            }
+            targetCard = getActionTargetCard(jsonGameState);
+            message = message + showLinkableCardTitle(targetCard);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "BEAM_CARDS":
             message = performingPlayerId + " beamed ";
             message = message + jsonAction.targetCardIds.length + " cards from ";
@@ -224,7 +234,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         case "ADD_CARD_TO_PRESEED_STACK":
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
-        case "ATTEMPT_MISSION":
         case "DOCK_SHIP":
         case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
         case "ENCOUNTER_SEED_CARD":

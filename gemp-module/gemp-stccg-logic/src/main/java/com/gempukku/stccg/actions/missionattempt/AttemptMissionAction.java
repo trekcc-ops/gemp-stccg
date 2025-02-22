@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
@@ -21,6 +23,9 @@ import java.util.List;
 
 public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction {
     private AttemptingUnitResolver _attemptingUnitTarget;
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final MissionCard _performingCard;
     private PhysicalCard _lastCardRevealed;
     private PhysicalCard _lastCardEncountered;
@@ -165,7 +170,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         setProgress(Progress.solvedMission);
         setAsSuccessful();
         mission.complete(_performingPlayerId, cardGame);
-        cardGame.sendMessage(_performingPlayerId + " solved " + _performingCard.getCardLink());
     }
 
     public MissionLocation getLocation() { return _missionLocation; }
@@ -179,7 +183,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         setProgress(Progress.failedMissionAttempt);
         setProgress(Progress.endedMissionAttempt);
         setAsFailed();
-        game.sendMessage(_performingPlayerId + " failed mission attempt of " + _performingCard.getCardLink());
     }
 
     public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException {
