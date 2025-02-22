@@ -33,6 +33,7 @@ export default class GameTableUI {
     alertText;
     alertButtons;
     infoDialog;
+    hasDecision = false;
 
 //    playPiles;
     hand;
@@ -867,6 +868,7 @@ export default class GameTableUI {
     decisionFunction(decisionId, result) {
         var that = this;
         this.stopAnimatingTitle();
+        this.hasDecision = false;
         this.communication.gameDecisionMade(decisionId, result,
             this.channelNumber,
             function (json) {
@@ -1028,9 +1030,6 @@ export default class GameTableUI {
                     }
                     this.lastActionIndex = i;
                 }
-                break;
-            case "DECISION":
-                this.animations.processDecision(gameState.pendingDecision, animate);
                 break;
             case "M":
                 this.animations.message(gameEvent, animate);
@@ -1197,22 +1196,26 @@ export default class GameTableUI {
     processGameEvents(jsonNode, animate) {
         try {
             this.channelNumber = jsonNode.channelNumber;
-            let hasDecision = false;
 
             // Go through all the events
-            for (const gameEvent of jsonNode.gameEvents) {
+            for (let i = 0; i < jsonNode.gameEvents.length; i++) {
+                let gameEvent = jsonNode.gameEvents[i];
                 this.processGameEvent(gameEvent, animate);
-                if (gameEvent.type == "DECISION") {
-                    hasDecision = true;
+                if (i === jsonNode.gameEvents.length - 1) {
+                    let gameState = typeof gameEvent.gameState === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                    let userDecision = gameState.pendingDecision;
+                    if (this.hasDecision === false && userDecision != null && typeof userDecision != "undefined") {
+                        this.hasDecision = true;
+                        this.animations.processDecision(userDecision, animate);
+                        this.startAnimatingTitle();
+                    }
                 }
             }
 
             this.setupClocks(jsonNode);
 
-            if (!hasDecision) {
+            if (!this.hasDecision) {
                 this.animations.updateGameState(animate);
-            } else {
-                this.startAnimatingTitle();
             }
         } catch (e) {
             console.error(e);

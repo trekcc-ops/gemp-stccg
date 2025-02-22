@@ -30,7 +30,6 @@ public class GameEvent {
     public enum Type {
         SEND_MESSAGE("M"),
         SEND_WARNING("W"),
-        DECISION("DECISION"),
         ACTION_RESULT("ACTION_RESULT");
 
         private final String code;
@@ -72,12 +71,6 @@ public class GameEvent {
         _eventAttributes.put(Attribute.timestamp,
                 ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS")));
         _timeStamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS"));
-    }
-
-    public GameEvent(Type type, Player player) {
-        this(type);
-        _playerId = player.getPlayerId();
-        _eventAttributes.put(Attribute.participantId, player.getPlayerId());
     }
 
 

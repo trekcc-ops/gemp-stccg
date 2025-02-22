@@ -116,12 +116,7 @@ public abstract class GameState {
             throws PlayerNotFoundException {
         if (awaitingDecision != null) {
             _playerDecisions.put(playerId, awaitingDecision);
-            for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
-                if (listener.getPlayerId().equals(playerId)) {
-                    GameEvent decisionEvent = new SendDecisionGameEvent(cardGame, awaitingDecision, getPlayer(playerId));
-                    listener.sendEvent(decisionEvent);
-                }
-            }
+            cardGame.sendActionResultToClient();
         }
     }
 
