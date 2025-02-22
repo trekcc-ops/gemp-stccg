@@ -110,7 +110,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
 
         final PhysicalCard getItDone = newCardForGame("155_026", P1);
-        gameState.addCardToZone(getItDone, Zone.CORE, true);
+        gameState.addCardToZoneWithoutSendingToClient(getItDone, Zone.CORE);
         assertTrue(getItDone.isInPlay());
 
         autoSeedFacility();
@@ -162,7 +162,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         selectCards(P1, cardsToPlace);
 
         for (int i = 0; i < 5; i++) {
-            gameState.addCardToZone(newCardForGame("101_236", P1), Zone.HAND, true); // Simon Tarses
+            gameState.addCardToZoneWithoutSendingToClient(newCardForGame("101_236", P1), Zone.HAND); // Simon Tarses
         }
 
         assertNotNull(_userFeedback.getAwaitingDecision(P1));

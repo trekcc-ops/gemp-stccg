@@ -32,7 +32,7 @@ public class GameEvent {
         REMOVE_CARD_FROM_PLAY("RCFP"),
         SEND_MESSAGE("M"),
         SEND_WARNING("W"),
-        DECISION("D"),
+        DECISION("DECISION"),
         ACTION_RESULT("ACTION_RESULT");
 
         private final String code;

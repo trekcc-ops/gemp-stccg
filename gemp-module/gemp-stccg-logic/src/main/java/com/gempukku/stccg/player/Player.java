@@ -38,6 +38,9 @@ public class Player {
     @JsonProperty("discardPile")
     CardPile _discardPile;
 
+    @JsonProperty("missionsPile")
+    CardPile _missionsPile;
+
     @JsonProperty("seedDeck")
     PhysicalCardGroup _seedDeck;
 
@@ -134,10 +137,18 @@ public class Player {
                 _discardPile = new DiscardPile();
                 yield _discardPile;
             }
-            case MISSIONS_PILE, PLAY_PILE, REMOVED -> new CardPile();
+            case MISSIONS_PILE -> {
+                _missionsPile = new CardPile();
+                yield _missionsPile;
+            }
+            case PLAY_PILE, REMOVED -> new CardPile();
             default -> throw new InvalidGameLogicException("Unable to create a card group for zone " + zone);
         };
         _cardGroups.put(zone, group);
+    }
+
+    public CardPile getMissionsPile() {
+        return _missionsPile;
     }
 
     public List<PhysicalCard> getCardGroupCards(Zone zone) {

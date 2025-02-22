@@ -285,7 +285,7 @@ export default class GameTableUI {
 
         if (!this.spectatorMode) {
             this.hand = new NormalCardGroup($("#main"), function (card) {
-                return (card.zone == "HAND") || (card.zone == "EXTRA");
+                return (card.zone === "HAND" || card.zone === "EXTRA" || card.zone === "MISSIONS_PILE");
             });
             if(!discardPublic) {
                 $("#discard" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
@@ -1017,7 +1017,7 @@ export default class GameTableUI {
         switch(eventType) {
             case "ACTION_RESULT":
                 this.updateGameStats(gameState); // updates count of card piles
-                this.animations.gamePhaseChange(gameState.currentPhase);
+                this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
                 this.animations.turnChange(gameState, true);
                 let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
                 for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
@@ -1079,6 +1079,8 @@ export default class GameTableUI {
                 this.initializePlayerOrder(gameState);
                 this.updateGameStats(gameState);
             }
+
+            this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
 
             for (const player of gameState.players) {
                 for (const cardId of player.cardGroups["CORE"].cardIds) {

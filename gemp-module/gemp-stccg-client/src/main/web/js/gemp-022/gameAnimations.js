@@ -695,12 +695,27 @@ export default class GameAnimations {
         }
     }
 
-    gamePhaseChange(currentPhase) {
+    gamePhaseChange(gameState) {
         var that = this;
         $("#main").queue(
             function (next) {
-                let phase = getFriendlyPhaseName(currentPhase);
-                $("#currentPhase").text(phase);
+                let newPhase = gameState.currentPhase;
+                let newPhaseName = getFriendlyPhaseName(newPhase);
+                if (newPhaseName != $("#currentPhase").text()) { // if moving to a new phase
+                    let uiPlayer = that.game.bottomPlayerId;
+                    if (newPhase === "SEED_MISSION" && that.game.allPlayerIds.includes(uiPlayer)) {
+                        for (const player of gameState.players) {
+                            if (player.playerId === uiPlayer) {
+                                let missionPileCardIds = player.cardGroups["MISSIONS_PILE"].cardIds;
+                                for (let i = missionPileCardIds.length - 1; i >= 0; i--) {
+                                    let card = gameState.visibleCardsInGame[missionPileCardIds[i]];
+                                    that.addCardToHiddenZone(card, "MISSIONS_PILE", uiPlayer);
+                                }
+                            }
+                        }
+                    }
+                    $("#currentPhase").text(newPhaseName);
+                }
                 next();
             });
     }
