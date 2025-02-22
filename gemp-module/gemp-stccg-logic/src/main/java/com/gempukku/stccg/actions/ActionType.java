@@ -26,6 +26,7 @@ public enum ActionType {
     PLACE_CARD_IN_PLAY_PILE, // needs to be revisited when Tribbles is implemented
     PLAY_CARD,
     REMOVE_CARD_FROM_GAME,
+    ADD_CARD_TO_PRESEED_STACK,
     REVEAL_SEED_CARD,
     SCORE_POINTS,
     SEED_CARD,

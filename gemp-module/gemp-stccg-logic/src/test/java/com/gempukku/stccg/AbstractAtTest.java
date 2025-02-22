@@ -924,7 +924,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) throws InvalidGameLogicException {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
-            _game.getGameState().removeCardsFromZone(_game, card.getOwner(), Collections.singleton(card));
+            _game.getGameState().removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(card));
             _game.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.VOID);
             topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(topCard.getLocationDeprecatedOnlyUseForTests(), card);
         }

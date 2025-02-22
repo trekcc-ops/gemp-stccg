@@ -8,6 +8,10 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let spacelineIndex;
 
     switch(actionType) {
+        case "ADD_CARD_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"
+            cardList.push(jsonAction.targetCardId);
+            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+            break;
         case "BEAM_CARDS": // Same animation for both beaming and walking
         case "WALK_CARDS":
             for (const cardId of jsonAction.targetCardIds) {
@@ -210,6 +214,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = message + " to " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.destinationCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
+        case "ADD_CARD_TO_PRESEED_STACK":
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "ATTEMPT_MISSION":
         case "DOCK_SHIP":

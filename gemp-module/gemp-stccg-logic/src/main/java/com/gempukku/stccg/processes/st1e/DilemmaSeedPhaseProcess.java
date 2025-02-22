@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.placecard.AddCardToSeedCardStack;
 import com.gempukku.stccg.actions.playcard.AddSeedCardsAction;
 import com.gempukku.stccg.actions.playcard.RemoveSeedCardsAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -107,9 +108,17 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     public void decisionMade (String result) throws DecisionResultInvalidException {
                         try {
                             Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                            if (topCard.getGameLocation() instanceof MissionLocation mission)
-                                mission.preSeedCardsUnder(cardGame, selectedCards, player);
-                            else throw new InvalidGameLogicException("Tried to seed cards under a non-mission card");
+                            if (topCard.getGameLocation() instanceof MissionLocation mission) {
+                                for (PhysicalCard card : selectedCards) {
+                                    AddCardToSeedCardStack removeAction =
+                                            new AddCardToSeedCardStack(cardGame, player, card, mission);
+                                    removeAction.processEffect(card.getOwner(), cardGame);
+                                    cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
+                                    cardGame.sendActionResultToClient();
+                                }
+                            } else {
+                                throw new InvalidGameLogicException("Tried to seed cards under a non-mission card");
+                            }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             throw new DecisionResultInvalidException(exp.getMessage());
