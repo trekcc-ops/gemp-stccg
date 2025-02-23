@@ -1763,7 +1763,7 @@ export default class GameTableUI {
         let displayedCards = decision.displayedCards;
         var cardIds = decision.cardIds;
 
-        var jsonCombinations = decision.validCombinations;
+        var jsonCombinations = JSON.parse(decision.validCombinations);
 
         var that = this;
 
@@ -2274,6 +2274,11 @@ export default class GameTableUI {
     }
 
     recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
+        if (typeof(jsonCombinations) !== 'object' || jsonCombinations === null) {
+            let inc_type = typeof(jsonCombinations);
+            throw new TypeError(`jsonCombinations must be an Object not a ${inc_type} or null.`);;
+        }
+
         let allowedCombinationsRemaining = new Set();
         
         if (selectedCardIds.length === 0) {
