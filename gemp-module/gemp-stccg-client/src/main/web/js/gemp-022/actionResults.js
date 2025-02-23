@@ -1,4 +1,4 @@
-import { showLinkableCardTitle, showLinkableCardTitles, getAffiliationHtml } from "./common.js";
+import { showLinkableCardTitle, getAffiliationHtml } from "./common.js";
 
 export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let actionType = jsonAction.actionType;
