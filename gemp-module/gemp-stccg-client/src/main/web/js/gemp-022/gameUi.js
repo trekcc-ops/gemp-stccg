@@ -1947,32 +1947,35 @@ export default class GameTableUI {
                 let actionId = selectableCard.actionId;
                 let actionText = selectableCard.actionText;
                 let blueprintId = selectableCard.blueprintId;
-                let zone = "EXTRA";
-                let cardId = `extra${selectableCard.cardId}`;
-                let noOwner = "";
-                let imageUrl = selectableCard.imageUrl;
-                let noLocationIndex = "";
-                let upsideDown = false;
+                let cardId = selectableCard.cardId;
                 let actionType = selectableCard.actionType;
                 let cardIdElem;
 
-                if (blueprintId == "inPlay") {
+                if (blueprintId === "inPlay") {
+                    // in play, do not add "extra" to card id value when doing lookup
                     cardIdElem = getCardDivFromId(cardId);
                     allCardIds.push(cardId);
                 } else {
+                    // not in play, need to add "extra" to card id value when doing lookup
                     hasVirtual = true;
-                    allCardIds.push("extra" + cardId);
-                    var card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
+                    cardIdElem = getCardDivFromId(`extra${cardId}`);
+                    allCardIds.push(`extra${cardId}`);
+                    let zone = "EXTRA";
+                    // No new cardId - interesting that it's going to retrieve an extra{cardId} but
+                    //                 create one with a regular cardId. Intentional?
+                    let imageUrl = selectableCard.imageUrl;
+                    let noOwner = "";
+                    let noLocationIndex = "";
+                    let upsideDown = false;
+                    let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
 
-                    var cardDiv = that.createCardDivWithData(card);
+                    let cardDiv = that.createCardDivWithData(card);
                     $(cardDiv).css({opacity: "0.8"});
 
                     $("#main").append(cardDiv);
-
-                    cardIdElem = $(".card:cardId(extra" + cardId + ")");
                 }
 
-                if (cardIdElem.data("action") == null) {
+                if (cardIdElem.data("action") === null || cardIdElem.data("action") === undefined) {
                     cardIdElem.data("action", new Array());
                 }
                 var actions = cardIdElem.data("action");
