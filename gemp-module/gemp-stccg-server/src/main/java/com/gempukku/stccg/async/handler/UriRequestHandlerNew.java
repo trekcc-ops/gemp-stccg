@@ -13,9 +13,7 @@ import com.gempukku.stccg.async.handler.chat.GetChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.SendChatMessageRequestHandler;
 import com.gempukku.stccg.async.handler.decks.*;
-import com.gempukku.stccg.async.handler.events.CurrentTournamentsRequestHandler;
-import com.gempukku.stccg.async.handler.events.JoinLeagueRequestHandler;
-import com.gempukku.stccg.async.handler.events.TournamentHistoryRequestHandler;
+import com.gempukku.stccg.async.handler.events.*;
 import com.gempukku.stccg.async.handler.game.*;
 import com.gempukku.stccg.async.handler.hall.*;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
@@ -23,7 +21,11 @@ import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.async.handler.server.ServerStatsRequestHandler;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -40,6 +42,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = ClearCacheRequestHandler.class, name = "clearCache"),
         @JsonSubTypes.Type(value = ConcedeGameRequestHandler.class, name = "concedeGame"),
         @JsonSubTypes.Type(value = CreateTableRequestHandler.class, name = "createTable"),
+        @JsonSubTypes.Type(value = CurrentLeaguesRequestHandler.class, name = "currentLeagues"),
         @JsonSubTypes.Type(value = CurrentTournamentsRequestHandler.class, name = "currentTournaments"),
         @JsonSubTypes.Type(value = DecisionResponseRequestHandler.class, name = "decisionResponse"),
         @JsonSubTypes.Type(value = DeckFormatsRequestHandler.class, name = "deckFormats"),
@@ -51,6 +54,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = GetErrataRequestHandler.class, name = "getErrata"),
         @JsonSubTypes.Type(value = GetHallRequestHandler.class, name = "getHall"),
         @JsonSubTypes.Type(value = GetGameStateRequestHandler.class, name = "getGameState"),
+        @JsonSubTypes.Type(value = GetLeagueRequestHandler.class, name = "getLeague"),
         @JsonSubTypes.Type(value = GetSetsRequestHandler.class, name = "getSets"),
         @JsonSubTypes.Type(value = ImportDeckRequestHandler.class, name = "importDeck"),
         @JsonSubTypes.Type(value = JoinLeagueRequestHandler.class, name = "joinLeague"),
@@ -104,6 +108,12 @@ public interface UriRequestHandlerNew {
         String sessionId = objects.getLoggedUserHolder().logUser(login);
         return Collections.singletonMap(
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
+    }
+
+    default Document createNewDoc() throws ParserConfigurationException {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        return docBuilder.newDocument();
     }
 
 

@@ -1,64 +1,50 @@
-package com.gempukku.stccg.async.handler;
+package com.gempukku.stccg.async.handler.events;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.handler.ResponseWriter;
+import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.league.League;
-import com.gempukku.stccg.competitive.LeagueMatchResult;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
 
-public class LeagueRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final LeagueService _leagueService;
-    private final FormatLibrary _formatLibrary;
+public class GetLeagueRequestHandler implements UriRequestHandlerNew {
 
-    public LeagueRequestHandler(ServerObjects objects) {
-        super(objects);
-        _leagueService = objects.getLeagueService();
-        _formatLibrary = objects.getFormatLibrary();
+    private final String _leagueType;
+    GetLeagueRequestHandler(
+            @JsonProperty("leagueType")
+            String leagueType
+    ) {
+        _leagueType = leagueType;
     }
 
     @Override
-    public final void handleRequest(String uri, GempHttpRequest gempRequest, ResponseWriter responseWriter)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
-        HttpRequest request = gempRequest.getRequest();
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            getNonExpiredLeagues(responseWriter);
-        } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
-            getLeagueInformation(request, uri.substring(1), responseWriter);
-        } else {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        }
-    }
-
-    private void getLeagueInformation(HttpRequest request, String leagueType, ResponseWriter responseWriter)
-            throws HttpProcessingException, ParserConfigurationException {
-        User resourceOwner = getUserIdFromCookiesOrUri(request);
+        User resourceOwner = request.user();
         Document doc = createNewDoc();
-        League league = getLeagueByType(leagueType);
+        LeagueService leagueService = serverObjects.getLeagueService();
+        League league = getLeagueByType(leagueService, _leagueType);
 
         if (league == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        final LeagueData leagueData =
-                league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _serverObjects.getSoloDraftDefinitions());
+        final LeagueData leagueData = league.getLeagueData(serverObjects.getCardBlueprintLibrary(),
+                serverObjects.getFormatLibrary(), serverObjects.getSoloDraftDefinitions());
         final List<LeagueSeriesData> allSeries = leagueData.getSeries();
 
         int end = allSeries.getLast().getEnd();
@@ -66,7 +52,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         int currentDate = DateUtils.getCurrentDateAsInt();
 
         Element leagueElem = doc.createElement("league");
-        boolean inLeague = _leagueService.isPlayerInLeague(league, resourceOwner);
+        boolean inLeague = leagueService.isPlayerInLeague(league, resourceOwner);
 
         leagueElem.setAttribute("member", String.valueOf(inLeague));
         leagueElem.setAttribute("joinable", String.valueOf(!inLeague && end >= currentDate));
@@ -91,7 +77,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
             Element matchesElem = doc.createElement("matches");
             Collection<LeagueMatchResult> playerMatches =
-                    _leagueService.getPlayerMatchesInSeries(league, series, resourceOwner.getName());
+                    leagueService.getPlayerMatchesInSeries(league, series, resourceOwner.getName());
             for (LeagueMatchResult playerMatch : playerMatches) {
                 Element matchElem = doc.createElement("match");
                 matchElem.setAttribute("winner", playerMatch.getWinner());
@@ -100,7 +86,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             }
             seriesElem.appendChild(matchesElem);
 
-            final List<PlayerStanding> standings = _leagueService.getLeagueSeriesStandings(league, series);
+            final List<PlayerStanding> standings = leagueService.getLeagueSeriesStandings(league, series);
             for (PlayerStanding standing : standings) {
                 Element standingElem = doc.createElement("standing");
                 setStandingAttributes(standing, standingElem);
@@ -110,7 +96,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             leagueElem.appendChild(seriesElem);
         }
 
-        List<PlayerStanding> leagueStandings = _leagueService.getLeagueStandings(league);
+        List<PlayerStanding> leagueStandings = leagueService.getLeagueStandings(league);
         for (PlayerStanding standing : leagueStandings) {
             Element standingElem = doc.createElement("leagueStanding");
             setStandingAttributes(standing, standingElem);
@@ -122,38 +108,8 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
-    private List<LeagueSeriesData> getSeriesData(League league) {
-        final LeagueData leagueData =
-                league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _serverObjects.getSoloDraftDefinitions());
-        return leagueData.getSeries();
-    }
-
-    private void getNonExpiredLeagues(ResponseWriter responseWriter) throws Exception {
-        Document doc = createNewDoc();
-        Element leagues = doc.createElement("leagues");
-
-        for (League league : _leagueService.getActiveLeagues()) {
-            final List<LeagueSeriesData> series = getSeriesData(league);
-
-            int end = series.getLast().getEnd();
-
-            Element leagueElem = doc.createElement("league");
-
-            leagueElem.setAttribute("type", league.getType());
-            leagueElem.setAttribute("name", league.getName());
-            leagueElem.setAttribute("start", String.valueOf(series.getFirst().getStart()));
-            leagueElem.setAttribute("end", String.valueOf(end));
-
-            leagues.appendChild(leagueElem);
-        }
-
-        doc.appendChild(leagues);
-
-        responseWriter.writeXmlResponseWithNoHeaders(doc);
-    }
-
-    private League getLeagueByType(String type) {
-        for (League league : _leagueService.getActiveLeagues()) {
+    private League getLeagueByType(LeagueService leagueService, String type) {
+        for (League league : leagueService.getActiveLeagues()) {
             if (league.getType().equals(type))
                 return league;
         }
@@ -168,5 +124,6 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         DecimalFormat format = new DecimalFormat("##0.00%");
         standingElem.setAttribute("opponentWin", format.format(standing.getOpponentWin()));
     }
+
 
 }

@@ -131,7 +131,7 @@ export default class GempClientCommunication {
     getLeagues(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/league",
+            url:this.url + "/currentLeagues",
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -142,7 +142,10 @@ export default class GempClientCommunication {
     getLeague(type, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/league/" + type,
+            url:this.url + "/getLeague",
+            data:{
+                leagueType:type
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
