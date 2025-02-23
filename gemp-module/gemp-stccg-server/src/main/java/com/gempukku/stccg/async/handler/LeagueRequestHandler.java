@@ -43,27 +43,8 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             getNonExpiredLeagues(responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getLeagueInformation(request, uri.substring(1), responseWriter);
-        } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
-            joinLeague(request, uri.substring(1), responseWriter, gempRequest.ip());
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        }
-    }
-
-    private void joinLeague(HttpRequest request, String leagueType, ResponseWriter responseWriter, String remoteIp)
-            throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
-        try {
-            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
-            League league = _leagueService.getLeagueByType(leagueType);
-            if (league == null)
-                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-            if (!_leagueService.playerJoinsLeague(league, resourceOwner, remoteIp))
-                throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
-            responseWriter.writeXmlOkResponse();
-        } finally {
-            postDecoder.destroy();
         }
     }
 
@@ -171,7 +152,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
-    private final League getLeagueByType(String type) {
+    private League getLeagueByType(String type) {
         for (League league : _leagueService.getActiveLeagues()) {
             if (league.getType().equals(type))
                 return league;

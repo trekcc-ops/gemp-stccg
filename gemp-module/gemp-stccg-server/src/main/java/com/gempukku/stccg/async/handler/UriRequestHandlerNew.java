@@ -14,6 +14,7 @@ import com.gempukku.stccg.async.handler.chat.PostChatRequestHandler;
 import com.gempukku.stccg.async.handler.chat.SendChatMessageRequestHandler;
 import com.gempukku.stccg.async.handler.decks.*;
 import com.gempukku.stccg.async.handler.events.CurrentTournamentsRequestHandler;
+import com.gempukku.stccg.async.handler.events.JoinLeagueRequestHandler;
 import com.gempukku.stccg.async.handler.events.TournamentHistoryRequestHandler;
 import com.gempukku.stccg.async.handler.game.*;
 import com.gempukku.stccg.async.handler.hall.*;
@@ -52,6 +53,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = GetGameStateRequestHandler.class, name = "getGameState"),
         @JsonSubTypes.Type(value = GetSetsRequestHandler.class, name = "getSets"),
         @JsonSubTypes.Type(value = ImportDeckRequestHandler.class, name = "importDeck"),
+        @JsonSubTypes.Type(value = JoinLeagueRequestHandler.class, name = "joinLeague"),
         @JsonSubTypes.Type(value = JoinQueueRequestHandler.class, name = "joinQueue"),
         @JsonSubTypes.Type(value = JoinTableRequestHandler.class, name = "joinTable"),
         @JsonSubTypes.Type(value = LeaveQueueRequestHandler.class, name = "leaveQueue"),

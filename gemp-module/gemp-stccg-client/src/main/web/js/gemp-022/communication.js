@@ -153,7 +153,10 @@ export default class GempClientCommunication {
     joinLeague(code, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/league/" + code,
+            url:this.url + "/joinLeague",
+            data:{
+                leagueType:code
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
