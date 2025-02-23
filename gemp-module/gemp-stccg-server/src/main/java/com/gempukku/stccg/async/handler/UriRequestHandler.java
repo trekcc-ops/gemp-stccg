@@ -78,6 +78,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = ReloadCardLibraryRequestHandler.class, name = "reloadCardLibrary"),
         @JsonSubTypes.Type(value = RenameDeckRequestHandler.class, name = "renameDeck"),
         @JsonSubTypes.Type(value = ReplayRequestHandler.class, name = "replay"),
+        @JsonSubTypes.Type(value = ResetUserPasswordRequestHandler.class, name = "resetUserPassword"),
         @JsonSubTypes.Type(value = SaveDeckRequestHandler.class, name = "saveDeck"),
         @JsonSubTypes.Type(value = SendChatMessageRequestHandler.class, name = "sendChatMessage"),
         @JsonSubTypes.Type(value = ServerStatsRequestHandler.class, name = "serverStats"),

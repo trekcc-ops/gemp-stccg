@@ -623,7 +623,6 @@ document.addEventListener("DOMContentLoaded", function() {
 										
 									let resultdiv = $("#reset-result");
 									resultdiv.html("Processing...");
-									
 									hall.comm.resetUserPassword($("#reset-input").val(), function (json) {
 										resultdiv.html(json.response);
 									}, banErrorMap(resultdiv));

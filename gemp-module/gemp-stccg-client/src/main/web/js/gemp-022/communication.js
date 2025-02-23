@@ -799,10 +799,10 @@ export default class GempClientCommunication {
     resetUserPassword(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/resetUserPassword",
+            url:this.url + "/resetUserPassword",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),

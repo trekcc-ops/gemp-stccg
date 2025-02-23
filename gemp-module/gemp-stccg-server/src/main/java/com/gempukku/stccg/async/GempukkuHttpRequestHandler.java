@@ -92,7 +92,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                             new CollectionRequestHandler().handleRequest(afterHandlerType, request, responseWriter, _serverObjects);
                             break;
                         default:
-                            Map<String, String> parameters = request.parameters();
+                            Map<String, Object> parameters = request.parameters();
                             parameters.put("type", handlerType);
                             try {
                                 UriRequestHandler newHandler =

@@ -106,14 +106,21 @@ public class GempHttpRequest {
         }
     }
 
-    Map<String, String> parameters() throws IOException {
-        Map<String, String> result = new HashMap<>();
+    Map<String, Object> parameters() throws IOException {
+        Map<String, List<String>> lists = new HashMap<>();
+        Map<String, String> items = new HashMap<>();
         if (_request.method() == HttpMethod.POST) {
             InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(_request);
             try {
                 for (InterfaceHttpData data : postDecoder.getBodyHttpDatas()) {
                     if (data instanceof Attribute attribute) {
-                        result.put(attribute.getName(), attribute.getValue());
+                        if (attribute.getName().endsWith("[]")) {
+                            String attributeName = attribute.getName().replace("[]","");
+                            lists.computeIfAbsent(attributeName, k -> new ArrayList<>());
+                            lists.get(attributeName).add(attribute.getValue());
+                        } else {
+                            items.put(attribute.getName(), attribute.getValue());
+                        }
                     }
                 }
             } finally {
@@ -123,10 +130,13 @@ public class GempHttpRequest {
             QueryStringDecoder queryDecoder = new QueryStringDecoder(_request.uri());
             for (Map.Entry<String, List<String>> entry : queryDecoder.parameters().entrySet()) {
                 if (entry.getValue() != null && !entry.getValue().isEmpty() && !entry.getKey().equals("_")) {
-                    result.put(entry.getKey(), entry.getValue().getFirst());
+                    items.put(entry.getKey(), entry.getValue().getFirst());
                 }
             }
         }
+        Map<String, Object> result = new HashMap<>();
+        result.putAll(items);
+        result.putAll(lists);
         return result;
     }
 

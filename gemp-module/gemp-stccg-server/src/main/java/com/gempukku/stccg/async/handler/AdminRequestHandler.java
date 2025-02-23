@@ -62,10 +62,6 @@ public class AdminRequestHandler extends AdminRequestHandlerNew {
                 validateLeagueAdmin(gempRequest);
                 addSoloDraftLeague(request, responseWriter, serverObjects);
                 break;
-            case "/resetUserPasswordPOST":
-                validateAdmin(gempRequest);
-                resetUserPassword(request, responseWriter, serverObjects.getAdminService());
-                break;
             case "/banMultiplePOST":
                 validateAdmin(gempRequest);
                 banMultiple(request, responseWriter, serverObjects.getAdminService());
@@ -100,17 +96,6 @@ public class AdminRequestHandler extends AdminRequestHandlerNew {
             }
             doc.appendChild(players);
             responseWriter.writeXmlResponseWithNoHeaders(doc);
-        }
-    }
-
-    private void resetUserPassword(HttpRequest request, ResponseWriter responseWriter, AdminService adminService) throws Exception {
-        try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            String login = getFormParameterSafely(postDecoder, FormParameter.login);
-            if (login == null)
-                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-            if (!adminService.resetUserPassword(login))
-                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-            responseWriter.writeJsonOkResponse();
         }
     }
 

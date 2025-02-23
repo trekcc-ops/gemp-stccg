@@ -19,15 +19,11 @@ public class AdminService {
         _loggedUserHolder = loggedUserHolder;
     }
 
-    public boolean resetUserPassword(String login) {
-        try {
-            final boolean success = _playerDAO.resetUserPassword(login);
-            if (!success)
-                return false;
-            _loggedUserHolder.forceLogoutUser(login);
-            return true;
-        } catch (SQLException exp) {
-            return false;
+    public void resetUserPassword(String login) throws SQLException {
+        boolean success = _playerDAO.resetUserPassword(login);
+        _loggedUserHolder.forceLogoutUser(login);
+        if (!success) {
+            throw new SQLException("Unable to reset user password");
         }
     }
 
