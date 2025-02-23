@@ -496,9 +496,15 @@ export default class GameTableUI {
         var tar = $(event.target);
 
         if (tar.hasClass("cardHint")) {
-            var blueprintId = tar.attr("value");
-            var imageUrl = tar.attr("card_img_url");
-            var card = new Card(blueprintId, "SPECIAL", "hint", "", imageUrl, "", false);
+            let blueprintId = tar.attr("value");
+            let zone = "SPECIAL";
+            let cardId = "hint";
+            let noOwner = "";
+            let imageUrl = tar.attr("card_img_url");
+            let emptyLocationIndex = "";
+            let upsideDown = false;
+
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
             this.displayCard(card, false);
             event.stopPropagation();
             return false;
@@ -1657,19 +1663,23 @@ export default class GameTableUI {
             .dialog("option", "title", text);
 
         // Create the action cards and fill the dialog with them
-        for (var i = 0; i < displayedCards.length; i++) {
+        for (let i = 0; i < displayedCards.length; i++) {
             let selectableCard = displayedCards[i];
-            var cardId = selectableCard.cardId;
-            var blueprintId = selectableCard.blueprintId;
-            var imageUrl = selectableCard.imageUrl;
+            let cardId = selectableCard.cardId;
+            let blueprintId = selectableCard.blueprintId;
+            let zone = "SPECIAL";
+            let noOwner = "";
+            let imageUrl = selectableCard.imageUrl;
+            let emptyLocationIndex = "";
+            let upsideDown = false;
 
-            if (selectableCard.selectable == "true") {
+            if (selectableCard.selectable === "true") {
                 selectableCardIds.push(cardId);
             }
             allCardIds.push(cardId);
-            var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
 
-            var cardDiv = this.createCardDivWithData(card);
+            let cardDiv = this.createCardDivWithData(card);
 
             $("#arbitraryChoice").append(cardDiv);
         }
@@ -1775,19 +1785,25 @@ export default class GameTableUI {
             .dialog("option", "title", `Select ${min} to ${max} cards`);
 
         // Create the action cards and fill the dialog with them
-        for (var i = 0; i < displayedCards.length; i++) {
+        for (let i = 0; i < displayedCards.length; i++) {
             let displayedCard = displayedCards[i];
-            var cardId = displayedCard.cardId;
-            var blueprintId = displayedCard.blueprintId;
-            var imageUrl = displayedCard.imageUrl;
+            
+            let blueprintId = displayedCard.blueprintId;
+            let zone ="SPECIAL";
+            let cardId = displayedCard.cardId;
+            let noOwner = "";
+            let emptyLocationIndex = "";
+            let upsideDown = false;
+            
+            let imageUrl = displayedCard.imageUrl;
 
             if (displayedCard.selectable == "true") {
                 selectableCardIds.push(cardId);
             }
 
-            var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
 
-            var cardDiv = this.createCardDivWithData(card);
+            let cardDiv = this.createCardDivWithData(card);
 
             $("#cardSelectionFromCombinations").append(cardDiv);
         }
@@ -1926,29 +1942,34 @@ export default class GameTableUI {
         var allowSelection = function () {
             var hasVirtual = false;
 
-            for (var i = 0; i < selectableCards.length; i++) {
+            for (let i = 0; i < selectableCards.length; i++) {
                 let selectableCard = selectableCards[i];
-                var cardId = selectableCard.cardId;
-                var actionId = selectableCard.actionId;
-                var actionText = selectableCard.actionText;
-                var blueprintId = selectableCard.blueprintId;
-                var imageUrl = selectableCard.imageUrl;
-                var actionType = selectableCard.actionType;
+                let actionId = selectableCard.actionId;
+                let actionText = selectableCard.actionText;
+                let blueprintId = selectableCard.blueprintId;
+                let zone = "EXTRA";
+                let cardId = `extra${selectableCard.cardId}`;
+                let noOwner = "";
+                let imageUrl = selectableCard.imageUrl;
+                let noLocationIndex = "";
+                let upsideDown = false;
+                let actionType = selectableCard.actionType;
+                let cardIdElem;
 
                 if (blueprintId == "inPlay") {
-                    var cardIdElem = getCardDivFromId(cardId);
+                    cardIdElem = getCardDivFromId(cardId);
                     allCardIds.push(cardId);
                 } else {
                     hasVirtual = true;
                     allCardIds.push("extra" + cardId);
-                    var card = new Card(blueprintId, "EXTRA", "extra" + cardId, null, imageUrl);
+                    var card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
 
                     var cardDiv = that.createCardDivWithData(card);
                     $(cardDiv).css({opacity: "0.8"});
 
                     $("#main").append(cardDiv);
 
-                    var cardIdElem = $(".card:cardId(extra" + cardId + ")");
+                    cardIdElem = $(".card:cardId(extra" + cardId + ")");
                 }
 
                 if (cardIdElem.data("action") == null) {
@@ -2074,15 +2095,20 @@ export default class GameTableUI {
 
         var cardIds = new Array();
 
-        for (var i = 0; i < displayedCards.length; i++) {
+        for (let i = 0; i < displayedCards.length; i++) {
             let displayedCard = displayedCards[i];
-            var blueprintId = displayedCard.blueprintId;
-            var imageUrl = displayedCard.imageUrl;
+            let blueprintId = displayedCard.blueprintId;
+            let zone = "SPECIAL";
+            let cardId = `temp${i}`;
+            let noOwner = "";
+            let imageUrl = displayedCard.imageUrl;
+            let noLocationIndex = "";
+            let upsideDown = false;
 
             cardIds.push("temp" + i);
-            var card = new Card(blueprintId, "SPECIAL", "temp" + i, "", imageUrl, "", false);
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
 
-            var cardDiv = this.createCardDivWithData(card, displayedCard.actionText);
+            let cardDiv = this.createCardDivWithData(card, displayedCard.actionText);
 
             $("#arbitraryChoice").append(cardDiv);
         }
