@@ -150,7 +150,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             } else if (jsonAction.status === "completed_failure") {
                 message = performingPlayerId + " failed ";
             }
-            targetCard = getActionTargetCard(jsonGameState);
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
             message = message + showLinkableCardTitle(targetCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
