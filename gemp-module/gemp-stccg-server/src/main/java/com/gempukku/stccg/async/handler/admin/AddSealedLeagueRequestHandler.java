@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.LeagueSeriesData;
@@ -14,7 +14,7 @@ import com.gempukku.stccg.league.NewSealedLeagueData;
 import java.util.List;
 
 @JsonIgnoreProperties("cost")
-public class AddSealedLeagueRequestHandler extends AdminRequestHandlerNew implements UriRequestHandlerNew {
+public class AddSealedLeagueRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
     private final long _creationTime;
     private final int _start;
     private final String _leagueTemplateName;

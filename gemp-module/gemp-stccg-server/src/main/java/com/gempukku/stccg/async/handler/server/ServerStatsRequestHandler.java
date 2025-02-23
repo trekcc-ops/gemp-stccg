@@ -6,9 +6,8 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.game.GameHistoryService;
-import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class ServerStatsRequestHandler implements UriRequestHandlerNew {
+public class ServerStatsRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(ServerStatsRequestHandler.class);
     private final ZonedDateTime _fromDate;
     private final ZonedDateTime _toDate;

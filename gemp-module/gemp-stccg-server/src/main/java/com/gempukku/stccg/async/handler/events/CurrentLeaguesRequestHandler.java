@@ -3,7 +3,7 @@ package com.gempukku.stccg.async.handler.events;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueSeriesData;
@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 
 import java.util.List;
 
-public class CurrentLeaguesRequestHandler implements UriRequestHandlerNew {
+public class CurrentLeaguesRequestHandler implements UriRequestHandler {
 
     @Override
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)

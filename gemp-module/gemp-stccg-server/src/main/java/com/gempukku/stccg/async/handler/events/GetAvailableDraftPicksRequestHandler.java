@@ -5,7 +5,7 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionType;
@@ -23,7 +23,7 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Map;
 
-public class GetAvailableDraftPicksRequestHandler extends SoloDraftRequestHandler implements UriRequestHandlerNew {
+public class GetAvailableDraftPicksRequestHandler extends SoloDraftRequestHandler implements UriRequestHandler {
 
     private final String _leagueType;
     GetAvailableDraftPicksRequestHandler(

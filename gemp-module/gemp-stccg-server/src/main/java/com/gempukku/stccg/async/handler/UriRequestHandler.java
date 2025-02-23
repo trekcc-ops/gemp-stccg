@@ -68,6 +68,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = ListUserDecksRequestHandler.class, name = "listUserDecks"),
         @JsonSubTypes.Type(value = LoginRequestHandler.class, name = "login"),
         @JsonSubTypes.Type(value = MakeDraftPickRequestHandler.class, name = "makeDraftPick"),
+        @JsonSubTypes.Type(value = OpenPackRequestHandler.class, name = "openPack"),
         @JsonSubTypes.Type(value = PlayerInfoRequestHandler.class, name = "playerInfo"),
         @JsonSubTypes.Type(value = PlayerStatsRequestHandler.class, name = "playerStats"),
         @JsonSubTypes.Type(value = PlaytestReplaysRequestHandler.class, name = "playtestReplays"),
@@ -88,7 +89,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = UpdateGameStateRequestHandler.class, name = "updateGameState"),
         @JsonSubTypes.Type(value = UpdateHallRequestHandler.class, name = "updateHall")
 })
-public interface UriRequestHandlerNew {
+public interface UriRequestHandler {
     void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception;
 

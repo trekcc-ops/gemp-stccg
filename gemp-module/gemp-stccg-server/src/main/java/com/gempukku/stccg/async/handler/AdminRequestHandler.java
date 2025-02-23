@@ -116,7 +116,7 @@ public class AdminRequestHandler extends AdminRequestHandlerNew {
 
     private void banMultiple(HttpRequest request, ResponseWriter responseWriter, AdminService adminService) throws Exception {
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            List<String> logins = getLoginParametersSafely(postDecoder);
+            List<String> logins = getFormMultipleParametersSafely(postDecoder,"login[]");
             if (logins.isEmpty())
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
@@ -126,11 +126,6 @@ public class AdminRequestHandler extends AdminRequestHandlerNew {
             }
             responseWriter.writeJsonOkResponse();
         }
-    }
-
-    static List<String> getLoginParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder)
-            throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
-        return getFormMultipleParametersSafely(postRequestDecoder,"login[]");
     }
 
     static List<String> getFormMultipleParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder,

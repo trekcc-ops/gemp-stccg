@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 
-public class SetShutdownRequestHandler extends AdminRequestHandlerNew implements UriRequestHandlerNew {
+public class SetShutdownRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
     private final boolean _shutdown;
 
     SetShutdownRequestHandler(

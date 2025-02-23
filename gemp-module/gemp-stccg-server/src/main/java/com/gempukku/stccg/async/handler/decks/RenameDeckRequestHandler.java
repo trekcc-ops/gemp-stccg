@@ -5,13 +5,13 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.User;
 
 import java.net.HttpURLConnection;
 
-public class RenameDeckRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
+public class RenameDeckRequestHandler extends DeckRequestHandler implements UriRequestHandler {
 
     private final String _newDeckName;
     private final String _oldDeckName;

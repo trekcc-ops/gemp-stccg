@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.tournament.Tournament;
 
 import java.util.List;
 
 @JsonIgnoreProperties("participantId")
-public class TournamentHistoryRequestHandler implements UriRequestHandlerNew {
+public class TournamentHistoryRequestHandler implements UriRequestHandler {
 
     private final static long SEVEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 7;
 

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.game.GameHistoryService;
 
 import java.util.List;
 
-public class PlaytestReplaysRequestHandler implements UriRequestHandlerNew {
+public class PlaytestReplaysRequestHandler implements UriRequestHandler {
 
     private final String _format;
     private final int _count;

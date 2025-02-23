@@ -12,7 +12,6 @@ import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.HallCommunicationChannel;
 import com.gempukku.stccg.hall.HallServer;
-import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class UpdateHallRequestHandler implements UriRequestHandlerNew {
+public class UpdateHallRequestHandler implements UriRequestHandler {
     private final static int SIGNUP_REWARD = 20000;
     private final static int WEEKLY_REWARD = 5000;
     private static final Logger LOGGER = LogManager.getLogger(UpdateHallRequestHandler.class);

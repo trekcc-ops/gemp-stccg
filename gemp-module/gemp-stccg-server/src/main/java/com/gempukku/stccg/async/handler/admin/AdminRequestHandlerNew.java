@@ -3,7 +3,6 @@ package com.gempukku.stccg.async.handler.admin;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpMessage;
 
 import java.net.HttpURLConnection;
 

@@ -7,11 +7,10 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.database.GameHistoryDAO;
 import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpRequest;
 
 import java.net.HttpURLConnection;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties("participantId")
-public class GameHistoryRequestHandler implements UriRequestHandlerNew {
+public class GameHistoryRequestHandler implements UriRequestHandler {
 
     private final int _start;
     private final int _count;

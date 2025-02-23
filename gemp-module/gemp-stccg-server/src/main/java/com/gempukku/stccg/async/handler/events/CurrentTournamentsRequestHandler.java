@@ -5,14 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentService;
 
 import java.util.List;
 
 @JsonIgnoreProperties("participantId")
-public class CurrentTournamentsRequestHandler implements UriRequestHandlerNew {
+public class CurrentTournamentsRequestHandler implements UriRequestHandler {
 
     @Override
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)

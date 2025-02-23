@@ -5,7 +5,7 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueNotFoundException;
@@ -13,7 +13,7 @@ import com.gempukku.stccg.league.LeagueService;
 
 import java.net.HttpURLConnection;
 
-public class JoinLeagueRequestHandler implements UriRequestHandlerNew {
+public class JoinLeagueRequestHandler implements UriRequestHandler {
 
     private final String _leagueType;
     JoinLeagueRequestHandler(

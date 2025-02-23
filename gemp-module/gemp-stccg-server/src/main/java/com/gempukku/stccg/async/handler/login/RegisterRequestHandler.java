@@ -6,9 +6,8 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.LoginInvalidException;
-import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.util.Map;
 
 @JsonIgnoreProperties("participantId")
-public class RegisterRequestHandler implements UriRequestHandlerNew {
+public class RegisterRequestHandler implements UriRequestHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(RegisterRequestHandler.class);
     private final String _userId;

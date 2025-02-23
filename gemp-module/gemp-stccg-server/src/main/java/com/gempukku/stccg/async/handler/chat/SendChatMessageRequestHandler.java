@@ -6,7 +6,7 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.PrivateInformationException;
@@ -31,7 +31,7 @@ import java.net.HttpURLConnection;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class SendChatMessageRequestHandler implements UriRequestHandlerNew {
+public class SendChatMessageRequestHandler implements UriRequestHandler {
 
     private final static List<Extension> _adminExt =
             Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create());

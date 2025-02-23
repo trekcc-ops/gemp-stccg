@@ -13,28 +13,23 @@ import java.net.HttpURLConnection;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-public class StatusRequestHandler {
+public class StatusRequestHandler implements UriRequestHandler {
 
-    public final void handleRequest(String uri, GempHttpRequest request, ResponseWriter responseWriter,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
-        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            HallServer hallServer = serverObjects.getHallServer();
-            ChatServer chatServer = serverObjects.getChatServer();
-            GameHistoryService gameHistoryService = serverObjects.getGameHistoryService();
+        HallServer hallServer = serverObjects.getHallServer();
+        ChatServer chatServer = serverObjects.getChatServer();
+        GameHistoryService gameHistoryService = serverObjects.getGameHistoryService();
 
-            var today = ZonedDateTime.now(ZoneOffset.UTC);
-            var yesterday = today.minusDays(1);
-            var lastWeek = today.minusDays(7);
+        var today = ZonedDateTime.now(ZoneOffset.UTC);
+        var yesterday = today.minusDays(1);
+        var lastWeek = today.minusDays(7);
 
-            String sb = "Tables count: " + hallServer.getTablesCount() + ", players in hall: " +
-                    chatServer.getChatRoom("Game Hall").getUserIdsInRoom(false).size() +
-                    ", games played in last 24 hours: " + gameHistoryService.getGamesPlayedCount(yesterday, today) +
-                    ", active players in last week: " + gameHistoryService.getActivePlayersCount(lastWeek, today);
+        String sb = "Tables count: " + hallServer.getTablesCount() + ", players in hall: " +
+                chatServer.getChatRoom("Game Hall").getUserIdsInRoom(false).size() +
+                ", games played in last 24 hours: " + gameHistoryService.getGamesPlayedCount(yesterday, today) +
+                ", active players in last week: " + gameHistoryService.getActivePlayersCount(lastWeek, today);
 
-            responseWriter.writeHtmlResponse(sb);
-        } else {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        }
+        responseWriter.writeHtmlResponse(sb);
     }
 }

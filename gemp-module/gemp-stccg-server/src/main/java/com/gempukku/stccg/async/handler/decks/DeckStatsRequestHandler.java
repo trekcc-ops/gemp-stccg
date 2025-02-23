@@ -5,14 +5,14 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.DefaultGameFormat;
 
 import java.util.List;
 
-public class DeckStatsRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
+public class DeckStatsRequestHandler extends DeckRequestHandler implements UriRequestHandler {
 
     private static final String YELLOW = "yellow";
     private static final String RED = "red";

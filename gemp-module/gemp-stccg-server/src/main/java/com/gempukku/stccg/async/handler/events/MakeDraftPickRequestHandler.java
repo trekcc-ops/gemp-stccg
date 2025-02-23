@@ -5,7 +5,7 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MakeDraftPickRequestHandler extends SoloDraftRequestHandler implements UriRequestHandlerNew {
+public class MakeDraftPickRequestHandler extends SoloDraftRequestHandler implements UriRequestHandler {
 
     private final String _leagueType;
     private final String _choiceId;

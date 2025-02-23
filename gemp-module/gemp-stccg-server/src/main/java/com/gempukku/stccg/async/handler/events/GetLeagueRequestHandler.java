@@ -6,7 +6,7 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.database.User;
@@ -22,7 +22,7 @@ import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
 
-public class GetLeagueRequestHandler implements UriRequestHandlerNew {
+public class GetLeagueRequestHandler implements UriRequestHandler {
 
     private final String _leagueType;
     GetLeagueRequestHandler(

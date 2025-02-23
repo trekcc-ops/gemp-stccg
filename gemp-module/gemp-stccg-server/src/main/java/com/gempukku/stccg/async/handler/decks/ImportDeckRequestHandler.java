@@ -5,7 +5,7 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.SortAndFilterCards;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ImportDeckRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
+public class ImportDeckRequestHandler extends DeckRequestHandler implements UriRequestHandler {
 
     private final String _rawDeckList;
 

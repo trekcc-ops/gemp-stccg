@@ -6,15 +6,14 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.DefaultGame;
-import io.netty.handler.codec.http.HttpRequest;
 
 import java.net.HttpURLConnection;
 
-public class GetGameStateRequestHandler extends GameRequestHandlerNew implements UriRequestHandlerNew {
+public class GetGameStateRequestHandler extends GameRequestHandlerNew implements UriRequestHandler {
 
     public GetGameStateRequestHandler(
             @JsonProperty("gameId")

@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 
 import java.util.Map;
 
-public class DeckFormatsRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
+public class DeckFormatsRequestHandler extends DeckRequestHandler implements UriRequestHandler {
 
     private final boolean _includeEvents;
 

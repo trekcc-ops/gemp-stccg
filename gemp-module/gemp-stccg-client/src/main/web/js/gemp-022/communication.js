@@ -389,10 +389,11 @@ export default class GempClientCommunication {
     openPack(collectionType, pack, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/collection/" + collectionType,
+            url:this.url + "/openPack",
             cache:false,
             data:{
-                pack:pack
+                packId:pack,
+                collectionType:collectionType
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -403,11 +404,12 @@ export default class GempClientCommunication {
     openSelectionPack(collectionType, pack, selection, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/collection/" + collectionType,
+            url:this.url + "/openPack",
             cache:false,
             data:{
-                pack:pack,
-                selection:selection
+                packId:pack,
+                selection:selection,
+                collectionType:collectionType
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),

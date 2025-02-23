@@ -6,16 +6,11 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.handler.codec.http.multipart.Attribute;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpData;
-import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,7 +18,6 @@ import org.w3c.dom.Node;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +29,7 @@ public class CollectionRequestHandler {
                                     ServerObjects serverObjects)
             throws Exception {
         HttpRequest request = gempRequest.getRequest();
-        if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
-            openPack(gempRequest, uri.substring(1), responseWriter, serverObjects);
-        } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
+        if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getCollection(gempRequest, uri.substring(1), responseWriter, serverObjects);
         } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
@@ -115,42 +107,6 @@ public class CollectionRequestHandler {
     }
 
 
-    private void openPack(GempHttpRequest request, String collectionType, ResponseWriter responseWriter,
-                          ServerObjects serverObjects) throws Exception {
-        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request.getRequest());
-        try {
-            String selection = getFormParameterSafely(postDecoder, FormParameter.selection);
-            String packId = getFormParameterSafely(postDecoder, FormParameter.pack);
-
-            User resourceOwner = request.user();
-
-            CollectionType collectionTypeObj = CollectionType.getCollectionTypeByCode(collectionType);
-            if (collectionTypeObj == null)
-                collectionTypeObj = serverObjects.getLeagueService().getCollectionTypeByCode(collectionType);
-            CardCollection packContents = serverObjects.getCollectionsManager().openPackInPlayerCollection(
-                    resourceOwner, collectionTypeObj, selection, serverObjects.getProductLibrary(), packId);
-
-            if (packContents == null)
-                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-            Document doc = createNewDoc();
-            Element collectionElem = doc.createElement("pack");
-            doc.appendChild(collectionElem);
-
-            for (GenericCardItem item : packContents.getAll()) {
-                if (item.getType() == CardItemType.CARD) {
-                    appendCardElement(doc, collectionElem, item, serverObjects);
-                } else {
-                    appendPackElement(doc, collectionElem, item, false, serverObjects);
-                }
-            }
-
-            responseWriter.writeXmlResponseWithNoHeaders(doc);
-        } finally {
-            postDecoder.destroy();
-        }
-    }
-
     protected enum FormParameter {
         blueprintId, cardId, channelNumber, choiceId, collectionType,
         cost, count, decisionId, decisionValue,
@@ -168,20 +124,6 @@ public class CollectionRequestHandler {
             return parameterValues.getFirst();
         else
             return null;
-    }
-
-
-    static String getFormParameterSafely(InterfaceHttpPostRequestDecoder decoder, FormParameter parameter)
-            throws IOException {
-        InterfaceHttpData data = decoder.getBodyHttpData(parameter.name());
-        if (data == null)
-            return null;
-        if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
-            Attribute attribute = (Attribute) data;
-            return attribute.getValue();
-        } else {
-            return null;
-        }
     }
 
 
