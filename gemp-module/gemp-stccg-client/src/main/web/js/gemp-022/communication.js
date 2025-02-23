@@ -1060,8 +1060,11 @@ export default class GempClientCommunication {
     getDraft(leagueType, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/soloDraft/"+leagueType,
+            url:this.url + "/getAvailableDraftPicks",
             cache:false,
+            data:{
+                leagueType:leagueType
+            },
             success:callback,
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -1071,9 +1074,10 @@ export default class GempClientCommunication {
     makeDraftPick(leagueType, choiceId, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/soloDraft/"+leagueType,
+            url:this.url + "/makeDraftPick",
             cache:false,
             data:{
+                leagueType:leagueType,
                 choiceId:choiceId
             },
             success:callback,

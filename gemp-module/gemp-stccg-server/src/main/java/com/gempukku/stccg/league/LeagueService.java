@@ -131,12 +131,12 @@ public class LeagueService {
         }
     }
 
-    public synchronized League getLeagueByType(String type) {
+    public synchronized League getLeagueByType(String type) throws LeagueNotFoundException {
         for (League league : getActiveLeagues()) {
             if (league.getType().equals(type))
                 return league;
         }
-        return null;
+        throw new LeagueNotFoundException();
     }
 
     public synchronized CollectionType getCollectionTypeByCode(String collectionTypeCode) {

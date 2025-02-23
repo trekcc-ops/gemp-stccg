@@ -96,7 +96,6 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 UriRequestHandler handler = switch (handlerType) {
                     case "admin" -> new AdminRequestHandler(_serverObjects);
                     case "collection" -> new CollectionRequestHandler(_serverObjects);
-                    case "soloDraft" -> new SoloDraftRequestHandler(_serverObjects);
                     default -> null;
                 };
                 if (handler != null) {

@@ -17,9 +17,9 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.League;
+import com.gempukku.stccg.league.LeagueNotFoundException;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.tournament.*;
-import org.apache.commons.lang.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -173,27 +173,29 @@ public class HallServer extends AbstractServer {
 
         if (format == null) {
             // Maybe it's a league format?
-            league = _serverObjects.getLeagueService().getLeagueByType(formatSelection);
-            if (league != null) {
+            try {
+                league = _serverObjects.getLeagueService().getLeagueByType(formatSelection);
                 seriesData = _serverObjects.getLeagueService().getCurrentLeagueSeries(league);
                 if (seriesData == null)
                     throw new HallException("There is no ongoing series for that league");
 
-                if(isInviteOnly) {
+                if (isInviteOnly) {
                     throw new HallException("League games cannot be invite-only");
                 }
 
-                if(isPrivate) {
+                if (isPrivate) {
                     throw new HallException("League games cannot be private");
                 }
 
                 //Don't want people getting around the anonymity for leagues.
-                if(description != null)
+                if (description != null)
                     description = "";
 
                 format = seriesData.getFormat();
 
                 gameTimer = GameTimer.COMPETITIVE_TIMER;
+            } catch(LeagueNotFoundException ignored) {
+
             }
         }
         // It's not a normal format and also not a league one
