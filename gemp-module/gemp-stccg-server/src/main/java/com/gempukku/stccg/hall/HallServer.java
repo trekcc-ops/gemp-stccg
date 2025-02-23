@@ -19,7 +19,6 @@ import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.tournament.*;
-import org.apache.commons.lang.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -613,7 +612,7 @@ public class HallServer extends AbstractServer {
         @Override
         public final void broadcastMessage(String message) {
             try {
-                _hallChat.sendMessage("TournamentSystem", message, true);
+                _hallChat.sendChatMessage("TournamentSystem", message, true);
             } catch (PrivateInformationException exp) {
                 // Ignore, sent as admin
             } catch (ChatCommandErrorException e) {

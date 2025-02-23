@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ActionSerializerTest extends AbstractAtTest {
 
-//    @Test
+       @Test
     public void killAttemptSerializerTest() throws CardNotFoundException, DecisionResultInvalidException,
             JsonProcessingException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
@@ -35,18 +36,11 @@ public class ActionSerializerTest extends AbstractAtTest {
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
         action.appendCost(action2);
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonString = mapper.writeValueAsString(action);
+        String jsonString = _game.getGameState().serializeForPlayer(P1);
         System.out.println(jsonString);
-        System.out.println(mapper.writeValueAsString(_mission));
-        System.out.println(mapper.writeValueAsString(_mission.getLocationDeprecatedOnlyUseForTests()));
-        System.out.println(mapper.writeValueAsString(_game.getCardFromCardId(1)));
-        System.out.println(mapper.writeValueAsString(troi));
-        System.out.println(mapper.writeValueAsString(runabout));
-        System.out.println(mapper.writeValueAsString(_game.getGameState()));
     }
 
-    @Test
+//    @Test
     public void missionAttemptSerializerTest() throws Exception {
         initializeMissionAttemptWithDrawCards("Investigate Rogue Comet", "172_040"); // with M'Vil
         assertNotNull(_mission);

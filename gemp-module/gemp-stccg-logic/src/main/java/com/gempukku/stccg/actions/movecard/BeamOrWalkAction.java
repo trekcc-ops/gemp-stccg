@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
@@ -11,6 +13,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -27,9 +30,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BeamOrWalkAction extends ActionyAction implements TopLevelSelectableAction {
+
+    @JsonProperty("targetCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
     final PhysicalNounCard1E _cardSource;
-    private PhysicalCard _origin, _destination;
+
+    @JsonProperty("originCardId")
+    private PhysicalCard _origin;
+
+    @JsonProperty("destinationCardId")
+    private PhysicalCard _destination;
     private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen;
     final Player _performingPlayer;
     final Collection<PhysicalCard> _destinationOptions;
@@ -43,8 +54,8 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param player              the player
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
-    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource) {
-        super(cardGame, player, ActionType.MOVE_CARDS);
+    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource, ActionType actionType) {
+        super(cardGame, player, actionType);
         _performingPlayer = player;
         _cardSource = cardSource;
         _destinationOptions = getDestinationOptions((ST1EGame) cardGame);
@@ -138,21 +149,17 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return null;
     }
 
-    private void processEffect(DefaultGame cardGame) throws InvalidGameOperationException {
+    private void processEffect(DefaultGame cardGame) {
         if (!_wasCarriedOut) {
             GameLocation destinationLocation = _destination.getGameLocation();
             for (PhysicalCard card : _cardsToMove) {
-                cardGame.getGameState().transferCard(cardGame, card, _destination); // attach card to destination card
+                card.setZone(Zone.ATTACHED);
+                card.attachTo(_destination);
                 card.setLocation(destinationLocation);
                 if (_origin instanceof MissionCard)
                     ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
                 if (_destination instanceof MissionCard && destinationLocation instanceof MissionLocation mission)
                     ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission);
-            }
-            if (!_cardsToMove.isEmpty()) {
-                cardGame.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +
-                        TextUtils.plural(_cardsToMove.size(), "card") + " from " +
-                        _origin.getCardLink() + " to " + _destination.getCardLink());
             }
             _wasCarriedOut = true;
             setAsSuccessful();

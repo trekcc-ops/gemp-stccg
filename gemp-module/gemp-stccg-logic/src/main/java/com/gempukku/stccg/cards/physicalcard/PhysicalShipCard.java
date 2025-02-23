@@ -66,12 +66,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     public boolean isDocked() { return _docked; }
 
-    @Override
-    public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
-        super.reportToFacility(facility);
-        dockAtFacility(facility);
-    }
-
     public void dockAtFacility(FacilityCard facilityCard) {
         _docked = true;
         _dockedAtCardId = facilityCard.getCardId();
@@ -85,7 +79,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     public void undockFromFacility() throws InvalidGameOperationException {
         _docked = false;
         _dockedAtCardId = null;
-        _game.getGameState().detachCard(_game,this, Zone.AT_LOCATION);
+        setZone(Zone.AT_LOCATION);
+        detach();
     }
 
     public PhysicalCard getDockedAtCard(DefaultGame cardGame) {
@@ -138,7 +133,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public int getFullRange() {
-        return _game.getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
+        return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
     }
 
     public int getRangeAvailable() {

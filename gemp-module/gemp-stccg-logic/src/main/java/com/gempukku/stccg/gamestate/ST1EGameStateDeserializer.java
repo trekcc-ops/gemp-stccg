@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
@@ -29,9 +30,12 @@ public class ST1EGameStateDeserializer {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        ST1EGameState gameState = new ST1EGameState(game);
+        List<String> playerIds = new ArrayList<>();
 
-        gameState.setCurrentPhaseNew(mapper.treeToValue(node.get("currentPhase"), Phase.class));
+            // TODO - Pull timer from serialized game state
+        ST1EGameState gameState = new ST1EGameState(playerIds, game, GameTimer.GLACIAL_TIMER);
+
+        gameState.setCurrentPhase(mapper.treeToValue(node.get("currentPhase"), Phase.class));
         gameState.loadPlayerOrder(mapper.treeToValue(node.get("playerOrder"), PlayerOrder.class));
 
         Map<MissionLocation, List<Integer>> seededUnderMap = new HashMap<>();
@@ -69,7 +73,7 @@ public class ST1EGameStateDeserializer {
         }
 
         GameProcess currentProcess = mapper.treeToValue(node.get("currentProcess"), GameProcess.class);
-        game.setCurrentProcess(currentProcess);
+        gameState.setCurrentProcess(currentProcess);
 
         gameState.setModifiersLogic(game);
 

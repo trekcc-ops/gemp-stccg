@@ -1,21 +1,16 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.gameevent.*;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GameCommunicationChannel implements GameStateListener, LongPollableResource {
     private List<GameEvent> _events = Collections.synchronizedList(new LinkedList<>());
@@ -34,10 +29,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @JsonProperty("channelNumber")
     public final int getChannelNumber() {
         return _channelNumber;
-    }
-
-    public final void initializeBoard() throws PlayerNotFoundException {
-        appendEvent(new InitializeBoardForPlayerGameEvent(_game, _game.getGameState().getPlayer(_playerId)));
     }
 
     @JsonIgnore
@@ -71,43 +62,8 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public final void setCurrentPhase(Phase phase) {
-        appendEvent(new StartOfPhaseGameEvent(phase));
-    }
-
-    @Override
-    public final void setPlayerDecked(DefaultGame cardGame, Player player) {
-        appendEvent(new GameEvent(GameEvent.Type.PLAYER_DECKED, player));
-    }
-
-    @Override
-    public final void setPlayerScore(Player player) {
-        appendEvent(new GameEvent(GameEvent.Type.PLAYER_SCORE, player));
-    }
-
-    @Override
-    public final void setTribbleSequence(String tribbleSequence) {
-        appendEvent(new UpdateTribbleSequenceGameEvent(tribbleSequence));
-    }
-
-    @Override
-    public final void setCurrentPlayerId(String playerId) {
-        try {
-            appendEvent(new GameEvent(GameEvent.Type.TURN_CHANGE, _game.getPlayer(playerId)));
-        } catch(PlayerNotFoundException exp) {
-            _game.sendErrorMessage(exp);
-            _game.cancelGame();
-        }
-    }
-
-    @Override
-    public final void sendMessage(String message) {
+    public final void sendMessageEvent(String message) {
         appendEvent(new SendMessageGameEvent(GameEvent.Type.SEND_MESSAGE, message));
-    }
-
-    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision)
-            throws PlayerNotFoundException {
-        appendEvent(new SendDecisionGameEvent(_game, awaitingDecision, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override
@@ -124,9 +80,9 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         return result;
     }
 
-    @JsonProperty("clocks")
+    @JsonProperty("playerClocks")
     public Collection<PlayerClock> getPlayerClocks() {
-        return _game.getPlayerClocks().values();
+        return _game.getGameState().getPlayerClocks().values();
     }
 
     private void updateLastAccess() {

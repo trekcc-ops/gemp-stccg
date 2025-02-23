@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.movecard;
 
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.filters.Filters;
@@ -15,7 +16,7 @@ import java.util.List;
 public class BeamCardsAction extends BeamOrWalkAction {
 
     public BeamCardsAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardUsingTransporters) {
-        super(cardGame, player, cardUsingTransporters);
+        super(cardGame, player, cardUsingTransporters, ActionType.BEAM_CARDS);
     }
 
     @Override

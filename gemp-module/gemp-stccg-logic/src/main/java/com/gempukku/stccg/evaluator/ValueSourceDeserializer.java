@@ -289,7 +289,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                                 new Evaluator() {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                        return Math.max(0, actionContext.getGame().getModifiersQuerying().getStrength(cardAffected) - over);
+                                        return Math.max(0, actionContext.getGame().getGameState().getModifiersQuerying().getStrength(cardAffected) - over);
                                     }
                                 });
                     } else {
@@ -300,7 +300,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                                         final Filterable filterable = strengthSource.getFilterable(actionContext);
                                         int strength = 0;
                                         for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
-                                            strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
+                                            strength += actionContext.getGame().getGameState().getModifiersQuerying().getStrength(physicalCard);
                                         }
 
                                         return Math.max(0, strength - over);
@@ -331,7 +331,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
                         for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
-                            result += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);
+                            result += actionContext.getGame().getGameState().getModifiersQuerying().getStrength(physicalCard);
                         }
                         return result;
                     }

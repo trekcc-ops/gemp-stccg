@@ -1,6 +1,8 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.placecard.AddCardToSeedCardStack;
+import com.gempukku.stccg.actions.placecard.RemoveCardFromPreSeedStack;
 import com.gempukku.stccg.actions.playcard.AddSeedCardsAction;
 import com.gempukku.stccg.actions.playcard.RemoveSeedCardsAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -19,6 +21,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
@@ -54,7 +57,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             List<MissionCard> availableMissions = getAvailableMissions(cardGame, playerId);
             for (MissionCard mission : availableMissions) {
                 // TODO - These actions are red herrings and are never actually used
-                if (!player.getCardsInHand().isEmpty()) {
+                if (!player.getCardsInGroup(Zone.SEED_DECK).isEmpty()) {
                     TopLevelSelectableAction seedCardsAction = new AddSeedCardsAction(player, mission);
                     seedActions.add(seedCardsAction);
                 }
@@ -98,7 +101,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     protected abstract String getDecisionText(DefaultGame cardGame, Player player);
 
     private void selectCardsToSeed(Player player, ST1EGame cardGame, PhysicalCard topCard) {
-        Collection<PhysicalCard> availableCards = player.getCardsInHand();
+        Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK);
         cardGame.getUserFeedback().sendAwaitingDecision(
                 new CardsSelectionDecision(player, "Select cards to seed under " + topCard.getTitle(),
                         availableCards, cardGame) {
@@ -106,9 +109,17 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     public void decisionMade (String result) throws DecisionResultInvalidException {
                         try {
                             Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                            if (topCard.getGameLocation() instanceof MissionLocation mission)
-                                mission.preSeedCardsUnder(cardGame, selectedCards, player);
-                            else throw new InvalidGameLogicException("Tried to seed cards under a non-mission card");
+                            if (topCard.getGameLocation() instanceof MissionLocation mission) {
+                                for (PhysicalCard card : selectedCards) {
+                                    AddCardToSeedCardStack removeAction =
+                                            new AddCardToSeedCardStack(cardGame, player, card, mission);
+                                    removeAction.processEffect(card.getOwner(), cardGame);
+                                    cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
+                                    cardGame.sendActionResultToClient();
+                                }
+                            } else {
+                                throw new InvalidGameLogicException("Tried to seed cards under a non-mission card");
+                            }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             throw new DecisionResultInvalidException(exp.getMessage());
@@ -129,9 +140,11 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                         Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                         try {
                             for (PhysicalCard card : selectedCards) {
-                                mission.removePreSeedCard(card, player);
-                                cardGame.getGameState().removeCardFromZone(card);
-                                cardGame.getGameState().addCardToZone(card, Zone.HAND);
+                                RemoveCardFromPreSeedStack removeAction =
+                                        new RemoveCardFromPreSeedStack(cardGame, player, card, mission);
+                                removeAction.processEffect(card.getOwner(), cardGame);
+                                cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
+                                cardGame.sendActionResultToClient();
                             }
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {

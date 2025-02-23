@@ -1,21 +1,16 @@
 package com.gempukku.stccg.async.handler.chat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
-import com.gempukku.stccg.chat.ChatCommunicationChannel;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,7 +57,7 @@ public class SendChatMessageRequestHandler implements UriRequestHandlerNew {
                 //Need to preserve any commands being made
                 if (!newMsg.startsWith("/"))
                     newMsg = HTMLUtils.parseChatMessage(newMsg);
-                chatRoom.sendMessage(resourceOwner, newMsg);
+                chatRoom.sendChatMessage(resourceOwner, newMsg);
                 responseWriter.writeXmlOkResponse();
             }
         } catch (PrivateInformationException exp) {

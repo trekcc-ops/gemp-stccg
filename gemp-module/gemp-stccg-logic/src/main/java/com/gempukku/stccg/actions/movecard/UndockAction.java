@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -14,7 +16,7 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
     private final PhysicalShipCard _performingCard;
 
     public UndockAction(Player player, PhysicalShipCard cardUndocking) {
-        super(cardUndocking.getGame(), player, "Undock", ActionType.MOVE_CARDS);
+        super(cardUndocking.getGame(), player, "Undock", ActionType.UNDOCK_SHIP);
         _performingCard = cardUndocking;
     }
 
@@ -41,6 +43,9 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return _performingCard.isDocked(); }
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     public PhysicalShipCard getCardToMove() { return _performingCard; }
 
 }

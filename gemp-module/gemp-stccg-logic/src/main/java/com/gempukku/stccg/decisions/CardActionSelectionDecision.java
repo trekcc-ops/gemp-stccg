@@ -1,15 +1,21 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public abstract class CardActionSelectionDecision extends ActionDecision {
+
+    @JsonProperty("noPass")
+    protected final boolean _noPass;
+    
+    @JsonProperty("cardIds")
+    private final String[] _cardIds;
 
     public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
                                        DefaultGame cardGame) {
@@ -20,6 +26,8 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
     public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
                                        boolean noPass, DefaultGame cardGame) {
         super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE, cardGame);
+        _noPass = noPass;
+        _cardIds = getCardIds();
         setParam("cardId", getCardIds());
         setParam("blueprintId", getBlueprintIds()); // done in super
         setParam("imageUrl", getImageUrls()); // done in super
@@ -47,7 +55,7 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
         return result;
     }
 
-    private String[] getCardIds() {
+    public String[] getCardIds() {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
             result[i] = String.valueOf(_actions.get(i).getCardIdForActionSelection());
@@ -66,5 +74,20 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
         } catch (NumberFormatException exp) {
             throw new DecisionResultInvalidException();
         }
+    }
+
+    @JsonProperty("displayedCards")
+    private List<Map<Object, Object>> getDisplayedCards() {
+        List<Map<Object, Object>> result = new ArrayList<>();
+        for (int i = 0; i < _cardIds.length; i++) {
+            Map<Object, Object> mapToAdd = new HashMap<>();
+            mapToAdd.put("cardId", _cardIds[i]);
+            mapToAdd.put("blueprintId", getBlueprintIds()[i]);
+            mapToAdd.put("actionId", getActionIds()[i]);
+            mapToAdd.put("actionText", getDecisionParameters().get("actionText")[i]);
+            mapToAdd.put("actionType", getActionTypes()[i]);
+            result.add(mapToAdd);
+        }
+        return result;
     }
 }

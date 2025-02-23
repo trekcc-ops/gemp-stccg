@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -16,7 +16,7 @@ public class DiscardThisCardSubActionBlueprint implements SubActionBlueprint {
     public List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         return List.of(
-                new DiscardCardAction(actionContext.getSource(), actionContext.getPerformingPlayer(),
+                new DiscardSingleCardAction(actionContext.getSource(), actionContext.getPerformingPlayer(),
                         actionContext.getSource()));
     }
 }

@@ -50,6 +50,13 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }
                         }
+
+                        @Override
+                        public String[] getCardIds() {
+                            return getDecisionParameters().get("cardId");
+                        }
+
+
                     });
         }
         setAsSuccessful();

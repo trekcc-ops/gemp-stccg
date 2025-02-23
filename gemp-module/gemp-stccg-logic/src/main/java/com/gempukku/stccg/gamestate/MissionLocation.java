@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.actions.placecard.AddCardToSeedCardStack;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
@@ -358,16 +359,6 @@ public class MissionLocation implements GameLocation {
             PhysicalCard card = cardPile.getBottomCard();
             cardPile.removeCard(card);
             seedCardOnTopOfMissionSeedCards(card);
-        }
-    }
-
-    public void preSeedCardsUnder(DefaultGame cardGame, Collection<PhysicalCard> cards, Player player)
-            throws InvalidGameLogicException {
-        GameState gameState = cardGame.getGameState();
-        for (PhysicalCard card : cards) {
-            gameState.removeCardFromZone(card);
-            gameState.addCardToZone(card, Zone.VOID);
-            addCardToTopOfPreSeedPile(card, player);
         }
     }
 

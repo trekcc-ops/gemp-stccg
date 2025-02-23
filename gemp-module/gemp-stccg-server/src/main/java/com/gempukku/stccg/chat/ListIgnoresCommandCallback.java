@@ -19,7 +19,7 @@ public class ListIgnoresCommandCallback extends ChatCommandWithMessage {
     public void commandReceived(String from, String parameters, boolean admin) {
         final Set<String> ignoredUsers = _ignoreDAO.getIgnoredUsers(from);
         String ignoredUsersString = TextUtils.concatenateStrings(ignoredUsers);
-        sendMessage(ChatStrings.SYSTEM_USER_ID, from, "Your ignores: " + ignoredUsersString);
+        sendChatMessage(ChatStrings.SYSTEM_USER_ID, from, "Your ignores: " + ignoredUsersString);
     }
 
 }

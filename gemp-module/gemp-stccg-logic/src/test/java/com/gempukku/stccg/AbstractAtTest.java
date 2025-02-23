@@ -19,7 +19,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.EndOfPile;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -59,7 +59,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -78,7 +78,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -97,7 +97,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -118,7 +118,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P2, testDeck);
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
@@ -135,8 +135,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-
-        _tribblesGame = new TribblesGame(format, decks, _cardLibrary);
+        _tribblesGame = new TribblesGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _tribblesGame.getUserFeedback();
         _tribblesGame.startGame();
 
@@ -280,7 +279,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.get("debug1e");
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -330,16 +329,16 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
         _klingonOutpost = (FacilityCard) _game.addCardToGame("101_105", _cardLibrary, P1);
-        _game.getGameState().addCardToZone(_klingonOutpost, Zone.SEED_DECK);
+        _game.getGameState().addCardToZoneWithoutSendingToClient(_klingonOutpost, Zone.SEED_DECK);
 
         for (String blueprintId : blueprintIds) {
             PhysicalCard card = _game.addCardToGame(blueprintId, _cardLibrary, P1);
-            _game.getGameState().addCardToZone(card, Zone.DRAW_DECK, EndOfPile.TOP);
+            _game.getGameState().addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(card, Zone.DRAW_DECK);
         }
 
         autoSeedMissions();
@@ -383,7 +382,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -412,7 +411,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -445,7 +444,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -462,7 +461,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.get("debug1e");
 
-        _game = new ST1EGame(format, decks, _cardLibrary);
+        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
@@ -597,7 +596,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         while (_game.getGameState().getCurrentPhase() == Phase.SEED_FACILITY) {
             if (_userFeedback.getAwaitingDecision(P1) != null) {
                 if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getCardIds()).toList());
                     try {
                         playerDecided(P1, cardIdList.getFirst());
                     } catch(Exception exp) {
@@ -609,7 +608,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     playerDecided(P1, "0");
             } else if (_userFeedback.getAwaitingDecision(P2) != null) {
                 if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getCardIds()).toList());
                     playerDecided(P2, cardIdList.getFirst());
                 }
                 else
@@ -624,7 +623,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
-                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardToSeed() == cardToSeed) {
+                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
                     choice = seedAction;
                 }
             }
@@ -925,8 +924,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) throws InvalidGameLogicException {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
-            _game.getGameState().removeCardFromZone(card);
-            _game.getGameState().addCardToZone(card, Zone.VOID);
+            _game.getGameState().removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(card));
+            _game.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.VOID);
             topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(topCard.getLocationDeprecatedOnlyUseForTests(), card);
         }
     }

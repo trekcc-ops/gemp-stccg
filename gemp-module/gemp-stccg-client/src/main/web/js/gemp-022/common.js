@@ -123,3 +123,142 @@ export var zones_all = [
     "BATTLE_BRIDGE",
     "TRIBBLE"
 ]
+
+export function showLinkableCardTitle(cardNode) {
+    // Takes a json node of card properties and creates a hyperlink that the user can click on to show the card
+    let title = cardNode.title; // string
+    let hasUniversalIcon = cardNode.hasUniversalIcon; // boolean
+    let blueprintId = cardNode.blueprintId; // string
+    let imageUrl = cardNode.imageUrl; // string
+
+    let html = "";
+    html = html + "<div class='cardHint' value='" + blueprintId + "' card_img_url='" + imageUrl + "'>";
+    if (hasUniversalIcon) {
+        html = html + "&#x2756&nbsp;"; // unicode for universal symbol
+    }
+    html = html + title + "</div>";
+
+    return html;
+}
+
+export function showLinkableCardTitles(cardNodeArray) {
+    let message = "";
+    for (let i = 0; i < cardNodeArray.length; i++) {
+        if (i > 0) {
+            message = message + ", ";
+        }
+        message = message + showLinkableCardTitle(cardNodeArray[i]);
+    }
+    return message;
+}
+
+export function getAffiliationIcon(affiliationEnum) {
+    // Receives the server enum name for an affiliation and provides the TrekCC icon URL
+    switch(affiliationEnum) {
+        case "BAJORAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-BAJ.gif";
+        case "BORG":
+            return "https://www.trekcc.org/images/icons/1e/1E-BORG.gif";
+        case "CARDASSIAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-CARD.gif";
+        case "DOMINION":
+            return "https://www.trekcc.org/images/icons/1e/1E-DOM.gif";
+        case "FEDERATION":
+            return "https://www.trekcc.org/images/icons/1e/1E-FED.gif";
+        case "FERENGI":
+            return "https://www.trekcc.org/images/icons/1e/1E-FER.gif";
+        case "HIROGEN":
+            return "https://www.trekcc.org/images/icons/1e/1E-HIR.gif";
+        case "KAZON":
+            return "https://www.trekcc.org/images/icons/1e/1E-KAZ.gif";
+        case "KLINGON":
+            return "https://www.trekcc.org/images/icons/1e/1E-KLG.gif";
+        case "NEUTRAL":
+            return "https://www.trekcc.org/images/icons/1e/1E-NEU.gif";
+        case "NON_ALIGNED":
+            return "https://www.trekcc.org/images/icons/1e/1E-NON.gif";
+        case "ROMULAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-ROM.gif";
+        case "STARFLEET":
+            return "https://www.trekcc.org/images/icons/1e/1E-STF.gif";
+        case "VIDIIAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-VID.gif";
+        case "VULCAN":
+            return "https://www.trekcc.org/images/icons/1e/1E-VUL.gif";
+        case "XINDI":
+            return "https://www.trekcc.org/images/icons/1e/1E-XIN.gif";
+        default:
+            console.error("Cannot recognize affiliation " + affiliationEnum);
+            return "";
+    }
+}
+
+export function getAffiliationName(affiliationEnum) {
+    // Receives the server enum name for an affiliation and provides a user-friendly string
+    switch(affiliationEnum) {
+        case "BAJORAN":
+        case "BORG":
+        case "CARDASSIAN":
+        case "DOMINION":
+        case "FEDERATION":
+        case "FERENGI":
+        case "HIROGEN":
+        case "KAZON":
+        case "KLINGON":
+        case "NEUTRAL":
+        case "ROMULAN":
+        case "STARFLEET":
+        case "VIDIIAN":
+        case "VULCAN":
+        case "XINDI":
+            return affiliationEnum.charAt(0).toUpperCase() + affiliationEnum.substring(1).toLowerCase();
+        case "NON_ALIGNED":
+            return "Non-Aligned";
+        default:
+            console.error("Cannot recognize affiliation " + affiliationEnum);
+            return "";
+    }
+}
+
+export function getAffiliationHtml(affiliationEnum) {
+    // Receives the server enum name for an affiliation and provides an in-line icon
+    let iconURL = getAffiliationIcon(affiliationEnum);
+    let userFriendlyName = getAffiliationName(affiliationEnum);
+    return "<img src='" + iconURL + "' class='inline-icon' title='" + userFriendlyName + "'>";
+}
+
+export function getFriendlyPhaseName(phaseEnum) {
+    switch(phaseEnum) {
+        case "BETWEEN_TURNS":
+            return "Between turns";
+        case "CARD_PLAY":
+            return "Card play";
+        case "END_OF_TURN":
+            return "End of turn";
+        case "EXECUTE_ORDERS":
+            return "Execute orders";
+        case "SEED_DILEMMA":
+            return "Dilemma seed phase";
+        case "SEED_DOORWAY":
+            return "Doorway seed phase";
+        case "SEED_FACILITY":
+            return "Facility seed phase";
+        case "SEED_MISSION":
+            return "Mission seed phase";
+        case "START_OF_TURN":
+            return "Start of turn";
+        case "TRIBBLES_TURN":
+            return "Player turn";
+        default:
+            console.error("Cannot recognize phase " + phaseEnum);
+            return "";
+    }
+}
+
+export function removeFromArray(arr, value) {
+  var index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}

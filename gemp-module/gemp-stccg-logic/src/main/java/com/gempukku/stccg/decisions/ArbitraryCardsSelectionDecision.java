@@ -1,5 +1,6 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -15,9 +16,18 @@ import java.util.*;
 public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDecision {
     private final List<PhysicalCard> _physicalCards = new LinkedList<>();
     private final Collection<? extends PhysicalCard> _selectable;
+
+    @JsonProperty("min")
     private final int _minimum;
+
+    @JsonProperty("max")
     private final int _maximum;
+    
+    @JsonProperty("validCombinations")
     private Map<String, List<String>> _validCombinations;
+
+    @JsonProperty("cardIds")
+    private final String[] _cardIds;
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards, DefaultGame cardGame) {
@@ -41,6 +51,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         _selectable = selectable;
         _minimum = minimum;
         _maximum = maximum;
+        _cardIds = getCardIds(physicalCards);
         setParam("min", String.valueOf(minimum));
         setParam("max", String.valueOf(maximum));
         setParam("cardId", getCardIds(physicalCards));
@@ -72,6 +83,8 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
         }
+        
+        _cardIds = getCardIds(physicalCards);
 
         setParam("min", String.valueOf(minimum));
         setParam("max", String.valueOf(maximum));
@@ -190,6 +203,24 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     public Map<String, List<String>> getValidCombinationsMap() {
         return _validCombinations;
+    }
+
+    @JsonProperty("displayedCards")
+    private List<Map<Object, Object>> getDisplayedCards() {
+        List<Map<Object, Object>> result = new ArrayList<>();
+        for (int i = 0; i < _cardIds.length; i++) {
+            Map<Object, Object> mapToAdd = new HashMap<>();
+            mapToAdd.put("cardId", _cardIds[i]);
+            mapToAdd.put("blueprintId", getDecisionParameters().get("blueprintId")[i]);
+            mapToAdd.put("imageUrl", getDecisionParameters().get("imageUrl")[i]);
+            mapToAdd.put("selectable", getDecisionParameters().get("selectable")[i]);
+            result.add(mapToAdd);
+        }
+        return result;
+    }
+
+    public String[] getCardIds() {
+        return _cardIds;
     }
 
 }

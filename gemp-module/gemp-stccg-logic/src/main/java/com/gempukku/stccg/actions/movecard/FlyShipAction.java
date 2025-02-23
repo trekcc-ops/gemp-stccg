@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -18,15 +20,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FlyShipAction extends ActionyAction implements TopLevelSelectableAction {
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalShipCard _flyingCard;
     private boolean _destinationChosen, _cardMoved;
+
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
     private SelectVisibleCardAction _selectAction;
 
     public FlyShipAction(Player player, PhysicalShipCard flyingCard, ST1EGame cardGame)
             throws InvalidGameLogicException {
-        super(cardGame, player, "Fly", ActionType.MOVE_CARDS);
+        super(cardGame, player, "Fly", ActionType.FLY_SHIP);
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
@@ -35,15 +40,11 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
         for (MissionLocation location : allLocations) {
             if (location.isInSameQuadrantAs(currentLocation) && location != currentLocation) {
-                try {
-                    int rangeNeeded = currentLocation.getDistanceToLocation(cardGame, location, player);
-                    if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
-                        PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
-                        _destinationOptions.add(destination);
-                        _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
-                    }
-                } catch(InvalidGameLogicException exp) {
-                    cardGame.sendMessage(exp.getMessage());
+                int rangeNeeded = currentLocation.getDistanceToLocation(cardGame, location, player);
+                if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
+                    PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
+                    _destinationOptions.add(destination);
+                    _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
                 }
             }
         }
@@ -93,11 +94,6 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             setAsSuccessful();
             _flyingCard.useRange(rangeNeeded);
             _flyingCard.setLocation(destinationLocation);
-            _flyingCard.getGame().getGameState().moveCard(cardGame, _flyingCard);
-            _flyingCard.getGame().sendMessage(
-                    _flyingCard.getCardLink() + " flew to " + destinationLocation.getLocationName() +
-                            " (using " + rangeNeeded + " RANGE)"
-            );
         }
 
         return getNextAction();

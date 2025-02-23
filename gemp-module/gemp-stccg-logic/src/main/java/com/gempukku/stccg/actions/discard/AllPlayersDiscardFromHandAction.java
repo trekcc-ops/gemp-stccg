@@ -26,7 +26,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     public AllPlayersDiscardFromHandAction(DefaultGame game, Action action, PhysicalCard performingCard,
                                            boolean allPlayersMustBeAble, boolean forced)
             throws PlayerNotFoundException {
-        super(game, game.getPlayer(action.getPerformingPlayerId()), ActionType.DISCARD);
+        super(game, game.getPlayer(action.getPerformingPlayerId()), ActionType.ALL_PLAYERS_DISCARD);
         _performingCard = performingCard;
         _allPlayersMustBeAble = allPlayersMustBeAble;
         _forced = forced;
@@ -65,7 +65,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     }
 
     private boolean canDiscard(DefaultGame cardGame, String playerId) {
-        return !_forced || cardGame.getModifiersQuerying().canDiscardCardsFromHand(playerId, _performingCard);
+        return !_forced || cardGame.getGameState().getModifiersQuerying().canDiscardCardsFromHand(playerId, _performingCard);
     }
 
     private void discardCards(DefaultGame game, Player discardingPlayer, Collection<PhysicalCard> cards) {
@@ -73,16 +73,11 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             GameState gameState = game.getGameState();
             Set<PhysicalCard> discardedCards = new HashSet<>(cards);
 
-            gameState.removeCardsFromZone(game, discardingPlayer, discardedCards);
+            gameState.removeCardsFromZoneWithoutSendingToClient(game, discardedCards);
             for (PhysicalCard card : discardedCards) {
-                gameState.addCardToZone(card, Zone.DISCARD);
+                gameState.addCardToZoneWithoutSendingToClient(card, Zone.DISCARD);
                 game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_performingCard, card));
             }
-
-            if (!discardedCards.isEmpty())
-                game.sendMessage(discardingPlayer.getPlayerId() + " discarded " +
-                        TextUtils.getConcatenatedCardLinks(discardedCards) +
-                        " from " + Zone.HAND.getHumanReadable());
         }
     }
 

@@ -24,16 +24,16 @@ public class IgnoreCommandCallback extends ChatCommandWithMessage {
         if (playerName.length() >= 2 && playerName.length() <= MAX_PLAYER_ID_LENGTH) {
             String userString = ChatStrings.user(playerName);
             if (!isFromPlayer && _ignoreDAO.addIgnoredUser(from, playerName)) {
-                sendMessage(ChatStrings.SYSTEM_USER_ID, from, userString + " added to ignore list");
+                sendChatMessage(ChatStrings.SYSTEM_USER_ID, from, userString + " added to ignore list");
             } else if (isFromPlayer) {
                 for (String message : ChatStrings.getIgnoredUserMessages())
-                    sendMessage(from, from, message);
+                    sendChatMessage(from, from, message);
             } else {
-                sendMessage(ChatStrings.SYSTEM_USER_ID, from,
+                sendChatMessage(ChatStrings.SYSTEM_USER_ID, from,
                         userString + " is already on your ignore list");
             }
         } else {
-            sendMessage(ChatStrings.SYSTEM_USER_ID, from, playerName + " is not a valid username");
+            sendChatMessage(ChatStrings.SYSTEM_USER_ID, from, playerName + " is not a valid username");
         }
     }
 

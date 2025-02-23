@@ -3,7 +3,6 @@ package com.gempukku.stccg.gameevent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -22,25 +21,16 @@ import org.w3c.dom.Node;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class GameEvent {
     public enum Type {
-        PARTICIPANTS("P"), GAME_PHASE_CHANGE("GPC"), TURN_CHANGE("TC"),
-        PUT_SHARED_MISSION_INTO_PLAY("PUT_SHARED_MISSION_INTO_PLAY"),
-        TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
-        PLAYER_DECKED("PLAYER_DECKED"), // TODO: Not implemented in JavaScript
-        PLAYER_SCORE("PLAYER_SCORE"),
-        PUT_CARD_INTO_PLAY("PCIP"),
-        PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING("PCIPAR"),
-        MOVE_CARD_IN_PLAY("MCIP"),
-        REMOVE_CARD_FROM_PLAY("RCFP"),
-        SEND_MESSAGE("M"), SEND_WARNING("W"),
-        GAME_STATS("GS"),
-        GAME_ENDED("EG"),
-        UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
-        FLASH_CARD_IN_PLAY("CA"),
-        DECISION("D"), GAME_STATE_CHECK("GAME_STATE_CHECK");
+        SEND_MESSAGE("M"),
+        SEND_WARNING("W"),
+        ACTION_RESULT("ACTION_RESULT");
 
         private final String code;
 
@@ -51,8 +41,7 @@ public class GameEvent {
     }
 
     public enum Attribute {
-        /* Don't change these names without editing the client code, as it relies on the .name() method */
-        allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
+        blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
         locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
         type, zone,
         placedOnMission,
@@ -82,12 +71,6 @@ public class GameEvent {
         _eventAttributes.put(Attribute.timestamp,
                 ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS")));
         _timeStamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS"));
-    }
-
-    public GameEvent(Type type, Player player) {
-        this(type);
-        _playerId = player.getPlayerId();
-        _eventAttributes.put(Attribute.participantId, player.getPlayerId());
     }
 
 
@@ -140,7 +123,7 @@ public class GameEvent {
     @JsonIgnore
     public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }
 
-    public Node serialize(Document doc) throws JsonProcessingException {
+    public Node serialize(Document doc) {
         Element eventElem = doc.createElement("ge");
 
         for (Attribute attribute : _eventAttributes.keySet()) {
@@ -148,10 +131,6 @@ public class GameEvent {
                 eventElem.setAttribute(attribute.name(), getAttribute(attribute));
         }
         return eventElem;
-    }
-
-    public Map<Attribute, String> getAttributes() {
-        return _eventAttributes;
     }
 
     protected Zone getZoneForCard(PhysicalCard card) throws InvalidGameOperationException {
@@ -179,7 +158,7 @@ public class GameEvent {
             possibleZones.add(missionZone);
         }
 
-        // TODO - 1E client doesn't use SEED_DECK or PLAY_PILE
+        // TODO - 1E client doesn't use PLAY_PILE
         if (card.getAttachedTo() != null) {
             possibleZones.add(Zone.ATTACHED);
         } else if (card.getCardType() != CardType.MISSION && card.isInPlay() &&
@@ -187,7 +166,15 @@ public class GameEvent {
             possibleZones.add(Zone.AT_LOCATION);
         }
 
-        if (!card.isInPlay() && possibleZones.isEmpty()) {
+        boolean inSeedDeck = false;
+        for (Player player : card.getGame().getPlayers()) {
+            if (player.getCardGroupCards(Zone.SEED_DECK).contains(card)) {
+                inSeedDeck = true;
+                possibleZones.add(Zone.SEED_DECK);
+            }
+        }
+
+        if (!inSeedDeck && !card.isInPlay() && possibleZones.isEmpty()) {
             possibleZones.add(Zone.VOID);
         }
 

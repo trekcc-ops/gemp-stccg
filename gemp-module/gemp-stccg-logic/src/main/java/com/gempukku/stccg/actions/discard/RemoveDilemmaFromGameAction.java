@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.discard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -43,18 +45,21 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
                 }
             }
 
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
-            gameState.removeCardsFromZone(cardGame, performingPlayer, Collections.singleton(cardToRemove));
-            gameState.addCardToZone(cardToRemove, Zone.REMOVED);
+            gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(cardToRemove));
+            gameState.addCardToZoneWithoutSendingToClient(cardToRemove, Zone.REMOVED);
             cardToRemove.setLocation(new NullLocation());
 
-            cardGame.sendMessage(_performingPlayerId + " removed " + cardToRemove.getCardLink() + " from the game");
             setAsSuccessful();
             return getNextAction();
         } else {
             setAsFailed();
             throw new InvalidGameLogicException("Tried to remove a dilemma from underneath a mission in a non-1E game");
         }
+    }
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private PhysicalCard getTargetCard() {
+        return _cardTarget.getCard();
     }
 }

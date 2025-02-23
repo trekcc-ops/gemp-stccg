@@ -18,7 +18,7 @@ public class HallChatRoomMediator extends ChatRoomMediator {
                 "Game Hall");
         _serverObjects = objects;
         try {
-            sendMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + _roomName, true);
+            sendChatMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + _roomName, true);
         } catch (PrivateInformationException exp) {
             // Ignore, sent as admin
         } catch (ChatCommandErrorException e) {

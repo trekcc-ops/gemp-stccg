@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -104,7 +104,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         SelectVisibleCardAction discardSelectAction =
                 new SelectVisibleCardAction(game, discardingPlayer, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
-        appendEffect(new DiscardCardAction(game, _performingCard, discardingPlayer, discardSelectAction));
+        appendEffect(new TribblesMultiDiscardActionBroken(game, _performingCard, discardingPlayer, discardSelectAction));
 
         Player performingPlayer = game.getPlayer(_performingPlayerId);
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, performingPlayer,

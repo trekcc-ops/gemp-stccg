@@ -1,5 +1,6 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -9,6 +10,8 @@ import com.gempukku.stccg.player.Player;
 import java.util.Collection;
 
 public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDecision {
+
+    @JsonProperty("results")
     private final String[] _possibleResults;
 
     public MultipleChoiceAwaitingDecision(Player player, String text, String[] possibleResults,
@@ -28,7 +31,6 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
                                           DefaultGame cardGame) {
         super(player, text, AwaitingDecisionType.MULTIPLE_CHOICE, cardGame);
         _possibleResults = possibleResults;
-        setParam("results", _possibleResults);
         setParam("defaultIndex", String.valueOf(defaultIndex)); // TODO SNAPSHOT - defaultIndex does not pass through to client
     }
 
@@ -53,5 +55,9 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
         } catch(InvalidGameLogicException exp) {
             throw new DecisionResultInvalidException(exp.getMessage());
         }
+    }
+
+    public String[] getCardIds() {
+        return null;
     }
 }

@@ -5,18 +5,19 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.player.PlayerView;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame",
-        "spacelineLocations", "awayTeams", "lastAction" })
+        "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "lastAction" })
+        "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
 public class GameStateView {
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
@@ -38,11 +39,11 @@ public class GameStateView {
     }
 
     @JsonProperty("visibleCardsInGame")
-    private List<PhysicalCard> getCardsInGame() {
-        List<PhysicalCard> result = new LinkedList<>();
+    private Map<String, PhysicalCard> getCardsInGame() {
+        Map<String, PhysicalCard> result = new HashMap<>();
         for (PhysicalCard card : _gameState.getAllCardsInGame()) {
             if (showCardInfo(card)) {
-                result.add(card);
+                result.put(String.valueOf(card.getCardId()), card);
             }
         }
         return result;
@@ -83,9 +84,19 @@ public class GameStateView {
         return card.isKnownToPlayer(_requestingPlayerId);
     }
 
-    @JsonProperty("lastAction")
-    private Action getLastAction() {
-        return _gameState.getActionsEnvironment().getPerformedActions().getLast();
+    @JsonProperty("performedActions")
+    private List<Action> performedActions() {
+        return _gameState.getActionsEnvironment().getPerformedActions();
+    }
+
+    @JsonProperty("playerClocks")
+    private Collection<PlayerClock> playerClocks() {
+        return _gameState.getPlayerClocks().values();
+    }
+
+    @JsonProperty("pendingDecision")
+    private AwaitingDecision decision() {
+        return _gameState.getDecision(_requestingPlayerId);
     }
 
 }

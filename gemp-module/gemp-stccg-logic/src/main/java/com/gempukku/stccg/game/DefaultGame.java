@@ -1,46 +1,35 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.GameTimer;
-import com.gempukku.stccg.common.filterable.GameType;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.decisions.YesNoDecision;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.gameevent.FlashCardInPlayGameEvent;
-import com.gempukku.stccg.gameevent.GameEvent;
-import com.gempukku.stccg.gameevent.GameStateListener;
-import com.gempukku.stccg.gamestate.*;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.gameevent.ActionResultGameEvent;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
+import com.gempukku.stccg.gamestate.DefaultUserFeedback;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.player.PlayerOrder;
-import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
 public abstract class DefaultGame {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
-    private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
-    private Map<String, PlayerClock> _playerClocks = new HashMap<>();
 
     // Game parameters
     protected final GameFormat _format;
     protected final CardBlueprintLibrary _library;
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
-    protected TurnProcedure _turnProcedure;
     final List<String> _lastMessages = new LinkedList<>();
 
     // Endgame operations
@@ -53,22 +42,8 @@ public abstract class DefaultGame {
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
     protected final UserFeedback _userFeedback;
-    private final List<GameSnapshot> _snapshots = new LinkedList<>();
-    protected GameSnapshot _snapshotToRestore;
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
-    private int _nextSnapshotId;
-    private final static int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
     protected final GameType _gameType;
-
-    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
-                       final CardBlueprintLibrary library, GameType gameType) {
-        _format = format;
-        _userFeedback = new DefaultUserFeedback(this);
-        _library = library;
-        _allPlayerIds = decks.keySet();
-        _playerClocks = clocks;
-        _gameType = gameType;
-    }
 
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
                        GameType gameType) {
@@ -77,10 +52,6 @@ public abstract class DefaultGame {
         _library = library;
         _allPlayerIds = decks.keySet();
         _gameType = gameType;
-        _playerClocks = new HashMap<>();
-        for (String playerId : _allPlayerIds) {
-            _playerClocks.put(playerId, new PlayerClock(playerId, GameTimer.GLACIAL_TIMER));
-        }
     }
 
 
@@ -96,57 +67,22 @@ public abstract class DefaultGame {
     public Set<String> getPlayerIds() { return _allPlayerIds; }
 
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
-    public boolean isCancelled() { return _cancelled; }
 
     public void addGameResultListener(GameResultListener listener) {
         _gameResultListeners.add(listener);
     }
-    public void addGameStateListener(String playerId, GameStateListener listener) {
+    public void addGameStateListener(GameStateListener listener) {
         _gameStateListeners.add(listener);
-        try {
-            GameState gameState = getGameState();
-            PlayerOrder playerOrder = gameState.getPlayerOrder();
-            if (playerOrder != null) {
-                listener.initializeBoard();
-                if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
-                if (getCurrentPhase() != null) listener.setCurrentPhase(getCurrentPhase());
-
-                try {
-                    gameState.sendCardsToClient(this, playerId, listener, false);
-                } catch (PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException exp) {
-                    sendErrorMessage(exp);
-                    cancelGame();
-                }
-            }
-            for (String lastMessage : getMessages())
-                listener.sendMessage(lastMessage);
-
-            final AwaitingDecision awaitingDecision = gameState.getDecision(playerId);
-            gameState.sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
-        } catch(PlayerNotFoundException exp) {
-            sendErrorMessage(exp);
-        }
     }
 
     public Collection<GameStateListener> getAllGameStateListeners() {
         return Collections.unmodifiableSet(_gameStateListeners);
     }
 
-    public void initializePlayerOrder(PlayerOrder playerOrder) throws PlayerNotFoundException {
-        getGameState().initializePlayerOrder(playerOrder);
-        for (GameStateListener listener : _gameStateListeners) {
-            listener.initializeBoard();
-        }
-    }
-
 
     public void requestCancel(String playerId) {
         _requestedCancel.add(playerId);
-        if (_requestedCancel.size() == _allPlayerIds.size())
-            cancelGameRequested();
-    }
-    public void cancelGameRequested() {
-        if (!_finished) {
+        if (_requestedCancel.size() == _allPlayerIds.size() && !_finished) {
             _cancelled = true;
 
             if (getGameState() != null)
@@ -158,7 +94,7 @@ public abstract class DefaultGame {
             _finished = true;
         }
     }
-    
+
     public UserFeedback getUserFeedback() {
         return _userFeedback;
     }
@@ -189,16 +125,9 @@ public abstract class DefaultGame {
         }
     }
 
-    public void finish() {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_ENDED));
-        }
-    }
-
     public void setCurrentPhase(Phase phase) {
-        getGameState().setCurrentPhaseNew(phase);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setCurrentPhase(phase);
+        getGameState().setCurrentPhase(phase);
+        sendActionResultToClient();
     }
 
 
@@ -223,7 +152,6 @@ public abstract class DefaultGame {
             sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
 
         assert getGameState() != null;
-        finish();
 
         for (GameResultListener gameResultListener : _gameResultListeners) {
             gameResultListener.gameFinished(_winnerPlayerId, reason, _losers);
@@ -267,18 +195,10 @@ public abstract class DefaultGame {
         return getGameState().getModifiersLogic();
     }
 
-    public ModifiersQuerying getModifiersQuerying() {
-        return getGameState().getModifiersLogic();
-    }
-
-    public abstract TurnProcedure getTurnProcedure();
-
     public void startGame() {
         try {
-            if (!_cancelled)
-                getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
-        } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidGameOperationException |
-                CardNotFoundException exp) {
+            carryOutPendingActionsUntilDecisionNeeded();
+        } catch(InvalidGameOperationException exp) {
             sendErrorMessage(exp);
         }
     }
@@ -286,17 +206,41 @@ public abstract class DefaultGame {
     public void carryOutPendingActionsUntilDecisionNeeded() throws InvalidGameOperationException {
         try {
             if (!_cancelled) {
-                getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
+                int numSinceDecision = 0;
+                ActionsEnvironment actionsEnvironment = getActionsEnvironment();
 
-                while (_snapshotToRestore != null) {
-//                restoreSnapshot();
-                    carryOutPendingActionsUntilDecisionNeeded();
+                while (isCarryingOutEffects()) {
+                    numSinceDecision++;
+                    actionsEnvironment.carryOutPendingActions(this);
+                    sendActionResultToClient();
+
+                    // Check if an unusually large number loops since user decision, which means game is probably in a loop
+                    if (numSinceDecision >= 5000)
+                        breakExcessiveLoop(numSinceDecision);
                 }
             }
         } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
             throw new InvalidGameOperationException(exp);
         }
     }
+
+    private void breakExcessiveLoop(int numSinceDecision) {
+        String errorMessage = "There's been " + numSinceDecision +
+                " actions/effects since last user decision. Game is probably looping, so ending game.";
+        sendErrorMessage(errorMessage);
+
+        Stack<Action> actionStack = getActionsEnvironment().getActionStack();
+        sendErrorMessage("Action stack size: " + actionStack.size());
+        actionStack.forEach(action -> sendErrorMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
+                action.getClass().getSimpleName()));
+
+        List<ActionResult> actionResults =
+                getActionsEnvironment().consumeEffectResults().stream().toList();
+        actionResults.forEach(effectResult -> sendErrorMessage(
+                "EffectResult " + (actionResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
+        throw new UnsupportedOperationException(errorMessage);
+    }
+    
 
     public Player getPlayer(int index) throws PlayerNotFoundException {
         return getPlayer(getPlayerId(index));
@@ -319,10 +263,6 @@ public abstract class DefaultGame {
         return gameState.getCurrentPlayer();
     }
 
-    public List<GameSnapshot> getSnapshots() {
-        return Collections.unmodifiableList(_snapshots);
-    }
-
     public String getOpponent(String playerId) {
             // TODO - Only works for 2-player games
             return getAllPlayerIds()[0].equals(playerId) ?
@@ -333,73 +273,10 @@ public abstract class DefaultGame {
         return getPlayer(getOpponent(player.getPlayerId()));
     }
 
-    public void requestRestoreSnapshot(int snapshotId) {
-        if (_snapshotToRestore == null) {
-            for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
-                GameSnapshot gameSnapshot = iterator.next();
-                if (gameSnapshot.getId() == snapshotId) {
-                    _snapshotToRestore = gameSnapshot;
-                }
-                // After snapshot to restore is found, remove any snapshots after it from list
-                if (_snapshotToRestore != null) {
-                    // Remove the current snapshot from the iterator and the list.
-                    iterator.remove();
-                }
-            }
-        }
-    }
-
-    /**
-     * Determines if a snapshot is pending to be restored.
-     * @return true or false
-     */
-    public boolean isRestoreSnapshotPending() {
-        return _snapshotToRestore != null;
-    }
-
-    /**
-     * Creates a snapshot of the current state of the game.
-     * @param description the description
-     */
-    public void takeSnapshot(String description) {
-        // TODO - Star Wars code used PlayCardStates here
-        try {
-            pruneSnapshots();
-        } catch(PlayerNotFoundException exp) {
-            sendErrorMessage(exp);
-            sendErrorMessage("Unable to prune game state snapshots");
-        }
-        // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
-        ++_nextSnapshotId;
-        // TODO
-//        _snapshots.add(new GameSnapshot(_nextSnapshotId, description, getGameState()));
-    }
-
-    /**
-     * Prunes older snapshots.
-     */
-    private void pruneSnapshots() throws PlayerNotFoundException {
-        // Remove old snapshots until reaching snapshots to keep
-        for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
-            GameSnapshot gameSnapshot = iterator.next();
-            int snapshotCurrentTurnNumber = gameSnapshot.getCurrentTurnNumber();
-            int currentTurnNumber = getGameState().getCurrentTurnNumber();
-            if (snapshotCurrentTurnNumber <= 1 && currentTurnNumber <= 1) {
-                break;
-            }
-            int pruneOlderThanTurn = currentTurnNumber - NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS;
-            if (snapshotCurrentTurnNumber >= pruneOlderThanTurn) {
-                break;
-            }
-            // Remove the current snapshot from the iterator and the list.
-            iterator.remove();
-        }
-    }
-    
     public void sendMessage(String message) {
         addMessage(message);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendMessage(message);
+            listener.sendMessageEvent(message);
     }
 
     public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
@@ -436,7 +313,7 @@ public abstract class DefaultGame {
     }
 
     public boolean isCarryingOutEffects() {
-        return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null && !isRestoreSnapshotPending();
+        return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null;
     }
 
     public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
@@ -451,13 +328,8 @@ public abstract class DefaultGame {
             _lastMessages.removeFirst();
     }
 
-    public void setCurrentProcess(GameProcess process) {
-        getGameState().setCurrentProcess(process);
-    }
-
     public void sendErrorMessage(Exception exp) {
-        String message = "ERROR: " + exp.getMessage();
-        sendMessage(message);
+        sendErrorMessage(exp.getMessage());
     }
 
     public void sendErrorMessage(String message) {
@@ -469,161 +341,23 @@ public abstract class DefaultGame {
         return environment.getActionById(actionId);
     }
 
-    public void updateGameStatsAndSendIfChanged() {
-        boolean changed = false;
-
-        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
-
-        if (getPlayers() != null) {
-            for (Player player : getPlayers()) {
-                if (player.getScore() != player.getLastSyncedScore()) {
-                    changed = true;
-                }
-                player.syncScore();
-
-                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
-                playerZoneSizes.put(Zone.HAND, player.getCardsInHand().size());
-                playerZoneSizes.put(Zone.DRAW_DECK, player.getCardsInDrawDeck().size());
-                playerZoneSizes.put(Zone.DISCARD, player.getDiscardPile().size());
-                playerZoneSizes.put(Zone.REMOVED, player.getRemovedPile().size());
-                newZoneSizes.put(player.getPlayerId(), playerZoneSizes);
-            }
-        }
-
-        if (!newZoneSizes.equals(_previousZoneSizes)) {
-            changed = true;
-            _previousZoneSizes = newZoneSizes;
-        }
-
-        if (changed) getGameState().sendGameStats(this);
-    }
-
-    public Map<String, Map<Zone, Integer>> getZoneSizes() {
-        return Collections.unmodifiableMap(_previousZoneSizes);
-    }
-
-    public void activatedCard(Player performingPlayer, PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            GameEvent event = new FlashCardInPlayGameEvent(card, performingPlayer);
-            listener.sendEvent(event);
-        }
-    }
-
 
     public void sendWarning(String player, String warning) {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.sendWarning(player, warning);
     }
 
-    public void addToPlayerScore(Player player, int points) {
-        player.scorePoints(points);
+    public void sendActionResultToClient() {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerScore(player);
-    }
-    public void sendSerializedGameStateToClient() {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATE_CHECK));
-    }
-
-    public void removeCardsFromZone(Player performingPlayer, Collection<PhysicalCard> cards) {
-        getGameState().removeCardsFromZone(this, performingPlayer, cards);
-    }
-
-
-    public void performRevert(Player player) {
-        DefaultGame thisGame = this;
-        String playerId = player.getPlayerId();
-        final List<Integer> snapshotIds = new ArrayList<>();
-        final List<String> snapshotDescriptions = new ArrayList<>();
-        for (GameSnapshot gameSnapshot : getSnapshots()) {
-            snapshotIds.add(gameSnapshot.getId());
-            snapshotDescriptions.add(gameSnapshot.getDescription());
-        }
-        int numSnapshots = snapshotDescriptions.size();
-        if (numSnapshots == 0) {
-            checkPlayerAgain();
-            return;
-        }
-        snapshotIds.add(-1);
-        snapshotDescriptions.add("Do not revert");
-
-        // Ask player to choose snapshot to revert back to
-        getUserFeedback().sendAwaitingDecision(
-                new MultipleChoiceAwaitingDecision(player, "Choose game state to revert prior to",
-                        snapshotDescriptions.toArray(new String[0]), snapshotDescriptions.size() - 1, this) {
-                    @Override
-                    public void validDecisionMade(int index, String result) throws DecisionResultInvalidException {
-                        try {
-                            final int snapshotIdChosen = snapshotIds.get(index);
-                            if (snapshotIdChosen == -1) {
-                                checkPlayerAgain();
-                                return;
-                            }
-
-                            sendMessage(playerId + " attempts to revert game to a previous state");
-
-                            // Confirm with the other player if it is acceptable to revert to the game state
-                            // TODO SNAPSHOT - Needs to work differently if more than 2 players
-                            final String opponent;
-                            String temp_opponent;
-                            temp_opponent = getOpponent(playerId);
-
-                            opponent = temp_opponent;
-                            Player opponentPlayer = getPlayer(opponent);
-
-                            StringBuilder snapshotDescMsg = new StringBuilder("</br>");
-                            for (int i = 0; i < snapshotDescriptions.size() - 1; ++i) {
-                                if (i == index) {
-                                    snapshotDescMsg.append("</br>").append(">>> Revert to here <<<");
-                                }
-                                if ((index - i) < 3) {
-                                    snapshotDescMsg.append("</br>").append(snapshotDescriptions.get(i));
-                                }
-                            }
-                            snapshotDescMsg.append("</br>");
-
-                            getUserFeedback().sendAwaitingDecision(
-                                    new YesNoDecision(opponentPlayer,
-                                            "Do you want to allow game to be reverted to the following game state?" +
-                                                    snapshotDescMsg, thisGame) {
-                                        @Override
-                                        protected void yes() {
-                                            sendMessage(opponent + " allows game to revert to a previous state");
-                                            requestRestoreSnapshot(snapshotIdChosen);
-                                        }
-
-                                        @Override
-                                        protected void no() {
-                                            sendMessage(opponent + " denies attempt to revert game to a previous state");
-                                            checkPlayerAgain();
-                                        }
-                                    });
-                        } catch(PlayerNotFoundException exp) {
-                            throw new DecisionResultInvalidException(exp.getMessage());
-                        }
-                    }
-                });
-    }
-
-
-    /**
-     * This method if the same player should be asked again to choose an action or pass.
-     */
-    private GameProcess checkPlayerAgain() {
-        // TODO SNAPSHOT - The SWCCG code is incompatible with the structure of this process
-/*        _playOrder.getNextPlayer();
-        return new PlayersPlayPhaseActionsInOrderGameProcess(
-                getGameState().getPlayerOrder().getPlayOrder(
-                        _playOrder.getNextPlayer(), true), _consecutivePasses, _followingGameProcess); */
-        return null;
-    }
-
-    public Map<String, PlayerClock> getPlayerClocks() {
-        return _playerClocks;
+            listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));
     }
 
 
     public GameType getGameType() {
         return _gameType;
+    }
+
+    public void continueCurrentProcess() throws PlayerNotFoundException, InvalidGameLogicException {
+        getGameState().continueCurrentProcess(this);
     }
 }

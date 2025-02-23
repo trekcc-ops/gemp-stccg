@@ -1,5 +1,6 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -10,8 +11,15 @@ import java.util.*;
 
 public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
     private final List<? extends PhysicalCard> _physicalCards;
+
+    @JsonProperty("min")
     private final int _minimum;
+
+    @JsonProperty("max")
     private final int _maximum;
+
+    @JsonProperty("cardIds")
+    private final String[] _cardIds;
 
     public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
                                   DefaultGame cardGame) {
@@ -24,16 +32,18 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;
+
+
+        _cardIds = new String[physicalCards.size()];
+        for (int i = 0; i < physicalCards.size(); i++)
+            _cardIds[i] = String.valueOf(_physicalCards.get(i).getCardId());
+
         setParam("min", String.valueOf(minimum));
         setParam("max", String.valueOf(maximum));
-        setParam("cardId", getCardIds(_physicalCards));
     }
 
-    private String[] getCardIds(List<? extends PhysicalCard> physicalCards) {
-        String[] result = new String[physicalCards.size()];
-        for (int i = 0; i < physicalCards.size(); i++)
-            result[i] = String.valueOf(physicalCards.get(i).getCardId());
-        return result;
+    public String[] getCardIds() {
+        return _cardIds;
     }
 
     protected PhysicalCard getSelectedCardByResponse(String response) throws DecisionResultInvalidException {

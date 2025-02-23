@@ -32,19 +32,15 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                             playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            if ("revert".equalsIgnoreCase(result)) {
-                                cardGame.performRevert(currentPlayer);
-                            } else {
-                                try {
-                                    Action action = getSelectedAction(result);
-                                    if (action != null) {
-                                        cardGame.getActionsEnvironment().addActionToStack(action);
-                                    } else {
-                                        _consecutivePasses++;
-                                    }
-                                } catch(InvalidGameLogicException exp) {
-                                    throw new DecisionResultInvalidException(exp.getMessage());
+                            try {
+                                Action action = getSelectedAction(result);
+                                if (action != null) {
+                                    cardGame.getActionsEnvironment().addActionToStack(action);
+                                } else {
+                                    _consecutivePasses++;
                                 }
+                            } catch (InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
                             }
                         }
                     });
@@ -58,13 +54,9 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
         GameProcess result;
         if (_consecutivePasses > 0) {
             Phase phase = cardGame.getCurrentPhase();
-            String message = "End of " + phase + " phase";
-            cardGame.sendMessage(message);
             result = switch (phase) {
                 case CARD_PLAY -> {
                     cardGame.setCurrentPhase(Phase.EXECUTE_ORDERS);
-                    message = "Start of " + Phase.EXECUTE_ORDERS + " phase";
-                    cardGame.sendMessage("\n" + message);
                     yield new ST1EPlayPhaseSegmentProcess();
                 }
                 case EXECUTE_ORDERS -> {

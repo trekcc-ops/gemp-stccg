@@ -29,9 +29,8 @@ public class StartGameSessionRequestHandler extends GameRequestHandlerNew implem
         gameMediator.setPlayerAutoPassSettings(resourceOwner, getAutoPassPhases(request));
 
         // may throw 403 error
-        GameCommunicationChannel channel = gameMediator.signupUserForGameAndGetChannel(resourceOwner);
-        String xmlString = gameMediator.serializeEventsToString(channel);
-        responseWriter.writeJsonResponse(xmlString);
+        String jsonString = gameMediator.signupUserForGameAndGetGameState(resourceOwner);
+        responseWriter.writeJsonResponse(jsonString);
     }
 
 }

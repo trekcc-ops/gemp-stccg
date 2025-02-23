@@ -70,7 +70,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK)
-            return !cardGame.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
+            return !cardGame.getGameState().getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) &&
                     !getPlayableCards().isEmpty();
         else
             return !getPlayableCards().isEmpty();

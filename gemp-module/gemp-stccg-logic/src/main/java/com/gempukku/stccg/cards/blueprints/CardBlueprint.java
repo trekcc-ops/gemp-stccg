@@ -453,12 +453,15 @@ public class CardBlueprint {
             return getTitle();
     }
 
-    public String getCardLink() {
+    public boolean hasUniversalIcon() {
         List<CardType> typesWithUniversalSymbol =
                 Arrays.asList(CardType.MISSION, CardType.SHIP, CardType.PERSONNEL, CardType.SITE);
-        boolean showUniversalSymbol = typesWithUniversalSymbol.contains(_cardType) && isUniversal();
+        return typesWithUniversalSymbol.contains(_cardType) && isUniversal();
+    }
+
+    public String getCardLink() {
         return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + imageUrl + "'>" +
-                (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
+                (hasUniversalIcon() ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
     }
 
     protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)

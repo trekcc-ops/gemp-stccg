@@ -1,9 +1,8 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadMultipleCardsToSameCompatibleOutpostAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.RegularSkill;
@@ -83,7 +82,7 @@ public class Blueprint109_063 extends CardBlueprint {
 
         if (actionResult.getType() == ActionResult.Type.START_OF_TURN && player == thisCard.getOwner() &&
                 player == cardGame.getCurrentPlayer()) {
-            actions.add(new DiscardCardAction(thisCard, player, thisCard));
+            actions.add(new DiscardSingleCardAction(thisCard, player, thisCard));
         }
 
         return actions;

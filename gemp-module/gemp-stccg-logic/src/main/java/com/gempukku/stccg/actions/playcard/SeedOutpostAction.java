@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
@@ -18,6 +20,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SeedOutpostAction extends PlayCardAction {
@@ -103,8 +106,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
                 facility.changeAffiliation(selectedAffiliation);
 
-                cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
-                gameState.removeCardFromZone(_cardEnteringPlay);
+                gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
                 performingPlayer.addPlayedAffiliation(facility.getCurrentAffiliation());
                 PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                 GameLocation destinationLocation = destinationCard.getGameLocation();
@@ -125,8 +127,6 @@ public class SeedOutpostAction extends PlayCardAction {
         _destinationTarget = new FixedCardResolver(location.getTopMissionCard());
         setProgress(Progress.placementChosen);
     }
-
-    public PhysicalCard getCardToSeed() { return _cardEnteringPlay; }
 
     @Override
     public boolean wasCarriedOut() { return getProgress(Progress.cardWasSeeded);}

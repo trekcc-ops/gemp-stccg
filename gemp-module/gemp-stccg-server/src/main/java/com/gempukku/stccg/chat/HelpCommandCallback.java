@@ -27,7 +27,7 @@ public class HelpCommandCallback extends ChatCommandWithMessage {
                         /banIpRange ip - Bans ips with the specified prefix, ie. 10.10.10.""";
         }
 
-        sendMessage(ChatStrings.SYSTEM_USER_ID, from, HTMLUtils.replaceNewlines(message));
+        sendChatMessage(ChatStrings.SYSTEM_USER_ID, from, HTMLUtils.replaceNewlines(message));
     }
     
 }

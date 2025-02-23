@@ -1,5 +1,6 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -8,7 +9,10 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class ActionSelectionDecision extends ActionDecision {
 
@@ -55,5 +59,20 @@ public abstract class ActionSelectionDecision extends ActionDecision {
         } catch (NumberFormatException exp) {
             throw new DecisionResultInvalidException();
         }
+    }
+
+    @JsonProperty("displayedCards")
+    private List<Map<Object, Object>> getDisplayedCards() {
+        List<Map<Object, Object>> result = new ArrayList<>();
+        for (int i = 0; i < getDecisionParameters().get("cardId").length; i++) {
+            Map<Object, Object> mapToAdd = new HashMap<>();
+            mapToAdd.put("cardId", getDecisionParameters().get("cardId")[i]);
+            mapToAdd.put("blueprintId", getDecisionParameters().get("blueprintId")[i]);
+            mapToAdd.put("actionId", getDecisionParameters().get("actionId")[i]);
+            mapToAdd.put("actionText", getDecisionParameters().get("actionText")[i]);
+            result.add(mapToAdd);
+        }
+        return result;
+        
     }
 }

@@ -44,8 +44,7 @@ export default class StatsUI {
 
     loadedStats(json) {
         var that = this;
-        // console.log(json);
-        
+
         var getPercentage = (num1, num2) => Number(num1 / num2).toLocaleString(undefined, {style: 'percent', minimumFractionDigits:2});
 
         $("#startDateSpan").html(json["StartDate"]);

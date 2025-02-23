@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectPlayerAction;
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.filters.Filters;
@@ -55,7 +55,7 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
         if (!getProgress(Progress.wasCarriedOut)) {
             setProgress(Progress.wasCarriedOut);
-            return new DiscardCardAction(_performingCard, _targetPlayer, Filters.topOfPlayPile(_targetPlayer));
+            return new TribblesMultiDiscardActionBroken(_performingCard, _targetPlayer, Filters.topOfPlayPile(_targetPlayer));
         }
         return getNextAction();
     }

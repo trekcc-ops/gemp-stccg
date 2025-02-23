@@ -47,4 +47,13 @@ public abstract class GameProcess {
     public void setFinished(boolean isFinished) {
         _isFinished = isFinished;
     }
+
+    public void continueProcess(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
+        if (_isFinished) {
+            cardGame.getGameState().setCurrentProcess(getNextProcess(cardGame));
+        } else {
+            process(cardGame);
+            _isFinished = true;
+        }
+    }
 }

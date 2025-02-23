@@ -24,15 +24,18 @@ public class UseOncePerTurnAction extends ActionyAction {
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix).getUsedLimit() <
-                LIMIT_PER_TURN;
+        return getLimitCounter(cardGame).getUsedLimit() < LIMIT_PER_TURN;
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        LimitCounter limitCounter = cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix);
+        LimitCounter limitCounter = getLimitCounter(cardGame);
         limitCounter.incrementToLimit(LIMIT_PER_TURN, 1);
         setAsSuccessful();
         return getNextAction();
+    }
+
+    private LimitCounter getLimitCounter(DefaultGame cardGame) {
+        return cardGame.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix);
     }
 }

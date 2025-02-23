@@ -2,6 +2,7 @@ package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
@@ -23,14 +24,14 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Player currentPlayer = _game.getCurrentPlayer();
-        String playerId = currentPlayer.getPlayerId();
         if (currentPlayer.getCardsInDrawDeck().isEmpty()) {
-            _game.sendMessage(playerId + " can't draw a card");
-            _game.getGameState().setPlayerDecked(cardGame, currentPlayer, true);
+            _game.getGameState().setPlayerDecked(currentPlayer, true);
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            _game.getGameState().playerDrawsCard(currentPlayer);
-            _game.sendMessage(playerId + " drew a card");
+            DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, currentPlayer);
+            drawAction.processEffect(cardGame);
+            cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
+            cardGame.sendActionResultToClient();
             List<? extends PhysicalCard> playerHand = currentPlayer.getCardsInHand();
             PhysicalCard cardDrawn = playerHand.getLast();
             final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
@@ -68,7 +69,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
     }
 
     private void playerPassed() {
-        _game.getGameState().breakChain(_game);
+        _game.getGameState().breakChain();
     }
 
     @Override

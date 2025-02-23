@@ -1,12 +1,19 @@
 package com.gempukku.stccg.processes.tribbles;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
+import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.actions.scorepoints.PlayerWentOutResult;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
@@ -16,7 +23,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
         super(game);
     }
     @Override
-    public void process(DefaultGame cardGame) {
+    public void process(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
 
         Map<String, Integer> pointsScored = new HashMap<>();
         TribblesGameState gameState = _game.getGameState();
@@ -29,16 +36,22 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 gameState.playerWentOut(); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 pointsScored.put(playerId, score);
-                cardGame.addToPlayerScore(player, score);
-                _game.sendMessage(playerId + " went out with " + score + " points");
+                ScorePointsAction scorePointsAction = new ScorePointsAction(_game, null, player, score);
+                scorePointsAction.processEffect(_game);
+                _game.getActionsEnvironment().logCompletedActionNotInStack(scorePointsAction);
+                _game.sendActionResultToClient(); // for updated points
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
 
             // Each player places the cards remaining in their hand into their discard pile.
-            player.discardHand(cardGame);
+            // TODO - Removing for now since Tribbles is not the focus. Need to rebuild later.
 
             // Each player then shuffles their play pile into their decks.
-            gameState.shufflePlayPileIntoDeck(cardGame, player);
+            ShuffleCardsIntoDrawDeckAction action = new ShuffleCardsIntoDrawDeckAction(null, player,
+                    Filters.in(player.getCardGroupCards(Zone.PLAY_PILE)));
+            action.processEffect(cardGame);
+            cardGame.getActionsEnvironment().logCompletedActionNotInStack(action);
+            cardGame.sendActionResultToClient();
         }
 
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfRound();
@@ -70,7 +83,6 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                     first player. Tribbles rules are inconclusive about what should happen in this case.
                  */
             String firstPlayer = firstPlayerList.get(new Random().nextInt(firstPlayerList.size()));
-            cardGame.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
 
             gameState.setCurrentPlayerId(firstPlayer);
         }

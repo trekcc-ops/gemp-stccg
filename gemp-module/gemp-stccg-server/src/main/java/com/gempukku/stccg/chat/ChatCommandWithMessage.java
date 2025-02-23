@@ -7,7 +7,7 @@ abstract class ChatCommandWithMessage implements ChatCommandCallback {
         _mediator = mediator;
     }
 
-    void sendMessage(String from, String to, String message) {
+    void sendChatMessage(String from, String to, String message) {
         _mediator.sendToUser(from, to, message);
     }
 

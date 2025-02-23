@@ -35,8 +35,8 @@ export default class Card {
             throw new TypeError(`zone '${zone}' is not in the zones_all array.`);
         }
 
-        if (typeof(cardId) != 'string') {
-            throw new TypeError(`cardId '${cardId}' must be a string.`);
+        if (typeof(cardId) != 'string' && !(Number.isInteger(cardId))) {
+            throw new TypeError(`cardId '${cardId}' must be a string or integer.`);
         }
 
         if (typeof(owner) != 'string') {
@@ -47,8 +47,21 @@ export default class Card {
             throw new TypeError(`imageUrl '${imageUrl}' must be a string.`);
         }
 
-        if (typeof(locationIndex) != 'string') {
-            throw new TypeError(`locationIndex '${locationIndex}' must be a string.`);
+        if (typeof(locationIndex) != 'string' && !(Number.isInteger(locationIndex))) {
+            throw new TypeError(`locationIndex '${locationIndex}' must be a string or integer.`);
+        }
+        else if (locationIndex === '') {
+            // empty string is allowed but needs to return a number
+            this.locationIndex = -1;
+        }
+        else {
+            // is a string, try to parse it
+            let parsedLocationIndex = parseInt(locationIndex);
+            if(Number.isNaN(parsedLocationIndex)) {
+                throw new TypeError(`locationIndex '${locationIndex}' string is not parseable into an integer.`);
+            }
+
+            this.locationIndex = parsedLocationIndex;
         }
 
         if (typeof(upsideDown) != 'boolean') {
@@ -75,11 +88,9 @@ export default class Card {
         this.hasWiki = packBlueprints[imageBlueprint] == null;
 
         this.zone = zone;
-        this.cardId = cardId;
+        this.cardId = cardId.toString();
         this.owner = owner;
-        if (locationIndex !== undefined) {
-            this.locationIndex = parseInt(locationIndex);
-        }
+        
         this.attachedCards = new Array();
         if (imageBlueprint == "rules") {
             this.imageUrl = rulesImg;

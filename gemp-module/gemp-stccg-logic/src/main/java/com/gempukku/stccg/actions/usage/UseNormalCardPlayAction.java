@@ -24,7 +24,7 @@ public class UseNormalCardPlayAction extends ActionyAction {
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            return cardGame.getModifiersQuerying().getNormalCardPlaysAvailable(performingPlayer) >= 1;
+            return cardGame.getGameState().getModifiersQuerying().getNormalCardPlaysAvailable(performingPlayer) >= 1;
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
@@ -35,7 +35,6 @@ public class UseNormalCardPlayAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         cardGame.getModifiersEnvironment().useNormalCardPlay(performingPlayer);
-        cardGame.sendMessage("Normal card play used");
         _wasCarriedOut = true;
         setAsSuccessful();
         return getNextAction();

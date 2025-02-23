@@ -13,6 +13,6 @@ public class IncognitoCommandCallback extends ChatCommandWithMessage {
         _mediator.setIncognito(from, _isSettingIncognito);
         String message = _isSettingIncognito ?
                 "You are now incognito (do not appear in user list)" : "You are no longer incognito";
-        sendMessage(ChatStrings.SYSTEM_USER_ID, from, message);
+        sendChatMessage(ChatStrings.SYSTEM_USER_ID, from, message);
     }
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -19,9 +21,14 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @JsonProperty("cardTarget")
     private final ActionCardResolver _cardTarget;
 
+    @JsonProperty("targetCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
+    private Collection<PhysicalCard> _targetCards;
+
     public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, Player performingPlayer,
                                           CardFilter cardFilter) {
-        super(performingCard.getGame(), performingPlayer, "Shuffle cards into draw deck", ActionType.PLACE_CARD);
+        super(performingCard.getGame(), performingPlayer, "Shuffle cards into draw deck",
+                ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
     }
@@ -43,13 +50,10 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
             }
         }
 
-        Collection<PhysicalCard> cards = _cardTarget.getCards(cardGame);
-        performingPlayer.shuffleCardsIntoDrawDeck(cardGame, cards);
-        cardGame.sendMessage(TextUtils.concatenateStrings(
-                cards.stream().map(PhysicalCard::getCardLink)) + " " +
-                TextUtils.be(cards) + " shuffled into " + _performingPlayerId + " deck");
-        setAsSuccessful();
-        return getNextAction();
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            processEffect(cardGame);
+        return nextAction;
     }
 
     @Override
@@ -61,4 +65,21 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     public int getCardIdForActionSelection() {
         return _performingCard.getCardId();
     }
+
+    public void processEffect(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+
+        _targetCards = _cardTarget.getCards(cardGame);
+
+        cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, _targetCards);
+        for (PhysicalCard card : _targetCards) {
+            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.DRAW_DECK);
+        }
+        CardPile drawDeck = performingPlayer.getDrawDeck();
+        drawDeck.shuffle();
+
+        setAsSuccessful();
+    }
+
 }

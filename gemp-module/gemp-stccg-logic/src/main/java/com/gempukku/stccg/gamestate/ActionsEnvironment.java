@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -16,10 +19,10 @@ public interface ActionsEnvironment {
 
     List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
 
-    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, String playerId,
+    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, Player player,
                                                        Collection<? extends ActionResult> effectResults);
 
-    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId,
+    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, Player player,
                                                            Collection<? extends ActionResult> effectResults);
 
     void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);
@@ -53,4 +56,12 @@ public interface ActionsEnvironment {
     void logAction(Action action);
 
     Map<Integer, Action> getAllActions();
+
+    void logCompletedActionNotInStack(Action action);
+
+    void executeNextSubAction(DefaultGame cardGame) throws InvalidGameOperationException,
+            PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException;
+
+    void carryOutPendingActions(DefaultGame cardGame) throws InvalidGameOperationException,
+            PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException;
 }

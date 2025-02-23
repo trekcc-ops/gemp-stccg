@@ -75,7 +75,7 @@ public class GameTable {
 
         String gameId = (_tableStatus == TableStatus.WAITING) ? null : cardGameMediator.getGameId();
         String statusDescription = (_tableStatus == TableStatus.WAITING) ?
-                "Waiting" : cardGameMediator.getGameStatus();
+                "Waiting" : cardGameMediator.getGame().getStatus();
 
         League league = gameSettings.getLeague();
         String tournamentName = (league != null) ?
