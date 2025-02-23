@@ -27,17 +27,13 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     private static final String SERVER_CONTEXT_PATH = "/gemp-stccg-server/";
     private static final String WEB_CONTEXT_PATH = "/gemp-module/";
     private final WebRequestHandler _webRequestHandler;
-    private final StatusRequestHandler _statusRequestHandler;
-    private final Pattern originPattern;
+    private final Pattern originPattern = Pattern.compile(AppConfig.getProperty("origin.allowed.pattern"));
     private final ObjectMapper _jsonMapper = new ObjectMapper();
 
 
     public GempukkuHttpRequestHandler(ServerObjects serverObjects) {
         _serverObjects = serverObjects;
         _webRequestHandler = new WebRequestHandler();
-        _statusRequestHandler = new StatusRequestHandler(serverObjects);
-        String originAllowedPattern = AppConfig.getProperty("origin.allowed.pattern");
-        originPattern = Pattern.compile(originAllowedPattern);
     }
 
     @Override
@@ -66,25 +62,19 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
 
     private void handleRequest(GempHttpRequest request, ResponseWriter responseWriter) throws Exception {
         String uri = request.uriWithoutParameters();
-        HttpRequest rawRequest = request.getRequest();
 
         if (uri.startsWith(WEB_CONTEXT_PATH)) {
-            _webRequestHandler.handleRequest(uri.substring(WEB_CONTEXT_PATH.length()), rawRequest, responseWriter);
+            _webRequestHandler.handleRequest(uri.substring(WEB_CONTEXT_PATH.length()), request, responseWriter);
         } else if (uri.replace("/","").isEmpty() ||
                 uri.replace("/","").equals(WEB_CONTEXT_PATH.replace("/",""))) {
             // 301 Moved Permanently
             responseWriter.writeError(
                     HttpURLConnection.HTTP_MOVED_PERM, Collections.singletonMap("Location", WEB_CONTEXT_PATH));
         } else if (uri.equals(SERVER_CONTEXT_PATH)) {
-            _statusRequestHandler.handleRequest(
-                    uri.substring(SERVER_CONTEXT_PATH.length()), rawRequest, responseWriter);
+            new StatusRequestHandler().handleRequest(
+                    uri.substring(SERVER_CONTEXT_PATH.length()), request, responseWriter, _serverObjects);
         } else {
-            String origin = rawRequest.headers().get("Origin");
-            if (origin != null) {
-                if (!originPattern.matcher(origin).matches())
-                    throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
-            }
-            boolean requestHandled = false;
+            validateOrigin(request);
 
             if (uri.startsWith(SERVER_CONTEXT_PATH)) {
 
@@ -93,32 +83,29 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
                 String afterHandlerType = afterServer.substring(handlerType.length());
 
-                UriRequestHandler handler = switch (handlerType) {
-                    case "admin" -> new AdminRequestHandler(_serverObjects);
-                    case "collection" -> new CollectionRequestHandler(_serverObjects);
-                    default -> null;
-                };
-                if (handler != null) {
-                    handler.handleRequest(afterHandlerType, request, responseWriter);
-                    requestHandled = true;
-                }
-
-                if (!requestHandled) {
-                    Map<String, String> parameters = request.parameters();
-                    parameters.put("type", handlerType);
-                    try {
-                        UriRequestHandlerNew newHandler =
-                                _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
-                        newHandler.handleRequest(request, responseWriter, _serverObjects);
-                    } catch (IllegalArgumentException exp) {
-                        if (exp.getCause() instanceof InvalidTypeIdException) {
-                            // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer
-                            logHttpError(uri,
-                                    new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND), responseWriter);
+                switch(handlerType) {
+                    case "admin":
+                        new AdminRequestHandler().handleRequest(afterHandlerType, request, responseWriter, _serverObjects);
+                        break;
+                    case "collection":
+                        new CollectionRequestHandler().handleRequest(afterHandlerType, request, responseWriter, _serverObjects);
+                        break;
+                    default:
+                        Map<String, String> parameters = request.parameters();
+                        parameters.put("type", handlerType);
+                        try {
+                            UriRequestHandlerNew newHandler =
+                                    _jsonMapper.convertValue(parameters, UriRequestHandlerNew.class);
+                            newHandler.handleRequest(request, responseWriter, _serverObjects);
+                        } catch (IllegalArgumentException exp) {
+                            if (exp.getCause() instanceof InvalidTypeIdException) {
+                                // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer
+                                logHttpError(uri,
+                                        new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND), responseWriter);
+                            }
+                        } catch (JsonProcessingException exp) {
+                            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
                         }
-                    } catch (JsonProcessingException exp) {
-                        throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-                    }
                 }
             }
         }
@@ -151,6 +138,14 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         if (!(cause instanceof IOException) && !(cause instanceof IllegalArgumentException))
             LOGGER.error("Error while processing request", cause);
         ctx.close();
+    }
+
+    private void validateOrigin(GempHttpRequest request) throws HttpProcessingException {
+        String origin = request.headers().get("Origin");
+        if (origin != null) {
+            if (!originPattern.matcher(origin).matches())
+                throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
+        }
     }
 
 }

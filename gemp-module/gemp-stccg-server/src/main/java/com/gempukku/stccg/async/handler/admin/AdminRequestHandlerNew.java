@@ -9,13 +9,13 @@ import java.net.HttpURLConnection;
 
 public abstract class AdminRequestHandlerNew {
 
-    void validateAdmin(GempHttpRequest request) throws HttpProcessingException {
+    protected void validateAdmin(GempHttpRequest request) throws HttpProcessingException {
         User user = request.user();
         if (!user.isAdmin())
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
     }
 
-    void validateLeagueAdmin(GempHttpRequest request) throws HttpProcessingException {
+    protected void validateLeagueAdmin(GempHttpRequest request) throws HttpProcessingException {
         User user = request.user();
         if (!user.isLeagueAdmin())
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403

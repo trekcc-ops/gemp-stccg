@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MakeDraftPickRequestHandler extends SoloDraftRequestHandlerNew implements UriRequestHandlerNew {
+public class MakeDraftPickRequestHandler extends SoloDraftRequestHandler implements UriRequestHandlerNew {
 
     private final String _leagueType;
     private final String _choiceId;

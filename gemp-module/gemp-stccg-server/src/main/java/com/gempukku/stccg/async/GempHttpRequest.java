@@ -50,6 +50,13 @@ public class GempHttpRequest {
         return false;
     }
 
+    public HttpHeaders headers() {
+        return _request.headers();
+    }
+
+    public HttpMethod method() {
+        return _request.method();
+    }
 
     private User identifyUser(ServerObjects serverObjects) {
         ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
@@ -138,4 +145,5 @@ public class GempHttpRequest {
         String result = _request.headers().get(HttpHeaderNames.COOKIE);
         return (result == null) ? "" : result;
     }
+
 }

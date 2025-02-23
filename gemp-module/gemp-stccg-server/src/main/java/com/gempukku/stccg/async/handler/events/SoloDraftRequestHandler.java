@@ -18,7 +18,7 @@ import org.w3c.dom.Node;
 
 import java.net.HttpURLConnection;
 
-public abstract class SoloDraftRequestHandlerNew {
+public abstract class SoloDraftRequestHandler {
 
     SoloDraftLeagueData getLeagueData(String leagueType, ServerObjects serverObjects)
             throws LeagueNotFoundException, HttpProcessingException {

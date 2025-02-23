@@ -4,97 +4,85 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.database.LeagueDAO;
+import com.gempukku.stccg.async.handler.admin.AdminRequestHandlerNew;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.hall.HallServer;
-import com.gempukku.stccg.league.*;
+import com.gempukku.stccg.league.LeagueData;
+import com.gempukku.stccg.league.LeagueSeriesData;
+import com.gempukku.stccg.league.NewConstructedLeagueData;
+import com.gempukku.stccg.league.SoloDraftLeagueData;
 import com.gempukku.stccg.service.AdminService;
-import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.multipart.Attribute;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
-public class AdminRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final LeagueService _leagueService;
-    private final HallServer _hallServer;
-    private final FormatLibrary _formatLibrary;
-    private final LeagueDAO _leagueDao;
-    private final AdminService _adminService;
+public class AdminRequestHandler extends AdminRequestHandlerNew {
     private static final Logger LOGGER = LogManager.getLogger(AdminRequestHandler.class);
 
-    public AdminRequestHandler(ServerObjects objects) {
-        super(objects);
-        _leagueService = objects.getLeagueService();
-        _hallServer = objects.getHallServer();
-        _formatLibrary = objects.getFormatLibrary();
-        _leagueDao = objects.getLeagueDAO();
-        _adminService = objects.getAdminService();
-    }
-
-    @Override
     public final void handleRequest(String uri, GempHttpRequest gempRequest,
-                                    ResponseWriter responseWriter) throws Exception {
+                                    ResponseWriter responseWriter, ServerObjects serverObjects) throws Exception {
         HttpRequest request = gempRequest.getRequest();
         String requestType = uri + request.method();
         switch(requestType) {
             case "/getDailyMessageGET":
-                validateAdmin(request);
-                getDailyMessage(request, responseWriter);
+                validateAdmin(gempRequest);
+                getDailyMessage(request, responseWriter, serverObjects.getHallServer());
                 break;
             case "/setDailyMessagePOST":
-                validateAdmin(request);
-                setDailyMessage(request, responseWriter);
+                validateAdmin(gempRequest);
+                setDailyMessage(request, responseWriter, serverObjects.getHallServer());
                 break;
             case "/previewConstructedLeaguePOST":
-                validateLeagueAdmin(request);
-                previewConstructedLeague(request, responseWriter);
+                validateLeagueAdmin(gempRequest);
+                previewConstructedLeague(request, responseWriter, serverObjects);
                 break;
             case "/addConstructedLeaguePOST":
-                validateLeagueAdmin(request);
-                addConstructedLeague(request, responseWriter);
+                validateLeagueAdmin(gempRequest);
+                addConstructedLeague(request, responseWriter, serverObjects);
                 break;
             case "/previewSoloDraftLeaguePOST":
-                validateLeagueAdmin(request);
-                previewSoloDraftLeague(request, responseWriter);
+                validateLeagueAdmin(gempRequest);
+                previewSoloDraftLeague(request, responseWriter, serverObjects);
                 break;
             case "/addSoloDraftLeaguePOST":
-                validateLeagueAdmin(request);
-                addSoloDraftLeague(request, responseWriter);
+                validateLeagueAdmin(gempRequest);
+                addSoloDraftLeague(request, responseWriter, serverObjects);
                 break;
             case "/resetUserPasswordPOST":
-                validateAdmin(request);
-                resetUserPassword(request, responseWriter);
+                validateAdmin(gempRequest);
+                resetUserPassword(request, responseWriter, serverObjects.getAdminService());
                 break;
             case "/banMultiplePOST":
-                validateAdmin(request);
-                banMultiple(request, responseWriter);
+                validateAdmin(gempRequest);
+                banMultiple(request, responseWriter, serverObjects.getAdminService());
                 break;
             case "/findMultipleAccountsPOST":
-                validateAdmin(request);
-                findMultipleAccounts(request, responseWriter);
+                validateAdmin(gempRequest);
+                findMultipleAccounts(request, responseWriter, serverObjects.getPlayerDAO());
                 break;
             default:
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
-    private void findMultipleAccounts(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+    private void findMultipleAccounts(HttpRequest request, ResponseWriter responseWriter, PlayerDAO playerDAO) throws Exception {
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String login = getFormParameterSafely(postDecoder, FormParameter.login).trim();
 
-            PlayerDAO playerDAO = _serverObjects.getPlayerDAO();
             List<User> similarPlayers = playerDAO.findSimilarAccounts(login);
             if (similarPlayers == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
@@ -115,51 +103,77 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         }
     }
 
-    private void resetUserPassword(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+    private void resetUserPassword(HttpRequest request, ResponseWriter responseWriter, AdminService adminService) throws Exception {
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             String login = getFormParameterSafely(postDecoder, FormParameter.login);
             if (login == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-            if (!_adminService.resetUserPassword(login))
+            if (!adminService.resetUserPassword(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
             responseWriter.writeJsonOkResponse();
         }
     }
 
-    private void banMultiple(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+    private void banMultiple(HttpRequest request, ResponseWriter responseWriter, AdminService adminService) throws Exception {
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
             List<String> logins = getLoginParametersSafely(postDecoder);
             if (logins.isEmpty())
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
             for (String login : logins) {
-                if (!_adminService.banUser(login))
+                if (!adminService.banUser(login))
                     throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
             }
             responseWriter.writeJsonOkResponse();
         }
     }
 
-    private void addConstructedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+    static List<String> getLoginParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder)
+            throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
+        return getFormMultipleParametersSafely(postRequestDecoder,"login[]");
+    }
+
+    static List<String> getFormMultipleParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder,
+                                                        String parameterName)
+            throws HttpPostRequestDecoder.NotEnoughDataDecoderException, IOException {
+        List<String> result = new LinkedList<>();
+        List<InterfaceHttpData> dataList = postRequestDecoder.getBodyHttpDatas(parameterName);
+        if (dataList == null)
+            return Collections.emptyList();
+        for (InterfaceHttpData data : dataList) {
+            if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
+                Attribute attribute = (Attribute) data;
+                result.add(attribute.getValue());
+            }
+
+        }
+        return result;
+    }
+
+
+
+    private void addConstructedLeague(HttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects) throws Exception {
         Map<String, String> parameters = getConstructedLeagueParameters(request);
         int cost = Integer.parseInt(parameters.get("cost"));
 
         LeagueData leagueData =
-                new NewConstructedLeagueData(_cardBlueprintLibrary, _formatLibrary, parameters.get("serializedParams"));
+                new NewConstructedLeagueData(serverObjects.getCardBlueprintLibrary(), serverObjects.getFormatLibrary(), parameters.get("serializedParams"));
         List<LeagueSeriesData> series = leagueData.getSeries();
         int leagueStart = series.getFirst().getStart();
         int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
 
-        _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
+        serverObjects.getLeagueDAO().addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
                 parameters.get("serializedParams"), leagueStart, displayEnd);
-        _leagueService.clearCache();
+        serverObjects.getLeagueService().clearCache();
         responseWriter.writeJsonOkResponse();
     }
 
-    private void previewConstructedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+    private void previewConstructedLeague(HttpRequest request, ResponseWriter responseWriter,
+                                          ServerObjects serverObjects) throws Exception {
         Map<String,String> parameters = getConstructedLeagueParameters(request);
         LeagueData leagueData =
-                new NewConstructedLeagueData(_cardBlueprintLibrary, _formatLibrary, parameters.get("serializedParams"));
+                new NewConstructedLeagueData(serverObjects.getCardBlueprintLibrary(), serverObjects.getFormatLibrary(),
+                        parameters.get("serializedParams"));
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
 
@@ -194,28 +208,29 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         responseWriter.writeXmlResponseWithNoHeaders(doc);
     }
 
-    private void addSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter)
+    private void addSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws HttpProcessingException, IOException, NumberFormatException {
         Map<String,String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        LeagueData leagueData = new SoloDraftLeagueData(_cardBlueprintLibrary,  _formatLibrary,
-                _serverObjects.getSoloDraftDefinitions(), parameters.get("serializedParams"));
+        LeagueData leagueData = new SoloDraftLeagueData(serverObjects.getCardBlueprintLibrary(),  serverObjects.getFormatLibrary(),
+                serverObjects.getSoloDraftDefinitions(), parameters.get("serializedParams"));
         List<LeagueSeriesData> series = leagueData.getSeries();
         int leagueStart = series.getFirst().getStart();
         int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
         int cost = Integer.parseInt(parameters.get("cost"));
 
-        _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"),
+        serverObjects.getLeagueDAO().addLeague(cost, parameters.get("name"), parameters.get("code"),
                 leagueData.getClass().getName(), parameters.get("serializedParams"), leagueStart, displayEnd);
-        _leagueService.clearCache();
+        serverObjects.getLeagueService().clearCache();
 
         responseWriter.writeJsonOkResponse();
     }
 
-    private void previewSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter)
+    private void previewSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws HttpProcessingException, IOException, ParserConfigurationException {
         Map<String, String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        LeagueData leagueData = new SoloDraftLeagueData(_cardBlueprintLibrary, _formatLibrary,
-                _serverObjects.getSoloDraftDefinitions(), parameters.get("serializedParams"));
+        LeagueData leagueData = new SoloDraftLeagueData(serverObjects.getCardBlueprintLibrary(),
+                serverObjects.getFormatLibrary(), serverObjects.getSoloDraftDefinitions(),
+                parameters.get("serializedParams"));
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
 
@@ -290,31 +305,74 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         }
     }
 
-    private void getDailyMessage(HttpRequest request, ResponseWriter responseWriter) {
+    private void getDailyMessage(HttpRequest request, ResponseWriter responseWriter, HallServer hallServer) {
         try(SelfClosingPostRequestDecoder ignored = new SelfClosingPostRequestDecoder(request)) {
-            String dailyMessage = _hallServer.getDailyMessage();
+            String dailyMessage = hallServer.getDailyMessage();
             if(dailyMessage != null)
                 responseWriter.writeJsonResponse(HTMLUtils.replaceNewlines(dailyMessage));
         }
     }
 
-    private void setDailyMessage(HttpRequest request, ResponseWriter responseWriter) throws IOException {
+    private void setDailyMessage(HttpRequest request, ResponseWriter responseWriter, HallServer hallServer) throws IOException {
         try(SelfClosingPostRequestDecoder postDecoder = new SelfClosingPostRequestDecoder(request)) {
-            _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, FormParameter.messageOfTheDay));
+            hallServer.setDailyMessage(getFormParameterSafely(postDecoder, FormParameter.messageOfTheDay));
             responseWriter.writeJsonOkResponse();
         }
     }
 
-    private void validateAdmin(HttpMessage request) throws HttpProcessingException {
-        User player = getResourceOwnerSafely(request);
-        if (!player.hasType(User.Type.ADMIN))
-            throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
+    protected static class SelfClosingPostRequestDecoder extends HttpPostRequestDecoder implements AutoCloseable {
+
+        SelfClosingPostRequestDecoder(HttpRequest request) {
+            super(request);
+        }
+
+        @Override
+        public void close() {
+            destroy();
+        }
     }
 
-    private void validateLeagueAdmin(HttpMessage request) throws HttpProcessingException {
-        User player = getResourceOwnerSafely(request);
-        if (!player.hasType(User.Type.LEAGUE_ADMIN))
-            throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
+    protected enum FormParameter {
+        availablePicks, blueprintId, cardId, channelNumber, choiceId, collectionType,
+        cost, count, decisionId, decisionValue,
+        deck, deckContents, decklist, deckName, decks,
+        desc, duration, filter, format, id, includeEvents, isInviteOnly, isPrivate, length, login, maxMatches,
+        message, messageOfTheDay, name, notes, oldDeckName,
+        ownedMin, pack, participantId, password, players, price, prizeMultiplier, product, reason, selection,
+        seriesDuration, shutdown, start, startDay, targetFormat, timer
     }
+
+    static String getFormParameterSafely(InterfaceHttpPostRequestDecoder decoder, FormParameter parameter)
+            throws IOException {
+        InterfaceHttpData data = decoder.getBodyHttpData(parameter.name());
+        if (data == null)
+            return null;
+        if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
+            Attribute attribute = (Attribute) data;
+            return attribute.getValue();
+        } else {
+            return null;
+        }
+    }
+
+    static Document createNewDoc() throws ParserConfigurationException {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        return docBuilder.newDocument();
+    }
+
+    void logHttpError(Logger log, int code, String uri, Exception exp) {
+        //401, 403, 404, and other 400 errors should just do minimal logging,
+        // but 400 (HTTP_BAD_REQUEST) itself should error out
+        if(code % 400 < 100 && code != HttpURLConnection.HTTP_BAD_REQUEST)
+            log.debug("HTTP {} response for {}", code, uri);
+
+            // record an HTTP 400
+        else if(code == HttpURLConnection.HTTP_BAD_REQUEST || code % 500 < 100)
+            log.error("HTTP code {} response for {}", code, uri, exp);
+    }
+
+
+
 
 }

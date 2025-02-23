@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -21,7 +22,7 @@ public class WebRequestHandler {
         _root = root;
     }
 
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter)
+    public final void handleRequest(String uri, GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         if (uri.isEmpty())
             uri = "index.html";
@@ -48,7 +49,7 @@ public class WebRequestHandler {
         responseWriter.writeFile(file, Collections.singletonMap(HttpHeaderNames.ETAG.toString(), eTag));
     }
 
-    private static boolean clientHasCurrentVersion(HttpMessage request, String eTag) {
+    private static boolean clientHasCurrentVersion(GempHttpRequest request, String eTag) {
         String ifNoneMatch = request.headers().get(HttpHeaderNames.IF_NONE_MATCH);
         if (ifNoneMatch != null) {
             String[] clientKnownVersions = ifNoneMatch.split(",");

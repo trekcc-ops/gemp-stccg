@@ -23,7 +23,7 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Map;
 
-public class GetAvailableDraftPicksRequestHandler extends SoloDraftRequestHandlerNew implements UriRequestHandlerNew {
+public class GetAvailableDraftPicksRequestHandler extends SoloDraftRequestHandler implements UriRequestHandlerNew {
 
     private final String _leagueType;
     GetAvailableDraftPicksRequestHandler(
