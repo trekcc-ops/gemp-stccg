@@ -118,11 +118,10 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "BATTLE":
         case "PLACE_CARD_IN_PLAY_PILE":
             break;
-            // Actions with no specific animations
+        
+        // Actions with no specific animations
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
-        case "ATTEMPT_MISSION":
-            /* Note that ATTEMPT_MISSION is only sent when the mission attempt is ended,
-                either by solving the mission or failing it. */
+        case "ATTEMPT_MISSION": // Note that ATTEMPT_MISSION is only sent when the mission attempt is ended, either by solving the mission or failing it.
         case "FAIL_DILEMMA":
         case "KILL": // only the kill part of the action; typically this will result in a separate discard action
         case "SCORE_POINTS":
@@ -161,7 +160,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = message + " to " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.destinationCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "CHANGE_AFFILIATION":
+        case "CHANGE_AFFILIATION": {
             let targetCardId = jsonAction.targetCardId;
             console.log("targetCardId: " + targetCardId);
             let card = jsonGameState.visibleCardsInGame[targetCardId];
@@ -171,16 +170,18 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
                 getAffiliationHtml(card.affiliation);
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "DISCARD":
+        }
+        case "DISCARD": {
             let discardedCard = jsonGameState.visibleCardsInGame[jsonAction.targetCardId];
             message = performingPlayerId + " discarded " + showLinkableCardTitle(discardedCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
+        }
         case "DRAW_CARD":
             message = performingPlayerId + " drew a card";
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "FLY_SHIP":
+        case "FLY_SHIP": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             let newLocationId = targetCard.locationId;
             let newLocationName;
@@ -191,6 +192,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             }
             message = showLinkableCardTitle(targetCard) + " flew to " + newLocationName;
             break;
+        }
         case "KILL":
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             message = performingPlayerId + " killed ";
@@ -203,22 +205,24 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = performingPlayerId + " played " + showLinkableCardTitle(targetCard);
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "REMOVE_CARD_FROM_GAME":
+        case "REMOVE_CARD_FROM_GAME": {
             let removedCard = jsonGameState.visibleCardsInGame[jsonAction.targetCardId];
             message = performingPlayerId + " removed " + showLinkableCardTitle(removedCard) + " from the game";
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "SCORE_POINTS":
+        }
+        case "SCORE_POINTS": {
             // Update points for both players because why not
             for (const player of jsonGameState.players) {
                 let playerId = player.playerId;
                 let playerIndex = gameUi.getPlayerIndex(playerId);
-                gameUi.playerScores[index] = player.score;
+                gameUi.playerScores[playerIndex] = player.score;
             }
             message = performingPlayerId + " scored " + jsonAction.pointsScored + " points from " +
                 showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
+        }
         case "SEED_CARD":
             // Same message, whether the card is a mission or not
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
