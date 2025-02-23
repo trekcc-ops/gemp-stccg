@@ -50,13 +50,18 @@ export default class Card {
         if (typeof(locationIndex) != 'string' && !(Number.isInteger(locationIndex))) {
             throw new TypeError(`locationIndex '${locationIndex}' must be a string or integer.`);
         }
+        else if (locationIndex === '') {
+            // empty string is allowed but needs to return a number
+            this.locationIndex = -1;
+        }
         else {
-                /* TODO - This is a reasonable error catch, but a number of client methods pass an empty string
-                    for locationIndex. */
-/*            let parsedLocationIndex = parseInt(locationIndex);
+            // is a string, try to parse it
+            let parsedLocationIndex = parseInt(locationIndex);
             if(Number.isNaN(parsedLocationIndex)) {
                 throw new TypeError(`locationIndex '${locationIndex}' string is not parseable into an integer.`);
-            } */
+            }
+
+            this.locationIndex = parsedLocationIndex;
         }
 
         if (typeof(upsideDown) != 'boolean') {
@@ -85,7 +90,7 @@ export default class Card {
         this.zone = zone;
         this.cardId = cardId.toString();
         this.owner = owner;
-        this.locationIndex = parseInt(locationIndex);
+        
         this.attachedCards = new Array();
         if (imageBlueprint == "rules") {
             this.imageUrl = rulesImg;

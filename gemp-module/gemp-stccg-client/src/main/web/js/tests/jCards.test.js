@@ -208,7 +208,27 @@ describe('Constructor', () => {
         expect(cardUnderTest.upsideDown).toBe(false);
     });
 
-    test('constructor throws error when locationIndex is a string but not translatable to an int', () => {
+    test('constructor accepts an empty string as locationIndex and returns it as -1', () => {
+        let blueprintId="101_312";
+        let zone="ATTACHED";
+        let cardId="1";
+        let owner="andrew2";
+        let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
+        let locationIndex="";
+        let upsideDown=false;
+    
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+    
+        expect(cardUnderTest.blueprintId).toBe("101_312");
+        expect(cardUnderTest.zone).toBe("ATTACHED");
+        expect(cardUnderTest.cardId).toBe("1");
+        expect(cardUnderTest.owner).toBe("andrew2");
+        expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
+        expect(cardUnderTest.locationIndex).toBe(-1);
+        expect(cardUnderTest.upsideDown).toBe(false);
+    });
+
+    test('constructor throws error when locationIndex is a not-empty string but not translatable to an int', () => {
         let blueprintId="101_312";
         let zone="ATTACHED";
         let cardId="1";
