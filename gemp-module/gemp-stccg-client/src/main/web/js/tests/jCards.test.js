@@ -1,4 +1,4 @@
-import {describe, beforeEach, expect, test} from '@jest/globals'
+import {describe, beforeEach, expect, test} from '@jest/globals';
 import Cookies from "js-cookie";
 import {cardCache, cardScale, packBlueprints, createCardDiv, getFoilPresentation, createFullCardDiv, createSimpleCardDiv, getCardDivFromId} from "../gemp-022/jCards.js";
 import Card from "../gemp-022/jCards.js";
