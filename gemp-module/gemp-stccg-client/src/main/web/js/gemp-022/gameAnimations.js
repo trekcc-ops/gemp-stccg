@@ -64,7 +64,11 @@ export default class GameAnimations {
 
             // Play-out game event animation only if it's not the player who initiated it
             if (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
-                let card = new Card(blueprintId, "ANIMATION", "anim", participantId, imageUrl);
+                let zone = "ANIMATION";
+                let cardId = "anim";
+                let emptyLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
                 let cardDiv = createSimpleCardDiv(card.imageUrl);
 
                 $("#main").queue(
@@ -137,8 +141,11 @@ export default class GameAnimations {
                     function (next) {
                         for (let i = 0; i < targetCardIds.length; i++) {
                             let targetCardId = targetCardIds[i];
-
-                            let card = new Card(blueprintId, "ANIMATION", "anim" + i, participantId, imageUrl);
+                            let zone = "ANIMATION";
+                            let cardId = `anim${i}`;
+                            let emptyLocationIndex = "";
+                            let upsideDown = false;
+                            let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
                             let cardDiv = createSimpleCardDiv(card.imageUrl);
 
                             let targetCard = getCardDivFromId(targetCardId);
@@ -264,15 +271,16 @@ export default class GameAnimations {
         console.log(cardJson);
         console.log(spacelineIndex);
         var that = this;
-        let participantId = cardJson.owner;
-        let cardId = cardJson.cardId;
-        let imageUrl = cardJson.imageUrl;
         let region = cardJson.region;
         let quadrant = cardJson.quadrant;
         let blueprintId = cardJson.blueprintId;
+        let zone = "SPACELINE";
+        let cardId = cardJson.cardId;
+        let participantId = cardJson.owner;
+        let imageUrl = cardJson.imageUrl;
+        let locationIndex = spacelineIndex.toString();
         let upsideDown = (participantId != that.game.bottomPlayerId);
         let thisGame = this.game;
-        let locationIndex = spacelineIndex.toString();
 
         $("#main").queue(
             function (next) {
@@ -285,7 +293,7 @@ export default class GameAnimations {
                     thisGame.addSharedMission(locationIndex, quadrant, region);
                 }
 
-                let card = new Card(blueprintId, "SPACELINE", cardId, participantId, imageUrl, locationIndex, upsideDown);
+                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
                 let cardDiv = thisGame.createCardDivWithData(card, null);
 
                 $("#main").append(cardDiv);
