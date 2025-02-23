@@ -320,7 +320,7 @@ export default class GameTableUI {
             function (event) {
                 return that.clickCardFunction(event);
             });
-        var test = $("body");
+
         $("body")[0].addEventListener("contextmenu",
             function (event) {
                 if(!that.clickCardFunction(event)) {
