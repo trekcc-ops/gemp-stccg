@@ -10,7 +10,7 @@ import com.gempukku.stccg.async.handler.UriRequestHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClearCacheRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class ClearCacheRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     @Override
     public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)

@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class LeagueAdminDraftRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class LeagueAdminDraftRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     // TODO - This doesn't work
 

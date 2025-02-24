@@ -5,22 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.async.handler.AdminRequestHandler;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.service.AdminService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class FindMultipleAccountsRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class FindMultipleAccountsRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     private final String _userName;
 

@@ -5,22 +5,24 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
+import com.gempukku.stccg.hall.HallServer;
 
-public class SetShutdownRequestHandler implements UriRequestHandler, AdminRequestHandler {
-    private final boolean _shutdown;
-
-    SetShutdownRequestHandler(
-        @JsonProperty(value = "shutdown", required = true)
-        boolean shutdown
+public class SetDailyMessageRequestHandler implements UriRequestHandler, AdminRequestHandler {
+    
+    private final String _newMessage;
+    SetDailyMessageRequestHandler(
+        @JsonProperty(value = "newMessage", required = true)
+        String newMessage
     ) {
-        _shutdown = shutdown;
+        _newMessage = newMessage;
     }
 
     @Override
     public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
         validateAdmin(request);
-        serverObjects.getHallServer().setShutdown(_shutdown);
+        HallServer hallServer = serverObjects.getHallServer();
+        hallServer.setDailyMessage(_newMessage);
         responseWriter.writeJsonOkResponse();
     }
 }

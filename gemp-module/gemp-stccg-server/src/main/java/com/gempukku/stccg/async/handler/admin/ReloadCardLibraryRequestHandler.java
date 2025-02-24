@@ -7,7 +7,7 @@ import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.ChatServer;
 
-public class ReloadCardLibraryRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class ReloadCardLibraryRequestHandler implements UriRequestHandler, AdminRequestHandler {
     private final static long CARD_LOAD_SLEEP_TIME = 6000;
 
     @Override

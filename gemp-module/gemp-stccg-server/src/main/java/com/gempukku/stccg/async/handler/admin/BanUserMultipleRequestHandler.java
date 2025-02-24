@@ -12,7 +12,7 @@ import com.gempukku.stccg.service.AdminService;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-public class BanUserMultipleRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class BanUserMultipleRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     // TODO - This doesn't work
 

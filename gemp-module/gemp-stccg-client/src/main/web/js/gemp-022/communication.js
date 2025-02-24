@@ -774,7 +774,7 @@ export default class GempClientCommunication {
     getDailyMessage(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/admin/getDailyMessage",
+            url:this.url + "/getDailyMessage",
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -785,10 +785,10 @@ export default class GempClientCommunication {
     setDailyMessage(motd, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/setDailyMessage",
+            url:this.url + "/setDailyMessage",
             cache:false,
             data:{
-                motd:motd
+                newMessage:motd
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),

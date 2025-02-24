@@ -82,31 +82,25 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                     String afterServer = uri.substring(SERVER_CONTEXT_PATH.length());
                     int nextSlashIndex = afterServer.indexOf("/");
                     String handlerType = (nextSlashIndex < 0) ? afterServer : afterServer.substring(0, nextSlashIndex);
-                    String afterHandlerType = afterServer.substring(handlerType.length());
 
-                    switch (handlerType) {
-                        case "admin":
-                            new AdminRequestHandler().handleRequest(afterHandlerType, request, responseWriter, _serverObjects);
-                            break;
-                        case "collection":
-                            new CollectionRequestHandler().handleRequest(afterHandlerType, request, responseWriter, _serverObjects);
-                            break;
-                        default:
-                            Map<String, Object> parameters = request.parameters();
-                            parameters.put("type", handlerType);
-                            try {
-                                UriRequestHandler newHandler =
-                                        _jsonMapper.convertValue(parameters, UriRequestHandler.class);
-                                newHandler.handleRequest(request, responseWriter, _serverObjects);
-                            } catch (IllegalArgumentException exp) {
-                                if (exp.getCause() instanceof InvalidTypeIdException) {
-                                    // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer
-                                    logHttpError(uri,
-                                            new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND), responseWriter);
-                                }
-                            } catch (JsonProcessingException exp) {
-                                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+                    if (handlerType.equals("collection")) {
+                        String afterHandlerType = afterServer.substring(handlerType.length());
+                        new CollectionRequestHandler().handleRequest(afterHandlerType, request, responseWriter, _serverObjects);
+                    } else {
+                        Map<String, Object> parameters = request.parameters();
+                        parameters.put("type", handlerType);
+                        try {
+                            UriRequestHandler newHandler = _jsonMapper.convertValue(parameters, UriRequestHandler.class);
+                            newHandler.handleRequest(request, responseWriter, _serverObjects);
+                        } catch (IllegalArgumentException exp) {
+                            if (exp.getCause() instanceof InvalidTypeIdException) {
+                                // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer
+                                logHttpError(uri,
+                                        new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND), responseWriter);
                             }
+                        } catch (JsonProcessingException exp) {
+                            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+                        }
                     }
                 }
             }

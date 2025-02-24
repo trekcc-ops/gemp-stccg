@@ -20,7 +20,7 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class LeagueAdminConstructedRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class LeagueAdminConstructedRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     // TODO - This doesn't work
 

@@ -11,7 +11,7 @@ import com.gempukku.stccg.service.AdminService;
 
 import java.net.HttpURLConnection;
 
-public class BanUserTemporaryRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class BanUserTemporaryRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     private final String _userToBan;
     private final int _duration;

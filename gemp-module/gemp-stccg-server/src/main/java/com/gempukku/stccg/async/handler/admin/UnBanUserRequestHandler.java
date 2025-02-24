@@ -11,7 +11,7 @@ import com.gempukku.stccg.service.AdminService;
 
 import java.net.HttpURLConnection;
 
-public class UnBanUserRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class UnBanUserRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     private final String _userToBan;
 

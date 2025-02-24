@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties("cost")
-public class PreviewSealedLeagueRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class PreviewSealedLeagueRequestHandler implements UriRequestHandler, AdminRequestHandler {
     private final long _creationTime;
     private final int _start;
     private final String _leagueTemplateName;

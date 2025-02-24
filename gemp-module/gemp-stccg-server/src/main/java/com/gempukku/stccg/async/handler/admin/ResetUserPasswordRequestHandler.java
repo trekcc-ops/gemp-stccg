@@ -5,16 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.async.handler.AdminRequestHandler;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.service.AdminService;
 
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
-import java.util.List;
 
-public class ResetUserPasswordRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class ResetUserPasswordRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     private final String _userName;
 

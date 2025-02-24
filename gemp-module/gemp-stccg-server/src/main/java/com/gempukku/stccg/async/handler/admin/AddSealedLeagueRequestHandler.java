@@ -14,7 +14,7 @@ import com.gempukku.stccg.league.NewSealedLeagueData;
 import java.util.List;
 
 @JsonIgnoreProperties("cost")
-public class AddSealedLeagueRequestHandler extends AdminRequestHandlerNew implements UriRequestHandler {
+public class AddSealedLeagueRequestHandler implements UriRequestHandler, AdminRequestHandler {
     private final long _creationTime;
     private final int _start;
     private final String _leagueTemplateName;
