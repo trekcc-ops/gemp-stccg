@@ -2,10 +2,13 @@ package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
+import com.gempukku.stccg.cards.cardgroup.MissionCardPile;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -38,12 +41,11 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                 }
             }
             return result;
-        } else if (phase == Phase.SEED_MISSION && !cardsInHand.isEmpty()) {
-            if (isCurrentPlayer) {
-                result.add(new SeedMissionCardAction((MissionCard) cardsInHand.getFirst()));
-            }
+        } else if (phase == Phase.SEED_MISSION && !player.getMissionsPile().isEmpty() && isCurrentPlayer) {
+            CardPile missionsPile = player.getMissionsPile();
+            result.add(new SeedMissionCardAction((MissionCard) missionsPile.getTopCard()));
         } else if (phase == Phase.SEED_FACILITY) {
-            for (PhysicalCard card : cardsInHand) {
+            for (PhysicalCard card : player.getCardsInGroup(Zone.SEED_DECK)) {
                 if (isCurrentPlayer) {
                     if (card.canBeSeeded(_game)) {
                         ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;

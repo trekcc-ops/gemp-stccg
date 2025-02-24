@@ -3,11 +3,15 @@ package com.gempukku.stccg.processes.st1e;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
+import com.gempukku.stccg.actions.draw.DrawMultipleCardsUnrespondableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -17,6 +21,7 @@ import com.gempukku.stccg.processes.StartOfTurnGameProcess;
 
 import java.beans.ConstructorProperties;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,32 +66,33 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
-        ST1EGame stGame = getST1EGame(cardGame);
+    public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         PlayerOrder playerOrder = cardGame.getGameState().getPlayerOrder();
         if (_consecutivePasses >= playerOrder.getPlayerCount()) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
 
             Collection<Player> players = cardGame.getPlayers();
 
-            ST1EGameState gameState = stGame.getGameState();
-            cardGame.takeSnapshot("Start of play phase");
-
             for (Player player : players) {
-                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInHand());
+                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeedCards) {
-                    gameState.removeCardFromZone(card);
-                    gameState.addCardToZone(card, Zone.REMOVED);
+                    RemoveCardFromPlayAction removeAction =
+                            new RemoveCardFromPlayAction(cardGame, card.getOwner(), card);
+                    removeAction.processEffect(cardGame);
+                    cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
+                    cardGame.sendActionResultToClient();
                 }
             }
 
             for (Player player : players) {
                 player.shuffleDrawDeck(cardGame);
-                for (int i = 0; i < cardGame.getFormat().getHandSize(); i++) {
-                    gameState.playerDrawsCard(player);
-                }
+                int cardsToDraw = cardGame.getFormat().getHandSize();
+                DrawMultipleCardsUnrespondableAction drawAction =
+                        new DrawMultipleCardsUnrespondableAction(cardGame, player, cardsToDraw);
+                drawAction.processEffect(cardGame);
+                cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
+                cardGame.sendActionResultToClient();
             }
-            cardGame.sendMessage("Players drew starting hands");
             return new StartOfTurnGameProcess();
         } else {
             playerOrder.advancePlayer();

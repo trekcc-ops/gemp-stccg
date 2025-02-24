@@ -2,9 +2,12 @@ package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileAction;
+import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -17,7 +20,8 @@ import java.util.LinkedList;
 
 
 public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMutateTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
+    public ActivateMutateTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+            throws PlayerNotFoundException {
         super(actionContext, power);
     }
 
@@ -33,11 +37,8 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
                 Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
                 // Shuffle your play pile into your draw deck
-                cardGame.removeCardsFromZone(performingPlayer, playPile);
-                for (PhysicalCard physicalCard : playPile) {
-                    gameState.putCardOnBottomOfDeck(physicalCard);
-                }
-                performingPlayer.shuffleDrawDeck(cardGame);
+                appendEffect(new ShuffleCardsIntoDrawDeckAction(
+                        _performingCard, performingPlayer, Filters.in(performingPlayer.getCardGroupCards(Zone.PLAY_PILE))));
 
                 // Then put that many cards from the top of your draw deck in your play pile
                 appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(game, performingPlayer, cardsInPlayPile));

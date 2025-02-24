@@ -1,16 +1,23 @@
 package com.gempukku.stccg.actions.placecard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
+import java.util.List;
 
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
@@ -21,12 +28,13 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
                                               SelectCardsAction selectionAction) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARD, Progress.values());
+        super(cardGame, performingPlayer, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK, Progress.values());
         _selectionAction = selectionAction;
     }
 
-    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer, Collection<PhysicalCard> cardsToPlace) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
+                                              Collection<PhysicalCard> cardsToPlace) {
+        super(cardGame, performingPlayer, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
         _cardsToPlace = cardsToPlace;
     }
 
@@ -49,12 +57,20 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
             }
         }
 
+        GameState gameState = cardGame.getGameState();
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, _cardsToPlace);
+
         for (PhysicalCard card : _cardsToPlace) {
-            GameState gameState = cardGame.getGameState();
-            gameState.placeCardOnBottomOfDrawDeck(cardGame, card.getOwner(), card);
-            cardGame.sendMessage(_performingPlayerId + " placed " + card + " beneath their draw deck");
+            CardPile drawDeck = card.getOwner().getDrawDeck();
+            drawDeck.addCardToBottom(card);
+            card.setZone(Zone.DRAW_DECK);
             setAsSuccessful();
         }
         return getNextAction();
+    }
+
+    @JsonProperty("targetCardIds")
+    private Collection<PhysicalCard> getTargetCards() {
+        return _cardsToPlace;
     }
 }

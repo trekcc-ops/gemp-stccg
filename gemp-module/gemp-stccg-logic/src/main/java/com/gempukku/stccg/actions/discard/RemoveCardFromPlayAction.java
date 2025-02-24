@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.discard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -12,21 +13,16 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class RemoveCardFromPlayAction extends ActionyAction {
 
-    private final ActionCardResolver _cardTarget;
+    private final FixedCardResolver _cardTarget;
 
     public RemoveCardFromPlayAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard cardToRemove) {
         super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);
-    }
-
-    public RemoveCardFromPlayAction(DefaultGame cardGame, Player performingPlayer,
-                                    Collection<PhysicalCard> cardsToRemove) {
-        super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
-        _cardTarget = new FixedCardsResolver(cardsToRemove);
     }
 
 
@@ -46,23 +42,30 @@ public class RemoveCardFromPlayAction extends ActionyAction {
             }
         }
 
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        Collection<PhysicalCard> removedCards = new HashSet<>(_cardTarget.getCards(cardGame));
+        Action nextAction = getNextAction();
+        if (nextAction == null)
+            processEffect(cardGame);
+        return nextAction;
+    }
+
+    @JsonProperty("targetCardId")
+    private int targetCardId() {
+        return _cardTarget.getCard().getCardId();
+    }
+
+    public void processEffect(DefaultGame cardGame) {
+        Collection<PhysicalCard> removedCards = List.of(_cardTarget.getCard());
 
         Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
 
-        cardGame.removeCardsFromZone(performingPlayer, toRemoveFromZone);
+        cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, toRemoveFromZone);
         for (PhysicalCard removedCard : removedCards) {
-            cardGame.getGameState().addCardToZone(removedCard, Zone.REMOVED);
+            cardGame.getGameState().addCardToZoneWithoutSendingToClient(removedCard, Zone.REMOVED);
             if (removedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();
             }
         }
 
-        cardGame.sendMessage(_performingPlayerId + " removed " + TextUtils.getConcatenatedCardLinks(removedCards) +
-                " from the game");
         setAsSuccessful();
-
-        return getNextAction();
     }
 }

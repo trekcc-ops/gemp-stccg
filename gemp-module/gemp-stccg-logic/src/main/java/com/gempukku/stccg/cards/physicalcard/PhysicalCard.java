@@ -17,6 +17,7 @@ import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,10 +25,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl", "cardType", "uniqueness" })
+        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay" })
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl", "cardType", "uniqueness" })
+        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay" })
 public interface PhysicalCard extends Filterable {
 
     @JsonIgnore
@@ -108,6 +109,8 @@ public interface PhysicalCard extends Filterable {
     boolean hasSkill(SkillName skillName);
 
     boolean checkTurnLimit(DefaultGame game, int max);
+
+    @JsonProperty("isInPlay")
     boolean isInPlay();
     boolean hasCharacteristic(Characteristic characteristic);
 
@@ -157,4 +160,14 @@ public interface PhysicalCard extends Filterable {
     boolean isVisibleToPlayer(String requestingPlayerId);
 
     void removeFromCardGroup();
+
+    @JsonProperty("hasUniversalIcon")
+    default boolean hasUniversalIcon() {
+        return getBlueprint().hasUniversalIcon();
+    }
+
+    @JsonIgnore
+    default Integer getStrength(DefaultGame cardGame) {
+        return cardGame.getGameState().getModifiersQuerying().getStrength(this);
+    }
 }

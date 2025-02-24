@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.filters.Filters;
@@ -19,7 +19,7 @@ public class ActivateDiscardTribblePowerAction extends ActivateTribblePowerActio
         SelectVisibleCardAction selectAction =
                 new SelectVisibleCardAction(cardGame, performingPlayer, "select",
                         Filters.yourHand(performingPlayer));
-        appendEffect(new DiscardCardAction(cardGame, _performingCard, performingPlayer, selectAction));
+        appendEffect(new TribblesMultiDiscardActionBroken(cardGame, _performingCard, performingPlayer, selectAction));
     }
 
 }

@@ -25,7 +25,7 @@ public class ChatServer extends AbstractServer {
         ChatRoomMediator chatRoom = new ChatRoomMediator(_serverObjects, muteJoinPartMessages,
                 secondsTimeoutPeriod, allowIncognito, null, name);
         try {
-            chatRoom.sendMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + name, true);
+            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + name, true);
         } catch (PrivateInformationException exp) {
             // Ignore, sent as admin
         } catch (ChatCommandErrorException e) {
@@ -40,7 +40,7 @@ public class ChatServer extends AbstractServer {
         ChatRoomMediator chatRoom = new ChatRoomMediator(_serverObjects, muteJoinPartMessages,
                 secondsTimeoutPeriod, allowedUsers, false, name);
         try {
-            chatRoom.sendMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to private room: " + name, true);
+            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to private room: " + name, true);
         } catch (PrivateInformationException exp) {
             // Ignore, sent as admin
         } catch (ChatCommandErrorException e) {
@@ -54,7 +54,7 @@ public class ChatServer extends AbstractServer {
         String messageText = ChatStrings.ALL_USERS_PREFIX + message;
         try {
             for (ChatRoomMediator mediator : _chatRooms.values())
-                mediator.sendMessage(ChatStrings.SYSTEM_USER_ID, messageText, true);
+                mediator.sendChatMessage(ChatStrings.SYSTEM_USER_ID, messageText, true);
         } catch (PrivateInformationException exp) {
             // Ignore, sent as admin
         } catch (ChatCommandErrorException e) {

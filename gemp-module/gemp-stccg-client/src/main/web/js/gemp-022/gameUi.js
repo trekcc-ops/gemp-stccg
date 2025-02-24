@@ -3,9 +3,10 @@ import { log, getUrlParam } from './common.js';
 import Card from './jCards.js';
 import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js';
 import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
+import { animateActionResult, communicateActionResult, getSpacelineIndexFromLocationId } from './actionResults.js';
 import GameAnimations from './gameAnimations.js';
 import ChatBoxUI from './chat.js';
-import { openSizeDialog } from "./common.js";
+import { openSizeDialog, showLinkableCardTitle, removeFromArray } from "./common.js";
 import Cookies from "js-cookie";
 import playImg from "../../images/play.png";
 import pauseImg from "../../images/pause.png";
@@ -32,6 +33,7 @@ export default class GameTableUI {
     alertText;
     alertButtons;
     infoDialog;
+    hasDecision = false;
 
 //    playPiles;
     hand;
@@ -61,6 +63,7 @@ export default class GameTableUI {
 
     animations;
     replayPlay = false;
+    lastActionIndex;
 
     constructor(url, replayMode) {
         this.replayMode = replayMode;
@@ -199,8 +202,6 @@ export default class GameTableUI {
     initializeGameUI(discardPublic) {
         var that = this;
 
-//        this.advPathGroup = new AdvPathCardGroup($("#main"));
-
         for (var i = 0; i < this.allPlayerIds.length; i++) {
 
             this.gameStateElem.append(
@@ -285,7 +286,7 @@ export default class GameTableUI {
 
         if (!this.spectatorMode) {
             this.hand = new NormalCardGroup($("#main"), function (card) {
-                return (card.zone == "HAND") || (card.zone == "EXTRA");
+                return (card.zone === "HAND" || card.zone === "EXTRA" || card.zone === "MISSIONS_PILE" || card.zone === "SEED_DECK");
             });
             if(!discardPublic) {
                 $("#discard" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
@@ -319,7 +320,7 @@ export default class GameTableUI {
             function (event) {
                 return that.clickCardFunction(event);
             });
-        var test = $("body");
+
         $("body")[0].addEventListener("contextmenu",
             function (event) {
                 if(!that.clickCardFunction(event)) {
@@ -495,9 +496,15 @@ export default class GameTableUI {
         var tar = $(event.target);
 
         if (tar.hasClass("cardHint")) {
-            var blueprintId = tar.attr("value");
-            var imageUrl = tar.attr("card_img_url");
-            var card = new Card(blueprintId, "SPECIAL", "hint", "", imageUrl, "", false);
+            let blueprintId = tar.attr("value");
+            let zone = "SPECIAL";
+            let cardId = "hint";
+            let noOwner = "";
+            let imageUrl = tar.attr("card_img_url");
+            let emptyLocationIndex = "";
+            let upsideDown = false;
+
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
             this.displayCard(card, false);
             event.stopPropagation();
             return false;
@@ -784,24 +791,6 @@ export default class GameTableUI {
         $("#cardEffects").addClass("cardInfoText");
     }
 
-    showLinkableCardTitle(cardNode) {
-        // Takes a json node of card properties and creates a hyperlink that the user can click on to show the card
-        // Used in setCardModifiers method
-        let title = cardNode.title; // string
-        let hasUniversalIcon = cardNode.hasUniversalIcon; // boolean
-        let blueprintId = cardNode.blueprintId; // string
-        let imageUrl = cardNode.imageUrl; // string
-
-        let html = "";
-        html = html + "<div class='cardHint' value='" + blueprintId + "' card_img_url='" + imageUrl + "'>";
-        if (hasUniversalIcon) {
-            html = html + "&#x2756&nbsp;"; // unicode for universal symbol
-        }
-        html = html + title + "</div>";
-
-        return html;
-    }
-
     showCommaDelimitedListOfCardLinks(jsonList, listTitle) {
         let html = "";
         if (jsonList != null && jsonList.length > 0) {
@@ -810,7 +799,7 @@ export default class GameTableUI {
                 if (i > 0) {
                     html = html + ", ";
                 }
-                html = html + this.showLinkableCardTitle(jsonList[i]);
+                html = html + showLinkableCardTitle(jsonList[i]);
             }
             html = html + "<br/><br/>";
         }
@@ -869,7 +858,7 @@ export default class GameTableUI {
         var that = this;
         this.communication.startGameSession(
             function (json) {
-                that.processGameEvents(json, false);
+                that.initializeGameState(json);
             }, this.gameErrorMap());
     }
 
@@ -885,6 +874,7 @@ export default class GameTableUI {
     decisionFunction(decisionId, result) {
         var that = this;
         this.stopAnimatingTitle();
+        this.hasDecision = false;
         this.communication.gameDecisionMade(decisionId, result,
             this.channelNumber,
             function (json) {
@@ -1026,119 +1016,214 @@ export default class GameTableUI {
     processGameEvent(gameEvent, animate) {
             // gameEvent is a json node
         var eventType = gameEvent.type;
+        let gameState = typeof gameEvent.gameState === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+
+        if (this.allPlayerIds == null || this.allPlayerIds.length == 0) {
+            this.initializePlayerOrder(gameState);
+        }
 
         switch(eventType) {
-            case "CA":
+            case "ACTION_RESULT":
+                this.updateGameStats(gameState); // updates count of card piles
+                this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
+                this.animations.turnChange(gameState, true);
+                let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
+                for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
+                    let action = gameState.performedActions[i];
+                    if (action.status === "completed_success") {
+                        animateActionResult(action, gameState, this.animations);
+                        communicateActionResult(action, gameState, this);
+                    } else if (action.status === "completed_failure" && action.actionType === "ATTEMPT_MISSION") {
+                        communicateActionResult(action, gameState, this);
+                    }
+                    this.lastActionIndex = i;
+                }
+                break;
+            case "M":
+                this.animations.message(gameEvent, animate);
+                break;
+            case "W":
+                this.animations.warning(gameEvent, animate);
+                break;
+            case "CA": // TODO - This game event flashes the border around the card. No longer called in server.
                 this.animations.cardActivated(gameEvent, animate);
                 break;
             case "CAC": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.cardAffectsCard(gameEvent, animate);
                 break;
-            case "D":
-                this.animations.processDecision(gameEvent, animate);
-                break;
-            case "EG":
-                this.processGameEnd();
-                break;
             case "EP": // TODO - This game event was removed from the server side, so will never be called
                 this.animations.eventPlayed(gameEvent, animate);
-                break;
-            case "GPC":
-                this.animations.gamePhaseChange(gameEvent, animate);
-                break;
-            case "GS":
-                this.animations.gameStats(gameEvent, animate);
-                break;
-            case "M":
-                this.animations.message(gameEvent, animate);
-                break;
-            case "MCIP":
-                this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
-                break;
-            case "PCIP":
-            case "PUT_SHARED_MISSION_INTO_PLAY":
-                this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-                break;
-            case "PLAYER_SCORE":
-                this.animations.playerScore(gameEvent, animate);
-                break;
-            case "P":
-                this.participant(gameEvent);
-                break;
-            case "RCFP":
-                this.animations.removeCardFromPlay(gameEvent, animate);
-                break;
-            case "TC":
-                this.animations.turnChange(gameEvent, animate);
-                break;
-            case "TSEQ":
-                this.animations.tribbleSequence(gameEvent, animate);
-                break;
-            case "UPDATE_CARD_IMAGE":
-                this.animations.updateCardImage(gameEvent);
-                break;
-            case "W":
-                this.animations.warning(gameEvent, animate);
                 break;
             default:
                 console.error("Unknown game event type: '" + eventType + "'.");
         }
     }
 
-    processGameEvents(jsonNode, animate) {
+    initializeGameState(jsonNode) {
+
         try {
             this.channelNumber = jsonNode.channelNumber;
-            var gameEvents = jsonNode.gameEvents;
 
-            var hasDecision = false;
+            let gameState = jsonNode.gameState;
+            let cardsAdded = new Array();
+            let cardsStillToAdd = Object.keys(gameState.visibleCardsInGame);
+            let cardToAdd;
 
-            // Go through all the events
-            for (var i = 0; i < gameEvents.length; i++) {
-                var gameEvent = gameEvents[i];
-                this.processGameEvent(gameEvent, animate);
-                var eventType = gameEvent.type;
-                if (eventType == "D") {
-                    hasDecision = true;
-                }
+            if (gameState.players != null && gameState.players.length > 0) {
+                console.log("Calling initializePlayerOrder from initializeGameState");
+                this.initializePlayerOrder(gameState);
+                this.updateGameStats(gameState);
             }
 
-            if (this.allPlayerIds != null) {
-                let clocks = jsonNode.clocks;
-                if (clocks.length > 0) {
-                    for (var i = 0; i < clocks.length; i++) {
-                        let clock = clocks[i];
-                        let playerId = clock.playerId;
-                        let value = clock.timeRemaining;
+            this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
 
-                        let index = this.getPlayerIndex(playerId);
-
-                        let sign = (value < 0) ? "-" : "";
-                        value = Math.abs(value);
-                        let hours = Math.floor(value / 3600);
-                        let minutes = Math.floor(value / 60) % 60;
-                        let seconds = value % 60;
-
-                        if (hours > 0) {
-                            $("#clock" + index).text(
-                                sign + hours + ":" +
-                                ((minutes < 10) ? ("0" + minutes) : minutes) + ":" +
-                                ((seconds < 10) ? ("0" + seconds) : seconds)
-                            );
-                        }
-                        else {
-                            $("#clock" + index).text(
-                                sign + minutes + ":" +
-                                ((seconds < 10) ? ("0" + seconds) : seconds)
-                            );
-                        }
+            for (const player of gameState.players) {
+                for (const cardId of player.cardGroups["CORE"].cardIds) {
+                    cardToAdd = gameState.visibleCardsInGame[cardId];
+                    if (cardToAdd == null) {
+                        console.error("Unable to find card of cardId '" + cardId + "'");
+                    } else if (cardsAdded.includes(cardId)) {
+                        console.error("Trying to add a card to core, but it's already been added");
+                    } else {
+                        this.animations.putNonMissionIntoPlay(cardToAdd, cardToAdd.owner, gameState, "-1", false);
+                        cardsAdded.push(cardId);
+                        cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
+                    }
+                }
+                for (const cardId of player.cardGroups["HAND"].cardIds) {
+                    cardToAdd = gameState.visibleCardsInGame[cardId];
+                    if (cardId == "-99") {
+                        console.log("Card is hidden information");
+                    } else if (cardToAdd == null) {
+                        console.error("Unable to find card of cardId '" + cardId + "'");
+                    } else if (cardsAdded.includes(cardId)) {
+                        console.error("Trying to add a card to hand, but it's already been added");
+                    } else {
+                        this.animations.addCardToHiddenZone(cardToAdd, "HAND", player.playerId);
+                        cardsAdded.push(cardId);
+                        cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
+                    }
+                }
+                for (const cardId of player.cardGroups["DISCARD"].cardIds) {
+                    cardToAdd = gameState.visibleCardsInGame[cardId];
+                    if (cardToAdd == null) {
+                        console.error("Unable to find card of cardId '" + cardId + "'");
+                    } else if (cardsAdded.includes(cardId)) {
+                        console.error("Trying to add a card to discard, but it's already been added");
+                    } else {
+                        this.animations.addCardToHiddenZone(cardToAdd, "DISCARD", player.playerId);
+                        cardsAdded.push(cardId);
+                        cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
                     }
                 }
             }
 
-            if (!hasDecision) {
-                this.animations.updateGameState(animate);
-            } else {
+            for (const location of gameState.spacelineLocations) {
+                for (let i = 0; i < location.missionCardIds.length; i++) {
+                    let missionCardId = location.missionCardIds[i];
+                    let missionCard = gameState.visibleCardsInGame[missionCardId];
+                    let spacelineIndex = getSpacelineIndexFromLocationId(missionCard.locationId, gameState);
+                    let firstMissionAtLocation = (i == 0);
+                    this.animations.putMissionIntoPlay(missionCard, false, spacelineIndex, firstMissionAtLocation);
+                    cardsAdded.push(missionCardId);
+                    cardsStillToAdd = removeFromArray(cardsStillToAdd, missionCardId);
+                }
+            }
+
+            for (let [cardId, cardData] of Object.entries(gameState.visibleCardsInGame)) {
+                if (!cardData.isInPlay && cardsStillToAdd.includes(cardId)) {
+                    cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
+                } else if (!cardsAdded.includes(cardId)) {
+                    let cardDiv = getCardDivFromId(cardId);
+                    if (cardDiv.length == 0) {
+                        this.addNonMissionInPlayToClientRecursively(cardData, gameState);
+                    }
+                    cardsAdded.push(cardId);
+                    cardsStillToAdd = removeFromArray(cardsStillToAdd, cardId);
+                }
+            }
+
+            if (cardsStillToAdd.length > 0) {
+                console.error("Was unable to add all cards");
+            }
+
+            this.setupClocks(jsonNode.gameState);
+            this.lastActionIndex = jsonNode.gameState.performedActions.length - 1;
+
+            let pendingDecision = gameState.pendingDecision;
+            if (pendingDecision != null) {
+                this.animations.processDecision(pendingDecision, true);
                 this.startAnimatingTitle();
+            } else {
+                this.animations.updateGameState(false);
+            }
+
+        } catch (e) {
+            console.error(e);
+            this.showErrorDialog(
+                "Game error",
+                "There was an error while initializing the game state",
+                true, false, false
+            );
+        }
+    }
+
+    setupClocks(gameState) {
+        if (this.allPlayerIds != null) {
+            let clocks = gameState.playerClocks;
+            for (var i = 0; i < clocks.length; i++) {
+                let clock = clocks[i];
+                let playerId = clock.playerId;
+                let value = clock.timeRemaining;
+
+                let index = this.getPlayerIndex(playerId);
+
+                let sign = (value < 0) ? "-" : "";
+                value = Math.abs(value);
+                let hours = Math.floor(value / 3600);
+                let minutes = Math.floor(value / 60) % 60;
+                let seconds = value % 60;
+
+                if (hours > 0) {
+                    $("#clock" + index).text(
+                        sign + hours + ":" +
+                        ((minutes < 10) ? ("0" + minutes) : minutes) + ":" +
+                        ((seconds < 10) ? ("0" + seconds) : seconds)
+                    );
+                }
+                else {
+                    $("#clock" + index).text(
+                        sign + minutes + ":" +
+                        ((seconds < 10) ? ("0" + seconds) : seconds)
+                    );
+                }
+            }
+        }
+    }
+
+    processGameEvents(jsonNode, animate) {
+        try {
+            this.channelNumber = jsonNode.channelNumber;
+
+            // Go through all the events
+            for (let i = 0; i < jsonNode.gameEvents.length; i++) {
+                let gameEvent = jsonNode.gameEvents[i];
+                this.processGameEvent(gameEvent, animate);
+                if (i === jsonNode.gameEvents.length - 1) {
+                    let gameState = typeof gameEvent.gameState === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                    let userDecision = gameState.pendingDecision;
+                    if (this.hasDecision === false && userDecision != null && typeof userDecision != "undefined") {
+                        this.hasDecision = true;
+                        this.animations.processDecision(userDecision, animate);
+                        this.startAnimatingTitle();
+                    }
+                }
+            }
+
+            this.setupClocks(jsonNode);
+
+            if (!this.hasDecision) {
+                this.animations.updateGameState(animate);
             }
         } catch (e) {
             console.error(e);
@@ -1198,41 +1283,27 @@ export default class GameTableUI {
         }
     }
 
-    participant(json) {
-        var participantId = json.participantId;
-        this.allPlayerIds = json.allParticipantIds.split(",");
-        var discardPublic = json.discardPublic;
+    initializePlayerOrder(gameState) {
+        this.bottomPlayerId = gameState.requestingPlayer;
+        this.allPlayerIds = new Array();
 
-        this.bottomPlayerId = participantId;
-
-        var that = this;
+        for (var i =0; i < gameState.players.length; i++) {
+            let playerId = gameState.players[i].playerId;
+            this.allPlayerIds.push(playerId);
+            this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
+            this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
+        }
 
         var index = this.getPlayerIndex(this.bottomPlayerId);
         if (index == -1) {
-            this.bottomPlayerId = this.allPlayerIds[1];
+            this.bottomPlayerId = gameState.players[1].playerId;
             this.spectatorMode = true;
         } else {
             this.spectatorMode = false;
-
-            if(!discardPublic) {
-                this.createPile(participantId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
-            }
-
-            this.createPile(participantId, "Draw Deck", "miscPileDialogs", "miscPileGroups");
+            this.createPile(this.bottomPlayerId, "Draw Deck", "miscPileDialogs", "miscPileGroups");
         }
 
-        for (var i = 0; i < this.allPlayerIds.length; i++) {
-
-            participantId = this.allPlayerIds[i];
-
-            this.createPile(participantId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
-
-            if(discardPublic) {
-                this.createPile(participantId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
-            }
-        }
-
-        this.initializeGameUI(discardPublic);
+        this.initializeGameUI(true);
         this.layoutUI(true);
     }
 
@@ -1592,19 +1663,23 @@ export default class GameTableUI {
             .dialog("option", "title", text);
 
         // Create the action cards and fill the dialog with them
-        for (var i = 0; i < displayedCards.length; i++) {
+        for (let i = 0; i < displayedCards.length; i++) {
             let selectableCard = displayedCards[i];
-            var cardId = selectableCard.cardId;
-            var blueprintId = selectableCard.blueprintId;
-            var imageUrl = selectableCard.imageUrl;
+            let cardId = selectableCard.cardId;
+            let blueprintId = selectableCard.blueprintId;
+            let zone = "SPECIAL";
+            let noOwner = "";
+            let imageUrl = selectableCard.imageUrl;
+            let emptyLocationIndex = "";
+            let upsideDown = false;
 
-            if (selectableCard.selectable == "true") {
+            if (selectableCard.selectable === "true") {
                 selectableCardIds.push(cardId);
             }
             allCardIds.push(cardId);
-            var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
 
-            var cardDiv = this.createCardDivWithData(card);
+            let cardDiv = this.createCardDivWithData(card);
 
             $("#arbitraryChoice").append(cardDiv);
         }
@@ -1698,7 +1773,7 @@ export default class GameTableUI {
         let displayedCards = decision.displayedCards;
         var cardIds = decision.cardIds;
 
-        var jsonCombinations = decision.validCombinations;
+        var jsonCombinations = JSON.parse(decision.validCombinations);
 
         var that = this;
 
@@ -1710,19 +1785,25 @@ export default class GameTableUI {
             .dialog("option", "title", `Select ${min} to ${max} cards`);
 
         // Create the action cards and fill the dialog with them
-        for (var i = 0; i < displayedCards.length; i++) {
+        for (let i = 0; i < displayedCards.length; i++) {
             let displayedCard = displayedCards[i];
-            var cardId = displayedCard.cardId;
-            var blueprintId = displayedCard.blueprintId;
-            var imageUrl = displayedCard.imageUrl;
+            
+            let blueprintId = displayedCard.blueprintId;
+            let zone ="SPECIAL";
+            let cardId = displayedCard.cardId;
+            let noOwner = "";
+            let emptyLocationIndex = "";
+            let upsideDown = false;
+            
+            let imageUrl = displayedCard.imageUrl;
 
             if (displayedCard.selectable == "true") {
                 selectableCardIds.push(cardId);
             }
 
-            var card = new Card(blueprintId, "SPECIAL", cardId, "", imageUrl, "", false);
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
 
-            var cardDiv = this.createCardDivWithData(card);
+            let cardDiv = this.createCardDivWithData(card);
 
             $("#cardSelectionFromCombinations").append(cardDiv);
         }
@@ -1797,7 +1878,7 @@ export default class GameTableUI {
     cardActionChoiceDecision(decision) {
         var id = decision.decisionId;
         var text = decision.text;
-        let noPass = decision.noPass;
+        let noPass = decision.noPass; // boolean
         let selectableCards = decision.displayedCards;
 
         var that = this;
@@ -1816,7 +1897,7 @@ export default class GameTableUI {
 
         var processButtons = function () {
             that.alertButtons.html("");
-            if (noPass != "true" && selectedCardIds.length == 0) {
+            if (!noPass && selectedCardIds.length == 0) {
                 that.alertButtons.append("<button id='Pass'>Pass</button>");
                 $("#Pass").button().click(function () {
                     finishChoice();
@@ -1861,32 +1942,40 @@ export default class GameTableUI {
         var allowSelection = function () {
             var hasVirtual = false;
 
-            for (var i = 0; i < selectableCards.length; i++) {
+            for (let i = 0; i < selectableCards.length; i++) {
                 let selectableCard = selectableCards[i];
-                var cardId = selectableCard.cardId;
-                var actionId = selectableCard.actionId;
-                var actionText = selectableCard.actionText;
-                var blueprintId = selectableCard.blueprintId;
-                var imageUrl = selectableCard.imageUrl;
-                var actionType = selectableCard.actionType;
+                let actionId = selectableCard.actionId;
+                let actionText = selectableCard.actionText;
+                let blueprintId = selectableCard.blueprintId;
+                let cardId = selectableCard.cardId;
+                let actionType = selectableCard.actionType;
+                let cardIdElem;
 
-                if (blueprintId == "inPlay") {
-                    var cardIdElem = getCardDivFromId(cardId);
+                if (blueprintId === "inPlay") {
+                    // in play, do not add "extra" to card id value when doing lookup
+                    cardIdElem = getCardDivFromId(cardId);
                     allCardIds.push(cardId);
                 } else {
+                    // not in play, need to add "extra" to card id value when doing lookup
                     hasVirtual = true;
-                    allCardIds.push("extra" + cardId);
-                    var card = new Card(blueprintId, "EXTRA", "extra" + cardId, null, imageUrl);
+                    cardIdElem = getCardDivFromId(`extra${cardId}`);
+                    allCardIds.push(`extra${cardId}`);
+                    let zone = "EXTRA";
+                    // No new cardId - interesting that it's going to retrieve an extra{cardId} but
+                    //                 create one with a regular cardId. Intentional?
+                    let imageUrl = selectableCard.imageUrl;
+                    let noOwner = "";
+                    let noLocationIndex = "";
+                    let upsideDown = false;
+                    let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
 
-                    var cardDiv = that.createCardDivWithData(card);
+                    let cardDiv = that.createCardDivWithData(card);
                     $(cardDiv).css({opacity: "0.8"});
 
                     $("#main").append(cardDiv);
-
-                    var cardIdElem = $(".card:cardId(extra" + cardId + ")");
                 }
 
-                if (cardIdElem.data("action") == null) {
+                if (cardIdElem.data("action") === null || cardIdElem.data("action") === undefined) {
                     cardIdElem.data("action", new Array());
                 }
                 var actions = cardIdElem.data("action");
@@ -2009,15 +2098,20 @@ export default class GameTableUI {
 
         var cardIds = new Array();
 
-        for (var i = 0; i < displayedCards.length; i++) {
+        for (let i = 0; i < displayedCards.length; i++) {
             let displayedCard = displayedCards[i];
-            var blueprintId = displayedCard.blueprintId;
-            var imageUrl = displayedCard.imageUrl;
+            let blueprintId = displayedCard.blueprintId;
+            let zone = "SPECIAL";
+            let cardId = `temp${i}`;
+            let noOwner = "";
+            let imageUrl = displayedCard.imageUrl;
+            let noLocationIndex = "";
+            let upsideDown = false;
 
             cardIds.push("temp" + i);
-            var card = new Card(blueprintId, "SPECIAL", "temp" + i, "", imageUrl, "", false);
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
 
-            var cardDiv = this.createCardDivWithData(card, displayedCard.actionText);
+            let cardDiv = this.createCardDivWithData(card, displayedCard.actionText);
 
             $("#arbitraryChoice").append(cardDiv);
         }
@@ -2209,6 +2303,11 @@ export default class GameTableUI {
     }
 
     recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
+        if (typeof(jsonCombinations) !== 'object' || jsonCombinations === null) {
+            let inc_type = typeof(jsonCombinations);
+            throw new TypeError(`jsonCombinations must be an Object not a ${inc_type} or null.`);;
+        }
+
         let allowedCombinationsRemaining = new Set();
         
         if (selectedCardIds.length === 0) {
@@ -2934,13 +3033,47 @@ export class ST1EGameTableUI extends GameTableUI {
             case "TELLUN":
                 return "Tellun Region";
             case "VALO":
-                return "Valo Region Region";
+                return "Valo Region";
             // 2E regions
             case "QO_NOS_SYSTEM":
                 return "Qo'noS Region";
             default:
                 return "";
         }
+    }
+
+    updateGameStats(gameState) {
+        var that = this;
+        $("#main").queue(
+            function (next) {
+                for (const player of gameState.players) {
+                    let playerId = player.playerId;
+                    let drawDeckSize = player.cardGroups["DRAW_DECK"].cardCount;
+                    let handSize = player.cardGroups["HAND"].cardCount;
+                    let discardSize = player.cardGroups["DISCARD"].cardCount;
+                    let removedSize = player.cardGroups["REMOVED"].cardCount;
+
+                    $("#deck" + that.getPlayerIndex(playerId)).text(drawDeckSize);
+                    $("#hand" + that.getPlayerIndex(playerId)).text(handSize);
+                    $("#discard" + that.getPlayerIndex(playerId)).text(discardSize);
+                    $("#removedPile" + that.getPlayerIndex(playerId)).text(removedSize);
+                }
+                next();
+            });
+    }
+
+    addNonMissionInPlayToClientRecursively(card, gameState) {
+        let spacelineIndex = getSpacelineIndexFromLocationId(card.locationId, gameState);
+        let attachedToCardId = card.attachedToCardId;
+        // Assumes that all missions in play already have a div
+        if (attachedToCardId != null && typeof attachedToCardId != "undefined") {
+            let attachedToCardDiv = getCardDivFromId(attachedToCardId);
+            if (attachedToCardDiv.length == 0) {
+                let attachedToCard = gameState.visibleCardsInGame[attachedToCardId];
+                this.addNonMissionInPlayToClientRecursively(attachedToCard, gameState);
+            }
+        }
+        this.animations.putNonMissionIntoPlay(card, card.owner, gameState, spacelineIndex, false);
     }
 
 }

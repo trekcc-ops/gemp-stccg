@@ -79,15 +79,12 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
                 Filters.atLocation(_location), Filters.not(Filters.your(player)));
     }
 
-    private OpenFireResult calculateOpenFireResult(Player player, DefaultGame cardGame) {
-        String playerId = player.getPlayerId();
+    private OpenFireResult calculateOpenFireResult(Player player) {
         int attackTotal = 0;
         for (PhysicalCard ship : _forces.get(player)) {
             attackTotal += ship.getBlueprint().getWeapons();
         }
         int defenseTotal = _targets.get(player).getBlueprint().getShields();
-        cardGame.sendMessage(playerId + " opens fire");
-        cardGame.sendMessage("ATTACK: " + attackTotal + ", DEFENSE: " + defenseTotal);
         if (attackTotal > defenseTotal * 2)
             return OpenFireResult.DIRECT_HIT;
         else if (attackTotal > defenseTotal)
@@ -154,12 +151,12 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
 
         if (!_openedFire) {
             _openedFire = true;
-            _openFireResults.put(_attackingPlayer, calculateOpenFireResult(_attackingPlayer, cardGame));
+            _openFireResults.put(_attackingPlayer, calculateOpenFireResult(_attackingPlayer));
         }
 
         if (!_returnedFire && _returningFire) {
             _returnedFire = true;
-            _openFireResults.put(_defendingPlayer, calculateOpenFireResult(_defendingPlayer, cardGame));
+            _openFireResults.put(_defendingPlayer, calculateOpenFireResult(_defendingPlayer));
         }
 
         if (!_damageApplied) {

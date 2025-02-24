@@ -10,7 +10,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.Collections;
+import java.util.List;
 
 public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
 
@@ -18,7 +18,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
     private final int _count;
 
     public PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(DefaultGame cardGame, Player performingPlayer, int count) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD_IN_PLAY_PILE);
         _count = count;
     }
 
@@ -41,10 +41,8 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
 
         while ((drawn < _count) && (!performingPlayer.getCardsInDrawDeck().isEmpty())) {
             PhysicalCard card = performingPlayer.getCardsInDrawDeck().getFirst();
-            cardGame.removeCardsFromZone(null, Collections.singleton(card));
-            cardGame.getGameState().addCardToZone(card, Zone.PLAY_PILE);
-            cardGame.sendMessage(card.getOwnerName() + " puts " + card.getCardLink() +
-                    " from the top of their draw deck on top of their play pile");
+            cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
+            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.PLAY_PILE);
             drawn++;
         }
 

@@ -36,7 +36,8 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
     @Override
     public Action nextAction(DefaultGame cardGame)
             throws PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException {
-        final String activePlayer = _actionOrder.getNextPlayer();
+        final String activePlayerName = _actionOrder.getNextPlayer();
+        Player activePlayer = cardGame.getPlayer(activePlayerName);
 
         final Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
                 _actionsEnvironment.getOptionalAfterTriggers(cardGame, activePlayer, _actionResults);
@@ -50,7 +51,7 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
                         _action, _actionOrder, _passCount + 1, _actionResults));
             }
         } else {
-            Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayer);
+            Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayerName);
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(decidingPlayer, "Optional responses", possibleActions,
                             cardGame) {

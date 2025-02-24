@@ -110,7 +110,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
 
         final PhysicalCard getItDone = newCardForGame("155_026", P1);
-        gameState.addCardToZone(getItDone, Zone.CORE);
+        gameState.addCardToZoneWithoutSendingToClient(getItDone, Zone.CORE);
         assertTrue(getItDone.isInPlay());
 
         autoSeedFacility();
@@ -120,15 +120,15 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         }
         assertEquals(3, wallaces.size());
 
-        gameState.addCardToZone(wallaces.get(0), Zone.DISCARD, EndOfPile.TOP); // Darian Wallace
-        gameState.addCardToZone(newCardForGame("156_010", P1), Zone.DISCARD, EndOfPile.TOP); // Surprise Party
-        gameState.addCardToZone(wallaces.get(1), Zone.DISCARD, EndOfPile.TOP); // Darian Wallace
-        gameState.addCardToZone(wallaces.get(2), Zone.DISCARD, EndOfPile.TOP); // Darian Wallace
-        gameState.addCardToZone(newCardForGame("156_010", P1), Zone.DISCARD, EndOfPile.TOP); // Surprise Party
-        gameState.addCardToZone(newCardForGame("156_010", P1), Zone.DISCARD, EndOfPile.TOP); // Surprise Party
-        gameState.addCardToZone(newCardForGame("101_236", P1), Zone.DISCARD, EndOfPile.TOP); // Simon Tarses
-        gameState.addCardToZone(newCardForGame("101_236", P1), Zone.DISCARD, EndOfPile.TOP); // Simon Tarses
-        gameState.addCardToZone(newCardForGame("101_236", P1), Zone.DISCARD, EndOfPile.TOP); // Simon Tarses
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(wallaces.get(0), Zone.DISCARD); // Darian Wallace
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("156_010", P1), Zone.DISCARD); // Surprise Party
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(wallaces.get(1), Zone.DISCARD); // Darian Wallace
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(wallaces.get(2), Zone.DISCARD); // Darian Wallace
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("156_010", P1), Zone.DISCARD); // Surprise Party
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("156_010", P1), Zone.DISCARD); // Surprise Party
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("101_236", P1), Zone.DISCARD); // Simon Tarses
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("101_236", P1), Zone.DISCARD); // Simon Tarses
+        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("101_236", P1), Zone.DISCARD); // Simon Tarses
 
         assertEquals(9, player1.getCardGroupCards(Zone.DISCARD).size());
 
@@ -162,7 +162,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         selectCards(P1, cardsToPlace);
 
         for (int i = 0; i < 5; i++) {
-            gameState.addCardToZone(newCardForGame("101_236", P1), Zone.HAND); // Simon Tarses
+            gameState.addCardToZoneWithoutSendingToClient(newCardForGame("101_236", P1), Zone.HAND); // Simon Tarses
         }
 
         assertNotNull(_userFeedback.getAwaitingDecision(P1));

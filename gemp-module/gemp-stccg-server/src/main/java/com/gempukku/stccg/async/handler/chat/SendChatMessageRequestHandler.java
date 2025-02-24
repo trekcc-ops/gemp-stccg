@@ -91,7 +91,7 @@ public class SendChatMessageRequestHandler implements UriRequestHandler {
                 //Need to preserve any commands being made
                 if (!newMsg.startsWith("/"))
                     newMsg = parseChatMessage(newMsg);
-                chatRoom.sendMessage(resourceOwner, newMsg);
+                chatRoom.sendChatMessage(resourceOwner, newMsg);
                 responseWriter.writeXmlOkResponse();
             }
         } catch (PrivateInformationException exp) {

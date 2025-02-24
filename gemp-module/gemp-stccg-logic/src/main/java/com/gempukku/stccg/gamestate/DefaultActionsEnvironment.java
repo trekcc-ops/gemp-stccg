@@ -3,7 +3,12 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.game.ActionOrderOfOperationException;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -63,33 +68,28 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, String playerId,
+    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, Player player,
                                                               Collection<? extends ActionResult> effectResults) {
         final Map<TopLevelSelectableAction, ActionResult> gatheredActions = new HashMap<>();
 
-        try {
-            if (effectResults != null) {
-                for (ActionResult actionResult : effectResults) {
-                    List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(
-                            cardGame.getGameState().getPlayer(playerId));
-                    if (actions != null) {
-                        for (TopLevelSelectableAction action : actions) {
-                            if (!actionResult.wasOptionalTriggerUsed(action)) {
-                                gatheredActions.put(action, actionResult);
-                            }
+        if (effectResults != null) {
+            for (ActionResult actionResult : effectResults) {
+                List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(player);
+                if (actions != null) {
+                    for (TopLevelSelectableAction action : actions) {
+                        if (!actionResult.wasOptionalTriggerUsed(action)) {
+                            gatheredActions.put(action, actionResult);
                         }
                     }
                 }
             }
-        } catch(PlayerNotFoundException exp) {
-            cardGame.sendErrorMessage(exp);
         }
 
         return gatheredActions;
     }
 
     @Override
-    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId,
+    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, Player player,
                                                                   Collection<? extends ActionResult> effectResults) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
 
@@ -97,8 +97,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (ActionResult actionResult : effectResults) {
                     List<TopLevelSelectableAction> actions =
-                            actionProxy.getOptionalAfterActions(playerId, actionResult);
-                    List<TopLevelSelectableAction> playableActions = getPlayableActions(cardGame, playerId, actions);
+                            actionProxy.getOptionalAfterActions(player.getPlayerId(), actionResult);
+                    List<TopLevelSelectableAction> playableActions = getPlayableActions(cardGame, player, actions);
                     result.addAll(playableActions);
                 }
             }
@@ -108,12 +108,11 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
 
-    private <T extends Action> List<T> getPlayableActions(DefaultGame cardGame, String playerId, Iterable<T> actions) {
+    private <T extends Action> List<T> getPlayableActions(DefaultGame cardGame, Player player, Iterable<T> actions) {
         List<T> result = new LinkedList<>();
         if (actions != null) {
             for (T action : actions) {
-                if (cardGame.getModifiersQuerying().canPerformAction(playerId, action) &&
-                        action.canBeInitiated(cardGame))
+                if (player.canPerformAction(cardGame, action))
                     result.add(action);
             }
         }
@@ -127,8 +126,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
         for (ActionProxy actionProxy : _actionProxies) {
             List<TopLevelSelectableAction> actions = actionProxy.getPhaseActions(player);
-            List<TopLevelSelectableAction> playableActions =
-                    getPlayableActions(cardGame, player.getPlayerId(), actions);
+            List<TopLevelSelectableAction> playableActions = getPlayableActions(cardGame, player, actions);
             result.addAll(playableActions);
         }
 
@@ -188,8 +186,51 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _createdActionMap.put(action.getActionId(), action);
     }
 
+    public void logCompletedActionNotInStack(Action action) {
+        logAction(action);
+        _performedActions.add(action);
+    }
+
     public Map<Integer, Action> getAllActions() {
         return _createdActionMap;
+    }
+
+    public void executeNextSubAction(DefaultGame cardGame) throws InvalidGameOperationException,
+            PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException {
+        Action currentAction = getCurrentAction();
+        Action nextAction = currentAction.nextAction(cardGame);
+
+        if (currentAction.isInProgress() && nextAction != null) {
+            addActionToStack(nextAction);
+        } else if (currentAction.wasCompleted()) {
+            removeCompletedActionFromStack(currentAction);
+            cardGame.sendActionResultToClient();
+        } else if (cardGame.isCarryingOutEffects()) {
+            throw new InvalidGameLogicException("Unable to process action");
+        }
+
+    }
+
+    public void carryOutPendingActions(DefaultGame cardGame) throws PlayerNotFoundException,
+            InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
+        Set<ActionResult> actionResults = consumeEffectResults();
+        for (ActionResult result : actionResults) {
+            result.createOptionalAfterTriggerActions(cardGame);
+        }
+        if (actionResults.isEmpty()) {
+            if (hasNoActionsInProgress())
+                try {
+                    cardGame.continueCurrentProcess();
+                    cardGame.sendActionResultToClient();
+                } catch(InvalidGameLogicException exp) {
+                    cardGame.sendErrorMessage(exp);
+                }
+            else {
+                executeNextSubAction(cardGame);
+            }
+        } else {
+            addActionToStack(new PlayOutEffectResults(cardGame, actionResults));
+        }
     }
 
 }

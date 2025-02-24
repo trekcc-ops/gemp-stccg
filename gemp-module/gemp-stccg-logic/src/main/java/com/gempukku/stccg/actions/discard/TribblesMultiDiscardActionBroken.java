@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.discard;
 
-import com.gempukku.stccg.TextUtils;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,33 +16,31 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 
-public class DiscardCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class TribblesMultiDiscardActionBroken extends ActionyAction implements TopLevelSelectableAction {
+
+    /* TODO - There is a bug in this class, because each individual discard action is not created as a
+        separate action. */
 
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardTarget;
+    private Collection<PhysicalCard> _cardsDiscarded; // may not be initialized
 
-    public DiscardCardAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
-                             SelectVisibleCardAction selectAction) {
+    public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
+                                            SelectVisibleCardAction selectAction) {
         super(cardGame, performingPlayer, "Discard", ActionType.DISCARD);
         _performingCard = performingCard;
         _cardTarget = new SelectCardsResolver(selectAction);
     }
 
 
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, PhysicalCard cardToDiscard) {
-        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
-        _cardTarget = new FixedCardResolver(cardToDiscard);
-        _performingCard = performingCard;
-    }
-
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer,
-                             Collection<PhysicalCard> cardsToDiscard) {
+    public TribblesMultiDiscardActionBroken(PhysicalCard performingCard, Player performingPlayer,
+                                            Collection<PhysicalCard> cardsToDiscard) {
         super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new FixedCardsResolver(cardsToDiscard);
         _performingCard = performingCard;
     }
 
-    public DiscardCardAction(PhysicalCard performingCard, Player performingPlayer, CardFilter cardFilter) {
+    public TribblesMultiDiscardActionBroken(PhysicalCard performingCard, Player performingPlayer, CardFilter cardFilter) {
         super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
@@ -69,20 +68,17 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
             }
         }
 
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
         Collection<PhysicalCard> cardsToDiscard = _cardTarget.getCards(cardGame);
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(cardGame, performingPlayer, cardsToDiscard);
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, cardsToDiscard);
         for (PhysicalCard cardToDiscard : cardsToDiscard) {
             if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();
             }
-            gameState.addCardToZone(cardToDiscard, Zone.DISCARD);
+            gameState.addCardToZoneWithoutSendingToClient(cardToDiscard, Zone.DISCARD);
             cardGame.getActionsEnvironment().emitEffectResult(
                     new DiscardCardFromPlayResult(_performingCard, cardToDiscard));
         }
-        cardGame.sendMessage(_performingPlayerId + " discards " + TextUtils.getConcatenatedCardLinks(cardsToDiscard));
         setAsSuccessful();
         return getNextAction();
     }
@@ -91,4 +87,11 @@ public class DiscardCardAction extends ActionyAction implements TopLevelSelectab
     public int getCardIdForActionSelection() {
         return _performingCard.getCardId();
     }
+
+    @JsonProperty("targetCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
+    private Collection<PhysicalCard> cardsDiscarded() {
+        return _cardsDiscarded;
+    }
+
 }

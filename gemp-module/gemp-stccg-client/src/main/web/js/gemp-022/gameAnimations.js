@@ -1,6 +1,7 @@
 import Card from "./jCards.js";
-import { getCardDivFromId } from "./jCards.js";
+import { getCardDivFromId, createSimpleCardDiv } from "./jCards.js";
 import { layoutCardElem } from "./jCardGroup.js";
+import { getFriendlyPhaseName } from "./common.js";
 
 export default class GameAnimations {
     game;
@@ -28,14 +29,14 @@ export default class GameAnimations {
         if (animate) {
             var that = this;
 
-            var participantId = json.participantId;
-            var cardId = json.cardId;
+            let participantId = json.participantId;
+            let cardId = json.cardId;
 
             // Play-out game event animation only if it's not the player who initiated it
             if (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
                 $("#main").queue(
                     function (next) {
-                        var cardDiv = getCardDivFromId(cardId);
+                        let cardDiv = getCardDivFromId(cardId);
                         if (cardDiv.length > 0) {
                             $(".borderOverlay", cardDiv)
                                 .switchClass("borderOverlay", "highlightBorderOverlay", that.getAnimationLength(that.cardActivatedDuration / 6))
@@ -57,25 +58,29 @@ export default class GameAnimations {
         if (animate) {
             var that = this;
 
-            var participantId = element.getAttribute("participantId");
-            var blueprintId = element.getAttribute("blueprintId");
-            var imageUrl = element.getAttribute("imageUrl");
+            let participantId = element.getAttribute("participantId");
+            let blueprintId = element.getAttribute("blueprintId");
+            let imageUrl = element.getAttribute("imageUrl");
 
             // Play-out game event animation only if it's not the player who initiated it
             if (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
-                var card = new Card(blueprintId, "ANIMATION", "anim", participantId, imageUrl);
-                var cardDiv = createSimpleCardDiv(card.imageUrl);
+                let zone = "ANIMATION";
+                let cardId = "anim";
+                let emptyLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
+                let cardDiv = createSimpleCardDiv(card.imageUrl);
 
                 $("#main").queue(
                     function (next) {
                         cardDiv.data("card", card);
                         $("#main").append(cardDiv);
 
-                        var gameWidth = $("#main").width();
-                        var gameHeight = $("#main").height();
+                        let gameWidth = $("#main").width();
+                        let gameHeight = $("#main").height();
 
-                        var cardHeight = (gameHeight / 2);
-                        var cardWidth = card.getWidthForHeight(cardHeight);
+                        let cardHeight = (gameHeight / 2);
+                        let cardWidth = card.getWidthForHeight(cardHeight);
 
                         $(cardDiv).css(
                             {
@@ -125,34 +130,37 @@ export default class GameAnimations {
         if (animate) {
             var that = this;
 
-            var participantId = element.getAttribute("participantId");
-            var blueprintId = element.getAttribute("blueprintId");
-            var imageUrl = element.getAttribute("imageUrl");
-            var targetCardIds = element.getAttribute("otherCardIds").split(",");
+            let participantId = element.getAttribute("participantId");
+            let blueprintId = element.getAttribute("blueprintId");
+            let imageUrl = element.getAttribute("imageUrl");
+            let targetCardIds = element.getAttribute("otherCardIds").split(",");
 
             // Play-out card affects card animation only if it's not the player who initiated it
             if (this.game.spectatorMode || this.game.replayMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
                 $("#main").queue(
                     function (next) {
-                        for (var i = 0; i < targetCardIds.length; i++) {
-                            var targetCardId = targetCardIds[i];
+                        for (let i = 0; i < targetCardIds.length; i++) {
+                            let targetCardId = targetCardIds[i];
+                            let zone = "ANIMATION";
+                            let cardId = `anim${i}`;
+                            let emptyLocationIndex = "";
+                            let upsideDown = false;
+                            let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
+                            let cardDiv = createSimpleCardDiv(card.imageUrl);
 
-                            var card = new Card(blueprintId, "ANIMATION", "anim" + i, participantId, imageUrl);
-                            var cardDiv = createSimpleCardDiv(card.imageUrl);
-
-                            var targetCard = getCardDivFromId(targetCardId);
+                            let targetCard = getCardDivFromId(targetCardId);
                             if (targetCard.length > 0) {
                                 cardDiv.data("card", card);
                                 $("#main").append(cardDiv);
 
                                 targetCard = targetCard[0];
-                                var targetCardWidth = $(targetCard).width();
-                                var targetCardHeight = $(targetCard).height();
+                                let targetCardWidth = $(targetCard).width();
+                                let targetCardHeight = $(targetCard).height();
 
-                                var shadowStartPosX;
-                                var shadowStartPosY;
-                                var shadowWidth;
-                                var shadowHeight;
+                                let shadowStartPosX;
+                                let shadowStartPosY;
+                                let shadowWidth;
+                                let shadowHeight;
                                 if (card.horizontal != $(targetCard).data("card").horizontal) {
                                     shadowWidth = targetCardHeight;
                                     shadowHeight = targetCardWidth;
@@ -194,7 +202,7 @@ export default class GameAnimations {
                     function (next) {
                         $(".card").each(
                             function () {
-                                var cardData = $(this).data("card");
+                                let cardData = $(this).data("card");
                                 if (cardData.zone == "ANIMATION") {
                                     $(this).remove();
                                 }
@@ -206,69 +214,131 @@ export default class GameAnimations {
         }
     }
 
-    putCardIntoPlay(json, animate, eventType) {
-        var participantId = json.participantId;
-        var cardId = json.cardId;
-        var zone = json.zone;
-        var imageUrl = json.imageUrl;
-        let region = json.region;
-        var quadrant = json.quadrant;
-        var locationIndex = json.locationIndex;
-
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                var blueprintId = json.blueprintId;
-                var imageUrl = json.imageUrl;
-                var targetCardId = json.targetCardId;
-                var controllerId = json.controllerId;
-
-                if (zone == "SPACELINE") {
-                    if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
-                        that.game.addSharedMission(locationIndex, quadrant, region);
-                    } else {
-                        that.game.addLocationDiv(locationIndex, quadrant, region);
+    drawCard(performingPlayerId, gameState) {
+        this.game.updateGameStats(gameState); // update card counts in draw decks
+        for (const player of gameState.players) {
+            if (player.playerId == performingPlayerId && player.playerId == this.game.bottomPlayerId) {
+                for (const cardId of player.cardGroups["HAND"].cardIds) {
+                    let cardDiv = getCardDivFromId(cardId);
+                    if (cardDiv.length == 0) {
+                        let card = gameState.visibleCardsInGame[cardId];
+                        this.addCardToHiddenZone(card, "HAND", performingPlayerId);
                     }
                 }
+            }
+        }
+    }
 
-                if (controllerId != null)
-                    participantId = controllerId;
+    addCardToHiddenZone(cardJson, zone, zoneOwner) {
+        // Adding card to discard, hand, removed, or draw deck
+        console.log("calling addCardToHiddenZone");
+        var that = this;
+        let cardId = cardJson.cardId;
+        let imageUrl = cardJson.imageUrl;
+        let blueprintId = cardJson.blueprintId;
+        let locationIndex = "-1";
+        let upsideDown = false;
+        let controllerId = zoneOwner;
 
-                // If card is listed as public knowledge in server -> common/filterable/Zone.java
-                // and the card belongs to the opponent, inform UI to invert it.
-                let visible_opponent_zones = [
-                    "CORE",
-                    "SPACELINE",
-                    "AT_LOCATION",
-                    "ATTACHED"
-                ];
+        $("#main").queue(
+            function (next) {
 
-                if (visible_opponent_zones.includes(zone) &&
-                    (participantId != that.game.bottomPlayerId)
-                ) {
-                    var upsideDown = true;
-                } else {
-                    var upsideDown = false;
-                }
-
-                var card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
-                var cardDiv = that.game.createCardDivWithData(card, null);
+                let card = new Card(blueprintId, zone, cardId, controllerId, imageUrl, locationIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card, null);
 
                 if (zone == "DISCARD")
-                    that.game.discardPileDialogs[participantId].append(cardDiv);
-                else if (zone == "ADVENTURE_DECK") // Todo - Safe to remove? Have removed the ADVENTURE_DECK zone from server
-                    that.game.adventureDeckDialogs[participantId].append(cardDiv);
+                    that.game.discardPileDialogs[controllerId].append(cardDiv);
+                else if (zone == "DRAW_DECK")
+                    that.game.miscPileDialogs[controllerId].append(cardDiv);
                 else if (zone == "REMOVED")
-                    that.game.removedPileDialogs[participantId].append(cardDiv);
-                else if (zone == "DRAW_DECK") {
-                    that.game.miscPileDialogs[participantId].append(cardDiv);
-                    animate = false;
-                }
+                    that.game.removedPileDialogs[controllerId].append(cardDiv);
                 else
                     $("#main").append(cardDiv);
+                next();
+            });
 
-                if (targetCardId != null)
-                    that.attachCardDivToTargetCardId(cardDiv, targetCardId);
+        $("#main").queue(
+            function (next) {
+                that.game.layoutGroupWithCard(cardId);
+                next();
+            });
+    }
+
+    putMissionIntoPlay(cardJson, animate, spacelineIndex, firstMissionAtLocation) {
+        // int spacelineIndex: index of mission's location in game state spaceline array
+        // boolean firstMissionAtLocation: true if bottom or only mission card; false if card is in top of another mission card
+        console.log("Calling putMissionIntoPlay");
+        console.log(cardJson);
+        console.log(spacelineIndex);
+        var that = this;
+        let region = cardJson.region;
+        let quadrant = cardJson.quadrant;
+        let blueprintId = cardJson.blueprintId;
+        let zone = "SPACELINE";
+        let cardId = cardJson.cardId;
+        let participantId = cardJson.owner;
+        let imageUrl = cardJson.imageUrl;
+        let locationIndex = spacelineIndex.toString();
+        let upsideDown = (participantId != that.game.bottomPlayerId);
+        let thisGame = this.game;
+
+        $("#main").queue(
+            function (next) {
+
+                if (firstMissionAtLocation) {
+                    console.log("Adding mission " + cardJson.title + " at location index " + spacelineIndex);
+                    thisGame.addLocationDiv(locationIndex, quadrant, region);
+                } else {
+                    console.log("Adding mission card " + cardJson.title + " to location index " + spacelineIndex);
+                    thisGame.addSharedMission(locationIndex, quadrant, region);
+                }
+
+                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
+                let cardDiv = thisGame.createCardDivWithData(card, null);
+
+                $("#main").append(cardDiv);
+                next();
+            });
+
+        $("#main").queue(
+            function (next) {
+                thisGame.layoutGroupWithCard(cardId);
+                next();
+            });
+
+        if (animate && (thisGame.spectatorMode || thisGame.replayMode || (participantId != thisGame.bottomPlayerId))) {
+            this.animateCardPlay(cardId);
+        }
+    }
+
+    putNonMissionIntoPlay(cardJson, performingPlayerId, gameState, spacelineIndex, animate) {
+
+        var that = this;
+        let cardId = cardJson.cardId;
+        let imageUrl = cardJson.imageUrl;
+        let blueprintId = cardJson.blueprintId;
+        let attachedToCardId = cardJson.attachedToCardId;
+        let upsideDown = (performingPlayerId != that.game.bottomPlayerId);
+
+        let zone;
+        if (attachedToCardId != null) {
+            zone = "ATTACHED";
+        } else if (spacelineIndex.toString() === "-1") {
+            zone = "CORE";
+        } else {
+            zone = "AT_LOCATION";
+        }
+
+        $("#main").queue(
+            function (next) {
+
+                let card = new Card(blueprintId, zone, cardId, performingPlayerId, imageUrl, spacelineIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card, null);
+
+                $("#main").append(cardDiv);
+
+                if (attachedToCardId != null)
+                    that.attachCardDivToTargetCardId(cardDiv, attachedToCardId);
                 next();
             });
 
@@ -278,118 +348,122 @@ export default class GameAnimations {
                 next();
             });
 
-        if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))
-            && zone != "DISCARD" && zone != "HAND" && zone != "DRAW_DECK") {
-            var final_position = {};
-
-            $("#main").queue(
-                // Display the card in the center of the screen
-                function (next) {
-                    // Calculate expected final position.
-                    var cardDiv = getCardDivFromId(cardId);
-                    var card = cardDiv.data("card");
-                    var pos = cardDiv.position();
-                    let card_img = $(cardDiv).children(".card_img").first();
-
-                    final_position["left"] = pos.left;
-                    final_position["top"] = pos.top;
-                    final_position["width"] = cardDiv.width();
-                    final_position["height"] = cardDiv.height();
-                    final_position["z-index"] = cardDiv.css("z-index");
-                    final_position["upside-down"] = card.upsideDown;
-
-                    if (final_position["upside-down"]) {
-                        // Don't animate a card upside down even if that's set. Class is restored in final step.
-                        $(card_img).removeClass("upside-down");
-                    }
-                    
-
-                    // Now we begin the animation
-                    var gameWidth = $("#main").width();
-                    var gameHeight = $("#main").height();
-
-                    var cardHeight = (gameHeight / 2);
-                    var cardWidth = card.getWidthForHeight(cardHeight);
-
-                    $(cardDiv).css(
-                        {
-                            position:"absolute",
-                            left: "" + (gameWidth / 2 - cardWidth / 4) + "px",
-                            top: "" + (gameHeight * (3 / 8)) + "px",
-                            width: "" + (cardWidth / 2) + "px",
-                            height: "" + (cardHeight / 2) + "px",
-                            "z-index":100,
-                            opacity:0});
-                    
-                    $(cardDiv).animate(
-                        {
-                            opacity:1},
-                        {
-                            duration:that.getAnimationLength(that.putCardIntoPlayDuration / 8),
-                            easing:"linear",
-                            step:function (now, fx) {
-                                    layoutCardElem(cardDiv,
-                                    (gameWidth / 2 - cardWidth / 4) - now * (cardWidth / 4),
-                                    gameHeight * (3 / 8) - now * (gameHeight / 8),
-                                    cardWidth / 2 + now * (cardWidth / 2),
-                                    cardHeight / 2 + now * (cardHeight / 2), 100);
-                            },
-                            complete:next});
-                }).queue(
-                function (next) {
-                    // Hold display in the center of the screen.
-                    setTimeout(next, that.getAnimationLength(that.putCardIntoPlayDuration * (5 / 8)));
-                }).queue(
-                function (next) {
-                    // Animate the card towards the final position on the play mat.
-                    var cardDiv = getCardDivFromId(cardId);
-                    $(cardDiv).animate(
-                        // properties
-                        {
-                            left:final_position["left"],
-                            top:final_position["top"],
-                            width:final_position["width"],
-                            height:final_position["height"]
-                        },
-                        // duration
-                        that.getAnimationLength(that.putCardIntoPlayDuration / 4),
-                        // easing
-                        "linear",
-                        // complete
-                        next
-                        );
-                }).queue(
-                function (next) {
-                    // Set final resting values for the card, including upside-down status.
-                    // TODO: This is required in order to ensure the border overlay and
-                    //       token overlay display correctly after the animation.
-                    //       This may not be necessary if the overlays are contained inside the
-                    //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
-                    var cardDiv = getCardDivFromId(cardId);
-                    let card_img = $(cardDiv).children(".card_img").first();
-                    layoutCardElem(cardDiv,
-                        final_position["left"],
-                        final_position["top"],
-                        final_position["width"],
-                        final_position["height"],
-                        final_position["z-index"]);
-                    
-                    if (final_position["upside-down"]) {
-                        $(card_img).addClass("upside-down");
-                    }
-                    next();
-                });
+        if (animate && (this.game.spectatorMode || this.game.replayMode || (performingPlayerId != this.game.bottomPlayerId))) {
+            this.animateCardPlay(cardId);
         }
     }
 
-    updateCardImage(json) {
+    animateCardPlay(cardId) {
+        var that = this;
+        let final_position = {};
+
+        $("#main").queue(
+            // Display the card in the center of the screen
+            function (next) {
+                // Calculate expected final position.
+                let cardDiv = getCardDivFromId(cardId);
+                let card = cardDiv.data("card");
+                let pos = cardDiv.position();
+                let card_img = $(cardDiv).children(".card_img").first();
+
+                final_position["left"] = pos.left;
+                final_position["top"] = pos.top;
+                final_position["width"] = cardDiv.width();
+                final_position["height"] = cardDiv.height();
+                final_position["z-index"] = cardDiv.css("z-index");
+                final_position["upside-down"] = card.upsideDown;
+
+                if (final_position["upside-down"]) {
+                    // Don't animate a card upside down even if that's set. Class is restored in final step.
+                    $(card_img).removeClass("upside-down");
+                }
+
+
+                // Now we begin the animation
+                let gameWidth = $("#main").width();
+                let gameHeight = $("#main").height();
+
+                let cardHeight = (gameHeight / 2);
+                let cardWidth = card.getWidthForHeight(cardHeight);
+
+                $(cardDiv).css(
+                    {
+                        position:"absolute",
+                        left: "" + (gameWidth / 2 - cardWidth / 4) + "px",
+                        top: "" + (gameHeight * (3 / 8)) + "px",
+                        width: "" + (cardWidth / 2) + "px",
+                        height: "" + (cardHeight / 2) + "px",
+                        "z-index":100,
+                        opacity:0});
+
+                $(cardDiv).animate(
+                    {
+                        opacity:1},
+                    {
+                        duration:that.getAnimationLength(that.putCardIntoPlayDuration / 8),
+                        easing:"linear",
+                        step:function (now, fx) {
+                                layoutCardElem(cardDiv,
+                                (gameWidth / 2 - cardWidth / 4) - now * (cardWidth / 4),
+                                gameHeight * (3 / 8) - now * (gameHeight / 8),
+                                cardWidth / 2 + now * (cardWidth / 2),
+                                cardHeight / 2 + now * (cardHeight / 2), 100);
+                        },
+                        complete:next});
+            }).queue(
+            function (next) {
+                // Hold display in the center of the screen.
+                setTimeout(next, that.getAnimationLength(that.putCardIntoPlayDuration * (5 / 8)));
+            }).queue(
+            function (next) {
+                // Animate the card towards the final position on the play mat.
+                let cardDiv = getCardDivFromId(cardId);
+                $(cardDiv).animate(
+                    // properties
+                    {
+                        left:final_position["left"],
+                        top:final_position["top"],
+                        width:final_position["width"],
+                        height:final_position["height"]
+                    },
+                    // duration
+                    that.getAnimationLength(that.putCardIntoPlayDuration / 4),
+                    // easing
+                    "linear",
+                    // complete
+                    next
+                    );
+            }).queue(
+            function (next) {
+                // Set final resting values for the card, including upside-down status.
+                // TODO: This is required in order to ensure the border overlay and
+                //       token overlay display correctly after the animation.
+                //       This may not be necessary if the overlays are contained inside the
+                //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
+                let cardDiv = getCardDivFromId(cardId);
+                let card_img = $(cardDiv).children(".card_img").first();
+                layoutCardElem(cardDiv,
+                    final_position["left"],
+                    final_position["top"],
+                    final_position["width"],
+                    final_position["height"],
+                    final_position["z-index"]);
+
+                if (final_position["upside-down"]) {
+                    $(card_img).addClass("upside-down");
+                }
+                next();
+            });
+    }
+
+    updateCardImage(cardData) {
             $("#main").queue(
                 function (next) {
-                    var cardId = json.cardId;
-                    var imageUrl = json.imageUrl;
-                    var cardDiv = getCardDivFromId(cardId);
-                    images = document.getElementsByClassName("card_img_"+cardId);
-                    for (var i = 0; i < images.length; i++) {
+                    let cardId = cardData.cardId;
+                    let imageUrl = cardData.imageUrl;
+                    let cardDiv = getCardDivFromId(cardId);
+                    let images = document.getElementsByClassName("card_img_"+cardId);
+                    for (let i = 0; i < images.length; i++) {
                         images[i].src = imageUrl;
                     }
                     if (cardDiv.data("card") != null)
@@ -398,41 +472,26 @@ export default class GameAnimations {
                 });
     }
 
-    moveCardInPlay(json) {
+    beamOrWalkCard(cardJson, spacelineIndex) {
         var that = this;
         $("#main").queue(
             function (next) {
-                that.cardId = json.cardId;
-                var zone = json.zone;
-                var targetCardId = json.targetCardId;
-                var participantId = json.participantId;
-                var controllerId = json.controllerId;
-                var locationIndex = json.locationIndex;
+                that.cardId = cardJson.cardId;
+                let attachedToCardId = cardJson.attachedToCardId;
 
-                if (controllerId != null)
-                    participantId = controllerId;
-
-                var card = getCardDivFromId(that.cardId);
-                var cardData = card.data("card");
-                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
-                if (cardData.zone == "ATTACHED")
-                    cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
-                else
-                    cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
+                let card = getCardDivFromId(that.cardId);
+                let cardData = card.data("card");
+                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
 
                 // Remove from where it was already attached
                 that.removeFromAttached(that.cardId);
 
-                var card = getCardDivFromId(that.cardId);
-                var cardData = card.data("card");
                 // move to new zone
-                cardData.zone = zone;
-                cardData.owner = participantId;
-                cardData.locationIndex = locationIndex;
+                cardData.zone = "ATTACHED";
+                cardData.owner = cardJson.owner;
+                cardData.locationIndex = spacelineIndex;
                 that.cardData = cardData;
-
-                if (targetCardId != null)
-                    that.attachCardDivToTargetCardId(card, targetCardId);
+                that.attachCardDivToTargetCardId(card, attachedToCardId);
                 next();
             });
 
@@ -445,35 +504,129 @@ export default class GameAnimations {
                 });
     }
 
-    removeCardFromPlay(json, animate) {
+    flyShip(cardJson, spacelineIndex) {
         var that = this;
-        var cardRemovedIds = json.otherCardIds.split(",");
-        var participantId = json.participantId;
+        $("#main").queue(
+            function (next) {
+                that.cardId = cardJson.cardId;
 
-        if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))) {
+                let card = getCardDivFromId(that.cardId);
+                let cardData = card.data("card");
+                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
+
+                // move to new zone
+                cardData.locationIndex = spacelineIndex;
+                that.cardData = cardData;
+                next();
+            });
+
             $("#main").queue(
                 function (next) {
-                    $(".card:cardId(" + cardRemovedIds + ")")
-                        .animate(
-                        {
-                            opacity:0},
-                        {
-                            duration:that.getAnimationLength(that.removeCardFromPlayDuration),
-                            easing:"easeOutQuart",
-                            queue:false});
-                    setTimeout(next, that.getAnimationLength(that.removeCardFromPlayDuration));
+                    that.game.layoutGroupWithCard(that.cardId);
+                    that.cardData.oldGroup.layoutCards();
+                    that.cardData.oldGroup = null;
+                    next();
+                });
+    }
+
+    dockShip(cardJson) {
+        var that = this;
+        $("#main").queue(
+            function (next) {
+                that.cardId = cardJson.cardId;
+                let attachedToCardId = cardJson.attachedToCardId;
+
+                let card = getCardDivFromId(that.cardId);
+                let cardData = card.data("card");
+                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
+
+                // move to new zone
+                cardData.zone = "ATTACHED";
+                that.cardData = cardData;
+                that.attachCardDivToTargetCardId(card, attachedToCardId);
+
+                next();
+            });
+
+            $("#main").queue(
+                function (next) {
+                    that.game.layoutGroupWithCard(that.cardId);
+                    that.cardData.oldGroup.layoutCards();
+                    that.cardData.oldGroup = null;
+                    next();
+                });
+    }
+
+    undockShip(json) {
+        var that = this;
+        $("#main").queue(
+            function (next) {
+                that.cardId = json.cardId;
+
+                let card = getCardDivFromId(that.cardId);
+                let cardData = card.data("card");
+                cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
+
+                // Remove from where it was already attached
+                that.removeFromAttached(that.cardId);
+
+                card = getCardDivFromId(that.cardId);
+                cardData = card.data("card");
+                // move to new zone
+                cardData.zone = "AT_LOCATION";
+                that.cardData = cardData;
+                next();
+            });
+
+            $("#main").queue(
+                function (next) {
+                    that.game.layoutGroupWithCard(that.cardId);
+                    that.cardData.oldGroup.layoutCards();
+                    that.cardData.oldGroup = null;
+                    next();
+                });
+    }
+
+    removeCardFromPlay(cardRemovedIds, performingPlayerId, animate) {
+        // This method may be called on cards that are not "in play" but visible on the board (like those in hands)
+        var that = this;
+        console.log("Calling removeCardFromPlay");
+        console.log(cardRemovedIds);
+        console.log(performingPlayerId);
+        console.log(animate);
+
+        if (animate && (this.game.spectatorMode || this.game.replayMode || (performingPlayerId != this.game.bottomPlayerId))) {
+            $("#main").queue(
+                function (next) {
+                    for (const cardId of cardRemovedIds) {
+                        console.log("Removing card with cardId '" + cardId + "'");
+                        let cardDiv = getCardDivFromId(cardId);
+                        if (cardDiv.length > 0) {
+                            cardDiv.animate(
+                                {
+                                    opacity:0
+                                },
+                                {
+                                    duration:that.getAnimationLength(that.removeCardFromPlayDuration),
+                                    easing:"easeOutQuart",
+                                    queue:false
+                                }
+                            );
+                        }
+                        setTimeout(next, that.getAnimationLength(that.removeCardFromPlayDuration));
+                    }
                 });
         }
         $("#main").queue(
             function (next) {
-                for (var i = 0; i < cardRemovedIds.length; i++) {
-                    var cardId = cardRemovedIds[i];
-                    var card = getCardDivFromId(cardId);
+                for (let i = 0; i < cardRemovedIds.length; i++) {
+                    let cardId = cardRemovedIds[i];
+                    let card = getCardDivFromId(cardId);
 
                     if (card.length > 0) {
-                        var cardData = card.data("card");
+                        let cardData = card.data("card");
                         if (cardData.zone == "ATTACHED") {
-                            removeFromAttached(cardId);
+                            that.removeFromAttached(cardId);
                         }
 
                         card.remove();
@@ -492,12 +645,43 @@ export default class GameAnimations {
         }
     }
 
-    gamePhaseChange(json, animate) {
+    gamePhaseChange(gameState) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var phase = json.phase;
-                $("#currentPhase").text(phase);
+                let newPhase = gameState.currentPhase;
+                let newPhaseName = getFriendlyPhaseName(newPhase);
+                let uiPlayer = that.game.bottomPlayerId;
+                let currentPhaseName = $("#currentPhase").text();
+                if (that.game.allPlayerIds.includes(uiPlayer)) {
+                    if (newPhase === "SEED_MISSION" && newPhaseName != currentPhaseName) {
+                        // if initializing mission seed phase
+                        for (const player of gameState.players) {
+                            if (player.playerId === uiPlayer) {
+                                let missionPileCardIds = player.cardGroups["MISSIONS_PILE"].cardIds;
+                                for (let i = missionPileCardIds.length - 1; i >= 0; i--) {
+                                    let card = gameState.visibleCardsInGame[missionPileCardIds[i]];
+                                    that.addCardToHiddenZone(card, "MISSIONS_PILE", uiPlayer);
+                                }
+                            }
+                        }
+                    } else if ((newPhase === "SEED_DILEMMA" || newPhase === "SEED_FACILITY") &&
+                            currentPhaseName != "Facility seed phase" && currentPhaseName != "Dilemma seed phase") {
+                            /* All dilemma and facility phase cards are put in the hand group at the beginning of
+                                the dilemma seed phase, so this shouldn't be run again when the phase moves from
+                                dilemma phase to facility phase. */
+                        for (const player of gameState.players) {
+                            if (player.playerId === uiPlayer) {
+                                let seedDeckCardIds = player.cardGroups["SEED_DECK"].cardIds;
+                                for (const cardId of seedDeckCardIds) {
+                                    let card = gameState.visibleCardsInGame[cardId];
+                                    that.addCardToHiddenZone(card, "SEED_DECK", uiPlayer);
+                                }
+                            }
+                        }
+                    }
+                }
+                $("#currentPhase").text(newPhaseName);
                 next();
             });
     }
@@ -506,7 +690,7 @@ export default class GameAnimations {
         var that = this;
         $("#main").queue(
             function (next) {
-                var message = json.tribbleSequence;
+                let message = json.tribbleSequence;
                 // if the TribbleSequence object exists, checked via length (lol jQuery), fill it with the phase.
                 if ($("#tribbleSequence").length ) {
                     $("#tribbleSequence").html("Next Tribble in sequence:<b>" + message + "</b>");
@@ -519,8 +703,8 @@ export default class GameAnimations {
         var that = this;
         $("#main").queue(
             function (next) {
-                var playerId = json.participantId;
-                var playerIndex = that.game.getPlayerIndex(playerId);
+                let playerId = json.playerOrder.currentPlayer;
+                let playerIndex = that.game.getPlayerIndex(playerId);
                 that.game.currentPlayerId = playerId;
                 $(".player").each(function (index) {
                     if (index == playerIndex)
@@ -536,56 +720,6 @@ export default class GameAnimations {
                     next();
                 });
         }
-    }
-
-    playerScore(json, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                var participantId = json.participantId;
-                var score = json.score;
-
-                if (that.game.playerScores == null)
-                    that.game.playerScores = new Array();
-
-                var index = that.game.getPlayerIndex(participantId);
-                that.game.playerScores[index] = score;
-
-                next();
-            });
-    }
-
-    gameStats(json, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                var playerZones = json.playerZones;
-                for (var i = 0; i < playerZones.length; i++) {
-                    var playerZone = playerZones[i];
-
-                    var playerId = playerZone.playerId;
-                    var hand = playerZone.hand;
-                    var discard = playerZone.discard;
-                    var deck = playerZone.drawDeck;
-                    var removed = playerZone.removed;
-
-                    $("#deck" + that.game.getPlayerIndex(playerId)).text(deck);
-                    $("#hand" + that.game.getPlayerIndex(playerId)).text(hand);
-                    $("#discard" + that.game.getPlayerIndex(playerId)).text(discard);
-                    $("#removedPile" + that.game.getPlayerIndex(playerId)).text(removed);
-                }
-
-                var playerScores = json.playerScores;
-                for (var i = 0; i < playerScores.length; i++) {
-                    var playerScore = playerScores[i];
-                    var playerId = playerScore.playerId;
-                    var score = playerScore.score;
-
-                    $("#score" + that.game.getPlayerIndex(playerId)).text("SCORE " + Number(score).toLocaleString("en-US"));
-                }
-
-                next();
-            });
     }
 
     message(json, animate) {
@@ -616,7 +750,7 @@ export default class GameAnimations {
         var that = this;
         $("#main").queue(
             function (next) {
-                var decisionType = decision.decisionType;
+                let decisionType = decision.decisionType;
                 if (decisionType === "INTEGER") {
                     that.game.integerDecision(decision);
                 } else if (decisionType === "MULTIPLE_CHOICE") {
@@ -680,9 +814,9 @@ export default class GameAnimations {
             // TODO - This can probably be greatly simplified now that "attachedToCard" has been created, but not messing with it for now
         $(".card").each(
             function () {
-                var cardData = $(this).data("card");
-                var index = -1;
-                for (var i = 0; i < cardData.attachedCards.length; i++)
+                let cardData = $(this).data("card");
+                let index = -1;
+                for (let i = 0; i < cardData.attachedCards.length; i++)
                     if (cardData.attachedCards[i].data("card").cardId == cardId) {
                         index = i;
                         break;
@@ -696,7 +830,7 @@ export default class GameAnimations {
     }
 
     attachCardDivToTargetCardId(cardDiv, targetCardId) {
-        var targetCardData = getCardDivFromId(targetCardId).data("card");
+        let targetCardData = getCardDivFromId(targetCardId).data("card");
         targetCardData.attachedCards.push(cardDiv);
         cardDiv.data("card").attachedToCard = targetCardData;
     }

@@ -1,6 +1,7 @@
 import { openSizeDialog } from "./common.js";
 import NormalCardGroup from './jCardGroup.js';
 import { createCardDiv } from "./jCards.js";
+import Card from "./jCards.js";
 
 export default function deliveryService(xml) {
     var deliveryDialogs = {};
@@ -46,28 +47,32 @@ export default function deliveryService(xml) {
                     });
             }
 
-            var packs = collection.getElementsByTagName("pack");
-            for (var j = 0; j < packs.length; j++) {
-                var packElem = packs[j];
-                var blueprintId = packElem.getAttribute("blueprintId");
-                var count = packElem.getAttribute("count");
-                var imageUrl = packElem.getAttribute("imageUrl");
-                var card = new Card(blueprintId, "delivery", "deliveryPack" + i, "player", imageUrl);
+            let packs = collection.getElementsByTagName("pack");
+            for (let j = 0; j < packs.length; j++) {
+                let packElem = packs[j];
+                let blueprintId = packElem.getAttribute("blueprintId");
+                let count = packElem.getAttribute("count");
+                let imageUrl = packElem.getAttribute("imageUrl");
+                let emptyLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, "delivery", "deliveryPack" + i, "player", imageUrl, emptyLocationIndex, upsideDown);
                 card.tokens = {"count":count};
-                var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, true, false);
+                let cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, true, false);
                 cardDiv.data("card", card);
                 deliveryDialogs[collectionName].append(cardDiv);
             }
 
-            var cards = collection.getElementsByTagName("card");
-            for (var j = 0; j < cards.length; j++) {
-                var cardElem = cards[j];
-                var blueprintId = cardElem.getAttribute("blueprintId");
-                var count = cardElem.getAttribute("count");
-                var imageUrl = cardElem.getAttribute("imageUrl");
-                var card = new Card(blueprintId, "delivery", "deliveryCard" + i, "player", imageUrl);
+            let cards = collection.getElementsByTagName("card");
+            for (let j = 0; j < cards.length; j++) {
+                let cardElem = cards[j];
+                let blueprintId = cardElem.getAttribute("blueprintId");
+                let count = cardElem.getAttribute("count");
+                let imageUrl = cardElem.getAttribute("imageUrl");
+                let emptyLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, "delivery", "deliveryCard" + i, "player", imageUrl, emptyLocationIndex, upsideDown);
                 card.tokens = {"count":count};
-                var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
+                let cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
                 cardDiv.data("card", card);
                 deliveryDialogs[collectionName].append(cardDiv);
             }

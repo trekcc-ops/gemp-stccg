@@ -156,7 +156,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             return false;
         if (requirements != null && !createActionContext(game).acceptsAllRequirements(requirements))
             return false;
-        return !game.getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
+        return !game.getGameState().getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
     }
 
 
@@ -204,7 +204,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean hasTextRemoved(DefaultGame game) {
         for (Modifier modifier :
-                game.getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
+                game.getGameState().getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
             if (modifier.hasRemovedText(game, this))
                 return true;
         }
@@ -348,7 +348,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     public boolean hasIcon(DefaultGame game, CardIcon icon) {
-        return game.getModifiersQuerying().hasIcon(this, icon);
+        return game.getGameState().getModifiersQuerying().hasIcon(this, icon);
     }
 
 
@@ -362,7 +362,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean checkTurnLimit(DefaultGame game, int max) {
         // TODO This isn't right since it checks against the card instead of the action
-        return game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
+        return game.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
     }
 
 

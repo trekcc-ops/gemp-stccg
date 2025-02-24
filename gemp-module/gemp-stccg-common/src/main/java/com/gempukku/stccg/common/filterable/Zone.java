@@ -2,7 +2,7 @@ package com.gempukku.stccg.common.filterable;
 
 public enum Zone implements Filterable {
     DRAW_DECK("draw deck", false, false, false, true),
-    MISSIONS_PILE("missions pile", false, false, false, true),
+    MISSIONS_PILE("missions pile", false, true, false, true),
     SEED_DECK("seed deck", false, true, false, true),
     CORE("table", true, true, true, true),
     @SuppressWarnings("SpellCheckingInspection")

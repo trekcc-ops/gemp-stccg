@@ -618,7 +618,7 @@ public class HallServer extends AbstractServer {
         @Override
         public final void broadcastMessage(String message) {
             try {
-                _hallChat.sendMessage("TournamentSystem", message, true);
+                _hallChat.sendChatMessage("TournamentSystem", message, true);
             } catch (PrivateInformationException exp) {
                 // Ignore, sent as admin
             } catch (ChatCommandErrorException e) {

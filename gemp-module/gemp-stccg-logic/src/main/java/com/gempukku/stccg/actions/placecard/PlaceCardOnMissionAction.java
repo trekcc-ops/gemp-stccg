@@ -4,12 +4,15 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+
+import java.util.List;
 
 public class PlaceCardOnMissionAction extends ActionyAction {
 
@@ -19,7 +22,7 @@ public class PlaceCardOnMissionAction extends ActionyAction {
 
     public PlaceCardOnMissionAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard cardBeingPlaced,
                                     MissionLocation mission) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD_ON_MISSION);
         _mission = mission;
         _cardBeingPlaced = cardBeingPlaced;
     }
@@ -40,12 +43,17 @@ public class PlaceCardOnMissionAction extends ActionyAction {
         }
         ST1EGameState gameState = stGame.getGameState();
         gameState.placeCardOnMission(cardGame, _cardBeingPlaced, _mission);
+
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
+        _cardBeingPlaced.setPlacedOnMission(true);
+        _cardBeingPlaced.setLocation(_mission);
+        gameState.addCardToZoneWithoutSendingToClient(_cardBeingPlaced, Zone.AT_LOCATION);
+
         for (MissionLocation location : gameState.getSpacelineLocations()) {
             if (location.getSeedCards().contains(_cardBeingPlaced)) {
                 location.removeSeedCard(_cardBeingPlaced);
             }
         }
-        cardGame.sendMessage(_cardBeingPlaced.getTitle() + " was placed on " + _mission.getLocationName());
         setAsSuccessful();
         return getNextAction();
     }
