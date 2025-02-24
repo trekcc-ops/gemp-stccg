@@ -1,19 +1,17 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.hall.HallServer;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpRequest;
 
-import java.net.HttpURLConnection;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-public class StatusRequestHandler implements UriRequestHandler {
+public class HallStatusRequestHandler implements UriRequestHandler {
+
+    // TODO - This has not been tested since the client calling method doesn't seem to be active
 
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {

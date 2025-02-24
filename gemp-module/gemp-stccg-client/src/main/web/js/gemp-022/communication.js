@@ -1024,7 +1024,7 @@ export default class GempClientCommunication {
     getStatus(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/",
+            url:this.url + "/hallStatus",
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
