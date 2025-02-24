@@ -42,9 +42,6 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
 
-            // Each player places the cards remaining in their hand into their discard pile.
-            // TODO - Removing for now since Tribbles is not the focus. Need to rebuild later.
-
             // Each player then shuffles their play pile into their decks.
             ShuffleCardsIntoDrawDeckAction action = new ShuffleCardsIntoDrawDeckAction(null, player,
                     Filters.in(player.getCardGroupCards(Zone.PLAY_PILE)));
