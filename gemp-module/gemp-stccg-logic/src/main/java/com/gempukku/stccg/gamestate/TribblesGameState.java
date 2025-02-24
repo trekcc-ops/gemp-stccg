@@ -122,10 +122,6 @@ public final class TribblesGameState extends GameState {
         return _chainBroken;
     }
 
-    public void playerWentOut() {
-        // TODO
-    }
-
     public int getRoundNum() {
         return _currentRound;
     }
