@@ -28,14 +28,12 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     private final ServerObjects _serverObjects;
     private static final String SERVER_CONTEXT_PATH = "/gemp-stccg-server/";
     private static final String WEB_CONTEXT_PATH = "/gemp-module/";
-    private final WebRequestHandler _webRequestHandler;
     private final Pattern originPattern = Pattern.compile(AppConfig.getProperty("origin.allowed.pattern"));
     private final ObjectMapper _jsonMapper = new ObjectMapper();
 
 
     public GempukkuHttpRequestHandler(ServerObjects serverObjects) {
         _serverObjects = serverObjects;
-        _webRequestHandler = new WebRequestHandler();
     }
 
     @Override
@@ -68,7 +66,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 String uri = request.uriWithoutParameters();
 
                 if (uri.startsWith(WEB_CONTEXT_PATH)) {
-                    _webRequestHandler.handleRequest(uri.substring(WEB_CONTEXT_PATH.length()), request, responseWriter);
+                    new WebRequestHandler().handleRequest(uri.substring(WEB_CONTEXT_PATH.length()), request, responseWriter);
                 } else if (uri.replace("/", "").isEmpty() ||
                         uri.replace("/", "").equals(WEB_CONTEXT_PATH.replace("/", ""))) {
                     // 301 Moved Permanently
@@ -87,8 +85,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                         String afterHandlerType = afterServer.substring(handlerType.length());
                         new CollectionRequestHandler().handleRequest(afterHandlerType, request, responseWriter, _serverObjects);
                     } else {
-                        Map<String, Object> parameters = request.parameters();
-                        parameters.put("type", handlerType);
+                        Map<String, Object> parameters = request.parametersWithType(handlerType);
                         try {
                             UriRequestHandler newHandler = _jsonMapper.convertValue(parameters, UriRequestHandler.class);
                             newHandler.handleRequest(request, responseWriter, _serverObjects);

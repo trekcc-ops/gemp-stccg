@@ -140,6 +140,12 @@ public class GempHttpRequest {
         return result;
     }
 
+    public Map<String, Object> parametersWithType(String handlerType) throws IOException {
+        Map<String, Object> parameters = parameters();
+        parameters.put("type", handlerType);
+        return parameters;
+    }
+
     public HttpRequest getRequest() {
         return _request;
     }
