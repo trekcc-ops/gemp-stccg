@@ -13,11 +13,6 @@ public enum Zone implements Filterable {
 
     REMOVED("removed", true, true, false, true),
 
-    /* TODO - Not a perfect implementation of play pile. In a real game, only the top card is visible,
-        but it is visible to all players. It should be considered "in play".
-        All parameters set to "true" for now so that it can be visually
-        observed in the game UI.
-     */
     PLAY_PILE("play pile", true, true,true, true),
 
     // Private knowledge
