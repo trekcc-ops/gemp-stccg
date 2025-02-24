@@ -41,6 +41,8 @@ public class HallServer extends AbstractServer {
     private static final int PLAYER_TABLE_INACTIVITY_PERIOD = 1000 * 20 ; // 20 seconds
     private static final int PLAYER_CHAT_INACTIVITY_PERIOD = 1000 * 60 * 5; // 5 minutes
     // Repeat tournaments every 2 days
+    private static final String DEFAULT_MESSAGE_OF_THE_DAY = "Lorem ipsum dolor sit amet, " +
+            "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
     private static final long SCHEDULED_TOURNAMENT_LOAD_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
     private final FormatLibrary _formatLibrary;
     private final CollectionsManager _collectionsManager;
@@ -63,6 +65,7 @@ public class HallServer extends AbstractServer {
         final IgnoreDAO ignoreDAO = objects.getIgnoreDAO();
         tableHolder = new TableHolder(objects);
         _hallChat = new HallChatRoomMediator(_serverObjects, HALL_TIMEOUT_PERIOD);
+        _messageOfTheDay = DEFAULT_MESSAGE_OF_THE_DAY;
         objects.getChatServer().addChatRoom(_hallChat);
     }
 
@@ -333,7 +336,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private final boolean leaveAwaitingTablesForLeavingPlayer(User player) {
+    private boolean leaveAwaitingTablesForLeavingPlayer(User player) {
         _hallDataAccessLock.writeLock().lock();
         try {
             return tableHolder.leaveAwaitingTablesForPlayer(player);
