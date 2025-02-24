@@ -25,6 +25,8 @@ import java.util.Map;
 
 public class GetAvailableDraftPicksRequestHandler extends SoloDraftRequestHandler implements UriRequestHandler {
 
+    // TODO - This has not been tested
+
     private final String _leagueType;
     GetAvailableDraftPicksRequestHandler(
             @JsonProperty("leagueType")

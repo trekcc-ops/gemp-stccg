@@ -55,7 +55,7 @@ public class DbPlayerDAO implements PlayerDAO {
     public final List<User> findSimilarAccounts(String login) throws SQLException {
         final User player = getPlayerFromDBByName(login);
         if (player == null)
-            return null;
+            return new ArrayList<>();
 
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
             String sql = """

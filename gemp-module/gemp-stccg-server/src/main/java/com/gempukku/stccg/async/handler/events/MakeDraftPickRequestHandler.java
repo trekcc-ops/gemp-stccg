@@ -28,6 +28,8 @@ import java.util.Map;
 
 public class MakeDraftPickRequestHandler extends SoloDraftRequestHandler implements UriRequestHandler {
 
+    // TODO - This has not been tested
+
     private final String _leagueType;
     private final String _choiceId;
     MakeDraftPickRequestHandler(

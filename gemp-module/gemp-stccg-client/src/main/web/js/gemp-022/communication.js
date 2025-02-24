@@ -856,10 +856,10 @@ export default class GempClientCommunication {
     susUserSearch(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/findMultipleAccounts",
+            url:this.url + "/findMultipleAccounts",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -870,10 +870,10 @@ export default class GempClientCommunication {
     banMultiple(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/banMultiple",
+            url:this.url + "/banUserMultiple",
             cache:false,
             data:{
-                login:login
+                userNames:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -921,7 +921,7 @@ export default class GempClientCommunication {
     previewSoloDraftLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/previewSoloDraftLeague",
+            url:this.url + "/leagueAdminDraft",
             cache:false,
             data:{
                 format:format,
@@ -929,7 +929,8 @@ export default class GempClientCommunication {
                 seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
-                cost:cost
+                cost:cost,
+                preview:true
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -940,7 +941,7 @@ export default class GempClientCommunication {
     addSoloDraftLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/addSoloDraftLeague",
+            url:this.url + "/leagueAdminDraft",
             cache:false,
             data:{
                 format:format,
@@ -948,7 +949,8 @@ export default class GempClientCommunication {
                 seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
-                cost:cost
+                cost:cost,
+                preview:false
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -959,7 +961,7 @@ export default class GempClientCommunication {
     previewConstructedLeague(start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/previewConstructedLeague",
+            url:this.url + "/leagueAdminConstructed",
             cache:false,
             data:{
                 start:start,
@@ -969,7 +971,8 @@ export default class GempClientCommunication {
                 cost:cost,
                 format:formats,
                 seriesDuration:seriesDurations,
-                maxMatches:maxMatches
+                maxMatches:maxMatches,
+                preview:true
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -980,7 +983,7 @@ export default class GempClientCommunication {
     addConstructedLeague(start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/addConstructedLeague",
+            url:this.url + "/leagueAdminConstructed",
             cache:false,
             data:{
                 start:start,
@@ -990,7 +993,8 @@ export default class GempClientCommunication {
                 cost:cost,
                 format:formats,
                 seriesDuration:seriesDurations,
-                maxMatches:maxMatches
+                maxMatches:maxMatches,
+                preview:false
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
