@@ -9,11 +9,14 @@ export default class GempClientCommunication {
     errorCheck(errorMap) {
         var that = this;
         return function (xhr, status, request) {
-            var errorStatus = "" + xhr.status;
-            if (errorMap != null && errorMap[errorStatus] != null)
-                errorMap[errorStatus](xhr, status, request);
-            else if (""+xhr.status != "200")
-                that.failure(xhr, status, request);
+            if (xhr.readyState === 4) { // Don't throw errors unless the XMLHttpRequest is done
+                let errorStatus = "" + xhr.status;
+                if (errorMap != null && errorMap[errorStatus] != null) {
+                    errorMap[errorStatus](xhr, status, request);
+                } else if (""+xhr.status != "200") {
+                    that.failure(xhr, status, request);
+                }
+            }
         }
     }
 
