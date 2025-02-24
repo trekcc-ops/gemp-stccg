@@ -15,6 +15,11 @@ public class DrawDeck extends CardPile {
         return _cards.size();
     }
 
+    public void addCardToTop(PhysicalCard card) {
+        _cards.add(card);
+        card.setZone(Zone.DRAW_DECK);
+    }
+
     public void remove(PhysicalCard card) {
         _cards.remove(card);
         card.setZone(Zone.VOID);

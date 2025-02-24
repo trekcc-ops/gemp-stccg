@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
@@ -100,9 +101,9 @@ public abstract class CardGameMediator {
         getGame().sendMessage(message);
     }
 
-    final void addGameStateListener(String playerId, GameStateListener listener) {
+    final void addGameStateListener(GameStateListener listener) {
         DefaultGame game = getGame();
-        game.addGameStateListener(playerId, listener);
+        game.addGameStateListener(listener);
     }
 
     public final void addGameResultListener(GameResultListener listener) {
@@ -115,15 +116,6 @@ public abstract class CardGameMediator {
 
     public final List<String> getPlayersPlaying() {
         return new LinkedList<>(_playersPlaying);
-    }
-
-    public final String getGameStatus() {
-        DefaultGame game = getGame();
-        return game.getStatus();
-    }
-
-    public final boolean isFinished() {
-        return getGame().isFinished();
     }
 
     public final String produceCardInfo(int cardId) throws JsonProcessingException {
@@ -295,6 +287,36 @@ public abstract class CardGameMediator {
         }
     }
 
+    public final String signupUserForGameAndGetGameState(User player)
+            throws PrivateInformationException, JsonProcessingException {
+        String playerName = player.getName();
+        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
+            throw new PrivateInformationException();
+        GameCommunicationChannel channel;
+        int channelNumber;
+
+        _readLock.lock();
+        try {
+            channelNumber = _channelNextIndex;
+            _channelNextIndex++;
+
+            channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
+            _communicationChannels.put(playerName, channel);
+            addGameStateListener(channel);
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = getGame().getGameState().serializeForPlayer(player.getName());
+            JsonNode gameState = mapper.readTree(jsonString);
+            Map<String, Object> result = new HashMap<>();
+            result.put("channelNumber", channelNumber);
+            result.put("gameState", gameState);
+            String resultString = mapper.writeValueAsString(result);
+            return resultString;
+        } finally {
+            _readLock.unlock();
+        }
+    }
+
+
 
     public final GameCommunicationChannel signupUserForGameAndGetChannel(User player)
             throws PrivateInformationException {
@@ -311,7 +333,7 @@ public abstract class CardGameMediator {
 
             channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
             _communicationChannels.put(playerName, channel);
-            getGame().addGameStateListener(playerName, channel);
+            addGameStateListener(channel);
             return channel;
         } finally {
             _readLock.unlock();
@@ -387,7 +409,7 @@ public abstract class CardGameMediator {
             return mapper.writeValueAsString(itemsToSerialize);
 
         Collection<String> modifiersToAdd = new ArrayList<>();
-        for (Modifier modifier : cardGame.getModifiersQuerying().getModifiersAffecting(card)) {
+        for (Modifier modifier : cardGame.getGameState().getModifiersQuerying().getModifiersAffecting(card)) {
             modifiersToAdd.add(modifier.getCardInfoText(getGame(), card));
         }
         itemsToSerialize.put("modifiers", modifiersToAdd);
@@ -485,5 +507,4 @@ public abstract class CardGameMediator {
         cardMap.put("hasUniversalIcon", hasUniversalIcon);
         return cardMap;
     }
-
 }

@@ -20,7 +20,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
             playerOrder = getPlayerOrderByRollingDice(cardGame);
         }
         cardGame.sendMessage(playerOrder.getFirst() + " will go first");
-        cardGame.initializePlayerOrder(new PlayerOrder(playerOrder));
+        cardGame.getGameState().initializePlayerOrder(new PlayerOrder(playerOrder));
     }
 
     private List<String> getPlayerOrderByRollingDice(DefaultGame cardGame) {
@@ -60,8 +60,6 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
-        ST1EGame stGame = getST1EGame(cardGame);
-        cardGame.takeSnapshot("Start of game");
-        return new DoorwaySeedPhaseProcess(stGame.getPlayerIds());
+        return new DoorwaySeedPhaseProcess(cardGame.getPlayerIds());
     }
 }

@@ -8,10 +8,11 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
@@ -24,8 +25,8 @@ public class ST1EGameState extends GameState {
     private int _nextAttemptingUnitId = 1;
     private int _nextLocationId = 1;
 
-    public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
-        super(game, playerIds);
+    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, Map<String, PlayerClock> clocks) {
+        super(game, playerIds, clocks);
         _currentPhase = Phase.SEED_DOORWAY;
         try {
             for (Player player : _players.values()) {
@@ -39,9 +40,21 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public ST1EGameState(ST1EGame game) {
-        this(game.getPlayerIds(), game);
+    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, GameTimer gameTimer) {
+        super(game, playerIds, gameTimer);
+        _currentPhase = Phase.SEED_DOORWAY;
+        try {
+            for (Player player : _players.values()) {
+                player.addCardGroup(Zone.CORE);
+                player.addCardGroup(Zone.MISSIONS_PILE);
+                player.addCardGroup(Zone.SEED_DECK);
+            }
+        } catch(InvalidGameLogicException exp) {
+            game.sendErrorMessage(exp);
+            game.cancelGame();
+        }
     }
+
 
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
@@ -108,7 +121,7 @@ public class ST1EGameState extends GameState {
     public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
         _spacelineLocations.add(indexNumber, new MissionLocation(newMission, _nextLocationId));
         _nextLocationId++;
-        addCardToZone(newMission, Zone.SPACELINE, true, false);
+        addCardToZoneWithoutSendingToClient(newMission, Zone.SPACELINE);
     }
 
     public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
@@ -121,12 +134,12 @@ public class ST1EGameState extends GameState {
                     newMission.getOwnerName() + " already has a mission at " +
                     newMission.getBlueprint().getLocation());
         location.addMission(newMission);
-        addCardToZone(newMission, Zone.SPACELINE, true, true);
+        addCardToZoneWithoutSendingToClient(newMission, Zone.SPACELINE);
     }
 
     public void seedFacilityAtLocation(FacilityCard card, GameLocation location) {
         card.setLocation(location);
-        addCardToZone(card, Zone.AT_LOCATION, true);
+        addCardToZoneWithoutSendingToClient(card, Zone.AT_LOCATION);
     }
 
 
@@ -182,72 +195,6 @@ public class ST1EGameState extends GameState {
         return x;
     }
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
-
-    @Override
-    public void sendCardsToClient(DefaultGame cardGame, String playerId, GameStateListener listener,
-                                  boolean restoreSnapshot)
-            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
-        Player player = getPlayer(playerId);
-        boolean sharedMission;
-        Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
-        Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
-
-        // Send missions in order
-        for (MissionLocation location : _spacelineLocations) {
-            for (int i = 0; i < location.getMissionCards().size(); i++) {
-                sharedMission = i != 0;
-                // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
-                PhysicalCard mission = location.getMissionCards().get(i);
-                sendCreatedCardToListener(mission, sharedMission, listener, !restoreSnapshot);
-                cardsLeftToSend.remove(mission);
-                sentCardsFromPlay.add(mission);
-            }
-        }
-
-        int cardsToSendAtLoopStart;
-        do {
-            cardsToSendAtLoopStart = cardsLeftToSend.size();
-            Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
-            while (cardIterator.hasNext()) {
-                PhysicalCard physicalCard = cardIterator.next();
-                PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                if (physicalCard.isPlacedOnMission()) {
-                    GameLocation location = physicalCard.getGameLocation();
-                    if (location instanceof MissionLocation mission) {
-                        PhysicalCard topMission = mission.getTopMissionCard();
-                        if (sentCardsFromPlay.contains(topMission)) {
-                            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-                            sentCardsFromPlay.add(physicalCard);
-
-                            cardIterator.remove();
-                        }
-                    } else {
-                        throw new InvalidGameLogicException("Card placed on mission, but is attached to a non-mission card");
-                    }
-                } else if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-                    sentCardsFromPlay.add(physicalCard);
-
-                    cardIterator.remove();
-                }
-            }
-        } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
-
-        for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.HAND)) {
-            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-        }
-
-        List<PhysicalCard> missionPile = player.getCardGroupCards(Zone.MISSIONS_PILE);
-        if (missionPile != null) {
-            for (PhysicalCard physicalCard : missionPile) {
-                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-            }
-        }
-
-        for (PhysicalCard physicalCard : player.getCardGroupCards(Zone.DISCARD)) {
-            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-        }
-    }
 
 
     public List<AwayTeam> getAwayTeams() {

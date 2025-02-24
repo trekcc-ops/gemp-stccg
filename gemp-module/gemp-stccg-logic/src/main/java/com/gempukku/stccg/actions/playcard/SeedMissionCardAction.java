@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.choose.MakeDecisionAction;
@@ -14,11 +16,12 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
-    private final MissionCard _cardEnteringPlay;
+
     private boolean _cardPlayed;
     private boolean _placementChosen;
     private int _locationZoneIndex;
@@ -28,7 +31,6 @@ public class SeedMissionCardAction extends PlayCardAction {
 
     public SeedMissionCardAction(MissionCard cardToPlay) {
         super(cardToPlay, cardToPlay, cardToPlay.getOwner(), Zone.SPACELINE, ActionType.SEED_CARD);
-        _cardEnteringPlay = cardToPlay;
         setText("Seed " + _cardEnteringPlay.getFullName());
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         _missionLocation = _cardEnteringPlay.getBlueprint().getLocation();
@@ -128,17 +130,15 @@ public class SeedMissionCardAction extends PlayCardAction {
     }
 
     private void seedCard(DefaultGame game) {
-        if (game.getGameState() instanceof ST1EGameState gameState) {
+        if (game.getGameState() instanceof ST1EGameState gameState && _cardEnteringPlay instanceof MissionCard mission) {
 
-            game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
-
-            gameState.removeCardFromZone(_cardEnteringPlay);
+            gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
 
             try {
                 if (_sharedMission)
-                    gameState.addMissionCardToSharedMission(_cardEnteringPlay, _locationZoneIndex);
+                    gameState.addMissionCardToSharedMission(mission, _locationZoneIndex);
                 else
-                    gameState.addMissionLocationToSpaceline(_cardEnteringPlay, _locationZoneIndex);
+                    gameState.addMissionLocationToSpaceline(mission, _locationZoneIndex);
                 game.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, _cardEnteringPlay));
                 _actionCarriedOut = true;
@@ -150,7 +150,7 @@ public class SeedMissionCardAction extends PlayCardAction {
         } else {
             setAsFailed();
             _actionCarriedOut = false;
-            game.sendMessage("Seed mission action attempted in a non-1E game");
+            game.sendErrorMessage("Seed mission action attempted in a non-1E game");
         }
     }
 

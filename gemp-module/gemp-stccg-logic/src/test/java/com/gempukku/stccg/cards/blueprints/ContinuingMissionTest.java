@@ -41,7 +41,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
         Player currPlayer = _game.getCurrentPlayer();
 
-        PhysicalCard continuingMission = getCardInGame("Continuing Mission", currPlayer, Zone.HAND);
+        PhysicalCard continuingMission = getCardInGame("Continuing Mission", currPlayer, Zone.SEED_DECK);
 
         assertFalse(continuingMission.isInPlay());
         seedCardIfAllowed(continuingMission);

@@ -6,15 +6,16 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerClock;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.*;
 
 public final class TribblesGameState extends GameState {
@@ -25,14 +26,24 @@ public final class TribblesGameState extends GameState {
     private int _currentRound;
     private boolean _currentRoundIsOver;
 
-    public TribblesGameState(Iterable<String> playerIds, TribblesGame game) {
-        super(game, playerIds);
+    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, GameTimer gameTimer) {
+        super(game, playerIds, gameTimer);
         _currentRound = 0;
         _chainBroken = false;
-        setNextTribbleInSequence(game, 1);
+        setNextTribbleInSequence(1);
         for (String player : playerIds)
             _playPiles.put(player, new LinkedList<>());
     }
+
+    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, Map<String, PlayerClock> clocks) {
+        super(game, playerIds, clocks);
+        _currentRound = 0;
+        _chainBroken = false;
+        setNextTribbleInSequence(1);
+        for (String player : playerIds)
+            _playPiles.put(player, new LinkedList<>());
+    }
+
 
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
@@ -75,32 +86,16 @@ public final class TribblesGameState extends GameState {
     }
 
 
-    public void shufflePlayPileIntoDeck(DefaultGame game, Player player) {
-        String playerId = player.getPlayerId();
-        List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
-        removeCardsFromZone(game, player, playPile);
-        for (PhysicalCard card : playPile) {
-            addCardToZone(card, Zone.DRAW_DECK);
-        }
-        player.shuffleDrawDeck(game);
-    }
-
     public List<PhysicalCard> getPlayPile(String playerId) {
         return Collections.unmodifiableList(_playPiles.get(playerId));
     }
 
-    public void setPlayerDecked(DefaultGame cardGame, Player player, boolean bool) {
+    public void setPlayerDecked(Player player, boolean bool) {
         player.setDecked(bool);
-        for (GameStateListener listener : cardGame.getAllGameStateListeners())
-            listener.setPlayerDecked(cardGame, player);
     }
 
-    public void setNextTribbleInSequence(DefaultGame cardGame, int num) {
+    public void setNextTribbleInSequence(int num) {
         _nextTribbleInSequence = num;
-        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
-            DecimalFormat df = new DecimalFormat("#,###");
-            listener.setTribbleSequence(df.format(num));
-        }
     }
 
 
@@ -112,18 +107,13 @@ public final class TribblesGameState extends GameState {
 
     public int getNextTribbleInSequence() { return _nextTribbleInSequence; }
 
-    public void breakChain(TribblesGame cardGame) {
+    public void breakChain() {
         _chainBroken = true;
-        cardGame.sendMessage("The chain has been broken.");
-        for (GameStateListener listener : cardGame.getAllGameStateListeners()) {
-            DecimalFormat df = new DecimalFormat("#,###");
-            listener.setTribbleSequence("1 or " + df.format(_nextTribbleInSequence));
-        }
     }
 
 
-    public void setChainBroken(TribblesGame game, boolean chainBroken) {
-        if (chainBroken) breakChain(game);
+    public void setChainBroken(boolean chainBroken) {
+        if (chainBroken) breakChain();
         else _chainBroken = false;
     }
 
@@ -152,10 +142,10 @@ public final class TribblesGameState extends GameState {
         return List.of(getCurrentPhase());
     }
 
-    public void advanceRound(TribblesGame cardGame) {
+    public void advanceRound() {
         // Each new round begins with a new "chain" (starting with a card worth 1 Tribble) and play proceeds clockwise.
         _chainBroken = false;
-        setNextTribbleInSequence(cardGame, 1);
+        setNextTribbleInSequence(1);
         _playerOrder.setReversed(false);
 
         // TODO: Handle "decked" players
@@ -163,7 +153,6 @@ public final class TribblesGameState extends GameState {
         // Increment round number
         _currentRound++;
         _currentRoundIsOver = false;
-        cardGame.sendMessage("Beginning Round " + _currentRound);
     }
 
     public void endRound() {

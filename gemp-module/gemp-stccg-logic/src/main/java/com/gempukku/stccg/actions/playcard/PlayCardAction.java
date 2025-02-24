@@ -1,16 +1,20 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.gempukku.stccg.actions.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.gamestate.GameState;
 
-import java.util.Collections;
+import java.util.List;
 
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
 
@@ -50,6 +54,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         return _cardEnteringPlay.getCardId();
     }
 
+    @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
@@ -71,11 +76,9 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     
     protected void putCardIntoPlay(DefaultGame game) {
         GameState gameState = game.getGameState();
-        game.removeCardsFromZone(_cardEnteringPlay.getOwner(), Collections.singleton(_cardEnteringPlay));
-        gameState.addCardToZone(_cardEnteringPlay, _destinationZone);
+        gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
+        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
-        game.sendMessage(_cardEnteringPlay.getOwnerName() + " played " +
-                _cardEnteringPlay.getCardLink());
         setAsSuccessful();
     }
 

@@ -29,12 +29,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         _game = game;
     }
 
-    // For testing
-    public ST1EPhysicalCard(ST1EGame game, Player owner, String title, String set) throws CardNotFoundException {
-        super(game.getGameState().getAndIncrementNextCardId(), owner,
-                game.getBlueprintLibrary().getBlueprintByName(title, set));
-        _game = game;
-    }
     @Override
     public ST1EGame getGame() { return _game; }
 
@@ -43,7 +37,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
         STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.CORE, getOwner(), forFree);
-        _game.getModifiersQuerying().appendExtraCosts(action, this);
+        _game.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
         return action;
     }
 

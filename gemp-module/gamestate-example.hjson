@@ -57,7 +57,7 @@
                     "cardCount": 2,
                     "cardIds": [34,47]
                 },
-                "TABLE": {
+                "CORE": {
                     "cardCount": 2,
                     "cardIds": [6,-99] // -99 here most likely represents a hidden agenda card
                 },
@@ -74,15 +74,18 @@
         "turnOrder": ["player2", "player1"], // Player order (only used in Tribbles)
         "currentPlayer": "player2" // Player ID for the player whose current turn it is
     },
-    "cardsInGame": [
+    "cardsInGame": {
         /* Information for every card in GameState._allCards
+
+            This object is a map using cardId as a string for the key.
+
             This includes cards that were in the game, but have been placed out-of-play.
             (The cards in this file are examples and not expected to align with the cardId numbers above.)
 
             Player-specific game state will show "visibleCardsInGame" here, but the contained information is in the
             same format. visibleCardsInGame will not include a number of opponent cards that are not public information.
         */
-        {
+        "1": {
             "title": "Federation Outpost",
             "blueprintId": "101_104",
             "cardId": 1,
@@ -91,8 +94,10 @@
             "affiliation": "FEDERATION", // only included for affiliated cards
             "locationId": 3, // only included if the card is on the spaceline
             "cardType": "FACILITY"
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true
         },
-        {
+        "2": {
             "title": "U.S.S. Galaxy",
             "blueprintId": "101_336",
             "cardId": 2,
@@ -104,9 +109,11 @@
             "dockedAtCardId": 1, // only included for a docked ship
             "rangeAvailable": 3, // only included for a ship
             "isStopped": false, // only included for reportables (personnel, ships, equipment)
-            "cardType": "SHIP"
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true
         },
-        {
+        "3": {
             "title": "Excavation",
             "blueprintId": "101_154",
             "cardId": 3,
@@ -114,10 +121,12 @@
             "owner": "player1",
             "locationId": 3, // only included if the card is on the spaceline
             "stackedOnCardId": 4, // only included if the card is stacked on another
-            "cardType": "MISSION"
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false
         },
         // etc.
-    ],
+    },
     "spacelineLocations": [
         /* List of spaceline locations for 1E game. This list in order from left to right.
                     (As of 1/25/25, both players see the spaceline in the same left-to-right order.)
@@ -179,8 +188,18 @@
         /* performedActions only includes actionIds for actions that were finished,
             whether successfully or unsuccessfully. It does not include unselected actions that players never
             attempted to initiate or actions that are still in progress.
-
-            Not included in the player-specific game state.
         */
-    "performedActions": [1,2,4,3,6,7,9,8]
+    "performedActions": [1,2,4,3,6,7,9,8],
+    "playerClocks": [
+        {
+            "playerId": "player1",
+            "timeRemaining": 3600
+        },
+        {
+            "playerId": "player2",
+            "timeRemaining": 3600
+        }
+    ],
+    // channelNumber added 18 Feb 2025
+    // timeStamp added 19 Feb 2025
 }

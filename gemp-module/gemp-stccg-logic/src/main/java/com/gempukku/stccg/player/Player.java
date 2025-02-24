@@ -1,6 +1,7 @@
 package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.cardgroup.DiscardPile;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
@@ -36,6 +37,9 @@ public class Player {
     CardPile _drawDeck;
     @JsonProperty("discardPile")
     CardPile _discardPile;
+
+    @JsonProperty("missionsPile")
+    CardPile _missionsPile;
 
     @JsonProperty("seedDeck")
     PhysicalCardGroup _seedDeck;
@@ -133,10 +137,18 @@ public class Player {
                 _discardPile = new DiscardPile();
                 yield _discardPile;
             }
-            case MISSIONS_PILE, PLAY_PILE, REMOVED -> new CardPile();
+            case MISSIONS_PILE -> {
+                _missionsPile = new CardPile();
+                yield _missionsPile;
+            }
+            case PLAY_PILE, REMOVED -> new CardPile();
             default -> throw new InvalidGameLogicException("Unable to create a card group for zone " + zone);
         };
         _cardGroups.put(zone, group);
+    }
+
+    public CardPile getMissionsPile() {
+        return _missionsPile;
     }
 
     public List<PhysicalCard> getCardGroupCards(Zone zone) {
@@ -185,22 +197,12 @@ public class Player {
         return _cardGroups.keySet();
     }
 
-    public void discardHand(DefaultGame cardGame) {
-        cardGame.getGameState().removeCardsFromZone(cardGame, this, getCardsInHand());
-        for (PhysicalCard card : getCardsInHand()) {
-            cardGame.getGameState().addCardToZone(card, Zone.DISCARD);
-        }
-    }
-
-    public void shuffleCardsIntoDrawDeck(DefaultGame cardGame, Collection<PhysicalCard> cards) {
-        cardGame.removeCardsFromZone(this, cards);
-        for (PhysicalCard card : cards) {
-            cardGame.getGameState().addCardToZone(card, Zone.DRAW_DECK);
-        }
-        _drawDeck.shuffle();
-    }
-
     public CardPile getDrawDeck() {
         return _drawDeck;
+    }
+
+    public boolean canPerformAction(DefaultGame cardGame, Action action) {
+        return cardGame.getGameState().getModifiersQuerying().canPerformAction(_playerId, action) &&
+                action.canBeInitiated(cardGame);
     }
 }

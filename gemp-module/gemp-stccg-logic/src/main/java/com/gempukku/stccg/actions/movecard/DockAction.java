@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -8,6 +10,7 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.player.Player;
@@ -16,6 +19,8 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.Collection;
 
 public class DockAction extends ActionyAction implements TopLevelSelectableAction {
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalShipCard _cardToDock;
     private boolean _targetChosen;
     private boolean _cardDocked;
@@ -24,7 +29,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     private SelectVisibleCardAction _selectAction;
 
     public DockAction(Player player, PhysicalShipCard cardToDock, ST1EGame cardGame) {
-        super(cardGame, player, "Dock", ActionType.MOVE_CARDS);
+        super(cardGame, player, "Dock", ActionType.DOCK_SHIP);
         _cardToDock = cardToDock;
 
         _dockingTargetOptions = Filters.yourFacilitiesInPlay(cardGame, player).stream()
@@ -47,8 +52,10 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
             return cost;
 
         if (!_targetChosen) {
-            _selectAction = new SelectVisibleCardAction(cardGame, cardGame.getPlayer(_performingPlayerId),
-                    "Choose facility to dock at", _dockingTargetOptions);
+            if (_selectAction == null) {
+                _selectAction = new SelectVisibleCardAction(cardGame, cardGame.getPlayer(_performingPlayerId),
+                        "Choose facility to dock at", _dockingTargetOptions);
+            }
             if (!_selectAction.wasCarriedOut()) {
                 appendTargeting(_selectAction);
                 return getNextCost();
@@ -62,7 +69,8 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
             _cardDocked = true;
             setAsSuccessful();
             _cardToDock.dockAtFacility(_dockingTarget);
-            _cardToDock.getGame().getGameState().transferCard(cardGame, _cardToDock, _dockingTarget);
+            _cardToDock.setZone(Zone.ATTACHED);
+            _cardToDock.attachTo(_dockingTarget);
         }
 
         return getNextAction();

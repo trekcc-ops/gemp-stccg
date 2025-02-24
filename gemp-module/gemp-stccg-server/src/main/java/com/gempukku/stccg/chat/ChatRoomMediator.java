@@ -5,7 +5,6 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.database.UserNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -88,7 +87,7 @@ public class ChatRoomMediator {
         }
     }
 
-    public final void sendMessage(String playerId, String message, boolean admin)
+    public final void sendChatMessage(String playerId, String message, boolean admin)
             throws PrivateInformationException, ChatCommandErrorException {
         if (message.trim().startsWith("/")) {
             processIfKnownCommand(playerId, message.trim().substring(1), admin);
@@ -107,11 +106,11 @@ public class ChatRoomMediator {
         }
     }
 
-    public final void sendMessage(User user, String message)
+    public final void sendChatMessage(User user, String message)
             throws PrivateInformationException, ChatCommandErrorException {
         String userName = user.getName();
         boolean admin = user.hasType(User.Type.ADMIN);
-        sendMessage(userName, message, admin);
+        sendChatMessage(userName, message, admin);
     }
 
 

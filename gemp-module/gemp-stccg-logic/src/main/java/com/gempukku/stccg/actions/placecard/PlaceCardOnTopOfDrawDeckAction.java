@@ -6,8 +6,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.FixedCardResolver;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -23,7 +23,7 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
 
     public PlaceCardOnTopOfDrawDeckAction(Player performingPlayer, PhysicalCard cardBeingPlaced) {
-        super(cardBeingPlaced.getGame(), performingPlayer, ActionType.PLACE_CARD);
+        super(cardBeingPlaced.getGame(), performingPlayer, ActionType.PLACE_CARD_ON_TOP_OF_DRAW_DECK);
         _cardTarget = new FixedCardResolver(cardBeingPlaced);
     }
 
@@ -36,10 +36,17 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         PhysicalCard cardBeingPlaced = _cardTarget.getCard();
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZone(cardGame, cardBeingPlaced.getOwner(), List.of(cardBeingPlaced));
-        cardGame.sendMessage(_performingPlayerId + " placed " + cardBeingPlaced + " on top of their draw deck");
-        gameState.addCardToZone(cardBeingPlaced, Zone.DRAW_DECK, EndOfPile.TOP);
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(cardBeingPlaced));
+
+        CardPile drawDeck = cardBeingPlaced.getOwner().getDrawDeck();
+        drawDeck.addCardToTop(cardBeingPlaced);
+
         setAsSuccessful();
         return getNextAction();
+    }
+
+    @JsonProperty("targetCardId")
+    private PhysicalCard getTargetCard() {
+        return _cardTarget.getCard();
     }
 }

@@ -172,7 +172,7 @@ class TableHolder {
         for (GameTable runningTable : runningTables.values()) {
             if (league.equals(runningTable.getGameSettings().getLeague())) {
                 CardGameMediator game = runningTable.getMediator();
-                if (game != null && !game.isFinished() && game.getPlayersPlaying().contains(player.getName()))
+                if (game != null && !game.getGame().isFinished() && game.getPlayersPlaying().contains(player.getName()))
                     throw new HallException("You can't play in multiple league games at the same time");
             }
         }
@@ -204,7 +204,7 @@ class TableHolder {
             if (cardGameMediator != null) {
                 if (isAdmin || (cardGameMediator.isVisibleToUser(player.getName()) &&
                         isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))) {
-                    if (cardGameMediator.isFinished()) {
+                    if (cardGameMediator.getGame().isFinished()) {
                         runningTable.setAsFinished();
                         finishedTables.put(runningGame.getKey(), runningTable);
                     } else {

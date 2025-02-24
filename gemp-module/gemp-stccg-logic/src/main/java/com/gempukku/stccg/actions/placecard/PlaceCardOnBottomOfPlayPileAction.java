@@ -21,7 +21,7 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
 
     public PlaceCardOnBottomOfPlayPileAction(DefaultGame cardGame, Player performingPlayer,
                                              SelectCardsAction selectCardAction) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARD);
+        super(cardGame, performingPlayer, ActionType.PLACE_CARD_IN_PLAY_PILE);
         _cardTarget = new SelectCardsResolver(selectCardAction);
     }
 
@@ -42,12 +42,9 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
         }
 
         if (!_wasCarriedOut) {
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
-                cardGame.removeCardsFromZone(performingPlayer, List.of(card));
-                cardGame.sendMessage(_performingPlayerId + " puts " + card.getCardLink() +
-                        " from hand on bottom of their play pile");
-                cardGame.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);
+                cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
+                cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.PLAY_PILE);
                 _wasCarriedOut = true;
                 setAsSuccessful();
             }

@@ -155,19 +155,19 @@ public class Filters {
 
     // Filters available
     public static CardFilter strengthEqual(final Evaluator evaluator) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) == evaluator.evaluateExpression(game, null);
+        return (game, physicalCard) -> game.getGameState().getModifiersQuerying().getStrength(physicalCard) == evaluator.evaluateExpression(game, null);
     }
 
     public static CardFilter moreStrengthThan(final int strength) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) > strength;
+        return (game, physicalCard) -> physicalCard.getStrength(game) > strength;
     }
 
     public static CardFilter lessStrengthThan(final int strength) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) < strength;
+        return (game, physicalCard) -> physicalCard.getStrength(game) < strength;
     }
 
     public static CardFilter lessStrengthThan(final PhysicalCard card) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) < game.getModifiersQuerying().getStrength(card);
+        return (game, physicalCard) -> physicalCard.getStrength(game) < card.getStrength(game);
     }
 
     public static CardFilter topOfPlayPile(Player player) {
@@ -241,14 +241,10 @@ public class Filters {
     public static final CardFilter multiAffiliation = (game, physicalCard) ->
             physicalCard instanceof AffiliatedCard affilCard && affilCard.isMultiAffiliation();
 
-    public static CardFilter canBeDiscarded(final PhysicalCard source) {
-        return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(source.getOwnerName(), physicalCard, source);
-    }
-
     public static final CardFilter canBeRemovedFromTheGame = (game, physicalCard) -> true;
 
     public static CardFilter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
-        return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
+        return (game, physicalCard) -> game.getGameState().getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
     }
 
     public static CardFilter yourHand(Player player) {

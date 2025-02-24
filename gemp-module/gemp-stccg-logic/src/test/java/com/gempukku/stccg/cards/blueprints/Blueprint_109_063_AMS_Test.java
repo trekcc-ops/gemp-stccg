@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.actions.discard.DiscardCardAction;
+import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -68,7 +68,7 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
         // Try to discard card at start of turn
         assertEquals(Phase.START_OF_TURN, _game.getCurrentPhase());
-        performAction(P1, DiscardCardAction.class, ams);
+        performAction(P1, DiscardSingleCardAction.class, ams);
 
         assertEquals(Zone.DISCARD, ams.getZone());
         assertTrue(_game.getPlayer(P1).getDiscardPile().contains(ams));

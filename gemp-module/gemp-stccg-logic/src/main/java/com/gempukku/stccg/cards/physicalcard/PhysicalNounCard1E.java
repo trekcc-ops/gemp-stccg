@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -22,6 +23,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     protected Quadrant getNativeQuadrant() { return _blueprint.getQuadrant(); }
     public boolean isMultiAffiliation() { return getAffiliationOptions().size() > 1; }
 
+    @JsonProperty("affiliation")
     public Affiliation getCurrentAffiliation() { return _currentAffiliation; }
 
     public void setCurrentAffiliation(Affiliation affiliation) {
@@ -41,7 +43,6 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
                         reportable.joinEligibleAwayTeam(missionLocation);
                 }
             }
-            _game.sendUpdatedCardImageToClient(this);
         }
     }
 
