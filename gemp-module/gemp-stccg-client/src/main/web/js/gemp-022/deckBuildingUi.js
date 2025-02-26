@@ -1099,7 +1099,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
                 function () {
                     let cardData = $(this).data("card");
                     if (cardData.blueprintId === blueprintId) {
-                        var attDiv = that.addCardToContainer(blueprintId, imageUrl, "ATTACHED", container, false);
+                        let attDiv = that.addCardToContainer(blueprintId, imageUrl, "ATTACHED", container, false);
                         cardData.attachedCards.push(attDiv);
                         added = true;
                     }
