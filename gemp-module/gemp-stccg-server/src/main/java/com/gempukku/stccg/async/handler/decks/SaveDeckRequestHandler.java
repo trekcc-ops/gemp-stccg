@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.GameFormat;
 
 @JsonIgnoreProperties("participantId")
-public class SaveDeckRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
+public class SaveDeckRequestHandler extends DeckRequestHandler implements UriRequestHandler {
 
     private final String _deckName;
     private final String _targetFormat;

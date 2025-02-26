@@ -1,16 +1,13 @@
 package com.gempukku.stccg.async.handler.hall;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionType;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.HallCommunicationChannel;
@@ -18,7 +15,6 @@ import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
-import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class GetHallRequestHandler implements UriRequestHandlerNew {
+public class GetHallRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(GetHallRequestHandler.class);
 
     @Override

@@ -8,6 +8,7 @@ import com.gempukku.stccg.async.handler.SortAndFilterCards;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.collection.CompleteCardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.formats.FormatLibrary;
 
@@ -35,7 +36,8 @@ public class FilterPickDraftChoiceDefinition implements DraftChoiceDefinition {
 
     @JsonIgnore
     private List<GenericCardItem> getPossibleCards() {
-        return SortAndFilterCards.process(_filter, _cardLibrary, _formatLibrary);
+        Iterable<GenericCardItem> cards = new CompleteCardCollection(_cardLibrary).getAll();
+        return SortAndFilterCards.process(_filter, cards, _cardLibrary, _formatLibrary);
     }
 
     @Override

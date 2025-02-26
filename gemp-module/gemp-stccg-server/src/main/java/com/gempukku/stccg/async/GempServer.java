@@ -58,7 +58,7 @@ public class GempServer {
             pipeline.addLast(new HttpServerCodec());
             pipeline.addLast(new HttpObjectAggregator(Short.MAX_VALUE));
             pipeline.addLast(new HttpContentCompressor());
-            pipeline.addLast(new GempukkuHttpRequestHandler(_objects));
+            pipeline.addLast(new ClientRequestHandler(_objects));
         }
     }
 }

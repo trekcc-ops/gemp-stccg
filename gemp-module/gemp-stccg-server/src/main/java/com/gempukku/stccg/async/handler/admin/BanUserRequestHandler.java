@@ -6,12 +6,12 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.service.AdminService;
 
 import java.net.HttpURLConnection;
 
-public class BanUserRequestHandler extends AdminRequestHandlerNew implements UriRequestHandlerNew {
+public class BanUserRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     private final String _userToBan;
 

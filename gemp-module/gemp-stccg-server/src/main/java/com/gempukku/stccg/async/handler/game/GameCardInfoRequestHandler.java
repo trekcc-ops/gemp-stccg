@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.game.CardGameMediator;
-import io.netty.handler.codec.http.HttpRequest;
 
-public class GameCardInfoRequestHandler extends GameRequestHandlerNew implements UriRequestHandlerNew {
+public class GameCardInfoRequestHandler extends GameRequestHandlerNew implements UriRequestHandler {
     private final int _cardId;
 
     GameCardInfoRequestHandler(

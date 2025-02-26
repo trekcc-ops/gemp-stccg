@@ -1,5 +1,5 @@
 import GempClientCommunication from "./communication.js";
-import { getDateString } from "./common.js";
+import { formatPrice, getDateString } from "./common.js";
 
 export default class LeagueResultsUI {
     communication;

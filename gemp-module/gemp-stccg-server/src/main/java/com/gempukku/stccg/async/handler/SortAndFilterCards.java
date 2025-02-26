@@ -13,10 +13,6 @@ import java.util.*;
 
 public class SortAndFilterCards {
 
-    public static List<GenericCardItem> process(String filter, CardBlueprintLibrary cardLibrary,
-                                                FormatLibrary formatLibrary) {
-        return process(filter, new CompleteCardCollection(cardLibrary).getAll(), cardLibrary, formatLibrary);
-    }
     public static <T extends CardItem> List<T> process(String filter, Iterable<? extends T> items,
                                                        CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary) {
         if (filter == null)

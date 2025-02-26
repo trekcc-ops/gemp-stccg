@@ -5,14 +5,13 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameCommunicationChannel;
 import com.gempukku.stccg.game.GameServer;
-import io.netty.handler.codec.http.HttpRequest;
 
-public class UpdateGameStateRequestHandler extends GameRequestHandlerNew implements UriRequestHandlerNew {
+public class UpdateGameStateRequestHandler extends GameRequestHandlerNew implements UriRequestHandler {
     private final int _channelNumber;
 
     UpdateGameStateRequestHandler(

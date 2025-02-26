@@ -17,6 +17,7 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.League;
+import com.gempukku.stccg.league.LeagueNotFoundException;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.tournament.*;
 import org.apache.logging.log4j.LogManager;
@@ -40,6 +41,8 @@ public class HallServer extends AbstractServer {
     private static final int PLAYER_TABLE_INACTIVITY_PERIOD = 1000 * 20 ; // 20 seconds
     private static final int PLAYER_CHAT_INACTIVITY_PERIOD = 1000 * 60 * 5; // 5 minutes
     // Repeat tournaments every 2 days
+    private static final String DEFAULT_MESSAGE_OF_THE_DAY = "Lorem ipsum dolor sit amet, " +
+            "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
     private static final long SCHEDULED_TOURNAMENT_LOAD_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
     private final FormatLibrary _formatLibrary;
     private final CollectionsManager _collectionsManager;
@@ -62,6 +65,7 @@ public class HallServer extends AbstractServer {
         final IgnoreDAO ignoreDAO = objects.getIgnoreDAO();
         tableHolder = new TableHolder(objects);
         _hallChat = new HallChatRoomMediator(_serverObjects, HALL_TIMEOUT_PERIOD);
+        _messageOfTheDay = DEFAULT_MESSAGE_OF_THE_DAY;
         objects.getChatServer().addChatRoom(_hallChat);
     }
 
@@ -172,27 +176,29 @@ public class HallServer extends AbstractServer {
 
         if (format == null) {
             // Maybe it's a league format?
-            league = _serverObjects.getLeagueService().getLeagueByType(formatSelection);
-            if (league != null) {
+            try {
+                league = _serverObjects.getLeagueService().getLeagueByType(formatSelection);
                 seriesData = _serverObjects.getLeagueService().getCurrentLeagueSeries(league);
                 if (seriesData == null)
                     throw new HallException("There is no ongoing series for that league");
 
-                if(isInviteOnly) {
+                if (isInviteOnly) {
                     throw new HallException("League games cannot be invite-only");
                 }
 
-                if(isPrivate) {
+                if (isPrivate) {
                     throw new HallException("League games cannot be private");
                 }
 
                 //Don't want people getting around the anonymity for leagues.
-                if(description != null)
+                if (description != null)
                     description = "";
 
                 format = seriesData.getFormat();
 
                 gameTimer = GameTimer.COMPETITIVE_TIMER;
+            } catch(LeagueNotFoundException ignored) {
+
             }
         }
         // It's not a normal format and also not a league one
@@ -330,7 +336,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private final boolean leaveAwaitingTablesForLeavingPlayer(User player) {
+    private boolean leaveAwaitingTablesForLeavingPlayer(User player) {
         _hallDataAccessLock.writeLock().lock();
         try {
             return tableHolder.leaveAwaitingTablesForPlayer(player);

@@ -2,7 +2,6 @@ package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
@@ -50,6 +49,17 @@ public class GameRecorder {
         _playerDAO = playerDAO;
     }
 
+    public static String getPlayTestMessage(Map<String, String> playerRecordingId, String winnerName,
+                                            String loserName) {
+        String url = AppConfig.getPlaytestUrl() +
+                AppConfig.getPlaytestPrefixUrl() + winnerName + "$" +
+                playerRecordingId.get(winnerName) + "%20" +
+                AppConfig.getPlaytestPrefixUrl() + loserName + "$" + playerRecordingId.get(loserName);
+        return "Thank you for playtesting!  " +
+                "If you have any feedback, bugs, or other issues to report about this match, <a href= '" +
+                url + "'>please do so using this form.</a>";
+    }
+
 
     public final GameRecordingInProgress recordGame(CardGameMediator game, GameFormat format,
                                                     final String tournamentName,
@@ -77,7 +87,7 @@ public class GameRecorder {
                 gameInfo.id = _gameHistoryService.addGameHistory(gameInfo);
 
                 if (format.isPlaytest()) {
-                    game.sendMessageToPlayers(HTMLUtils.getPlayTestMessage(playerRecordingId, winnerName, loserName));
+                    game.sendMessageToPlayers(getPlayTestMessage(playerRecordingId, winnerName, loserName));
                 }
             } catch(UserNotFoundException exp) {
                 LOGGER.error(exp.getMessage());

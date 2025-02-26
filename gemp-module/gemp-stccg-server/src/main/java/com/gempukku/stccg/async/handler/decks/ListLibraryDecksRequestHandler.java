@@ -1,11 +1,10 @@
 package com.gempukku.stccg.async.handler.decks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.User;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 
-public class ListLibraryDecksRequestHandler extends DeckRequestHandler implements UriRequestHandlerNew {
+public class ListLibraryDecksRequestHandler extends DeckRequestHandler implements UriRequestHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(ListLibraryDecksRequestHandler.class);
 

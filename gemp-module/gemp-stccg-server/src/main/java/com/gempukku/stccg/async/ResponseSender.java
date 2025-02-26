@@ -50,16 +50,12 @@ public class ResponseSender implements ResponseWriter {
 
     @Override
     public final void writeError(int status) {
-        writeError(status, new DefaultHttpHeaders());
+        sendResponse(HttpResponseStatus.valueOf(status), new byte[0], new DefaultHttpHeaders(), ctx, request);
     }
 
     @Override
     public final void writeError(int status, Map<String, String> headers) {
-        writeError(status, convertToHeaders(headers));
-    }
-
-    private void writeError(int status, HttpHeaders headers) {
-        sendResponse(HttpResponseStatus.valueOf(status), new byte[0], headers, ctx, request);
+        sendResponse(HttpResponseStatus.valueOf(status), new byte[0], convertToHeaders(headers), ctx, request);
     }
 
     @Override

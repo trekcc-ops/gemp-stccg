@@ -3,11 +3,11 @@ package com.gempukku.stccg.async.handler.admin;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.ChatServer;
 
-public class ReloadCardLibraryRequestHandler extends AdminRequestHandlerNew implements UriRequestHandlerNew {
+public class ReloadCardLibraryRequestHandler implements UriRequestHandler, AdminRequestHandler {
     private final static long CARD_LOAD_SLEEP_TIME = 6000;
 
     @Override

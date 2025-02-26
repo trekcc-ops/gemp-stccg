@@ -3,10 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.game.GameRecorder;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.util.AsciiString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReplayRequestHandler implements UriRequestHandlerNew {
+public class ReplayRequestHandler implements UriRequestHandler {
     private final static int BYTE_LENGTH = 1024;
     private static final Logger LOGGER = LogManager.getLogger(ReplayRequestHandler.class);
 

@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.GameServer;
-import io.netty.handler.codec.http.HttpRequest;
 
-public class CancelGameRequestHandler extends GameRequestHandlerNew implements UriRequestHandlerNew {
+public class CancelGameRequestHandler extends GameRequestHandlerNew implements UriRequestHandler {
 
     CancelGameRequestHandler(
             @JsonProperty("gameId")

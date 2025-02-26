@@ -116,7 +116,7 @@ export default class GempClientCommunication {
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
@@ -127,25 +127,14 @@ export default class GempClientCommunication {
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
-    getTournament(tournamentId, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/tournament/" + tournamentId,
-            cache:false,
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"json"
         });
     }
 
     getLeagues(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/league",
+            url:this.url + "/currentLeagues",
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -156,7 +145,10 @@ export default class GempClientCommunication {
     getLeague(type, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/league/" + type,
+            url:this.url + "/getLeague",
+            data:{
+                leagueType:type
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -167,7 +159,10 @@ export default class GempClientCommunication {
     joinLeague(code, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/league/" + code,
+            url:this.url + "/joinLeague",
+            data:{
+                leagueType:code
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -397,10 +392,11 @@ export default class GempClientCommunication {
     openPack(collectionType, pack, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/collection/" + collectionType,
+            url:this.url + "/openPack",
             cache:false,
             data:{
-                pack:pack
+                packId:pack,
+                collectionType:collectionType
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -411,11 +407,12 @@ export default class GempClientCommunication {
     openSelectionPack(collectionType, pack, selection, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/collection/" + collectionType,
+            url:this.url + "/openPack",
             cache:false,
             data:{
-                pack:pack,
-                selection:selection
+                packId:pack,
+                selection:selection,
+                collectionType:collectionType
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -701,7 +698,10 @@ export default class GempClientCommunication {
     addTesterFlag(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/playtesting/addTesterFlag",
+            url:this.url + "/setTesterFlag",
+            data:{
+                testerFlag:true
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -712,7 +712,10 @@ export default class GempClientCommunication {
     removeTesterFlag(callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/playtesting/removeTesterFlag",
+            url:this.url + "/setTesterFlag",
+            data:{
+                testerFlag:false
+            },
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -723,7 +726,7 @@ export default class GempClientCommunication {
     getRecentReplays(format, count, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/playtesting/getRecentReplays",
+            url:this.url + "/playtestReplays",
             cache:false,
             data:{
                 format:format,
@@ -774,7 +777,7 @@ export default class GempClientCommunication {
     getDailyMessage(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/admin/getDailyMessage",
+            url:this.url + "/getDailyMessage",
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -785,10 +788,10 @@ export default class GempClientCommunication {
     setDailyMessage(motd, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/setDailyMessage",
+            url:this.url + "/setDailyMessage",
             cache:false,
             data:{
-                motd:motd
+                newMessage:motd
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -799,10 +802,10 @@ export default class GempClientCommunication {
     resetUserPassword(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/resetUserPassword",
+            url:this.url + "/resetUserPassword",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -856,10 +859,10 @@ export default class GempClientCommunication {
     susUserSearch(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/findMultipleAccounts",
+            url:this.url + "/findMultipleAccounts",
             cache:false,
             data:{
-                login:login
+                userName:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -870,10 +873,10 @@ export default class GempClientCommunication {
     banMultiple(login, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/banMultiple",
+            url:this.url + "/banUserMultiple",
             cache:false,
             data:{
-                login:login
+                userNames:login
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -921,7 +924,7 @@ export default class GempClientCommunication {
     previewSoloDraftLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/previewSoloDraftLeague",
+            url:this.url + "/leagueAdminDraft",
             cache:false,
             data:{
                 format:format,
@@ -929,7 +932,8 @@ export default class GempClientCommunication {
                 seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
-                cost:cost
+                cost:cost,
+                preview:true
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -940,7 +944,7 @@ export default class GempClientCommunication {
     addSoloDraftLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/addSoloDraftLeague",
+            url:this.url + "/leagueAdminDraft",
             cache:false,
             data:{
                 format:format,
@@ -948,7 +952,8 @@ export default class GempClientCommunication {
                 seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
-                cost:cost
+                cost:cost,
+                preview:false
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -959,7 +964,7 @@ export default class GempClientCommunication {
     previewConstructedLeague(start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/previewConstructedLeague",
+            url:this.url + "/leagueAdminConstructed",
             cache:false,
             data:{
                 start:start,
@@ -969,7 +974,8 @@ export default class GempClientCommunication {
                 cost:cost,
                 format:formats,
                 seriesDuration:seriesDurations,
-                maxMatches:maxMatches
+                maxMatches:maxMatches,
+                preview:true
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -980,7 +986,7 @@ export default class GempClientCommunication {
     addConstructedLeague(start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/addConstructedLeague",
+            url:this.url + "/leagueAdminConstructed",
             cache:false,
             data:{
                 start:start,
@@ -990,7 +996,8 @@ export default class GempClientCommunication {
                 cost:cost,
                 format:formats,
                 seriesDuration:seriesDurations,
-                maxMatches:maxMatches
+                maxMatches:maxMatches,
+                preview:false
             },
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -1020,7 +1027,7 @@ export default class GempClientCommunication {
     getStatus(callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/",
+            url:this.url + "/hallStatus",
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -1062,8 +1069,11 @@ export default class GempClientCommunication {
     getDraft(leagueType, callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/soloDraft/"+leagueType,
+            url:this.url + "/getAvailableDraftPicks",
             cache:false,
+            data:{
+                leagueType:leagueType
+            },
             success:callback,
             error:this.errorCheck(errorMap),
             dataType:"xml"
@@ -1073,9 +1083,10 @@ export default class GempClientCommunication {
     makeDraftPick(leagueType, choiceId, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/soloDraft/"+leagueType,
+            url:this.url + "/makeDraftPick",
             cache:false,
             data:{
+                leagueType:leagueType,
                 choiceId:choiceId
             },
             success:callback,

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.HallException;
@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class JoinTableRequestHandler implements UriRequestHandlerNew {
+public class JoinTableRequestHandler implements UriRequestHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(JoinTableRequestHandler.class);
     private final String _deckName;

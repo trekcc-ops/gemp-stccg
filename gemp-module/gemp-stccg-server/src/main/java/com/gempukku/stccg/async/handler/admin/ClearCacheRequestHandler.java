@@ -5,15 +5,12 @@ import com.gempukku.stccg.async.CacheManager;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.league.LeagueService;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClearCacheRequestHandler extends AdminRequestHandlerNew implements UriRequestHandlerNew {
+public class ClearCacheRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     @Override
     public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)

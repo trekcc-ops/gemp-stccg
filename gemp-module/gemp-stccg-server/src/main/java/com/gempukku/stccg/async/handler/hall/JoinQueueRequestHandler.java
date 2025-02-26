@@ -4,16 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.HallException;
 import com.gempukku.stccg.hall.HallServer;
-import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class JoinQueueRequestHandler implements UriRequestHandlerNew {
+public class JoinQueueRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(JoinQueueRequestHandler.class);
 
     private final String _queueId;

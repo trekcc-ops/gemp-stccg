@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.HallServer;
-import io.netty.handler.codec.http.HttpRequest;
 
 
-public class LeaveTournamentRequestHandler implements UriRequestHandlerNew {
+public class LeaveTournamentRequestHandler implements UriRequestHandler {
     private final String _tournamentId;
     LeaveTournamentRequestHandler(
         @JsonProperty("tournamentId")

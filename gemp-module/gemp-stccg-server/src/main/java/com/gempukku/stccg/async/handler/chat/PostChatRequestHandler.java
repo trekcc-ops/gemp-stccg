@@ -8,17 +8,16 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandlerNew;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.chat.ChatCommunicationChannel;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.database.User;
-import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
 
-public class PostChatRequestHandler implements UriRequestHandlerNew {
+public class PostChatRequestHandler implements UriRequestHandler {
 
     private final String _roomName;
 
