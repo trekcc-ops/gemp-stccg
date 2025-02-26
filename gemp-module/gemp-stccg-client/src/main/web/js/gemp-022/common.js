@@ -27,10 +27,12 @@ export var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 export var serverDomain = "";
 
 export function formatToTwoDigits(no) {
-    if (no < 10)
+    if (no < 10) {
         return "0" + no;
-    else
+    }
+    else {
         return no;
+    }
 }
 
 export function formatDate(date) {

@@ -1,5 +1,5 @@
 import GempClientCommunication from './communication.js';
-import { monthNames } from './common.js';
+import { monthNames, formatToTwoDigits } from './common.js';
 
 export default class ChatBoxUI {
     name;
@@ -396,15 +396,6 @@ export default class ChatBoxUI {
     scrollChatToBottom() {
         this.chatMessagesDiv.prop({ scrollTop:this.chatMessagesDiv.prop("scrollHeight") })
     }
-    
-    formatToTwoDigits(no) {
-        if (no < 10) {
-            return "0" + no;
-        }
-        else {
-            return no;
-        }
-    }
 
     processMessages(json, processAgain) {
         this.retryCount = 0;
@@ -421,7 +412,7 @@ export default class ChatBoxUI {
             let prefix = "<div class='msg-identifier'>";
             if (this.showTimestamps) {
                 let date = new Date(parseInt(message.timestamp));
-                let dateStr = monthNames[date.getMonth()] + " " + date.getDate() + " " + this.formatToTwoDigits(date.getHours()) + ":" + this.formatToTwoDigits(date.getMinutes()) + ":" + this.formatToTwoDigits(date.getSeconds());
+                let dateStr = monthNames[date.getMonth()] + " " + date.getDate() + " " + formatToTwoDigits(date.getHours()) + ":" + formatToTwoDigits(date.getMinutes()) + ":" + formatToTwoDigits(date.getSeconds());
                 prefix += "<span class='timestamp'>[" + dateStr + "]</span>";
             }
 
