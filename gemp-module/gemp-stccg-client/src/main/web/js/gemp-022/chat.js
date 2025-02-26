@@ -47,145 +47,144 @@ export default class ChatBoxUI {
         this.name = name;
         this.div = div;
         
-        //This needs to be done before the comm object is instantiated, as otherwise it's too slow for immediate errors
+        // This needs to be done before the comm object is instantiated, as otherwise it's too slow for immediate errors
+        if (this.name === "Game Hall") {
+            this.chatMessagesDiv = $("#chatMessages");
+        }
+        else {
+            this.chatMessagesDiv = $("<div class='chatMessages'></div>");
+            this.div.append(this.chatMessagesDiv);
+        }
+        
+        this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
+            that.appendMessage(`Unknown chat problem occurred (error=${xhr.status})`, "warningMessage");
+        });
+        this.enableDiscord = allowDiscord;
 
-        if(this.name == "Game Hall")
-            {
-                this.chatMessagesDiv = $("#chatMessages");
-            }
-            else
-            {
-                this.chatMessagesDiv = $("<div class='chatMessages'></div>");
-                this.div.append(this.chatMessagesDiv);
-            }
-    
-            
-            this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
-                that.appendMessage("Unknown chat problem occurred (error=" + xhr.status + ")", "warningMessage");
-            });
-            this.enableDiscord = allowDiscord;
-    
-            this.comm.getPlayerInfo(function(json)
-            { 
+        this.comm.getPlayerInfo(
+            function(json) { 
                 that.initPlayerInfo(json);
-            }, this.chatErrorMap());
-    
-            if (this.name != null) {
-                
-                if(this.name == "Game Hall")
-                {
-                    this.discordDiv = $("#discordChat");
-    
-                    this.chatTalkDiv = $("#chatTalk");
-    
-                    this.hideSystemButton = $("#showSystemButton");
-                    if (showHideSystemButton) {
-                        this.hideSystemButton.button({
-                            icon: "ui-icon-zoomin",
-                            text:false
-                        });
-    
-                        this.hideSystemButton.click(
-                                function () {
-                                    if (that.isShowingMessageClass("systemMessage")) {
-                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
-                                        that.hideMessageClass("systemMessage");
-                                    } else {
-                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
-                                        that.showMessageClass("systemMessage");
-                                    }
-                                });
-                        this.hideMessageClass("systemMessage");
-                    }
-                    else
-                    {
-                        this.hideSystemButton.hide();
-                        this.hideSystemButton = null;
-                    }
-    
-                    this.comm.startChat(this.name,
-                            function (json) {
-                                that.processMessages(json, true);
-                                that.scrollChatToBottom();
-                            }, this.chatErrorMap());
-    
-                    this.chatTalkDiv.keydown(function (e) {
-                        if (e.keyCode == 13) {
-                            if(!e.shiftKey)
-                            {
-                                e.preventDefault();
-                                var value = $(this).val();
-                                if (value != "")
-                                    that.sendMessage(value);
-                                $(this).val("").trigger("oninput");
-                                that.scrollChatToBottom();
-                            }
-                        }
+            },
+            this.chatErrorMap()
+        );
+
+        if (this.name !== null) {
+            if (this.name === "Game Hall") {
+                this.discordDiv = $("#discordChat");
+                this.chatTalkDiv = $("#chatTalk");
+
+                this.hideSystemButton = $("#showSystemButton");
+                if (showHideSystemButton) {
+                    this.hideSystemButton.button({
+                        icon: "ui-icon-zoomin",
+                        text:false
                     });
-    
-                    
-                    if (showList) {
-                        this.chatListDiv = $("#userList");
-                        this.toggleChatButton = $("#toggleChatButt");
-    
-                        this.toggleChatButton.button();
-                        this.toggleChatButton.click( function() {
-                            that.toggleChat();
-                        });
-                    }
-                    
-                    this.setDiscordVisible(false);
+
+                    this.hideSystemButton.on("click",
+                            function () {
+                                if (that.isShowingMessageClass("systemMessage")) {
+                                    $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
+                                    that.hideMessageClass("systemMessage");
+                                } else {
+                                    $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
+                                    that.showMessageClass("systemMessage");
+                                }
+                            });
+                    this.hideMessageClass("systemMessage");
                 }
-                else
-                {
-                    this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
-    
-                    if (showHideSystemButton) {
-                        this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button({
-                            icon: "ui-icon-zoomin",
-                            text:false
-                        });
-                        this.hideSystemButton.click(
-                                function () {
-                                    if (that.isShowingMessageClass("systemMessage")) {
-                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
-                                        that.hideMessageClass("systemMessage");
-                                    } else {
-                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
-                                        that.showMessageClass("systemMessage");
-                                    }
-                                });
-                        this.hideMessageClass("systemMessage");
-                    }
-    
-                    if (showList) {
-                        this.chatListDiv = $("<div class='userList'></div>");
-                        this.div.append(this.chatListDiv);
-                    }
-                    if (this.hideSystemButton != null)
-                        this.div.append(this.hideSystemButton);
-    
-                    this.div.append(this.chatTalkDiv);
-    
-                    this.comm.startChat(this.name,
-                            function (json) {
-                                that.processMessages(json, true);
-                            }, this.chatErrorMap());
-    
-                    this.chatTalkDiv.bind("keypress", function (e) {
-                        var code = (e.keyCode ? e.keyCode : e.which);
-                        if (code == 13) {
-                            var value = $(this).val();
-                            if (value != "")
+                else {
+                    this.hideSystemButton.hide();
+                    this.hideSystemButton = null;
+                }
+
+                this.comm.startChat(this.name,
+                        function (json) {
+                            that.processMessages(json, true);
+                            that.scrollChatToBottom();
+                        }, this.chatErrorMap());
+
+                this.chatTalkDiv.keydown(function (e) {
+                    if (e.keyCode === 13) {
+                        if (!e.shiftKey) {
+                            e.preventDefault();
+                            let value = $(this).val();
+                            if (value !== "")
                                 that.sendMessage(value);
-                            $(this).val("");
+                            $(this).val("").trigger("oninput");
+                            that.scrollChatToBottom();
                         }
+                    }
+                });
+
+                
+                if (showList) {
+                    this.chatListDiv = $("#userList");
+                    this.toggleChatButton = $("#toggleChatButt");
+
+                    this.toggleChatButton.button();
+                    this.toggleChatButton.on("click", function() {
+                        that.toggleChat();
                     });
                 }
                 
-            } else {
-                this.talkBoxHeight = 0;
+                this.setDiscordVisible(false);
             }
+            else {
+                this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
+
+                if (showHideSystemButton) {
+                    this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button({
+                        icon: "ui-icon-zoomin",
+                        text:false
+                    });
+                    this.hideSystemButton.on("click",
+                        function () {
+                            if (that.isShowingMessageClass("systemMessage")) {
+                                $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
+                                that.hideMessageClass("systemMessage");
+                            }
+                            else {
+                                $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
+                                that.showMessageClass("systemMessage");
+                            }
+                        });
+                    this.hideMessageClass("systemMessage");
+                }
+
+                if (showList) {
+                    this.chatListDiv = $("<div class='userList'></div>");
+                    this.div.append(this.chatListDiv);
+                }
+
+                if (this.hideSystemButton !== null) {
+                    this.div.append(this.hideSystemButton);
+                }
+
+                this.div.append(this.chatTalkDiv);
+
+                this.comm.startChat(
+                    this.name,
+                    function (json) {
+                        that.processMessages(json, true);
+                    },
+                    this.chatErrorMap()
+                );
+
+                this.chatTalkDiv.bind("keypress", function (e) {
+                    let code = (e.keyCode ? e.keyCode : e.which);
+                    if (code === 13) {
+                        let value = $(this).val();
+                        if (value != "") {
+                            that.sendMessage(value);
+                        }
+                        $(this).val("");
+                    }
+                });
+            }
+        }
+        else {
+            this.talkBoxHeight = 0;
+        }
     }
     
     initPlayerInfo(playerInfo) {
