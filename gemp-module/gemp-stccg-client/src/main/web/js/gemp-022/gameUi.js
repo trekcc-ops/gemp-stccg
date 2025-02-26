@@ -1023,7 +1023,7 @@ export default class GameTableUI {
         }
 
         switch(eventType) {
-            case "ACTION_RESULT":
+            case "ACTION_RESULT": {
                 this.updateGameStats(gameState); // updates count of card piles
                 this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
                 this.animations.turnChange(gameState, true);
@@ -1039,6 +1039,7 @@ export default class GameTableUI {
                     this.lastActionIndex = i;
                 }
                 break;
+            }
             case "M":
                 this.animations.message(gameEvent, animate);
                 break;
