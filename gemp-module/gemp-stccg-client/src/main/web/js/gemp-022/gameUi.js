@@ -568,15 +568,15 @@ export default class GameTableUI {
     dragContinuesCardFunction(event) {
         if (this.dragCardId != null) {
             if (!this.draggingHorizontaly && Math.abs(this.dragStartX - event.clientX) >= 20) {
-                var cardElems = getCardDivFromId(this.dragCardId);
+                let cardElems = getCardDivFromId(this.dragCardId);
                 if (cardElems.length > 0) {
-                    var cardElem = cardElems[0];
-                    var cardData = $(cardElem).data("card");
+                    let cardElem = cardElems[0];
+                    let cardData = $(cardElem).data("card");
                     this.draggingHorizontaly = true;
-                    var cardGroup = this.getReorganizableCardGroupForCardData(cardData);
+                    let cardGroup = this.getReorganizableCardGroupForCardData(cardData);
                     if (cardGroup != null) {
-                        var cardsInGroup = cardGroup.getCardElems();
-                        for (var i = 0; i < cardsInGroup.length; i++) {
+                        let cardsInGroup = cardGroup.getCardElems();
+                        for (let i = 0; i < cardsInGroup.length; i++) {
                             if (cardsInGroup[i].data("card").cardId == this.dragCardId) {
                                 this.dragCardIndex = i;
                                 this.draggedCardIndex = i;
@@ -587,15 +587,15 @@ export default class GameTableUI {
                 }
             }
             if (this.draggingHorizontaly && this.dragCardId != null && this.dragCardIndex != null) {
-                var cardElems = getCardDivFromId(this.dragCardId);
+                let cardElems = getCardDivFromId(this.dragCardId);
                 if (cardElems.length > 0) {
-                    var cardElem = $(cardElems[0]);
-                    var cardData = cardElem.data("card");
-                    var cardGroup = this.getReorganizableCardGroupForCardData(cardData);
+                    let cardElem = $(cardElems[0]);
+                    let cardData = cardElem.data("card");
+                    let cardGroup = this.getReorganizableCardGroupForCardData(cardData);
                     if (cardGroup != null) {
-                        var cardsInGroup = cardGroup.getCardElems();
-                        var width = cardElem.width();
-                        var currentIndex;
+                        let cardsInGroup = cardGroup.getCardElems();
+                        let width = cardElem.width();
+                        let currentIndex;
                         if (event.clientX < this.dragStartX) {
                             currentIndex = this.dragCardIndex - Math.floor((this.dragStartX - event.clientX) / width);
                         }
@@ -610,7 +610,7 @@ export default class GameTableUI {
                             currentIndex = cardsInGroup.length - 1;
                         }
 
-                        var cardIdAtIndex = $(cardsInGroup[currentIndex]).data("card").cardId;
+                        let cardIdAtIndex = $(cardsInGroup[currentIndex]).data("card").cardId;
                         if (cardIdAtIndex != this.dragCardId) {
                             if (currentIndex < this.draggedCardIndex) {
                                 $(".card:cardId(" + cardIdAtIndex + ")").before(getCardDivFromId(this.dragCardId));
