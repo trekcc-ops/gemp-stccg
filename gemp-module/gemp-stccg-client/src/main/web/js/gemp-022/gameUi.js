@@ -2541,7 +2541,7 @@ export class TribblesGameTableUI extends GameTableUI {
         }
         var yScales = new Array();
         var scaleTotal = 0;
-        for (var i = 0; i < heightScales.length; i++) {
+        for (let i = 0; i < heightScales.length; i++) {
             yScales[i] = scaleTotal;
             scaleTotal += heightScales[i];
         }
@@ -2605,15 +2605,13 @@ export class TribblesGameTableUI extends GameTableUI {
             );
         }
 
-        var i = 0; // I don't think this is used, but not deleting it for now to avoid breaking anything
-
         if (!this.spectatorMode) {
             this.hand.setBounds(HAND_LEFT, HAND_TOP, HAND_WIDTH, HAND_HEIGHT);
         }
 
 
         for (var playerId in this.discardPileGroups) {
-            if (this.discardPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.discardPileGroups, playerId)) {
                 this.discardPileGroups[playerId].layoutCards();
             }
         }
@@ -2929,25 +2927,25 @@ export class ST1EGameTableUI extends GameTableUI {
         }
 
         for (let playerId in this.discardPileGroups) {
-            if (this.discardPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.discardPileGroups, playerId)) {
                 this.discardPileGroups[playerId].layoutCards();
             }
         }
 
         for (let playerId in this.adventureDeckGroups) {
-            if (this.adventureDeckGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.adventureDeckGroups, playerId)) {
                 this.adventureDeckGroups[playerId].layoutCards();
             }
         }
 
         for (let playerId in this.removedPileGroups) {
-            if (this.removedPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.removedPileGroups, playerId)) {
                 this.removedPileGroups[playerId].layoutCards();
             }
         }
 
         for (let playerId in this.miscPileGroups) {
-            if (this.miscPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.miscPileGroups, playerId)) {
                 this.miscPileGroups[playerId].layoutCards();
             }
         }
