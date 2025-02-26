@@ -2647,35 +2647,35 @@ export class ST1EGameTableUI extends GameTableUI {
         var that = this;
 
         // Increment locationIndex for existing cards on the table to the right of the added location
-        var locationBeforeCount = this.locationDivs.length;
-        for (var i=locationBeforeCount-1; i>=index; i--) {
+        let locationBeforeCount = this.locationDivs.length;
+        for (let i=locationBeforeCount-1; i>=index; i--) {
             this.locationDivs[i].data( "locationIndex", i+1);
             this.locationDivs[i].removeAttr("id");
             this.locationDivs[i].attr("id", "location" + (i+1));
 
-            var missionCardGroup = this.missionCardGroups[i].getCardElems();
-            for (var j=0; j<missionCardGroup.length; j++) {
-                var cardData = $(missionCardGroup[j]).data("card");
+            let missionCardGroup = this.missionCardGroups[i].getCardElems();
+            for (let j=0; j<missionCardGroup.length; j++) {
+                let cardData = $(missionCardGroup[j]).data("card");
                 cardData.locationIndex = i+1;
             }
             this.missionCardGroups[i].locationIndex = i+1;
             
-            var opponentAtLocationCardGroup = this.opponentAtLocationCardGroups[i].getCardElems();
-            for (var j=0; j<opponentAtLocationCardGroup.length; j++) {
-                var cardData = $(opponentAtLocationCardGroup[j]).data("card");
+            let opponentAtLocationCardGroup = this.opponentAtLocationCardGroups[i].getCardElems();
+            for (let j=0; j<opponentAtLocationCardGroup.length; j++) {
+                let cardData = $(opponentAtLocationCardGroup[j]).data("card");
                 cardData.locationIndex = i+1;
             }
             this.opponentAtLocationCardGroups[i].locationIndex = i+1;
 
-            var playerAtLocationCardGroup = this.playerAtLocationCardGroups[i].getCardElems();
-            for (var j=0; j<playerAtLocationCardGroup.length; j++) {
-                var cardData = $(playerAtLocationCardGroup[j]).data("card");
+            let playerAtLocationCardGroup = this.playerAtLocationCardGroups[i].getCardElems();
+            for (let j=0; j<playerAtLocationCardGroup.length; j++) {
+                let cardData = $(playerAtLocationCardGroup[j]).data("card");
                 cardData.locationIndex = i+1;
             }
             this.playerAtLocationCardGroups[i].locationIndex = i+1;            
         }
 
-        var newDiv = $("<div id='location" + index + "' class='ui-widget-content locationDiv'></div>");
+        let newDiv = $("<div id='location" + index + "' class='ui-widget-content locationDiv'></div>");
         newDiv.data( "locationIndex", index);
         newDiv.data( "quadrant", quadrant);
         newDiv.data("region", region);
@@ -2683,18 +2683,18 @@ export class ST1EGameTableUI extends GameTableUI {
 
         this.locationDivs.splice(index, 0, newDiv);
 
-            // TODO - MissionCardGroup class exists for this, but using TableCardGroup to test beaming function
-        var missionCardGroup = new TableCardGroup($("#main"), function (card) {
+        // TODO - MissionCardGroup class exists for this, but using TableCardGroup to test beaming function
+        let missionCardGroup = new TableCardGroup($("#main"), function (card) {
             return (card.zone == "SPACELINE" && card.locationIndex == this.locationIndex );
         }, false, index, this.bottomPlayerId);
         this.missionCardGroups.splice(index, 0, missionCardGroup);
 
-        var opponentAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
+        let opponentAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
             return (card.zone == "AT_LOCATION" && card.locationIndex == this.locationIndex && card.owner != that.bottomPlayerId);
         }, false, index, this.bottomPlayerId);
         this.opponentAtLocationCardGroups.splice(index, 0, opponentAtLocationCardGroup);
 
-        var playerAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
+        let playerAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
             return (card.zone == "AT_LOCATION" && card.locationIndex == this.locationIndex && card.owner == that.bottomPlayerId);
         }, false, index, this.bottomPlayerId);
         this.playerAtLocationCardGroups.splice(index, 0, playerAtLocationCardGroup);
@@ -2703,10 +2703,10 @@ export class ST1EGameTableUI extends GameTableUI {
     }
 
     layoutUI(sizeChanged) {
-        var padding = this.padding;
+        let padding = this.padding;
 
-        var width = $(window).width();
-        var height = $(window).height();
+        let width = $(window).width();
+        let height = $(window).height();
         if (sizeChanged) {
             this.windowWidth = width;
             this.windowHeight = height;
@@ -2715,64 +2715,51 @@ export class ST1EGameTableUI extends GameTableUI {
             height = this.windowHeight;
         }
 
-        var BORDER_PADDING = 2;
-        var LOCATION_BORDER_PADDING = 4;
+        let BORDER_PADDING = 2;
+        let LOCATION_BORDER_PADDING = 4;
 
         // Defines the relative height of the opponent/player/table areas of the UI.
-        var OPPONENT_AREA_HEIGHT_SCALE = 0.15;
-        var PLAYER_AREA_HEIGHT_SCALE = 0.3;
+        let OPPONENT_AREA_HEIGHT_SCALE = 0.15;
+        let PLAYER_AREA_HEIGHT_SCALE = 0.3;
 
         // Defines the minimum/maximum height of the opponent/player/table areas of the UI. No max for table area.
-        var MIN_OPPONENT_AREA_HEIGHT = 114;
-        var MAX_OPPONENT_AREA_HEIGHT = 140;
-        var MIN_PLAYER_AREA_HEIGHT = MIN_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
-        var MAX_PLAYER_AREA_HEIGHT = MAX_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
+        let MIN_OPPONENT_AREA_HEIGHT = 114;
+        let MAX_OPPONENT_AREA_HEIGHT = 140;
+        let MIN_PLAYER_AREA_HEIGHT = MIN_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
+        let MAX_PLAYER_AREA_HEIGHT = MAX_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
 
         // Sets the top and height of the opponent/player/table areas of the UI.
-        var OPPONENT_AREA_TOP = 0;
-        var OPPONENT_AREA_HEIGHT = Math.min(MAX_OPPONENT_AREA_HEIGHT, Math.max(MIN_OPPONENT_AREA_HEIGHT, Math.floor(height * OPPONENT_AREA_HEIGHT_SCALE)));
-        var OPPONENT_CARD_PILE_TOP_1 = OPPONENT_AREA_TOP;
-        var OPPONENT_CARD_PILE_HEIGHT_1 = Math.floor(OPPONENT_AREA_HEIGHT / 2);
-        var OPPONENT_CARD_PILE_TOP_2 = OPPONENT_AREA_TOP + OPPONENT_CARD_PILE_HEIGHT_1 + BORDER_PADDING - 1;
-        var OPPONENT_CARD_PILE_HEIGHT_2 = OPPONENT_AREA_HEIGHT - OPPONENT_CARD_PILE_HEIGHT_1 - BORDER_PADDING + 1;
-        var PLAYER_AREA_HEIGHT = Math.min(MAX_PLAYER_AREA_HEIGHT, Math.max(MIN_PLAYER_AREA_HEIGHT, Math.floor(height * PLAYER_AREA_HEIGHT_SCALE)));
-        var PLAYER_AREA_TOP = height - BORDER_PADDING - PLAYER_AREA_HEIGHT;
-        var PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT = Math.floor(PLAYER_AREA_HEIGHT / 2);
-        var PLAYER_CARD_PILE_TOP_1 = PLAYER_AREA_TOP;
-        var PLAYER_CARD_PILE_HEIGHT_1 = Math.floor(PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT / 2);
-        var PLAYER_CARD_PILE_TOP_2 = PLAYER_CARD_PILE_TOP_1 + PLAYER_CARD_PILE_HEIGHT_1 + BORDER_PADDING - 1;
-        var PLAYER_CARD_PILE_HEIGHT_2 = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - PLAYER_CARD_PILE_HEIGHT_1 - BORDER_PADDING + 1;
-        var PLAYER_ACTION_AREA_AND_HAND_TOP = PLAYER_AREA_TOP + PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT + BORDER_PADDING - 1;
-        var PLAYER_ACTION_AREA_AND_HAND_HEIGHT = PLAYER_AREA_HEIGHT - PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - BORDER_PADDING;
-        var TABLE_AREA_TOP = OPPONENT_AREA_HEIGHT + BORDER_PADDING;
-        var TABLE_AREA_HEIGHT = Math.max(0, PLAYER_AREA_TOP - LOCATION_BORDER_PADDING - TABLE_AREA_TOP);
+        let OPPONENT_AREA_TOP = 0;
+        let OPPONENT_AREA_HEIGHT = Math.min(MAX_OPPONENT_AREA_HEIGHT, Math.max(MIN_OPPONENT_AREA_HEIGHT, Math.floor(height * OPPONENT_AREA_HEIGHT_SCALE)));
+
+        let PLAYER_AREA_HEIGHT = Math.min(MAX_PLAYER_AREA_HEIGHT, Math.max(MIN_PLAYER_AREA_HEIGHT, Math.floor(height * PLAYER_AREA_HEIGHT_SCALE)));
+        let PLAYER_AREA_TOP = height - BORDER_PADDING - PLAYER_AREA_HEIGHT;
+        let PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT = Math.floor(PLAYER_AREA_HEIGHT / 2);
+        let PLAYER_ACTION_AREA_AND_HAND_TOP = PLAYER_AREA_TOP + PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT + BORDER_PADDING - 1;
+        let PLAYER_ACTION_AREA_AND_HAND_HEIGHT = PLAYER_AREA_HEIGHT - PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - BORDER_PADDING;
+        let TABLE_AREA_TOP = OPPONENT_AREA_HEIGHT + BORDER_PADDING;
+        let TABLE_AREA_HEIGHT = Math.max(0, PLAYER_AREA_TOP - LOCATION_BORDER_PADDING - TABLE_AREA_TOP);
 
         // Defines the sizes of other items in the UI.
-        var LEFT_SIDE = 0;
-        var GAME_STATE_AND_CHAT_WIDTH = 300;
-        var CARD_PILE_AND_ACTION_AREA_LEFT = GAME_STATE_AND_CHAT_WIDTH + BORDER_PADDING - 1;
-        var CARD_PILE_AND_ACTION_AREA_WIDTH = 141;
-        var CARD_PILE_LEFT_1 = CARD_PILE_AND_ACTION_AREA_LEFT;
-        var CARD_PILE_WIDTH_1 = Math.floor(CARD_PILE_AND_ACTION_AREA_WIDTH / 3);
-        var CARD_PILE_LEFT_2 = CARD_PILE_AND_ACTION_AREA_LEFT + CARD_PILE_WIDTH_1 + BORDER_PADDING - 1;
-        var CARD_PILE_WIDTH_2 = CARD_PILE_WIDTH_1;
-        var CARD_PILE_LEFT_3 = CARD_PILE_LEFT_2 + CARD_PILE_WIDTH_2 + BORDER_PADDING - 1;
-        var CARD_PILE_WIDTH_3 = CARD_PILE_AND_ACTION_AREA_WIDTH - CARD_PILE_WIDTH_1 - CARD_PILE_WIDTH_2;
-        var LARGE_STAT_BOX_SIZE = 25;
-        var SMALL_STAT_BOX_SIZE = 20;
-        var STAT_BOX_PADDING = 2;
-        var TAB_PANE_HEIGHT = 25;
-        var TAB_PANE_WIDTH_PADDING = 4;
-        var CHAT_HEIGHT = PLAYER_AREA_HEIGHT - BORDER_PADDING + 1;
-        var CHAT_WIDTH = GAME_STATE_AND_CHAT_WIDTH;
+        let LEFT_SIDE = 0;
+        let GAME_STATE_AND_CHAT_WIDTH = 300;
+        let CARD_PILE_AND_ACTION_AREA_LEFT = GAME_STATE_AND_CHAT_WIDTH + BORDER_PADDING - 1;
+        let CARD_PILE_AND_ACTION_AREA_WIDTH = 141;
+        let CARD_PILE_WIDTH_1 = Math.floor(CARD_PILE_AND_ACTION_AREA_WIDTH / 3);
+        let CARD_PILE_LEFT_2 = CARD_PILE_AND_ACTION_AREA_LEFT + CARD_PILE_WIDTH_1 + BORDER_PADDING - 1;
+        let CARD_PILE_WIDTH_2 = CARD_PILE_WIDTH_1;
+        let CARD_PILE_LEFT_3 = CARD_PILE_LEFT_2 + CARD_PILE_WIDTH_2 + BORDER_PADDING - 1;
+        let CARD_PILE_WIDTH_3 = CARD_PILE_AND_ACTION_AREA_WIDTH - CARD_PILE_WIDTH_1 - CARD_PILE_WIDTH_2;
+        let TAB_PANE_HEIGHT = 25;
+        let TAB_PANE_WIDTH_PADDING = 4;
+        let CHAT_HEIGHT = PLAYER_AREA_HEIGHT - BORDER_PADDING + 1;
+        let CHAT_WIDTH = GAME_STATE_AND_CHAT_WIDTH;
 
         // Sets the hand and side of table left and width
-        var HAND_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
-        var HAND_WIDTH = (width - HAND_LEFT) - BORDER_PADDING;
-        var SIDE_OF_TABLE_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
-        var SIDE_OF_TABLE_WIDTH = (width - SIDE_OF_TABLE_LEFT) - BORDER_PADDING;
-
-        var BOTTOM_LEFT_TABS_RIGHT = LEFT_SIDE + CHAT_WIDTH;
+        let HAND_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        let HAND_WIDTH = (width - HAND_LEFT) - BORDER_PADDING;
+        let SIDE_OF_TABLE_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        let SIDE_OF_TABLE_WIDTH = (width - SIDE_OF_TABLE_LEFT) - BORDER_PADDING;
 
         $("#bottomLeftTabs").css({left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH - 50, height: CHAT_HEIGHT});
         this.tabPane.css({position: "absolute", left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
@@ -2780,31 +2767,21 @@ export class ST1EGameTableUI extends GameTableUI {
             CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
 
         // Old LotR gemp code for heightScales
-        var heightScales;
+        let heightScales;
         if (this.spectatorMode) {
             heightScales = [6, 10, 10, 10, 6];
         }
         else {
             heightScales = [5, 9, 9, 10, 6, 10];
         }
-        var yScales = new Array();
-        var scaleTotal = 0;
-        for (var i = 0; i < heightScales.length; i++) {
+        let yScales = new Array();
+        let scaleTotal = 0;
+        for (let i = 0; i < heightScales.length; i++) {
             yScales[i] = scaleTotal;
             scaleTotal += heightScales[i];
         }
 
-        var heightPerScale = (height - (padding * (heightScales.length + 1))) / scaleTotal;
-
-        var advPathWidth = Math.min(150, width * 0.1);
-        var specialUiWidth = 150;
-        var chatHeight = 200;
-        var assignmentsCount = 0;
-
-        var charsWidth = width - (advPathWidth + specialUiWidth + padding * 3);
-        var charsWidthWithAssignments = 2 * charsWidth / (2 + assignmentsCount);
-
-        var currentPlayerTurn = (this.currentPlayerId == this.bottomPlayerId);
+        let specialUiWidth = 150;
 
         if (!this.gameUiInitialized) {
             return;
@@ -2819,7 +2796,7 @@ export class ST1EGameTableUI extends GameTableUI {
         });
         this.gameStateElem.css({
             position: "absolute",
-            left: padding * 2, // + advPathWidth,
+            left: padding * 2,
             top: padding,
             width: specialUiWidth - padding + 75,
             //height: TABLE_AREA_TOP - padding * 2
@@ -2833,14 +2810,16 @@ export class ST1EGameTableUI extends GameTableUI {
             height: $("#bottomLeftTabs").height() - $("#statsDiv").height() - (BORDER_PADDING * 5)
         });
 
-        for (var i = 0; i < 2; i++) {
-            var playerId = this.allPlayerIds[i];
-            if (playerId == this.bottomPlayerId) {
-                var top = PLAYER_AREA_TOP;
-                var height = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT;
+        for (let i = 0; i < 2; i++) {
+            let top = 0;
+            let height = 0;
+            let playerId = this.allPlayerIds[i];
+            if (playerId === this.bottomPlayerId) {
+                top = PLAYER_AREA_TOP;
+                height = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT;
             } else {
-                var top = OPPONENT_AREA_TOP;
-                var height = OPPONENT_AREA_HEIGHT;
+                top = OPPONENT_AREA_TOP;
+                height = OPPONENT_AREA_HEIGHT;
             }
             this.onTableAreas[playerId].setBounds(SIDE_OF_TABLE_LEFT, top, SIDE_OF_TABLE_WIDTH, height);
             this.onTableAreas[playerId].layoutCards();
@@ -2853,8 +2832,6 @@ export class ST1EGameTableUI extends GameTableUI {
 
         var locationsCount = this.locationDivs.length;
 
-        var zoomedInLocationDivWidth = (width / Math.min(3.25, locationsCount)) - (LOCATION_BORDER_PADDING / 2);
-        var otherLocationDivWidth = zoomedInLocationDivWidth;
         var locationDivWidth = (width / locationsCount) - (LOCATION_BORDER_PADDING / 2);
 
         var x = 0;
