@@ -201,12 +201,12 @@ export default class ChatBoxUI {
     }
 
     isShowingMessageClass(msgClass) {
-        var index = $.inArray(msgClass, this.hiddenClasses);
+        let index = $.inArray(msgClass, this.hiddenClasses);
         return index == -1;
     }
 
     showMessageClass(msgClass) {
-        var index = $.inArray(msgClass, this.hiddenClasses);
+        let index = $.inArray(msgClass, this.hiddenClasses);
         if (index > -1) {
             this.hiddenClasses.splice(index, 1);
             $("div.message." + msgClass, this.chatMessagesDiv).show();
@@ -214,25 +214,26 @@ export default class ChatBoxUI {
     }
 
     setBounds(x, y, width, height) {
-        
-        if(this.name != "Game Hall")
-        {
-            var talkBoxPadding = 3;
+        if (this.name !== "Game Hall") {
+            let talkBoxPadding = 3;
+            let userListWidth = 150;
 
-            var userListWidth = 150;
-            if (this.chatListDiv == null)
+            if (this.chatListDiv === null) {
                userListWidth = 0;
+            }
 
-            if (this.chatListDiv != null)
+            if (this.chatListDiv !== null) {
                this.chatListDiv.css({ position:"absolute", left:x + width - userListWidth + "px", top:y + "px", width:userListWidth, height:height - this.talkBoxHeight - 3 * talkBoxPadding, overflow:"auto" });
+            }
            
-            if(this.chatMessagesDiv != null)
+            if (this.chatMessagesDiv !== null) {
                 this.chatMessagesDiv.css({ position:"absolute", left:x + "px", top:y + "px", width:width - userListWidth, height:height - this.talkBoxHeight - 3 * talkBoxPadding, overflow:"auto" });
+            }
             
-            if (this.chatTalkDiv != null) {
-               var leftTextBoxPadding = 0;
+            if (this.chatTalkDiv !== null) {
+               let leftTextBoxPadding = 0;
 
-               if (this.hideSystemButton != null) {
+               if (this.hideSystemButton !== null) {
                    this.hideSystemButton.css({position:"absolute", left:x + width - talkBoxPadding - this.talkBoxHeight + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:this.talkBoxHeight, height:this.talkBoxHeight});
                    leftTextBoxPadding += this.talkBoxHeight + talkBoxPadding;
                }
@@ -249,68 +250,71 @@ export default class ChatBoxUI {
     }
     
     handleChatVisibility() {
-        
-        if(this.enableDiscord)
-        {
-            if(this.displayDiscord)
-            {
+        if (this.enableDiscord) {
+            if (this.displayDiscord) {
                 this.toggleChatButton.text("Switch to Legacy");
                 
-                if(this.chatEmbed == null)
-                {
+                if(this.chatEmbed === null) {
                     this.discordDiv.show();
                     this.chatEmbed = $("<widgetbot server='699957633121255515' channel='873065954609881140' width='100%' height='100%' username='" + this.userName + "'></widgetbot>");
-                    var script = $("<script src='https://cdn.jsdelivr.net/npm/@widgetbot/html-embed'></script>");
+                    let script = $("<script src='https://cdn.jsdelivr.net/npm/@widgetbot/html-embed'></script>");
                     this.discordDiv.append(script);
                     this.discordDiv.append(this.chatEmbed);
                 }
             }
-            else
-            {
+            else {
                 this.toggleChatButton.text("Switch to Discord");
             } 
         }
         
-        if(this.enableDiscord && this.displayDiscord)
-        {
-            if(this.discordDiv != null)
+        if (this.enableDiscord && this.displayDiscord) {
+            if (this.discordDiv !== null) {
                 this.discordDiv.show();
+            }
             
-            if(this.chatMessagesDiv != null)
+            if (this.chatMessagesDiv !== null) {
                 this.chatMessagesDiv.hide();
-            if(this.chatTalkDiv != null)
+            }
+            
+            if (this.chatTalkDiv !== null) {
                 this.chatTalkDiv.hide();
-            if(this.hideSystemButton != null)
+            }
+
+            if (this.hideSystemButton !== null) {
                 this.hideSystemButton.hide();
+            }
             // if(this.lockButton != null)
             //     this.lockButton.hide();
         }
-        else
-        {
-            if(this.discordDiv != null)
+        else {
+            if (this.discordDiv !== null) {
                 this.discordDiv.hide();
+            }
             
-            if(this.chatMessagesDiv != null)
+            if (this.chatMessagesDiv !== null) {
                 this.chatMessagesDiv.show();
-            if(this.chatTalkDiv != null)
+            }
+            
+            if (this.chatTalkDiv !== null) {
                 this.chatTalkDiv.show();
-            if(this.hideSystemButton != null)
+            }
+
+            if (this.hideSystemButton !== null) {
                 this.hideSystemButton.show();
+            }
             // if(this.lockButton != null)
             //     this.lockButton.show(); 
         }
         
     }
     
-    toggleChat(){
+    toggleChat() {
         this.setDiscordVisible(!this.displayDiscord);
     }
     
     setDiscordVisible(visible) {
       this.displayDiscord = visible;
-      
       this.handleChatVisibility();
-        
     }
     
     checkForEnd(message, msgClass) {
@@ -319,7 +323,7 @@ export default class ChatBoxUI {
         //     return;
         // }
         
-        if(message.includes("Thank you for playtesting!")) {
+        if (message.includes("Thank you for playtesting!")) {
             if (this.dialogListener != null) {
                 this.dialogListener("Give us feedback!", message);
             }
@@ -328,8 +332,9 @@ export default class ChatBoxUI {
     
 
     appendMessage(message, msgClass) {
-        if (msgClass == undefined)
+        if (msgClass == undefined) {
             msgClass = "chatMessage";
+        }
         
         var locked = false;
         var scroll = this.chatMessagesDiv.scrollTop();
@@ -337,29 +342,29 @@ export default class ChatBoxUI {
         var noScrollBars = maxScroll <= 0;
         var ratio = scroll / maxScroll;
         
-        if(msgClass === "warningMessage" || noScrollBars || maxScroll <= 30 || ratio >= 0.999)
+        if (msgClass === "warningMessage" || noScrollBars || maxScroll <= 30 || ratio >= 0.999) {
             locked = true;
+        }
         
-        if(this.pingRegex != null && this.pingRegex.test(message))
-        {
+        if(this.pingRegex !== null && this.pingRegex.test(message)) {
             msgClass += " user-ping";
         }
-        else if((this.mentionRegex != null && this.mentionRegex.test(message)) || this.everyoneRegex.test(message))
-        {
+        else if ((this.mentionRegex !== null && this.mentionRegex.test(message)) || 
+                  this.everyoneRegex.test(message)) {
             msgClass += " user-mention";
         }
         
-        if(msgClass == "gameMessage")
-        {
-            var msg_content_div = "<div class='msg-content'>" + message + "</div>";
-            var messageDiv = $("<div class='message " + msgClass + "'>" + msg_content_div + "</div>");
+
+        let messageDiv;
+        if (msgClass === "gameMessage") {
+            let msg_content_div = "<div class='msg-content'>" + message + "</div>";
+            messageDiv = $("<div class='message " + msgClass + "'>" + msg_content_div + "</div>");
         }
         else {
-            var messageDiv = $("<div class='message " + msgClass + "'>" + message + "</div>");
+            messageDiv = $("<div class='message " + msgClass + "'>" + message + "</div>");
         }
 
         this.chatMessagesDiv.append(messageDiv);
-        var index = $.inArray(msgClass, this.hiddenClasses);
         if (!this.isShowingMessageClass(msgClass)) {
             messageDiv.hide();
         }
@@ -376,7 +381,7 @@ export default class ChatBoxUI {
 
     appendNotLoggedIntoGameMessage() {
         let message = "Game problem - You're not logged in. Go to the <a href='index.html'>main page</a> to log in.";
-        msgClass = "warningMessage";
+        let msgClass = "warningMessage";
         this.appendMessage(message, msgClass);
     }
 
@@ -393,31 +398,35 @@ export default class ChatBoxUI {
     }
     
     formatToTwoDigits(no) {
-        if (no < 10)
+        if (no < 10) {
             return "0" + no;
-        else
+        }
+        else {
             return no;
+        }
     }
 
     processMessages(json, processAgain) {
         this.retryCount = 0;
-        for (var i = 0; i < json.messages.length; i++) {
-            var message = json.messages[i];
-            var from = message.fromUser;
-            var text = message.messageText;
+        for (let i = 0; i < json.messages.length; i++) {
+            let message = json.messages[i];
+            let from = message.fromUser;
+            let text = message.messageText;
 
-            var msgClass = "chatMessage";
-            if (from == "System")
+            let msgClass = "chatMessage";
+            if (from === "System") {
                 msgClass = "systemMessage";
-            var prefix = "<div class='msg-identifier'>";
+            }
+
+            let prefix = "<div class='msg-identifier'>";
             if (this.showTimestamps) {
-                var date = new Date(parseInt(message.timestamp));
-                var dateStr = monthNames[date.getMonth()] + " " + date.getDate() + " " + this.formatToTwoDigits(date.getHours()) + ":" + this.formatToTwoDigits(date.getMinutes()) + ":" + this.formatToTwoDigits(date.getSeconds());
+                let date = new Date(parseInt(message.timestamp));
+                let dateStr = monthNames[date.getMonth()] + " " + date.getDate() + " " + this.formatToTwoDigits(date.getHours()) + ":" + this.formatToTwoDigits(date.getMinutes()) + ":" + this.formatToTwoDigits(date.getSeconds());
                 prefix += "<span class='timestamp'>[" + dateStr + "]</span>";
             }
 
             prefix += "<span> <b>" + from + ": </b></span></div>";
-            var postfix = "<div class='msg-content'>" + text + "</div>";
+            let postfix = "<div class='msg-content'>" + text + "</div>";
 
             this.appendMessage(prefix + postfix, msgClass);
         }
@@ -426,22 +435,21 @@ export default class ChatBoxUI {
         for (let i = 0; i < json.users.length; i++) {
             let userInRoom = json.users[i];
             let formattedUserName = "";
-            if (userInRoom.isAdmin == true) {
+            if (userInRoom.isAdmin || userInRoom.isLeagueAdmin) {
                 formattedUserName = "* " + userInRoom.name;
-            } else if (userInRoom.isLeagueAdmin == true) {
-                formattedUserName = "+ " + userInRoom.name;
-            } else {
+            }
+            else {
                 formattedUserName = userInRoom.name;
             }
             formattedUserNames.push(formattedUserName);
         }
         formattedUserNames.sort();
 
-        if (this.playerListener != null) {
+        if (this.playerListener !== null) {
             this.playerListener(formattedUserNames);
         }
 
-        if (this.chatListDiv != null) {
+        if (this.chatListDiv !== null) {
             this.chatListDiv.html("");
             for (const userName of formattedUserNames) {
                 this.chatListDiv.append("<div class='chatUser'>" + userName + "</div>");
@@ -450,18 +458,26 @@ export default class ChatBoxUI {
 
         var that = this;
 
-        if (processAgain)
-            setTimeout(function () {
-                that.updateChatMessages();
-            }, that.chatUpdateInterval);
+        if (processAgain) {
+            setTimeout(
+                function () {
+                    that.updateChatMessages();
+                },
+                that.chatUpdateInterval
+            );
+        }
     }
 
     updateChatMessages() {
         var that = this;
 
-        this.comm.updateChat(this.name, function (json) {
-            that.processMessages(json, true);
-        }, this.chatErrorMap());
+        this.comm.updateChat(
+            this.name,
+            function (json) {
+                that.processMessages(json, true);
+            },
+            this.chatErrorMap()
+        );
     }
 
     sendMessage(message) {
@@ -476,8 +492,7 @@ export default class ChatBoxUI {
         this.chatTalkDiv.prop('disabled', true);
         this.chatTalkDiv.css({"background-color": "#ff9999"});
         
-        if(this.discordDiv)
-        {
+        if (this.discordDiv) {
             this.discordDiv.prop('disabled', true);
             this.discordDiv.css({"background-color": "#ff9999"});
         }
