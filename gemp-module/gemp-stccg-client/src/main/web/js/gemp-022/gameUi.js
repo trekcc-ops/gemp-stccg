@@ -1227,7 +1227,13 @@ export default class GameTableUI {
                 let gameEvent = jsonNode.gameEvents[i];
                 this.processGameEvent(gameEvent, animate);
                 if (i === jsonNode.gameEvents.length - 1) {
-                    let gameState = typeof gameEvent.gameState === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                    let gameState;
+                    if (gameEvent.gameState) {
+                        gameState = typeof(gameEvent.gameState) === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                    }
+                    else {
+                        continue;
+                    }
                     let userDecision = gameState.pendingDecision;
                     if (this.hasDecision === false && userDecision != null && typeof userDecision != "undefined") {
                         this.hasDecision = true;
