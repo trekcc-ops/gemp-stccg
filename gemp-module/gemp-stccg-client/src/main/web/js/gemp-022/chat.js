@@ -68,7 +68,7 @@ export default class ChatBoxUI {
             this.chatErrorMap()
         );
 
-        if (this.name !== null) {
+        if (this.name !== undefined) {
             if (this.name === "Game Hall") {
                 this.discordDiv = $("#discordChat");
                 this.chatTalkDiv = $("#chatTalk");
@@ -94,7 +94,6 @@ export default class ChatBoxUI {
                 }
                 else {
                     this.hideSystemButton.hide();
-                    this.hideSystemButton = null;
                 }
 
                 this.comm.startChat(this.name,
@@ -131,6 +130,7 @@ export default class ChatBoxUI {
             }
             else {
                 this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
+                this.hideSystemButton = $("#showSystemButton");
 
                 if (showHideSystemButton) {
                     this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button({
@@ -149,15 +149,12 @@ export default class ChatBoxUI {
                             }
                         });
                     this.hideMessageClass("systemMessage");
+                    this.hideSystemButton.show();
                 }
 
                 if (showList) {
                     this.chatListDiv = $("<div class='userList'></div>");
                     this.div.append(this.chatListDiv);
-                }
-
-                if (this.hideSystemButton !== null) {
-                    this.div.append(this.hideSystemButton);
                 }
 
                 this.div.append(this.chatTalkDiv);
@@ -218,31 +215,31 @@ export default class ChatBoxUI {
             let talkBoxPadding = 3;
             let userListWidth = 150;
 
-            if (this.chatListDiv === null) {
+            if (this.chatListDiv === undefined) {
                userListWidth = 0;
             }
 
-            if (this.chatListDiv !== null) {
+            if (this.chatListDiv !== undefined) {
                this.chatListDiv.css({ position:"absolute", left:x + width - userListWidth + "px", top:y + "px", width:userListWidth, height:height - this.talkBoxHeight - 3 * talkBoxPadding, overflow:"auto" });
             }
            
-            if (this.chatMessagesDiv !== null) {
+            if (this.chatMessagesDiv !== undefined) {
                 this.chatMessagesDiv.css({ position:"absolute", left:x + "px", top:y + "px", width:width - userListWidth, height:height - this.talkBoxHeight - 3 * talkBoxPadding, overflow:"auto" });
             }
             
-            if (this.chatTalkDiv !== null) {
-               let leftTextBoxPadding = 0;
+            if (this.chatTalkDiv !== undefined) {
+                let leftTextBoxPadding = 0;
 
-               if (this.hideSystemButton !== null) {
-                   this.hideSystemButton.css({position:"absolute", left:x + width - talkBoxPadding - this.talkBoxHeight + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:this.talkBoxHeight, height:this.talkBoxHeight});
-                   leftTextBoxPadding += this.talkBoxHeight + talkBoxPadding;
-               }
-               // if (this.lockButton != null) {
-               //     this.lockButton.css({position:"absolute", left:x + width - talkBoxPadding - this.talkBoxHeight - leftTextBoxPadding + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:this.talkBoxHeight, height:this.talkBoxHeight});
-               //     leftTextBoxPadding += this.talkBoxHeight + talkBoxPadding;
-               // }
+                if (this.hideSystemButton !== undefined) {
+                    this.hideSystemButton.css({position:"absolute", left:x + width - talkBoxPadding - this.talkBoxHeight + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:this.talkBoxHeight, height:this.talkBoxHeight});
+                    leftTextBoxPadding += this.talkBoxHeight + talkBoxPadding;
+                }
+                // if (this.lockButton != undefined) {
+                //     this.lockButton.css({position:"absolute", left:x + width - talkBoxPadding - this.talkBoxHeight - leftTextBoxPadding + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:this.talkBoxHeight, height:this.talkBoxHeight});
+                //     leftTextBoxPadding += this.talkBoxHeight + talkBoxPadding;
+                // }
 
-               this.chatTalkDiv.css({ position:"absolute", left:x + talkBoxPadding + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:width - 3 * talkBoxPadding - leftTextBoxPadding, height:this.talkBoxHeight });
+                this.chatTalkDiv.css({ position:"absolute", left:x + talkBoxPadding + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:width - 3 * talkBoxPadding - leftTextBoxPadding, height:this.talkBoxHeight });
             }
         }
 
@@ -254,7 +251,7 @@ export default class ChatBoxUI {
             if (this.displayDiscord) {
                 this.toggleChatButton.text("Switch to Legacy");
                 
-                if(this.chatEmbed === null) {
+                if(this.chatEmbed === undefined) {
                     this.discordDiv.show();
                     this.chatEmbed = $("<widgetbot server='699957633121255515' channel='873065954609881140' width='100%' height='100%' username='" + this.userName + "'></widgetbot>");
                     let script = $("<script src='https://cdn.jsdelivr.net/npm/@widgetbot/html-embed'></script>");
@@ -268,41 +265,41 @@ export default class ChatBoxUI {
         }
         
         if (this.enableDiscord && this.displayDiscord) {
-            if (this.discordDiv !== null) {
+            if (this.discordDiv !== undefined) {
                 this.discordDiv.show();
             }
             
-            if (this.chatMessagesDiv !== null) {
+            if (this.chatMessagesDiv !== undefined) {
                 this.chatMessagesDiv.hide();
             }
             
-            if (this.chatTalkDiv !== null) {
+            if (this.chatTalkDiv !== undefined) {
                 this.chatTalkDiv.hide();
             }
 
-            if (this.hideSystemButton !== null) {
+            if (this.hideSystemButton !== undefined) {
                 this.hideSystemButton.hide();
             }
-            // if(this.lockButton != null)
+            // if(this.lockButton !== undefined)
             //     this.lockButton.hide();
         }
         else {
-            if (this.discordDiv !== null) {
+            if (this.discordDiv !== undefined) {
                 this.discordDiv.hide();
             }
             
-            if (this.chatMessagesDiv !== null) {
+            if (this.chatMessagesDiv !== undefined) {
                 this.chatMessagesDiv.show();
             }
             
-            if (this.chatTalkDiv !== null) {
+            if (this.chatTalkDiv !== undefined) {
                 this.chatTalkDiv.show();
             }
 
-            if (this.hideSystemButton !== null) {
+            if (this.hideSystemButton !== undefined) {
                 this.hideSystemButton.show();
             }
-            // if(this.lockButton != null)
+            // if(this.lockButton !== undefined)
             //     this.lockButton.show(); 
         }
         
@@ -324,7 +321,7 @@ export default class ChatBoxUI {
         // }
         
         if (message.includes("Thank you for playtesting!")) {
-            if (this.dialogListener != null) {
+            if (this.dialogListener !== undefined) {
                 this.dialogListener("Give us feedback!", message);
             }
         }
@@ -346,10 +343,10 @@ export default class ChatBoxUI {
             locked = true;
         }
         
-        if(this.pingRegex !== null && this.pingRegex.test(message)) {
+        if(this.pingRegex !== undefined && this.pingRegex.test(message)) {
             msgClass += " user-ping";
         }
-        else if ((this.mentionRegex !== null && this.mentionRegex.test(message)) || 
+        else if ((this.mentionRegex !== undefined && this.mentionRegex.test(message)) || 
                   this.everyoneRegex.test(message)) {
             msgClass += " user-mention";
         }
@@ -436,11 +433,11 @@ export default class ChatBoxUI {
         }
         formattedUserNames.sort();
 
-        if (this.playerListener !== null) {
+        if (this.playerListener !== undefined) {
             this.playerListener(formattedUserNames);
         }
 
-        if (this.chatListDiv !== null) {
+        if (this.chatListDiv !== undefined) {
             this.chatListDiv.html("");
             for (const userName of formattedUserNames) {
                 this.chatListDiv.append("<div class='chatUser'>" + userName + "</div>");
