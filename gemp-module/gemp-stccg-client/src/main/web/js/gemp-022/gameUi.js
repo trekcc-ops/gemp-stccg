@@ -378,20 +378,20 @@ export default class GameTableUI {
         this.tabPane = $("#bottomLeftTabs").tabs();
 
         // Process game settings
-        for (var setting of that.gameSettings.entries()) {
-            var settingName = setting[0];
-            if (settingName != "autoPass") { // TODO: currently, autoPass always set to false
-                var optionSelection = $("#" + settingName);
-                var cookieValue = Cookies.get(settingName);
+        for (let setting of that.gameSettings.entries()) {
+            let settingName = setting[0];
+            if (settingName !== "autoPass") { // TODO: currently, autoPass always set to false
+                let optionSelection = $("#" + settingName);
+                let cookieValue = Cookies.get(settingName);
 
                     // Multiple choice settings: foilPresentation
-                if (settingName == "foilPresentation" && cookieValue != null) {
+                if (settingName === "foilPresentation" && cookieValue !== undefined) {
                     optionSelection.val(cookieValue);
                     that.gameSettings.set(settingName, cookieValue);
                 }
 
                     // True/false settings: autoAccept, alwaysDropDown
-                if (cookieValue == "true" || cookieValue == null) {
+                if (cookieValue === "true" || cookieValue === undefined) {
                     optionSelection.prop("checked", true);
                     that.gameSettings.set(settingName, true);
                 }
@@ -410,25 +410,26 @@ export default class GameTableUI {
         }
 
         // Create arrays for phase-specific functions
-        var allPhaseNames = that.gamePhases;
-        var autoPassArr = new Array();
-        var autoPassArrHashtag = new Array();
-        for (var i = 0; i < allPhaseNames.length; i++) {
+        let allPhaseNames = that.gamePhases;
+        let autoPassArr = new Array();
+        let autoPassArrHashtag = new Array();
+        for (let i = 0; i < allPhaseNames.length; i++) {
             autoPassArr.push("autoPass" + allPhaseNames[i]);
             autoPassArrHashtag.push("#autoPass" + allPhaseNames[i]);
         }
 
         // Load auto-pass settings from cookie, or set to default (current default is all phases auto-pass)
-        var currPassedPhases = new Array();
-        var currAutoPassCookieValue = Cookies.get("autoPassPhases");
-        if (currAutoPassCookieValue == null) {
+        let currPassedPhases = new Array();
+        let currAutoPassCookieValue = Cookies.get("autoPassPhases");
+        if (currAutoPassCookieValue === undefined) {
             currPassedPhases = allPhaseNames;
-        } else {
+        }
+        else {
             currPassedPhases = currAutoPassCookieValue.split("0");
         }
 
         // Create settings panel for user selection of auto-pass settings
-        for (var i = 0; i < allPhaseNames.length; i++) {
+        for (let i = 0; i < allPhaseNames.length; i++) {
             $("#autoPassOptionsDiv").append(
                 "<input id='" + autoPassArr[i] + "' type='checkbox' value='selected' />" +
                 "<label for='" + autoPassArr[i] + "'>" + allPhaseNames[i] + "</label> "
@@ -436,14 +437,14 @@ export default class GameTableUI {
         }
 
         // Populate settings panel with current user options
-        for (var i = 0; i < currPassedPhases.length; i++) {
+        for (let i = 0; i < currPassedPhases.length; i++) {
             $(autoPassArrHashtag[i]).prop("checked", true);
         }
 
         // Save user selections to cookie
         $(autoPassArrHashtag.join(",")).bind("change", function () {
-            var newAutoPassPhases = "";
-            for (var i = 0; i < allPhaseNames.length; i++) {
+            let newAutoPassPhases = "";
+            for (let i = 0; i < allPhaseNames.length; i++) {
                 if ($("#autoPass" + allPhaseNames[i]).prop("checked")) {
                     newAutoPassPhases += "0" + allPhaseNames[i];
                 }
@@ -454,29 +455,42 @@ export default class GameTableUI {
             Cookies.set("autoPassPhases", newAutoPassPhases, {expires: 365});
         });
 
-        var playerListener = function (players) {
-            var val = "";
-            for (var i = 0; i < players.length; i++) {
+        let chatRoomName = (this.replayMode ? undefined : ("Game" + getUrlParam("gameId")));
+        let chatBoxDiv = $("#chatBox");
+        let chatBoxUrl = this.communication.url;
+        let showList = true;
+
+        let playerListener = function (players) {
+            let val = "";
+            for (let i = 0; i < players.length; i++) {
                 val += players[i] + "<br/>";
             }
             $("a[href='#playersInRoomBox']").html("Players(" + players.length + ")");
             $("#playersInRoomBox").html(val);
         };
 
-        var displayChatListener = function(title, message) {
+        let showHideSystemButton = false;
 
-            var dialog = $("<div></div>").dialog({
+        let displayChatListener = function(title, message) {
+            let dialog = $("<div></div>").dialog({
                 title: title,
                 resizable: true,
                 height: 200,
                 modal: true,
                 buttons: {}
             }).html(message);
-        }
+        };
 
-        var chatRoomName = (this.replayMode ? null : ("Game" + getUrlParam("gameId")));
+        let allowDiscord = false;
         this.chatBox = new ChatBoxUI(
-            chatRoomName, $("#chatBox"), this.communication.url, false, playerListener, false, displayChatListener
+            chatRoomName,
+            chatBoxDiv,
+            chatBoxUrl,
+            showList,
+            playerListener,
+            showHideSystemButton,
+            displayChatListener,
+            allowDiscord
         );
         this.chatBox.chatUpdateInterval = 3000;
 
@@ -484,11 +498,13 @@ export default class GameTableUI {
             $("#concedeGame").button().click(
                 function () {
                     that.communication.concede();
-                });
+                }
+            );
             $("#cancelGame").button().click(
                 function () {
                     that.communication.cancel();
-                });
+                }
+            );
         }
     }
 
