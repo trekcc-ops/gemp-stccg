@@ -458,7 +458,7 @@ export default class GameTableUI {
         let chatRoomName = (this.replayMode ? undefined : ("Game" + getUrlParam("gameId")));
         let chatBoxDiv = $("#chatBox");
         let chatBoxUrl = this.communication.url;
-        let showList = true;
+        let showList = false;
 
         let playerListener = function (players) {
             let val = "";
