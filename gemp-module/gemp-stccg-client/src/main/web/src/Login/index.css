@@ -13,8 +13,11 @@ body {
 }
 
 #banner {
-    text-align: center;
     background-color: #222222CC;
+}
+
+#banner-text {
+    text-align: center;
     font-family: "Garamond", sans-serif;
     padding: 10px;
     color: #63C5DA;
@@ -23,8 +26,11 @@ body {
 }
 
 #banner-sub {
+    transform:rotate(0.95turn);
+}
+
+#banner-sub-text {
     text-align: center;
-    background-color: #222222CC;
     font-family: "Verdana", sans-serif;
     padding: 10px;
     color: #63C5DA;
