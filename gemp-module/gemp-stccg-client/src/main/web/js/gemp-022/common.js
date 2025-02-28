@@ -27,10 +27,12 @@ export var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 export var serverDomain = "";
 
 export function formatToTwoDigits(no) {
-    if (no < 10)
+    if (no < 10) {
         return "0" + no;
-    else
+    }
+    else {
         return no;
+    }
 }
 
 export function formatDate(date) {
@@ -52,43 +54,49 @@ export function getUrlParam(param) {
 }
 
 export function getMapSize(map) {
-    var size = 0, key;
-    for (key in map)
-        if (map.hasOwnProperty(key)) size++;
+    let size = 0;
+    let key;
+    for (key in map) {
+        if (Object.hasOwn(map, key)) {
+            size++;
+        }
+    }
     return size;
 }
 
 export function replaceIncludes($) {
-    
-    var includes = $('[data-include]');
+    let includes = $('[data-include]');
     $.each(includes, function () {
-        var file = 'includes/' + $(this).data('include') + '.html'
-        $(this).load(file)
+        let file = `includes/${$(this).data('include')}.html`;
+        $(this).load(file);
         //alert( "Loaded " + file );
     })
 
 }
 
 export function log(text) {
-    if (getUrlParam("log") == "true")
+    if (getUrlParam("log") === "true") {
         console.log(text);
+    }
 }
 
 export function openSizeDialog(dialog) {
-    var dialogsSized = new Array();
-    var sizedDialog = function () {
-        for (var i = 0; i < dialogsSized.length; i++)
-            if (dialogsSized[i] == dialog)
+    let dialogsSized = new Array();
+    let sizedDialog = function () {
+        for (let i = 0; i < dialogsSized.length; i++) {
+            if (dialogsSized[i] === dialog) {
                 return true;
+            }
+        }
         return false;
     };
 
     if (!sizedDialog(dialog)) {
-        var windowWidth = $(window).width();
-        var windowHeight = $(window).height();
+        let windowWidth = $(window).width();
+        let windowHeight = $(window).height();
 
-        var dialogWidth = windowWidth * 0.8;
-        var dialogHeight = windowHeight * 0.8;
+        let dialogWidth = windowWidth * 0.8;
+        let dialogHeight = windowHeight * 0.8;
 
         dialogsSized.push(dialog);
         dialog.dialog({width:dialogWidth, height:dialogHeight});
@@ -97,7 +105,7 @@ export function openSizeDialog(dialog) {
 }
 
 // All possible zones, per stccg/common/filterable/Zone.java
-export var zones_all = [
+export const zones_all = [
     "DRAW_DECK",
     "MISSIONS_PILE",
     "SEED_DECK",

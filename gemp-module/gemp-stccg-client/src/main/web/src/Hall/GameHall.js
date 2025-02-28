@@ -17,7 +17,15 @@ var hall;
 document.addEventListener("DOMContentLoaded", function() {
 	$("#main").tabs();
 	
-	let chat = new ChatBoxUI("Game Hall", $("#chat"), "/gemp-stccg-server", true, null, false, null, true);
+	let chatBoxName = "Game Hall";
+	let chatBoxDiv = $("#chat");
+	let chatBoxUrl = "/gemp-stccg-server";
+	let showList = true;
+	let playerListener;
+	let showHideSystemButton = false;
+	let displayChatListener;
+	let allowDiscord = true;
+	let chat = new ChatBoxUI(chatBoxName, chatBoxDiv, chatBoxUrl, showList, playerListener, showHideSystemButton, displayChatListener, allowDiscord);
 	chat.showTimestamps = true;
 	
 	hall = new GempHallUI("/gemp-stccg-server", chat);
