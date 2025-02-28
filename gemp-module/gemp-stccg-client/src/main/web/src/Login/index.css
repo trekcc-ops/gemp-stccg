@@ -25,15 +25,16 @@ body {
     margin: 0;
 }
 
-#banner-sub {
-    transform:rotate(0.95turn);
-}
-
 #banner-sub-text {
+    display: inline-block;
+    position: relative;
+    left: 75%;
+    top: -40%;
+    transform:rotate(0.95turn);
     text-align: center;
     font-family: "Verdana", sans-serif;
     padding: 10px;
-    color: #63C5DA;
+    color: #f8f2cb;
     font-size: 150%;
     margin: 0;
 }
