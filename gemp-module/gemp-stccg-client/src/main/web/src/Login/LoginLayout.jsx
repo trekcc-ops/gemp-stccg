@@ -1,16 +1,14 @@
 import LoginRegisterTabs from "./LoginRegisterTabs.jsx";
 import ServerStatus from "./ServerStatus.jsx";
 import { Stack } from "@mui/material";
+import Motd from "./Motd.jsx";
 
 export default function LoginLayout({ comms }) {
     return (
         <div id="centerContainer">
             <div id="banner">
                 <h1 id="banner-text">STAR TREK CUSTOMIZABLE CARD GAME</h1>
-                <h1 id="banner-sub-text">Project LetVar</h1>
-                <div id="banner-sub">
-                    
-                </div>
+                <Motd />
             </div>
             <Stack direction={"column"} alignItems={"center"}>
                 <ServerStatus comms={comms} />
