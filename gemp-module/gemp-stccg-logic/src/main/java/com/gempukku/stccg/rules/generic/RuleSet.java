@@ -1,13 +1,11 @@
 package com.gempukku.stccg.rules.generic;
 
-import com.gempukku.stccg.gamestate.ActionProxy;
-import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.ActionProxy;
 
 public class RuleSet<T extends DefaultGame> {
 
     private void applyGenericRules(T cardGame) {
-        // TODO - I see these less as "rules" and more as basic turn loop mechanisms
         applyActionProxiesAsRules(cardGame,
                 new RequiredTriggersRule(cardGame),
                 new DiscardedCardRule(cardGame),

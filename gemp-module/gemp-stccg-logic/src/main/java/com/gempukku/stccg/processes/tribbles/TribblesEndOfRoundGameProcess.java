@@ -33,7 +33,6 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
 
             // Count the total number of Tribbles in the play piles of the players who "went out" and score points.
             if (player.getCardsInHand().isEmpty()) {
-                gameState.playerWentOut(); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 pointsScored.put(playerId, score);
                 ScorePointsAction scorePointsAction = new ScorePointsAction(_game, null, player, score);
@@ -42,9 +41,6 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 _game.sendActionResultToClient(); // for updated points
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
-
-            // Each player places the cards remaining in their hand into their discard pile.
-            // TODO - Removing for now since Tribbles is not the focus. Need to rebuild later.
 
             // Each player then shuffles their play pile into their decks.
             ShuffleCardsIntoDrawDeckAction action = new ShuffleCardsIntoDrawDeckAction(null, player,

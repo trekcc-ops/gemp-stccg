@@ -208,20 +208,6 @@
             span: 4
             image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
         }
-    /*    {
-            blueprintId: 155_043
-            title: Revenge Plot
-            type: mission
-            mission-type: planet
-            location: Camor V
-            lore: Lay genetic groundwork for vengeance against old foe.
-            affiliation-icons: romulan,non-aligned,cardassian,ferengi
-                // TODO - Add the "any Bok" requirement
-            mission-requirements: MEDICAL + Exobiology + Treachery x2
-            point-box: 35
-            span: 3
-            image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg
-        } */
         {
             blueprintId: 155_044
             title: Salvage Borg Ship
