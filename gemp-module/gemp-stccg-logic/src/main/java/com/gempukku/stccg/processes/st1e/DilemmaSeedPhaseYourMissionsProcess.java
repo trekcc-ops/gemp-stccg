@@ -54,7 +54,7 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
                 location.seedPreSeedsForYourMissions();
             }
             cardGame.setCurrentPhase(Phase.SEED_FACILITY);
-            return new ST1EFacilitySeedPhaseProcess(0); // TODO - Add "other cards" dilemma seed phase
+            return new ST1EFacilitySeedPhaseProcess(0);
         }
         else return new DilemmaSeedPhaseYourMissionsProcess(_playersParticipating);
 

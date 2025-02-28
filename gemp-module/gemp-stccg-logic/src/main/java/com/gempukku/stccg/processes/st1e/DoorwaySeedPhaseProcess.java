@@ -10,9 +10,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.processes.GameProcess;
 import com.google.common.collect.Iterables;
 
@@ -34,7 +33,6 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
         for (Player player : cardGame.getPlayers()) {
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
-            // TODO - Doorway seeding is a bit more complicated for cards like Bajoran Wormhole, or non-seedable doors
             for (PhysicalCard seedCard : player.getCardsInGroup(Zone.SEED_DECK)) {
                 if (seedCard.getCardType() == CardType.DOORWAY)
                     doorwaySeeds.add(seedCard);

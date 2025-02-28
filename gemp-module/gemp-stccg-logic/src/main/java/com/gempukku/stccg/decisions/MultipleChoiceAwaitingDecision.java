@@ -16,24 +16,16 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
 
     public MultipleChoiceAwaitingDecision(Player player, String text, String[] possibleResults,
                                           DefaultGame cardGame) {
-        this(player, text, possibleResults, -1, cardGame);
+        super(player, text, AwaitingDecisionType.MULTIPLE_CHOICE, cardGame);
+        _possibleResults = possibleResults;
     }
 
 
 
     public MultipleChoiceAwaitingDecision(Player player, String text, Collection<String> possibleResults,
                                           DefaultGame cardGame) {
-        this(player, text, possibleResults.toArray(new String[0]), -1, cardGame);
+        this(player, text, possibleResults.toArray(new String[0]), cardGame);
     }
-
-
-    public MultipleChoiceAwaitingDecision(Player player, String text, String[] possibleResults, int defaultIndex,
-                                          DefaultGame cardGame) {
-        super(player, text, AwaitingDecisionType.MULTIPLE_CHOICE, cardGame);
-        _possibleResults = possibleResults;
-        setParam("defaultIndex", String.valueOf(defaultIndex)); // TODO SNAPSHOT - defaultIndex does not pass through to client
-    }
-
 
 
     protected abstract void validDecisionMade(int index, String result)
