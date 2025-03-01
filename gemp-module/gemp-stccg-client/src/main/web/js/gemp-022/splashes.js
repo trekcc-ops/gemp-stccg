@@ -1,4 +1,4 @@
-const MOTDS = [
+const SPLASHES = [
     // Sensible chuckles
     "50% off sale!",
     "Void where prohibited.",
@@ -28,7 +28,7 @@ const MOTDS = [
     "Half the calories of 1E Traditional!",
 ]
 
-export default function rand_motd() {
-    let rand_index = Math.floor(Math.random() * MOTDS.length);
-    return MOTDS[rand_index];
+export default function rand_splash() {
+    let rand_index = Math.floor(Math.random() * SPLASHES.length);
+    return SPLASHES[rand_index];
 }

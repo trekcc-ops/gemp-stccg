@@ -1,7 +1,7 @@
 import LoginRegisterTabs from "./LoginRegisterTabs.jsx";
 import ServerStatus from "./ServerStatus.jsx";
 import { Stack, Typography } from "@mui/material";
-import Motd from "./Motd.jsx";
+import Splash from "./Splash.jsx";
 
 export default function LoginLayout({ comms }) {
     return (
@@ -18,8 +18,8 @@ export default function LoginLayout({ comms }) {
                     >STAR TREK CUSTOMIZABLE CARD GAME
                 </Typography>
 
-                <Motd
-                    id="motd"
+                <Splash
+                    id="splash"
                     color="#f8f2cb"
                     align="center"
                     fontSize={"150%"}

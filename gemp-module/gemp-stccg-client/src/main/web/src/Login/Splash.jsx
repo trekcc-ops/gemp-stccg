@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material";
-import rand_motd from "../../js/gemp-022/motds.js";
+import rand_splash from "../../js/gemp-022/splashes.js";
 
 let style = {
     transform: 'rotate(0.95turn)',
     textShadow: "4px 4px 8px black"
 }
 
-export default function Motd({id, align, padding, color, fontSize}) {
+export default function Splash({id, align, padding, color, fontSize}) {
     return (
         <Box id={id} style={style}>
             <Typography
@@ -17,7 +17,7 @@ export default function Motd({id, align, padding, color, fontSize}) {
                 fontSize={fontSize}
                 marginTop={"10px"}
                 marginRight={"20px"}
-                >{rand_motd()}
+                >{rand_splash()}
             </Typography>
         </Box>
     )
