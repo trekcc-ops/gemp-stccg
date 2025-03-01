@@ -1,4 +1,4 @@
-const SPLASHES = [
+export const SPLASHES = [
     // Sensible chuckles
     "50% off sale!",
     "Void where prohibited.",
@@ -26,7 +26,7 @@ const SPLASHES = [
     "aka Project LetVar",
     "Starring Two-Gun Tomalak!",
     "Half the calories of 1E Traditional!",
-]
+];
 
 export default function rand_splash() {
     let rand_index = Math.floor(Math.random() * SPLASHES.length);
