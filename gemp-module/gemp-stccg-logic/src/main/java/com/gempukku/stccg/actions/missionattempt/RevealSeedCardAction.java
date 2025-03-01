@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.missionattempt;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -20,11 +21,14 @@ public class RevealSeedCardAction extends ActionyAction {
     private final int _missionAttemptActionId;
     private enum Progress { misSeedResolved }
     private final MissionLocation _missionLocation;
+    @JsonProperty("revealedCard")
+    private final PhysicalCard _revealedCard;
 
     public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, AttemptMissionAction attemptAction,
                                 MissionLocation mission) {
         super(revealedCard.getGame(), revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCardId = revealedCard.getCardId();
+        _revealedCard = revealedCard;
         _missionAttemptActionId = attemptAction.getActionId();
         _missionLocation = mission;
     }
