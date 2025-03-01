@@ -5,6 +5,7 @@ const MOTDS = [
     "Half the calories of 1E Traditional!",
     "Starring Two-Gun Tomalak!",
     "aka Project LetVar",
+    "Dozens of players!",
     "Mehr Spa\u00DF als legal erlaubt!",
     "KHAAAAAAAAAN!",
     "Paul is dead!"
