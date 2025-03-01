@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import "../../js/jquery/jquery-3.7.1.js";
 import "../../js/jquery/jquery-ui-1.14.1/jquery-ui.js";
 import GempClientCommunication from "../../js/gemp-022/communication.js";
-import LoginRegisterTabs from "./LoginRegisterTabs.jsx";
+import LoginLayout from './LoginLayout.jsx';
 
 
 var comm = new GempClientCommunication("/gemp-stccg-server", function () {
@@ -11,13 +11,8 @@ var comm = new GempClientCommunication("/gemp-stccg-server", function () {
 
 document.addEventListener("DOMContentLoaded",
     function () {
-        comm.getStatus(
-            function (html) {
-                $("#serverStatus").append(html);
-            });
-        
-        const domNode = document.getElementById('interaction');
+        const domNode = document.getElementById('root');
         const root = createRoot(domNode);
-        root.render(<LoginRegisterTabs comms={comm} />);
+        root.render(<LoginLayout comms={comm} />);
     }
 );
