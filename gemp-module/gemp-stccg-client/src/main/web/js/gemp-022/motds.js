@@ -2,11 +2,14 @@ const MOTDS = [
     // Sensible chuckles
     "50% off sale!",
     "Void where prohibited.",
+    "Mehr Spa\u00DF als legal erlaubt!",
+    "Paul is dead!",
 
     // Trek jokes and references
     // TOS
     "Fascinating.",
     "I'm a card game, not a doctor!",
+    "KHAAAAAAAAAN!",
     // TNG
     "There are five lights!",
     // DS9
