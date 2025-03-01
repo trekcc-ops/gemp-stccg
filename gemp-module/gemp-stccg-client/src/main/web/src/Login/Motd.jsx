@@ -1,19 +1,22 @@
 import { Box, Typography } from "@mui/material";
 import rand_motd from "../../js/gemp-022/motds.js";
 
-export default function Motd() {
+let style = {
+    transform: 'rotate(0.95turn)',
+    textShadow: "4px 4px 8px black"
+}
+
+export default function Motd({id, align, padding, color, fontSize}) {
     return (
-        <Box sx={{
-            display: "inline-block",
-            position: "relative",
-            left: "60%",
-            top: "-50%",
-            transform: "rotate(0.95turn)",
-            "text-align": "center",
-            color: "#f8f2cb",
-            margin: 0,
-        }}>
-            <Typography variant="h5">{rand_motd()}</Typography>
+        <Box id={id} style={style}>
+            <Typography
+                variant="h5"
+                align={align}
+                padding={padding}
+                color={color}
+                fontSize={fontSize}
+                >{rand_motd()}
+            </Typography>
         </Box>
     )
 };

@@ -1,14 +1,31 @@
 import LoginRegisterTabs from "./LoginRegisterTabs.jsx";
 import ServerStatus from "./ServerStatus.jsx";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import Motd from "./Motd.jsx";
 
 export default function LoginLayout({ comms }) {
     return (
         <div id="centerContainer">
             <div id="banner">
-                <h1 id="banner-text">STAR TREK CUSTOMIZABLE CARD GAME</h1>
-                <Motd />
+                <Typography 
+                    id="banner-title"
+                    variant="h1"
+                    color="#63C5DA"
+                    align="center"
+                    fontSize={"400%"}
+                    fontWeight={700}
+                    sx={{padding: '10px'}}
+                    >STAR TREK CUSTOMIZABLE CARD GAME
+                </Typography>
+
+                <Motd
+                    id="motd"
+                    color="#f8f2cb"
+                    align="center"
+                    fontSize={"150%"}
+                    fontWeight={400}
+                    sx={{padding: '10px'}}
+                />
             </div>
             <Stack direction={"column"} alignItems={"center"}>
                 <ServerStatus comms={comms} />
