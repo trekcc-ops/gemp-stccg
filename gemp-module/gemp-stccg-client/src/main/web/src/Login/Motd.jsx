@@ -15,6 +15,7 @@ export default function Motd({id, align, padding, color, fontSize}) {
                 padding={padding}
                 color={color}
                 fontSize={fontSize}
+                marginTop={"10px"}
                 marginRight={"20px"}
                 >{rand_motd()}
             </Typography>
