@@ -5,6 +5,9 @@ const MOTDS = [
     "Half the calories of 1E Traditional!",
     "Starring Two-Gun Tomalak!",
     "aka Project LetVar",
+    "Mehr Spa\u00DF als legal erlaubt!",
+    "KHAAAAAAAAAN!",
+    "Paul is dead!"
 ]
 
 export default function rand_motd() {
