@@ -13,25 +13,31 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
-public class DownloadCardAction extends ActionyAction {
+public class DownloadCardAction extends ActionyAction implements CardPerformedAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
     private Action _playCardAction;
 
+    private final PhysicalCard _performingCard;
+
     private final ActionCardResolver _cardToDownloadTarget;
 
-    public DownloadCardAction(DefaultGame cardGame, Zone fromZone, Player player, Filterable playableCardFilter) {
+    public DownloadCardAction(DefaultGame cardGame, Zone fromZone, Player player, Filterable playableCardFilter,
+                              PhysicalCard performingCard) {
         super(cardGame, player, "Download card from " + fromZone.getHumanReadable(),
                 ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = new SelectCardsResolver(
                 new SelectCardsFromDialogAction(cardGame, player, "Select a card to download",
                         Filters.and(playableCardFilter, fromZone)));
+        _performingCard = performingCard;
     }
 
-    public DownloadCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget) {
+    public DownloadCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
+                              PhysicalCard performingCard) {
         super(cardGame, player, "Download card", ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = cardTarget;
+        _performingCard = performingCard;
     }
 
 
@@ -77,4 +83,8 @@ public class DownloadCardAction extends ActionyAction {
     protected Action getPlayCardAction() { return _playCardAction; }
     protected void setPlayCardAction(Action action) { _playCardAction = action; }
 
+    @Override
+    public PhysicalCard getPerformingCard() {
+        return _performingCard;
+    }
 }
