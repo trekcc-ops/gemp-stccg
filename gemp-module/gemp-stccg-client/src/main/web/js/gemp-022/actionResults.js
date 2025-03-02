@@ -249,7 +249,16 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "REMOVE_CARD_FROM_PRESEED_STACK":
         case "REVEAL_SEED_CARD":
         case "SHUFFLE_CARDS_INTO_DRAW_DECK":
+            break;
         case "STOP_CARDS":
+            console.log('STOP_CARDS JSON');
+            console.log(jsonAction);
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            message = performingPlayerId + " stopped ";
+            message = message + showLinkableCardTitle(targetCard) + " using ";
+            message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "UNDOCK_SHIP":
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
