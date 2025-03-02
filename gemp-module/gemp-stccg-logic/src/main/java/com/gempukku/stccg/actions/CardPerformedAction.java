@@ -7,6 +7,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 public interface CardPerformedAction extends Action {
 
     @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("performingCard")
+    @JsonProperty("performingCardId")
     PhysicalCard getPerformingCard();
 }

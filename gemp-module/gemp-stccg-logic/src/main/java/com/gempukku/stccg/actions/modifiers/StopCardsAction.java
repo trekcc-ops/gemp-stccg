@@ -13,11 +13,14 @@ import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 public class StopCardsAction extends ActionyAction {
-    @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("cardTarget")
     private final ActionCardResolver _cardTarget;
+
+    @JsonProperty("targetCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
+    private Collection<PhysicalCard> _stoppedCards;
 
     public StopCardsAction(DefaultGame cardGame, Player performingPlayer,
                            Collection<? extends ST1EPhysicalCard> cardsToStop) {
@@ -62,6 +65,7 @@ public class StopCardsAction extends ActionyAction {
         }
 
         if (!wasCompleted()) {
+            _stoppedCards = _cardTarget.getCards(cardGame);
             Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>();
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
                 if (card instanceof ST1EPhysicalCard stCard) {
@@ -80,4 +84,5 @@ public class StopCardsAction extends ActionyAction {
 
         return getNextAction();
     }
+
 }
