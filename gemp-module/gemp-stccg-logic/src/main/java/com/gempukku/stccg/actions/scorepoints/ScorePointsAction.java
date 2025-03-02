@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class ScorePointsAction extends ActionyAction {
 
-    @JsonProperty("performingCard")
+    @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _performingCard;
 
