@@ -88,7 +88,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 let spacelineLocation = jsonGameState.spacelineLocations[spacelineIndex];
                 let missionCards = spacelineLocation.missionCardIds;
                 let firstMissionAtLocation = (missionCards[0] == targetCard.cardId);
-                gameAnimations.putMissionIntoPlay(targetCard, true, spacelineIndex, firstMissionAtLocation);
+                gameAnimations.putMissionIntoPlay(targetCard, true, spacelineLocation, spacelineIndex, firstMissionAtLocation);
             } else {
                 gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             }
