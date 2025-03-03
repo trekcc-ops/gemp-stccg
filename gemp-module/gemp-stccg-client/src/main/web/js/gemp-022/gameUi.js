@@ -1141,7 +1141,7 @@ export default class GameTableUI {
                     let missionCard = gameState.visibleCardsInGame[missionCardId];
                     let spacelineIndex = getSpacelineIndexFromLocationId(missionCard.locationId, gameState);
                     let firstMissionAtLocation = (i == 0);
-                    this.animations.putMissionIntoPlay(missionCard, false, spacelineIndex, firstMissionAtLocation);
+                    this.animations.putMissionIntoPlay(missionCard, false, location, spacelineIndex, firstMissionAtLocation);
                     cardsAdded.push(missionCardId);
                     cardsStillToAdd = removeFromArray(cardsStillToAdd, missionCardId);
                 }

@@ -13,6 +13,7 @@ public enum Region implements Filterable {
 
     @JsonValue
     public String getJsonValue() {
+        // TODO: Please send the client the enum name
         return switch(this) {
             case QO_NOS_SYSTEM -> "Qo'Nos System";
             default -> name().replace("_", " ");

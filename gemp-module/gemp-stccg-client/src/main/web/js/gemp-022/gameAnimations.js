@@ -264,15 +264,15 @@ export default class GameAnimations {
             });
     }
 
-    putMissionIntoPlay(cardJson, animate, spacelineIndex, firstMissionAtLocation) {
+    putMissionIntoPlay(cardJson, animate, spacelineLocation, spacelineIndex, firstMissionAtLocation) {
         // int spacelineIndex: index of mission's location in game state spaceline array
         // boolean firstMissionAtLocation: true if bottom or only mission card; false if card is in top of another mission card
         console.log("Calling putMissionIntoPlay");
         console.log(cardJson);
         console.log(spacelineIndex);
         var that = this;
-        let region = cardJson.region;
-        let quadrant = cardJson.quadrant;
+        let region = spacelineLocation.region;
+        let quadrant = spacelineLocation.quadrant;
         let blueprintId = cardJson.blueprintId;
         let zone = "SPACELINE";
         let cardId = cardJson.cardId;
