@@ -251,13 +251,11 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "SHUFFLE_CARDS_INTO_DRAW_DECK":
             break;
         case "STOP_CARDS":
-            console.log('STOP_CARDS JSON');
-            console.log(jsonAction);
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            message = performingPlayerId + " stopped ";
-            message = message + showLinkableCardTitle(targetCard) + " using ";
-            message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
-            gameChat.appendMessage(message, "gameMessage");
+            for (const cardId of jsonAction.targetCardIds) {
+                targetCard = jsonGameState.visibleCardsInGame[cardId];
+                message = showLinkableCardTitle(targetCard) + " was stopped.";
+                gameChat.appendMessage(message, "gameMessage");
+            }
             break;
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "UNDOCK_SHIP":
