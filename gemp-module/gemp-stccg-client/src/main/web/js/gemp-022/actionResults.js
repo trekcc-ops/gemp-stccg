@@ -102,9 +102,11 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "OVERCOME_DILEMMA": // no animation
         case "PLACE_CARD_ON_MISSION": // no animation included yet
         case "REVEAL_SEED_CARD": // no animation included yet
-        case "STOP_CARDS": // no animation included yet
             break;
-            // Actions that are just wrappers for decisions
+        case "STOP_CARDS": // no animation included yet
+            gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState);
+            break;
+        // Actions that are just wrappers for decisions
         case "MAKE_DECISION":
         case "SELECT_ACTION":
         case "SELECT_AFFILIATION":
@@ -112,7 +114,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "SELECT_CARDS":
         case "SELECT_SKILL":
             break;
-            // Actions that will currently not be performed in a 1E game
+        // Actions that will currently not be performed in a 1E game
         case "ACTIVATE_TRIBBLE_POWER":
         case "ALL_PLAYERS_DISCARD":
         case "BATTLE":

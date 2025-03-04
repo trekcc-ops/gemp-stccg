@@ -587,6 +587,15 @@ export default class GameAnimations {
                 });
     }
 
+    stopCards(targetCardIds, jsonGameState) {
+        for (const cardId of targetCardIds) {
+            //getCardDivFromId()
+            //apply css
+            let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
+            console.log(`Stop animation for ${cardToAnimate.title}`);
+        }
+    }
+
     removeCardFromPlay(cardRemovedIds, performingPlayerId, animate) {
         // This method may be called on cards that are not "in play" but visible on the board (like those in hands)
         var that = this;
