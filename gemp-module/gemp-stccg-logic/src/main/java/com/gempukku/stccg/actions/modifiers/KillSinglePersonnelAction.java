@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.modifiers;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
@@ -16,6 +18,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
 
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardTarget;
+    private PhysicalCard _victim;
 
     public KillSinglePersonnelAction(Player performingPlayer, PhysicalCard performingCard,
                                      SelectCardsAction selectVictimAction) {
@@ -74,15 +77,21 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
             if (_cardTarget.getCards(cardGame).size() != 1) {
                 throw new InvalidGameLogicException("Too many cards selected for KillSinglePersonnelAction");
             } else {
-                PhysicalCard victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
+                _victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
 
-                if (victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
+                if (_victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
                     reportable.leaveAwayTeam((ST1EGame) cardGame);
                 _wasCarriedOut = true;
-                return new DiscardSingleCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), victim);
+                return new DiscardSingleCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), _victim);
             }
         }
         setAsSuccessful();
         return getNextAction();
+    }
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private PhysicalCard victimCard() {
+        return _victim;
     }
 }
