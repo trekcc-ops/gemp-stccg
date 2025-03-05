@@ -959,7 +959,8 @@ describe('createCardDiv', () => {
         var upsideDown = true; //bool
         var cardId; // null or str
         
-        let divUnderTest = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let threeDSceneWrapper = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let divUnderTest = threeDSceneWrapper.children[0];
         let image_tag = divUnderTest.children[0];
         let errata_tag = divUnderTest.children[1];
         let errata_img = errata_tag.children[0];
@@ -1009,7 +1010,8 @@ describe('createCardDiv', () => {
 
         Cookies.set('foilPresentation', true);
         
-        let divUnderTest = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let threeDSceneWrapper = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let divUnderTest = threeDSceneWrapper.children[0];
         let foil_tag = divUnderTest.children[2];
         let foil_img = foil_tag.children[0];
 
@@ -1031,7 +1033,8 @@ describe('createCardDiv', () => {
         var upsideDown = true; //bool
         var cardId = "1234"; // null or str
         
-        let divUnderTest = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let threeDSceneWrapper = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let divUnderTest = threeDSceneWrapper.children[0];
         let image_tag = divUnderTest.children[0];
 
         expect(image_tag.classList.contains("card_img_1234")).toBe(true);
@@ -1048,7 +1051,8 @@ describe('createCardDiv', () => {
         var upsideDown = true; //bool
         var cardId = "what"; // null or str
         
-        let divUnderTest = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let threeDSceneWrapper = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let divUnderTest = threeDSceneWrapper.children[0];
         let image_tag = divUnderTest.children[0];
 
         expect(image_tag.classList.contains("card_img_what")).toBe(true);
@@ -1065,7 +1069,8 @@ describe('createCardDiv', () => {
         var upsideDown = false; //bool
         var cardId; // null or str
         
-        let divUnderTest = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let threeDSceneWrapper = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let divUnderTest = threeDSceneWrapper.children[0];
         let image_tag = divUnderTest.children[0];
 
         // null value set to an empty string
@@ -1089,7 +1094,8 @@ describe('createCardDiv', () => {
         var upsideDown = false; //bool
         var cardId = "1234"; // null or str
         
-        let divUnderTest = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let threeDSceneWrapper = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId)[0];
+        let divUnderTest = threeDSceneWrapper.children[0];
         let image_tag = divUnderTest.children[0];
 
         // null value set to an empty string

@@ -318,6 +318,9 @@ export default class Card {
 
 
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
+    let threeDScene = document.createElement("div");
+    threeDScene.classList.add("three-d-scene");
+
     let baseCardDiv = document.createElement("div");
     baseCardDiv.classList.add("card");
     baseCardDiv.textContent = (text) ? text : ""; 
@@ -390,7 +393,9 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     borderDiv.appendChild(borderImageTag);
     baseCardDiv.appendChild(borderDiv);
 
-    let cardDiv = $(baseCardDiv); // convert to jquery object
+    threeDScene.appendChild(baseCardDiv);
+
+    let cardDiv = $(threeDScene); // convert to jquery object
     return cardDiv;
 }
 
