@@ -318,49 +318,79 @@ export default class Card {
 
 
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
-    let imgClass;
-    if (cardId == null) {
-        if (upsideDown) {
-            imgClass = "card_img upside-down";
-        }
-        else {
-            imgClass = "card_img";
-        }
-    }
-    else {
-        if (upsideDown) {
-            imgClass = "card_img upside-down card_img_" + cardId;
-        }
-        else {
-            imgClass = "card_img card_img_" + cardId;
-        }
+    let baseCardDiv = document.createElement("div");
+    baseCardDiv.classList.add("card");
+    baseCardDiv.textContent = (text) ? text : ""; 
+
+    let imageTag = document.createElement("img");
+    imageTag.classList.add("card_img");
+
+    if (cardId != null) {
+        let img_class_id = "card_img_" + cardId;
+        imageTag.classList.add(img_class_id);
     }
 
+    if (upsideDown) {
+        imageTag.classList.add("upside-down");
+    }
 
-    var cardDiv = $("<div class='card'><img class='" + imgClass + "' src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
+    imageTag.src = image;
+    imageTag.width = "100%";
+    imageTag.height = "100%";
+
+    baseCardDiv.appendChild(imageTag);
 
     if (errata) {
-        var errataDiv = $(`<div class='errataOverlay'><img src='${errataVerticalImg}' width='100%' height='100%'></div>`);
-        cardDiv.append(errataDiv);
+        let errataDiv = document.createElement("div");
+        errataDiv.classList.add("errataOverlay");
+
+        let errataImageTag = document.createElement("img");
+        errataImageTag.src = errataVerticalImg;
+        errataImageTag.width = "100%";
+        errataImageTag.height = "100%";
+
+        errataDiv.appendChild(errataImageTag);
+        baseCardDiv.appendChild(errataDiv);
     }
 
-    var foilPresentation = getFoilPresentation();
-
+    let foilPresentation = getFoilPresentation();
     if (foil && foilPresentation !== 'none') {
-        var foilImage = (foilPresentation === 'animated') ? "foil.gif" : "holo.jpg";
-        var foilDiv = $("<div class='foilOverlay'><img src='/gemp-module/images/" + foilImage + "' width='100%' height='100%'></div>");
-        cardDiv.append(foilDiv);
+        let foilDiv = document.createElement("div");
+        foilDiv.classList.add("foilOverlay");
+
+        let foilImageSrc = (foilPresentation === 'animated') ? "foil.gif" : "holo.jpg";
+        let foilImageTag = document.createElement("img");
+        foilImageTag.src = `gemp-module/images/${foilImageSrc}`;
+        foilImageTag.width = "100%";
+        foilImageTag.height = "100%";
+
+        foilDiv.appendChild(foilImageTag);
+        baseCardDiv.appendChild(foilDiv);
     }
 
+    // Unless tokens are explicitly set to false
     if (tokens === undefined || tokens) {
-        var overlayDiv = $("<div class='tokenOverlay'></div>");
-        cardDiv.append(overlayDiv);
+        let overlayDiv = document.createElement("div");
+        overlayDiv.classList.add("tokenOverlay");
+        baseCardDiv.appendChild(overlayDiv);
     }
-    var borderDiv = $(`<div class='borderOverlay'><img class='actionArea' src='${pixelImg}' width='100%' height='100%'></div>`);
-    if (noBorder)
-        borderDiv.addClass("noBorder");
-    cardDiv.append(borderDiv);
 
+    let borderDiv = document.createElement("div");
+    borderDiv.classList.add("borderOverlay");
+    if (noBorder) {
+        borderDiv.classList.add("noBorder");
+    }
+    
+    let borderImageTag = document.createElement("img");
+    borderImageTag.classList.add("actionArea");
+    borderImageTag.src = pixelImg;
+    borderImageTag.width = "100%";
+    borderImageTag.height = "100%";
+
+    borderDiv.appendChild(borderImageTag);
+    baseCardDiv.appendChild(borderDiv);
+
+    let cardDiv = $(baseCardDiv); // convert to jquery object
     return cardDiv;
 }
 
