@@ -330,7 +330,7 @@ export default class GempLotrDeckBuildingUI {
     loadDeckList() {
         var that = this;
         this.comm.listUserDecks(function (json) {
-            if (that.deckListDialog === null) {
+            if (that.deckListDialog === null || typeof that.deckListDialog === "undefined") {
                 that.deckListDialog = $("<div></div>")
                         .dialog({
                     title:"Your Saved Decks",
@@ -426,7 +426,7 @@ export default class GempLotrDeckBuildingUI {
     loadLibraryList() {
         var that = this;
         this.comm.listLibraryDecks(function (json) {
-            if (that.deckListDialog === null) {
+            if (that.deckListDialog === null || typeof that.deckListDialog === "undefined") {
                 that.deckListDialog = $("<div></div>")
                         .dialog({
                     title:"Library Decks",
