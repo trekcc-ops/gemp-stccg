@@ -338,8 +338,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     }
 
     imageTag.src = image;
-    imageTag.width = "100%";
-    imageTag.height = "100%";
+    imageTag.style.width = "100%";
+    imageTag.style.height = "100%";
 
     baseCardDiv.appendChild(imageTag);
 
@@ -349,8 +349,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
 
         let errataImageTag = document.createElement("img");
         errataImageTag.src = errataVerticalImg;
-        errataImageTag.width = "100%";
-        errataImageTag.height = "100%";
+        errataImageTag.style.width = "100%";
+        errataImageTag.style.height = "100%";
 
         errataDiv.appendChild(errataImageTag);
         baseCardDiv.appendChild(errataDiv);
@@ -364,8 +364,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
         let foilImageSrc = (foilPresentation === 'animated') ? "foil.gif" : "holo.jpg";
         let foilImageTag = document.createElement("img");
         foilImageTag.src = `gemp-module/images/${foilImageSrc}`;
-        foilImageTag.width = "100%";
-        foilImageTag.height = "100%";
+        foilImageTag.style.width = "100%";
+        foilImageTag.style.height = "100%";
 
         foilDiv.appendChild(foilImageTag);
         baseCardDiv.appendChild(foilDiv);
@@ -387,8 +387,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     let borderImageTag = document.createElement("img");
     borderImageTag.classList.add("actionArea");
     borderImageTag.src = pixelImg;
-    borderImageTag.width = "100%";
-    borderImageTag.height = "100%";
+    borderImageTag.style.width = "100%";
+    borderImageTag.style.height = "100%";
 
     borderDiv.appendChild(borderImageTag);
     baseCardDiv.appendChild(borderDiv);
