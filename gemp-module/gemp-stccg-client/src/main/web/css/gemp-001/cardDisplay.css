@@ -27,10 +27,7 @@
 }
 
 .card__face--back {
-    background-image: url('../../images/decipher_card_back.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    z-index: 2;
+    z-index: 1;
     transform: rotateY( 180deg );
 }
 

@@ -4,7 +4,7 @@ import special01Img from "../../images/boosters/special-01.png";
 import rulesImg from "../../images/rules.png";
 import errataVerticalImg from "../../images/errata-vertical.png";
 import pixelImg from "../../images/pixel.png";
-//import cardBackImg from "../../images/decipher_card_back.svg?url";
+import cardBackImg from "../../images/decipher_card_back.svg?url";
 
 export var cardCache = {};
 export var cardScale = 357 / 497;
@@ -332,13 +332,15 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     // Card back
     let back_face = document.createElement("div");
     back_face.classList.add("card__face", "card__face--back");
-    //let back_img = document.createElement("img");
-    //back_img.src = cardBackImg;
-    //back_img.style.width = "100%";
-    //back_img.style.height = "100%";
-    //back_face.appendChild(back_img);
     back_face.style.width = "100%";
     back_face.style.height = "100%";
+
+    let back_img = document.createElement("img");
+    back_img.src = cardBackImg;
+    back_img.style.width = "100%";
+    back_img.style.height = "100%";
+    back_face.appendChild(back_img);
+
     threeDCardObject.appendChild(back_face);
 
     // Card front with everything else
