@@ -83,7 +83,7 @@ export default class GempLotrDeckBuildingUI {
 
         saveDeckBut.on("click",
                 function () {
-                    if (that.deckName === null) {
+                    if (that.deckName == null) {
                         let newDeckName = prompt("Enter the name of the deck", "");
                         if (that.validateDeckName(newDeckName)) {
                             that.deckName = newDeckName;
@@ -98,7 +98,7 @@ export default class GempLotrDeckBuildingUI {
 
         renameDeckBut.on("click",
                 function () {
-                    if (that.deckName === null) {
+                    if (that.deckName == null) {
                         alert("You can't rename this deck, since it's not named (saved) yet.");
                         return;
                     }
@@ -218,7 +218,7 @@ export default class GempLotrDeckBuildingUI {
     
     importDecklist() {
         var that = this;
-        if (that.deckImportDialog === null) {
+        if (that.deckImportDialog == null) {
             that.deckImportDialog = $('<div></div>').dialog({
                 closeOnEscape:true,
                 resizable:true,
@@ -330,7 +330,7 @@ export default class GempLotrDeckBuildingUI {
     loadDeckList() {
         var that = this;
         this.comm.listUserDecks(function (json) {
-            if (that.deckListDialog === null) {
+            if (that.deckListDialog == null) {
                 that.deckListDialog = $("<div></div>")
                         .dialog({
                     title:"Your Saved Decks",
@@ -426,7 +426,7 @@ export default class GempLotrDeckBuildingUI {
     loadLibraryList() {
         var that = this;
         this.comm.listLibraryDecks(function (json) {
-            if (that.deckListDialog === null) {
+            if (that.deckListDialog == null) {
                 that.deckListDialog = $("<div></div>")
                         .dialog({
                     title:"Library Decks",
@@ -533,7 +533,7 @@ export default class GempLotrDeckBuildingUI {
                             that.selectionGroup.setBounds(2, 2, width - 2 * 2, height - 2 * 2);
                         };
 
-                        if (this.selectionDialog === null) {
+                        if (this.selectionDialog == null) {
                             this.selectionDialog = $("<div></div>")
                                     .dialog({
                                 title:"Choose one",
@@ -585,9 +585,10 @@ export default class GempLotrDeckBuildingUI {
         var that = this;
 
         let deckContents = this.getDeckContents();
-        if (deckContents === null)
+        if (deckContents == null) {
             alert("Cannot save an empty deck.");
-        else
+        }
+        else {
             this.comm.saveDeck(this.deckName, that.formatSelect.val(), this.notes, deckContents, function (json) {
                 that.deckModified(false);
                 alert("Deck was saved.  Refresh the Game Hall to see it!");
@@ -596,6 +597,7 @@ export default class GempLotrDeckBuildingUI {
                     alert("Invalid deck format.");
                 }
             });
+        }
     }
 
     addCardToContainer(blueprintId, imageUrl, subDeck, container, tokens) {
@@ -625,7 +627,7 @@ export default class GempLotrDeckBuildingUI {
     }
 
     deckModified(value) {
-        let name = (this.deckName === null) ? "New deck" : this.deckName;
+        let name = (this.deckName == null) ? "New deck" : this.deckName;
         if (value)
         {
             this.deckValidationDirty = true;
@@ -854,7 +856,7 @@ export default class GempLotrDeckBuildingUI {
     }
 
     validateDeckName(deckName) {
-        if (deckName === null) {
+        if (deckName == null) {
             return false;
         } else if (deckName.length < 3 || deckName.length > 100) {
             alert("Deck name length must be between 3 and 100 characters.");
