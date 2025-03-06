@@ -856,7 +856,7 @@ export default class GempLotrDeckBuildingUI {
     }
 
     validateDeckName(deckName) {
-        if (deckName ) {
+        if (deckName == null) {
             return false;
         } else if (deckName.length < 3 || deckName.length > 100) {
             alert("Deck name length must be between 3 and 100 characters.");
