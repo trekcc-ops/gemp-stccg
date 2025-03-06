@@ -4,6 +4,7 @@ import special01Img from "../../images/boosters/special-01.png";
 import rulesImg from "../../images/rules.png";
 import errataVerticalImg from "../../images/errata-vertical.png";
 import pixelImg from "../../images/pixel.png";
+//import cardBackImg from "../../images/decipher_card_back.svg?url";
 
 export var cardCache = {};
 export var cardScale = 357 / 497;
@@ -318,12 +319,31 @@ export default class Card {
 
 
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
-    let threeDScene = document.createElement("div");
-    threeDScene.classList.add("three-d-scene");
-
     let baseCardDiv = document.createElement("div");
     baseCardDiv.classList.add("card");
-    baseCardDiv.textContent = (text) ? text : ""; 
+    baseCardDiv.textContent = (text) ? text : "";
+
+    let threeDScene = document.createElement("div");
+    threeDScene.classList.add("three-d-card-scene");
+
+    let threeDCardObject = document.createElement("div");
+    threeDCardObject.classList.add("three-d-card");
+
+    // Card back
+    let back_face = document.createElement("div");
+    back_face.classList.add("card__face", "card__face--back");
+    //let back_img = document.createElement("img");
+    //back_img.src = cardBackImg;
+    //back_img.style.width = "100%";
+    //back_img.style.height = "100%";
+    //back_face.appendChild(back_img);
+    back_face.style.width = "100%";
+    back_face.style.height = "100%";
+    threeDCardObject.appendChild(back_face);
+
+    // Card front with everything else
+    let front_face = document.createElement("div");
+    front_face.classList.add("card__face", "card__face--front");
 
     let imageTag = document.createElement("img");
     imageTag.classList.add("card_img");
@@ -341,7 +361,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     imageTag.style.width = "100%";
     imageTag.style.height = "100%";
 
-    baseCardDiv.appendChild(imageTag);
+    front_face.appendChild(imageTag);
 
     if (errata) {
         let errataDiv = document.createElement("div");
@@ -353,7 +373,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
         errataImageTag.style.height = "100%";
 
         errataDiv.appendChild(errataImageTag);
-        baseCardDiv.appendChild(errataDiv);
+        front_face.appendChild(errataDiv);
     }
 
     let foilPresentation = getFoilPresentation();
@@ -368,14 +388,14 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
         foilImageTag.style.height = "100%";
 
         foilDiv.appendChild(foilImageTag);
-        baseCardDiv.appendChild(foilDiv);
+        front_face.appendChild(foilDiv);
     }
 
     // Unless tokens are explicitly set to false
     if (tokens === undefined || tokens) {
         let overlayDiv = document.createElement("div");
         overlayDiv.classList.add("tokenOverlay");
-        baseCardDiv.appendChild(overlayDiv);
+        front_face.appendChild(overlayDiv);
     }
 
     let borderDiv = document.createElement("div");
@@ -391,11 +411,14 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     borderImageTag.style.height = "100%";
 
     borderDiv.appendChild(borderImageTag);
-    baseCardDiv.appendChild(borderDiv);
+    front_face.appendChild(borderDiv);
 
-    threeDScene.appendChild(baseCardDiv);
+    //threeDScene.appendChild(baseCardDiv);
+    threeDCardObject.appendChild(front_face);
+    threeDScene.appendChild(threeDCardObject);
+    baseCardDiv.appendChild(threeDScene);
 
-    let cardDiv = $(threeDScene); // convert to jquery object
+    let cardDiv = $(baseCardDiv); // convert to jquery object
     return cardDiv;
 }
 

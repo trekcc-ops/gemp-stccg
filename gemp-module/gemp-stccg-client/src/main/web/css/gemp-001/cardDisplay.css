@@ -1,3 +1,38 @@
+.three-d-card-scene {
+    /* height: 300px;
+    width: 200px;
+    */
+    width: inherit;
+    height: inherit;
+    perspective: 600px;
+}
+
+.three-d-card {
+    width: inherit;
+    height: inherit;
+    position: relative;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+}
+
+.three-d-card.facedown {
+    transform: rotateY(180deg);
+}
+
+.card__face {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    backface-visibility: hidden;
+}
+
+.card__face--back {
+    background-image: url('../../images/decipher_card_back.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 2;
+    transform: rotateY( 180deg );
+}
 
 .card, .borderOverlay, .card_img, .fullCardImgHorizontal, .fullCardImgVertical {
     border-radius: 3.5%;
