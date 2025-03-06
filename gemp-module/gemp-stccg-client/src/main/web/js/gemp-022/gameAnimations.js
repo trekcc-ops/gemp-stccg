@@ -598,10 +598,13 @@ export default class GameAnimations {
         */
         
         let animation_layer = document.createElement("div");
+        animation_layer.id = "animation_layer";
         animation_layer.style.zIndex = 100; // TODO: Put these z-index levels in common or something.
         animation_layer.style.display = "grid";
         animation_layer.style.gridTemplateColumns = "repeat(6, 1fr)"; // TODO sizing will need work
         animation_layer.style.gap = "5px";
+        animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
+        animation_layer.style.opacity = 0; // invisible
 
         // create a cardDiv for each card
         // opacity fade entire group in
@@ -612,10 +615,84 @@ export default class GameAnimations {
         // create a card div for each card
         for (const cardId of targetCardIds) {
             //apply css
-            let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
-            console.log(`Stop animation for ${cardToAnimate.title}`);
+            //let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
+            //console.log(`Stop animation for ${cardToAnimate.title}`);
+            let card_grid_item = document.createElement("div");
+            card_grid_item.innerHTML = `${cardId}`;
+            card_grid_item.style.padding = "5px";
+            card_grid_item.style.backgroundColor = "#ffffff";
+            animation_layer.appendChild(card_grid_item);
         }
 
+        new Promise((resolve, _reject) => {
+            this.game.appendChild(animation_layer);
+            resolve();
+        })
+        .then(() => {
+            // fade in
+            return this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 0,
+                    },
+                    { // to
+                        opacity: 1,
+                    },
+                ],
+                {
+                    duration: 1000, //ms
+                    fill: "forwards"
+                }
+            );
+        })
+        .then(() => {
+            // delay
+            return new Promise((resolve, _reject) => {
+                setTimeout(resolve, 2000); // important to NOT put resolve parens here
+            });
+        })
+        .then(() => {
+            // fade out
+            return this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 1,
+                    },
+                    { // to
+                        opacity: 0,
+                    },
+                ],
+                {
+                    duration: 500, //ms
+                    fill: "forwards"
+                }
+            );
+        })
+        .then(() => {
+            // remove animation layer
+            return new Promise((resolve, _reject) => {
+                animation_layer.remove();
+                resolve();
+            });
+        });
+    }
+
+    animateElementAndSaveCSSPromise(element, keyframes, options) {
+        return new Promise((resolve, _reject) => {
+            if (options.fill == null || options.fill == "none") {
+                _reject("animateElementAndSaveCSSPromise requires the options object to have fill: forwards, backwards, or both value set or it cannot save style settings.");
+            }
+            else {
+                const animation = element.animate(keyframes, options);
+                animation.onfinish = (_evt) => {
+                    animation.commitStyles(); // save js settings
+                    animation.cancel(); // stop any future or ongoing animations
+                    resolve(); // important to put resolve() parens here
+                };
+            }
+        });
     }
 
     removeCardFromPlay(cardRemovedIds, performingPlayerId, animate) {
