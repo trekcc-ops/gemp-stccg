@@ -588,12 +588,34 @@ export default class GameAnimations {
     }
 
     stopCards(targetCardIds, jsonGameState) {
+        /*
         for (const cardId of targetCardIds) {
             //getCardDivFromId()
             //apply css
             let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
             console.log(`Stop animation for ${cardToAnimate.title}`);
         }
+        */
+        
+        let animation_layer = document.createElement("div");
+        animation_layer.style.zIndex = 100; // TODO: Put these z-index levels in common or something.
+        animation_layer.style.display = "grid";
+        animation_layer.style.gridTemplateColumns = "repeat(6, 1fr)"; // TODO sizing will need work
+        animation_layer.style.gap = "5px";
+
+        // create a cardDiv for each card
+        // opacity fade entire group in
+        // drop the stop icon onto each of them
+        // opacity fade entire group out
+        // remove animation_layer
+
+        // create a card div for each card
+        for (const cardId of targetCardIds) {
+            //apply css
+            let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
+            console.log(`Stop animation for ${cardToAnimate.title}`);
+        }
+
     }
 
     removeCardFromPlay(cardRemovedIds, performingPlayerId, animate) {
