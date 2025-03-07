@@ -561,9 +561,10 @@ export default class GempLotrDeckBuildingUI {
                             let emptyLocationIndex = "";
                             let upsideDown = false;
                             let card = new Card(blueprintIds[i], "selection", "selection" + i, "player", emptyImageUrl, emptyLocationIndex, upsideDown);
-                            let cardDiv = createCardDiv(
+                            let baseCardDiv = createCardDiv(
                                 card.imageUrl, null, card.isFoil(), false, card.isPack(), card.hasErrata()
                             );
+                            let cardDiv = $(baseCardDiv); // convert to jQuery object
                             cardDiv.data("card", card);
                             cardDiv.addClass("cardToSelect");
                             this.selectionDialog.append(cardDiv);
@@ -602,7 +603,8 @@ export default class GempLotrDeckBuildingUI {
         let emptyLocationIndex = "";
         let upsideDown = false;
         let card = new Card(blueprintId, subDeck, "deck", "player", imageUrl, emptyLocationIndex, upsideDown);
-        let cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
+        let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
+        let cardDiv = $(baseCardDiv); // convert to jQuery object
         cardDiv.data("card", card);
         container.append(cardDiv);
         return cardDiv;
@@ -802,7 +804,8 @@ export default class GempLotrDeckBuildingUI {
                 let emptyLocationIndex = "";
                 let card = new Card(blueprintId, "pack", "collection", "player", imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
-                cardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
+                let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
+                cardDiv = $(baseCardDiv); // convert to jQuery object
                 cardDiv.data("card", card);
                 cardDiv.data("selection", contents);
                 cardDiv.addClass("selectionInCollection");
@@ -810,7 +813,9 @@ export default class GempLotrDeckBuildingUI {
                 let emptyLocationIndex = "";
                 let card = new Card(blueprintId, "pack", "collection", "player", imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
-                cardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
+                let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
+                cardDiv = $(baseCardDiv); // convert to jQuery object
+                cardDiv = $(cardDiv); // convert to jQuery object
                 cardDiv.data("card", card);
                 cardDiv.addClass("packInCollection");
             }
@@ -827,7 +832,8 @@ export default class GempLotrDeckBuildingUI {
                             countInDeck++;
                     });
             card.tokens = {"count":countInDeck};
-            let cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
+            let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
+            let cardDiv = $(baseCardDiv); // convert to jQuery object
             cardDiv.data("card", card);
             cardDiv.addClass("cardInCollection");
             cardDiv.draggable({

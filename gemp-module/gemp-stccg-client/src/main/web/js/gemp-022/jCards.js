@@ -332,8 +332,6 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     // Card back
     let back_face = document.createElement("div");
     back_face.classList.add("card__face", "card__face--back");
-    back_face.style.width = "100%";
-    back_face.style.height = "100%";
 
     let back_img = document.createElement("img");
     back_img.src = cardBackImg;
@@ -419,9 +417,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     threeDCardObject.appendChild(front_face);
     threeDScene.appendChild(threeDCardObject);
     baseCardDiv.appendChild(threeDScene);
-
-    let cardDiv = $(baseCardDiv); // convert to jquery object
-    return cardDiv;
+    
+    return baseCardDiv;
 }
 
 export function getFoilPresentation() {

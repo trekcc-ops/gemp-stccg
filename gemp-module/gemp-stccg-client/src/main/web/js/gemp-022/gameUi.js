@@ -1645,7 +1645,8 @@ export default class GameTableUI {
     }
 
     createCardDivWithData(card, text) {
-        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let cardDiv = $(baseCardDiv); // convert to jQuery object
 
         cardDiv.data("card", card);
 
