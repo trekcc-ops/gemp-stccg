@@ -31,18 +31,47 @@
     transform: rotateY( 180deg );
 }
 
-/*
+
 .card, .borderOverlay, .card_img, .fullCardImgHorizontal, .fullCardImgVertical {
     border-radius: 3.5%;
 }
-    */
 
 .borderOverlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
     border: 0px solid #000000;
 }
 
 .foilOverlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
     opacity: 0.2;
+}
+
+.tokenOverlay {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin-top: 5%;
+    margin-right: 5%;
+    min-width: 20px;
+    width: 10%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: flex-start; /* T to B, aligned top */
+    align-items: center; /* L to R */
+    background-color: #80808055;
+}
+
+.tokenOverlay * {
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    flex: 0 1 20px;
 }
 
 .fullCardDivHorizontal, .fullCardDivVertical {
