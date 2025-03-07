@@ -194,18 +194,18 @@ ul {
     color: white;
 }
 
-.notSelectableCard > .borderOverlay {
+.notSelectableCard .borderOverlay {
     cursor: pointer;
     background-color: #1b1b207d;
 }
 
-.selectableCard > .borderOverlay,
-.actionableCard > .borderOverlay {
+.selectableCard .borderOverlay,
+.actionableCard .borderOverlay {
     border-color: #7f7fff;
     cursor: pointer;
 }
 
-.selectedCard > .borderOverlay {
+.selectedCard .borderOverlay {
     border-color: #59C27C;
     cursor: pointer;
 }
