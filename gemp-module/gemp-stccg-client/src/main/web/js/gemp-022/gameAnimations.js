@@ -599,7 +599,10 @@ export default class GameAnimations {
         
         let animation_layer = document.createElement("div");
         animation_layer.id = "animation_layer";
-        animation_layer.style.zIndex = 100; // TODO: Put these z-index levels in common or something.
+        animation_layer.style.position = "absolute"; // render on top
+        animation_layer.style.height = "100%";
+        animation_layer.style.width = "100%";
+        animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
         animation_layer.style.display = "flex";
         animation_layer.style.flexWrap = "wrap";
         animation_layer.style.justifyContent = "center"; //horiz
@@ -658,7 +661,14 @@ export default class GameAnimations {
         }
 
         new Promise((resolve, _reject) => {
-            this.game.appendChild(animation_layer);
+            let gamediv;
+            if (this.game.mainDiv instanceof jQuery) {
+                gamediv = this.game.mainDiv[0];
+            }
+            else {
+                gamediv = this.game;
+            }
+            gamediv.appendChild(animation_layer);
             resolve();
         })
         .then(() => {
