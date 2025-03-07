@@ -364,7 +364,7 @@ export default class GameAnimations {
                 let cardDiv = getCardDivFromId(cardId);
                 let card = cardDiv.data("card");
                 let pos = cardDiv.position();
-                let card_img = $(cardDiv).children(".card_img").first();
+                let card_img = $(cardDiv).find(".card_img").first();
 
                 final_position["left"] = pos.left;
                 final_position["top"] = pos.top;
@@ -441,7 +441,7 @@ export default class GameAnimations {
                 //       This may not be necessary if the overlays are contained inside the
                 //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
                 let cardDiv = getCardDivFromId(cardId);
-                let card_img = $(cardDiv).children(".card_img").first();
+                let card_img = $(cardDiv).find(".card_img").first();
                 layoutCardElem(cardDiv,
                     final_position["left"],
                     final_position["top"],
