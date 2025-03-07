@@ -70,6 +70,7 @@ export default class GameTableUI {
 
         log("ui initialized");
         var that = this;
+        this.mainDiv = $("#main");
         this.alertBox = $("#alertBox");
         this.alertText = $("#alertText");
         this.alertButtons = $("#alertButtons");
