@@ -2,14 +2,14 @@
     /* height: 300px;
     width: 200px;
     */
-    width: inherit;
-    height: inherit;
+    width: 100%;
+    height: 100%;
     perspective: 600px;
 }
 
 .three-d-card {
-    width: inherit;
-    height: inherit;
+    width: 100%;
+    height: 100%;
     position: relative;
     transition: transform 0.5s;
     transform-style: preserve-3d;
@@ -31,9 +31,11 @@
     transform: rotateY( 180deg );
 }
 
+/*
 .card, .borderOverlay, .card_img, .fullCardImgHorizontal, .fullCardImgVertical {
     border-radius: 3.5%;
 }
+    */
 
 .borderOverlay {
     border: 0px solid #000000;

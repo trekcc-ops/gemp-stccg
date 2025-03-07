@@ -1,5 +1,5 @@
 import Card from "./jCards.js";
-import { getCardDivFromId, createSimpleCardDiv } from "./jCards.js";
+import { getCardDivFromId, createCardDiv, createSimpleCardDiv } from "./jCards.js";
 import { layoutCardElem } from "./jCardGroup.js";
 import { getFriendlyPhaseName } from "./common.js";
 
@@ -600,10 +600,13 @@ export default class GameAnimations {
         let animation_layer = document.createElement("div");
         animation_layer.id = "animation_layer";
         animation_layer.style.zIndex = 100; // TODO: Put these z-index levels in common or something.
-        animation_layer.style.display = "grid";
-        animation_layer.style.gridTemplateColumns = "repeat(6, 1fr)"; // TODO sizing will need work
-        animation_layer.style.gap = "5px";
+        animation_layer.style.display = "flex";
+        animation_layer.style.flexWrap = "wrap";
+        animation_layer.style.justifyContent = "center"; //horiz
+        animation_layer.style.alignContent = "center"; //vert
+        animation_layer.style.gap = "15px";
         animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
+        //animation_layer.style.minHeight = "200px";
         animation_layer.style.opacity = 0; // invisible
 
         // create a cardDiv for each card
@@ -613,15 +616,37 @@ export default class GameAnimations {
         // remove animation_layer
 
         // create a card div for each card
-        for (const cardId of targetCardIds) {
+        for (const targetCardId of targetCardIds) {
             //apply css
-            //let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
             //console.log(`Stop animation for ${cardToAnimate.title}`);
-            let card_grid_item = document.createElement("div");
-            card_grid_item.innerHTML = `${cardId}`;
-            card_grid_item.style.padding = "5px";
-            card_grid_item.style.backgroundColor = "#ffffff";
-            animation_layer.appendChild(card_grid_item);
+
+            //let card_grid_item = document.createElement("div");
+            //card_grid_item.innerHTML = `${cardId}`;
+            //card_grid_item.style.padding = "5px";
+            //card_grid_item.style.backgroundColor = "#ffffff";
+            let card_json = jsonGameState.visibleCardsInGame[targetCardId];
+            let blueprintId = card_json.blueprintId;
+            let zone = "VOID";
+            let cardId = card_json.cardId;
+            let noOwner = "";
+            let imageUrl = card_json.imageUrl;
+            let emptyLocationIndex = "";
+            let upsideDown = false;
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
+            let text = "";
+            let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+
+            let pageWidth = document.body.clientWidth;
+            let oneSixthWidthVal = (pageWidth / 6);
+            let cardWidth = oneSixthWidthVal + "px"; // 5 width
+            let cardHeight = Math.floor(oneSixthWidthVal * 1.5) + "px"; // 3:2 ratio
+
+            baseCardDiv.style.margin = "auto";
+            baseCardDiv.style.width = cardWidth;
+            baseCardDiv.style.height = cardHeight;
+            baseCardDiv.style.flex = `0 1 ${cardWidth}`;
+
+            animation_layer.appendChild(baseCardDiv);
         }
 
         new Promise((resolve, _reject) => {
@@ -646,6 +671,7 @@ export default class GameAnimations {
                 }
             );
         })
+        /*
         .then(() => {
             // delay
             return new Promise((resolve, _reject) => {
@@ -677,6 +703,7 @@ export default class GameAnimations {
                 resolve();
             });
         });
+        */
     }
 
     animateElementAndSaveCSSPromise(element, keyframes, options) {
