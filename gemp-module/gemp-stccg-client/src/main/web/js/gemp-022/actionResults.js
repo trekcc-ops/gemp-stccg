@@ -1,4 +1,5 @@
 import { showLinkableCardTitle, getAffiliationHtml } from "./common.js";
+import { getCardDivFromId } from "./jCards.js";
 
 export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let actionType = jsonAction.actionType;
@@ -6,6 +7,19 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let cardList = new Array();
     let targetCard;
     let spacelineIndex;
+
+    for (const location of jsonGameState.spacelineLocations) {
+        if (location.seedCardCount === 0) {
+            for (const missionId of location.missionCardIds) {
+                getCardDivFromId(missionId).removeClass("seedCardCountBadge").removeAttr("seedCardCount");
+            }
+        }
+        else {
+            for (const missionId of location.missionCardIds) {
+                getCardDivFromId(missionId).addClass("seedCardCountBadge").attr("seedCardCount", location.seedCardCount);
+            }
+        }
+    }
 
     switch(actionType) {
         case "ADD_CARD_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"

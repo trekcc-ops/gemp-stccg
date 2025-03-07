@@ -230,6 +230,20 @@ red/pink: #C2599F
 	color: white;
 }
 
+.seedCardCountBadge::after {
+	content: attr(seedCardCount);
+    position: relative;
+    top: -42%;
+    left: 39%;
+    border-radius: 50%;
+    padding: 5%;
+	background: #c25959;
+    opacity: 0.9;
+    font-size: 12px;
+    font-weight: bolder;
+	color: white;
+}
+
 .stats {
     text-align: center;
     padding: 2px;
