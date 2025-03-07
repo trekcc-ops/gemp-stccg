@@ -758,9 +758,9 @@ export function layoutCardElem(cardElem, x, y, width, height, index) {
         return;
     cardElem.css({position:"absolute", left:x + "px", top:y + "px", width:width, height:height, "z-index":index });
 
-    var tokenOverlay = $(".tokenOverlay", cardElem);
-    if (tokenOverlay.length > 0)
-        tokenOverlay.css({position:"absolute", left:0 + "px", top:0 + "px", width:width, height:height});
+    //var tokenOverlay = $(".tokenOverlay", cardElem);
+    //if (tokenOverlay.length > 0)
+    //    tokenOverlay.css({position:"absolute", left:0 + "px", top:0 + "px", width:width, height:height});
 
     $(".errataOverlay", cardElem).css({position:"absolute", left:0 + "px", top:0 + "px", width:width, height:height});
     $(".foilOverlay", cardElem).css({position:"absolute", left:0 + "px", top:0 + "px", width:width, height:height});
@@ -769,9 +769,12 @@ export function layoutCardElem(cardElem, x, y, width, height, index) {
     var borderWidth = Math.floor(maxDimension / 30);
 
     var borderOverlay = $(".borderOverlay", cardElem);
-    if (borderOverlay.hasClass("noBorder"))
+    if (borderOverlay.hasClass("noBorder")) {
         borderWidth = 0;
-    borderOverlay.css({position:"absolute", left:0 + "px", top:0 + "px", width:width - 2 * borderWidth, height:height - 2 * borderWidth, "border-width":borderWidth + "px"});
+    }
+    //borderOverlay.css({position:"absolute", left:0 + "px", top:0 + "px", width:width - 2 * borderWidth, height:height - 2 * borderWidth, "border-width":borderWidth + "px"});
+    borderOverlay.css({width:width - 2 * borderWidth, height:height - 2 * borderWidth, "border-width":borderWidth + "px"});
+    
 
     var sizeListeners = cardElem.data("sizeListeners");
     if (sizeListeners != null)

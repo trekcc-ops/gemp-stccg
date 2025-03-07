@@ -682,7 +682,19 @@ export default class GameAnimations {
         .then(() => {
             // delay
             return new Promise((resolve, _reject) => {
-                setTimeout(resolve, 2000); // important to NOT put resolve parens here
+                const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlay");
+                let animation_promises = [];
+                for (const overlay of tokenOverlays) {
+                    animation_promises.push(
+                        overlay.animate([
+                            {opacity: 1}, {opacity: 0}],
+                            {direction: "alternate", duration: 500, easing: "linear", iterations: 6})
+                    );
+                }
+                
+                Promise.all(animation_promises.map((animation) => animation.finished)).then(
+                    () => resolve()
+                );
             });
         })
         .then(() => {
