@@ -634,7 +634,15 @@ export default class GameAnimations {
             let upsideDown = false;
             let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
             let text = "";
-            let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+
+            if (card_json.isStopped) {
+                card.addStatusToken("STOPPED");
+            }
+            else {
+                card.removeStatusToken("STOPPED");
+            }
+
+            let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
             let pageWidth = document.body.clientWidth;
             let oneSixthWidthVal = (pageWidth / 6);
