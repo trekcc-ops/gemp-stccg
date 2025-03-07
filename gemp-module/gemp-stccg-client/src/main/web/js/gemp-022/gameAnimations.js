@@ -671,7 +671,6 @@ export default class GameAnimations {
                 }
             );
         })
-        /*
         .then(() => {
             // delay
             return new Promise((resolve, _reject) => {
@@ -703,7 +702,6 @@ export default class GameAnimations {
                 resolve();
             });
         });
-        */
     }
 
     animateElementAndSaveCSSPromise(element, keyframes, options) {
