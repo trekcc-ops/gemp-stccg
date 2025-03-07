@@ -5,6 +5,9 @@ import rulesImg from "../../images/rules.png";
 import errataVerticalImg from "../../images/errata-vertical.png";
 import pixelImg from "../../images/pixel.png";
 import cardBackImg from "../../images/decipher_card_back.svg?url";
+import stoppedImg from "../../images/emblem-error.svg?url";
+import disabledImg from "../../images/emblem-locked.svg?url";
+import capturedImg from "../../images/emblem-symbolic-link.svg?url";
 
 export var cardCache = {};
 export var cardScale = 357 / 497;
@@ -12,6 +15,11 @@ export var cardScale = 357 / 497;
 export var packBlueprints = {
     "Special-01": special01Img
 };
+
+// TODO: corresponds to the list of tokens we have icons for, not the full 1E list
+export const STATUS_TOKENS = [
+    "STOPPED"
+];
 
 export default class Card {
     blueprintId;
@@ -26,8 +34,9 @@ export default class Card {
     siteNumber = 1;
     attachedCards;
     errata;
+    status_tokens;
 
-    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown) {
+    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown, tokens) {
         if (typeof(blueprintId) != 'string') {
             throw new TypeError(`blueprintId '${blueprintId}' must be a string.`);
         }
@@ -68,7 +77,9 @@ export default class Card {
         if (typeof(upsideDown) != 'boolean') {
             throw new TypeError(`upsideDown '${upsideDown}' must be a boolean.`);
         }
-        
+
+        this.status_tokens = (tokens instanceof Set) ? tokens : new Set();
+
         this.blueprintId = blueprintId;
         this.imageUrl = imageUrl;
         this.upsideDown = upsideDown;
@@ -315,9 +326,26 @@ export default class Card {
         );
         container.dialog("open");
     }
+
+    addStatusToken(status) {
+        if (STATUS_TOKENS.indexOf(status) === -1) {
+            throw new TypeError(`Status '${status}' is not in the STATUS_TOKENS array.`);
+        }
+        else {
+            this.status_tokens.add(status);
+        }
+    }
+
+    removeStatusToken(status) {
+        this.status_tokens.delete(status);
+    }
+
+    hasStatus(status) {
+        return this.status_tokens.has(status);
+    }
 }
 
-
+// TODO: This should be an instance function.
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
     let baseCardDiv = document.createElement("div");
     baseCardDiv.classList.add("card");
@@ -391,10 +419,37 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
         front_face.appendChild(foilDiv);
     }
 
-    // Unless tokens are explicitly set to false
-    if (tokens === undefined || tokens) {
+    if (tokens) {
         let overlayDiv = document.createElement("div");
         overlayDiv.classList.add("tokenOverlay");
+
+        if (tokens instanceof Set) { // handle back-compat case where tokens could be bool true
+            for (const status of tokens) {
+                switch(status) {
+                    case "STOPPED": {
+                        let stoppedImgTag = document.createElement("img");
+                        stoppedImgTag.src = stoppedImg;
+                        overlayDiv.appendChild(stoppedImgTag);
+                        break;
+                    }
+                    case "STASIS": {
+                        let disabledImgTag = document.createElement("img");
+                        disabledImgTag.src = disabledImg;
+                        overlayDiv.appendChild(disabledImgTag);
+                        break;
+                    }
+                    case "CAPTURED": {
+                        let capturedImgTag = document.createElement("img");
+                        capturedImgTag.src = capturedImg;
+                        overlayDiv.appendChild(capturedImgTag);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+        }
+
         front_face.appendChild(overlayDiv);
     }
 
