@@ -4,6 +4,10 @@ import special01Img from "../../images/boosters/special-01.png";
 import rulesImg from "../../images/rules.png";
 import errataVerticalImg from "../../images/errata-vertical.png";
 import pixelImg from "../../images/pixel.png";
+import cardBackImg from "../../images/decipher_card_back.svg?url";
+import stoppedImg from "../../images/emblem-error.svg?url";
+import disabledImg from "../../images/emblem-locked.svg?url";
+import capturedImg from "../../images/emblem-symbolic-link.svg?url";
 
 export var cardCache = {};
 export var cardScale = 357 / 497;
@@ -11,6 +15,11 @@ export var cardScale = 357 / 497;
 export var packBlueprints = {
     "Special-01": special01Img
 };
+
+// TODO: corresponds to the list of tokens we have icons for, not the full 1E list
+export const STATUS_TOKENS = [
+    "STOPPED"
+];
 
 export default class Card {
     blueprintId;
@@ -25,8 +34,9 @@ export default class Card {
     siteNumber = 1;
     attachedCards;
     errata;
+    status_tokens;
 
-    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown) {
+    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown, tokens) {
         if (typeof(blueprintId) != 'string') {
             throw new TypeError(`blueprintId '${blueprintId}' must be a string.`);
         }
@@ -67,7 +77,9 @@ export default class Card {
         if (typeof(upsideDown) != 'boolean') {
             throw new TypeError(`upsideDown '${upsideDown}' must be a boolean.`);
         }
-        
+
+        this.status_tokens = (tokens instanceof Set) ? tokens : new Set();
+
         this.blueprintId = blueprintId;
         this.imageUrl = imageUrl;
         this.upsideDown = upsideDown;
@@ -314,54 +326,154 @@ export default class Card {
         );
         container.dialog("open");
     }
+
+    addStatusToken(status) {
+        if (STATUS_TOKENS.indexOf(status) === -1) {
+            throw new TypeError(`Status '${status}' is not in the STATUS_TOKENS array.`);
+        }
+        else {
+            this.status_tokens.add(status);
+        }
+    }
+
+    removeStatusToken(status) {
+        this.status_tokens.delete(status);
+    }
+
+    hasStatus(status) {
+        return this.status_tokens.has(status);
+    }
 }
 
-
+// TODO: This should be an instance function.
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
-    let imgClass;
-    if (cardId == null) {
-        if (upsideDown) {
-            imgClass = "card_img upside-down";
-        }
-        else {
-            imgClass = "card_img";
-        }
-    }
-    else {
-        if (upsideDown) {
-            imgClass = "card_img upside-down card_img_" + cardId;
-        }
-        else {
-            imgClass = "card_img card_img_" + cardId;
-        }
+    let baseCardDiv = document.createElement("div");
+    baseCardDiv.classList.add("card");
+    baseCardDiv.textContent = (text) ? text : "";
+
+    let threeDScene = document.createElement("div");
+    threeDScene.classList.add("three-d-card-scene");
+
+    let threeDCardObject = document.createElement("div");
+    threeDCardObject.classList.add("three-d-card");
+
+    // Card back
+    let back_face = document.createElement("div");
+    back_face.classList.add("card__face", "card__face--back");
+
+    let back_img = document.createElement("img");
+    back_img.src = cardBackImg;
+    back_img.style.width = "100%";
+    back_img.style.height = "100%";
+    back_face.appendChild(back_img);
+
+    threeDCardObject.appendChild(back_face);
+
+    // Card front with everything else
+    let front_face = document.createElement("div");
+    front_face.classList.add("card__face", "card__face--front");
+
+    let imageTag = document.createElement("img");
+    imageTag.classList.add("card_img");
+
+    if (cardId != null) {
+        let img_class_id = "card_img_" + cardId;
+        imageTag.classList.add(img_class_id);
     }
 
+    if (upsideDown) {
+        imageTag.classList.add("upside-down");
+    }
 
-    var cardDiv = $("<div class='card'><img class='" + imgClass + "' src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
+    imageTag.src = image;
+    imageTag.style.width = "100%";
+    imageTag.style.height = "100%";
+
+    front_face.appendChild(imageTag);
 
     if (errata) {
-        var errataDiv = $(`<div class='errataOverlay'><img src='${errataVerticalImg}' width='100%' height='100%'></div>`);
-        cardDiv.append(errataDiv);
+        let errataDiv = document.createElement("div");
+        errataDiv.classList.add("errataOverlay");
+
+        let errataImageTag = document.createElement("img");
+        errataImageTag.src = errataVerticalImg;
+        errataImageTag.style.width = "100%";
+        errataImageTag.style.height = "100%";
+
+        errataDiv.appendChild(errataImageTag);
+        front_face.appendChild(errataDiv);
     }
 
-    var foilPresentation = getFoilPresentation();
-
+    let foilPresentation = getFoilPresentation();
     if (foil && foilPresentation !== 'none') {
-        var foilImage = (foilPresentation === 'animated') ? "foil.gif" : "holo.jpg";
-        var foilDiv = $("<div class='foilOverlay'><img src='/gemp-module/images/" + foilImage + "' width='100%' height='100%'></div>");
-        cardDiv.append(foilDiv);
+        let foilDiv = document.createElement("div");
+        foilDiv.classList.add("foilOverlay");
+
+        let foilImageSrc = (foilPresentation === 'animated') ? "foil.gif" : "holo.jpg";
+        let foilImageTag = document.createElement("img");
+        foilImageTag.src = `gemp-module/images/${foilImageSrc}`;
+        foilImageTag.style.width = "100%";
+        foilImageTag.style.height = "100%";
+
+        foilDiv.appendChild(foilImageTag);
+        front_face.appendChild(foilDiv);
     }
 
-    if (tokens === undefined || tokens) {
-        var overlayDiv = $("<div class='tokenOverlay'></div>");
-        cardDiv.append(overlayDiv);
-    }
-    var borderDiv = $(`<div class='borderOverlay'><img class='actionArea' src='${pixelImg}' width='100%' height='100%'></div>`);
-    if (noBorder)
-        borderDiv.addClass("noBorder");
-    cardDiv.append(borderDiv);
+    if (tokens) {
+        let overlayDiv = document.createElement("div");
+        overlayDiv.classList.add("tokenOverlay");
 
-    return cardDiv;
+        if (tokens instanceof Set) { // handle back-compat case where tokens could be bool true
+            for (const status of tokens) {
+                switch(status) {
+                    case "STOPPED": {
+                        let stoppedImgTag = document.createElement("img");
+                        stoppedImgTag.src = stoppedImg;
+                        overlayDiv.appendChild(stoppedImgTag);
+                        break;
+                    }
+                    case "STASIS": {
+                        let disabledImgTag = document.createElement("img");
+                        disabledImgTag.src = disabledImg;
+                        overlayDiv.appendChild(disabledImgTag);
+                        break;
+                    }
+                    case "CAPTURED": {
+                        let capturedImgTag = document.createElement("img");
+                        capturedImgTag.src = capturedImg;
+                        overlayDiv.appendChild(capturedImgTag);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+        }
+
+        front_face.appendChild(overlayDiv);
+    }
+
+    let borderDiv = document.createElement("div");
+    borderDiv.classList.add("borderOverlay");
+    if (noBorder) {
+        borderDiv.classList.add("noBorder");
+    }
+    
+    let borderImageTag = document.createElement("img");
+    borderImageTag.classList.add("actionArea");
+    borderImageTag.src = pixelImg;
+    borderImageTag.style.width = "100%";
+    borderImageTag.style.height = "100%";
+
+    borderDiv.appendChild(borderImageTag);
+    front_face.appendChild(borderDiv);
+
+    //threeDScene.appendChild(baseCardDiv);
+    threeDCardObject.appendChild(front_face);
+    threeDScene.appendChild(threeDCardObject);
+    baseCardDiv.appendChild(threeDScene);
+    
+    return baseCardDiv;
 }
 
 export function getFoilPresentation() {

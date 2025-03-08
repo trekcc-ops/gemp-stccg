@@ -70,6 +70,7 @@ export default class GameTableUI {
 
         log("ui initialized");
         var that = this;
+        this.mainDiv = $("#main");
         this.alertBox = $("#alertBox");
         this.alertText = $("#alertText");
         this.alertButtons = $("#alertButtons");
@@ -1645,7 +1646,8 @@ export default class GameTableUI {
     }
 
     createCardDivWithData(card, text) {
-        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let cardDiv = $(baseCardDiv); // convert to jQuery object
 
         cardDiv.data("card", card);
 
@@ -1998,7 +2000,7 @@ export default class GameTableUI {
                     $("#main").append(cardDiv);
                 }
 
-                if (cardIdElem.data("action") === null || cardIdElem.data("action") === undefined) {
+                if (cardIdElem.data("action") == null) {
                     cardIdElem.data("action", new Array());
                 }
                 var actions = cardIdElem.data("action");
@@ -2326,7 +2328,7 @@ export default class GameTableUI {
     }
 
     recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
-        if (typeof(jsonCombinations) !== 'object' || jsonCombinations === null) {
+        if (typeof(jsonCombinations) !== 'object' || jsonCombinations == null) {
             let inc_type = typeof(jsonCombinations);
             throw new TypeError(`jsonCombinations must be an Object not a ${inc_type} or null.`);;
         }
@@ -2986,8 +2988,7 @@ export class ST1EGameTableUI extends GameTableUI {
 
     // Converts region enum sent from Region.java to a user friendly string
     _friendly_region_name(locationDiv) {
-        if (locationDiv === null ||
-            locationDiv === undefined) {
+        if (locationDiv == null) {
             return "";
         }
         switch (locationDiv) {

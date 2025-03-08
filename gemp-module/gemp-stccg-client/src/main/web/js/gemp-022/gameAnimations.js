@@ -1,5 +1,5 @@
 import Card from "./jCards.js";
-import { getCardDivFromId, createSimpleCardDiv } from "./jCards.js";
+import { getCardDivFromId, createCardDiv, createSimpleCardDiv } from "./jCards.js";
 import { layoutCardElem } from "./jCardGroup.js";
 import { getFriendlyPhaseName } from "./common.js";
 
@@ -364,7 +364,7 @@ export default class GameAnimations {
                 let cardDiv = getCardDivFromId(cardId);
                 let card = cardDiv.data("card");
                 let pos = cardDiv.position();
-                let card_img = $(cardDiv).children(".card_img").first();
+                let card_img = $(cardDiv).find(".card_img").first();
 
                 final_position["left"] = pos.left;
                 final_position["top"] = pos.top;
@@ -441,7 +441,7 @@ export default class GameAnimations {
                 //       This may not be necessary if the overlays are contained inside the
                 //       cardDiv that is being animated, as opposed to applied in layoutCardElem.
                 let cardDiv = getCardDivFromId(cardId);
-                let card_img = $(cardDiv).children(".card_img").first();
+                let card_img = $(cardDiv).find(".card_img").first();
                 layoutCardElem(cardDiv,
                     final_position["left"],
                     final_position["top"],
@@ -585,6 +585,169 @@ export default class GameAnimations {
                     that.cardData.oldGroup = null;
                     next();
                 });
+    }
+
+    stopCards(targetCardIds, jsonGameState) {
+        /*
+        for (const cardId of targetCardIds) {
+            //getCardDivFromId()
+            //apply css
+            let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
+            console.log(`Stop animation for ${cardToAnimate.title}`);
+        }
+        */
+        
+        let animation_layer = document.createElement("div");
+        animation_layer.id = "animation_layer";
+        animation_layer.style.position = "absolute"; // render on top
+        animation_layer.style.height = "100%";
+        animation_layer.style.width = "100%";
+        animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
+        animation_layer.style.display = "flex";
+        animation_layer.style.flexWrap = "wrap";
+        animation_layer.style.justifyContent = "center"; //horiz
+        animation_layer.style.alignContent = "center"; //vert
+        animation_layer.style.gap = "15px";
+        animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
+        //animation_layer.style.minHeight = "200px";
+        animation_layer.style.opacity = 0; // invisible
+
+        // create a cardDiv for each card
+        // opacity fade entire group in
+        // drop the stop icon onto each of them
+        // opacity fade entire group out
+        // remove animation_layer
+
+        // create a card div for each card
+        for (const targetCardId of targetCardIds) {
+            //apply css
+            //console.log(`Stop animation for ${cardToAnimate.title}`);
+
+            //let card_grid_item = document.createElement("div");
+            //card_grid_item.innerHTML = `${cardId}`;
+            //card_grid_item.style.padding = "5px";
+            //card_grid_item.style.backgroundColor = "#ffffff";
+            let card_json = jsonGameState.visibleCardsInGame[targetCardId];
+            let blueprintId = card_json.blueprintId;
+            let zone = "VOID";
+            let cardId = card_json.cardId;
+            let noOwner = "";
+            let imageUrl = card_json.imageUrl;
+            let emptyLocationIndex = "";
+            let upsideDown = false;
+            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
+            let text = "";
+
+            if (card_json.isStopped) {
+                card.addStatusToken("STOPPED");
+            }
+            else {
+                card.removeStatusToken("STOPPED");
+            }
+
+            let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+
+            let pageWidth = document.body.clientWidth;
+            let oneSixthWidthVal = (pageWidth / 6);
+            let cardWidth = oneSixthWidthVal + "px"; // 5 width
+            let cardHeight = Math.floor(oneSixthWidthVal * 1.5) + "px"; // 3:2 ratio
+
+            baseCardDiv.style.margin = "auto";
+            baseCardDiv.style.width = cardWidth;
+            baseCardDiv.style.height = cardHeight;
+            baseCardDiv.style.flex = `0 1 ${cardWidth}`;
+
+            animation_layer.appendChild(baseCardDiv);
+        }
+
+        new Promise((resolve, _reject) => {
+            let gamediv;
+            if (this.game.mainDiv instanceof jQuery) {
+                gamediv = this.game.mainDiv[0];
+            }
+            else {
+                gamediv = this.game;
+            }
+            gamediv.appendChild(animation_layer);
+            resolve();
+        })
+        .then(() => {
+            // fade in
+            return this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 0,
+                    },
+                    { // to
+                        opacity: 1,
+                    },
+                ],
+                {
+                    duration: 1000, //ms
+                    fill: "forwards"
+                }
+            );
+        })
+        .then(() => {
+            // delay
+            return new Promise((resolve, _reject) => {
+                const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlay");
+                let animation_promises = [];
+                for (const overlay of tokenOverlays) {
+                    animation_promises.push(
+                        overlay.animate([
+                            {opacity: 1}, {opacity: 0}],
+                            {direction: "alternate", duration: 500, easing: "linear", iterations: 6})
+                    );
+                }
+                
+                Promise.all(animation_promises.map((animation) => animation.finished)).then(
+                    () => resolve()
+                );
+            });
+        })
+        .then(() => {
+            // fade out
+            return this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 1,
+                    },
+                    { // to
+                        opacity: 0,
+                    },
+                ],
+                {
+                    duration: 500, //ms
+                    fill: "forwards"
+                }
+            );
+        })
+        .then(() => {
+            // remove animation layer
+            return new Promise((resolve, _reject) => {
+                animation_layer.remove();
+                resolve();
+            });
+        });
+    }
+
+    animateElementAndSaveCSSPromise(element, keyframes, options) {
+        return new Promise((resolve, _reject) => {
+            if (options.fill == null || options.fill == "none") {
+                _reject("animateElementAndSaveCSSPromise requires the options object to have fill: forwards, backwards, or both value set or it cannot save style settings.");
+            }
+            else {
+                const animation = element.animate(keyframes, options);
+                animation.onfinish = (_evt) => {
+                    animation.commitStyles(); // save js settings
+                    animation.cancel(); // stop any future or ongoing animations
+                    resolve(); // important to put resolve() parens here
+                };
+            }
+        });
     }
 
     removeCardFromPlay(cardRemovedIds, performingPlayerId, animate) {

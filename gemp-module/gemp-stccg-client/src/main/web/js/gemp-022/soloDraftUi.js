@@ -87,14 +87,16 @@ export default class GempLotrSoloDraftUI {
                         var blueprintId = availablePick.getAttribute("blueprintId");
 
                         if (blueprintId != null) {
-                            var card = new Card(blueprintId, "picks", "deck", "player", imageUrl);
-                            var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                            let card = new Card(blueprintId, "picks", "deck", "player", imageUrl);
+                            let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                            let cardDiv = $(baseCardDiv); // convert to jQuery object
                             cardDiv.data("card", card);
                             cardDiv.data("choiceId", id);
                             that.picksDiv.append(cardDiv);
                         } else {
-                            var card = new Card("rules", "picks", "deck", "player", url);
-                            var cardDiv = createCardDiv(url, null, false, false, true, false);
+                            let card = new Card("rules", "picks", "deck", "player", url);
+                            let baseCardDiv = createCardDiv(url, null, false, false, true, false);
+                            let cardDiv = $(baseCardDiv); // convert to jQuery object
                             cardDiv.data("card", card);
                             cardDiv.data("choiceId", id);
                             that.picksDiv.append(cardDiv);
@@ -121,8 +123,9 @@ export default class GempLotrSoloDraftUI {
                     var blueprintId = card.getAttribute("blueprintId");
                     var imageUrl = card.getAttribute("imageUrl");
                     for (var no = 0; no < count; no++) {
-                        var card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
-                        var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                        let card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
+                        let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                        let cardDiv = $(baseCardDiv); // convert to jQuery object
                         cardDiv.data("card", card);
                         that.draftedDiv.append(cardDiv);
                     }
@@ -167,8 +170,9 @@ export default class GempLotrSoloDraftUI {
                                         var count = pickedCard.getAttribute("count");
                                         var imageUrl = pickedCard.getAttribute("imageUrl");
                                         for (var no = 0; no < count; no++) {
-                                            var card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
-                                            var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                                            let card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
+                                            let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                                            let cardDiv = $(baseCardDiv); // convert to jQuery object
                                             cardDiv.data("card", card);
                                             that.draftedDiv.append(cardDiv);
                                         }
@@ -184,14 +188,16 @@ export default class GempLotrSoloDraftUI {
                                         var imageUrl = availablePick.getAttribute("imageUrl");
 
                                         if (blueprintId != null) {
-                                            var card = new Card(blueprintId, "picks", "deck", "player", imageUrl);
-                                            var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                                            let card = new Card(blueprintId, "picks", "deck", "player", imageUrl);
+                                            let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                                            let cardDiv = $(baseCardDiv); // convert to jQuery object
                                             cardDiv.data("card", card);
                                             cardDiv.data("choiceId", id);
                                             that.picksDiv.append(cardDiv);
                                         } else {
-                                            var card = new Card("rules", "picks", "deck", "player", url);
-                                            var cardDiv = createCardDiv(url, null, false, false, true, false);
+                                            let card = new Card("rules", "picks", "deck", "player", url);
+                                            let baseCardDiv = createCardDiv(url, null, false, false, true, false);
+                                            let cardDiv = $(baseCardDiv); // convert to jQuery object
                                             cardDiv.data("card", card);
                                             cardDiv.data("choiceId", id);
                                             that.picksDiv.append(cardDiv);
