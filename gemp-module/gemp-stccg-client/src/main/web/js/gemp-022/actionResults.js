@@ -256,7 +256,16 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "DOCK_SHIP":
         case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
-        case "ENCOUNTER_SEED_CARD":
+        case "ENCOUNTER_SEED_CARD": {
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            if (jsonAction.status === "completed_success") {
+                message = performingPlayerId + " overcame " + showLinkableCardTitle(targetCard);
+            } else if (jsonAction.status === "completed_failure") {
+                message = performingPlayerId + " failed to overcome " + showLinkableCardTitle(targetCard);
+            }
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        }
         case "FAIL_DILEMMA":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD_ON_MISSION":
