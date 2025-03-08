@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -24,7 +26,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
                                    MissionLocation location)
             throws InvalidGameLogicException {
-        super(cardGame, encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        super(cardGame, encounteringPlayer, "Encounter seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);
@@ -63,6 +65,8 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
     public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
     public AttemptMissionAction getAttemptAction() { return _parentAction; }
 
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     @Override
     public PhysicalCard getPerformingCard() {
         return _cardTarget.getCard();

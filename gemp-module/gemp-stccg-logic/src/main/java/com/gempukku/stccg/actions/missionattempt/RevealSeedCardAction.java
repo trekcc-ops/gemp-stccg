@@ -30,6 +30,7 @@ public class RevealSeedCardAction extends ActionyAction {
         _revealedCardId = revealedCard.getCardId();
         _missionAttemptActionId = attemptAction.getActionId();
         _missionLocation = mission;
+        revealedCard.reveal();
     }
 
 

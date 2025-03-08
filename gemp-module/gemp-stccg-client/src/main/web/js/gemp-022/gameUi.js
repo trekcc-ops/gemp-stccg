@@ -1050,7 +1050,8 @@ export default class GameTableUI {
                     if (action.status === "completed_success") {
                         animateActionResult(action, gameState, this.animations);
                         communicateActionResult(action, gameState, this);
-                    } else if (action.status === "completed_failure" && action.actionType === "ATTEMPT_MISSION") {
+                    } else if (action.status === "completed_failure" && (action.actionType === "ATTEMPT_MISSION" || action.actionType === "ENCOUNTER_SEED_CARD")) {
+                        // Pass a message to the play history if a mission attempt or seed card encounter was failed
                         communicateActionResult(action, gameState, this);
                     }
                     this.lastActionIndex = i;
