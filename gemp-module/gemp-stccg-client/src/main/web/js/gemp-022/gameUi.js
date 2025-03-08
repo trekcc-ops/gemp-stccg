@@ -70,6 +70,7 @@ export default class GameTableUI {
 
         log("ui initialized");
         var that = this;
+        this.mainDiv = $("#main");
         this.alertBox = $("#alertBox");
         this.alertText = $("#alertText");
         this.alertButtons = $("#alertButtons");
@@ -1645,7 +1646,8 @@ export default class GameTableUI {
     }
 
     createCardDivWithData(card, text) {
-        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let cardDiv = $(baseCardDiv); // convert to jQuery object
 
         cardDiv.data("card", card);
 
