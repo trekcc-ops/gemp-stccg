@@ -9,6 +9,7 @@ import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -44,14 +45,17 @@ public class Blueprint155_021 extends CardBlueprint {
                 action1.setCardActionPrefix("1");
                 action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
                 action1.appendEffect(
+
                         new DownloadCardAction(cardGame, Zone.HAND, thisCard.getOwner(), playableCardFilter, thisCard) {
 
                             @Override
                             protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
 
+                                CardFilter outpostFilter = Filters.yourMatchingOutposts(thisCard.getOwner(), selectedCard);
+                                Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
+
                                 Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                                        true, Filters.filterYourActive(cardGame, thisCard.getOwner(),
-                                        Filters.yourMatchingOutposts(thisCard.getOwner(), thisCard)));
+                                        true, eligibleDestinations);
                                 setPlayCardAction(action);
                                 selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
                             }

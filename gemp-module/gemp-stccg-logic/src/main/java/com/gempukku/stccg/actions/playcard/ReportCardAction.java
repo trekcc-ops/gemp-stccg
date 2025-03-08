@@ -106,8 +106,9 @@ public class ReportCardAction extends STCCGPlayCardAction {
                             "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                             Filters.inCards(getDestinationOptions(cardGame)), 1, 1);
                     _destinationTarget = new SelectCardsResolver(selectDestinationAction);
+                    return selectDestinationAction;
                 } else if (!_destinationTarget.isResolved()) {
-                    if (_destinationTarget instanceof SelectCardsResolver resolver) {
+                    if (_destinationTarget instanceof SelectCardsResolver resolver && !resolver.getSelectionAction().wasCarriedOut()) {
                         return resolver.getSelectionAction();
                     } else {
                         _destinationTarget.resolve(cardGame);
