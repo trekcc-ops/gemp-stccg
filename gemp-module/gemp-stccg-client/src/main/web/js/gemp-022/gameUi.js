@@ -748,7 +748,7 @@ export default class GameTableUI {
         }
 
         // Indicate if card is stopped
-        if (isStopped != null) {
+        if (isStopped) {
             html = html + "<i>Stopped</i><br/>";
         }
 
