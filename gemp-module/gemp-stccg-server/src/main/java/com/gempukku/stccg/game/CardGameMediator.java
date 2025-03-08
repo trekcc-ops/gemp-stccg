@@ -410,9 +410,15 @@ public abstract class CardGameMediator {
 
         Collection<String> modifiersToAdd = new ArrayList<>();
         for (Modifier modifier : cardGame.getGameState().getModifiersQuerying().getModifiersAffecting(card)) {
-            modifiersToAdd.add(modifier.getCardInfoText(getGame(), card));
+            if (modifier != null && !Objects.equals(modifier.getCardInfoText(getGame(), card), "null")) {
+                modifiersToAdd.add(modifier.getCardInfoText(getGame(), card));
+            }
         }
         itemsToSerialize.put("modifiers", modifiersToAdd);
+
+        if (card instanceof ST1EPhysicalCard stCard) {
+            itemsToSerialize.put("isStopped", stCard.isStopped());
+        }
 
         List<String> affiliationTexts = new ArrayList<>();
         if (card instanceof AffiliatedCard affiliatedCard) {
@@ -505,6 +511,7 @@ public abstract class CardGameMediator {
         boolean hasUniversalIcon = card.isUniversal() &&
                 cardTypesShowingUniversal.contains(card.getCardType());
         cardMap.put("hasUniversalIcon", hasUniversalIcon);
+
         return cardMap;
     }
 }
