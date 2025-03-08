@@ -1166,6 +1166,11 @@ export default class GameTableUI {
             }
 
             this.setupClocks(jsonNode.gameState);
+
+            for (const action of gameState.performedActions) {
+                communicateActionResult(action, gameState, this);
+            }
+
             this.lastActionIndex = jsonNode.gameState.performedActions.length - 1;
 
             let pendingDecision = gameState.pendingDecision;
