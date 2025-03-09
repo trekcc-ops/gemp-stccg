@@ -718,6 +718,7 @@ export default class GameTableUI {
     setCardModifiers(json) {
         // DEBUG: console.log("Calling setCardModifiers");
         let modifiers = json.modifiers; // list of HTML strings
+        let isStopped = json.isStopped; // boolean
         let affiliations = json.affiliations; // list of HTML strings
         let icons = json.icons; // list of HTML strings
         let crew = json.crew; // list of other cards with specific properties
@@ -739,9 +740,16 @@ export default class GameTableUI {
         if (modifiers != null && modifiers.length > 0) {
             html = html + "<b>Active Modifiers:</b><br/>";
             for (const modifier of modifiers) {
-                html = html + modifier + "<br/>";
+                if (modifier != "null") {
+                    html = html + modifier + "<br/>";
+                }
             }
             html = html + "<br/>";
+        }
+
+        // Indicate if card is stopped
+        if (isStopped) {
+            html = html + "<i>Stopped</i><br/>";
         }
 
         // Show icons for affiliation(s)
