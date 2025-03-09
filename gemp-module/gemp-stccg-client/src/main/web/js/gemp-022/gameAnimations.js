@@ -587,16 +587,7 @@ export default class GameAnimations {
                 });
     }
 
-    stopCards(targetCardIds, jsonGameState) {
-        /*
-        for (const cardId of targetCardIds) {
-            //getCardDivFromId()
-            //apply css
-            let cardToAnimate = jsonGameState.visibleCardsInGame[cardId];
-            console.log(`Stop animation for ${cardToAnimate.title}`);
-        }
-        */
-        
+    stopCards(targetCardIds, jsonGameState) {     
         let animation_layer = document.createElement("div");
         animation_layer.id = "animation_layer";
         animation_layer.style.position = "absolute"; // render on top
@@ -609,24 +600,9 @@ export default class GameAnimations {
         animation_layer.style.alignContent = "center"; //vert
         animation_layer.style.gap = "15px";
         animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
-        //animation_layer.style.minHeight = "200px";
         animation_layer.style.opacity = 0; // invisible
 
-        // create a cardDiv for each card
-        // opacity fade entire group in
-        // drop the stop icon onto each of them
-        // opacity fade entire group out
-        // remove animation_layer
-
-        // create a card div for each card
         for (const targetCardId of targetCardIds) {
-            //apply css
-            //console.log(`Stop animation for ${cardToAnimate.title}`);
-
-            //let card_grid_item = document.createElement("div");
-            //card_grid_item.innerHTML = `${cardId}`;
-            //card_grid_item.style.padding = "5px";
-            //card_grid_item.style.backgroundColor = "#ffffff";
             let card_json = jsonGameState.visibleCardsInGame[targetCardId];
             let blueprintId = card_json.blueprintId;
             let zone = "VOID";
@@ -690,7 +666,7 @@ export default class GameAnimations {
             );
         })
         .then(() => {
-            // delay
+            // animate all token overlays on every card
             return new Promise((resolve, _reject) => {
                 const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlay");
                 let animation_promises = [];
