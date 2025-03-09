@@ -256,6 +256,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "DOCK_SHIP":
         case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
+            break;
         case "ENCOUNTER_SEED_CARD": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             if (jsonAction.status === "completed_success") {
