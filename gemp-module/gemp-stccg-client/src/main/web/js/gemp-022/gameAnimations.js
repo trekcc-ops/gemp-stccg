@@ -235,7 +235,7 @@ export default class GameAnimations {
 
     addCardToHiddenZone(cardJson, zone, zoneOwner) {
         // Adding card to discard, hand, removed, or draw deck
-        console.log("calling addCardToHiddenZone");
+        // console.log("calling addCardToHiddenZone");
         var that = this;
         let cardId = cardJson.cardId;
         let imageUrl = cardJson.imageUrl;
@@ -271,9 +271,9 @@ export default class GameAnimations {
     putMissionIntoPlay(cardJson, animate, spacelineLocation, spacelineIndex, firstMissionAtLocation) {
         // int spacelineIndex: index of mission's location in game state spaceline array
         // boolean firstMissionAtLocation: true if bottom or only mission card; false if card is in top of another mission card
-        console.log("Calling putMissionIntoPlay");
-        console.log(cardJson);
-        console.log(spacelineIndex);
+        // console.log("Calling putMissionIntoPlay");
+        // console.log(cardJson);
+        // console.log(spacelineIndex);
         var that = this;
         let region = spacelineLocation.region;
         let quadrant = spacelineLocation.quadrant;
@@ -290,10 +290,10 @@ export default class GameAnimations {
             function (next) {
 
                 if (firstMissionAtLocation) {
-                    console.log("Adding mission " + cardJson.title + " at location index " + spacelineIndex);
+                    // console.log("Adding mission " + cardJson.title + " at location index " + spacelineIndex);
                     thisGame.addLocationDiv(locationIndex, quadrant, region);
                 } else {
-                    console.log("Adding mission card " + cardJson.title + " to location index " + spacelineIndex);
+                    // console.log("Adding mission card " + cardJson.title + " to location index " + spacelineIndex);
                     thisGame.addSharedMission(locationIndex, quadrant, region);
                 }
 
@@ -593,23 +593,10 @@ export default class GameAnimations {
 
     async revealCard(targetCardId, jsonGameState) {
         await this.queue.add(async () => {
-            console.log(`revealCard processing started at ${new Date().toLocaleString()}`);
-
             // animation layer setup
             // TODO: Create a permanent animation layer that's invisible so I don't have to copy this every time.
             let animation_layer = document.createElement("div");
-            animation_layer.id = "animation_layer";
-            animation_layer.style.position = "absolute"; // render on top
-            animation_layer.style.height = "100%";
-            animation_layer.style.width = "100%";
-            animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
-            animation_layer.style.display = "flex";
-            animation_layer.style.flexWrap = "wrap";
-            animation_layer.style.justifyContent = "center"; //horiz
-            animation_layer.style.alignContent = "center"; //vert
-            animation_layer.style.gap = "15px";
-            animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
-            animation_layer.style.opacity = 0; // invisible
+            animation_layer.id = "animation-layer";
 
             let card_json = jsonGameState.visibleCardsInGame[targetCardId];
             let blueprintId = card_json.blueprintId;
@@ -691,27 +678,14 @@ export default class GameAnimations {
             );
 
             animation_layer.remove();
-            console.log(`revealCard done at ${new Date().toLocaleString()}`);
         });
     }
 
     async stopCards(targetCardIds, jsonGameState) {
         await this.queue.add(async () => {
-            console.log(`stopCards processing started at ${new Date().toLocaleString()}`);
             // animation layer setup
             let animation_layer = document.createElement("div");
-            animation_layer.id = "animation_layer";
-            animation_layer.style.position = "absolute"; // render on top
-            animation_layer.style.height = "100%";
-            animation_layer.style.width = "100%";
-            animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
-            animation_layer.style.display = "flex";
-            animation_layer.style.flexWrap = "wrap";
-            animation_layer.style.justifyContent = "center"; //horiz
-            animation_layer.style.alignContent = "center"; //vert
-            animation_layer.style.gap = "15px";
-            animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
-            animation_layer.style.opacity = 0; // invisible
+            animation_layer.id = "animation-layer";
 
             for (const targetCardId of targetCardIds) {
                 let card_json = jsonGameState.visibleCardsInGame[targetCardId];
@@ -805,7 +779,6 @@ export default class GameAnimations {
             );
             
             animation_layer.remove();
-            console.log(`stopCards done at ${new Date().toLocaleString()}`);
         });
     }
 
@@ -828,16 +801,16 @@ export default class GameAnimations {
     removeCardFromPlay(cardRemovedIds, performingPlayerId, animate) {
         // This method may be called on cards that are not "in play" but visible on the board (like those in hands)
         var that = this;
-        console.log("Calling removeCardFromPlay");
-        console.log(cardRemovedIds);
-        console.log(performingPlayerId);
-        console.log(animate);
+        // console.log("Calling removeCardFromPlay");
+        // console.log(cardRemovedIds);
+        // console.log(performingPlayerId);
+        // console.log(animate);
 
         if (animate && (this.game.spectatorMode || this.game.replayMode || (performingPlayerId != this.game.bottomPlayerId))) {
             $("#main").queue(
                 function (next) {
                     for (const cardId of cardRemovedIds) {
-                        console.log("Removing card with cardId '" + cardId + "'");
+                        // console.log("Removing card with cardId '" + cardId + "'");
                         let cardDiv = getCardDivFromId(cardId);
                         if (cardDiv.length > 0) {
                             cardDiv.animate(

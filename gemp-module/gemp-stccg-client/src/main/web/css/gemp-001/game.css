@@ -536,7 +536,7 @@ red/pink: #C2599F
     height: 1em;
 }
 
-#animationLayer {
+#animation-layer {
     position: absolute; /* render on top of main */
     height: 100%;
     width: 100%;

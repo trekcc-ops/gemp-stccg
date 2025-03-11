@@ -1089,7 +1089,7 @@ export default class GameTableUI {
             let cardToAdd;
 
             if (gameState.players != null && gameState.players.length > 0) {
-                console.log("Calling initializePlayerOrder from initializeGameState");
+                // console.log("Calling initializePlayerOrder from initializeGameState");
                 this.initializePlayerOrder(gameState);
                 this.updateGameStats(gameState);
             }

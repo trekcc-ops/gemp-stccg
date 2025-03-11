@@ -3,7 +3,7 @@ import { getCardDivFromId } from "./jCards.js";
 
 export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let actionType = jsonAction.actionType;
-    console.log("Calling animateActionResult for " + actionType);
+    // console.log("Calling animateActionResult for " + actionType);
     let cardList = new Array();
     let targetCard;
     let spacelineIndex;
@@ -156,7 +156,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
     let actionType = jsonAction.actionType;
     let performingPlayerId = jsonAction.performingPlayerId;
     let message;
-    console.log("Calling communicateActionResult for " + actionType);
+    // console.log("Calling communicateActionResult for " + actionType);
     let gameChat = gameUi.chatBox;
     let targetCard;
 
@@ -180,9 +180,9 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         case "CHANGE_AFFILIATION": {
             let targetCardId = jsonAction.targetCardId;
-            console.log("targetCardId: " + targetCardId);
+            // console.log("targetCardId: " + targetCardId);
             let card = jsonGameState.visibleCardsInGame[targetCardId];
-            console.log("card: " + card.title);
+            // console.log("card: " + card.title);
                 // getCardLink and change selectedAffiliation to HTML
             message = performingPlayerId + " changed " + showLinkableCardTitle(card) + "'s affiliation to " +
                 getAffiliationHtml(card.affiliation);
@@ -324,6 +324,6 @@ export function getSpacelineIndexFromLocationId(locationId, gameState) {
             return i;
         }
     }
-    console.log("Spaceline index for locationId " + locationId + " not found");
+    console.log("Spaceline index for locationId " + locationId + " not found"); // normal for core cards
     return -1;
 }
