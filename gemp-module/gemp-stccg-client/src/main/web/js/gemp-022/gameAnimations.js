@@ -2,6 +2,8 @@ import Card from "./jCards.js";
 import { getCardDivFromId, createCardDiv, createSimpleCardDiv } from "./jCards.js";
 import { layoutCardElem } from "./jCardGroup.js";
 import { getFriendlyPhaseName } from "./common.js";
+import PQueue from 'p-queue';
+import delay from 'delay';
 
 export default class GameAnimations {
     game;
@@ -14,9 +16,11 @@ export default class GameAnimations {
     removeCardFromPlayDuration = 600;
     cardId;
     cardData;
+    queue;
 
     constructor(gameUI) {
         this.game = gameUI;
+        this.queue = new PQueue({concurrency: 1});
     }
 
     getAnimationLength(origValue) {
@@ -587,133 +591,26 @@ export default class GameAnimations {
                 });
     }
 
-    revealCard(targetCardId, jsonGameState) {
-        // TODO: Create a permanent animation layer that's invisible so I don't have to copy this every time.
-        let animation_layer = document.createElement("div");
-        animation_layer.id = "animation_layer";
-        animation_layer.style.position = "absolute"; // render on top
-        animation_layer.style.height = "100%";
-        animation_layer.style.width = "100%";
-        animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
-        animation_layer.style.display = "flex";
-        animation_layer.style.flexWrap = "wrap";
-        animation_layer.style.justifyContent = "center"; //horiz
-        animation_layer.style.alignContent = "center"; //vert
-        animation_layer.style.gap = "15px";
-        animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
-        animation_layer.style.opacity = 0; // invisible
+    async revealCard(targetCardId, jsonGameState) {
+        await this.queue.add(async () => {
+            console.log(`revealCard processing started at ${new Date().toLocaleString()}`);
 
-        let card_json = jsonGameState.visibleCardsInGame[targetCardId];
-        let blueprintId = card_json.blueprintId;
-        let zone = "VOID";
-        let cardId = card_json.cardId;
-        let noOwner = "";
-        let imageUrl = card_json.imageUrl;
-        let emptyLocationIndex = "";
-        let upsideDown = false;
-        let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-        let text = "";
+            // animation layer setup
+            // TODO: Create a permanent animation layer that's invisible so I don't have to copy this every time.
+            let animation_layer = document.createElement("div");
+            animation_layer.id = "animation_layer";
+            animation_layer.style.position = "absolute"; // render on top
+            animation_layer.style.height = "100%";
+            animation_layer.style.width = "100%";
+            animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
+            animation_layer.style.display = "flex";
+            animation_layer.style.flexWrap = "wrap";
+            animation_layer.style.justifyContent = "center"; //horiz
+            animation_layer.style.alignContent = "center"; //vert
+            animation_layer.style.gap = "15px";
+            animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
+            animation_layer.style.opacity = 0; // invisible
 
-        let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
-
-        let pageWidth = document.body.clientWidth;
-        let oneSixthWidthVal = (pageWidth / 6);
-        let cardWidth = oneSixthWidthVal + "px"; // 5 width
-        let cardHeight = Math.floor(oneSixthWidthVal * 1.5) + "px"; // 3:2 ratio
-
-        baseCardDiv.style.margin = "auto";
-        baseCardDiv.style.width = cardWidth;
-        baseCardDiv.style.height = cardHeight;
-        baseCardDiv.style.flex = `0 1 ${cardWidth}`;
-        
-        let threeDCardLayer = baseCardDiv.getElementsByClassName("three-d-card")[0];
-        threeDCardLayer.classList.add("facedown"); // TODO make this part of the createCardDiv options
-
-        animation_layer.appendChild(baseCardDiv);
-
-        new Promise((resolve, _reject) => {
-            let gamediv;
-            if (this.game.mainDiv instanceof jQuery) {
-                gamediv = this.game.mainDiv[0];
-            }
-            else {
-                gamediv = this.game;
-            }
-            gamediv.appendChild(animation_layer);
-            resolve();
-        })
-        .then(() => {
-            // fade in
-            return this.animateElementAndSaveCSSPromise(
-                animation_layer,
-                [
-                    { // from
-                        opacity: 0,
-                    },
-                    { // to
-                        opacity: 1,
-                    },
-                ],
-                {
-                    duration: 500, //ms
-                    fill: "forwards"
-                }
-            );
-        })
-        .then(() => {
-            // flip the card over
-            return new Promise((resolve, _reject) => {
-                let cardsToFlip = animation_layer.getElementsByClassName("facedown");
-                for (card of cardsToFlip) {
-                    card.classList.remove("facedown");
-                }
-                // wait 2s for people to read them
-                setTimeout(resolve, 2000); // important to NOT put resolve parens here
-            })
-        })
-        .then(() => {
-            // fade out
-            return this.animateElementAndSaveCSSPromise(
-                animation_layer,
-                [
-                    { // from
-                        opacity: 1,
-                    },
-                    { // to
-                        opacity: 0,
-                    },
-                ],
-                {
-                    duration: 500, //ms
-                    fill: "forwards"
-                }
-            );
-        })
-        .then(() => {
-            // remove animation layer
-            return new Promise((resolve, _reject) => {
-                animation_layer.remove();
-                resolve();
-            });
-        });
-    }
-
-    stopCards(targetCardIds, jsonGameState) {     
-        let animation_layer = document.createElement("div");
-        animation_layer.id = "animation_layer";
-        animation_layer.style.position = "absolute"; // render on top
-        animation_layer.style.height = "100%";
-        animation_layer.style.width = "100%";
-        animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
-        animation_layer.style.display = "flex";
-        animation_layer.style.flexWrap = "wrap";
-        animation_layer.style.justifyContent = "center"; //horiz
-        animation_layer.style.alignContent = "center"; //vert
-        animation_layer.style.gap = "15px";
-        animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
-        animation_layer.style.opacity = 0; // invisible
-
-        for (const targetCardId of targetCardIds) {
             let card_json = jsonGameState.visibleCardsInGame[targetCardId];
             let blueprintId = card_json.blueprintId;
             let zone = "VOID";
@@ -724,13 +621,6 @@ export default class GameAnimations {
             let upsideDown = false;
             let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
             let text = "";
-
-            if (card_json.isStopped) {
-                card.addStatusToken("STOPPED");
-            }
-            else {
-                card.removeStatusToken("STOPPED");
-            }
 
             let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
@@ -743,11 +633,12 @@ export default class GameAnimations {
             baseCardDiv.style.width = cardWidth;
             baseCardDiv.style.height = cardHeight;
             baseCardDiv.style.flex = `0 1 ${cardWidth}`;
+            
+            let threeDCardLayer = baseCardDiv.getElementsByClassName("three-d-card")[0];
+            threeDCardLayer.classList.add("facedown"); // TODO make this part of the createCardDiv options
 
             animation_layer.appendChild(baseCardDiv);
-        }
-
-        new Promise((resolve, _reject) => {
+            
             let gamediv;
             if (this.game.mainDiv instanceof jQuery) {
                 gamediv = this.game.mainDiv[0];
@@ -756,11 +647,117 @@ export default class GameAnimations {
                 gamediv = this.game;
             }
             gamediv.appendChild(animation_layer);
-            resolve();
-        })
-        .then(() => {
+
             // fade in
-            return this.animateElementAndSaveCSSPromise(
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 0,
+                    },
+                    { // to
+                        opacity: 1,
+                    },
+                ],
+                {
+                    duration: 500, //ms
+                    fill: "forwards"
+                }
+            );
+
+            let cardsToFlip = animation_layer.getElementsByClassName("facedown");
+            for (const card of cardsToFlip) {
+                card.classList.remove("facedown");
+            }
+            
+            // wait 2s for people to read them
+            await delay(2000);
+            
+            // fade out
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 1,
+                    },
+                    { // to
+                        opacity: 0,
+                    },
+                ],
+                {
+                    duration: 500, //ms
+                    fill: "forwards"
+                }
+            );
+
+            animation_layer.remove();
+            console.log(`revealCard done at ${new Date().toLocaleString()}`);
+        });
+    }
+
+    async stopCards(targetCardIds, jsonGameState) {
+        await this.queue.add(async () => {
+            console.log(`stopCards processing started at ${new Date().toLocaleString()}`);
+            // animation layer setup
+            let animation_layer = document.createElement("div");
+            animation_layer.id = "animation_layer";
+            animation_layer.style.position = "absolute"; // render on top
+            animation_layer.style.height = "100%";
+            animation_layer.style.width = "100%";
+            animation_layer.style.zIndex = 200; // TODO: Put these z-index levels in common or something.
+            animation_layer.style.display = "flex";
+            animation_layer.style.flexWrap = "wrap";
+            animation_layer.style.justifyContent = "center"; //horiz
+            animation_layer.style.alignContent = "center"; //vert
+            animation_layer.style.gap = "15px";
+            animation_layer.style.backgroundColor = "#5b5b5b90"; // semitransparent gray
+            animation_layer.style.opacity = 0; // invisible
+
+            for (const targetCardId of targetCardIds) {
+                let card_json = jsonGameState.visibleCardsInGame[targetCardId];
+                let blueprintId = card_json.blueprintId;
+                let zone = "VOID";
+                let cardId = card_json.cardId;
+                let noOwner = "";
+                let imageUrl = card_json.imageUrl;
+                let emptyLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
+                let text = "";
+
+                if (card_json.isStopped) {
+                    card.addStatusToken("STOPPED");
+                }
+                else {
+                    card.removeStatusToken("STOPPED");
+                }
+
+                let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+
+                let pageWidth = document.body.clientWidth;
+                let oneSixthWidthVal = (pageWidth / 6);
+                let cardWidth = oneSixthWidthVal + "px"; // 5 width
+                let cardHeight = Math.floor(oneSixthWidthVal * 1.5) + "px"; // 3:2 ratio
+
+                baseCardDiv.style.margin = "auto";
+                baseCardDiv.style.width = cardWidth;
+                baseCardDiv.style.height = cardHeight;
+                baseCardDiv.style.flex = `0 1 ${cardWidth}`;
+
+                animation_layer.appendChild(baseCardDiv);
+            }
+
+            let gamediv;
+            if (this.game.mainDiv instanceof jQuery) {
+                gamediv = this.game.mainDiv[0];
+            }
+            else {
+                gamediv = this.game;
+            }
+            gamediv.appendChild(animation_layer);
+
+            // fade in
+            await this.animateElementAndSaveCSSPromise(
                 animation_layer,
                 [
                     { // from
@@ -775,28 +772,23 @@ export default class GameAnimations {
                     fill: "forwards"
                 }
             );
-        })
-        .then(() => {
-            // animate all token overlays on every card
-            return new Promise((resolve, _reject) => {
-                const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlay");
-                let animation_promises = [];
-                for (const overlay of tokenOverlays) {
-                    animation_promises.push(
-                        overlay.animate([
-                            {opacity: 1}, {opacity: 0}],
-                            {direction: "alternate", duration: 500, easing: "linear", iterations: 6})
-                    );
-                }
-                
-                Promise.all(animation_promises.map((animation) => animation.finished)).then(
-                    () => resolve()
+
+            // set up multiple promises, one for each overlay token
+            const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlay");
+            let animation_promises = [];
+            for (const overlay of tokenOverlays) {
+                animation_promises.push(
+                    overlay.animate([
+                        {opacity: 1}, {opacity: 0}],
+                        {direction: "alternate", duration: 500, easing: "linear", iterations: 6})
                 );
-            });
-        })
-        .then(() => {
+            }
+            
+            // wait for tokens to animate
+            await Promise.all(animation_promises.map((animation) => animation.finished));
+            
             // fade out
-            return this.animateElementAndSaveCSSPromise(
+            await this.animateElementAndSaveCSSPromise(
                 animation_layer,
                 [
                     { // from
@@ -811,13 +803,9 @@ export default class GameAnimations {
                     fill: "forwards"
                 }
             );
-        })
-        .then(() => {
-            // remove animation layer
-            return new Promise((resolve, _reject) => {
-                animation_layer.remove();
-                resolve();
-            });
+            
+            animation_layer.remove();
+            console.log(`stopCards done at ${new Date().toLocaleString()}`);
         });
     }
 

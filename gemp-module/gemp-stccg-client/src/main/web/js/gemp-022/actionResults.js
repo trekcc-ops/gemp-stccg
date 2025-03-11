@@ -115,10 +115,12 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
         case "PLACE_CARD_ON_MISSION": // no animation included yet
-        case "REVEAL_SEED_CARD": // no animation included yet
             break;
-        case "STOP_CARDS": // no animation included yet
-            gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState);
+        case "REVEAL_SEED_CARD":
+            gameAnimations.revealCard(jsonAction.targetCardId, jsonGameState).then(() => {return});
+            break;
+        case "STOP_CARDS":
+            gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState).then(() => {return});
             break;
         // Actions that are just wrappers for decisions
         case "MAKE_DECISION":
