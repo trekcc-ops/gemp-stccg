@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.missionattempt;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -16,6 +17,8 @@ import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.PlayerCannotSolveMissionModifier;
 
 public class RevealSeedCardAction extends ActionyAction {
+
+    @JsonProperty("targetCardId")
     private final int _revealedCardId;
     private final int _missionAttemptActionId;
     private enum Progress { misSeedResolved }

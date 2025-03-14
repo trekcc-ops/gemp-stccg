@@ -24,7 +24,7 @@ public class Blueprint212_019 extends CardBlueprint {
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult.getType() == ActionResult.Type.START_OF_MISSION_ATTEMPT && card.isControlledBy(player)) {
             UseGameTextAction gameTextAction = new UseGameTextAction(card, player, "Download a card");
-            gameTextAction.appendEffect(new DownloadCardAction(cardGame, Zone.DRAW_DECK, player, CardType.PERSONNEL));
+            gameTextAction.appendEffect(new DownloadCardAction(cardGame, Zone.DRAW_DECK, player, CardType.PERSONNEL, card));
             actions.add(gameTextAction);
         }
         return actions;

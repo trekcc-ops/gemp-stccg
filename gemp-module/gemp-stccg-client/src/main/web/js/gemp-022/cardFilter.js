@@ -99,8 +99,9 @@ export default class CardFilter {
             $(json).each(function (index, o) {
                 if (o.code == "disabled") {
                     that.setSelect.append("<option disabled>----------</option>")
-                } else {
-                    var $option = $("<option/>")
+                }
+                else {
+                    let $option = $("<option/>")
                         .attr("value", o.code)
                         .text(o.name);
                     that.setSelect.append($option);
@@ -139,7 +140,7 @@ export default class CardFilter {
     };
 
     async changeDynamicFilters() {
-        var cardType = $("#cardType option:selected").prop("value");
+        let cardType = $("#cardType option:selected").prop("value");
         this.filter = this.calculateNormalFilter();
         this.start = 0;
         await this.getCollection();
@@ -234,12 +235,12 @@ export default class CardFilter {
     }
 
     calculateNormalFilter() {
-        var normalFilterArray = new Array("cardType", "affiliation", "type");
-        var filterString = "";
+        let normalFilterArray = new Array("cardType", "affiliation", "type");
+        let filterString = "";
 
-        for (var i = 0; i < normalFilterArray.length; i++) {
+        for (let i = 0; i < normalFilterArray.length; i++) {
             if (normalFilterArray[i] == "affiliation") {
-                var affiliations = new Array();
+                let affiliations = new Array();
                 $('.affiliationFilter').each(
                     function (_index, element) {
                         if (element.checked) {
@@ -250,7 +251,7 @@ export default class CardFilter {
                 if (affiliations.length > 0)
                     filterString = filterString + "|affiliation:" + affiliations;
             } else {
-                var filterResult = $("#" + normalFilterArray[i] + " option:selected").prop("value");
+                let filterResult = $("#" + normalFilterArray[i] + " option:selected").prop("value");
                 if (filterResult != "")
                     filterString = filterString + "|" + normalFilterArray[i] + ":" + filterResult;
             }
@@ -259,40 +260,46 @@ export default class CardFilter {
     }
 
     calculateFullFilterPostfix() {
-        var filterString = "";
+        let filterString = "";
 
-        var setNo = $("option:selected", this.setSelect).prop("value");
+        let setNo = $("option:selected", this.setSelect).prop("value");
         if (setNo != "")
             filterString = filterString + "|set:" + setNo;
 
-        var sort = $("option:selected", this.sortSelect).prop("value");
+        let sort = $("option:selected", this.sortSelect).prop("value");
         if (sort != "")
             filterString = filterString + "|sort:" + sort;
-
-/*        var cardName = this.nameInput.val();
-        var cardNameElems = cardName.split(" ");
+        /*
+        let cardName = this.nameInput.val();
+        let cardNameElems = cardName.split(" ");
         cardName = "";
-        for (var i = 0; i < cardNameElems.length; i++)
-            filterString = filterString + "|name:" + cardNameElems[i];*/
+        for (let i = 0; i < cardNameElems.length; i++)
+            filterString = filterString + "|name:" + cardNameElems[i];
+        */
 
-        var cardNameRegexp = /[^\s"]+|"([^"]*)"/gi;
-        var cardName = this.nameInput.val();
-        var cardNameArray = [];
+        let cardNameRegexp = /[^\s"]+|"([^"]*)"/gi;
+        let cardName = this.nameInput.val();
+        let cardNameArray = [];
+        let match;
         do {
-            var match = cardNameRegexp.exec(cardName);
-            if (match != null)
+            match = cardNameRegexp.exec(cardName);
+            if (match !== null)
             {
                 cardNameArray.push(match[1] ? match[1] : match[0]);
             }
-        } while (match != null);
+        } while (match !== null);
 
-        for (var i = 0; i < cardNameArray.length; i++)
+        for (let i = 0; i < cardNameArray.length; i++) {
             filterString = filterString + "|name:" + cardNameArray[i];
+        }
 
-
-//        var rarity = $("option:selected", this.raritySelect).prop("value");
-//        if (rarity != "")
-//            filterString = filterString + "|rarity:" + rarity;
+        // TODO: Rarity
+        /*
+        var rarity = $("option:selected", this.raritySelect).prop("value");
+        if (rarity != "") {
+            filterString = filterString + "|rarity:" + rarity;
+        }
+        */
 
         return filterString;
     }
@@ -309,7 +316,7 @@ export default class CardFilter {
             // convert incoming string to an XML DOM document, since
             // that's what displayCollection expects
             let xmlparser = new DOMParser();
-            var xmlDoc = xmlparser.parseFromString(xml, "text/xml");
+            let xmlDoc = xmlparser.parseFromString(xml, "text/xml");
             this.displayCollection(xmlDoc);
         })
         .catch(error => {
@@ -319,32 +326,32 @@ export default class CardFilter {
 
     displayCollection(xml) {
         log(xml);
-        var root = xml.documentElement;
+        let root = xml.documentElement;
 
         this.clearCollectionFunc(root);
 
-        var packs = root.getElementsByTagName("pack");
-        for (var i = 0; i < packs.length; i++) {
-            var packElem = packs[i];
-            var blueprintId = packElem.getAttribute("blueprintId");
-            var count = packElem.getAttribute("count");
+        let packs = root.getElementsByTagName("pack");
+        for (let i = 0; i < packs.length; i++) {
+            let packElem = packs[i];
+            let blueprintId = packElem.getAttribute("blueprintId");
+            let count = packElem.getAttribute("count");
             this.addCardFunc(packElem, "pack", blueprintId, count);
         }
 
-        var cards = root.getElementsByTagName("card");
-        for (var i = 0; i < cards.length; i++) {
-            var cardElem = cards[i];
-            var blueprintId = cardElem.getAttribute("blueprintId");
-            var count = cardElem.getAttribute("count");
-            var imageUrl = cardElem.getAttribute("imageUrl");
+        let cards = root.getElementsByTagName("card");
+        for (let i = 0; i < cards.length; i++) {
+            let cardElem = cards[i];
+            let blueprintId = cardElem.getAttribute("blueprintId");
+            let count = cardElem.getAttribute("count");
+            let imageUrl = cardElem.getAttribute("imageUrl");
             this.addCardFunc(cardElem, "card", blueprintId, count, imageUrl);
         }
 
         this.finishCollectionFunc();
 
-        $("#previousPage").button("option", "disabled", this.start == 0);
-        var cnt = parseInt(root.getAttribute("count"));
-        $("#nextPage").button("option", "disabled", (this.start + this.count) >= cnt);
+        $("#previousPage").button("option", "disabled", this.start === 0);
+        let count = parseInt(root.getAttribute("count"));
+        $("#nextPage").button("option", "disabled", (this.start + this.count) >= count);
         $("#countSlider").slider("option", "disabled", false);
     }
 }

@@ -22,7 +22,7 @@ export default function LoginRegisterTabs({ comms }) {
   
     return (
         <ThemeProvider theme={theme}>
-            <Box>
+            <Box id="login">
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} >

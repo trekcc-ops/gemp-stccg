@@ -57,7 +57,8 @@ export default function deliveryService(xml) {
                 let upsideDown = false;
                 let card = new Card(blueprintId, "delivery", "deliveryPack" + i, "player", imageUrl, emptyLocationIndex, upsideDown);
                 card.tokens = {"count":count};
-                let cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, true, false);
+                let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, true, false);
+                let cardDiv = $(baseCardDiv); // convert to jQuery object
                 cardDiv.data("card", card);
                 deliveryDialogs[collectionName].append(cardDiv);
             }
@@ -72,7 +73,8 @@ export default function deliveryService(xml) {
                 let upsideDown = false;
                 let card = new Card(blueprintId, "delivery", "deliveryCard" + i, "player", imageUrl, emptyLocationIndex, upsideDown);
                 card.tokens = {"count":count};
-                let cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
+                let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
+                let cardDiv = $(baseCardDiv); // convert to jQuery object
                 cardDiv.data("card", card);
                 deliveryDialogs[collectionName].append(cardDiv);
             }

@@ -1,8 +1,5 @@
 package com.gempukku.stccg.common;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.common.filterable.SubDeck;
 
 import java.util.*;
@@ -59,10 +56,7 @@ public class CardDeck {
         String[] parts = contents.split("\\|");
         for (int i = 0; i < parts.length; i += 2) {
             List<String> cards = new ArrayList<>();
-                /* TODO
-                     if (i < parts.length - 1) condition needed to address a bug loading decks with empty
-                     subdecks. Should replace this serialization with JSON in the long-term.
-                 */
+            // if (i < parts.length - 1) condition needed for decks with empty subdecks
             if (i < parts.length - 1) {
                 for (String card : parts[i + 1].split(",")) {
                     if (!card.isEmpty()) {

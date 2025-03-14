@@ -264,7 +264,6 @@ public abstract class DefaultGame {
     }
 
     public String getOpponent(String playerId) {
-            // TODO - Only works for 2-player games
             return getAllPlayerIds()[0].equals(playerId) ?
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
     }

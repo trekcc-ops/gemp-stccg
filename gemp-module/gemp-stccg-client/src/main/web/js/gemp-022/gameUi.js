@@ -70,6 +70,7 @@ export default class GameTableUI {
 
         log("ui initialized");
         var that = this;
+        this.mainDiv = $("#main");
         this.alertBox = $("#alertBox");
         this.alertText = $("#alertText");
         this.alertButtons = $("#alertButtons");
@@ -378,20 +379,20 @@ export default class GameTableUI {
         this.tabPane = $("#bottomLeftTabs").tabs();
 
         // Process game settings
-        for (var setting of that.gameSettings.entries()) {
-            var settingName = setting[0];
-            if (settingName != "autoPass") { // TODO: currently, autoPass always set to false
-                var optionSelection = $("#" + settingName);
-                var cookieValue = Cookies.get(settingName);
+        for (let setting of that.gameSettings.entries()) {
+            let settingName = setting[0];
+            if (settingName !== "autoPass") { // TODO: currently, autoPass always set to false
+                let optionSelection = $("#" + settingName);
+                let cookieValue = Cookies.get(settingName);
 
                     // Multiple choice settings: foilPresentation
-                if (settingName == "foilPresentation" && cookieValue != null) {
+                if (settingName === "foilPresentation" && cookieValue !== undefined) {
                     optionSelection.val(cookieValue);
                     that.gameSettings.set(settingName, cookieValue);
                 }
 
                     // True/false settings: autoAccept, alwaysDropDown
-                if (cookieValue == "true" || cookieValue == null) {
+                if (cookieValue === "true" || cookieValue === undefined) {
                     optionSelection.prop("checked", true);
                     that.gameSettings.set(settingName, true);
                 }
@@ -410,25 +411,26 @@ export default class GameTableUI {
         }
 
         // Create arrays for phase-specific functions
-        var allPhaseNames = that.gamePhases;
-        var autoPassArr = new Array();
-        var autoPassArrHashtag = new Array();
-        for (var i = 0; i < allPhaseNames.length; i++) {
+        let allPhaseNames = that.gamePhases;
+        let autoPassArr = new Array();
+        let autoPassArrHashtag = new Array();
+        for (let i = 0; i < allPhaseNames.length; i++) {
             autoPassArr.push("autoPass" + allPhaseNames[i]);
             autoPassArrHashtag.push("#autoPass" + allPhaseNames[i]);
         }
 
         // Load auto-pass settings from cookie, or set to default (current default is all phases auto-pass)
-        var currPassedPhases = new Array();
-        var currAutoPassCookieValue = Cookies.get("autoPassPhases");
-        if (currAutoPassCookieValue == null) {
+        let currPassedPhases = new Array();
+        let currAutoPassCookieValue = Cookies.get("autoPassPhases");
+        if (currAutoPassCookieValue === undefined) {
             currPassedPhases = allPhaseNames;
-        } else {
+        }
+        else {
             currPassedPhases = currAutoPassCookieValue.split("0");
         }
 
         // Create settings panel for user selection of auto-pass settings
-        for (var i = 0; i < allPhaseNames.length; i++) {
+        for (let i = 0; i < allPhaseNames.length; i++) {
             $("#autoPassOptionsDiv").append(
                 "<input id='" + autoPassArr[i] + "' type='checkbox' value='selected' />" +
                 "<label for='" + autoPassArr[i] + "'>" + allPhaseNames[i] + "</label> "
@@ -436,14 +438,14 @@ export default class GameTableUI {
         }
 
         // Populate settings panel with current user options
-        for (var i = 0; i < currPassedPhases.length; i++) {
+        for (let i = 0; i < currPassedPhases.length; i++) {
             $(autoPassArrHashtag[i]).prop("checked", true);
         }
 
         // Save user selections to cookie
         $(autoPassArrHashtag.join(",")).bind("change", function () {
-            var newAutoPassPhases = "";
-            for (var i = 0; i < allPhaseNames.length; i++) {
+            let newAutoPassPhases = "";
+            for (let i = 0; i < allPhaseNames.length; i++) {
                 if ($("#autoPass" + allPhaseNames[i]).prop("checked")) {
                     newAutoPassPhases += "0" + allPhaseNames[i];
                 }
@@ -454,29 +456,42 @@ export default class GameTableUI {
             Cookies.set("autoPassPhases", newAutoPassPhases, {expires: 365});
         });
 
-        var playerListener = function (players) {
-            var val = "";
-            for (var i = 0; i < players.length; i++) {
+        let chatRoomName = (this.replayMode ? undefined : ("Game" + getUrlParam("gameId")));
+        let chatBoxDiv = $("#chatBox");
+        let chatBoxUrl = this.communication.url;
+        let showList = false;
+
+        let playerListener = function (players) {
+            let val = "";
+            for (let i = 0; i < players.length; i++) {
                 val += players[i] + "<br/>";
             }
             $("a[href='#playersInRoomBox']").html("Players(" + players.length + ")");
             $("#playersInRoomBox").html(val);
         };
 
-        var displayChatListener = function(title, message) {
+        let showHideSystemButton = false;
 
-            var dialog = $("<div></div>").dialog({
+        let displayChatListener = function(title, message) {
+            let dialog = $("<div></div>").dialog({
                 title: title,
                 resizable: true,
                 height: 200,
                 modal: true,
                 buttons: {}
             }).html(message);
-        }
+        };
 
-        var chatRoomName = (this.replayMode ? null : ("Game" + getUrlParam("gameId")));
+        let allowDiscord = false;
         this.chatBox = new ChatBoxUI(
-            chatRoomName, $("#chatBox"), this.communication.url, false, playerListener, false, displayChatListener
+            chatRoomName,
+            chatBoxDiv,
+            chatBoxUrl,
+            showList,
+            playerListener,
+            showHideSystemButton,
+            displayChatListener,
+            allowDiscord
         );
         this.chatBox.chatUpdateInterval = 3000;
 
@@ -484,11 +499,13 @@ export default class GameTableUI {
             $("#concedeGame").button().click(
                 function () {
                     that.communication.concede();
-                });
+                }
+            );
             $("#cancelGame").button().click(
                 function () {
                     that.communication.cancel();
-                });
+                }
+            );
         }
     }
 
@@ -568,15 +585,15 @@ export default class GameTableUI {
     dragContinuesCardFunction(event) {
         if (this.dragCardId != null) {
             if (!this.draggingHorizontaly && Math.abs(this.dragStartX - event.clientX) >= 20) {
-                var cardElems = getCardDivFromId(this.dragCardId);
+                let cardElems = getCardDivFromId(this.dragCardId);
                 if (cardElems.length > 0) {
-                    var cardElem = cardElems[0];
-                    var cardData = $(cardElem).data("card");
+                    let cardElem = cardElems[0];
+                    let cardData = $(cardElem).data("card");
                     this.draggingHorizontaly = true;
-                    var cardGroup = this.getReorganizableCardGroupForCardData(cardData);
+                    let cardGroup = this.getReorganizableCardGroupForCardData(cardData);
                     if (cardGroup != null) {
-                        var cardsInGroup = cardGroup.getCardElems();
-                        for (var i = 0; i < cardsInGroup.length; i++) {
+                        let cardsInGroup = cardGroup.getCardElems();
+                        for (let i = 0; i < cardsInGroup.length; i++) {
                             if (cardsInGroup[i].data("card").cardId == this.dragCardId) {
                                 this.dragCardIndex = i;
                                 this.draggedCardIndex = i;
@@ -587,15 +604,15 @@ export default class GameTableUI {
                 }
             }
             if (this.draggingHorizontaly && this.dragCardId != null && this.dragCardIndex != null) {
-                var cardElems = getCardDivFromId(this.dragCardId);
+                let cardElems = getCardDivFromId(this.dragCardId);
                 if (cardElems.length > 0) {
-                    var cardElem = $(cardElems[0]);
-                    var cardData = cardElem.data("card");
-                    var cardGroup = this.getReorganizableCardGroupForCardData(cardData);
+                    let cardElem = $(cardElems[0]);
+                    let cardData = cardElem.data("card");
+                    let cardGroup = this.getReorganizableCardGroupForCardData(cardData);
                     if (cardGroup != null) {
-                        var cardsInGroup = cardGroup.getCardElems();
-                        var width = cardElem.width();
-                        var currentIndex;
+                        let cardsInGroup = cardGroup.getCardElems();
+                        let width = cardElem.width();
+                        let currentIndex;
                         if (event.clientX < this.dragStartX) {
                             currentIndex = this.dragCardIndex - Math.floor((this.dragStartX - event.clientX) / width);
                         }
@@ -610,7 +627,7 @@ export default class GameTableUI {
                             currentIndex = cardsInGroup.length - 1;
                         }
 
-                        var cardIdAtIndex = $(cardsInGroup[currentIndex]).data("card").cardId;
+                        let cardIdAtIndex = $(cardsInGroup[currentIndex]).data("card").cardId;
                         if (cardIdAtIndex != this.dragCardId) {
                             if (currentIndex < this.draggedCardIndex) {
                                 $(".card:cardId(" + cardIdAtIndex + ")").before(getCardDivFromId(this.dragCardId));
@@ -701,6 +718,7 @@ export default class GameTableUI {
     setCardModifiers(json) {
         // DEBUG: console.log("Calling setCardModifiers");
         let modifiers = json.modifiers; // list of HTML strings
+        let isStopped = json.isStopped; // boolean
         let affiliations = json.affiliations; // list of HTML strings
         let icons = json.icons; // list of HTML strings
         let crew = json.crew; // list of other cards with specific properties
@@ -722,9 +740,16 @@ export default class GameTableUI {
         if (modifiers != null && modifiers.length > 0) {
             html = html + "<b>Active Modifiers:</b><br/>";
             for (const modifier of modifiers) {
-                html = html + modifier + "<br/>";
+                if (modifier != "null") {
+                    html = html + modifier + "<br/>";
+                }
             }
             html = html + "<br/>";
+        }
+
+        // Indicate if card is stopped
+        if (isStopped) {
+            html = html + "<i>Stopped</i><br/>";
         }
 
         // Show icons for affiliation(s)
@@ -1023,7 +1048,7 @@ export default class GameTableUI {
         }
 
         switch(eventType) {
-            case "ACTION_RESULT":
+            case "ACTION_RESULT": {
                 this.updateGameStats(gameState); // updates count of card piles
                 this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
                 this.animations.turnChange(gameState, true);
@@ -1039,6 +1064,7 @@ export default class GameTableUI {
                     this.lastActionIndex = i;
                 }
                 break;
+            }
             case "M":
                 this.animations.message(gameEvent, animate);
                 break;
@@ -1124,7 +1150,7 @@ export default class GameTableUI {
                     let missionCard = gameState.visibleCardsInGame[missionCardId];
                     let spacelineIndex = getSpacelineIndexFromLocationId(missionCard.locationId, gameState);
                     let firstMissionAtLocation = (i == 0);
-                    this.animations.putMissionIntoPlay(missionCard, false, spacelineIndex, firstMissionAtLocation);
+                    this.animations.putMissionIntoPlay(missionCard, false, location, spacelineIndex, firstMissionAtLocation);
                     cardsAdded.push(missionCardId);
                     cardsStillToAdd = removeFromArray(cardsStillToAdd, missionCardId);
                 }
@@ -1148,6 +1174,11 @@ export default class GameTableUI {
             }
 
             this.setupClocks(jsonNode.gameState);
+
+            for (const action of gameState.performedActions) {
+                communicateActionResult(action, gameState, this);
+            }
+
             this.lastActionIndex = jsonNode.gameState.performedActions.length - 1;
 
             let pendingDecision = gameState.pendingDecision;
@@ -1210,7 +1241,13 @@ export default class GameTableUI {
                 let gameEvent = jsonNode.gameEvents[i];
                 this.processGameEvent(gameEvent, animate);
                 if (i === jsonNode.gameEvents.length - 1) {
-                    let gameState = typeof gameEvent.gameState === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                    let gameState;
+                    if (gameEvent.gameState) {
+                        gameState = typeof(gameEvent.gameState) === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                    }
+                    else {
+                        continue;
+                    }
                     let userDecision = gameState.pendingDecision;
                     if (this.hasDecision === false && userDecision != null && typeof userDecision != "undefined") {
                         this.hasDecision = true;
@@ -1622,7 +1659,8 @@ export default class GameTableUI {
     }
 
     createCardDivWithData(card, text) {
-        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+        let cardDiv = $(baseCardDiv); // convert to jQuery object
 
         cardDiv.data("card", card);
 
@@ -1975,7 +2013,7 @@ export default class GameTableUI {
                     $("#main").append(cardDiv);
                 }
 
-                if (cardIdElem.data("action") === null || cardIdElem.data("action") === undefined) {
+                if (cardIdElem.data("action") == null) {
                     cardIdElem.data("action", new Array());
                 }
                 var actions = cardIdElem.data("action");
@@ -2303,7 +2341,7 @@ export default class GameTableUI {
     }
 
     recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
-        if (typeof(jsonCombinations) !== 'object' || jsonCombinations === null) {
+        if (typeof(jsonCombinations) !== 'object' || jsonCombinations == null) {
             let inc_type = typeof(jsonCombinations);
             throw new TypeError(`jsonCombinations must be an Object not a ${inc_type} or null.`);;
         }
@@ -2540,7 +2578,7 @@ export class TribblesGameTableUI extends GameTableUI {
         }
         var yScales = new Array();
         var scaleTotal = 0;
-        for (var i = 0; i < heightScales.length; i++) {
+        for (let i = 0; i < heightScales.length; i++) {
             yScales[i] = scaleTotal;
             scaleTotal += heightScales[i];
         }
@@ -2604,15 +2642,13 @@ export class TribblesGameTableUI extends GameTableUI {
             );
         }
 
-        var i = 0; // I don't think this is used, but not deleting it for now to avoid breaking anything
-
         if (!this.spectatorMode) {
             this.hand.setBounds(HAND_LEFT, HAND_TOP, HAND_WIDTH, HAND_HEIGHT);
         }
 
 
         for (var playerId in this.discardPileGroups) {
-            if (this.discardPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.discardPileGroups, playerId)) {
                 this.discardPileGroups[playerId].layoutCards();
             }
         }
@@ -2646,35 +2682,35 @@ export class ST1EGameTableUI extends GameTableUI {
         var that = this;
 
         // Increment locationIndex for existing cards on the table to the right of the added location
-        var locationBeforeCount = this.locationDivs.length;
-        for (var i=locationBeforeCount-1; i>=index; i--) {
+        let locationBeforeCount = this.locationDivs.length;
+        for (let i=locationBeforeCount-1; i>=index; i--) {
             this.locationDivs[i].data( "locationIndex", i+1);
             this.locationDivs[i].removeAttr("id");
             this.locationDivs[i].attr("id", "location" + (i+1));
 
-            var missionCardGroup = this.missionCardGroups[i].getCardElems();
-            for (var j=0; j<missionCardGroup.length; j++) {
-                var cardData = $(missionCardGroup[j]).data("card");
+            let missionCardGroup = this.missionCardGroups[i].getCardElems();
+            for (let j=0; j<missionCardGroup.length; j++) {
+                let cardData = $(missionCardGroup[j]).data("card");
                 cardData.locationIndex = i+1;
             }
             this.missionCardGroups[i].locationIndex = i+1;
             
-            var opponentAtLocationCardGroup = this.opponentAtLocationCardGroups[i].getCardElems();
-            for (var j=0; j<opponentAtLocationCardGroup.length; j++) {
-                var cardData = $(opponentAtLocationCardGroup[j]).data("card");
+            let opponentAtLocationCardGroup = this.opponentAtLocationCardGroups[i].getCardElems();
+            for (let j=0; j<opponentAtLocationCardGroup.length; j++) {
+                let cardData = $(opponentAtLocationCardGroup[j]).data("card");
                 cardData.locationIndex = i+1;
             }
             this.opponentAtLocationCardGroups[i].locationIndex = i+1;
 
-            var playerAtLocationCardGroup = this.playerAtLocationCardGroups[i].getCardElems();
-            for (var j=0; j<playerAtLocationCardGroup.length; j++) {
-                var cardData = $(playerAtLocationCardGroup[j]).data("card");
+            let playerAtLocationCardGroup = this.playerAtLocationCardGroups[i].getCardElems();
+            for (let j=0; j<playerAtLocationCardGroup.length; j++) {
+                let cardData = $(playerAtLocationCardGroup[j]).data("card");
                 cardData.locationIndex = i+1;
             }
             this.playerAtLocationCardGroups[i].locationIndex = i+1;            
         }
 
-        var newDiv = $("<div id='location" + index + "' class='ui-widget-content locationDiv'></div>");
+        let newDiv = $("<div id='location" + index + "' class='ui-widget-content locationDiv'></div>");
         newDiv.data( "locationIndex", index);
         newDiv.data( "quadrant", quadrant);
         newDiv.data("region", region);
@@ -2682,18 +2718,18 @@ export class ST1EGameTableUI extends GameTableUI {
 
         this.locationDivs.splice(index, 0, newDiv);
 
-            // TODO - MissionCardGroup class exists for this, but using TableCardGroup to test beaming function
-        var missionCardGroup = new TableCardGroup($("#main"), function (card) {
+        // TODO - MissionCardGroup class exists for this, but using TableCardGroup to test beaming function
+        let missionCardGroup = new TableCardGroup($("#main"), function (card) {
             return (card.zone == "SPACELINE" && card.locationIndex == this.locationIndex );
         }, false, index, this.bottomPlayerId);
         this.missionCardGroups.splice(index, 0, missionCardGroup);
 
-        var opponentAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
+        let opponentAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
             return (card.zone == "AT_LOCATION" && card.locationIndex == this.locationIndex && card.owner != that.bottomPlayerId);
         }, false, index, this.bottomPlayerId);
         this.opponentAtLocationCardGroups.splice(index, 0, opponentAtLocationCardGroup);
 
-        var playerAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
+        let playerAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
             return (card.zone == "AT_LOCATION" && card.locationIndex == this.locationIndex && card.owner == that.bottomPlayerId);
         }, false, index, this.bottomPlayerId);
         this.playerAtLocationCardGroups.splice(index, 0, playerAtLocationCardGroup);
@@ -2702,10 +2738,10 @@ export class ST1EGameTableUI extends GameTableUI {
     }
 
     layoutUI(sizeChanged) {
-        var padding = this.padding;
+        let padding = this.padding;
 
-        var width = $(window).width();
-        var height = $(window).height();
+        let width = $(window).width();
+        let height = $(window).height();
         if (sizeChanged) {
             this.windowWidth = width;
             this.windowHeight = height;
@@ -2714,64 +2750,51 @@ export class ST1EGameTableUI extends GameTableUI {
             height = this.windowHeight;
         }
 
-        var BORDER_PADDING = 2;
-        var LOCATION_BORDER_PADDING = 4;
+        let BORDER_PADDING = 2;
+        let LOCATION_BORDER_PADDING = 4;
 
         // Defines the relative height of the opponent/player/table areas of the UI.
-        var OPPONENT_AREA_HEIGHT_SCALE = 0.15;
-        var PLAYER_AREA_HEIGHT_SCALE = 0.3;
+        let OPPONENT_AREA_HEIGHT_SCALE = 0.15;
+        let PLAYER_AREA_HEIGHT_SCALE = 0.3;
 
         // Defines the minimum/maximum height of the opponent/player/table areas of the UI. No max for table area.
-        var MIN_OPPONENT_AREA_HEIGHT = 114;
-        var MAX_OPPONENT_AREA_HEIGHT = 140;
-        var MIN_PLAYER_AREA_HEIGHT = MIN_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
-        var MAX_PLAYER_AREA_HEIGHT = MAX_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
+        let MIN_OPPONENT_AREA_HEIGHT = 114;
+        let MAX_OPPONENT_AREA_HEIGHT = 140;
+        let MIN_PLAYER_AREA_HEIGHT = MIN_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
+        let MAX_PLAYER_AREA_HEIGHT = MAX_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
 
         // Sets the top and height of the opponent/player/table areas of the UI.
-        var OPPONENT_AREA_TOP = 0;
-        var OPPONENT_AREA_HEIGHT = Math.min(MAX_OPPONENT_AREA_HEIGHT, Math.max(MIN_OPPONENT_AREA_HEIGHT, Math.floor(height * OPPONENT_AREA_HEIGHT_SCALE)));
-        var OPPONENT_CARD_PILE_TOP_1 = OPPONENT_AREA_TOP;
-        var OPPONENT_CARD_PILE_HEIGHT_1 = Math.floor(OPPONENT_AREA_HEIGHT / 2);
-        var OPPONENT_CARD_PILE_TOP_2 = OPPONENT_AREA_TOP + OPPONENT_CARD_PILE_HEIGHT_1 + BORDER_PADDING - 1;
-        var OPPONENT_CARD_PILE_HEIGHT_2 = OPPONENT_AREA_HEIGHT - OPPONENT_CARD_PILE_HEIGHT_1 - BORDER_PADDING + 1;
-        var PLAYER_AREA_HEIGHT = Math.min(MAX_PLAYER_AREA_HEIGHT, Math.max(MIN_PLAYER_AREA_HEIGHT, Math.floor(height * PLAYER_AREA_HEIGHT_SCALE)));
-        var PLAYER_AREA_TOP = height - BORDER_PADDING - PLAYER_AREA_HEIGHT;
-        var PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT = Math.floor(PLAYER_AREA_HEIGHT / 2);
-        var PLAYER_CARD_PILE_TOP_1 = PLAYER_AREA_TOP;
-        var PLAYER_CARD_PILE_HEIGHT_1 = Math.floor(PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT / 2);
-        var PLAYER_CARD_PILE_TOP_2 = PLAYER_CARD_PILE_TOP_1 + PLAYER_CARD_PILE_HEIGHT_1 + BORDER_PADDING - 1;
-        var PLAYER_CARD_PILE_HEIGHT_2 = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - PLAYER_CARD_PILE_HEIGHT_1 - BORDER_PADDING + 1;
-        var PLAYER_ACTION_AREA_AND_HAND_TOP = PLAYER_AREA_TOP + PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT + BORDER_PADDING - 1;
-        var PLAYER_ACTION_AREA_AND_HAND_HEIGHT = PLAYER_AREA_HEIGHT - PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - BORDER_PADDING;
-        var TABLE_AREA_TOP = OPPONENT_AREA_HEIGHT + BORDER_PADDING;
-        var TABLE_AREA_HEIGHT = Math.max(0, PLAYER_AREA_TOP - LOCATION_BORDER_PADDING - TABLE_AREA_TOP);
+        let OPPONENT_AREA_TOP = 0;
+        let OPPONENT_AREA_HEIGHT = Math.min(MAX_OPPONENT_AREA_HEIGHT, Math.max(MIN_OPPONENT_AREA_HEIGHT, Math.floor(height * OPPONENT_AREA_HEIGHT_SCALE)));
+
+        let PLAYER_AREA_HEIGHT = Math.min(MAX_PLAYER_AREA_HEIGHT, Math.max(MIN_PLAYER_AREA_HEIGHT, Math.floor(height * PLAYER_AREA_HEIGHT_SCALE)));
+        let PLAYER_AREA_TOP = height - BORDER_PADDING - PLAYER_AREA_HEIGHT;
+        let PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT = Math.floor(PLAYER_AREA_HEIGHT / 2);
+        let PLAYER_ACTION_AREA_AND_HAND_TOP = PLAYER_AREA_TOP + PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT + BORDER_PADDING - 1;
+        let PLAYER_ACTION_AREA_AND_HAND_HEIGHT = PLAYER_AREA_HEIGHT - PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - BORDER_PADDING;
+        let TABLE_AREA_TOP = OPPONENT_AREA_HEIGHT + BORDER_PADDING;
+        let TABLE_AREA_HEIGHT = Math.max(0, PLAYER_AREA_TOP - LOCATION_BORDER_PADDING - TABLE_AREA_TOP);
 
         // Defines the sizes of other items in the UI.
-        var LEFT_SIDE = 0;
-        var GAME_STATE_AND_CHAT_WIDTH = 300;
-        var CARD_PILE_AND_ACTION_AREA_LEFT = GAME_STATE_AND_CHAT_WIDTH + BORDER_PADDING - 1;
-        var CARD_PILE_AND_ACTION_AREA_WIDTH = 141;
-        var CARD_PILE_LEFT_1 = CARD_PILE_AND_ACTION_AREA_LEFT;
-        var CARD_PILE_WIDTH_1 = Math.floor(CARD_PILE_AND_ACTION_AREA_WIDTH / 3);
-        var CARD_PILE_LEFT_2 = CARD_PILE_AND_ACTION_AREA_LEFT + CARD_PILE_WIDTH_1 + BORDER_PADDING - 1;
-        var CARD_PILE_WIDTH_2 = CARD_PILE_WIDTH_1;
-        var CARD_PILE_LEFT_3 = CARD_PILE_LEFT_2 + CARD_PILE_WIDTH_2 + BORDER_PADDING - 1;
-        var CARD_PILE_WIDTH_3 = CARD_PILE_AND_ACTION_AREA_WIDTH - CARD_PILE_WIDTH_1 - CARD_PILE_WIDTH_2;
-        var LARGE_STAT_BOX_SIZE = 25;
-        var SMALL_STAT_BOX_SIZE = 20;
-        var STAT_BOX_PADDING = 2;
-        var TAB_PANE_HEIGHT = 25;
-        var TAB_PANE_WIDTH_PADDING = 4;
-        var CHAT_HEIGHT = PLAYER_AREA_HEIGHT - BORDER_PADDING + 1;
-        var CHAT_WIDTH = GAME_STATE_AND_CHAT_WIDTH;
+        let LEFT_SIDE = 0;
+        let GAME_STATE_AND_CHAT_WIDTH = 300;
+        let CARD_PILE_AND_ACTION_AREA_LEFT = GAME_STATE_AND_CHAT_WIDTH + BORDER_PADDING - 1;
+        let CARD_PILE_AND_ACTION_AREA_WIDTH = 141;
+        let CARD_PILE_WIDTH_1 = Math.floor(CARD_PILE_AND_ACTION_AREA_WIDTH / 3);
+        let CARD_PILE_LEFT_2 = CARD_PILE_AND_ACTION_AREA_LEFT + CARD_PILE_WIDTH_1 + BORDER_PADDING - 1;
+        let CARD_PILE_WIDTH_2 = CARD_PILE_WIDTH_1;
+        let CARD_PILE_LEFT_3 = CARD_PILE_LEFT_2 + CARD_PILE_WIDTH_2 + BORDER_PADDING - 1;
+        let CARD_PILE_WIDTH_3 = CARD_PILE_AND_ACTION_AREA_WIDTH - CARD_PILE_WIDTH_1 - CARD_PILE_WIDTH_2;
+        let TAB_PANE_HEIGHT = 25;
+        let TAB_PANE_WIDTH_PADDING = 4;
+        let CHAT_HEIGHT = PLAYER_AREA_HEIGHT - BORDER_PADDING + 1;
+        let CHAT_WIDTH = GAME_STATE_AND_CHAT_WIDTH;
 
         // Sets the hand and side of table left and width
-        var HAND_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
-        var HAND_WIDTH = (width - HAND_LEFT) - BORDER_PADDING;
-        var SIDE_OF_TABLE_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
-        var SIDE_OF_TABLE_WIDTH = (width - SIDE_OF_TABLE_LEFT) - BORDER_PADDING;
-
-        var BOTTOM_LEFT_TABS_RIGHT = LEFT_SIDE + CHAT_WIDTH;
+        let HAND_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        let HAND_WIDTH = (width - HAND_LEFT) - BORDER_PADDING;
+        let SIDE_OF_TABLE_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        let SIDE_OF_TABLE_WIDTH = (width - SIDE_OF_TABLE_LEFT) - BORDER_PADDING;
 
         $("#bottomLeftTabs").css({left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH - 50, height: CHAT_HEIGHT});
         this.tabPane.css({position: "absolute", left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
@@ -2779,31 +2802,21 @@ export class ST1EGameTableUI extends GameTableUI {
             CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
 
         // Old LotR gemp code for heightScales
-        var heightScales;
+        let heightScales;
         if (this.spectatorMode) {
             heightScales = [6, 10, 10, 10, 6];
         }
         else {
             heightScales = [5, 9, 9, 10, 6, 10];
         }
-        var yScales = new Array();
-        var scaleTotal = 0;
-        for (var i = 0; i < heightScales.length; i++) {
+        let yScales = new Array();
+        let scaleTotal = 0;
+        for (let i = 0; i < heightScales.length; i++) {
             yScales[i] = scaleTotal;
             scaleTotal += heightScales[i];
         }
 
-        var heightPerScale = (height - (padding * (heightScales.length + 1))) / scaleTotal;
-
-        var advPathWidth = Math.min(150, width * 0.1);
-        var specialUiWidth = 150;
-        var chatHeight = 200;
-        var assignmentsCount = 0;
-
-        var charsWidth = width - (advPathWidth + specialUiWidth + padding * 3);
-        var charsWidthWithAssignments = 2 * charsWidth / (2 + assignmentsCount);
-
-        var currentPlayerTurn = (this.currentPlayerId == this.bottomPlayerId);
+        let specialUiWidth = 150;
 
         if (!this.gameUiInitialized) {
             return;
@@ -2818,7 +2831,7 @@ export class ST1EGameTableUI extends GameTableUI {
         });
         this.gameStateElem.css({
             position: "absolute",
-            left: padding * 2, // + advPathWidth,
+            left: padding * 2,
             top: padding,
             width: specialUiWidth - padding + 75,
             //height: TABLE_AREA_TOP - padding * 2
@@ -2832,14 +2845,16 @@ export class ST1EGameTableUI extends GameTableUI {
             height: $("#bottomLeftTabs").height() - $("#statsDiv").height() - (BORDER_PADDING * 5)
         });
 
-        for (var i = 0; i < 2; i++) {
-            var playerId = this.allPlayerIds[i];
-            if (playerId == this.bottomPlayerId) {
-                var top = PLAYER_AREA_TOP;
-                var height = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT;
+        for (let i = 0; i < 2; i++) {
+            let top = 0;
+            let height = 0;
+            let playerId = this.allPlayerIds[i];
+            if (playerId === this.bottomPlayerId) {
+                top = PLAYER_AREA_TOP;
+                height = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT;
             } else {
-                var top = OPPONENT_AREA_TOP;
-                var height = OPPONENT_AREA_HEIGHT;
+                top = OPPONENT_AREA_TOP;
+                height = OPPONENT_AREA_HEIGHT;
             }
             this.onTableAreas[playerId].setBounds(SIDE_OF_TABLE_LEFT, top, SIDE_OF_TABLE_WIDTH, height);
             this.onTableAreas[playerId].layoutCards();
@@ -2852,8 +2867,6 @@ export class ST1EGameTableUI extends GameTableUI {
 
         var locationsCount = this.locationDivs.length;
 
-        var zoomedInLocationDivWidth = (width / Math.min(3.25, locationsCount)) - (LOCATION_BORDER_PADDING / 2);
-        var otherLocationDivWidth = zoomedInLocationDivWidth;
         var locationDivWidth = (width / locationsCount) - (LOCATION_BORDER_PADDING / 2);
 
         var x = 0;
@@ -2951,25 +2964,25 @@ export class ST1EGameTableUI extends GameTableUI {
         }
 
         for (let playerId in this.discardPileGroups) {
-            if (this.discardPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.discardPileGroups, playerId)) {
                 this.discardPileGroups[playerId].layoutCards();
             }
         }
 
         for (let playerId in this.adventureDeckGroups) {
-            if (this.adventureDeckGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.adventureDeckGroups, playerId)) {
                 this.adventureDeckGroups[playerId].layoutCards();
             }
         }
 
         for (let playerId in this.removedPileGroups) {
-            if (this.removedPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.removedPileGroups, playerId)) {
                 this.removedPileGroups[playerId].layoutCards();
             }
         }
 
         for (let playerId in this.miscPileGroups) {
-            if (this.miscPileGroups.hasOwnProperty(playerId)) {
+            if (Object.hasOwn(this.miscPileGroups, playerId)) {
                 this.miscPileGroups[playerId].layoutCards();
             }
         }
@@ -2988,8 +3001,7 @@ export class ST1EGameTableUI extends GameTableUI {
 
     // Converts region enum sent from Region.java to a user friendly string
     _friendly_region_name(locationDiv) {
-        if (locationDiv === null ||
-            locationDiv === undefined) {
+        if (locationDiv == null) {
             return "";
         }
         switch (locationDiv) {

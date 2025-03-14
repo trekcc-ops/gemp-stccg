@@ -149,7 +149,7 @@
         {
             "locationId": 2,
             "quadrant": "ALPHA",
-            "region": "Romulus System", // There will not be a region item if the location is not in one
+            "region": "ROMULUS_SYSTEM", // There will not be a region item if the location is not in one
             "locationName": "Romulus",
             "isCompleted": false,
             "isHomeworld": true,

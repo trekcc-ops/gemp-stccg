@@ -566,7 +566,7 @@ export default class GempClientCommunication {
             },
             traditional:true,
             error:this.errorCheck(errorMap),
-            dataType:"xml"
+            dataType:"html"
         });
     }
 

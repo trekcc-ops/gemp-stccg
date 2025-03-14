@@ -21,10 +21,10 @@ export default class GameHistoryUI {
     }
 
     loadedGameHistory(json) {
-        var historyTable = $("<table class='gameHistory'></table>");
+        let historyTable = $("<table class='gameHistory'></table>");
         historyTable.append("<tr><th>Format</th><th>Tournament</th><th>Deck</th><th>Winner</th><th>Loser</th><th>Win reason</th><th>Lose reason</th><th>Finished on</th><th>Replay link</th></tr>");
 
-        for (var i = 0; i < json.games.length; i++) {
+        for (let i = 0; i < json.games.length; i++) {
             let historyEntry = json.games[i];
             let format = historyEntry.formatName;
             let tournament = historyEntry.tournament;
@@ -37,7 +37,7 @@ export default class GameHistoryUI {
             let gameRecordingId = historyEntry.gameRecordingId;
             let playerId = json.playerId;
 
-            var row = $("<tr></tr>");
+            let row = $("<tr></tr>");
             if (format != null)
                 row.append($("<td></td>").html(format));
             else
@@ -56,8 +56,8 @@ export default class GameHistoryUI {
             row.append($("<td></td>").html(loseReason));
             row.append($("<td></td>").html(endTime));
 /*            if (gameRecordingId != null) {
-                var link = "game.html?replayId=" + playerId + "$" + gameRecordingId;
-                var linkElem = $("<a>replay game</a>");
+                let link = "game.html?replayId=" + playerId + "$" + gameRecordingId;
+                let linkElem = $("<a>replay game</a>");
                 linkElem.attr("href", link);
                 row.append($("<td></td>").html(linkElem));
             } else {

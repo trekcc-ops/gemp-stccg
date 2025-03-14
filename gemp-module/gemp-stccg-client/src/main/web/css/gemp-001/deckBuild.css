@@ -2,12 +2,12 @@ body {
     font-size: 12px;
 }
 
-.selectableCard > .borderOverlay {
+.selectableCard .borderOverlay {
     border: 2px solid #00ff00;
     cursor: pointer;
 }
 
-.selectedCard > .borderOverlay {
+.selectedCard .borderOverlay {
     border: 2px solid #00cccc;
 }
 

@@ -1,4 +1,5 @@
 import { showLinkableCardTitle, getAffiliationHtml } from "./common.js";
+import { getCardDivFromId } from "./jCards.js";
 
 export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let actionType = jsonAction.actionType;
@@ -6,6 +7,19 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let cardList = new Array();
     let targetCard;
     let spacelineIndex;
+
+    for (const location of jsonGameState.spacelineLocations) {
+        if (location.seedCardCount === 0) {
+            for (const missionId of location.missionCardIds) {
+                getCardDivFromId(missionId).removeClass("seedCardCountBadge").removeAttr("seedCardCount");
+            }
+        }
+        else {
+            for (const missionId of location.missionCardIds) {
+                getCardDivFromId(missionId).addClass("seedCardCountBadge").attr("seedCardCount", location.seedCardCount);
+            }
+        }
+    }
 
     switch(actionType) {
         case "ADD_CARD_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"
@@ -88,7 +102,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 let spacelineLocation = jsonGameState.spacelineLocations[spacelineIndex];
                 let missionCards = spacelineLocation.missionCardIds;
                 let firstMissionAtLocation = (missionCards[0] == targetCard.cardId);
-                gameAnimations.putMissionIntoPlay(targetCard, true, spacelineIndex, firstMissionAtLocation);
+                gameAnimations.putMissionIntoPlay(targetCard, true, spacelineLocation, spacelineIndex, firstMissionAtLocation);
             } else {
                 gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             }
@@ -102,9 +116,11 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "OVERCOME_DILEMMA": // no animation
         case "PLACE_CARD_ON_MISSION": // no animation included yet
         case "REVEAL_SEED_CARD": // no animation included yet
-        case "STOP_CARDS": // no animation included yet
             break;
-            // Actions that are just wrappers for decisions
+        case "STOP_CARDS": // no animation included yet
+            gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState);
+            break;
+        // Actions that are just wrappers for decisions
         case "MAKE_DECISION":
         case "SELECT_ACTION":
         case "SELECT_AFFILIATION":
@@ -112,7 +128,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "SELECT_CARDS":
         case "SELECT_SKILL":
             break;
-            // Actions that will currently not be performed in a 1E game
+        // Actions that will currently not be performed in a 1E game
         case "ACTIVATE_TRIBBLE_POWER":
         case "ALL_PLAYERS_DISCARD":
         case "BATTLE":
@@ -249,7 +265,14 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "REMOVE_CARD_FROM_PRESEED_STACK":
         case "REVEAL_SEED_CARD":
         case "SHUFFLE_CARDS_INTO_DRAW_DECK":
+            break;
         case "STOP_CARDS":
+            for (const cardId of jsonAction.targetCardIds) {
+                targetCard = jsonGameState.visibleCardsInGame[cardId];
+                message = showLinkableCardTitle(targetCard) + " was stopped.";
+                gameChat.appendMessage(message, "gameMessage");
+            }
+            break;
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "UNDOCK_SHIP":
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
