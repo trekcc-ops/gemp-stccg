@@ -42,26 +42,27 @@ function cards_to_treeitems (gamestate) {
 
     let card_tree = [];
 
-    card_tree.push(build_cards_on_table_treeitems(card_ids_on_table, visible_cards_in_game));
-    card_tree.push(build_your_hand_treeitems(card_ids_in_your_hand, visible_cards_in_game));
-    card_tree.push(build_your_core_treeitems(card_ids_in_your_core, visible_cards_in_game));
-    card_tree.push(build_your_discard_treeitems(card_ids_in_your_discard, visible_cards_in_game));
-    card_tree.push(build_your_removed_treeitems(card_ids_in_your_removed, visible_cards_in_game));
-    card_tree.push(build_opponent_core_treeitems(card_ids_in_opponent_core, visible_cards_in_game));
-    card_tree.push(build_opponent_discard_treeitems(card_ids_in_opponent_discard, visible_cards_in_game));
-    card_tree.push(build_opponent_removed_treeitems(card_ids_in_opponent_removed, visible_cards_in_game));
+    card_tree.push(build_cards_on_table_treeitems(card_ids_on_table, visible_cards_obj));
+    card_tree.push(build_your_hand_treeitems(card_ids_in_your_hand, visible_cards_obj));
+    card_tree.push(build_your_core_treeitems(card_ids_in_your_core, visible_cards_obj));
+    card_tree.push(build_your_discard_treeitems(card_ids_in_your_discard, visible_cards_obj));
+    card_tree.push(build_your_removed_treeitems(card_ids_in_your_removed, visible_cards_obj));
+    card_tree.push(build_opponent_core_treeitems(card_ids_in_opponent_core, visible_cards_obj));
+    card_tree.push(build_opponent_discard_treeitems(card_ids_in_opponent_discard, visible_cards_obj));
+    card_tree.push(build_opponent_removed_treeitems(card_ids_in_opponent_removed, visible_cards_obj));
 
     return card_tree;
 }
 
 function build_cards_on_table_treeitems(table_arr, visible_cards) {
-    console.log(`visible_cards type: ${visible_cards instanceof Array}`);
     let table_item = {id: 'table', label: 'On Table', children: []};
 
     for (const table_cardid of table_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === table_cardid);
-        if (matching_card.length === 1) {
-            table_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, table_cardid)) {
+            table_item.children.push(card_to_treeitem(visible_cards[table_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${table_cardid}`);
         }
     }
 
@@ -72,9 +73,11 @@ function build_your_hand_treeitems(hand_arr, visible_cards) {
     let hand_item = {id: 'your_hand', label: 'Your Hand', children: []};
 
     for (const hand_cardid of hand_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === hand_cardid);
-        if (matching_card.length === 1) {
-            hand_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, hand_cardid)) {
+            hand_item.children.push(card_to_treeitem(visible_cards[hand_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${hand_cardid}`);
         }
     }
 
@@ -85,9 +88,11 @@ function build_your_core_treeitems(core_arr, visible_cards) {
     let core_item = {id: 'your_core', label: 'Your Core', children: []};
 
     for (const core_cardid of core_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === core_cardid);
-        if (matching_card.length === 1) {
-            core_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, core_cardid)) {
+            core_item.children.push(card_to_treeitem(visible_cards[core_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${core_cardid}`);
         }
     }
 
@@ -98,9 +103,11 @@ function build_your_discard_treeitems(discard_arr, visible_cards) {
     let discard_item = {id: 'your_discard', label: 'Your Discard', children: []};
 
     for (const discard_cardid of discard_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === discard_cardid);
-        if (matching_card.length === 1) {
-            discard_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, discard_cardid)) {
+            discard_item.children.push(card_to_treeitem(visible_cards[discard_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${discard_cardid}`);
         }
     }
 
@@ -111,9 +118,11 @@ function build_your_removed_treeitems(removed_arr, visible_cards) {
     let removed_item = {id: 'your_removed', label: 'Your Removed', children: []};
 
     for (const removed_cardid of removed_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === removed_cardid);
-        if (matching_card.length === 1) {
-            removed_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, removed_cardid)) {
+            removed_item.children.push(card_to_treeitem(visible_cards[removed_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${removed_cardid}`);
         }
     }
 
@@ -124,9 +133,11 @@ function build_opponent_core_treeitems(core_arr, visible_cards) {
     let core_item = {id: 'opponent_core', label: 'Opponent Core', children: []};
 
     for (const core_cardid of core_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === core_cardid);
-        if (matching_card.length === 1) {
-            core_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, core_cardid)) {
+            core_item.children.push(card_to_treeitem(visible_cards[core_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${core_cardid}`);
         }
     }
 
@@ -137,9 +148,11 @@ function build_opponent_discard_treeitems(discard_arr, visible_cards) {
     let discard_item = {id: 'opponent_discard', label: 'Opponent Discard', children: []};
 
     for (const discard_cardid of discard_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === discard_cardid);
-        if (matching_card.length === 1) {
-            discard_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, discard_cardid)) {
+            discard_item.children.push(card_to_treeitem(visible_cards[discard_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${discard_cardid}`);
         }
     }
 
@@ -150,9 +163,11 @@ function build_opponent_removed_treeitems(removed_arr, visible_cards) {
     let removed_item = {id: 'opponent_removed', label: 'Opponent Removed', children: []};
 
     for (const removed_cardid of removed_arr) {
-        let matching_card = visible_cards.filter((card) => card["cardId"] === removed_cardid);
-        if (matching_card.length === 1) {
-            removed_item.children.push(card_to_treeitem(matching_card[0]));
+        if (Object.hasOwn(visible_cards, removed_cardid)) {
+            removed_item.children.push(card_to_treeitem(visible_cards[removed_cardid]));
+        }
+        else {
+            console.error(`Could not find card matching id ${removed_cardid}`);
         }
     }
 
