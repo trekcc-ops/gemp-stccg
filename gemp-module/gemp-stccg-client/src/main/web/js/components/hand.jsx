@@ -13,7 +13,7 @@ function get_hand(gamestate) {
         // DEBUG: console.log(ids_in_hand);
         let resolved_cards = [];
         for (const cardid of ids_in_hand) {
-            let matching_cards = gamestate["visibleCardsInGame"].filter((card) => card["cardId"] === cardid);
+            let matching_cards = Object.values(gamestate["visibleCardsInGame"]).filter((card) => card["cardId"] === cardid);
             if (matching_cards.length > 1) {
                 console.error(`More than 1 card matching id ${cardid}`);
             }

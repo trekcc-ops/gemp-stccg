@@ -23,7 +23,8 @@ function cards_to_treeitems (gamestate) {
     let card_ids_in_opponent_discard = opponent_player_data[0]["cardGroups"]["DISCARD"]["cardIds"];
     let card_ids_in_opponent_removed = opponent_player_data[0]["cardGroups"]["REMOVED"]["cardIds"];
 
-    let visible_cards_in_game = gamestate["visibleCardsInGame"];
+    let visible_cards_obj = gamestate["visibleCardsInGame"];
+    let visible_cards_in_game = Object.values(visible_cards_obj); // array
 
     let card_ids_on_table = [];
     for (const visible_card of visible_cards_in_game) {
@@ -54,6 +55,7 @@ function cards_to_treeitems (gamestate) {
 }
 
 function build_cards_on_table_treeitems(table_arr, visible_cards) {
+    console.log(`visible_cards type: ${visible_cards instanceof Array}`);
     let table_item = {id: 'table', label: 'On Table', children: []};
 
     for (const table_cardid of table_arr) {
