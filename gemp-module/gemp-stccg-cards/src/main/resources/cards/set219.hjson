@@ -1,0 +1,21 @@
+{
+    setId: "219"
+    setName: The Neutral Zone
+    gameType: First Edition
+    cards: [
+        {
+            blueprintId: 219_022
+            title: Evade Sensors
+            type: mission
+            mission-type: space
+            region: Neutral Zone
+            location: Comet Icarus IV
+            lore: Hide near comet discovered in 23rd century.
+            affiliation-icons: federation,romulan,non-aligned
+            mission-requirements: Leadership x2 + Navigation + Computer Skill + Stellar Cartography
+            point-box: 35
+            span: 3
+            image-url: https://www.trekcc.org/1e/cardimages/tnz/22.jpg
+        }
+    ]
+}

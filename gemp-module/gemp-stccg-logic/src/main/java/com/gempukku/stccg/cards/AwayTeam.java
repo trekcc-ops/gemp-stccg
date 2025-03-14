@@ -61,6 +61,8 @@ public class AwayTeam implements AttemptingUnit {
     public boolean canAttemptMission(DefaultGame cardGame, MissionLocation mission) {
         if (!isOnSurface(mission))
             return false;
+        if (getAttemptingPersonnel().isEmpty())
+            return false;
         try {
             MissionCard missionCard = mission.getMissionForPlayer(_player.getPlayerId());
             if (missionCard.getBlueprint().canAnyAttempt())

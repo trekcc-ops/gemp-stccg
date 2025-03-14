@@ -52,13 +52,12 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
-            ST1EGame stGame;
-            if (cardGame instanceof ST1EGame)
-                stGame = (ST1EGame) cardGame;
+            if (cardGame instanceof ST1EGame stGame) {
+                GameLocation missionLocation = _missionLocation;
+                Player player = cardGame.getPlayer(_performingPlayerId);
+                return missionLocation.mayBeAttemptedByPlayer(player, stGame);
+            }
             else throw new InvalidGameLogicException("Could not check mission attempt requirements for non-1E game");
-            GameLocation missionLocation = _missionLocation;
-            Player player = cardGame.getPlayer(_performingPlayerId);
-            return missionLocation.mayBeAttemptedByPlayer(player, stGame);
         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;

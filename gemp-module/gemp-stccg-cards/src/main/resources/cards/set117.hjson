@@ -4,6 +4,19 @@
     gameType: First Edition
     cards: [
         {
+            blueprintId: 117_030
+            title: Ferengi Outpost
+            type: facility
+            property-logo: ds9-logo
+            facility-type: outpost
+            affiliation: ferengi
+            uniqueness: universal
+            lore: Ferenginar is the rainy, soggy homeworld of the highly capitalistic Ferengi people. The Ferengi Alliance establishes outposts throughout its territory.
+            shields: 30
+            image-url: https://www.trekcc.org/1e/cardimages/errata/Ferengi-Outpost.jpg
+            rarity: C
+        }
+        {
             blueprintId: 117_083
             title: Krunk
             type: personnel

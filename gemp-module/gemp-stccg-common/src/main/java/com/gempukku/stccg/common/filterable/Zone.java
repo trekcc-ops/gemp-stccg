@@ -17,7 +17,7 @@ public enum Zone implements Filterable {
 
     // Private knowledge
     HAND("hand", false, true, false, true),
-    DISCARD("discard", false, true, false, true),
+    DISCARD("discard", true, true, false, true),
 
     // Nobody sees
     VOID("void", false, false, false, false);
