@@ -3,7 +3,7 @@ import { getCardDivFromId } from "./jCards.js";
 
 export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let actionType = jsonAction.actionType;
-    console.log("Calling animateActionResult for " + actionType);
+    // console.log("Calling animateActionResult for " + actionType);
     let cardList = new Array();
     let targetCard;
     let spacelineIndex;
@@ -115,10 +115,12 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
         case "PLACE_CARD_ON_MISSION": // no animation included yet
-        case "REVEAL_SEED_CARD": // no animation included yet
             break;
-        case "STOP_CARDS": // no animation included yet
-            gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState);
+        case "REVEAL_SEED_CARD":
+            gameAnimations.revealCard(jsonAction.targetCardId, jsonGameState).then(() => {return});
+            break;
+        case "STOP_CARDS":
+            gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState).then(() => {return});
             break;
         // Actions that are just wrappers for decisions
         case "MAKE_DECISION":
@@ -154,7 +156,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
     let actionType = jsonAction.actionType;
     let performingPlayerId = jsonAction.performingPlayerId;
     let message;
-    console.log("Calling communicateActionResult for " + actionType);
+    // console.log("Calling communicateActionResult for " + actionType);
     let gameChat = gameUi.chatBox;
     let targetCard;
 
@@ -178,9 +180,9 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         case "CHANGE_AFFILIATION": {
             let targetCardId = jsonAction.targetCardId;
-            console.log("targetCardId: " + targetCardId);
+            // console.log("targetCardId: " + targetCardId);
             let card = jsonGameState.visibleCardsInGame[targetCardId];
-            console.log("card: " + card.title);
+            // console.log("card: " + card.title);
                 // getCardLink and change selectedAffiliation to HTML
             message = performingPlayerId + " changed " + showLinkableCardTitle(card) + "'s affiliation to " +
                 getAffiliationHtml(card.affiliation);
@@ -256,7 +258,17 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "DOCK_SHIP":
         case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
-        case "ENCOUNTER_SEED_CARD":
+            break;
+        case "ENCOUNTER_SEED_CARD": {
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            if (jsonAction.status === "completed_success") {
+                message = performingPlayerId + " overcame " + showLinkableCardTitle(targetCard);
+            } else if (jsonAction.status === "completed_failure") {
+                message = performingPlayerId + " failed to overcome " + showLinkableCardTitle(targetCard);
+            }
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        }
         case "FAIL_DILEMMA":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD_ON_MISSION":
@@ -312,6 +324,6 @@ export function getSpacelineIndexFromLocationId(locationId, gameState) {
             return i;
         }
     }
-    console.log("Spaceline index for locationId " + locationId + " not found");
+    console.log("Spaceline index for locationId " + locationId + " not found"); // normal for core cards
     return -1;
 }
