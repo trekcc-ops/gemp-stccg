@@ -174,7 +174,7 @@ function build_opponent_removed_treeitems(removed_arr, visible_cards) {
     return removed_item;
 }
 
-function card_to_treeitem (card) {
+export function card_to_treeitem(card) {
     const id = card ? card.cardId : -1;
     const title = card ? card.title : "ERROR";
 
