@@ -184,6 +184,26 @@ export function card_to_treeitem(card) {
     }
 }
 
+export function cardFlatMapToTreeMap(card_ids_to_use, card_data) {
+    if (!(card_ids_to_use instanceof Array)) {
+        throw new TypeError(`card_ids_to_use '${card_ids_to_use}' must be an Array.`);
+    }
+
+    // if one of the cases is true, continue, otherwise throw error
+    if (! ((card_data instanceof Map) || 
+           (card_data instanceof Set) || 
+           (card_data.constructor === Object))) {
+
+            throw new TypeError(`card_data '${card_data}' must be an Object, Set, or Map that is addressable with object[]`);
+    }
+
+    let new_tree = {};
+    for (const card_id of card_ids_to_use) {
+        new_tree[card_id] = card_data[card_id];
+    }
+    return new_tree;
+};
+
 export default function CardTree ( {gamestate} ) {
     return(
         <Box>
