@@ -535,3 +535,17 @@ red/pink: #C2599F
 .inline-icon {
     height: 1em;
 }
+
+#animation-layer {
+    position: absolute; /* render on top of main */
+    height: 100%;
+    width: 100%;
+    z-index: 200; /* TODO: Put these z-index levels in common or something. */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* horiz */
+    align-content: center; /* vert */
+    gap: 15px;
+    background-color: #5b5b5b90; /* semitransparent gray */
+    opacity: 0; /* start invisible */
+}

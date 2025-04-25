@@ -43,6 +43,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected MissionLocation _currentLocation;
     protected GameLocation _currentGameLocation;
     private boolean _placedOnMission = false;
+    private boolean _revealedSeedCard = false;
 
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
@@ -406,7 +407,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isKnownToPlayer(String playerName) {
         return _zone.isPublic() || _owner.getPlayerId().equals(playerName) ||
-                isControlledBy(playerName);
+                isControlledBy(playerName) || _revealedSeedCard;
     }
 
     public boolean isVisibleToPlayer(String playerName) {
@@ -421,6 +422,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         PhysicalCardGroup group = _owner.getCardGroup(_zone);
         if (group != null)
             group.remove(this);
+    }
+
+    public void reveal() {
+        _revealedSeedCard = true;
     }
 
 }
