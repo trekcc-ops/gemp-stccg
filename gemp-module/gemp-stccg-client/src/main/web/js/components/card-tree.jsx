@@ -199,10 +199,39 @@ export function cardFlatMapToTreeMap(card_ids_to_use, card_data) {
 
     let new_tree = {};
     for (const card_id of card_ids_to_use) {
-        new_tree[card_id] = card_data[card_id];
+        addCardToTreeMap(card_id, card_data, new_tree);
     }
     return new_tree;
 };
+
+export function addCardToTreeMap(card_id, card_data, tree) {
+    // already in the tree? skip
+    if (tree[card_id]) {
+        return;
+    }
+    else {
+        if (Object.hasOwn(card_data[card_id], "attachedToCardId")) {
+            // need to attach to something
+            // is it in the tree already?
+            let parent_card_id = card_data[card_id].attachedToCardId;
+            let parent_card = tree[parent_card_id];
+            if (parent_card) {
+                if (!parent_card.children) {
+                    parent_card.children = {};
+                }
+                parent_card.children[card_id] = card_data[card_id];
+            }
+            else {
+                // recurse!
+                addCardToTreeMap(parent_card_id, card_data, tree);
+            }
+        }
+        else {
+            // no relationship, put directly in root of tree
+            tree[card_id] = card_data[card_id];
+        }
+    }
+}
 
 export default function CardTree ( {gamestate} ) {
     return(
