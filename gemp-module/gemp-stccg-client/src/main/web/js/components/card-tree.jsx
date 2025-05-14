@@ -205,31 +205,35 @@ export function cardFlatMapToTreeMap(card_ids_to_use, card_data) {
 };
 
 export function addCardToTreeMap(card_id, card_data, tree) {
+    // do we even have the requested data?
+    if (!card_data[card_id]) {
+        return;
+    }
+
     // already in the tree? skip
     if (tree[card_id]) {
         return;
     }
-    else {
-        if (Object.hasOwn(card_data[card_id], "attachedToCardId")) {
-            // need to attach to something
-            // is it in the tree already?
-            let parent_card_id = card_data[card_id].attachedToCardId;
-            let parent_card = tree[parent_card_id];
-            if (parent_card) {
-                if (!parent_card.children) {
-                    parent_card.children = {};
-                }
-                parent_card.children[card_id] = card_data[card_id];
+
+    if (Object.hasOwn(card_data[card_id], "attachedToCardId")) {
+        // need to attach to something
+        // is it in the tree already?
+        let parent_card_id = card_data[card_id].attachedToCardId;
+        let parent_card = tree[parent_card_id];
+        if (parent_card) {
+            if (!parent_card.children) {
+                parent_card.children = {};
             }
-            else {
-                // recurse!
-                addCardToTreeMap(parent_card_id, card_data, tree);
-            }
+            parent_card.children[card_id] = card_data[card_id];
         }
         else {
-            // no relationship, put directly in root of tree
-            tree[card_id] = card_data[card_id];
+            // recurse!
+            addCardToTreeMap(parent_card_id, card_data, tree);
         }
+    }
+    else {
+        // no relationship, put directly in root of tree
+        tree[card_id] = card_data[card_id];
     }
 }
 
