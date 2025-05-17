@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
+import {JSONPath} from 'jsonpath-plus';
 
 function cards_to_treeitems (gamestate) {
     let player_id = gamestate["requestingPlayer"];
@@ -211,7 +212,10 @@ export function addCardToTreeMap(card_id, card_data, tree) {
     }
 
     // already in the tree? skip
-    if (tree[card_id]) {
+    // NOTE: Use == not === here for consistent matching
+    let search_all_cardIds_for_this_id_jsonpath = `$..*[?(@.cardId == '${card_id}')]`;
+    const result = JSONPath({path: search_all_cardIds_for_this_id_jsonpath, json: tree});
+    if (Object.keys(result).length !== 0) {
         return;
     }
 
@@ -219,7 +223,21 @@ export function addCardToTreeMap(card_id, card_data, tree) {
         // need to attach to something
         // is it in the tree already?
         let parent_card_id = card_data[card_id].attachedToCardId;
-        let parent_card = tree[parent_card_id];
+        
+        // NOTE: Use == not === here for consistent matching
+        let search_all_cardIds_for_parent_id_jsonpath = `$..*[?(@.cardId == '${parent_card_id}')]`;
+        const parent_result = JSONPath({path: search_all_cardIds_for_parent_id_jsonpath, json: tree});
+        //console.log(`tree: ${JSON.stringify(tree)}`);
+        //console.log(`parent_result: ${JSON.stringify(parent_result)}`);
+
+        let parent_card;
+        if (parent_result.length > 0) {
+            parent_card = parent_result[0]; // HACK: we should only ever get 1 since cardId is unique, but I am not bothering to check
+        }
+        else {
+            parent_card = tree[parent_card_id];
+        }
+
         if (parent_card) {
             if (!parent_card.children) {
                 parent_card.children = {};
