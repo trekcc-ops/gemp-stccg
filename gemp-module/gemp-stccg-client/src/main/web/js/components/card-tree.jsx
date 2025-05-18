@@ -56,18 +56,26 @@ function cards_to_treeitems (gamestate) {
 }
 
 function build_cards_on_table_treeitems(table_arr, visible_cards) {
+    const treemap = cardFlatMapToTreeMap(table_arr, visible_cards);
+
     let table_item = {id: 'table', label: 'On Table', children: []};
 
-    for (const table_cardid of table_arr) {
-        if (Object.hasOwn(visible_cards, table_cardid)) {
-            table_item.children.push(card_to_treeitem(visible_cards[table_cardid]));
-        }
-        else {
-            console.error(`Could not find card matching id ${table_cardid}`);
-        }
+    for (const table_card_id in treemap) {
+        table_item.children.push(recurseTreeMapToTreeItem(treemap[table_card_id]));
     }
 
     return table_item;
+}
+
+function recurseTreeMapToTreeItem(card) {
+    let thiscard_treeitem = card_to_treeitem(card);
+    if (card.children) {
+        for (const child_id in card.children) {
+            let child_treeitem = recurseTreeMapToTreeItem(card.children[child_id]);
+            thiscard_treeitem.children.push(child_treeitem);
+        }
+    }
+    return thiscard_treeitem;
 }
 
 function build_your_hand_treeitems(hand_arr, visible_cards) {
@@ -178,10 +186,12 @@ function build_opponent_removed_treeitems(removed_arr, visible_cards) {
 export function card_to_treeitem(card) {
     const id = card ? card.cardId : -1;
     const title = card ? card.title : "ERROR";
+    const children = [];
 
     return {
         id: `${id}`,
-        label: title
+        label: title,
+        children: []
     }
 }
 
