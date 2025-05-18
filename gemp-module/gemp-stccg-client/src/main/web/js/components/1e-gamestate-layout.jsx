@@ -211,19 +211,11 @@ export default function MiniDrawer() {
                                 ]}>
                                 <AccountTreeIcon />
                             </ListItemIcon>
-                            <ListItem sx={[
+                            <ListItemText sx={[
                                         open ? {opacity: 1,} : {opacity: 0,},
                                     ]} >
-                                <CardTree gamestate={get_gamestate()} ></CardTree>
-                            </ListItem>
-                            {/*
-                            <ListItemText
-                                primary="Card Tree"
-                                sx={[
-                                        open ? {opacity: 1,} : {opacity: 0,},
-                                    ]}
-                            />
-                            */}
+                                    <CardTree gamestate={get_gamestate()} ></CardTree>
+                            </ListItemText>
                         </ListItemButton>
                     </ListItem>
 
