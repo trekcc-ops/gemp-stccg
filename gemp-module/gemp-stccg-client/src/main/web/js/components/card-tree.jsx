@@ -61,7 +61,10 @@ function build_cards_on_table_treeitems(table_arr, visible_cards) {
     let table_item = {id: 'table', label: 'On Table', children: []};
 
     for (const table_card_id in treemap) {
-        table_item.children.push(recurseTreeMapToTreeItem(treemap[table_card_id]));
+        // don't show known cards that aren't in play, e.g. in Draw Deck, etc.
+        if (treemap[table_card_id].isInPlay) {
+            table_item.children.push(recurseTreeMapToTreeItem(treemap[table_card_id]));
+        }
     }
 
     return table_item;
@@ -265,7 +268,7 @@ export function addCardToTreeMap(card_id, card_data, tree) {
     }
 }
 
-export default function CardTree ( {gamestate} ) {
+export default function CardTree ( {gamestate, visible} ) {
     return(
         <Box>
             <RichTreeView items={cards_to_treeitems(gamestate)} />
