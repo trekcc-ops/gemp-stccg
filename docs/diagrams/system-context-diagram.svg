@@ -9,7 +9,7 @@
    id="svg1"
    xml:space="preserve"
    inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
-   sodipodi:docname="system-context-digram.svg"
+   sodipodi:docname="system-context-diagram.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -32,7 +32,7 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g98" /><defs
+     inkscape:current-layer="layer2" /><defs
      id="defs1"><rect
        x="329.21821"
        y="188.30769"
@@ -392,6 +392,15 @@
        fy="136.81819"
        gradientTransform="matrix(0.38143,0,0,0.38143,194.54473,155.58044)"
        gradientUnits="userSpaceOnUse" /></defs><g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Background"><rect
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.96;fill-opacity:1;stroke-opacity:1;stroke-dasharray:none"
+       id="rect1"
+       width="815.0011"
+       height="1055.0011"
+       x="0.49945748"
+       y="0.49945748" /></g><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"><text
