@@ -28,8 +28,16 @@ export default class CardGroup {
         var that = this;
         $(".card", this.container).each(function (index) {
             let card = $(this).data("card");
-            if (that.cardBelongs(card)) {
-                cardsToLayout.push($(this));
+            
+            // Don't run a cardBelongs test if we find a .card element without associated data
+            // Seems to occur on temporary cards with no on-table div, like dilemmas after a reveal.
+            if (card == null) {
+                console.log(`getCardElems: card data is undefined or null`);
+            }
+            else {
+                if (that.cardBelongs(card)) {
+                    cardsToLayout.push($(this));
+                }
             }
         });
         return cardsToLayout;
