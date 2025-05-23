@@ -17,3 +17,4 @@ What are the major pieces of a hosted GEMP application? What do those pieces do?
 
 ![GEMP Client Page Responsibilities diagram (L3)](diagrams/client-page-responsibilities.svg)
 
+![GEMP Client Game UI Components diagram (L3)](diagrams/client-game-ui-components-diagram.svg)
