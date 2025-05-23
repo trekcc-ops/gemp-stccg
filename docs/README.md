@@ -10,3 +10,10 @@ Who uses GEMP? Why? How does it relate to other services the user might be famil
 What are the major pieces of a hosted GEMP application? What do those pieces do?
 
 ![GEMP system container diagram (L2)](diagrams/system-container-diagram.svg)
+
+## Component
+
+### GEMP Client
+
+![GEMP Client Page Responsibilities diagram (L3)](diagrams/client-page-responsibilities.svg)
+
