@@ -4,6 +4,8 @@
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.3",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.2.0",
     "@vitejs/plugin-react": "^4.3.4",
     "babel-jest": "^29.7.0",
     "eslint": "^9.17.0",
@@ -27,12 +29,16 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",
+    "@mui/icons-material": "^6.4.2",
     "@mui/lab": "^6.0.0-beta.22",
-    "@mui/material": "^6.3.1",
+    "@mui/material": "^6.4.2",
+    "@mui/x-tree-view": "^7.26.0",
     "delay": "^6.0.0",
     "js-cookie": "^3.0.5",
+    "jsonpath-plus": "^10.3.0",
     "p-queue": "^8.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-error-boundary": "^6.0.0"
   }
 }
