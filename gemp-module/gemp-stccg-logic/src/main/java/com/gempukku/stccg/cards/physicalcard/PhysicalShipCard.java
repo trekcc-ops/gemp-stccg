@@ -158,6 +158,10 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                 return false;
             // TODO - Does not include a check for infiltrators
 
+            // Ship with no unstopped crew can't attempt a mission
+            if (getAttemptingPersonnel().isEmpty())
+                return false;
+
             // Check for affiliation requirements
             if (_blueprint.canAnyAttempt())
                 return true;

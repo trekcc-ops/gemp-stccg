@@ -107,10 +107,25 @@ public class ReportCardAction extends STCCGPlayCardAction {
                             Filters.inCards(getDestinationOptions(cardGame)), 1, 1);
                     _destinationTarget = new SelectCardsResolver(selectDestinationAction);
                     return selectDestinationAction;
-                } else if (_destinationTarget.isResolved()) {
+                } else if (!_destinationTarget.isResolved()) {
+                    if (_destinationTarget instanceof SelectCardsResolver resolver && !resolver.getSelectionAction().wasCarriedOut()) {
+                        return resolver.getSelectionAction();
+                    } else {
+                        _destinationTarget.resolve(cardGame);
+                        try {
+                            PhysicalCard result = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
+                            if (result instanceof FacilityCard) {
+                                setProgress(Progress.destinationSelected);
+                            } else
+                                throw new InvalidGameLogicException("Cards for report card action did not match expected classes");
+                        } catch (IllegalArgumentException exp) {
+                            throw new InvalidGameLogicException(exp.getMessage());
+                        }
+                    }
+                } else {
                     try {
                         PhysicalCard result = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
-                        if (result instanceof FacilityCard facility) {
+                        if (result instanceof FacilityCard) {
                             setProgress(Progress.destinationSelected);
                         } else
                             throw new InvalidGameLogicException("Cards for report card action did not match expected classes");
@@ -192,6 +207,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     private FacilityCard getSelectedDestination(DefaultGame cardGame) throws InvalidGameLogicException {
+
         Collection<PhysicalCard> result = _destinationTarget.getCards(cardGame);
         if (result.size() != 1) {
             throw new InvalidGameLogicException("Unable to identify reporting destination");

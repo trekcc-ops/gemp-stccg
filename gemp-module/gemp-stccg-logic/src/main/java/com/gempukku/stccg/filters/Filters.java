@@ -198,23 +198,11 @@ public class Filters {
     public static final CardFilter hologram = Filters.or(Species.HOLOGRAM);
     public static CardFilter matchingAffiliation(final PhysicalCard cardToMatch) {
         return (game, physicalCard) -> {
-            if (cardToMatch.getBlueprint().getAffiliations() == null)
+            if (physicalCard instanceof AffiliatedCard affilCard1 && cardToMatch instanceof AffiliatedCard affilCard2) {
+                return affilCard1.matchesAffiliationOf(affilCard2);
+            } else {
                 return false;
-            if (physicalCard.getBlueprint().getAffiliations() == null)
-                return false;
-            List<Affiliation> affiliationsToMatch = new LinkedList<>();
-            List<Affiliation> filteredAffiliations = new LinkedList<>();
-            if (cardToMatch.isInPlay())
-                affiliationsToMatch.addAll(cardToMatch.getBlueprint().getAffiliations());
-            else affiliationsToMatch.add(((PhysicalNounCard1E) cardToMatch).getCurrentAffiliation());
-            if (physicalCard.isInPlay())
-                filteredAffiliations.addAll(physicalCard.getBlueprint().getAffiliations());
-            else filteredAffiliations.add(((PhysicalNounCard1E) physicalCard).getCurrentAffiliation());
-            for (Affiliation matchAffiliation : affiliationsToMatch)
-                for (Affiliation filterAffiliation : filteredAffiliations)
-                    if (matchAffiliation == filterAffiliation)
-                        return true;
-            return false;
+            }
         };
     }
 

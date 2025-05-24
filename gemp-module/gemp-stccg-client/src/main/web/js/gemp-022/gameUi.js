@@ -1058,7 +1058,8 @@ export default class GameTableUI {
                     if (action.status === "completed_success") {
                         animateActionResult(action, gameState, this.animations);
                         communicateActionResult(action, gameState, this);
-                    } else if (action.status === "completed_failure" && action.actionType === "ATTEMPT_MISSION") {
+                    } else if (action.status === "completed_failure" && (action.actionType === "ATTEMPT_MISSION" || action.actionType === "ENCOUNTER_SEED_CARD")) {
+                        // Pass a message to the play history if a mission attempt or seed card encounter was failed
                         communicateActionResult(action, gameState, this);
                     }
                     this.lastActionIndex = i;
@@ -1096,7 +1097,7 @@ export default class GameTableUI {
             let cardToAdd;
 
             if (gameState.players != null && gameState.players.length > 0) {
-                console.log("Calling initializePlayerOrder from initializeGameState");
+                // console.log("Calling initializePlayerOrder from initializeGameState");
                 this.initializePlayerOrder(gameState);
                 this.updateGameStats(gameState);
             }
