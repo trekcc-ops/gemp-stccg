@@ -360,12 +360,6 @@ public class CardBlueprint {
         _optionalInHandTriggers.add(actionBlueprint);
     }
 
-    public void appendTrigger(TriggerActionBlueprint actionSource) {
-        RequiredType requiredType = actionSource.getRequiredType();
-        _afterTriggers.computeIfAbsent(requiredType, k -> new LinkedList<>());
-        _afterTriggers.get(requiredType).add(actionSource);
-    }
-
     public void appendPlayRequirement(Requirement requirement) {
         if (_playRequirements == null)
             _playRequirements = new LinkedList<>();
@@ -612,7 +606,6 @@ public class CardBlueprint {
     public ShipClass getShipClass() {
         return _shipClass;
     }
-
 
     public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
         return switch(_cardType) {

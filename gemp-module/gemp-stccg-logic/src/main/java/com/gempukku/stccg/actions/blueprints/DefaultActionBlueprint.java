@@ -16,66 +16,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class DefaultActionBlueprint implements ActionBlueprint {
-    private final List<Requirement> requirements = new LinkedList<>();
+    protected final List<Requirement> _requirements = new LinkedList<>();
 
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
     protected final List<SubActionBlueprint> effects = new LinkedList<>();
 
     protected String _text;
 
-    public DefaultActionBlueprint(String text, int limitPerTurn, Phase phase) {
-            if (text != null)
-                setText(text);
-            if (limitPerTurn > 0)
-                setTurnLimit(limitPerTurn);
-            if (phase != null)
-                addRequirement(
-                        (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
+    public DefaultActionBlueprint(String text, int limitPerTurn) {
+        if (text != null)
+            setText(text);
+        if (limitPerTurn > 0)
+            setTurnLimit(limitPerTurn);
     }
-
-    public void setText(String text) {
-        this._text = text;
-    }
-
-    public void addRequirement(Requirement requirement) {
-        this.requirements.add(requirement);
-    }
-
-    public void addCost(SubActionBlueprint subActionBlueprint) {
-        costs.add(subActionBlueprint);
-    }
-
-    public void addEffect(SubActionBlueprint subActionBlueprint) {
-        effects.add(subActionBlueprint);
-    }
-
-    @Override
-    public boolean isValid(ActionContext actionContext) {
-        return actionContext.acceptsAllRequirements(requirements);
-    }
-
-    @Override
-    public void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext) {
-        if (_text != null)
-            action.setText(actionContext.substituteText(_text));
-
-        costs.forEach(cost -> cost.addEffectToAction(true, action, actionContext));
-
-        effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
-    }
-
-    public void processRequirementsCostsAndEffects(List<Requirement> requirements, List<SubActionBlueprint> costs,
-                                                   List<SubActionBlueprint> effects)
-            throws InvalidCardDefinitionException {
+    public DefaultActionBlueprint(String text, int limitPerTurn, List<SubActionBlueprint> costs,
+                                  List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
+        this(text, limitPerTurn);
 
         if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
-
-        if (requirements != null && !requirements.isEmpty()) {
-            for (Requirement requirement : requirements) {
-                addRequirement(requirement);
-            }
-        }
 
         if (costs != null && !costs.isEmpty()) {
             for (SubActionBlueprint costBlueprint : costs) {
@@ -93,10 +52,36 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         }
     }
 
+    public void setText(String text) {
+        this._text = text;
+    }
 
+    public void addRequirement(Requirement requirement) {
+        this._requirements.add(requirement);
+    }
 
+    public void addCost(SubActionBlueprint subActionBlueprint) {
+        costs.add(subActionBlueprint);
+    }
 
+    public void addEffect(SubActionBlueprint subActionBlueprint) {
+        effects.add(subActionBlueprint);
+    }
 
+    @Override
+    public boolean isValid(ActionContext actionContext) {
+        return actionContext.acceptsAllRequirements(_requirements);
+    }
+
+    @Override
+    public void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext) {
+        if (_text != null)
+            action.setText(actionContext.substituteText(_text));
+
+        costs.forEach(cost -> cost.addEffectToAction(true, action, actionContext));
+
+        effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
+    }
 
     protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 
