@@ -607,7 +607,6 @@ public class CardBlueprint {
         return _shipClass;
     }
 
-
     public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
         return switch(_cardType) {
             case EQUIPMENT -> new PhysicalReportableCard1E(st1egame, cardId, player, this);

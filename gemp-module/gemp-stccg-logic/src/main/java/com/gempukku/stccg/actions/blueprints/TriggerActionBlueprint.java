@@ -1,8 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.RequiredType;
 import com.gempukku.stccg.requirement.PlayPhaseRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
