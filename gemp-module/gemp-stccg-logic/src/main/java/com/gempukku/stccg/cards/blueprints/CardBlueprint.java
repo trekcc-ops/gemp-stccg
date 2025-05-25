@@ -360,12 +360,6 @@ public class CardBlueprint {
         _optionalInHandTriggers.add(actionBlueprint);
     }
 
-    public void appendTrigger(TriggerActionBlueprint actionSource) {
-        RequiredType requiredType = actionSource.getRequiredType();
-        _afterTriggers.computeIfAbsent(requiredType, k -> new LinkedList<>());
-        _afterTriggers.get(requiredType).add(actionSource);
-    }
-
     public void appendPlayRequirement(Requirement requirement) {
         if (_playRequirements == null)
             _playRequirements = new LinkedList<>();

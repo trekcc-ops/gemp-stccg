@@ -10,8 +10,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.RequiredType;
 
 import java.util.List;
 
@@ -23,8 +21,6 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
                                        int limitPerTurn,
                                           @JsonProperty(value="triggerDuringSeed", required = true)
                                       boolean triggerDuringSeed,
-                                          @JsonProperty("phase")
-                                       Phase phase,
                                           @JsonProperty("trigger")
                                        TriggerChecker triggerChecker,
                                           @JsonProperty("requires")
@@ -35,18 +31,13 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                           @JsonProperty("effect")
                                        List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(RequiredType.REQUIRED, text, limitPerTurn, phase, triggerChecker, requirements, costs, effects,
-                triggerDuringSeed);
-    }
-
-    public RequiredTriggerAction createAction(PhysicalCard card) {
-        return new RequiredTriggerAction(card);
+        super(text, limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed);
     }
 
     @Override
     protected RequiredTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
         if (isValid(actionContext)) {
-            RequiredTriggerAction action = createAction(card);
+            RequiredTriggerAction action = new RequiredTriggerAction(card);
             appendActionToContext(action, actionContext);
             return action;
         }

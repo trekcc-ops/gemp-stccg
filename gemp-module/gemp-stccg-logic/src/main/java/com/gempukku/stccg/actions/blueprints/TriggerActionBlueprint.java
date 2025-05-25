@@ -11,15 +11,12 @@ import java.util.List;
 
 public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
 
-    private final RequiredType _requiredType;
-
-    protected TriggerActionBlueprint(RequiredType requiredType, String text, int limitPerTurn, Phase phase,
+    protected TriggerActionBlueprint(String text, int limitPerTurn,
                                      TriggerChecker triggerChecker, List<Requirement> requirements,
                                      List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
                                      boolean triggerDuringSeed)
             throws InvalidCardDefinitionException {
-        super(text, limitPerTurn, phase);
-        _requiredType = requiredType;
+        super(text, limitPerTurn);
         if (requirements != null) {
             _requirements.addAll(requirements);
         }
@@ -31,8 +28,5 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
         }
         addCostsAndEffects(costs, effects);
     }
-
-
-    public RequiredType getRequiredType() { return _requiredType; }
 
 }

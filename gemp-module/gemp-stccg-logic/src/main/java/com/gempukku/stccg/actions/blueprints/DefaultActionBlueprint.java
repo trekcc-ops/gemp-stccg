@@ -23,6 +23,13 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     protected String _text;
 
+    public DefaultActionBlueprint(String text, int limitPerTurn) {
+        if (text != null)
+            setText(text);
+        if (limitPerTurn > 0)
+            setTurnLimit(limitPerTurn);
+    }
+
     public DefaultActionBlueprint(String text, int limitPerTurn, Phase phase) {
             if (text != null)
                 setText(text);

@@ -8,13 +8,10 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.RequiredType;
 
 import java.util.List;
 
 public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
-    private final RequiredType _requiredType = RequiredType.OPTIONAL;
 
     public OptionalTriggerActionBlueprint(@JsonProperty("text")
                                        String text,
@@ -22,8 +19,6 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                        int limitPerTurn,
                                           @JsonProperty(value="triggerDuringSeed", required = true)
                                       boolean triggerDuringSeed,
-                                          @JsonProperty("phase")
-                                       Phase phase,
                                           @JsonProperty("trigger")
                                        TriggerChecker triggerChecker,
                                           @JsonProperty("requires")
@@ -34,8 +29,7 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                           @JsonProperty("effect")
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                           List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(RequiredType.OPTIONAL, text, limitPerTurn, phase, triggerChecker, requirements, costs, effects,
-                triggerDuringSeed);
+        super(text, limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed);
     }
 
     @Override
@@ -47,7 +41,5 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
         }
         return null;
     }
-
-    public RequiredType getRequiredType() { return _requiredType; }
 
 }
