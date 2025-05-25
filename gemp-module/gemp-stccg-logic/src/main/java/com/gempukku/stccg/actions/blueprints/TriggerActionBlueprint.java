@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.RequiredType;
+import com.gempukku.stccg.requirement.PlayPhaseRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 
@@ -14,12 +15,21 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
 
     protected TriggerActionBlueprint(RequiredType requiredType, String text, int limitPerTurn, Phase phase,
                                      TriggerChecker triggerChecker, List<Requirement> requirements,
-                                     List<SubActionBlueprint> costs, List<SubActionBlueprint> effects)
+                                     List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
+                                     boolean triggerDuringSeed)
             throws InvalidCardDefinitionException {
         super(text, limitPerTurn, phase);
         _requiredType = requiredType;
-        addRequirement(triggerChecker);
-        processRequirementsCostsAndEffects(requirements, costs, effects);
+        if (requirements != null) {
+            _requirements.addAll(requirements);
+        }
+        if (triggerChecker != null) {
+            _requirements.add(triggerChecker);
+        }
+        if (!triggerDuringSeed) {
+            _requirements.add(new PlayPhaseRequirement());
+        }
+        addCostsAndEffects(costs, effects);
     }
 
 

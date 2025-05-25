@@ -29,7 +29,10 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
             super(text, limitPerTurn, phase);
-            processRequirementsCostsAndEffects(requirements, costs, effects);
+            if (requirements != null && !requirements.isEmpty()) {
+                _requirements.addAll(requirements);
+            }
+            addCostsAndEffects(costs, effects);
     }
 
     public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card.getGame(), card); }

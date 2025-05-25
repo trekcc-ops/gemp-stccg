@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class DefaultActionBlueprint implements ActionBlueprint {
-    private final List<Requirement> requirements = new LinkedList<>();
+    protected final List<Requirement> _requirements = new LinkedList<>();
 
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
     protected final List<SubActionBlueprint> effects = new LinkedList<>();
@@ -38,7 +38,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     }
 
     public void addRequirement(Requirement requirement) {
-        this.requirements.add(requirement);
+        this._requirements.add(requirement);
     }
 
     public void addCost(SubActionBlueprint subActionBlueprint) {
@@ -51,7 +51,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     @Override
     public boolean isValid(ActionContext actionContext) {
-        return actionContext.acceptsAllRequirements(requirements);
+        return actionContext.acceptsAllRequirements(_requirements);
     }
 
     @Override
@@ -64,18 +64,11 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
-    public void processRequirementsCostsAndEffects(List<Requirement> requirements, List<SubActionBlueprint> costs,
-                                                   List<SubActionBlueprint> effects)
+    public void addCostsAndEffects(List<SubActionBlueprint> costs, List<SubActionBlueprint> effects)
             throws InvalidCardDefinitionException {
 
         if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
-
-        if (requirements != null && !requirements.isEmpty()) {
-            for (Requirement requirement : requirements) {
-                addRequirement(requirement);
-            }
-        }
 
         if (costs != null && !costs.isEmpty()) {
             for (SubActionBlueprint costBlueprint : costs) {
@@ -92,11 +85,6 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
             }
         }
     }
-
-
-
-
-
 
     protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 

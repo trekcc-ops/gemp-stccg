@@ -20,6 +20,8 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                        String text,
                                           @JsonProperty(value="limitPerTurn", defaultValue="0")
                                        int limitPerTurn,
+                                          @JsonProperty(value="triggerDuringSeed", required = true)
+                                      boolean triggerDuringSeed,
                                           @JsonProperty("phase")
                                        Phase phase,
                                           @JsonProperty("trigger")
@@ -32,7 +34,8 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                           @JsonProperty("effect")
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                           List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(RequiredType.OPTIONAL, text, limitPerTurn, phase, triggerChecker, requirements, costs, effects);
+        super(RequiredType.OPTIONAL, text, limitPerTurn, phase, triggerChecker, requirements, costs, effects,
+                triggerDuringSeed);
     }
 
     @Override

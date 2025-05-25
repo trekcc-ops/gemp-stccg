@@ -21,6 +21,8 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
                                        String text,
                                           @JsonProperty(value="limitPerTurn", defaultValue="0")
                                        int limitPerTurn,
+                                          @JsonProperty(value="triggerDuringSeed", required = true)
+                                      boolean triggerDuringSeed,
                                           @JsonProperty("phase")
                                        Phase phase,
                                           @JsonProperty("trigger")
@@ -33,7 +35,8 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                           @JsonProperty("effect")
                                        List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(RequiredType.REQUIRED, text, limitPerTurn, phase, triggerChecker, requirements, costs, effects);
+        super(RequiredType.REQUIRED, text, limitPerTurn, phase, triggerChecker, requirements, costs, effects,
+                triggerDuringSeed);
     }
 
     public RequiredTriggerAction createAction(PhysicalCard card) {
