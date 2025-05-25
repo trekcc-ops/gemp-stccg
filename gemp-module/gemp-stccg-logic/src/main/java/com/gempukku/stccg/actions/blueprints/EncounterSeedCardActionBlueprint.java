@@ -27,7 +27,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
     public EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                             List<SubActionBlueprint> effects) {
-        super("Encounter card", 0, Phase.EXECUTE_ORDERS);
+        super("Encounter card", 0);
         _effects = Objects.requireNonNullElse(effects, new LinkedList<>());
     }
 

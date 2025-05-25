@@ -14,7 +14,7 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
                                      List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
                                      boolean triggerDuringSeed)
             throws InvalidCardDefinitionException {
-        super(text, limitPerTurn);
+        super(text, limitPerTurn, costs, effects);
         if (requirements != null) {
             _requirements.addAll(requirements);
         }
@@ -24,7 +24,6 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
         if (!triggerDuringSeed) {
             _requirements.add(new PlayPhaseRequirement());
         }
-        addCostsAndEffects(costs, effects);
     }
 
 }

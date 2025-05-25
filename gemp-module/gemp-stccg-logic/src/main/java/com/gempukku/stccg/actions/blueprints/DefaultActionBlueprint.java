@@ -29,15 +29,27 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         if (limitPerTurn > 0)
             setTurnLimit(limitPerTurn);
     }
+    public DefaultActionBlueprint(String text, int limitPerTurn, List<SubActionBlueprint> costs,
+                                  List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
+        this(text, limitPerTurn);
 
-    public DefaultActionBlueprint(String text, int limitPerTurn, Phase phase) {
-            if (text != null)
-                setText(text);
-            if (limitPerTurn > 0)
-                setTurnLimit(limitPerTurn);
-            if (phase != null)
-                addRequirement(
-                        (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
+        if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
+            throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
+
+        if (costs != null && !costs.isEmpty()) {
+            for (SubActionBlueprint costBlueprint : costs) {
+                addRequirement(costBlueprint::isPlayableInFull);
+                addCost(costBlueprint);
+            }
+        }
+
+        if (effects != null && !effects.isEmpty()) {
+            for (SubActionBlueprint blueprint : effects) {
+                if (blueprint.isPlayabilityCheckedForEffect())
+                    addRequirement(blueprint::isPlayableInFull);
+                addEffect(blueprint);
+            }
+        }
     }
 
     public void setText(String text) {
@@ -69,28 +81,6 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         costs.forEach(cost -> cost.addEffectToAction(true, action, actionContext));
 
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
-    }
-
-    public void addCostsAndEffects(List<SubActionBlueprint> costs, List<SubActionBlueprint> effects)
-            throws InvalidCardDefinitionException {
-
-        if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
-            throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
-
-        if (costs != null && !costs.isEmpty()) {
-            for (SubActionBlueprint costBlueprint : costs) {
-                addRequirement(costBlueprint::isPlayableInFull);
-                addCost(costBlueprint);
-            }
-        }
-
-        if (effects != null && !effects.isEmpty()) {
-            for (SubActionBlueprint blueprint : effects) {
-                if (blueprint.isPlayabilityCheckedForEffect())
-                    addRequirement(blueprint::isPlayableInFull);
-                addEffect(blueprint);
-            }
-        }
     }
 
     protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);

@@ -17,8 +17,6 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                     String text,
                                        @JsonProperty(value="limitPerTurn", defaultValue="0")
                                     int limitPerTurn,
-                                       @JsonProperty("phase")
-                                    Phase phase,
                                        @JsonProperty("requires")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<Requirement> requirements,
@@ -28,11 +26,10 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                        @JsonProperty("effect")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-            super(text, limitPerTurn, phase);
+            super(text, limitPerTurn, costs, effects);
             if (requirements != null && !requirements.isEmpty()) {
                 _requirements.addAll(requirements);
             }
-            addCostsAndEffects(costs, effects);
     }
 
     public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card.getGame(), card); }
