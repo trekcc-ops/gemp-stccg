@@ -48,6 +48,8 @@ public class Blueprint155_021_AAH_Test extends AbstractAtTest {
         assertNotNull(attention);
 
         List<PhysicalCard> playableCards = new ArrayList<>();
+        PhysicalCard lopez = newCardForGame("155_063", P1); // Lopez
+        playableCards.add(lopez);
         playableCards.add(newCardForGame("101_203", P1)); // Darian Wallace
 
         List<PhysicalCard> unPlayableCards = new ArrayList<>();
@@ -91,6 +93,20 @@ public class Blueprint155_021_AAH_Test extends AbstractAtTest {
         for (PhysicalCard card : unPlayableCards) {
             assertFalse(selectableCards.contains(card.getBlueprintId()));
         }
+
+        assertFalse(lopez.isInPlay());
+        // Select a card
+        selectCard(P1, lopez);
+        assertTrue(lopez.isInPlay());
+
+        // Verify that it can't be used twice
+        boolean errorThrown = false;
+        try {
+            useGameText(attention, P1);
+        } catch(Exception exp) {
+            errorThrown = true;
+        }
+        assertTrue(errorThrown);
     }
 
 }
