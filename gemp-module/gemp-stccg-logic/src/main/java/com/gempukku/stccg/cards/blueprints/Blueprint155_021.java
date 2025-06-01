@@ -2,8 +2,8 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
+import com.gempukku.stccg.actions.playcard.SelectAndReportCardAction;
 import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -46,7 +46,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
                 action1.appendEffect(
 
-                        new DownloadCardAction(cardGame, Zone.HAND, thisCard.getOwner(), playableCardFilter, thisCard) {
+                        new SelectAndReportCardAction(cardGame, thisCard.getOwner(), playableCardFilter, thisCard) {
 
                             @Override
                             protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
