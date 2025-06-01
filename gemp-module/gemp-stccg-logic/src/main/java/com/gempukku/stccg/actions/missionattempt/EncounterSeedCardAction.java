@@ -53,7 +53,8 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
             setAsFailed(); */
         Action nextAction = getNextAction();
         if (nextAction == null && isInProgress()) {
-            if (_cardTarget.getCard().getGameLocation() == _missionLocation) {
+            PhysicalCard card = _cardTarget.getCard();
+            if (card.getGameLocation() == _missionLocation && !card.isPlacedOnMission()) {
                 return new RemoveDilemmaFromGameAction(cardGame.getPlayer(_performingPlayerId), _cardTarget.getCard());
             }
             setAsSuccessful();
