@@ -18,6 +18,7 @@ import java.util.List;
 public interface ModifiersQuerying {
 
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card);
+    LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix);
 
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix);
 

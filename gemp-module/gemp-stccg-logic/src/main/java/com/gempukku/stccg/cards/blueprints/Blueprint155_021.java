@@ -1,18 +1,22 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.choose.SelectCardAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadCardAction;
-import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.usage.UseGameTextAction;
+import com.gempukku.stccg.actions.playcard.DownloadReportableAction;
+import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
+import com.gempukku.stccg.actions.turn.ActivateCardAction;
+import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
+import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
@@ -29,51 +33,56 @@ public class Blueprint155_021 extends CardBlueprint {
         Phase currentPhase = cardGame.getCurrentPhase();
         List<TopLevelSelectableAction> actions = new LinkedList<>();
 
-        if (currentPhase == Phase.CARD_PLAY) {
+        if (currentPhase == Phase.CARD_PLAY && thisCard.isControlledBy(player)) {
 
-            // TODO - This should not be where the Filters.playable filter is included
-            // TODO - Make sure there's a native quadrant requirement here if Modern rules are used
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
-                    Filters.youHaveNoCopiesInPlay(thisCard.getOwner()), Filters.playable,
+                    Filters.youHaveNoCopiesInPlay(thisCard.getOwner()),
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON),
                     Filters.inYourHand(player), Filters.youControlAMatchingOutpost(player));
 
             Collection<PhysicalCard> playableCards = Filters.filter(cardGame, playableCardFilter);
             if (!playableCards.isEmpty()) {
 
-                UseGameTextAction action1 = new UseGameTextAction(thisCard, player, "Report a card for free");
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, player,
+                        "Select a card to report", playableCards);
+                ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+                MatchingFilterBlueprint destinationFilterBlueprint =
+                        new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
+                SelectAndReportForFreeCardAction action1 =
+                        new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwner(), cardTarget, thisCard,
+                                destinationFilterBlueprint);
                 action1.setCardActionPrefix("1");
                 action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
-                action1.appendEffect(
-
-                        new DownloadCardAction(cardGame, Zone.HAND, thisCard.getOwner(), playableCardFilter, thisCard) {
-
-                            @Override
-                            protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
-
-                                CardFilter outpostFilter = Filters.yourMatchingOutposts(thisCard.getOwner(), selectedCard);
-                                Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
-
-                                Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                                        true, eligibleDestinations);
-                                setPlayCardAction(action);
-                                selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
-                            }
-                        });
                 action1.setText("Report a personnel for free");
                 if (action1.canBeInitiated(cardGame))
                     actions.add(action1);
 
-/*            ActivateCardAction action2 = new ActivateCardAction(card);
-            Filterable downloadableCardFilter = Filters.and(CardType.SHIP, Uniqueness.UNIVERSAL, Icon1E.TNG_ICON,
-                    Filters.playable);
-            action2.setCardActionPrefix("2");
-            action2.appendUsage(new OncePerGameEffect(action2));
-            // append normal card play cost
-            action2.appendAction(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
-            actions.add(action2);*/
+            }
+
+            /* TODO - Need to get more explicit somewhere to prevent downloading cards in play, or accepting
+                  out-of-play cards as destination targets.
+             */
+            Filterable downloadableCardFilter = Filters.and(CardType.SHIP, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON);
+            Collection<PhysicalCard> downloadableCards = Filters.filter(cardGame, downloadableCardFilter);
+
+            if (!downloadableCards.isEmpty()) {
+
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, player,
+                        "Select a card to download", downloadableCards);
+                ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+                MatchingFilterBlueprint destinationFilterBlueprint =
+                        new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
+                DownloadReportableAction action2 =
+                        new DownloadReportableAction(cardGame, player, cardTarget, thisCard, destinationFilterBlueprint);
+                action2.setCardActionPrefix("2");
+                action2.appendUsage(new UseOncePerGameAction(action2, thisCard, player));
+                action2.appendCost(new UseNormalCardPlayAction(cardGame, player));
+                action2.setText("Download a card");
+                if (action2.canBeInitiated(cardGame))
+                    actions.add(action2);
             }
         }
+
         return actions;
     }
 }

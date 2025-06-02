@@ -93,6 +93,8 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                 cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
                 cardGame.sendActionResultToClient();
             }
+            String firstPlayerId = playerOrder.getFirstPlayer();
+            cardGame.getGameState().startPlayerTurn(cardGame.getPlayer(firstPlayerId));
             return new StartOfTurnGameProcess();
         } else {
             playerOrder.advancePlayer();

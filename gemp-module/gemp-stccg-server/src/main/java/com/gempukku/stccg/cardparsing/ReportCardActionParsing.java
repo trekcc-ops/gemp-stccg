@@ -16,7 +16,7 @@ public class ReportCardActionParsing {
         int matchingSentences = 0;
         int wordInstances = 0;
 
-        Pattern assimilatePattern = Pattern.compile("assimilate", Pattern.CASE_INSENSITIVE);
+        Pattern reportPattern = Pattern.compile("report", Pattern.CASE_INSENSITIVE);
         List<RegexDescription> regexes = getRegexDescriptions();
         List<RegexResult> regexResults = new LinkedList<>();
         Map<RegexDescription, List<RegexResult>> resultMap = new HashMap<>();
@@ -29,7 +29,7 @@ public class ReportCardActionParsing {
             for (Sentence sentence : card._gameText.getSentences()) {
                 String sentenceText = sentence.toString();
 
-                Matcher parentMatcher = assimilatePattern.matcher(sentenceText);
+                Matcher parentMatcher = reportPattern.matcher(sentenceText);
                 boolean sentenceMatches = false;
                 while (parentMatcher.find()) { // Iterate through matches on the parent pattern
                     sentenceMatches = true;
@@ -84,54 +84,54 @@ public class ReportCardActionParsing {
     private static List<RegexDescription> getRegexDescriptions() {
         List<RegexDescription> result = new LinkedList<>();
 
-        // Game terms not related to card assimilate actions
-        result.add(new RegexDescription(Pattern.compile("assimilateer", Pattern.CASE_INSENSITIVE), "assimilateer"));
-        result.add(new RegexDescription(Pattern.compile("[\\s(\"]in\\sassimilate"), "in assimilate"));
-        result.add(new RegexDescription(Pattern.compile("from\\sassimilate[^i]"), "from assimilate"));
-        result.add(new RegexDescription(Pattern.compile("out[-\\s]of[-\\s]assimilate"), "out of assimilate"));
-        result.add(new RegexDescription(Pattern.compile("leave\\sassimilate[^eis]"), "leave assimilate"));
-        result.add(new RegexDescription(Pattern.compile("leaves\\sassimilate[^eis]"), "leaves assimilate"));
-        result.add(new RegexDescription(Pattern.compile("File Mission assimilate"), "File Mission assimilate"));
+        // Game terms not related to card report actions
+        result.add(new RegexDescription(Pattern.compile("reporter", Pattern.CASE_INSENSITIVE), "reporter"));
+        result.add(new RegexDescription(Pattern.compile("[\\s(\"]in\\sreport"), "in report"));
+        result.add(new RegexDescription(Pattern.compile("from\\sreport[^i]"), "from report"));
+        result.add(new RegexDescription(Pattern.compile("out[-\\s]of[-\\s]report"), "out of report"));
+        result.add(new RegexDescription(Pattern.compile("leave\\sreport[^eis]"), "leave report"));
+        result.add(new RegexDescription(Pattern.compile("leaves\\sreport[^eis]"), "leaves report"));
+        result.add(new RegexDescription(Pattern.compile("File Mission report"), "File Mission report"));
 
-        result.add(new RegexDescription(Pattern.compile("assimilateed", Pattern.CASE_INSENSITIVE), "assimilateed"));
-        result.add(new RegexDescription(Pattern.compile("assimilateing"), "assimilateing"));
+        result.add(new RegexDescription(Pattern.compile("reported", Pattern.CASE_INSENSITIVE), "reported"));
+        result.add(new RegexDescription(Pattern.compile("reporting"), "reporting"));
 
-        // assimilate action as a required response to or cost for another action
-        result.add(new RegexDescription(Pattern.compile("you may.+[,:] (then )?assimilate(?=\\s)"), "you may..., then assimilate"));
-        result.add(new RegexDescription(Pattern.compile("you must assimilate \\S+ to", Pattern.CASE_INSENSITIVE), "you must assimilate... to"));
-        result.add(new RegexDescription(Pattern.compile("must\\simmediately assimilate[^eis]"), "must immediately assimilate"));
+        // report action as a required response to or cost for another action
+        result.add(new RegexDescription(Pattern.compile("you may.+[,:] (then )?report(?=\\s)"), "you may..., then report"));
+        result.add(new RegexDescription(Pattern.compile("you must report \\S+ to", Pattern.CASE_INSENSITIVE), "you must report... to"));
+        result.add(new RegexDescription(Pattern.compile("must\\simmediately report[^eis]"), "must immediately report"));
 
-        // Allowing cards to be assimilateed
-        result.add(new RegexDescription(Pattern.compile("allowing.+to\\senter\\sassimilate", Pattern.CASE_INSENSITIVE), "allowing... to enter assimilate"));
+        // Allowing cards to be reported
+        result.add(new RegexDescription(Pattern.compile("allowing.+to\\senter\\sreport", Pattern.CASE_INSENSITIVE), "allowing... to enter report"));
 
-        // Not allowing cards to be assimilateed
+        // Not allowing cards to be reported
 
-        result.add(new RegexDescription(Pattern.compile("[^o]\\senter\\sassimilate[^eis]", Pattern.CASE_INSENSITIVE), "enter assimilate"));
-        result.add(new RegexDescription(Pattern.compile("(can|may)\\s(?!only)(not )?(immediately )?(.+ or )?(immediately )?assimilate[^es]", Pattern.CASE_INSENSITIVE), "can/may (not/immediately) (? or) (immediately) assimilate"));
-        result.add(new RegexDescription(Pattern.compile("[^f]\\syou\\sassimilate[^es]"), "you assimilate"));
-        result.add(new RegexDescription(Pattern.compile("card\\sassimilate[^eis]"), "card assimilate"));
-        result.add(new RegexDescription(Pattern.compile("may only (seed or )?assimilate"), "may only (seed or) assimilate"));
-        result.add(new RegexDescription(Pattern.compile("assimilate at any time"), "assimilate at any time"));
-        result.add(new RegexDescription(Pattern.compile("and\\s(\\(once per turn\\) )?assimilate[^eis]"), "and assimilate"));
-        result.add(new RegexDescription(Pattern.compile("suspend(s)?(ing)?\\sassimilate[^eis]", Pattern.CASE_INSENSITIVE), "suspend(s/ing) assimilate"));
-        result.add(new RegexDescription(Pattern.compile("enter(ed|s)\\sassimilate[^eis]", Pattern.CASE_INSENSITIVE), "entered/enters assimilate"));
-        result.add(new RegexDescription(Pattern.compile("[^ny]\\sassimilate for free"), "assimilate for free"));
-        result.add(new RegexDescription(Pattern.compile("otherwise\\sassimilate[^eis]"), "otherwise assimilate"));
-        result.add(new RegexDescription(Pattern.compile("[^-\\s]assimilate[^es]"), "Lowercase with no leading space"));
-        result.add(new RegexDescription(Pattern.compile("assimilate on table", Pattern.CASE_INSENSITIVE), "assimilate on table"));
-        result.add(new RegexDescription(Pattern.compile("assimilates", Pattern.CASE_INSENSITIVE), "assimilates"));
-        result.add(new RegexDescription(Pattern.compile("^assimilate[^es][^o][^n]", Pattern.CASE_INSENSITIVE), "Start of sentence"));
-        result.add(new RegexDescription(Pattern.compile("^(immediately )?assimilate on [^t]", Pattern.CASE_INSENSITIVE), "assimilate on"));
-        result.add(new RegexDescription(Pattern.compile("^assimilate one"), "assimilate one at beginning of sentence"));
-        result.add(new RegexDescription(Pattern.compile("If .+, assimilate\\s"), "If..., assimilate"));
-        result.add(new RegexDescription(Pattern.compile(" to assimilate\\s[^f]"), " to assimilate"));
-        result.add(new RegexDescription(Pattern.compile("if you.+, or assimilate"), "if you..., or assimilate"));
-        result.add(new RegexDescription(Pattern.compile("OR assimilate on any spaceline"), "OR assimilate on any spaceline"));
-        result.add(new RegexDescription(Pattern.compile("if you (subsequently )?assimilate\\s", Pattern.CASE_INSENSITIVE), "if you assimilate"));
-        result.add(new RegexDescription(Pattern.compile("assimilate or place in hand", Pattern.CASE_INSENSITIVE), "assimilate or place in hand"));
-        result.add(new RegexDescription(Pattern.compile("put it into assimilate"), "put it into assimilate"));
-        result.add(new RegexDescription(Pattern.compile("assimilate Wormhole"), "assimilate Wormhole"));
-        result.add(new RegexDescription(Pattern.compile("download .+[^t]\\sinto assimilate"), "download into assimilate"));
+        result.add(new RegexDescription(Pattern.compile("[^o]\\senter\\sreport[^eis]", Pattern.CASE_INSENSITIVE), "enter report"));
+        result.add(new RegexDescription(Pattern.compile("(can|may)\\s(?!only)(not )?(immediately )?(.+ or )?(immediately )?report[^es]", Pattern.CASE_INSENSITIVE), "can/may (not/immediately) (? or) (immediately) report"));
+        result.add(new RegexDescription(Pattern.compile("[^f]\\syou\\sreport[^es]"), "you report"));
+        result.add(new RegexDescription(Pattern.compile("card\\sreport[^eis]"), "card report"));
+        result.add(new RegexDescription(Pattern.compile("may only (seed or )?report"), "may only (seed or) report"));
+        result.add(new RegexDescription(Pattern.compile("report at any time"), "report at any time"));
+        result.add(new RegexDescription(Pattern.compile("and\\s(\\(once per turn\\) )?report[^eis]"), "and report"));
+        result.add(new RegexDescription(Pattern.compile("suspend(s)?(ing)?\\sreport[^eis]", Pattern.CASE_INSENSITIVE), "suspend(s/ing) report"));
+        result.add(new RegexDescription(Pattern.compile("enter(ed|s)\\sreport[^eis]", Pattern.CASE_INSENSITIVE), "entered/enters report"));
+        result.add(new RegexDescription(Pattern.compile("[^ny]\\sreport for free"), "report for free"));
+        result.add(new RegexDescription(Pattern.compile("otherwise\\sreport[^eis]"), "otherwise report"));
+        result.add(new RegexDescription(Pattern.compile("[^-\\s]report[^es]"), "Lowercase with no leading space"));
+        result.add(new RegexDescription(Pattern.compile("report on table", Pattern.CASE_INSENSITIVE), "report on table"));
+        result.add(new RegexDescription(Pattern.compile("reports", Pattern.CASE_INSENSITIVE), "reports"));
+        result.add(new RegexDescription(Pattern.compile("^report[^es][^o][^n]", Pattern.CASE_INSENSITIVE), "Start of sentence"));
+        result.add(new RegexDescription(Pattern.compile("^(immediately )?report on [^t]", Pattern.CASE_INSENSITIVE), "report on"));
+        result.add(new RegexDescription(Pattern.compile("^report one"), "report one at beginning of sentence"));
+        result.add(new RegexDescription(Pattern.compile("If .+, report\\s"), "If..., report"));
+        result.add(new RegexDescription(Pattern.compile(" to report\\s[^f]"), " to report"));
+        result.add(new RegexDescription(Pattern.compile("if you.+, or report"), "if you..., or report"));
+        result.add(new RegexDescription(Pattern.compile("OR report on any spaceline"), "OR report on any spaceline"));
+        result.add(new RegexDescription(Pattern.compile("if you (subsequently )?report\\s", Pattern.CASE_INSENSITIVE), "if you report"));
+        result.add(new RegexDescription(Pattern.compile("report or place in hand", Pattern.CASE_INSENSITIVE), "report or place in hand"));
+        result.add(new RegexDescription(Pattern.compile("put it into report"), "put it into report"));
+        result.add(new RegexDescription(Pattern.compile("report Wormhole"), "report Wormhole"));
+        result.add(new RegexDescription(Pattern.compile("download .+[^t]\\sinto report"), "download into report"));
         return result;
     }
 
@@ -147,9 +147,9 @@ public class ReportCardActionParsing {
 
     private static List<RegexDescription> commonDescriptions() {
         List<RegexDescription> result = new LinkedList<>();
-        result.add(new RegexDescription(Pattern.compile("\\sassimilate"), "Lowercase with a space"));
-        result.add(new RegexDescription(Pattern.compile("[^\\s]assimilate"), "Lowercase with no space"));
-        result.add(new RegexDescription(Pattern.compile("assimilate"), "Uppercase"));
+        result.add(new RegexDescription(Pattern.compile("\\sreport"), "Lowercase with a space"));
+        result.add(new RegexDescription(Pattern.compile("[^\\s]report"), "Lowercase with no space"));
+        result.add(new RegexDescription(Pattern.compile("report"), "Uppercase"));
         return result;
     }
 

@@ -40,6 +40,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
 
         setParam("min", String.valueOf(minimum));
         setParam("max", String.valueOf(maximum));
+        setParam("cardIds", _cardIds);
     }
 
     public String[] getCardIds() {

@@ -4,9 +4,11 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -22,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AttemptMissionResponseTest extends AbstractAtTest {
 
     @Test
-    public void attemptMissionResponseTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
+    public void attemptMissionResponseTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException, CardNotFoundException {
         initializeQuickMissionAttemptWithRisk();
         Player player1 = _game.getPlayer(P1);
 
@@ -38,7 +40,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         MissionCard excavation = null;
         PersonnelCard picard = null;
         ST1EPhysicalCard risk = null;
-        PersonnelCard tarses = null;
+        PersonnelCard tarses = (PersonnelCard) newCardForGame("101_236", P1);
 
         for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
             if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
@@ -49,8 +51,6 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
                 picard = personnel;
             if (Objects.equals(card.getTitle(), "Risk is Our Business") && card instanceof ST1EPhysicalCard incident)
                 risk = incident;
-            if (Objects.equals(card.getTitle(), "Simon Tarses") && card instanceof PersonnelCard personnel)
-                tarses = personnel;
         }
 
         assertNotNull(outpost);
@@ -58,6 +58,10 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         assertNotNull(picard);
         assertNotNull(risk);
         assertNotNull(tarses);
+        picard.removeFromCardGroup();
+        player1.getDrawDeck().addCardToTop(picard);
+        player1.getDrawDeck().addCardToBottom(tarses);
+        tarses.setZone(Zone.DRAW_DECK);
 
         // Seed Risk is Our Business
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
