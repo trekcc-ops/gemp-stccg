@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -35,4 +36,9 @@ public class NullLocation implements GameLocation {
     }
 
     public boolean isHomeworld() { return false; }
+
+    @Override
+    public boolean hasCardSeededUnderneath(PhysicalCard card) {
+        return false;
+    }
 }

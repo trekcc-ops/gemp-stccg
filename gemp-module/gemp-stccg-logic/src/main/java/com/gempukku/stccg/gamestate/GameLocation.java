@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -21,4 +22,6 @@ public interface GameLocation {
     String getLocationName() throws InvalidGameLogicException;
 
     boolean isHomeworld();
+
+    boolean hasCardSeededUnderneath(PhysicalCard card);
 }
