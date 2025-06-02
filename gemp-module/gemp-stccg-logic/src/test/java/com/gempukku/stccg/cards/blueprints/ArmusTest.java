@@ -11,6 +11,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ArmusTest extends AbstractAtTest {
 
     @Test
-    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
+    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException, PlayerNotFoundException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
@@ -35,7 +36,7 @@ public class ArmusTest extends AbstractAtTest {
 
         FacilityCard outpost = null;
         MissionCard excavation = null;
-        PersonnelCard picard = null;
+        PersonnelCard picard = (PersonnelCard) newCardForGame("135_004", P1);
         PersonnelCard tarses = null;
 
         for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
@@ -53,6 +54,8 @@ public class ArmusTest extends AbstractAtTest {
         assertNotNull(excavation);
         assertNotNull(picard);
         assertNotNull(tarses);
+        picard.removeFromCardGroup();
+        _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
 
         PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
         armus.setZone(Zone.VOID);
