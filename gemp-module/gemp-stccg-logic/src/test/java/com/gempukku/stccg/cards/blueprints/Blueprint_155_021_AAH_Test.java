@@ -69,6 +69,14 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
         assertEquals(1, _game.getGameState().getCurrentTurnNumber());
 
+        /* TODO - The commented out code below was intended to test the "you do not have this card in play already"
+                filter in AAH's free report. Currently not able to do it because this test does not give an
+                opportunity for Linda to be put into play. She needs to report to a facility. The facility is
+                played during the autoSeedFacility() method above, but at the end of that method, the valid
+                reportable cards for AAH have already been identified. Low priority at the moment since testing
+                may or may not be getting an overhaul from ketura.
+
+            */
 /*
         PhysicalCard newLarson = newCardForGame("101_220", P1);
         if (larsonInPlay) {
