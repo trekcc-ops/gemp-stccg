@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportCardAction;
-import com.gempukku.stccg.actions.usage.UseGameTextAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -41,17 +40,14 @@ public class Blueprint155_021 extends CardBlueprint {
             Collection<PhysicalCard> playableCards = Filters.filter(cardGame, playableCardFilter);
             if (!playableCards.isEmpty()) {
 
-                UseGameTextAction action1 = new UseGameTextAction(thisCard, player, "Report a card for free");
-                action1.setCardActionPrefix("1");
-                action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
-                action1.appendEffect(
-
+                SelectAndReportCardAction action3 =
                         new SelectAndReportCardAction(cardGame, thisCard.getOwner(), playableCardFilter, thisCard) {
 
                             @Override
                             protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
 
-                                CardFilter outpostFilter = Filters.yourMatchingOutposts(thisCard.getOwner(), selectedCard);
+                                CardFilter outpostFilter =
+                                        Filters.yourMatchingOutposts(thisCard.getOwner(), selectedCard);
                                 Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
 
                                 Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
@@ -59,10 +55,13 @@ public class Blueprint155_021 extends CardBlueprint {
                                 setPlayCardAction(action);
                                 selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
                             }
-                        });
-                action1.setText("Report a personnel for free");
-                if (action1.canBeInitiated(cardGame))
-                    actions.add(action1);
+                        };
+
+                action3.setCardActionPrefix("1");
+                action3.appendUsage(new UseOncePerTurnAction(action3, thisCard, player));
+                action3.setText("Report a personnel for free");
+                if (action3.canBeInitiated(cardGame))
+                    actions.add(action3);
 
 /*            ActivateCardAction action2 = new ActivateCardAction(card);
             Filterable downloadableCardFilter = Filters.and(CardType.SHIP, Uniqueness.UNIVERSAL, Icon1E.TNG_ICON,

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.actions.playcard.SelectAndReportCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -20,7 +21,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Blueprint155_021_AAH_Test extends AbstractAtTest {
+public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
     @Test
     public void testWithAndWithoutLarsonInPlay() throws InvalidGameOperationException, PlayerNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, CardNotFoundException {
@@ -102,7 +103,7 @@ public class Blueprint155_021_AAH_Test extends AbstractAtTest {
         // Verify that it can't be used twice
         boolean errorThrown = false;
         try {
-            useGameText(attention, P1);
+            selectAction(SelectAndReportCardAction.class, attention, P1);
         } catch(Exception exp) {
             errorThrown = true;
         }

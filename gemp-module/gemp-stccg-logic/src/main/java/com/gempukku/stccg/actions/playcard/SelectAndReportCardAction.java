@@ -14,7 +14,7 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
-public abstract class SelectAndReportCardAction extends ActionyAction implements CardPerformedAction {
+public abstract class SelectAndReportCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
@@ -40,6 +40,10 @@ public abstract class SelectAndReportCardAction extends ActionyAction implements
         if (_playCardAction instanceof PlayCardAction)
             return _playCardAction.wasCarriedOut();
         return true;
+    }
+
+    public int getCardIdForActionSelection() {
+        return _performingCard.getCardId();
     }
 
     @Override
