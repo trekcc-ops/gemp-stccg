@@ -3,11 +3,9 @@ package com.gempukku.stccg.actions.playcard;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
@@ -18,7 +16,7 @@ import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 
-public class SelectAndReportCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class SelectAndReportForFreeCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
@@ -27,8 +25,8 @@ public class SelectAndReportCardAction extends ActionyAction implements TopLevel
     private final ActionCardResolver _cardToPlayTarget;
     private final MatchingFilterBlueprint _destinationFilterBlueprint;
 
-    public SelectAndReportCardAction(DefaultGame cardGame, Player player, ActionCardResolver playableCardTarget,
-                                     PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
+    public SelectAndReportForFreeCardAction(DefaultGame cardGame, Player player, ActionCardResolver playableCardTarget,
+                                            PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
         super(cardGame, player, "Report card from hand", ActionType.PLAY_CARD);
         _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;

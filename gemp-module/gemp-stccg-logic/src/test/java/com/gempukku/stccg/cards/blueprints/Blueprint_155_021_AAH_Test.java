@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.actions.playcard.SelectAndReportCardAction;
+import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -91,7 +91,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
             assertTrue(larsonAlreadyInPlay.isInPlay());
         } */
 
-        selectAction(SelectAndReportCardAction.class, attention, P1);
+        selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
         List<String> selectableCards =
                 List.of(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardIds"));
 
@@ -111,7 +111,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         // Verify that it can't be used twice
         boolean errorThrown = false;
         try {
-            selectAction(SelectAndReportCardAction.class, attention, P1);
+            selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
         } catch(Exception exp) {
             errorThrown = true;
         }
