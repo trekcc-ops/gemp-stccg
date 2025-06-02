@@ -1467,9 +1467,22 @@ export default class GameTableUI {
 
     multipleChoiceDecision(decision) {
         var id = decision.decisionId;
-        var text = decision.text;
+        let serverText = decision.text; // raw string from the server for the user message
+        let context = decision.context;
+        let serverValues = decision.results; // raw strings that are passed from the server
+        let results = new Array();
+        let text;
 
-        var results = decision.results;
+        if (context === "SEED_MISSION_INDEX_SELECTION") {
+            // For this decision, the serverValues are strings representing the spaceline indices where the mission
+            // can be seeded. This array should be in ascending numerical order.
+            text = "Seed mission on the left or right?";
+            results.push("LEFT");
+            results.push("RIGHT");
+        } else {
+            text = serverText;
+            results = serverValues;
+        }
 
         var that = this;
         this.smallDialog
