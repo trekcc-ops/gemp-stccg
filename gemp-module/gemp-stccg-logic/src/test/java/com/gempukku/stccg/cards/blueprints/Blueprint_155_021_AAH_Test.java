@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
-//    @Test
+    @Test
     public void testWithAndWithoutLarsonInPlay() throws InvalidGameOperationException, PlayerNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, CardNotFoundException {
         testThis(true);
         testThis(false);
