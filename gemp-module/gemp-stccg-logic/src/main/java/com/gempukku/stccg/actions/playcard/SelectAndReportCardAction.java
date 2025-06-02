@@ -22,6 +22,13 @@ public abstract class SelectAndReportCardAction extends ActionyAction implements
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardToPlayTarget;
 
+    public SelectAndReportCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardToPlayTarget,
+                                     PhysicalCard performingCard) {
+        super(cardGame, player, "Report card from hand", ActionType.PLAY_CARD);
+        _cardToPlayTarget = cardToPlayTarget;
+        _performingCard = performingCard;
+    }
+
     public SelectAndReportCardAction(DefaultGame cardGame, Player player, Filterable playableCardFilter,
                                      PhysicalCard performingCard) {
         super(cardGame, player, "Report card from hand", ActionType.PLAY_CARD);
@@ -30,6 +37,7 @@ public abstract class SelectAndReportCardAction extends ActionyAction implements
                         Filters.and(playableCardFilter, Zone.HAND)));
         _performingCard = performingCard;
     }
+
 
     abstract protected void playCard(PhysicalCard selectedCard) throws InvalidGameLogicException;
 

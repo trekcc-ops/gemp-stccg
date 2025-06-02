@@ -206,6 +206,20 @@ public class Filters {
         };
     }
 
+    public static CardFilter matchingAffiliation(Collection<PhysicalCard> cardsToMatch) {
+        return (game, physicalCard) -> {
+            boolean matching = true;
+            for (PhysicalCard cardToMatch : cardsToMatch) {
+                if (physicalCard instanceof AffiliatedCard affilCard1 && cardToMatch instanceof AffiliatedCard affilCard2) {
+                    if (!affilCard1.matchesAffiliationOf(affilCard2))
+                        matching = false;
+                }
+            }
+            return matching;
+        };
+    }
+
+
     public static CardFilter presentWith(final PhysicalCard card) {
         return (game, physicalCard) -> physicalCard.isPresentWith(card);
     }

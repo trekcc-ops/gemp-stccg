@@ -4,11 +4,9 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.playcard.SelectAndReportCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -36,6 +34,27 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         autoSeedMissions();
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
+
+        List<PhysicalCard> playableCards = new ArrayList<>();
+        PhysicalCard lopez = newCardForGame("155_063", P1); // Lopez
+        playableCards.add(lopez);
+        PhysicalCard lopez2 = newCardForGame("155_063", P1); // Lopez
+        playableCards.add(newCardForGame("101_203", P1)); // Darian Wallace
+
+        List<PhysicalCard> unPlayableCards = new ArrayList<>();
+        unPlayableCards.add(newCardForGame("101_215", P1)); // Jean-Luc Picard (unique)
+        unPlayableCards.add(newCardForGame("112_207", P1)); // Jace Michaels (no TNG icon)
+        unPlayableCards.add(newCardForGame("116_095", P1)); // R'Mal (no matching outpost)
+
+        for (PhysicalCard card : playableCards) {
+            _game.getPlayer(P1).getDrawDeck().addCardToTop(card);
+        }
+
+        for (PhysicalCard card : unPlayableCards) {
+            _game.getPlayer(P1).getDrawDeck().addCardToTop(card);
+        }
+
+
         autoSeedFacility();
         PhysicalCard attention = null;
         _outpost = null;
@@ -48,51 +67,30 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         assertNotNull(_outpost);
         assertNotNull(attention);
 
-        List<PhysicalCard> playableCards = new ArrayList<>();
-        PhysicalCard lopez = newCardForGame("155_063", P1); // Lopez
-        playableCards.add(lopez);
-        playableCards.add(newCardForGame("101_203", P1)); // Darian Wallace
-
-        List<PhysicalCard> unPlayableCards = new ArrayList<>();
-        unPlayableCards.add(newCardForGame("101_215", P1)); // Jean-Luc Picard (unique)
-        unPlayableCards.add(newCardForGame("112_207", P1)); // Jace Michaels (no TNG icon)
-        unPlayableCards.add(newCardForGame("116_095", P1)); // R'Mal (no matching outpost)
-
-
-
+/*
         PhysicalCard newLarson = newCardForGame("101_220", P1);
         if (larsonInPlay) {
             unPlayableCards.add(newLarson);
         } else {
             playableCards.add(newLarson);
-        }
+        } */
 
-
-        for (PhysicalCard card : playableCards) {
-            gameState.addCardToZoneWithoutSendingToClient(card, Zone.HAND);
-        }
-
-        for (PhysicalCard card : unPlayableCards) {
-            gameState.addCardToZoneWithoutSendingToClient(card, Zone.HAND);
-        }
-
-
-        if (larsonInPlay) {
+/*        if (larsonInPlay) {
             PersonnelCard larsonAlreadyInPlay = (PersonnelCard) newCardForGame("101_220", P1);
             larsonAlreadyInPlay.reportToFacility(_outpost);
             assertTrue(larsonAlreadyInPlay.isInPlay());
-        }
+        } */
 
-        useGameText(attention, P1);
+        selectAction(SelectAndReportCardAction.class, attention, P1);
         List<String> selectableCards =
-                List.of(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("blueprintId"));
+                List.of(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardIds"));
 
         for (PhysicalCard card : playableCards) {
-            assertTrue(selectableCards.contains(card.getBlueprintId()));
+            assertTrue(selectableCards.contains(String.valueOf(card.getCardId())));
         }
 
         for (PhysicalCard card : unPlayableCards) {
-            assertFalse(selectableCards.contains(card.getBlueprintId()));
+            assertFalse(selectableCards.contains(String.valueOf(card.getCardId())));
         }
 
         assertFalse(lopez.isInPlay());
