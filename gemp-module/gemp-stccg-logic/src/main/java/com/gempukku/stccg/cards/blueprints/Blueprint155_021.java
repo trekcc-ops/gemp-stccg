@@ -5,7 +5,12 @@ import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
+import com.gempukku.stccg.actions.playcard.DownloadCardAction;
+import com.gempukku.stccg.actions.playcard.DownloadReportableAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
+import com.gempukku.stccg.actions.turn.ActivateCardAction;
+import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
+import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
@@ -30,7 +35,6 @@ public class Blueprint155_021 extends CardBlueprint {
 
         if (currentPhase == Phase.CARD_PLAY && thisCard.isControlledBy(player)) {
 
-            // TODO - Make sure there's a native quadrant requirement here if Modern rules are used
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
                     Filters.youHaveNoCopiesInPlay(thisCard.getOwner()),
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON),
@@ -44,25 +48,41 @@ public class Blueprint155_021 extends CardBlueprint {
                 ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
                 MatchingFilterBlueprint destinationFilterBlueprint =
                         new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
-                SelectAndReportForFreeCardAction action3 =
+                SelectAndReportForFreeCardAction action1 =
                         new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwner(), cardTarget, thisCard,
                                 destinationFilterBlueprint);
-                action3.setCardActionPrefix("1");
-                action3.appendUsage(new UseOncePerTurnAction(action3, thisCard, player));
-                action3.setText("Report a personnel for free");
-                if (action3.canBeInitiated(cardGame))
-                    actions.add(action3);
+                action1.setCardActionPrefix("1");
+                action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
+                action1.setText("Report a personnel for free");
+                if (action1.canBeInitiated(cardGame))
+                    actions.add(action1);
 
-/*            ActivateCardAction action2 = new ActivateCardAction(card);
-            Filterable downloadableCardFilter = Filters.and(CardType.SHIP, Uniqueness.UNIVERSAL, Icon1E.TNG_ICON,
-                    Filters.playable);
-            action2.setCardActionPrefix("2");
-            action2.appendUsage(new OncePerGameEffect(action2));
-            // append normal card play cost
-            action2.appendAction(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
-            actions.add(action2);*/
+            }
+
+            /* TODO - Need to get more explicit somewhere to prevent downloading cards in play, or accepting
+                  out-of-play cards as destination targets.
+             */
+            Filterable downloadableCardFilter = Filters.and(CardType.SHIP, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON);
+            Collection<PhysicalCard> downloadableCards = Filters.filter(cardGame, downloadableCardFilter);
+
+            if (!downloadableCards.isEmpty()) {
+
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, player,
+                        "Select a card to download", downloadableCards);
+                ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+                MatchingFilterBlueprint destinationFilterBlueprint =
+                        new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
+                DownloadReportableAction action2 =
+                        new DownloadReportableAction(cardGame, player, cardTarget, thisCard, destinationFilterBlueprint);
+                action2.setCardActionPrefix("2");
+                action2.appendUsage(new UseOncePerGameAction(action2, thisCard, player));
+                action2.appendCost(new UseNormalCardPlayAction(cardGame, player));
+                action2.setText("Download a card");
+                if (action2.canBeInitiated(cardGame))
+                    actions.add(action2);
             }
         }
+
         return actions;
     }
 }
