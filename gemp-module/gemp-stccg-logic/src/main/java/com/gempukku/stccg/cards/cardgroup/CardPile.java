@@ -19,6 +19,7 @@ public class CardPile extends PhysicalCardGroup {
     public void shuffle() {
         Collections.shuffle(_cards);
     }
+    public boolean contains(PhysicalCard card) { return _cards.contains(card); }
 
     public boolean isEmpty() {
         return _cards.isEmpty();
