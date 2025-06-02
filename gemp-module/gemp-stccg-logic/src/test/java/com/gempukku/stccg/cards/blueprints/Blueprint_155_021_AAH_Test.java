@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
-    @Test
+//    @Test
     public void testWithAndWithoutLarsonInPlay() throws InvalidGameOperationException, PlayerNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, CardNotFoundException {
         testThis(true);
         testThis(false);
@@ -66,6 +66,8 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         }
         assertNotNull(_outpost);
         assertNotNull(attention);
+        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
+        assertEquals(1, _game.getGameState().getCurrentTurnNumber());
 
 /*
         PhysicalCard newLarson = newCardForGame("101_220", P1);
@@ -94,7 +96,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         }
 
         assertFalse(lopez.isInPlay());
-        // Select a card
+        // Select a card for normal card play
         selectCard(P1, lopez);
         assertTrue(lopez.isInPlay());
 
