@@ -15,7 +15,7 @@ public class CardPile extends PhysicalCardGroup {
     public void addCardToBottom(PhysicalCard card) { _cards.addFirst(card); }
     public PhysicalCard getTopCard() { return _cards.getFirst(); }
     public PhysicalCard getBottomCard() { return _cards.getLast(); }
-
+    public boolean contains(PhysicalCard card) { return _cards.contains(card); }
     public void shuffle() {
         Collections.shuffle(_cards);
     }

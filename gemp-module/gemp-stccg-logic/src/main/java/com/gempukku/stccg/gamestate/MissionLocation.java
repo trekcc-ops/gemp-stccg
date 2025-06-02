@@ -362,6 +362,10 @@ public class MissionLocation implements GameLocation {
         }
     }
 
+    public boolean hasCardSeededUnderneath(PhysicalCard card) {
+        return _seedCards.contains(card);
+    }
+
 
     public int getLocationId() {
         return _locationId;

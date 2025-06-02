@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.placecard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -16,6 +18,8 @@ import java.util.List;
 
 public class PlaceCardOnMissionAction extends ActionyAction {
 
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _cardBeingPlaced;
     private final MissionLocation _mission;
 
