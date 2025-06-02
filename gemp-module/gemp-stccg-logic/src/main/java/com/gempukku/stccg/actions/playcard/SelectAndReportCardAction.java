@@ -61,6 +61,10 @@ public abstract class SelectAndReportCardAction extends ActionyAction implements
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        Action nextCost = getNextCost();
+        if (nextCost != null)
+            return nextCost;
+
         if (!_cardToPlayTarget.isResolved()) {
             if (_cardToPlayTarget instanceof SelectCardsResolver selectTarget) {
                 if (selectTarget.getSelectionAction().wasCompleted()) {
