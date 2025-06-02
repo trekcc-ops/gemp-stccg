@@ -25,10 +25,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay" })
+        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission" })
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay" })
+        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission" })
 public interface PhysicalCard extends Filterable {
 
     @JsonIgnore
@@ -131,6 +131,7 @@ public interface PhysicalCard extends Filterable {
 
     void setPlacedOnMission(boolean placedOnMission);
 
+    @JsonProperty("isPlacedOnMission")
     boolean isPlacedOnMission();
 
     @JsonProperty("locationId")
