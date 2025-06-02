@@ -49,23 +49,11 @@ public class Blueprint155_021 extends CardBlueprint {
                 SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, player,
                         "Select a card to report", playableCards);
                 ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+                MatchingFilterBlueprint destinationFilterBlueprint =
+                        new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
                 SelectAndReportCardAction action3 =
-                        new SelectAndReportCardAction(cardGame, thisCard.getOwner(), cardTarget, thisCard) {
-
-                            @Override
-                            protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
-
-                                CardFilter outpostFilter =
-                                        Filters.yourMatchingOutposts(thisCard.getOwner(), selectedCard);
-                                Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
-
-                                Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                                        true, eligibleDestinations);
-                                setPlayCardAction(action);
-                                selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
-                            }
-                        };
-
+                        new SelectAndReportCardAction(cardGame, thisCard.getOwner(), cardTarget, thisCard,
+                                destinationFilterBlueprint);
                 action3.setCardActionPrefix("1");
                 action3.appendUsage(new UseOncePerTurnAction(action3, thisCard, player));
                 action3.setText("Report a personnel for free");

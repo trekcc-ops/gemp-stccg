@@ -5,41 +5,46 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
-public abstract class SelectAndReportCardAction extends ActionyAction implements TopLevelSelectableAction {
+import java.util.Collection;
+
+public class SelectAndReportCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
     private Action _playCardAction;
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardToPlayTarget;
+    private final MatchingFilterBlueprint _destinationFilterBlueprint;
 
-    public SelectAndReportCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardToPlayTarget,
-                                     PhysicalCard performingCard) {
+    public SelectAndReportCardAction(DefaultGame cardGame, Player player, ActionCardResolver playableCardTarget,
+                                     PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
         super(cardGame, player, "Report card from hand", ActionType.PLAY_CARD);
-        _cardToPlayTarget = cardToPlayTarget;
+        _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;
-    }
-
-    public SelectAndReportCardAction(DefaultGame cardGame, Player player, Filterable playableCardFilter,
-                                     PhysicalCard performingCard) {
-        super(cardGame, player, "Report card from hand", ActionType.PLAY_CARD);
-        _cardToPlayTarget = new SelectCardsResolver(
-                new SelectCardsFromDialogAction(cardGame, player, "Select a card to report",
-                        Filters.and(playableCardFilter, Zone.HAND)));
-        _performingCard = performingCard;
+        _destinationFilterBlueprint = destinationFilterBlueprint;
     }
 
 
-    abstract protected void playCard(PhysicalCard selectedCard) throws InvalidGameLogicException;
+    protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {
+        Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
+        Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
+
+        Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
+                true, eligibleDestinations);
+        setPlayCardAction(action);
+        selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
+    }
 
     @Override
     public boolean wasCarriedOut() {
@@ -78,7 +83,7 @@ public abstract class SelectAndReportCardAction extends ActionyAction implements
         }
 
         // The playCard method determines valid destinations
-        playCard(Iterables.getOnlyElement(_cardToPlayTarget.getCards(cardGame)));
+        playCard(cardGame, Iterables.getOnlyElement(_cardToPlayTarget.getCards(cardGame)));
         setAsSuccessful();
         return null;
     }
