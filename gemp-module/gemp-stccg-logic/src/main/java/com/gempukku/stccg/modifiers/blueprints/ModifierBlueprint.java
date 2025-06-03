@@ -10,9 +10,9 @@ import com.gempukku.stccg.modifiers.Modifier;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AddCunningModifierBlueprint.class, name = "addCunning"),
+        @JsonSubTypes.Type(value = AddStrengthModifierBlueprint.class, name = "addStrength"),
         @JsonSubTypes.Type(value = GainIconModifierBlueprint.class, name = "gainIcon"),
-        @JsonSubTypes.Type(value = GainSkillModifierBlueprint.class, name = "gainSkill"),
-        @JsonSubTypes.Type(value = StrengthModifierBlueprint.class, name = "modifyStrength")
+        @JsonSubTypes.Type(value = GainSkillModifierBlueprint.class, name = "gainSkill")
 })
 public interface ModifierBlueprint {
 

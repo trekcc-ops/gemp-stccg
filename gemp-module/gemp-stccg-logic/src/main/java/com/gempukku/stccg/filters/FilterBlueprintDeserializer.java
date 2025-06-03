@@ -71,9 +71,6 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put("you have no copies in play", (actionContext) ->
                 Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer()));
         simpleFilters.put("yourcardspresentwiththiscard", (actionContext) -> Filters.yourCardsPresentWithThisCard(actionContext.getSource()));
-        simpleFilters.put("affiliation(federation)", (actionContext) -> Filters.and(Affiliation.FEDERATION));
-        simpleFilters.put("classification(engineer)", (actionContext) -> Filters.classification(SkillName.ENGINEER));
-        simpleFilters.put("classification(officer)", (actionContext) -> Filters.classification(SkillName.OFFICER));
     }
 
     private void loadParameterFilters() {
@@ -244,6 +241,16 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         }
         if (value.startsWith("name(") && value.endsWith(")")) {
             return (actionContext) -> Filters.name(value.substring(5, value.length() - 1));
+        }
+        if (value.startsWith("affiliation=")) {
+            String affiliationName = value.substring(12);
+            Affiliation affiliation = Affiliation.findAffiliation(affiliationName);
+            return (actionContext) -> Filters.and(affiliation);
+        }
+        if (value.startsWith("classification=")) {
+            String skillName = value.substring("classification=".length());
+            SkillName skill = SkillName.valueOf(skillName.toUpperCase(Locale.ROOT));
+            return (actionContext) -> Filters.classification(skill);
         }
         if (value.startsWith("skill-dots<=")) {
             String[] stringSplit = value.split("<=");
