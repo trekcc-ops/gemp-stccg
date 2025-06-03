@@ -210,10 +210,16 @@
             title: Tricorder
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg
             lore: Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: science
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification(engineer)
+                }
+            ]
         }
         {
             blueprintId: 101_104
