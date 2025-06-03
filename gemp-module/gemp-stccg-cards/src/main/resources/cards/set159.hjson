@@ -4,6 +4,27 @@
     gameType: First Edition
     cards: [
         {
+            blueprintId: 159_004
+            title: El-Aurian Phaser
+            type: equipment
+            property-logo: generations-logo
+            lore: Unusual, easily concealed weapon carried by Dr. Tolian Soran. Capable of producing powerful bursts of phased energy. Targeting scope increases accuracy, in the right hands.
+            image-url: https://www.trekcc.org/1e/cardimages/homefront3/4.jpg
+            rarity: V
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + not(SCIENCE + Treachery)
+                    amount: 1
+                }
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + SCIENCE + Treachery
+                    amount: 3
+                }
+            ]
+        }
+        {
             blueprintId: 159_020
             title: "T'Lara"
             type: personnel

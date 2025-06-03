@@ -51,6 +51,8 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             appendFilter(value);
         for (PropertyLogo value : PropertyLogo.values())
             appendFilter(value);
+        for (SkillName value : SkillName.values())
+            appendFilter(value);
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
@@ -228,6 +230,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     }
 
     private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
+        // System.out.println(value); // Very useful for debugging
         if (value.split(OR_WITH_NO_PARENTHESES).length > 1)
             return createOrFilter(value);
         if (value.split(AND_WITH_NO_PARENTHESES).length > 1)

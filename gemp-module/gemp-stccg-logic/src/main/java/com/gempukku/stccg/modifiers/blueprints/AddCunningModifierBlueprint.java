@@ -25,8 +25,8 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
                               FilterBlueprint modifiedCardFilterBlueprint,
                                 @JsonProperty(value = "amount", required = true)
                              int amount,
-                                @JsonProperty(value = "ifCondition", required = true) // thisCardPresentWithYourCard
-                                Requirement ifRequirement) { // personnel + affiliation(federation)
+                                @JsonProperty(value = "ifCondition", required = true)
+                                Requirement ifRequirement) {
         _amount = amount;
         _modifiedCardFilterBlueprint = modifiedCardFilterBlueprint;
         _requirement = ifRequirement;
@@ -38,4 +38,5 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
         Condition ifCondition = new RequirementCondition(List.of(_requirement), actionContext);
         return new CunningModifier(thisCard, affectFilter, ifCondition, _amount);
     }
+
 }
