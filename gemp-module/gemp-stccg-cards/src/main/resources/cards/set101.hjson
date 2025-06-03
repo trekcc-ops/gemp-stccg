@@ -157,10 +157,16 @@
             title: Medical Kit
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of specialized medical equipment. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR60.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: medical
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification(officer)
+                }
+            ]
         }
         {
             blueprintId: 101_061

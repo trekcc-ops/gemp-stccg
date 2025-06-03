@@ -9,6 +9,7 @@ import com.gempukku.stccg.modifiers.Modifier;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({@JsonSubTypes.Type(value = GainIconModifierBlueprint.class, name = "gainIcon"),
+        @JsonSubTypes.Type(value = GainSkillModifierBlueprint.class, name = "gainSkill"),
         @JsonSubTypes.Type(value = StrengthModifierBlueprint.class, name = "modifyStrength")
 })
 public interface ModifierBlueprint {

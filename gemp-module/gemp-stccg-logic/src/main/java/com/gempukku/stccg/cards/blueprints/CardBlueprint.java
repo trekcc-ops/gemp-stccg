@@ -152,7 +152,7 @@ public class CardBlueprint {
     private List<ActionBlueprint> inDiscardPhaseActions;
 
     @JsonProperty("modifiers")
-    private final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
+    protected final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
 
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
