@@ -129,9 +129,20 @@
             title: Federation PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Standard Federation Personal Access Display Device for computerized information.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR57.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: personnel + affiliation(federation)
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_058

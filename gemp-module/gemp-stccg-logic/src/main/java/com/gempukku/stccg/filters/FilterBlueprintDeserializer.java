@@ -71,6 +71,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put("you have no copies in play", (actionContext) ->
                 Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer()));
         simpleFilters.put("yourcardspresentwiththiscard", (actionContext) -> Filters.yourCardsPresentWithThisCard(actionContext.getSource()));
+        simpleFilters.put("affiliation(federation)", (actionContext) -> Filters.and(Affiliation.FEDERATION));
         simpleFilters.put("classification(engineer)", (actionContext) -> Filters.classification(SkillName.ENGINEER));
         simpleFilters.put("classification(officer)", (actionContext) -> Filters.classification(SkillName.OFFICER));
     }
