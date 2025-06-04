@@ -1027,14 +1027,16 @@ export default class GameAnimations {
             function () {
                 let cardData = $(this).data("card");
                 let index = -1;
-                for (let i = 0; i < cardData.attachedCards.length; i++)
+                if (cardData != null) {
+                    for (let i = 0; i < cardData.attachedCards.length; i++)
                     if (cardData.attachedCards[i].data("card").cardId == cardId) {
                         index = i;
                         break;
                     }
-                if (index != -1) {
-                    cardData.attachedCards.splice(index, 1);
-                    getCardDivFromId(cardId).data("card").attachedToCard = null;
+                    if (index != -1) {
+                        cardData.attachedCards.splice(index, 1);
+                        getCardDivFromId(cardId).data("card").attachedToCard = null;
+                    }
                 }
             }
         );
