@@ -14,10 +14,14 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
     @JsonProperty("results")
     private final String[] _possibleResults;
 
+    @JsonProperty("context")
+    private final DecisionContext _context;
+
     public MultipleChoiceAwaitingDecision(Player player, String text, String[] possibleResults,
                                           DefaultGame cardGame) {
         super(player, text, AwaitingDecisionType.MULTIPLE_CHOICE, cardGame);
         _possibleResults = possibleResults;
+        _context = DecisionContext.OTHER;
     }
 
 
@@ -26,6 +30,14 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
                                           DefaultGame cardGame) {
         this(player, text, possibleResults.toArray(new String[0]), cardGame);
     }
+
+    public MultipleChoiceAwaitingDecision(Player player, String text, Collection<String> possibleResults,
+                                          DefaultGame cardGame, DecisionContext context) {
+        super(player, text, AwaitingDecisionType.MULTIPLE_CHOICE, cardGame);
+        _possibleResults = possibleResults.toArray(new String[0]);
+        _context = context;
+    }
+
 
 
     protected abstract void validDecisionMade(int index, String result)

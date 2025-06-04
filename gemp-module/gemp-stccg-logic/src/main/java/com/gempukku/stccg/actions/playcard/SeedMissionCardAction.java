@@ -1,29 +1,31 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.choose.MakeDecisionAction;
+import com.gempukku.stccg.actions.choose.SelectMissionSeedIndexAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
 
     private boolean _cardPlayed;
     private boolean _placementChosen;
+    private boolean _placementDecisionSent;
+    private SelectMissionSeedIndexAction _placementSelectionAction;
     private int _locationZoneIndex;
     private final boolean _sharedMission;
     private final String _missionLocation;
@@ -45,81 +47,50 @@ public class SeedMissionCardAction extends PlayCardAction {
         ST1EGameState gameState = ((ST1EGame) cardGame).getGameState();
         Region region = _cardEnteringPlay.getBlueprint().getRegion();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        String[] directions = {"LEFT", "RIGHT"};
+        List<Integer> possibleIndices = new ArrayList<>();
 
         if (!_placementChosen) {
-            if (!gameState.hasLocationsInQuadrant(quadrant)) {
-                if (gameState.getSpacelineLocationsSize() == 0) {
-                    _placementChosen = true;
-                    _locationZoneIndex = 0;
-                } else {
-                    appendCost(new MakeDecisionAction(cardGame, performingPlayer,
-                            "Add new quadrant to which end of the table?") {
-
-                        @Override
-                        protected AwaitingDecision getDecision(DefaultGame cardGame) {
-                            return new MultipleChoiceAwaitingDecision(performingPlayer,
-                                    "Add new quadrant to which end of the table?", directions, cardGame) {
-                                @Override
-                                protected void validDecisionMade(int index, String result) {
-                                    _placementChosen = true;
-                                    if (Objects.equals(result, "LEFT")) {
-                                        _locationZoneIndex = 0;
-                                    } else {
-                                        _locationZoneIndex = gameState.getSpacelineLocationsSize();
-                                    }
-                                }
-                            };
+            if (!_placementDecisionSent) {
+                List<MissionLocation> spacelineLocations = gameState.getSpacelineLocations();
+                if (_sharedMission) {
+                    possibleIndices.add(gameState.indexOfLocation(_missionLocation, quadrant));
+                } else if (spacelineLocations.isEmpty()) {
+                    possibleIndices.add(0);
+                } else if (!gameState.hasLocationsInQuadrant(quadrant)) {
+                    possibleIndices.add(0);
+                    possibleIndices.add(spacelineLocations.size());
+/*                    for (MissionLocation location : spacelineLocations) {
+                        int locationIndex = spacelineLocations.indexOf(location);
+                        if (locationIndex < spacelineLocations.size() - 1) {
+                            MissionLocation nextLocation = spacelineLocations.get(locationIndex + 1);
+                            if (location.getQuadrant() != nextLocation.getQuadrant()) {
+                                possibleIndices.add(locationIndex + 1);
+                            }
                         }
-                    });
-                    return getNextCost();
+                    } */
+                } else if (gameState.firstInRegion(region, quadrant) != null) {
+                    possibleIndices.add(gameState.firstInRegion(region, quadrant));
+                    possibleIndices.add(gameState.lastInRegion(region, quadrant) + 1);
+                } else {
+                    possibleIndices.add(gameState.firstInQuadrant(quadrant));
+                    possibleIndices.add(gameState.lastInQuadrant(quadrant) + 1);
                 }
-            } else if (_sharedMission) {
-                _locationZoneIndex = gameState.indexOfLocation(_missionLocation, quadrant);
-                _placementChosen = true;
-            } else if (gameState.firstInRegion(region, quadrant) != null) {
-                appendCost(new MakeDecisionAction(cardGame, performingPlayer,
-                        "Insert on which end of the region?") {
-                    @Override
-                    protected AwaitingDecision getDecision(DefaultGame cardGame) {
-                        return new MultipleChoiceAwaitingDecision(performingPlayer,
-                                "Insert on which end of the region?", directions, cardGame) {
-                            @Override
-                            protected void validDecisionMade(int index, String result) {
-                                _placementChosen = true;
-                                if (Objects.equals(result, "LEFT")) {
-                                    _locationZoneIndex = gameState.firstInRegion(region, quadrant);
-                                } else {
-                                    _locationZoneIndex = gameState.lastInRegion(region, quadrant) + 1;
-                                }
-                            }
-                        };
-                    }
-                });
-                return getNextCost();
-            } else if (_cardEnteringPlay.canInsertIntoSpaceline() && gameState.getQuadrantLocationsSize(quadrant) >= 2) {
-                // TODO: canInsertIntoSpaceline method not defined
-                throw new InvalidGameLogicException("No method defined for cards to insert into spaceline");
+                if (possibleIndices.size() == 1) {
+                    _locationZoneIndex = possibleIndices.getFirst();
+                    _placementChosen = true;
+                } else {
+                    _placementSelectionAction =
+                            new SelectMissionSeedIndexAction(cardGame, performingPlayer, possibleIndices);
+                    _placementDecisionSent = true;
+                    return _placementSelectionAction;
+                }
             } else {
-                appendCost(new MakeDecisionAction(cardGame, performingPlayer,
-                        "Insert on which end of the quadrant?") {
-                    @Override
-                    protected AwaitingDecision getDecision(DefaultGame cardGame) {
-                        return new MultipleChoiceAwaitingDecision(performingPlayer,
-                                "Insert on which end of the quadrant?", directions, cardGame) {
-                            @Override
-                            protected void validDecisionMade(int index, String result) {
-                                _placementChosen = true;
-                                if (Objects.equals(result, "LEFT")) {
-                                    _locationZoneIndex = gameState.firstInQuadrant(quadrant);
-                                } else {
-                                    _locationZoneIndex = gameState.lastInQuadrant(quadrant) + 1;
-                                }
-                            }
-                        };
-                    }
-                });
-                return getNextCost();
+                try {
+                    _locationZoneIndex = _placementSelectionAction.getSelectedIndex();
+                    _placementChosen = true;
+                } catch(DecisionResultInvalidException exp) {
+                    throw new InvalidGameLogicException(exp.getMessage());
+                }
             }
         }
 
