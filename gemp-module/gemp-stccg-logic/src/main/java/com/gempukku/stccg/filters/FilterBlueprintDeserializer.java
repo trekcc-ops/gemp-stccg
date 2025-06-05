@@ -51,6 +51,8 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             appendFilter(value);
         for (PropertyLogo value : PropertyLogo.values())
             appendFilter(value);
+        for (SkillName value : SkillName.values())
+            appendFilter(value);
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
@@ -70,6 +72,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
         simpleFilters.put("you have no copies in play", (actionContext) ->
                 Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer()));
+        simpleFilters.put("yourcardspresentwiththiscard", (actionContext) -> Filters.yourCardsPresentWithThisCard(actionContext.getSource()));
     }
 
     private void loadParameterFilters() {
@@ -227,6 +230,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     }
 
     private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
+        // System.out.println(value); // Very useful for debugging
         if (value.split(OR_WITH_NO_PARENTHESES).length > 1)
             return createOrFilter(value);
         if (value.split(AND_WITH_NO_PARENTHESES).length > 1)
@@ -240,6 +244,16 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         }
         if (value.startsWith("name(") && value.endsWith(")")) {
             return (actionContext) -> Filters.name(value.substring(5, value.length() - 1));
+        }
+        if (value.startsWith("affiliation=")) {
+            String affiliationName = value.substring(12);
+            Affiliation affiliation = Affiliation.findAffiliation(affiliationName);
+            return (actionContext) -> Filters.and(affiliation);
+        }
+        if (value.startsWith("classification=")) {
+            String skillName = value.substring("classification=".length());
+            SkillName skill = SkillName.valueOf(skillName.toUpperCase(Locale.ROOT));
+            return (actionContext) -> Filters.classification(skill);
         }
         if (value.startsWith("skill-dots<=")) {
             String[] stringSplit = value.split("<=");

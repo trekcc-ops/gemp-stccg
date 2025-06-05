@@ -119,19 +119,52 @@
             title: Engineering Kit
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of specialized engineering instruments. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR55.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: engineer
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=officer
+                }
+            ]
+        }
+        {
+            blueprintId: 101_056
+            title: Engineering PADD
+            type: equipment
+            property-logo: tng-logo
+            lore: Representative of Personal Access Display Devices designed specifically for engineering functions. Such equipment has been developed by many races.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR56.jpg
+            rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: engineer
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=science
+                }
+            ]
         }
         {
             blueprintId: 101_057
             title: Federation PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Standard Federation Personal Access Display Device for computerized information.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR57.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: personnel + affiliation=federation
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_058
@@ -139,75 +172,146 @@
             lore: Phase-disruptor used by Klingons and other races. Similar to a phaser.
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR58.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: (affiliation=klingon OR affiliation=non-aligned) + personnel
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_059
             title: Klingon PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR59.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: personnel + affiliation=klingon
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_060
             title: Medical Kit
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of specialized medical equipment. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR60.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: medical
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=officer
+                }
+            ]
         }
         {
             blueprintId: 101_061
             title: Medical Tricorder
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of a specialized tricorder optimized for medical use. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR61.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: medical
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=science
+                }
+            ]
         }
         {
             blueprintId: 101_062
             title: Romulan Disruptor
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Directed-energy weapon used by Romulans and other races. Disruptor fire can be identified by a high residue of antiprotons that linger for several hours.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR62.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: (affiliation=romulan OR affiliation=non-aligned) + personnel
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_063
             title: Romulan PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Standard Romulan Personal Access Display Device for computerized information.
             rarity: C
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR63.jpg
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: personnel + affiliation=romulan
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_064
             title: Starfleet Type II Phaser
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Handheld weapon can be set for stun, heat and disruption. PHASER is an acronym for PHASed Energy Rectification.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR64.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: (affiliation=federation OR affiliation=non-aligned) + personnel
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_065
             title: Tricorder
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg
             lore: Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: science
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=engineer
+                }
+            ]
         }
         {
             blueprintId: 101_104

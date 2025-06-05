@@ -4,6 +4,48 @@
     gameType: First Edition
     cards: [
         {
+            blueprintId: 159_004
+            title: El-Aurian Phaser
+            type: equipment
+            property-logo: generations-logo
+            lore: Unusual, easily concealed weapon carried by Dr. Tolian Soran. Capable of producing powerful bursts of phased energy. Targeting scope increases accuracy, in the right hands.
+            image-url: https://www.trekcc.org/1e/cardimages/homefront3/4.jpg
+            rarity: V
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + not(SCIENCE + Treachery)
+                    amount: 1
+                }
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + SCIENCE + Treachery
+                    amount: 3
+                }
+            ]
+        }
+        {
+            blueprintId: 159_006
+            title: Trilithium Weapon Control PADD
+            type: equipment
+            property-logo: generations-logo
+            lore: PADD used by Dr. Tolian Soran to remotely control his solar probe and its trilithium-based nuclear inhibitor. Modified programming also governs launch and cloak functions.
+            image-url: https://www.trekcc.org/1e/cardimages/homefront3/6.jpg
+            rarity: V
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + Astrophysics + Stellar Cartography + not(Treachery)
+                    amount: 1
+                }
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + Astrophysics + Stellar Cartography + Treachery
+                    amount: 3
+                }
+            ]
+        }
+        {
             blueprintId: 159_020
             title: "T'Lara"
             type: personnel
