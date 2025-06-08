@@ -1,7 +1,13 @@
 package com.gempukku.stccg.rules.generic;
 
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ActionProxy;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RuleSet<T extends DefaultGame> {
 
@@ -28,4 +34,15 @@ public class RuleSet<T extends DefaultGame> {
             cardGame.getActionsEnvironment().addAlwaysOnActionProxy(rule);
         }
     }
+
+    public ActionOrder getPlayerOrderForActionResponse(ActionResult actionResult, DefaultGame cardGame) {
+        // Start with opponent of the player that performed the action being responded to
+        List<String> respondingPlayerOrder = new ArrayList<>();
+        String actionPlayerId = actionResult.getPerformingPlayerId();
+        String opponentPlayerId = cardGame.getOpponent(actionPlayerId);
+        respondingPlayerOrder.add(opponentPlayerId);
+        respondingPlayerOrder.add(actionPlayerId);
+        return new ActionOrder(respondingPlayerOrder, true);
+    }
+
 }

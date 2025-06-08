@@ -30,9 +30,7 @@ public class PlayOutEffectResults extends SystemQueueAction {
                 appendEffect(
                         new PlayOutRequiredResponsesAction(cardGame, this, requiredResponses));
             } else {
-                GameState gameState = cardGame.getGameState();
-                ActionOrder actionOrder = gameState.getPlayerOrder().getCounterClockwisePlayOrder(
-                        gameState.getCurrentPlayerId(), true);
+                ActionOrder actionOrder = cardGame.getRules().getPlayerOrderForActionResponse(_actionResult, cardGame);
                 appendEffect(new PlayOutOptionalResponsesAction(
                         cardGame, this, actionOrder, 0, _actionResult)
                 );
