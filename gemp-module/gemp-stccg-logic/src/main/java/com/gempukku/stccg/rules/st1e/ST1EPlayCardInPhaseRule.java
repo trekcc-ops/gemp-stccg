@@ -30,6 +30,14 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         final List<TopLevelSelectableAction> result = new LinkedList<>();
         boolean isCurrentPlayer = Objects.equals(player.getPlayerId(), currentPlayerId);
 
+        for (PhysicalCard card : cardsInHand) {
+            for (TopLevelSelectableAction action : card.getPlayActionsFromGameText(player, _game)) {
+                if (action != null && action.canBeInitiated(_game)) {
+                    result.add(action);
+                }
+            }
+        }
+
         final Phase phase = _game.getGameState().getCurrentPhase();
         if (phase == Phase.SEED_DOORWAY) {
             for (PhysicalCard card : cardsInHand) {

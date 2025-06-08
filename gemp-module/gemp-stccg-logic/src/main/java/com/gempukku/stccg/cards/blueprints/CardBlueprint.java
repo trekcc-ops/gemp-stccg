@@ -360,6 +360,15 @@ public class CardBlueprint {
         _optionalInHandTriggers.add(actionBlueprint);
     }
 
+    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
+        for (ActionBlueprint trigger : _optionalInHandTriggers) {
+            TopLevelSelectableAction action = trigger.createActionWithNewContext(thisCard, actionResult);
+            if (action != null) result.add(action);
+        }
+        return result;
+    }
+
     public void appendPlayRequirement(Requirement requirement) {
         if (_playRequirements == null)
             _playRequirements = new LinkedList<>();
@@ -398,6 +407,10 @@ public class CardBlueprint {
     public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionBlueprint> getActivatedTriggers() {
         return _activatedTriggers;
+    }
+    public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player,
+                                                                     DefaultGame cardGame) {
+        return new ArrayList<>();
     }
     public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
