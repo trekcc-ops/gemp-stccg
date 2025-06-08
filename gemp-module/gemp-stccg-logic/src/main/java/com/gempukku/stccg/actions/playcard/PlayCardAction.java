@@ -12,6 +12,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
@@ -20,6 +21,9 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     protected final PhysicalCard _cardEnteringPlay;
     final Zone _destinationZone;
     private boolean _initiated;
+    private boolean _cancelled;
+    private boolean _cardPlayed;
+    private final List<Action> _immediateGameTextActions = new ArrayList<>();
 
     public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
                           Zone toZone, ActionType actionType) {
@@ -64,31 +68,50 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
         if (!_initiated) {
             _initiated = true;
+            _cardEnteringPlay.removeFromCardGroup();
             ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
             return new AllowResponsesAction(cardGame, playCardInitiationResult);
         }
 
+        if (!_cancelled && !_cardPlayed) {
+            _cardPlayed = true;
+            putCardIntoPlay(cardGame);
+        }
+
+        if (!_cancelled) {
+            Action nextAction = getNextAction();
+            if (nextAction == null) {
+                setAsSuccessful();
+            }
+            return nextAction;
+        }
+        return null;
+    }
+    
+    protected void putCardIntoPlay(DefaultGame cardGame) throws PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (performingPlayer.getCardsInDrawDeck().contains(_cardEnteringPlay)) {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
             _cardEnteringPlay.getOwner().shuffleDrawDeck(cardGame);
         }
-        putCardIntoPlay(cardGame);
-        _wasCarriedOut = true;
-        return null;
-    }
-    
-    protected void putCardIntoPlay(DefaultGame game) {
-        GameState gameState = game.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
+        GameState gameState = cardGame.getGameState();
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
         gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
-        setAsSuccessful();
+        cardGame.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
+        _wasCarriedOut = true;
     }
 
     public boolean wasCarriedOut() {
         return _wasCarriedOut;
+    }
+
+    public void cancel() {
+        _cancelled = true;
+    }
+
+    public void addImmediateGameTextAction(Action action) {
+        _immediateGameTextActions.add(action);
     }
 
 }

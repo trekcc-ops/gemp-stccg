@@ -15,6 +15,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -90,6 +91,11 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, deathYell, P1);
-        assertTrue(deathYell.isInPlay());
+
+        Player player1 = _game.getPlayer(P1);
+
+        assertEquals(5, _game.getPlayer(P1).getScore());
+        assertFalse(deathYell.isInPlay());
+        assertTrue(player1.getDiscardPile().contains(deathYell));
     }
 }

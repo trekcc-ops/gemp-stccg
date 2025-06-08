@@ -94,9 +94,10 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         selectAction(STCCGPlayCardAction.class, deathYell, P1);
 
         // P2 plays Amanda Rogers as response
-        assertTrue(deathYell.isInPlay());
+        assertFalse(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, amanda, P2);
         assertTrue(amanda.isInPlay());
+        assertTrue(deathYell.isInPlay());
     }
 
     @Test
@@ -172,11 +173,11 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, deathYell, P1);
-        assertTrue(deathYell.isInPlay());
+        assertFalse(deathYell.isInPlay());
 
         // P2 plays Amanda Rogers as response
         selectAction(STCCGPlayCardAction.class, amanda2, P2);
-        assertTrue(amanda2.isInPlay());
+        assertFalse(amanda2.isInPlay());
 
         // P1 plays Amanda Rogers as response
         selectAction(STCCGPlayCardAction.class, amanda1, P1);
@@ -256,7 +257,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, deathYell, P1);
-        assertTrue(deathYell.isInPlay());
+        assertFalse(deathYell.isInPlay());
 
         // Try to respond with player1's Amanda Rogers (it should be P2's turn)
         boolean errorThrown = false;
