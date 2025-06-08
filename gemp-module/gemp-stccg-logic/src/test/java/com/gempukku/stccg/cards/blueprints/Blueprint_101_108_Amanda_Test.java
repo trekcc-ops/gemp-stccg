@@ -94,13 +94,12 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         selectAction(STCCGPlayCardAction.class, deathYell, P1);
 
         // P2 plays Amanda Rogers as response
-        assertFalse(deathYell.isInPlay());
+        assertTrue(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, amanda, P2);
         assertTrue(amanda.isInPlay());
-        assertTrue(deathYell.isInPlay());
     }
 
-//    @Test
+    @Test
     public void twoAmandasTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException, PlayerNotFoundException {
         initializeGameToTestMissionAttempt();
 
@@ -173,12 +172,102 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, deathYell, P1);
+        assertTrue(deathYell.isInPlay());
 
         // P2 plays Amanda Rogers as response
-        assertFalse(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, amanda2, P2);
         assertTrue(amanda2.isInPlay());
-        assertTrue(deathYell.isInPlay());
+
+        // P1 plays Amanda Rogers as response
+        selectAction(STCCGPlayCardAction.class, amanda1, P1);
+        assertTrue(amanda1.isInPlay());
     }
+
+    @Test
+    public void wrongResponseTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException, PlayerNotFoundException {
+        initializeGameToTestMissionAttempt();
+
+        // Figure out which player is going first
+        assertEquals(P1, _game.getCurrentPlayerId());
+
+        autoSeedMissions();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
+            skipDilemma();
+        }
+        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
+
+        FacilityCard outpost = null;
+        MissionCard excavation = null;
+        PersonnelCard worf = (PersonnelCard) newCardForGame("101_251", P1);
+        PhysicalCard deathYell = newCardForGame("101_125", P1);
+        PhysicalCard amanda1 = newCardForGame("101_108", P1);
+        PhysicalCard amanda2 = newCardForGame("101_108", P2);
+
+        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
+            if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
+                outpost = facility;
+            if (Objects.equals(card.getTitle(), "Excavation") && card instanceof MissionCard mission)
+                excavation = mission;
+        }
+
+        assertNotNull(outpost);
+        assertNotNull(excavation);
+        assertNotNull(worf);
+        assertNotNull(amanda1);
+        assertNotNull(amanda2);
+        worf.removeFromCardGroup();
+        deathYell.removeFromCardGroup();
+        amanda1.removeFromCardGroup();
+        amanda2.removeFromCardGroup();
+        _game.getPlayer(P1).getDrawDeck().addCardToTop(worf);
+        _game.getPlayer(P1).getDrawDeck().addCardToTop(deathYell);
+        _game.getPlayer(P1).getDrawDeck().addCardToTop(amanda1);
+        _game.getPlayer(P2).getDrawDeck().addCardToTop(amanda2);
+
+        PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
+        armus.setZone(Zone.VOID);
+
+        // Seed Armus under Excavation
+        MissionLocation kurl = excavation.getLocationDeprecatedOnlyUseForTests();
+        seedCardsUnder(Collections.singleton(armus), excavation);
+
+        // Seed Federation Outpost at Excavation
+        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
+        assertTrue(deathYell.isInHand(_game));
+
+        // Report Worf to outpost
+        reportCard(P1, worf, outpost);
+        assertTrue(outpost.getCrew().contains(worf));
+        skipCardPlay();
+        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
+
+        // Beam Worf to the planet
+        beamCard(P1, outpost, worf, excavation);
+        assertTrue(worf.getAwayTeam().isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+
+        // Attempt mission
+        attemptMission(P1, worf.getAwayTeam(), excavation);
+
+        // Confirm that Worf was killed
+        assertEquals(Zone.DISCARD, worf.getZone());
+
+        // Play Klingon Death Yell as response
+        assertFalse(deathYell.isInPlay());
+        selectAction(STCCGPlayCardAction.class, deathYell, P1);
+        assertTrue(deathYell.isInPlay());
+
+        // Try to respond with player1's Amanda Rogers (it should be P2's turn)
+        boolean errorThrown = false;
+        try {
+            selectAction(STCCGPlayCardAction.class, amanda1, P1);
+        } catch(DecisionResultInvalidException exp) {
+            errorThrown = true;
+        }
+        assertTrue(errorThrown);
+        assertFalse(amanda1.isInPlay());
+    }
+
 
 }

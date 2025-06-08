@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.PlayCardInitiationResult;
+import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
@@ -29,8 +30,8 @@ public class Blueprint101_108 extends CardBlueprint {
     public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new ArrayList<>();
         if (thisCard instanceof ST1EPhysicalCard stCard) {
-            if (actionResult instanceof PlayCardInitiationResult playCardResult) {
-                PhysicalCard cardToPlay = playCardResult.getCardToPlay();
+            if (actionResult instanceof PlayCardResult playCardResult) {
+                PhysicalCard cardToPlay = playCardResult.getPlayedCard();
                 if (cardToPlay.getCardType() == CardType.INTERRUPT && cardToPlay != thisCard) {
                     TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);
                     result.add(playAction);
