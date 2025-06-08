@@ -19,6 +19,7 @@ public enum ActionType {
     FLY_SHIP,
     KILL,
     MAKE_DECISION,
+    NULLIFY,
     OVERCOME_DILEMMA,
     PLACE_CARD_ON_MISSION, // General all-purpose term for putting cards places (like on a deck or on another card)
     PLACE_CARDS_BENEATH_DRAW_DECK,

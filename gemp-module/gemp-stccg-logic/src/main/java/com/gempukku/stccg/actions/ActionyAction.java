@@ -260,6 +260,8 @@ public abstract class ActionyAction implements Action {
         _actionStatus = ActionStatus.completed_success;
     }
 
+    public void cancel() { _actionStatus = ActionStatus.cancelled; }
+
     protected void setAsInitiated() {
         _actionStatus = ActionStatus.initiation_complete;
     }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -13,6 +14,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -96,8 +98,8 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         // P2 plays Amanda Rogers as response
         assertFalse(deathYell.isInPlay());
         selectAction(STCCGPlayCardAction.class, amanda, P2);
-        assertTrue(amanda.isInPlay());
-        assertTrue(deathYell.isInPlay());
+        assertFalse(amanda.isInPlay());
+        assertFalse(deathYell.isInPlay());
     }
 
     @Test
@@ -175,13 +177,18 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         selectAction(STCCGPlayCardAction.class, deathYell, P1);
         assertFalse(deathYell.isInPlay());
 
+        Player player1 = _game.getPlayer(P1);
+
         // P2 plays Amanda Rogers as response
-        selectAction(STCCGPlayCardAction.class, amanda2, P2);
+        Action amanda2action = selectAction(STCCGPlayCardAction.class, amanda2, P2);
         assertFalse(amanda2.isInPlay());
+        assertFalse(deathYell.isInPlay());
+        assertEquals(0, player1.getScore());
 
         // P1 plays Amanda Rogers as response
-        selectAction(STCCGPlayCardAction.class, amanda1, P1);
-        assertTrue(amanda1.isInPlay());
+        Action amanda1action = selectAction(STCCGPlayCardAction.class, amanda1, P1);
+        assertFalse(amanda1.isInPlay());
+        assertEquals(5, player1.getScore());
     }
 
     @Test

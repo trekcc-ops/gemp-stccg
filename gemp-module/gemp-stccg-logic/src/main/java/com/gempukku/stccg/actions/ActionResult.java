@@ -59,10 +59,18 @@ public class ActionResult {
         return _optionalTriggersUsed.contains(action);
     }
 
-    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player) {
+    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame, Player player) {
         if (_optionalAfterTriggerActions.get(player) == null)
             return new LinkedList<>();
-        else return _optionalAfterTriggerActions.get(player);
+        else {
+            List<TopLevelSelectableAction> result = new LinkedList<>();
+            for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(player)) {
+                if (action.canBeInitiated(cardGame)) {
+                    result.add(action);
+                }
+            }
+            return result;
+        }
     }
 
     public void createOptionalAfterTriggerActions(DefaultGame game) throws PlayerNotFoundException {

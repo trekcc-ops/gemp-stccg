@@ -73,12 +73,12 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
             return new AllowResponsesAction(cardGame, playCardInitiationResult);
         }
 
-        if (!_cancelled && !_cardPlayed) {
+        if (isInProgress() && !_cardPlayed) {
             _cardPlayed = true;
             putCardIntoPlay(cardGame);
         }
 
-        if (!_cancelled) {
+        if (isInProgress()) {
             Action nextAction = getNextAction();
             if (nextAction == null) {
                 setAsSuccessful();
@@ -104,10 +104,6 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
     public boolean wasCarriedOut() {
         return _wasCarriedOut;
-    }
-
-    public void cancel() {
-        _cancelled = true;
     }
 
     public void addImmediateGameTextAction(Action action) {

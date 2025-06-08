@@ -75,7 +75,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
         if (effectResults != null) {
             for (ActionResult actionResult : effectResults) {
-                List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(player);
+                List<TopLevelSelectableAction> actions = actionResult.getOptionalAfterTriggerActions(cardGame, player);
                 if (actions != null) {
                     for (TopLevelSelectableAction action : actions) {
                         if (!actionResult.wasOptionalTriggerUsed(action)) {
@@ -203,7 +203,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
         if (currentAction.isInProgress() && nextAction != null) {
             addActionToStack(nextAction);
-        } else if (currentAction.wasCompleted()) {
+        } else if (!currentAction.isInProgress()) {
             removeCompletedActionFromStack(currentAction);
             cardGame.sendActionResultToClient();
         } else if (cardGame.isCarryingOutEffects()) {
