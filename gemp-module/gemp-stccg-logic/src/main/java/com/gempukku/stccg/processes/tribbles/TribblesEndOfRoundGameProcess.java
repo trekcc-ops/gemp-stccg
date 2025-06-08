@@ -1,6 +1,5 @@
 package com.gempukku.stccg.processes.tribbles;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -39,7 +38,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 scorePointsAction.processEffect(_game);
                 _game.getActionsEnvironment().logCompletedActionNotInStack(scorePointsAction);
                 _game.sendActionResultToClient(); // for updated points
-                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
+                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
             }
 
             // Each player then shuffles their play pile into their decks.

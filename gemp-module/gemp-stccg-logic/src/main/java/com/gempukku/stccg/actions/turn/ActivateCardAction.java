@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.turn;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class ActivateCardAction extends ActionyAction implements TopLevelSelectableAction {
@@ -45,7 +44,7 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
             if (!getProgress(Progress.activated)) {
                 setProgress(Progress.activated);
                 cardGame.getActionsEnvironment().emitEffectResult(
-                        new ActionResult(ActionResult.Type.ACTIVATE, this, _performingCard));
+                        new ActionResult(ActionResult.Type.ACTIVATE, this));
             }
 
             if (!getProgress(Progress.prevented))

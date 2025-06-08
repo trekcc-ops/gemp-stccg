@@ -8,7 +8,7 @@ public class RevealCardFromTopOfDeckResult extends ActionResult {
     private final PhysicalCard _revealedCard;
 
     public RevealCardFromTopOfDeckResult(String playerId, PhysicalCard revealedCard) {
-        super(Type.FOR_EACH_REVEALED_FROM_TOP_OF_DECK, revealedCard);
+        super(Type.FOR_EACH_REVEALED_FROM_TOP_OF_DECK);
         _playerId = playerId;
         _revealedCard = revealedCard;
     }

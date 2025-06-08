@@ -5,13 +5,9 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 public class DiscardCardFromHandResult extends ActionResult {
     private final PhysicalCard _card;
-    public DiscardCardFromHandResult(PhysicalCard source, PhysicalCard card) {
-        super(Type.FOR_EACH_DISCARDED_FROM_HAND, source);
+    public DiscardCardFromHandResult(PhysicalCard card) {
+        super(Type.FOR_EACH_DISCARDED_FROM_HAND);
         _card = card;
-    }
-
-    public PhysicalCard getSource() {
-        return _source;
     }
 
     public PhysicalCard getDiscardedCard() {

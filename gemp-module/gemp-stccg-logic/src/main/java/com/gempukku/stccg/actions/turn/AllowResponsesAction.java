@@ -6,16 +6,22 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class AllowResponsesAction extends SystemQueueAction {
 
-    private final ActionResult.Type _type;
+    private final ActionResult _result;
 
     public AllowResponsesAction(DefaultGame game, ActionResult.Type type) {
         super(game);
-        _type = type;
+        _result = new ActionResult(type);
     }
+
+    public AllowResponsesAction(DefaultGame game, ActionResult result) {
+        super(game);
+        _result = result;
+    }
+
 
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        cardGame.getActionsEnvironment().emitEffectResult(new ActionResult(_type));
+        cardGame.getActionsEnvironment().emitEffectResult(_result);
         setAsSuccessful();
     }
 

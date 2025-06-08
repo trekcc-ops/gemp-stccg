@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.discard;
 
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -76,7 +75,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             gameState.removeCardsFromZoneWithoutSendingToClient(game, discardedCards);
             for (PhysicalCard card : discardedCards) {
                 gameState.addCardToZoneWithoutSendingToClient(card, Zone.DISCARD);
-                game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_performingCard, card));
+                game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(card));
             }
         }
     }

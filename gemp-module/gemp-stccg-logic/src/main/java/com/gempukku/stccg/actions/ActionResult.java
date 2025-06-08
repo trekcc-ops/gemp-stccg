@@ -24,35 +24,32 @@ public class ActionResult {
         FOR_EACH_REVEALED_FROM_HAND,
         FOR_EACH_REVEALED_FROM_TOP_OF_DECK,
         PLAY_CARD,
+        PLAY_CARD_INITIATION,
         PLAYER_WENT_OUT,
         START_OF_MISSION_ATTEMPT,
         START_OF_PHASE,
         START_OF_TURN,
-        DRAW_CARD, WHEN_MOVE_FROM
+        DRAW_CARD, KILL_CARD, WHEN_MOVE_FROM
     }
 
     private final Type _type;
-    protected String _playerId;
-    protected final PhysicalCard _source;
     private Map<Player, List<TopLevelSelectableAction>> _optionalAfterTriggerActions = new HashMap<>();
         // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
 
-    protected ActionResult(Type type, PhysicalCard source) {
-        _type = type;
-        _source = source;
-        _performingPlayerId = source.getOwnerName();
-    }
-
     public ActionResult(Type type) {
         _type = type;
-        _source = null;
         _performingPlayerId = null;
     }
 
-    public ActionResult(Type type, Action action, PhysicalCard source) {
+    public ActionResult(Type type, String performingPlayerId) {
         _type = type;
-        _source = source;
+        _performingPlayerId = performingPlayerId;
+    }
+
+
+    public ActionResult(Type type, Action action) {
+        _type = type;
         _performingPlayerId = action.getPerformingPlayerId();
     }
 
@@ -66,7 +63,6 @@ public class ActionResult {
     public boolean wasOptionalTriggerUsed(Action action) {
         return _optionalTriggersUsed.contains(action);
     }
-    public String getPlayer() { return _playerId; }
 
     public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player) {
         if (_optionalAfterTriggerActions.get(player) == null)
@@ -78,13 +74,18 @@ public class ActionResult {
         Map<Player, List<TopLevelSelectableAction>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
             List<TopLevelSelectableAction> playerActions = new LinkedList<>();
-            for (PhysicalCard card : Filters.filterActive(game)) {
+            for (PhysicalCard card : Filters.filterActive(game)) { // cards in play
                 if (!card.hasTextRemoved(game)) {
                     final List<TopLevelSelectableAction> actions =
                             card.getOptionalAfterTriggerActions(player, this);
                     if (actions != null)
                         playerActions.addAll(actions);
                 }
+            }
+            for (PhysicalCard card : player.getCardsInHand()) {
+                final List<TopLevelSelectableAction> actions = card.getOptionalResponseActionsWhileInHand(player, this);
+                if (actions != null)
+                    playerActions.addAll(actions);
             }
             allActions.put(player, playerActions);
         }
