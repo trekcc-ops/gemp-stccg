@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -126,7 +127,7 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
 
         if (!_returnFireDecisionMade) {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new YesNoDecision(_defendingPlayer, "Do you want to return fire?", cardGame) {
+                    new YesNoDecision(_defendingPlayer, DecisionContext.RETURN_FIRE, cardGame) {
                 @Override
                         protected void yes() {
                     _returnFireDecisionMade = true;

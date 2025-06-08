@@ -16,15 +16,13 @@ import java.util.Map;
 
 public abstract class ActionSelectionDecision extends ActionDecision {
 
-    public ActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
+    public ActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                    DefaultGame cardGame)
             throws CardNotFoundException {
-        super(player, text, actions, AwaitingDecisionType.ACTION_CHOICE, cardGame);
+        super(player, context, actions, AwaitingDecisionType.ACTION_CHOICE, cardGame);
         setParam("blueprintId", getBlueprintIds(cardGame));
         setParam("imageUrl", getImageUrls(cardGame));
     }
-
-
 
     private String[] getBlueprintIds(DefaultGame cardGame) throws CardNotFoundException {
         String[] result = new String[_actions.size()];

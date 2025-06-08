@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
@@ -41,8 +42,8 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
         Phase phase = cardGame.getCurrentPhase();
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(cardGame.getCurrentPlayer(),
-                            "Play " + phase + " action or Pass", playableActions, cardGame) {
+                    new CardActionSelectionDecision(cardGame.getCurrentPlayer(), DecisionContext.SELECT_END_OF_TURN_ACTION,
+                            playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

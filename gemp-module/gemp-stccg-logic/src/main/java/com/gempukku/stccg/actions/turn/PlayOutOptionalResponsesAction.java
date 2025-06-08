@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.turn;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.ActionResult;
@@ -53,8 +54,8 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
         } else {
             Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayerName);
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(decidingPlayer, "Optional responses", possibleActions,
-                            cardGame) {
+                    new CardActionSelectionDecision(decidingPlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
+                            possibleActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

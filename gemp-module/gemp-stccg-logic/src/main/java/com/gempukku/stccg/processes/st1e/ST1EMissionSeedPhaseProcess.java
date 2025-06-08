@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -45,9 +46,9 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         if (playableActions.isEmpty() && cardGame.shouldAutoPass(currentPhase)) {
             _consecutivePasses++;
         } else {
-            String message = "Play " + currentPhase + " action";
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(currentPlayer, message, playableActions, true, cardGame) {
+                    new CardActionSelectionDecision(currentPlayer, DecisionContext.SELECT_MISSION_PHASE_ACTION,
+                            playableActions, true, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

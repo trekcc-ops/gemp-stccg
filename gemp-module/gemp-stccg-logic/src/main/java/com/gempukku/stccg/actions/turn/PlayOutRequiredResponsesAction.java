@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -36,8 +37,8 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
             _action.insertEffect(new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new ActionSelectionDecision(cardGame.getCurrentPlayer(), "Required responses", _responses,
-                            cardGame) {
+                    new ActionSelectionDecision(cardGame.getCurrentPlayer(),
+                            DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _responses, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

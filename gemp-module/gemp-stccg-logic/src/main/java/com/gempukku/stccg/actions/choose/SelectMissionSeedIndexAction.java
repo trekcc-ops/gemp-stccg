@@ -14,7 +14,6 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class SelectMissionSeedIndexAction extends ActionyAction {
     protected final String _choiceText;
@@ -37,7 +36,7 @@ public class SelectMissionSeedIndexAction extends ActionyAction {
     protected AwaitingDecision getDecision(DefaultGame cardGame) throws PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         return new MultipleChoiceAwaitingDecision(performingPlayer,
-                _choiceText, _selectionOptions, cardGame, DecisionContext.SEED_MISSION_INDEX_SELECTION) {
+                _selectionOptions, cardGame, DecisionContext.SEED_MISSION_INDEX_SELECTION) {
             @Override
             protected void validDecisionMade(int index, String result) {
                 _selectedIndex = Integer.valueOf(result);
