@@ -121,8 +121,6 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
             } else {
                 System.out.println(message);
@@ -140,8 +138,6 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
             } else {
                 System.out.println(message);

@@ -21,16 +21,16 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
     private final PlayOutEffectResults _action;
     private final ActionOrder _actionOrder;
     private final int _passCount;
-    private final Collection<ActionResult> _actionResults;
     private final ActionsEnvironment _actionsEnvironment;
+    private final ActionResult _actionResult;
 
     public PlayOutOptionalResponsesAction(DefaultGame game, PlayOutEffectResults action, ActionOrder actionOrder,
-                                          int passCount, Collection<ActionResult> actionResults) {
+                                          int passCount, ActionResult actionResult) {
         super(game);
         _action = action;
         _actionOrder = actionOrder;
         _passCount = passCount;
-        _actionResults = actionResults;
+        _actionResult = actionResult;
         _actionsEnvironment = game.getActionsEnvironment();
     }
 
@@ -41,15 +41,15 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
         Player activePlayer = cardGame.getPlayer(activePlayerName);
 
         final Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
-                _actionsEnvironment.getOptionalAfterTriggers(cardGame, activePlayer, _actionResults);
+                _actionsEnvironment.getOptionalAfterTriggers(cardGame, activePlayer, List.of(_actionResult));
 
         List<TopLevelSelectableAction> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
-        possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(cardGame, activePlayer, _actionResults));
+        possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(cardGame, activePlayer, List.of(_actionResult)));
 
         if (possibleActions.isEmpty()) {
             if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
                 _action.insertEffect(new PlayOutOptionalResponsesAction(cardGame,
-                        _action, _actionOrder, _passCount + 1, _actionResults));
+                        _action, _actionOrder, _passCount + 1, _actionResult));
             }
         } else {
             Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayerName);
@@ -71,7 +71,7 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
                                 }
                                 if (nextPassCount < _actionOrder.getPlayerCount())
                                     _action.insertEffect(new PlayOutOptionalResponsesAction(cardGame,
-                                            _action, _actionOrder, nextPassCount, _actionResults));
+                                            _action, _actionOrder, nextPassCount, _actionResult));
                             } catch(InvalidGameLogicException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }
@@ -83,7 +83,5 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
             processEffect(cardGame);
         return nextAction;
     }
-
-    public Collection<ActionResult> getEffectResults() { return _actionResults; }
 
 }

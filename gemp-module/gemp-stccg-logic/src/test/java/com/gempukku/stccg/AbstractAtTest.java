@@ -908,8 +908,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
                 String serialized = new ObjectMapper().writeValueAsString(action);
                 System.out.println(serialized);

@@ -11,6 +11,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.google.common.collect.Iterables;
 
 import java.util.*;
 
@@ -214,10 +215,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     public void carryOutPendingActions(DefaultGame cardGame) throws PlayerNotFoundException,
             InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
         Set<ActionResult> actionResults = consumeEffectResults();
-        for (ActionResult result : actionResults) {
+        if (actionResults.size() > 1) {
+            throw new InvalidGameLogicException("Too many action results to respond to");
+        } else if (!actionResults.isEmpty()) {
+            ActionResult result = Iterables.getOnlyElement(actionResults);
             result.createOptionalAfterTriggerActions(cardGame);
-        }
-        if (actionResults.isEmpty()) {
+            addActionToStack(new PlayOutEffectResults(cardGame, result));
+        } else  {
             if (hasNoActionsInProgress())
                 try {
                     cardGame.continueCurrentProcess();
@@ -228,8 +232,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
             else {
                 executeNextSubAction(cardGame);
             }
-        } else {
-            addActionToStack(new PlayOutEffectResults(cardGame, actionResults));
         }
     }
 
