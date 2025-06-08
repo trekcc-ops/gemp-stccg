@@ -12,14 +12,15 @@ import java.util.Map;
 
 public class ST2EGame extends DefaultGame {
     private ST2EGameState _gameState;
+    private final RuleSet _rules;
 
     public ST2EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
                     final CardBlueprintLibrary library) {
         super(format, decks, library, GameType.SECOND_EDITION);
 
         _gameState = new ST2EGameState(decks.keySet(), this, clocks);
-        RuleSet<ST2EGame> ruleSet = new RuleSet<>();
-        ruleSet.applyRuleSet(this);
+        _rules = new RuleSet<>();
+        _rules.applyRuleSet(this);
 
         _gameState.setCurrentProcess(null);
     }
@@ -28,6 +29,11 @@ public class ST2EGame extends DefaultGame {
     @Override
     public ST2EGameState getGameState() {
         return _gameState;
+    }
+
+    @Override
+    public RuleSet getRules() {
+        return _rules;
     }
 
 }

@@ -37,11 +37,6 @@ public class ActionResult {
         // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
 
-    public ActionResult(Type type) {
-        _type = type;
-        _performingPlayerId = null;
-    }
-
     public ActionResult(Type type, String performingPlayerId) {
         _type = type;
         _performingPlayerId = performingPlayerId;

@@ -4,12 +4,13 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class EndTurnAction extends SystemQueueAction {
 
-    public EndTurnAction(DefaultGame cardGame) {
+    public EndTurnAction(DefaultGame cardGame, Player currentPlayer) {
         super(cardGame);
-        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.END_OF_TURN));
+        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.END_OF_TURN, currentPlayer));
     }
     @Override
     protected void processEffect(DefaultGame cardGame) {

@@ -19,6 +19,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
@@ -54,8 +55,8 @@ public abstract class DefaultGame {
         _gameType = gameType;
     }
 
-
     public abstract GameState getGameState();
+    public abstract RuleSet getRules();
     public boolean shouldAutoPass(Phase phase) {
         return false;
     }
