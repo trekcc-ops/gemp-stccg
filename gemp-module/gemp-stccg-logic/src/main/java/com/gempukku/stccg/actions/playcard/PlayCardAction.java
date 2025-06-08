@@ -2,10 +2,8 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -21,6 +19,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     final PhysicalCard _performingCard;
     protected final PhysicalCard _cardEnteringPlay;
     final Zone _destinationZone;
+    private boolean _initiated;
 
     public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
                           Zone toZone, ActionType actionType) {
@@ -62,6 +61,12 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         Action cost = getNextCost();
         if (cost != null)
             return cost;
+
+        if (!_initiated) {
+            _initiated = true;
+            ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
+            return new AllowResponsesAction(cardGame, playCardInitiationResult);
+        }
 
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
