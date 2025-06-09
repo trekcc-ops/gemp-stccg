@@ -122,12 +122,15 @@ public class ActionResult {
                 return new PlayOutOptionalResponsesAction(cardGame, actionOrder, 0, this);
             }
         } else {
-            return _nextAction;
+            Action nextAction = _nextAction;
+            _nextAction = null;
+            return nextAction;
         }
     }
 
     public void addNextAction(Action action) {
-        _playOutEffectResultsAction.insertEffect(action);
+        _nextAction = action;
+//        _playOutEffectResultsAction.insertEffect(action);
     }
 
     public void setPlayOutAction(PlayOutEffectResults action) {

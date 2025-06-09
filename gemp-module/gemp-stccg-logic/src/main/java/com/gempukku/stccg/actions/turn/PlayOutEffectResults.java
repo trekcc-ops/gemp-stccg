@@ -13,7 +13,6 @@ import java.util.Set;
 
 public class PlayOutEffectResults extends SystemQueueAction {
     private final ActionResult _actionResult;
-    private boolean _initialized;
 
     public PlayOutEffectResults(DefaultGame game, ActionResult actionResult) {
         super(game);
@@ -22,16 +21,10 @@ public class PlayOutEffectResults extends SystemQueueAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_initialized) {
-            _initialized = true;
-            _actionResult.setPlayOutAction(this);
-            return _actionResult.nextAction(cardGame);
-        } else {
-            Action nextAction = getNextAction();
-            if (nextAction == null)
-                setAsSuccessful();
-            return nextAction;
-        }
+        Action nextAction = _actionResult.nextAction(cardGame);
+        if (nextAction == null)
+            setAsSuccessful();
+        return nextAction;
     }
 
 }
