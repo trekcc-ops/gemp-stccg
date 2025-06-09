@@ -43,4 +43,7 @@ public interface Action {
     boolean wasFailed();
     void setAsFailed();
 
+    void clearResult();
+    ActionResult getResult();
+
 }

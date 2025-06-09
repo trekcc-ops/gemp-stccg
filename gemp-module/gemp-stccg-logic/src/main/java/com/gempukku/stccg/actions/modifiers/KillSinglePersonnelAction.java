@@ -87,7 +87,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
             }
         }
         setAsSuccessful();
-        cardGame.getActionsEnvironment().emitEffectResult(new KillCardResult(this, _victim));
+        saveResult(new KillCardResult(this, _victim));
         return getNextAction();
     }
 

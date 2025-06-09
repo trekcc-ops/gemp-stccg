@@ -25,11 +25,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private Set<ActionResult> _actionResults = new HashSet<>();
     private int _nextActionId = 1;
 
-    @Override
-    public void emitEffectResult(ActionResult actionResult) {
-        _actionResults.add(actionResult);
-    }
-
     public Set<ActionResult> consumeEffectResults() {
         Set<ActionResult> result = _actionResults;
         _actionResults = new HashSet<>();
@@ -197,40 +192,37 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     public void executeNextSubAction(DefaultGame cardGame) throws InvalidGameOperationException,
             PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException {
         Action currentAction = getCurrentAction();
-        Action nextAction = currentAction.nextAction(cardGame);
+        ActionResult actionResult = currentAction.getResult();
 
-        if (currentAction.isInProgress() && nextAction != null) {
-            addActionToStack(nextAction);
-        } else if (!currentAction.isInProgress()) {
-            removeCompletedActionFromStack(currentAction);
-            cardGame.sendActionResultToClient();
-        } else if (cardGame.isCarryingOutEffects()) {
-            throw new InvalidGameLogicException("Unable to process action");
-        }
-
-    }
-
-    public void carryOutPendingActions(DefaultGame cardGame) throws PlayerNotFoundException,
-            InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
-        Set<ActionResult> actionResults = consumeEffectResults();
-        if (actionResults.size() > 1) {
-            throw new InvalidGameLogicException("Too many action results to respond to");
-        } else if (!actionResults.isEmpty()) {
-            ActionResult result = Iterables.getOnlyElement(actionResults);
-            result.createOptionalAfterTriggerActions(cardGame);
-            addActionToStack(new PlayOutEffectResults(cardGame, result));
-        } else  {
-            if (hasNoActionsInProgress())
-                try {
-                    cardGame.continueCurrentProcess();
-                    cardGame.sendActionResultToClient();
-                } catch(InvalidGameLogicException exp) {
-                    cardGame.sendErrorMessage(exp);
+        if (actionResult != null) {
+            actionResult.createOptionalAfterTriggerActions(cardGame);
+            addActionToStack(new PlayOutEffectResults(cardGame, currentAction, actionResult));
+        } else {
+            if (currentAction.isInProgress()) {
+                Action nextAction = currentAction.nextAction(cardGame);
+                if (nextAction != null) {
+                    addActionToStack(nextAction);
                 }
-            else {
-                executeNextSubAction(cardGame);
+            } else if (!currentAction.isInProgress() && currentAction.getResult() == null) {
+                removeCompletedActionFromStack(currentAction);
+                cardGame.sendActionResultToClient();
+            } else if (cardGame.isCarryingOutEffects() && currentAction.getResult() == null) {
+                throw new InvalidGameLogicException("Unable to process action");
             }
         }
     }
 
+    public void carryOutPendingActions(DefaultGame cardGame) throws PlayerNotFoundException,
+            InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
+        if (hasNoActionsInProgress())
+            try {
+                cardGame.continueCurrentProcess();
+                cardGame.sendActionResultToClient();
+            } catch(InvalidGameLogicException exp) {
+                cardGame.sendErrorMessage(exp);
+            }
+        else {
+            executeNextSubAction(cardGame);
+        }
+    }
 }

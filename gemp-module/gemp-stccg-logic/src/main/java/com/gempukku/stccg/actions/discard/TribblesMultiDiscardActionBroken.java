@@ -76,8 +76,7 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
                 stCard.unstop();
             }
             gameState.addCardToZoneWithoutSendingToClient(cardToDiscard, Zone.DISCARD);
-            cardGame.getActionsEnvironment().emitEffectResult(
-                    new DiscardCardFromPlayResult(cardToDiscard, this));
+            saveResult(new DiscardCardFromPlayResult(cardToDiscard, this));
         }
         setAsSuccessful();
         return getNextAction();

@@ -13,17 +13,21 @@ import java.util.Set;
 
 public class PlayOutEffectResults extends SystemQueueAction {
     private final ActionResult _actionResult;
+    private final Action _action;
 
-    public PlayOutEffectResults(DefaultGame game, ActionResult actionResult) {
+    public PlayOutEffectResults(DefaultGame game, Action action, ActionResult actionResult) {
         super(game);
         _actionResult = actionResult;
+        _action = action;
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Action nextAction = _actionResult.nextAction(cardGame);
-        if (nextAction == null)
+        if (nextAction == null) {
             setAsSuccessful();
+            _action.clearResult();
+        }
         return nextAction;
     }
 

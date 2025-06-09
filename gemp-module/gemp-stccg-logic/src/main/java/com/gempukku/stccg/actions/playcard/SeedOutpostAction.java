@@ -111,8 +111,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                 GameLocation destinationLocation = destinationCard.getGameLocation();
                 gameState.seedFacilityAtLocation(facility, destinationLocation);
-                cardGame.getActionsEnvironment().emitEffectResult(
-                        new PlayCardResult(this, _cardEnteringPlay));
+                saveResult(new PlayCardResult(this, _cardEnteringPlay));
                 setProgress(Progress.cardWasSeeded);
                 setAsSuccessful();
                 return getNextAction();

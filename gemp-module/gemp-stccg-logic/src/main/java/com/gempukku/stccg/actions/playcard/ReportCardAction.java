@@ -186,8 +186,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                         performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
                     }
                 }
-                cardGame.getActionsEnvironment().emitEffectResult(
-                        new PlayCardResult(this, _cardEnteringPlay));
+                saveResult(new PlayCardResult(this, _cardEnteringPlay));
             }
 
             return getNextAction();

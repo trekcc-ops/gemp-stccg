@@ -43,8 +43,7 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
 
             if (!getProgress(Progress.activated)) {
                 setProgress(Progress.activated);
-                cardGame.getActionsEnvironment().emitEffectResult(
-                        new ActionResult(ActionResult.Type.ACTIVATE, this));
+                saveResult(new ActionResult(ActionResult.Type.ACTIVATE, this));
             }
 
             if (!getProgress(Progress.prevented))

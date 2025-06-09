@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
 import com.gempukku.stccg.actions.turn.PlayOutRequiredResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -44,7 +43,6 @@ public class ActionResult {
 
     private final Stack<Action> _responseActionsToStack = new Stack<>();
     private Action _nextAction;
-    private PlayOutEffectResults _playOutEffectResultsAction;
 
     public ActionResult(Type type, String performingPlayerId) {
         _type = type;
@@ -130,10 +128,6 @@ public class ActionResult {
 
     public void addNextAction(Action action) {
         _nextAction = action;
-//        _playOutEffectResultsAction.insertEffect(action);
     }
 
-    public void setPlayOutAction(PlayOutEffectResults action) {
-        _playOutEffectResultsAction = action;
-    }
 }

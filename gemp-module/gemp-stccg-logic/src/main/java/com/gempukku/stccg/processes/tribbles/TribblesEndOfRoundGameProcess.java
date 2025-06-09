@@ -38,7 +38,8 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 scorePointsAction.processEffect(_game);
                 _game.getActionsEnvironment().logCompletedActionNotInStack(scorePointsAction);
                 _game.sendActionResultToClient(); // for updated points
-                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
+                    // TODO - This doesn't work because we removed emitEffectResult
+//                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
             }
 
             // Each player then shuffles their play pile into their decks.

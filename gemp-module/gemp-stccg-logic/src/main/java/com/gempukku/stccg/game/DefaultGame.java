@@ -234,11 +234,6 @@ public abstract class DefaultGame {
         sendErrorMessage("Action stack size: " + actionStack.size());
         actionStack.forEach(action -> sendErrorMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
                 action.getClass().getSimpleName()));
-
-        List<ActionResult> actionResults =
-                getActionsEnvironment().consumeEffectResults().stream().toList();
-        actionResults.forEach(effectResult -> sendErrorMessage(
-                "EffectResult " + (actionResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
         throw new UnsupportedOperationException(errorMessage);
     }
     
