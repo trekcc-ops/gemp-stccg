@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -14,15 +15,16 @@ import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import java.util.List;
 
 public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
-    private final PlayOutEffectResults _action;
+    private final ActionResult _actionResult;
     private final List<TopLevelSelectableAction> _responses;
 
-    public PlayOutRequiredResponsesAction(DefaultGame game, PlayOutEffectResults action,
+    public PlayOutRequiredResponsesAction(DefaultGame game, ActionResult actionResult,
                                           List<TopLevelSelectableAction> responses) {
         super(game);
-        _action = action;
+        _actionResult = actionResult;
         _responses = responses;
     }
+
 
 
     @Override
@@ -34,7 +36,7 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
         } else if (areAllActionsTheSame(_responses)) {
             Action anyAction = _responses.removeFirst();
             environment.addActionToStack(anyAction);
-            _action.insertEffect(new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
+            _actionResult.addNextAction(new PlayOutRequiredResponsesAction(cardGame, _actionResult, _responses));
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new ActionSelectionDecision(cardGame.getCurrentPlayer(),
@@ -45,8 +47,8 @@ public final class PlayOutRequiredResponsesAction extends SystemQueueAction {
                                 Action action = getSelectedAction(result);
                                 environment.addActionToStack(action);
                                 _responses.remove(action);
-                                _action.insertEffect(
-                                        new PlayOutRequiredResponsesAction(cardGame, _action, _responses));
+                                _actionResult.addNextAction(
+                                        new PlayOutRequiredResponsesAction(cardGame, _actionResult, _responses));
                             } catch(InvalidGameLogicException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }

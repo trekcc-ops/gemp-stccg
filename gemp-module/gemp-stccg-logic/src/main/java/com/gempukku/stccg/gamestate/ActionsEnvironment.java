@@ -17,7 +17,7 @@ import java.util.*;
 @JsonIncludeProperties({"actions"})
 public interface ActionsEnvironment {
 
-    List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
+    List<TopLevelSelectableAction> getRequiredAfterTriggers(ActionResult actionResult);
 
     Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, Player player,
                                                        Collection<? extends ActionResult> effectResults);

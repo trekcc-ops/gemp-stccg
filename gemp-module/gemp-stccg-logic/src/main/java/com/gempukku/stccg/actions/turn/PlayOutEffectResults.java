@@ -24,22 +24,14 @@ public class PlayOutEffectResults extends SystemQueueAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_initialized) {
             _initialized = true;
-            List<TopLevelSelectableAction> requiredResponses =
-                    cardGame.getActionsEnvironment().getRequiredAfterTriggers(List.of(_actionResult));
-            if (!requiredResponses.isEmpty()) {
-                appendEffect(
-                        new PlayOutRequiredResponsesAction(cardGame, this, requiredResponses));
-            } else {
-                ActionOrder actionOrder = cardGame.getRules().getPlayerOrderForActionResponse(_actionResult, cardGame);
-                appendEffect(new PlayOutOptionalResponsesAction(
-                        cardGame, this, actionOrder, 0, _actionResult)
-                );
-            }
+            _actionResult.setPlayOutAction(this);
+            return _actionResult.nextAction(cardGame);
+        } else {
+            Action nextAction = getNextAction();
+            if (nextAction == null)
+                setAsSuccessful();
+            return nextAction;
         }
-        Action nextAction = getNextAction();
-        if (nextAction == null)
-            setAsSuccessful();
-        return nextAction;
     }
 
 }

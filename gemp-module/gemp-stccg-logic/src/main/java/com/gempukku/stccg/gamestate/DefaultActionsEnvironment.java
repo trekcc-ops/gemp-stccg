@@ -51,22 +51,20 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _untilEndOfTurnActionProxies.add(actionProxy);
     }
 
-    @Override
-    public List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults) {
+    public List<TopLevelSelectableAction> getRequiredAfterTriggers(ActionResult actionResult) {
         List<TopLevelSelectableAction> gatheredActions = new LinkedList<>();
 
-        if (effectResults != null) {
+        if (actionResult != null) {
             for (ActionProxy actionProxy : _actionProxies) {
-                for (ActionResult actionResult : effectResults) {
-                    List<TopLevelSelectableAction> actions = actionProxy.getRequiredAfterTriggers(actionResult);
-                    if (actions != null)
-                        gatheredActions.addAll(actions);
-                }
+                List<TopLevelSelectableAction> actions = actionProxy.getRequiredAfterTriggers(actionResult);
+                if (actions != null)
+                    gatheredActions.addAll(actions);
             }
         }
 
         return gatheredActions;
     }
+
 
     @Override
     public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, Player player,

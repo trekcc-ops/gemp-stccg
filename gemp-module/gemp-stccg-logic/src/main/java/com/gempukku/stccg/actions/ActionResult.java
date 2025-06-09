@@ -1,7 +1,11 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
+import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
+import com.gempukku.stccg.actions.turn.PlayOutRequiredResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -36,6 +40,11 @@ public class ActionResult {
     private Map<Player, List<TopLevelSelectableAction>> _optionalAfterTriggerActions = new HashMap<>();
         // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
+    private boolean _initialized;
+
+    private final Stack<Action> _responseActionsToStack = new Stack<>();
+    private Action _nextAction;
+    private PlayOutEffectResults _playOutEffectResultsAction;
 
     public ActionResult(Type type, String performingPlayerId) {
         _type = type;
@@ -97,4 +106,31 @@ public class ActionResult {
 
 
     public String getPerformingPlayerId() { return _performingPlayerId; }
+
+    public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame) {
+        return cardGame.getActionsEnvironment().getRequiredAfterTriggers(this);
+    }
+
+    public Action nextAction(DefaultGame cardGame) {
+        if (!_initialized) {
+            _initialized = true;
+            List<TopLevelSelectableAction> requiredResponses = getRequiredResponseActions(cardGame);
+            if (!requiredResponses.isEmpty()) {
+                return new PlayOutRequiredResponsesAction(cardGame, this, requiredResponses);
+            } else {
+                ActionOrder actionOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
+                return new PlayOutOptionalResponsesAction(cardGame, actionOrder, 0, this);
+            }
+        } else {
+            return _nextAction;
+        }
+    }
+
+    public void addNextAction(Action action) {
+        _playOutEffectResultsAction.insertEffect(action);
+    }
+
+    public void setPlayOutAction(PlayOutEffectResults action) {
+        _playOutEffectResultsAction = action;
+    }
 }
