@@ -44,8 +44,6 @@ public class ActionResult {
         // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
     private boolean _initialized;
-
-    private final Stack<Action> _responseActionsToStack = new Stack<>();
     private Action _nextAction;
     private ActionOrder _optionalResponsePlayerOrder;
     private int _passCount;
@@ -126,7 +124,10 @@ public class ActionResult {
             } else {
                 _optionalResponsePlayerOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
                 _passCount = 0;
-                return getResponseActionShell(cardGame);
+                addNextResponseActionIfPassesRemaining(cardGame);
+                Action nextAction = _nextAction;
+                _nextAction = null;
+                return nextAction;
             }
         } else {
             Action nextAction = _nextAction;
@@ -182,7 +183,6 @@ public class ActionResult {
     }
     
     public Action getNextOptionalResponseAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        final ActionResult thisResult = this;
         final String activePlayerName = getNextRespondingPlayer();
         Player activePlayer = cardGame.getPlayer(activePlayerName);
 
@@ -190,9 +190,7 @@ public class ActionResult {
 
         if (possibleActions.isEmpty()) {
             incrementPassCount();
-            if (getPassCount() < getRespondingPlayerCount()) {
-                addNextAction(getResponseActionShell(cardGame));
-            }
+            addNextResponseActionIfPassesRemaining(cardGame);
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(activePlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
@@ -208,9 +206,7 @@ public class ActionResult {
                                 } else {
                                     incrementPassCount();
                                 }
-                                if (getPassCount() < getRespondingPlayerCount()) {
-                                    addNextAction(getResponseActionShell(cardGame));
-                                }
+                                addNextResponseActionIfPassesRemaining(cardGame);
                             } catch(InvalidGameLogicException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }
@@ -220,14 +216,17 @@ public class ActionResult {
         return null;
     }
 
-    private Action getResponseActionShell(DefaultGame cardGame) {
-        return new SystemQueueAction(cardGame) {
-            @Override
-            public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-                setAsSuccessful();
-                return getNextOptionalResponseAction(cardGame);
-            }
-        };
+    private void addNextResponseActionIfPassesRemaining(DefaultGame cardGame) {
+        if (getPassCount() < getRespondingPlayerCount()) {
+            Action nextAction = new SystemQueueAction(cardGame) {
+                @Override
+                public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
+                    setAsSuccessful();
+                    return getNextOptionalResponseAction(cardGame);
+                }
+            };
+            addNextAction(nextAction);
+        }
     }
 
 }
