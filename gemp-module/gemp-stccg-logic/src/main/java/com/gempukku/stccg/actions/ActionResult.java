@@ -128,23 +128,12 @@ public class ActionResult {
             } else {
                 _optionalResponsePlayerOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
                 _passCount = 0;
-                addNextOptionalResponseSystemActionIfPassesRemaining(cardGame);
             }
         }
     }
 
     public boolean canBeRespondedTo() {
         return !_requiredResponses.isEmpty() || _passCount < _optionalResponsePlayerOrder.getPlayerCount();
-    }
-
-    public Action nextAction() throws PlayerNotFoundException {
-        Action nextAction = _nextAction;
-        _nextAction = null;
-        return nextAction;
-    }
-
-    public void addNextAction(Action action) {
-        _nextAction = action;
     }
 
     public void incrementPassCount() {
@@ -187,7 +176,6 @@ public class ActionResult {
                     } else {
                         incrementPassCount();
                     }
-                    addNextOptionalResponseSystemActionIfPassesRemaining(cardGame);
                 } catch(InvalidGameLogicException exp) {
                     throw new DecisionResultInvalidException(exp.getMessage());
                 }
@@ -195,39 +183,14 @@ public class ActionResult {
         };
     }
 
-    private void addNextOptionalResponseSystemActionIfPassesRemaining(DefaultGame cardGame) {
-        if (canBeRespondedTo()) {
-            Action nextAction = new SystemQueueAction(cardGame) {
-                @Override
-                public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
-                    setAsSuccessful();
-                    _optionalResponsePlayerOrder.advancePlayer();
-                    final String activePlayerName = _optionalResponsePlayerOrder.getCurrentPlayerName();
-                    Player activePlayer = cardGame.getPlayer(activePlayerName);
-                    List<TopLevelSelectableAction> possibleActions = getOptionalAfterActions(cardGame, activePlayer);
-                    if (possibleActions.isEmpty()) {
-                        // increment pass count and prompt the next player with possible actions
-                        incrementPassCount();
-                        addNextOptionalResponseSystemActionIfPassesRemaining(cardGame);
-                    } else {
-                        cardGame.getUserFeedback().sendAwaitingDecision(
-                                selectOptionalResponseActionDecision(cardGame, possibleActions, activePlayer));
-                    }
-                }
-            };
-            addNextAction(nextAction);
-        }
-    }
-
     private void addNextRequiredResponseSystemAction(DefaultGame cardGame) {
-        Action nextAction = new SystemQueueAction(cardGame) {
+        _nextAction = new SystemQueueAction(cardGame) {
             @Override
-            public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException, CardNotFoundException, InvalidGameLogicException {
-                processRequiredResponseEffect(cardGame);
+            public void processEffect(DefaultGame cardGame1) throws PlayerNotFoundException, CardNotFoundException, InvalidGameLogicException {
+                processRequiredResponseEffect(cardGame1);
                 setAsSuccessful();
             }
         };
-        addNextAction(nextAction);
     }
 
     private void processRequiredResponseEffect(DefaultGame cardGame)
@@ -280,8 +243,22 @@ public class ActionResult {
         return result;
     }
 
-    public void addNextActionToStack(DefaultGame cardGame) throws InvalidGameLogicException {
-        cardGame.getActionsEnvironment().addActionToStack(_nextAction);
+    public void addNextActionToStack(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        if (!_requiredResponses.isEmpty()) {
+            cardGame.getActionsEnvironment().addActionToStack(_nextAction);
+        } else {
+            _optionalResponsePlayerOrder.advancePlayer();
+            final String activePlayerName = _optionalResponsePlayerOrder.getCurrentPlayerName();
+            Player activePlayer = cardGame.getPlayer(activePlayerName);
+            List<TopLevelSelectableAction> possibleActions = getOptionalAfterActions(cardGame, activePlayer);
+            if (possibleActions.isEmpty()) {
+                // increment pass count and prompt the next player with possible actions
+                incrementPassCount();
+            } else {
+                cardGame.getUserFeedback().sendAwaitingDecision(
+                        selectOptionalResponseActionDecision(cardGame, possibleActions, activePlayer));
+            }
+        }
     }
 
 }
