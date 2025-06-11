@@ -3,7 +3,6 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.turn.PlayOutEffectResults;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -11,7 +10,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.google.common.collect.Iterables;
 
 import java.util.*;
 
@@ -195,7 +193,12 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         ActionResult actionResult = currentAction.getResult();
 
         if (actionResult != null) {
-            addActionToStack(new PlayOutEffectResults(cardGame, currentAction, actionResult));
+            Action responseAction = actionResult.nextAction(cardGame);
+            if (responseAction != null) {
+                addActionToStack(responseAction);
+            } else {
+                currentAction.clearResult();
+            }
         } else {
             if (currentAction.isInProgress()) {
                 Action nextAction = currentAction.nextAction(cardGame);
