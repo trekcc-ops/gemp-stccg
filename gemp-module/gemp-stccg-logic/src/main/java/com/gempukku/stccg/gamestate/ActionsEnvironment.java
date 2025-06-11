@@ -31,7 +31,6 @@ public interface ActionsEnvironment {
 
     void addActionToStack(Action action) throws InvalidGameLogicException;
 
-    Set<ActionResult> consumeEffectResults();
     void signalEndOfTurn();
     void addAlwaysOnActionProxy(ActionProxy actionProxy);
 

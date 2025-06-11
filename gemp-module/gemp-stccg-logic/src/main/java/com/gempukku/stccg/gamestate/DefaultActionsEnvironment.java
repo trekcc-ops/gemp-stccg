@@ -20,14 +20,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
     private final List<Action> _performedActions = new LinkedList<>();
-    private Set<ActionResult> _actionResults = new HashSet<>();
     private int _nextActionId = 1;
-
-    public Set<ActionResult> consumeEffectResults() {
-        Set<ActionResult> result = _actionResults;
-        _actionResults = new HashSet<>();
-        return result;
-    }
 
     public void addAlwaysOnActionProxy(ActionProxy actionProxy) {
         _actionProxies.add(actionProxy);
@@ -193,9 +186,9 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         ActionResult actionResult = currentAction.getResult();
 
         if (actionResult != null) {
-            Action responseAction = actionResult.nextAction(cardGame);
-            if (responseAction != null) {
-                addActionToStack(responseAction);
+            actionResult.initialize(cardGame); // won't do anything if already initialized
+            if (actionResult.canBeRespondedTo()) {
+                actionResult.addNextActionToStack(cardGame);
             } else {
                 currentAction.clearResult();
             }
