@@ -121,8 +121,10 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     @Override
     public void addActionToStack(Action action) throws InvalidGameLogicException {
-        action.startPerforming(); // Set action status
-        _actionStack.add(action);
+        if (action != null) {
+            action.startPerforming(); // Set action status
+            _actionStack.add(action);
+        }
     }
 
     public Stack<Action> getActionStack() { return _actionStack; }
@@ -187,17 +189,11 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
         if (actionResult != null) {
             actionResult.initialize(cardGame); // won't do anything if already initialized
-            if (actionResult.canBeRespondedTo()) {
-                actionResult.addNextActionToStack(cardGame);
-            } else {
-                currentAction.clearResult();
-            }
+            actionResult.addNextActionToStack(cardGame, currentAction);
         } else {
             if (currentAction.isInProgress()) {
                 Action nextAction = currentAction.nextAction(cardGame);
-                if (nextAction != null) {
-                    addActionToStack(nextAction);
-                }
+                addActionToStack(nextAction); // won't do anything if nextAction is null
             } else if (!currentAction.isInProgress() && currentAction.getResult() == null) {
                 removeCompletedActionFromStack(currentAction);
                 cardGame.sendActionResultToClient();
