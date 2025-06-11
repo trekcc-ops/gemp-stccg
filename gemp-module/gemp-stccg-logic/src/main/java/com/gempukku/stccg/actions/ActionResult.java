@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
 import com.gempukku.stccg.actions.turn.PlayOutRequiredResponsesAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -192,7 +191,7 @@ public class ActionResult {
         if (possibleActions.isEmpty()) {
             incrementPassCount();
             if (getPassCount() < getRespondingPlayerCount()) {
-                addNextAction(new PlayOutOptionalResponsesAction(cardGame, thisResult));
+                addNextAction(getResponseActionShell(cardGame));
             }
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
@@ -210,7 +209,7 @@ public class ActionResult {
                                     incrementPassCount();
                                 }
                                 if (getPassCount() < getRespondingPlayerCount()) {
-                                    addNextAction(new PlayOutOptionalResponsesAction(cardGame, thisResult));
+                                    addNextAction(getResponseActionShell(cardGame));
                                 }
                             } catch(InvalidGameLogicException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
