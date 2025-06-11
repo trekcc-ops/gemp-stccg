@@ -43,6 +43,8 @@ public class ActionResult {
 
     private final Stack<Action> _responseActionsToStack = new Stack<>();
     private Action _nextAction;
+    private ActionOrder _optionalResponsePlayerOrder;
+
 
     public ActionResult(Type type, String performingPlayerId) {
         _type = type;
@@ -117,8 +119,8 @@ public class ActionResult {
             if (!requiredResponses.isEmpty()) {
                 return new PlayOutRequiredResponsesAction(cardGame, this, requiredResponses);
             } else {
-                ActionOrder actionOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
-                return new PlayOutOptionalResponsesAction(cardGame, actionOrder, 0, this);
+                _optionalResponsePlayerOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
+                return new PlayOutOptionalResponsesAction(cardGame, 0, this);
             }
         } else {
             Action nextAction = _nextAction;
@@ -129,6 +131,14 @@ public class ActionResult {
 
     public void addNextAction(Action action) {
         _nextAction = action;
+    }
+
+    public String getNextRespondingPlayer() {
+        return _optionalResponsePlayerOrder.getNextPlayer();
+    }
+
+    public int getRespondingPlayerCount() {
+        return _optionalResponsePlayerOrder.getPlayerCount();
     }
 
 }
