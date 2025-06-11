@@ -5,30 +5,21 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class PlayOutOptionalResponsesAction extends SystemQueueAction {
-    private final ActionsEnvironment _actionsEnvironment;
     private final ActionResult _actionResult;
 
     public PlayOutOptionalResponsesAction(DefaultGame game, ActionResult actionResult) {
         super(game);
         _actionResult = actionResult;
-        _actionsEnvironment = game.getActionsEnvironment();
     }
-
-
-
 
     @Override
     public Action nextAction(DefaultGame cardGame)
@@ -36,11 +27,7 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
         final String activePlayerName = _actionResult.getNextRespondingPlayer();
         Player activePlayer = cardGame.getPlayer(activePlayerName);
 
-        final Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
-                _actionsEnvironment.getOptionalAfterTriggers(cardGame, activePlayer, List.of(_actionResult));
-
-        List<TopLevelSelectableAction> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
-        possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(cardGame, activePlayer, List.of(_actionResult)));
+        List<TopLevelSelectableAction> possibleActions = _actionResult.getOptionalAfterActions(cardGame, activePlayer);
 
         if (possibleActions.isEmpty()) {
             _actionResult.incrementPassCount();
@@ -49,18 +36,16 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
                         new PlayOutOptionalResponsesAction(cardGame, _actionResult));
             }
         } else {
-            Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayerName);
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(decidingPlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
+                    new CardActionSelectionDecision(activePlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
                             possibleActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
-                                    _actionsEnvironment.addActionToStack(action);
-                                    if (optionalAfterTriggers.containsKey(action))
-                                        optionalAfterTriggers.get(action).optionalTriggerUsed(action);
+                                    cardGame.getActionsEnvironment().addActionToStack(action);
+                                    _actionResult.markActionAsUsed(action, cardGame, activePlayer);
                                     _actionResult.setPassCount(0);
                                 } else {
                                     _actionResult.incrementPassCount();
