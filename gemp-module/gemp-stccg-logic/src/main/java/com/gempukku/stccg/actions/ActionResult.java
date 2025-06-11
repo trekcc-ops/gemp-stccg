@@ -44,6 +44,7 @@ public class ActionResult {
     private final Stack<Action> _responseActionsToStack = new Stack<>();
     private Action _nextAction;
     private ActionOrder _optionalResponsePlayerOrder;
+    private int _passCount;
 
 
     public ActionResult(Type type, String performingPlayerId) {
@@ -120,7 +121,8 @@ public class ActionResult {
                 return new PlayOutRequiredResponsesAction(cardGame, this, requiredResponses);
             } else {
                 _optionalResponsePlayerOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
-                return new PlayOutOptionalResponsesAction(cardGame, 0, this);
+                _passCount = 0;
+                return new PlayOutOptionalResponsesAction(cardGame, this);
             }
         } else {
             Action nextAction = _nextAction;
@@ -139,6 +141,18 @@ public class ActionResult {
 
     public int getRespondingPlayerCount() {
         return _optionalResponsePlayerOrder.getPlayerCount();
+    }
+
+    public int getPassCount() {
+        return _passCount;
+    }
+
+    public void setPassCount(int passCount) {
+        _passCount = passCount;
+    }
+
+    public void incrementPassCount() {
+        _passCount++;
     }
 
 }

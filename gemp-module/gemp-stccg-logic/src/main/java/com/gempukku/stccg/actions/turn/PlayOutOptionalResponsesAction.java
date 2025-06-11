@@ -18,16 +18,15 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayOutOptionalResponsesAction extends SystemQueueAction {
-    private final int _passCount;
     private final ActionsEnvironment _actionsEnvironment;
     private final ActionResult _actionResult;
 
-    public PlayOutOptionalResponsesAction(DefaultGame game, int passCount, ActionResult actionResult) {
+    public PlayOutOptionalResponsesAction(DefaultGame game, ActionResult actionResult) {
         super(game);
-        _passCount = passCount;
         _actionResult = actionResult;
         _actionsEnvironment = game.getActionsEnvironment();
     }
+
 
 
 
@@ -44,9 +43,10 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
         possibleActions.addAll(_actionsEnvironment.getOptionalAfterActions(cardGame, activePlayer, List.of(_actionResult)));
 
         if (possibleActions.isEmpty()) {
-            if ((_passCount + 1) < _actionResult.getRespondingPlayerCount()) {
+            _actionResult.incrementPassCount();
+            if (_actionResult.getPassCount() < _actionResult.getRespondingPlayerCount()) {
                 _actionResult.addNextAction(
-                        new PlayOutOptionalResponsesAction(cardGame, _passCount+1, _actionResult));
+                        new PlayOutOptionalResponsesAction(cardGame, _actionResult));
             }
         } else {
             Player decidingPlayer = cardGame.getGameState().getPlayer(activePlayerName);
@@ -56,19 +56,18 @@ public class PlayOutOptionalResponsesAction extends SystemQueueAction {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {
-                                final int nextPassCount;
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
                                     _actionsEnvironment.addActionToStack(action);
                                     if (optionalAfterTriggers.containsKey(action))
                                         optionalAfterTriggers.get(action).optionalTriggerUsed(action);
-                                    nextPassCount = 0;
+                                    _actionResult.setPassCount(0);
                                 } else {
-                                    nextPassCount = _passCount + 1;
+                                    _actionResult.incrementPassCount();
                                 }
-                                if (nextPassCount < _actionResult.getRespondingPlayerCount()) {
+                                if (_actionResult.getPassCount() < _actionResult.getRespondingPlayerCount()) {
                                     _actionResult.addNextAction(new PlayOutOptionalResponsesAction(cardGame,
-                                            nextPassCount, _actionResult));
+                                            _actionResult));
                                 }
                             } catch(InvalidGameLogicException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
