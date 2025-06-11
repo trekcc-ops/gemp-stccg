@@ -1,15 +1,17 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.turn.PlayOutRequiredResponsesAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -46,6 +48,7 @@ public class ActionResult {
     private boolean _initialized;
     private Action _nextAction;
     private ActionOrder _optionalResponsePlayerOrder;
+    private List<TopLevelSelectableAction> _requiredResponses = new ArrayList<>();
     private int _passCount;
 
 
@@ -118,9 +121,9 @@ public class ActionResult {
         if (!_initialized) {
             _initialized = true;
             createOptionalAfterTriggerActions(cardGame);
-            List<TopLevelSelectableAction> requiredResponses = getRequiredResponseActions(cardGame);
-            if (!requiredResponses.isEmpty()) {
-                return new PlayOutRequiredResponsesAction(cardGame, this, requiredResponses);
+            _requiredResponses.addAll(getRequiredResponseActions(cardGame));
+            if (!_requiredResponses.isEmpty()) {
+                return getRequiredResponseSystemAction(cardGame);
             } else {
                 _optionalResponsePlayerOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
                 _passCount = 0;
@@ -134,6 +137,10 @@ public class ActionResult {
             _nextAction = null;
             return nextAction;
         }
+    }
+
+    public List<TopLevelSelectableAction> getRequiredResponses() {
+        return _requiredResponses;
     }
 
     public void addNextAction(Action action) {
@@ -227,6 +234,66 @@ public class ActionResult {
             };
             addNextAction(nextAction);
         }
+    }
+
+    private Action getRequiredResponseSystemAction(DefaultGame cardGame) {
+        return new SystemQueueAction(cardGame) {
+            @Override
+            public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException, CardNotFoundException, InvalidGameLogicException {
+                processRequiredResponseEffect(cardGame);
+                setAsSuccessful();
+            }
+        };
+    }
+
+    private void processRequiredResponseEffect(DefaultGame cardGame)
+            throws PlayerNotFoundException, CardNotFoundException, InvalidGameLogicException {
+        ActionsEnvironment environment = cardGame.getActionsEnvironment();
+        List<TopLevelSelectableAction> _responses = getRequiredResponses();
+        if (_responses.size() == 1) {
+            environment.addActionToStack(_responses.getFirst());
+        } else if (areAllActionsTheSame(_responses)) {
+            Action anyAction = _responses.removeFirst();
+            environment.addActionToStack(anyAction);
+            addNextAction(getRequiredResponseSystemAction(cardGame));
+        } else {
+            cardGame.getUserFeedback().sendAwaitingDecision(
+                    new ActionSelectionDecision(cardGame.getCurrentPlayer(),
+                            DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _responses, cardGame) {
+                        @Override
+                        public void decisionMade(String result) throws DecisionResultInvalidException {
+                            try {
+                                Action action = getSelectedAction(result);
+                                environment.addActionToStack(action);
+                                _responses.remove(action);
+                                addNextAction(getRequiredResponseSystemAction(cardGame));
+                            } catch(InvalidGameLogicException exp) {
+                                throw new DecisionResultInvalidException(exp.getMessage());
+                            }
+                        }
+
+                        @Override
+                        public String[] getCardIds() {
+                            return getDecisionParameters().get("cardId");
+                        }
+
+
+                    });
+        }
+    }
+
+    private static boolean areAllActionsTheSame(List<TopLevelSelectableAction> actions) {
+        boolean result = true;
+        TopLevelSelectableAction firstAction = actions.getFirst();
+        if (firstAction.getPerformingCard() == null)
+            result = false;
+        for (TopLevelSelectableAction action : actions) {
+            if (action.getPerformingCard() == null)
+                result = false;
+            else if (action.getPerformingCard().getBlueprint() != firstAction.getPerformingCard().getBlueprint())
+                result = false;
+        }
+        return result;
     }
 
 }
