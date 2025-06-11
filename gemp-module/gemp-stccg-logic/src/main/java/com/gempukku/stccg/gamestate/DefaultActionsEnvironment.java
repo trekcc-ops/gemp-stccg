@@ -195,7 +195,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         ActionResult actionResult = currentAction.getResult();
 
         if (actionResult != null) {
-            actionResult.createOptionalAfterTriggerActions(cardGame);
             addActionToStack(new PlayOutEffectResults(cardGame, currentAction, actionResult));
         } else {
             if (currentAction.isInProgress()) {

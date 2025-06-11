@@ -109,9 +109,10 @@ public class ActionResult {
         return cardGame.getActionsEnvironment().getRequiredAfterTriggers(this);
     }
 
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
         if (!_initialized) {
             _initialized = true;
+            createOptionalAfterTriggerActions(cardGame);
             List<TopLevelSelectableAction> requiredResponses = getRequiredResponseActions(cardGame);
             if (!requiredResponses.isEmpty()) {
                 return new PlayOutRequiredResponsesAction(cardGame, this, requiredResponses);
