@@ -17,6 +17,7 @@ export default class gameDecision {
     min; // smallest number of elements that can be selected
     max; // largest number of elements that can be selected
     selectableCardIds;
+    cardIds;
 
     constructor(decisionJson, gameUi) {
         this.decisionType = decisionJson.decisionType;
@@ -24,20 +25,24 @@ export default class gameDecision {
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
         this.decisionText = decisionJson.text;
-        this.displayedCards = decisionJson.displayedCards;
+        this.selectedElementIds = new Array();
         this.allCardIds = new Array();
 
+        // not for CARD_SELECTION
+        this.displayedCards = decisionJson.displayedCards;
+
         if (this.decisionType === "CARD_ACTION_CHOICE") {
-            this.selectedElementIds = new Array();
             this.noPass = decisionJson.noPass;
         } else if (this.decisionType === "ACTION_CHOICE") {
             this.noPass = true;
-            this.selectedElementIds = new Array();
         } else if (this.decisionType === "ARBITRARY_CARDS") {
             this.min = parseInt(decisionJson.min);
             this.max = parseInt(decisionJson.max);
-            this.selectedElementIds = new Array();
             this.selectableCardIds = new Array();
+        } else if (this.decisionType === "CARD_SELECTION") {
+            this.min = parseInt(decisionJson.min);
+            this.max = parseInt(decisionJson.max);
+            this.allCardIds = decisionJson.cardIds;
         }
     }
 
@@ -88,7 +93,20 @@ export default class gameDecision {
             openSizeDialog(this.gameUi.cardActionDialog);
             this.gameUi.arbitraryDialogResize(false);
             $('.ui-dialog :button').blur();
-        }     
+        } else if (this.decisionType === "CARD_SELECTION") {
+
+            this.gameUi.alertText.html(this.decisionText);
+            this.gameUi.alertBox.addClass("alert-box-card-selection");
+
+            var allowSelection = function () {
+            };
+
+            allowSelection();
+            if (!this.replayMode) {
+                processButtons();
+                this.PlayAwaitActionSound();
+            }
+        }
     }   
 
     finishChoice() {
@@ -116,6 +134,12 @@ export default class gameDecision {
                 this.gameUi.clearSelection();
                 this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
                 break;
+            case "CARD_SELECTION":
+                this.gameUi.alertText.html("");
+                this.gameUi.alertBox.removeClass("alert-box-card-selection");
+                this.gameUi.alertButtons.html("");
+                this.gameUi.clearSelection();
+                this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
         }
     }
 
@@ -181,6 +205,20 @@ export default class gameDecision {
                 };
             }
             this.gameUi.cardActionDialog.dialog("option", "buttons", buttons);
+        } else if (this.decisionType === "CARD_SELECTION") {
+            this.gameUi.alertButtons.html("");
+            if (this.selectedCardIds.length > 0) {
+                this.gameUi.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
+                $("#ClearSelection").button().click(function () {
+                    that.resetChoice();
+                });
+            }
+            if (this.selectedCardIds.length >= this.min) {
+                this.gameUi.alertButtons.append("<button id='Done'>Done</button>");
+                $("#Done").button().click(function () {
+                    that.finishChoice();
+                });
+            }
         }
     }
 
@@ -262,6 +300,35 @@ export default class gameDecision {
             };
 
             this.gameUi.attachSelectionFunctions(this.selectableCardIds, true);
+        } else if (this.decisionType === "CARD_SELECTION") {
+            // this.selectionFunction is called when a card is clicked
+            //   thanks to the code in clickCardFunction()
+            this.gameUi.selectionFunction = function (cardId) {
+                // DEBUG: console.log("cardSelectionDecision -> allowSelection -> selectionFunction");
+                // If the cardId is already selected, remove it.
+                if (that.selectedCardIds.includes(cardId)) {
+                    let index = that.selectedCardIds.indexOf(cardId);
+                    that.selectedCardIds.splice(index, 1);
+                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                }
+                // Otherwise, if the cardId is not already selected, add it.
+                else {
+                    that.selectedCardIds.push(cardId);
+                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");
+                }
+
+                this.gameUi.recalculateCardSelectionOrder(selectedCardIds);
+
+                // If the max number of cards are selected and the user has auto accept on, we're done.
+                if ((that.selectedCardIds.length == that.max) && (that.gameSettings.get("autoAccept"))) {
+                    that.finishChoice();
+                    return;
+                }
+
+                that.processButtons();
+            };
+
+            this.gameUi.attachSelectionFunctions(this.allCardIds, true);
         }
     }
 
@@ -357,11 +424,9 @@ export function processDecision(decision, animate, gameUi) {
                 case "ACTION_CHOICE":
                 case "ARBITRARY_CARDS":
                 case "CARD_ACTION_CHOICE":
+                case "CARD_SELECTION":
                     let decisionObject = new gameDecision(decision, gameUi);
                     decisionObject.processDecision();
-                    break;
-                case "CARD_SELECTION":
-                    gameUi.cardSelectionDecision(decision);
                     break;
                 case "CARD_SELECTION_FROM_COMBINATIONS":
                     gameUi.cardSelectionFromCombinations(decision);
