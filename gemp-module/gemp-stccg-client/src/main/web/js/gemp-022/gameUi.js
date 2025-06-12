@@ -1694,130 +1694,6 @@ export default class GameTableUI {
         }
     }
 
-    // Choosing cards from a predefined selection (for example stating fellowship)
-    arbitraryCardsDecision(decision) {
-        var id = decision.decisionId;
-        var text = decision.text;
-
-        var min = parseInt(decision.min);
-        var max = parseInt(decision.max);
-
-        var displayedCards = decision.displayedCards;
-
-        var that = this;
-
-        let allCardIds = new Array();
-        var selectedCardIds = new Array();
-
-        var selectableCardIds = new Array();
-
-        this.cardActionDialog
-            .html("<div id='arbitraryChoice'></div>")
-            .dialog("option", "title", text);
-
-        // Create the action cards and fill the dialog with them
-        for (let i = 0; i < displayedCards.length; i++) {
-            let selectableCard = displayedCards[i];
-            let cardId = selectableCard.cardId;
-            let blueprintId = selectableCard.blueprintId;
-            let zone = "SPECIAL";
-            let noOwner = "";
-            let imageUrl = selectableCard.imageUrl;
-            let emptyLocationIndex = "";
-            let upsideDown = false;
-
-            if (selectableCard.selectable === "true") {
-                selectableCardIds.push(cardId);
-            }
-            allCardIds.push(cardId);
-            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-
-            let cardDiv = this.createCardDivWithData(card);
-
-            $("#arbitraryChoice").append(cardDiv);
-        }
-
-        var finishChoice = function () {
-            that.cardActionDialog.dialog("close");
-            $("#arbitraryChoice").html("");
-            that.clearSelection();
-            that.decisionFunction(id, "" + selectedCardIds);
-        };
-
-        var resetChoice = function () {
-            selectedCardIds = new Array();
-            that.clearSelection();
-            allowSelection();
-            processButtons();
-        };
-
-        var selectAllCards = function () {
-            selectedCardIds = Array.from(selectableCardIds);
-            that.recalculateCardSelectionOrder(selectedCardIds);
-            that.recalculateAllowedSelectionFromMaxCSS(selectableCardIds, selectedCardIds, max);
-            allowSelection();
-            processButtons();
-        }
-
-        var processButtons = function () {
-            var buttons = {};
-            if ((allCardIds.length <= max) &&
-                (selectedCardIds.length != max)) {
-                buttons["Select all"] = function() {
-                    selectAllCards();
-                    processButtons();
-                }
-            }
-            if (selectedCardIds.length > 0) {
-                buttons["Clear selection"] = function () {
-                    resetChoice();
-                    processButtons();
-                };
-            }
-
-            if (selectedCardIds.length >= min) {
-                buttons["Done"] = function () {
-                    finishChoice();
-                };
-            }
-            that.cardActionDialog.dialog("option", "buttons", buttons);
-        };
-
-        var allowSelection = function () {
-            // this.selectionFunction is called when a card is clicked
-            //   thanks to the code in clickCardFunction()
-            that.selectionFunction = function (cardId) {
-                // DEBUG: console.log("arbitraryCardsDecision -> allowSelection -> selectionFunction");
-                // If the cardId is already selected, remove it.
-                if (selectedCardIds.includes(cardId)) {
-                    let index = selectedCardIds.indexOf(cardId);
-                    selectedCardIds.splice(index, 1);
-                }
-                // Otherwise, if the cardId is not already selected, add it.
-                else {
-                    selectedCardIds.push(cardId);
-                }
-                
-                that.recalculateCardSelectionOrder(selectedCardIds);
-                that.recalculateAllowedSelectionFromMaxCSS(selectableCardIds, selectedCardIds, max);
-
-                processButtons();
-            };
-
-            that.attachSelectionFunctions(selectableCardIds, true);
-        };
-
-        allowSelection();
-        if (!this.replayMode) {
-            processButtons();
-            this.PlayAwaitActionSound();
-        }
-
-        openSizeDialog(this.cardActionDialog);
-        this.arbitraryDialogResize(false);
-        $('.ui-dialog :button').blur();
-    }
-
     cardSelectionFromCombinations(decision) {
         var id = decision.decisionId;
 
@@ -2048,7 +1924,7 @@ export default class GameTableUI {
                 }
 
                 that.recalculateCardSelectionOrder(selectedCardIds);
-                
+
                 // If the max number of cards are selected and the user has auto accept on, we're done.
                 if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
                     finishChoice();
