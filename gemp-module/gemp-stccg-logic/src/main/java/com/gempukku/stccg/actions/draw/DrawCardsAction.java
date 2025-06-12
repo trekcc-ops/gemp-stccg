@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.draw;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
@@ -86,7 +85,8 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         if (_cardsAlreadyDrawnCount < totalDrawCount) {
             cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
             _cardsAlreadyDrawnCount++;
-            return new AllowResponsesAction(cardGame, ActionResult.Type.DRAW_CARD, this);
+            saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId));
+            return null;
         } else {
             setAsSuccessful();
         }

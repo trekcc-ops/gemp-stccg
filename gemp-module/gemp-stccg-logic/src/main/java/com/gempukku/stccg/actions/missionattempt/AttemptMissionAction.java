@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
-import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -115,7 +114,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt);
-                return new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT, this);
+                saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this));
+                return null;
             }
 
             if (attemptingUnit.getAttemptingPersonnel().isEmpty()) {

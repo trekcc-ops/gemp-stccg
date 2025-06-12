@@ -10,7 +10,7 @@ public class EndTurnAction extends SystemQueueAction {
 
     public EndTurnAction(DefaultGame cardGame, Player currentPlayer) {
         super(cardGame);
-        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.END_OF_TURN, currentPlayer));
+        saveResult(new ActionResult(ActionResult.Type.END_OF_TURN, currentPlayer.getPlayerId()));
     }
     @Override
     protected void processEffect(DefaultGame cardGame) {

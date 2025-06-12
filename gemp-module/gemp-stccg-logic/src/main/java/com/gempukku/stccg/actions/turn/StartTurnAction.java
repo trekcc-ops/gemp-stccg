@@ -11,7 +11,7 @@ public class StartTurnAction extends SystemQueueAction {
 
     public StartTurnAction(DefaultGame cardGame, Player currentPlayer) {
         super(cardGame);
-        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_TURN, currentPlayer));
+        saveResult(new ActionResult(ActionResult.Type.START_OF_TURN, currentPlayer.getPlayerId()));
     }
     @Override
     protected void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {

@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.playcard;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -70,7 +69,8 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
             _initiated = true;
             _cardEnteringPlay.removeFromCardGroup();
             ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
-            return new AllowResponsesAction(cardGame, playCardInitiationResult);
+            saveResult(playCardInitiationResult);
+            return null;
         }
 
         if (isInProgress() && !_cardPlayed) {
