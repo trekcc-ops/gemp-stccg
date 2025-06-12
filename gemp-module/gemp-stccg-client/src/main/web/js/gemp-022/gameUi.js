@@ -1374,29 +1374,6 @@ export default class GameTableUI {
         });
     }
 
-    getDecisionParameter(decision, name) {
-        var parameters = decision.getElementsByTagName("parameter");
-        for (var i = 0; i < parameters.length; i++) {
-            if (parameters[i].getAttribute("name") == name) {
-                return parameters[i].getAttribute("value");
-            }
-        }
-
-        return null;
-    }
-
-    getDecisionParameters(decision, name) {
-        var result = new Array();
-        var parameters = decision.getElementsByTagName("parameter");
-        for (var i = 0; i < parameters.length; i++) {
-            if (parameters[i].getAttribute("name") == name) {
-                result.push(parameters[i].getAttribute("value"));
-            }
-        }
-
-        return result;
-    }
-
     cleanupDecision() {
         this.smallDialog.dialog("close");
         this.cardActionDialog.dialog("close");
