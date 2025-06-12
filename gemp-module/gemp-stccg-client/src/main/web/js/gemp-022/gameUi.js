@@ -1682,18 +1682,6 @@ export default class GameTableUI {
         return cardDiv;
     }
 
-    attachSelectionFunctions(cardIds, selection) {
-        if (selection) {
-            if (cardIds.length > 0) {
-                $(".card:cardId(" + cardIds + ")").addClass("selectableCard");
-            }
-        } else {
-            if (cardIds.length > 0) {
-                $(".card:cardId(" + cardIds + ")").addClass("actionableCard");
-            }
-        }
-    }
-
     PlayAwaitActionSound() {
         let audio = new Audio(awaitingActionAudio);
         if(!document.hasFocus() || document.hidden || document.msHidden || document.webkitHidden)

@@ -5,7 +5,6 @@ import { openSizeDialog } from "./common.js";
 
 export default class gameDecision {
 
-    decisionJson;
     gameUi;
     decisionType;
     decisionId;
@@ -22,12 +21,10 @@ export default class gameDecision {
 
     constructor(decisionJson, gameUi) {
         this.decisionType = decisionJson.decisionType;
-        this.decisionJson = decisionJson;
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
         this.allCardIds = new Array();
         this.decisionText = decisionJson.text;
-
         this.selectedElementIds = new Array();
 
         if (this.decisionType === "CARD_ACTION_CHOICE") {
@@ -275,6 +272,18 @@ export default class gameDecision {
         this.processButtons();
     }
 
+    attachSelectionFunctions(cardIds, selection) {
+        if (selection) {
+            if (cardIds.length > 0) {
+                $(".card:cardId(" + cardIds + ")").addClass("selectableCard");
+            }
+        } else {
+            if (cardIds.length > 0) {
+                $(".card:cardId(" + cardIds + ")").addClass("actionableCard");
+            }
+        }
+    }
+
     allowSelection() {
         var that = this;
         if (this.decisionType === "CARD_ACTION_CHOICE") {
@@ -308,7 +317,7 @@ export default class gameDecision {
                 }
             };
 
-            this.gameUi.attachSelectionFunctions(this.allCardIds, false);
+            this.attachSelectionFunctions(this.allCardIds, false);
         } else if (this.decisionType === "ACTION_CHOICE") {
             this.gameUi.selectionFunction = function (cardId) {
                 // DEBUG: console.log("actionChoiceDecision -> allowSelection -> selectionFunction");
@@ -323,7 +332,7 @@ export default class gameDecision {
                 }
             };
 
-            this.gameUi.attachSelectionFunctions(this.allCardIds, true);
+            this.attachSelectionFunctions(this.allCardIds, true);
         } else if (this.decisionType === "ARBITRARY_CARDS") {
             // this.selectionFunction is called when a card is clicked
             //   thanks to the code in clickCardFunction()
@@ -345,7 +354,7 @@ export default class gameDecision {
                 that.processButtons();
             };
 
-            this.gameUi.attachSelectionFunctions(this.selectableCardIds, true);
+            this.attachSelectionFunctions(this.selectableCardIds, true);
         } else if (this.decisionType === "CARD_SELECTION") {
             // this.selectionFunction is called when a card is clicked
             //   thanks to the code in clickCardFunction()
@@ -374,7 +383,7 @@ export default class gameDecision {
                 that.processButtons();
             };
 
-            this.gameUi.attachSelectionFunctions(this.allCardIds, true);
+            this.attachSelectionFunctions(this.allCardIds, true);
         } else if (this.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
             // this.selectionFunction is called when a card is clicked
             //   thanks to the code in clickCardFunction()
@@ -396,7 +405,7 @@ export default class gameDecision {
                 that.processButtons();
             };
 
-            this.gameUi.attachSelectionFunctions(this.selectableCardIds, true);
+            this.attachSelectionFunctions(this.selectableCardIds, true);
         }
     }
 
