@@ -173,4 +173,12 @@ public interface PhysicalCard extends Filterable {
     }
 
     void reveal();
+
+    default List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(Player player, ActionResult actionResult) {
+        return getBlueprint().getOptionalResponseActionsWhileInHand(this, player, actionResult);
+    }
+
+    default List<TopLevelSelectableAction> getPlayActionsFromGameText(Player player, DefaultGame cardGame) {
+        return getBlueprint().getPlayActionsFromGameText(this, player, cardGame);
+    }
 }

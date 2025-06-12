@@ -31,6 +31,7 @@ public abstract class ActionyAction implements Action {
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
+    private ActionResult _currentResult;
     protected final Map<String, ActionCardResolver> _cards = new HashMap<>();
 
     @JsonProperty("status")
@@ -260,6 +261,8 @@ public abstract class ActionyAction implements Action {
         _actionStatus = ActionStatus.completed_success;
     }
 
+    public void cancel() { _actionStatus = ActionStatus.cancelled; }
+
     protected void setAsInitiated() {
         _actionStatus = ActionStatus.initiation_complete;
     }
@@ -283,5 +286,15 @@ public abstract class ActionyAction implements Action {
     public boolean wasSuccessful() {
         return _actionStatus == ActionStatus.completed_success;
     }
+
+    protected void saveResult(ActionResult actionResult) {
+        _currentResult = actionResult;
+    }
+
+    public void clearResult() {
+        _currentResult = null;
+    }
+
+    public ActionResult getResult() { return _currentResult; }
 
 }

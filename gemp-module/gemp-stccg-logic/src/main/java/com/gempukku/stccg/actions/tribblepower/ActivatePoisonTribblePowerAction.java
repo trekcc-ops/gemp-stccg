@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -47,7 +48,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
                 playerChosen(playersWithCardsArr[0], cardGame);
             else
                 cardGame.getUserFeedback().sendAwaitingDecision(
-                        new MultipleChoiceAwaitingDecision(performingPlayer, "Choose a player",
+                        new MultipleChoiceAwaitingDecision(performingPlayer, DecisionContext.SELECT_PLAYER,
                                 playersWithCardsArr, cardGame) {
                             @Override
                             protected void validDecisionMade(int index, String result)

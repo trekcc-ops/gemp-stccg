@@ -365,6 +365,36 @@
             rarity: C
         }
         {
+            blueprintId: 101_108
+            title: Amanda Rogers
+            type: interrupt
+            java-blueprint: true
+            property-logo: tng-logo
+            lore: Female Q raised as a human on Earth. Was taken to the Q continuum by Q after she could not resist the benevolent use of her powers.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR108.jpg
+            rarity: U
+        }
+        {
+            blueprintId: 101_125
+            title: Klingon Death Yell
+            java-blueprint: true
+            type: interrupt
+            property-logo: tng-logo
+            lore: Warning for the dead to beware; a Klingon warrior is about to arrive. In Klingon myth, killed warriors with honor go to Sto-Vo-Kor. Dishonored dead go to Gre-thor.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR125.jpg
+            rarity: R
+        }
+        {
+            blueprintId: 101_131
+            title: "Palor Toff: Alien Trader"
+            type: interrupt
+            java-blueprint: true
+            property-logo: tng-logo
+            lore: Rich merchant and trader from an unknown race. Friend of Kivas Fajo. Snappy dresser.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR131.jpg
+            rarity: C
+        }
+        {
             blueprintId: 101_146
             title: Avert Disaster
             type: mission
@@ -1327,6 +1357,7 @@
             property-logo: tng-logo
             classification: SECURITY
             icons: command
+            species: klingon
             lore: Lieutenant Worf is chief of security on the U.S.S. Enterprise. Klingon warrior and Starfleet officer. Son of Mogh. Raised on Earth by foster parents.
             skill-box: "[*] Honor x2 [*] Navigation [*] Diplomacy"
             integrity: 8

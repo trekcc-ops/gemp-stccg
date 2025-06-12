@@ -82,8 +82,7 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
                 stCard.unstop();
             }
             gameState.addCardToZoneWithoutSendingToClient(cardToDiscard, Zone.DISCARD);
-            cardGame.getActionsEnvironment().emitEffectResult(
-                    new DiscardCardFromPlayResult(_performingCard, cardToDiscard));
+            saveResult(new DiscardCardFromPlayResult(cardToDiscard, this));
         }
         setAsSuccessful();
         return getNextAction();

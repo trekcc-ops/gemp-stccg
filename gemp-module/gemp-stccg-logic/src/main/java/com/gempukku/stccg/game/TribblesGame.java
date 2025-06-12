@@ -8,6 +8,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
+import com.gempukku.stccg.rules.generic.RuleSet;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 
 import java.util.Map;
@@ -40,6 +41,11 @@ public class TribblesGame extends DefaultGame {
     @Override
     public TribblesGameState getGameState() {
         return _gameState;
+    }
+
+    @Override
+    public TribblesRuleSet getRules() {
+        return _rules;
     }
 
 }

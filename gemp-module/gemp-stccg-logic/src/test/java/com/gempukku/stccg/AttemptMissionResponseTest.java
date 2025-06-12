@@ -3,7 +3,6 @@ package com.gempukku.stccg;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
-import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -121,8 +120,6 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
             } else {
                 System.out.println(message);
@@ -140,8 +137,6 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
             } else {
                 System.out.println(message);

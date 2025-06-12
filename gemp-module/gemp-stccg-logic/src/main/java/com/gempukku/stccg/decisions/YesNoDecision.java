@@ -5,8 +5,8 @@ import com.gempukku.stccg.player.Player;
 
 public class YesNoDecision extends MultipleChoiceAwaitingDecision {
 
-    public YesNoDecision(Player player, String text, DefaultGame cardGame) {
-        super(player, text, new String[]{"Yes", "No"}, cardGame);
+    public YesNoDecision(Player player, DecisionContext context, DefaultGame cardGame) {
+        super(player, context, new String[]{"Yes", "No"}, cardGame);
     }
 
 

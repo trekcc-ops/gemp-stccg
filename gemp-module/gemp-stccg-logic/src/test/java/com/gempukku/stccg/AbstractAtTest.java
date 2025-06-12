@@ -12,7 +12,6 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
-import com.gempukku.stccg.actions.turn.PlayOutOptionalResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -26,7 +25,10 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import org.junit.jupiter.api.Assertions;
@@ -908,8 +910,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     message = message + " - " + action.getActionSelectionText(_game);
                 if (action instanceof SubAction)
                     message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
                 System.out.println(message);
                 String serialized = new ObjectMapper().writeValueAsString(action);
                 System.out.println(serialized);

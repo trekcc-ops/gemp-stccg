@@ -86,7 +86,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         if (_cardsAlreadyDrawnCount < totalDrawCount) {
             cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
             _cardsAlreadyDrawnCount++;
-            return new AllowResponsesAction(cardGame, ActionResult.Type.DRAW_CARD);
+            return new AllowResponsesAction(cardGame, ActionResult.Type.DRAW_CARD, this);
         } else {
             setAsSuccessful();
         }

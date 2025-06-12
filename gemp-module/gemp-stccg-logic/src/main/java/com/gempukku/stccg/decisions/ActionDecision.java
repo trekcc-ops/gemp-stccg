@@ -26,6 +26,19 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
         }
     }
 
+    ActionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
+                   AwaitingDecisionType type, DefaultGame cardGame) {
+        super(player, context, type, cardGame);
+        _actions = actions;
+        setParam("actionId", getActionIds());
+        try {
+            setParam("actionText", getActionTexts(cardGame));
+        } catch(InvalidGameLogicException exp) {
+            setParam("actionText", "Select action");
+        }
+    }
+
+
 
     protected String[] getActionIds() {
         String[] result = new String[_actions.size()];

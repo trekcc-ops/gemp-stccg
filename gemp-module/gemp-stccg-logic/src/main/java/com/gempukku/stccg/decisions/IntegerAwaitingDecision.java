@@ -17,14 +17,15 @@ public abstract class IntegerAwaitingDecision extends AbstractAwaitingDecision {
     @JsonProperty("defaultValue")
     private Integer _defaultValue;
 
-    public IntegerAwaitingDecision(Player performingPlayer, String choiceText, int min, int max,
+    public IntegerAwaitingDecision(Player performingPlayer, DecisionContext context, int min, int max,
                                    DefaultGame cardGame) {
-        super(performingPlayer, choiceText, AwaitingDecisionType.INTEGER, cardGame);
+        super(performingPlayer, context, AwaitingDecisionType.INTEGER, cardGame);
         _min = min;
         _max = max;
         setParam("min", _min);
         setParam("max", _max);
     }
+
 
 
     public void setDefaultValue(int defaultValue) {

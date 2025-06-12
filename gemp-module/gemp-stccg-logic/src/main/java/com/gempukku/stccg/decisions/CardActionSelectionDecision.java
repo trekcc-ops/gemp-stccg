@@ -19,13 +19,25 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
 
     public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
                                        DefaultGame cardGame) {
-        this(player, text, actions, false, cardGame);
+        super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE, cardGame);
+        _noPass = false;
+        _cardIds = getCardIds();
+        setParam("cardId", getCardIds());
+        setParam("blueprintId", getBlueprintIds()); // done in super
+        setParam("imageUrl", getImageUrls()); // done in super
+        setParam("actionType", getActionTypes());
+        setParam("noPass", String.valueOf(_noPass));
+    }
+
+    public CardActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
+                                       DefaultGame cardGame) {
+        this(player, context, actions, false, cardGame);
     }
 
 
-    public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
+    public CardActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                        boolean noPass, DefaultGame cardGame) {
-        super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE, cardGame);
+        super(player, context.getClientText(), actions, AwaitingDecisionType.CARD_ACTION_CHOICE, cardGame);
         _noPass = noPass;
         _cardIds = getCardIds();
         setParam("cardId", getCardIds());

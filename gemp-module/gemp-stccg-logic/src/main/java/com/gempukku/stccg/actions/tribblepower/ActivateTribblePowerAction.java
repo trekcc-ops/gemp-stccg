@@ -50,8 +50,8 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
         Action action = getNextAction();
         if (action == null) {
             ActionResult result =
-                    new ActionResult(ActionResult.Type.ACTIVATE_TRIBBLE_POWER, this, _performingCard);
-            cardGame.getActionsEnvironment().emitEffectResult(result);
+                    new ActionResult(ActionResult.Type.ACTIVATE_TRIBBLE_POWER, this);
+            saveResult(result);
         }
         return action;
     }

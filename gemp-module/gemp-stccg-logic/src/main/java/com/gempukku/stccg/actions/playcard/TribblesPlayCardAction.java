@@ -43,7 +43,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setNextTribbleInSequence(nextTribble);
 
         gameState.setChainBroken(false);
-        cardGame.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
+        saveResult(new PlayCardResult(this, _cardEnteringPlay));
         _wasCarriedOut = true;
         setAsSuccessful();
         return null;

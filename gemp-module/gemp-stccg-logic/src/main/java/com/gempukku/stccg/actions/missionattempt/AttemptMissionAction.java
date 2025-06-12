@@ -115,7 +115,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
             if (!getProgress(Progress.startedMissionAttempt)) {
                 setProgress(Progress.startedMissionAttempt);
-                return new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT);
+                return new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT, this);
             }
 
             if (attemptingUnit.getAttemptingPersonnel().isEmpty()) {

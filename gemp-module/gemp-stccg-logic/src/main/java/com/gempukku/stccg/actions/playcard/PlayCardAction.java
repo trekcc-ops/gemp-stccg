@@ -2,10 +2,8 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -14,6 +12,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
@@ -21,6 +20,10 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     final PhysicalCard _performingCard;
     protected final PhysicalCard _cardEnteringPlay;
     final Zone _destinationZone;
+    private boolean _initiated;
+    private boolean _cancelled;
+    private boolean _cardPlayed;
+    private final List<Action> _immediateGameTextActions = new ArrayList<>();
 
     public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
                           Zone toZone, ActionType actionType) {
@@ -63,27 +66,48 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         if (cost != null)
             return cost;
 
+        if (!_initiated) {
+            _initiated = true;
+            _cardEnteringPlay.removeFromCardGroup();
+            ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
+            return new AllowResponsesAction(cardGame, playCardInitiationResult);
+        }
+
+        if (isInProgress() && !_cardPlayed) {
+            _cardPlayed = true;
+            putCardIntoPlay(cardGame);
+        }
+
+        if (isInProgress()) {
+            Action nextAction = getNextAction();
+            if (nextAction == null) {
+                setAsSuccessful();
+            }
+            return nextAction;
+        }
+        return null;
+    }
+    
+    protected void putCardIntoPlay(DefaultGame cardGame) throws PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (performingPlayer.getCardsInDrawDeck().contains(_cardEnteringPlay)) {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
             _cardEnteringPlay.getOwner().shuffleDrawDeck(cardGame);
         }
-        putCardIntoPlay(cardGame);
-        _wasCarriedOut = true;
-        return null;
-    }
-    
-    protected void putCardIntoPlay(DefaultGame game) {
-        GameState gameState = game.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
+        GameState gameState = cardGame.getGameState();
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
         gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
-        setAsSuccessful();
+        saveResult(new PlayCardResult(this, _cardEnteringPlay));
+        _wasCarriedOut = true;
     }
 
     public boolean wasCarriedOut() {
         return _wasCarriedOut;
+    }
+
+    public void addImmediateGameTextAction(Action action) {
+        _immediateGameTextActions.add(action);
     }
 
 }
