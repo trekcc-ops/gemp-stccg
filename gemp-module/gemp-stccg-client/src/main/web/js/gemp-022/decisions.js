@@ -50,85 +50,91 @@ export default class gameDecision {
             this.selectableCardIds = new Array();
             this.allCardIds = decisionJson.cardIds;
             this.jsonCombinations = JSON.parse(decisionJson.validCombinations);
+            this.decisionText = "Select " + this.min + " to " + this.max + " cards";
+        }
+    }
+
+    createUiElements() {
+        switch(this.decisionType) {
+            case "CARD_ACTION_CHOICE":
+                this.gameUi.alertText.html(this.decisionText);
+                this.gameUi.alertBox.addClass("alert-box-highlight");
+                break;
+            case "ACTION_CHOICE":
+            case "ARBITRARY_CARDS":
+                this.gameUi.cardActionDialog
+                    .html("<div id='arbitraryChoice'></div>")
+                    .dialog("option", "title", this.decisionText);
+                this.createSelectableDivs();
+                break;
+            case "CARD_SELECTION":
+                this.gameUi.alertText.html(this.decisionText);
+                this.gameUi.alertBox.addClass("alert-box-card-selection");
+                break;
+            case "CARD_SELECTION_FROM_COMBINATIONS":
+                this.gameUi.cardActionDialog
+                    .html("<div id='cardSelectionFromCombinations'></div>")
+                    .dialog("option", "title", this.decisionText);
+                this.createSelectableDivs();
+                break;
+        }
+    }
+
+    goDing() {
+        if (!this.gameUi.replayMode) {
+            this.gameUi.PlayAwaitActionSound();
+        }
+    }
+
+    resizeDialog() {
+        openSizeDialog(this.gameUi.cardActionDialog);
+        this.gameUi.arbitraryDialogResize(false);
+    }
+
+    resetFocus() {
+        switch(this.decisionType) {
+            case "CARD_ACTION_CHOICE":
+                $(':button').blur();
+                break;
+            case "ACTION_CHOICE":
+            case "ARBITRARY_CARDS":
+            case "CARD_SELECTION_FROM_COMBINATIONS":
+                $('.ui-dialog :button').blur();
+                break;
+            case "CARD_SELECTION":
+                break; // Not sure why this one doesn't do anything
         }
     }
 
     processDecision() {
-        if (this.decisionType === "CARD_ACTION_CHOICE") {
-            if (this.displayedCards.length == 0 && this.gameUi.gameSettings.get("autoPass") && !this.gameUi.replayMode) {
-                this.gameUi.decisionFunction(this.decisionId, "");
-            } else {
-                this.gameUi.alertText.html(this.decisionText);
-                // ****CCG League****: Border around alert box
-                this.gameUi.alertBox.addClass("alert-box-highlight");
+        switch(this.decisionType) {
+            case "ACTION_CHOICE":
+            case "ARBITRARY_CARDS":
+            case "CARD_SELECTION_FROM_COMBINATIONS":
+                this.createUiElements();
                 this.allowSelection();
-                if (!this.gameUi.replayMode) {
-                    this.processButtons();
-                    this.gameUi.PlayAwaitActionSound();
+                this.goDing();
+                this.resizeDialog();
+                this.resetFocus();
+                break;
+            case "CARD_ACTION_CHOICE":
+                if (this.displayedCards.length == 0 && this.gameUi.gameSettings.get("autoPass") && !this.gameUi.replayMode) {
+                    this.gameUi.decisionFunction(this.decisionId, "");
+                } else {
+                    this.createUiElements();
+                    this.allowSelection();
+                    this.goDing();
+                    this.resetFocus();
                 }
-                $(':button').blur();
-            }
-        } else if (this.decisionType === "ACTION_CHOICE") {
-
-            this.gameUi.cardActionDialog
-                .html("<div id='arbitraryChoice'></div>")
-                .dialog("option", "title", this.decisionText);
-            this.createSelectableDivs();
-            this.allowSelection();
-            if (!this.gameUi.replayMode) {
-                this.processButtons();
-                this.gameUi.PlayAwaitActionSound();
-            }
-
-            openSizeDialog(this.gameUi.cardActionDialog);
-            this.gameUi.arbitraryDialogResize(false);
-            $('.ui-dialog :button').blur();
-        } else if (this.decisionType === "ARBITRARY_CARDS") {
-            // Selecting cards from a dialog box
-    
-            this.gameUi.cardActionDialog
-                .html("<div id='arbitraryChoice'></div>")
-                .dialog("option", "title", this.decisionText);
-            this.createSelectableDivs();
-    
-            this.allowSelection();
-            if (!this.gameUi.replayMode) {
-                this.processButtons();
-                this.gameUi.PlayAwaitActionSound();
-            }
-    
-            openSizeDialog(this.gameUi.cardActionDialog);
-            this.gameUi.arbitraryDialogResize(false);
-            $('.ui-dialog :button').blur();
-        } else if (this.decisionType === "CARD_SELECTION") {
-
-            this.gameUi.alertText.html(this.decisionText);
-            this.gameUi.alertBox.addClass("alert-box-card-selection");
-
-            this.allowSelection();
-            if (!this.replayMode) {
-                this.processButtons();
-                this.gameUi.PlayAwaitActionSound();
-            }
-        } else if (this.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
-
-            this.gameUi.cardActionDialog
-                .html("<div id='cardSelectionFromCombinations'></div>")
-                .dialog("option", "title", `Select ${min} to ${max} cards`);
-
-            this.createSelectableDivs();
-
-            this.allowSelection();
-            if (!this.replayMode) {
-                this.processButtons();
-                this.gameUi.PlayAwaitActionSound();
-            }
-
-            openSizeDialog(this.cardActionDialog);
-            this.arbitraryDialogResize(false);
-            $('.ui-dialog :button').blur();
+                break;
+            case "CARD_SELECTION":
+                this.createUiElements();
+                this.allowSelection();
+                this.goDing();
+                this.resetFocus();
+                break;
         }
-    }   
+    }
 
     finishChoice() {
         switch(this.decisionType) {
@@ -146,29 +152,27 @@ export default class gameDecision {
                         }
                     });
                 this.gameUi.hand.layoutCards();
-                this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
                 break;
             case "ACTION_CHOICE":
             case "ARBITRARY_CARDS":
                 this.gameUi.cardActionDialog.dialog("close");
                 $("#arbitraryChoice").html("");
                 this.gameUi.clearSelection();
-                this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
                 break;
             case "CARD_SELECTION":
                 this.gameUi.alertText.html("");
                 this.gameUi.alertBox.removeClass("alert-box-card-selection");
                 this.gameUi.alertButtons.html("");
                 this.gameUi.clearSelection();
-                this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
                 break;
             case "CARD_SELECTION_FROM_COMBINATIONS":
                 this.gameUi.cardActionDialog.dialog("close");
                 $("#cardSelectionFromCombinations").html("");
                 this.gameUi.clearSelection();
-                this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
                 break;
         }
+
+        this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
     }
 
     processButtons() {
@@ -196,7 +200,6 @@ export default class gameDecision {
             if (this.selectedElementIds.length > 0) {
                 buttons["Clear selection"] = function () {
                     that.resetChoice();
-                    that.processButtons();
                 };
                 buttons["Done"] = function () {
                     that.finishChoice();
@@ -212,12 +215,10 @@ export default class gameDecision {
                     that.gameUi.recalculateCardSelectionOrder(that.selectedElementIds);
                     that.gameUi.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
                     that.allowSelection();
-                    that.processButtons();
-                    this.selectedElementIds = Array.from(this.selectableCardIds);
-                    that.gameUi.recalculateCardSelectionOrder(this.selectedElementIds);
-                    that.gameUi.recalculateAllowedSelectionFromMaxCSS(this.selectableCardIds, this.selectedElementIds, this.max);
-                    this.allowSelection();
-                    this.processButtons();
+                    that.selectedElementIds = Array.from(that.selectableCardIds);
+                    that.gameUi.recalculateCardSelectionOrder(that.selectedElementIds);
+                    that.gameUi.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
+                    that.allowSelection();
                 }
             }
             if (this.selectedElementIds.length > 0) {
@@ -407,6 +408,8 @@ export default class gameDecision {
 
             this.attachSelectionFunctions(this.selectableCardIds, true);
         }
+
+        this.processButtons();
     }
 
     createSelectableDivs() {
@@ -531,10 +534,10 @@ export function processDecision(decision, animate, gameUi) {
                     decisionObject.processDecision();
                     break;
                 case "INTEGER":
-                    gameUi.integerDecision(decision);
+                    integerDecision(decision, gameUi);
                     break;
                 case "MULTIPLE_CHOICE":
-                    gameUi.multipleChoiceDecision(decision);
+                    multipleChoiceDecision(decision, gameUi);
                     break;
                 default:
                     console.error(`Unknown decisionType: ${decisionType}`);
@@ -552,3 +555,111 @@ export function processDecision(decision, animate, gameUi) {
             });
     }
 }
+
+    export function integerDecision(decision, gameUi) {
+        let id = decision.decisionId;
+        let text = decision.text;
+        var val = 0;
+
+        var min = decision.min;
+        if (min == null) {
+            min = 0;
+        }
+        var max = decision.max;
+        if (max == null) {
+            max = 1000;
+        }
+
+        var defaultValue = decision.defaultValue;
+        if (defaultValue != null) {
+            val = parseInt(defaultValue);
+        }
+
+        gameUi.smallDialog.html(text + `<br /><input id='integerDecision' value='${val}'>`);
+
+        if (!gameUi.replayMode) {
+            gameUi.smallDialog.dialog("option", "buttons",
+                {
+                    "OK": function () {
+                        let retval = document.getElementById("integerDecision").value
+                        $(this).dialog("close");
+                        gameUi.decisionFunction(id, retval);
+                    }
+                });
+        }
+
+        $("#integerDecision").spinner({
+            min: parseInt(min),
+            max: parseInt(max)
+        });
+
+        gameUi.smallDialog.dialog("open");
+        $('.ui-dialog :button').blur();
+    }
+
+    export function multipleChoiceDecision(decision, gameUi) {
+        var id = decision.decisionId;
+        let serverText = decision.text; // raw string from the server for the user message
+        let context = decision.context;
+        let serverValues = decision.results; // raw strings that are passed from the server
+        let results = new Array();
+        let text;
+
+        if (context === "SEED_MISSION_INDEX_SELECTION") {
+            // For this decision, the serverValues are strings representing the spaceline indices where the mission
+            // can be seeded. This array should be in ascending numerical order.
+            text = "Seed mission on the left or right?";
+            results.push("LEFT");
+            results.push("RIGHT");
+        } else {
+            text = serverText;
+            results = serverValues;
+        }
+
+        gameUi.smallDialog.html(text);
+
+        if (results.length > 2 || gameUi.gameSettings.get("alwaysDropDown")) {
+            var html = "<br /><select id='multipleChoiceDecision' selectedIndex='0'>";
+            for (var i = 0; i < results.length; i++) {
+                html += "<option value='" + i + "'>" + results[i] + "</option>";
+            }
+            html += "</select>";
+            gameUi.smallDialog.append(html);
+
+            if (!gameUi.replayMode) {
+                gameUi.smallDialog.dialog("option", "buttons",
+                    {
+                        "OK": function () {
+                            gameUi.smallDialog.dialog("close");
+                            gameUi.decisionFunction(id, $("#multipleChoiceDecision").val());
+                        }
+                    });
+            }
+        } else {
+            gameUi.smallDialog.append("<br />");
+            for (var i = 0; i < results.length; i++) {
+                if (i > 0) {
+                    gameUi.smallDialog.append(" ");
+                }
+
+                var but = $("<button></button>").html(results[i]).button();
+                if (!gameUi.replayMode) {
+                    but.click(
+                        (function (ind) {
+                            return function () {
+                                gameUi.smallDialog.dialog("close");
+                                gameUi.decisionFunction(id, "" + ind);
+                            }
+                        })(i));
+                }
+                gameUi.smallDialog.append(but);
+            }
+            if (!gameUi.replayMode) {
+                gameUi.smallDialog.dialog("option", "buttons", {});
+                gameUi.PlayAwaitActionSound();
+            }
+        }
+
+        this.smallDialog.dialog("open");
+        $('.ui-dialog :button').blur();
+    }
