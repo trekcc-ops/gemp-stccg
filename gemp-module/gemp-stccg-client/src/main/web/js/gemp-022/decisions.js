@@ -145,54 +145,48 @@ export default class gameDecision {
     processButtons() {
         var that = this;
 
-        switch(this.decisionType) {
-            case "CARD_ACTION_CHOICE":
-            case "CARD_SELECTION":
-                this.gameUi.alertButtons.html("");
-                if (this.min == 0 && this.selectedElementIds.length == 0) {
-                    this.gameUi.alertButtons.append("<button id='Pass'>Pass</button>");
-                    $("#Pass").button().click(function () {
-                        that.finishChoice();
-                    });
-                } else if (this.selectedElementIds.length >= this.min) {
-                    this.gameUi.alertButtons.append("<button id='Done'>Done</button>");
-                    $("#Done").button().click(function () {
-                        that.finishChoice();
-                    });
-                }
-                if (this.selectedElementIds.length > 0) {
-                    this.gameUi.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
-                    $("#ClearSelection").button().click(function () {
-                        that.resetChoice();
-                    });
-                }
-                break;
-            case "ACTION_CHOICE":
-            case "ARBITRARY_CARDS":
-            case "CARD_SELECTION_FROM_COMBINATIONS":
-                let buttons = {};
-                if (this.allCardIds.length <= this.max && this.selectedElementIds.length != this.max) {
-                    buttons["Select all"] = function() {
-                        that.selectedElementIds = Array.from(that.selectableCardIds);
-                        if (this.decisionType === "ARBITRARY_CARDS") {
-                            that.gameUi.recalculateCardSelectionOrder(that.selectedElementIds);
-                            that.gameUi.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
-                        }
-                        that.allowSelection();
+        if (!useDialog) {
+            this.gameUi.alertButtons.html("");
+            if (this.min == 0 && this.selectedElementIds.length == 0) {
+                this.gameUi.alertButtons.append("<button id='Pass'>Pass</button>");
+                $("#Pass").button().click(function () {
+                    that.finishChoice();
+                });
+            } else if (this.selectedElementIds.length >= this.min) {
+                this.gameUi.alertButtons.append("<button id='Done'>Done</button>");
+                $("#Done").button().click(function () {
+                    that.finishChoice();
+                });
+            }
+            if (this.selectedElementIds.length > 0) {
+                this.gameUi.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
+                $("#ClearSelection").button().click(function () {
+                    that.resetChoice();
+                });
+            }
+        } else {
+            let buttons = {};
+            if (this.allCardIds.length <= this.max && this.selectedElementIds.length != this.max) {
+                buttons["Select all"] = function() {
+                    that.selectedElementIds = Array.from(that.selectableCardIds);
+                    if (this.decisionType === "ARBITRARY_CARDS") {
+                        that.gameUi.recalculateCardSelectionOrder(that.selectedElementIds);
+                        that.gameUi.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
                     }
+                    that.allowSelection();
                 }
-                if (this.selectedElementIds.length > 0) {
-                    buttons["Clear selection"] = function () {
-                        that.resetChoice();
-                    };
-                }
-                if (this.selectedElementIds.length >= this.min) && (this.selectedElementIds.length <= this.max) {
-                    buttons["Done"] = function () {
-                        that.finishChoice();
-                    };
-                }
-                this.gameUi.cardActionDialog.dialog("option", "buttons", buttons);
-                break;
+            }
+            if (this.selectedElementIds.length > 0) {
+                buttons["Clear selection"] = function () {
+                    that.resetChoice();
+                };
+            }
+            if (this.selectedElementIds.length >= this.min) && (this.selectedElementIds.length <= this.max) {
+                buttons["Done"] = function () {
+                    that.finishChoice();
+                };
+            }
+            this.gameUi.cardActionDialog.dialog("option", "buttons", buttons);
         }
     }
 
