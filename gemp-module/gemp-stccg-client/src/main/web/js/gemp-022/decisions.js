@@ -193,7 +193,7 @@ export default class gameDecision {
     resetChoice() {
         this.selectedElementIds = new Array();
         this.gameUi.clearSelection();
-        if (this.decisionType === "CARD_ACTION_CHOICE") {
+        if (this.elementType === "ACTION" && !this.useDialog) {
             // Selecting cards with this decision removes all the divs, so they need to be re-created
             this.createSelectableDivs();
         }
