@@ -1,7 +1,41 @@
 import Card from './jCards.js';
 import { getCardDivFromId } from './jCards.js';
 import { openSizeDialog } from "./common.js";
+import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
 
+
+export function processDecision(decision, animate, gameUi) {
+    $("#main").queue(
+        function (next) {
+            let elementType = decision.elementType;
+            switch(elementType) {
+                case "ACTION":
+                case "CARD":
+                    let decisionObject = new gameDecision(decision, gameUi);
+                    decisionObject.processDecision();
+                    break;
+                case "INTEGER":
+                    integerDecision(decision, gameUi);
+                    break;
+                case "STRING":
+                    multipleChoiceDecision(decision, gameUi);
+                    break;
+                default:
+                    console.error(`Unknown decisionType: ${decisionType}`);
+                    next(); // bail out
+                    break;
+            }
+            if (!animate)
+                gameUi.layoutUI(false);
+            next();
+        });
+    if (gameUi.replayMode) {
+        $("#main").queue(
+            function (next) {
+                gameUi.animations.setTimeout(next, gameUi.getAnimationLength(gameUi.decisionDuration));
+            });
+    }
+}
 
 export default class gameDecision {
 
@@ -11,23 +45,23 @@ export default class gameDecision {
     decisionText; // string; prompt to display to user (for example, "Select a card to discard")
     elementType; // string representing the type of object that's being selected (ACTION or CARD)
 
-    displayedCards; // JSON
-    allCardIds; // string array
-    selectableCardIds; // string array
-    selectedElementIds; // string array
+    displayedCards; // JSON map
+    allCardIds; // string array representing all cards to be shown in this selection
+    selectableCardIds = new Array(); // string array; only those cards that can be selected
+    selectedElementIds = new Array(); // string array; only those cards that are already selected
 
     min; // integer; smallest number of elements that can be selected
     max; // integer; largest number of elements that can be selected
     useDialog; // boolean; if true, cards will be shown in a pop-up dialog
-    jsonCombinations; // JSON
+    jsonCombinations; // JSON map
 
     constructor(decisionJson, gameUi) {
         this.decisionType = decisionJson.decisionType;
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
         this.allCardIds = decisionJson.cardIds;
+
         this.decisionText = decisionJson.text;
-        this.selectedElementIds = new Array();
         this.min = decisionJson.min;
         this.max = decisionJson.max;
         this.elementType = decisionJson.elementType;
@@ -37,11 +71,17 @@ export default class gameDecision {
         }
 
         if (decisionJson.elementType === "ACTION") {
-            this.selectableCardIds = decisionJson.cardIds;
+            for (let i = 0; i < this.allCardIds.length; i++) {
+                this.selectableCardIds.push(this.allCardIds[i]);
+            }
             this.useDialog = (decisionJson.context === "SELECT_REQUIRED_RESPONSE_ACTION");
         } else if (decisionJson.elementType === "CARD") {
             this.useDialog = (this.decisionType != "CARD_SELECTION");
-            this.selectableCardIds = decisionJson.cardIds;
+            if (!this.useDialog) {
+                for (let i = 0; i < this.allCardIds.length; i++) {
+                    this.selectableCardIds.push(this.allCardIds[i]);
+                }
+            }
             if (this.useDialog) {
                 for (let i = 0; i < this.displayedCards.length; i++) {
                     if (this.displayedCards[i].selectable === "true") {
@@ -65,18 +105,22 @@ export default class gameDecision {
             this.gameUi.alertText.html(this.decisionText);
             let alertBoxClass = this.elementType === "ACTION" ? "alert-box-highlight" : "alert-box-card-selection";
             this.gameUi.alertBox.addClass(alertBoxClass);
-        }
-        if (this.decisionType != "CARD_SELECTION") {
-            this.createSelectableDivs();
-        }
-        if (this.elementType === "ACTION" && !this.useDialog) {
-            this.gameUi.hand.layoutCards();
+
+            switch(this.elementType) {
+                case "CARD":
+                    this.createSelectableDivs();
+                    break;
+                case "ACTION":
+                    this.gameUi.hand.layoutCards();
+                    break;
+            }
+
         }
     }
 
     goDing() {
         if (!this.gameUi.replayMode) {
-            this.gameUi.PlayAwaitActionSound();
+            PlayAwaitActionSound();
         }
     }
 
@@ -159,12 +203,7 @@ export default class gameDecision {
             let selectedElementCount = this.selectedElementIds.length;
             if (this.allCardIds.length <= this.max && selectedElementCount != this.max) {
                 buttons["Select all"] = function() {
-                    that.selectedElementIds = Array.from(that.selectableCardIds);
-                    if (this.decisionType === "ARBITRARY_CARDS") {
-                        that.gameUi.recalculateCardSelectionOrder(that.selectedElementIds);
-                        that.gameUi.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
-                    }
-                    that.allowSelection();
+                    that.selectAllCards();
                 }
             }
             if (selectedElementCount > 0) {
@@ -212,25 +251,14 @@ export default class gameDecision {
             // DEBUG: console.log("cardActionChoiceDecision -> allowSelection -> selectionFunction");
             let cardIdElem = getCardDivFromId(cardId);
             let actions = cardIdElem.data("action");
-            let selectActionFunction = function (actionId) {
-                that.selectedElementIds.push(actionId);
-                if (that.gameUi.gameSettings.get("autoAccept")) {
-                   that.finishChoice();
-                } else {
-                    that.gameUi.clearSelection();
-                    getCardDivFromId(cardId).addClass("selectedCard");
-                    that.processButtons();
-                }
-            };
 
             // If the only legal action is a card play, perform action automatically by clicking
             // Otherwise show a drop-down menu with the action options by clicking
             if (actions.length == 1 &&
                     (actions[0].actionType == "PLAY_CARD" || actions[0].actionType == "SEED_CARD")) {
-                selectActionFunction(actions[0].actionId);
+                this.respondToActionSelection(actions[0].actionId);
             } else {
-                    // TODO - Bind to right-click?
-                this.gameUi.createActionChoiceContextMenu(actions, event, selectActionFunction);
+                this.createActionChoiceContextMenu(actions, event);
             }
         }
 
@@ -251,13 +279,13 @@ export default class gameDecision {
                 }
             }
 
-            that.gameUi.recalculateCardSelectionOrder(that.selectedElementIds);
+            this.recalculateCardSelectionOrder();
 
             if (this.useDialog) {
                 if (this.decisionType === "ARBITRARY_CARDS") {
-                    that.gameUi.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
-                } else if (this.decisionType === "SELECT_CARDS_FROM_COMBINATIONS") {
-                    that.gameUi.recalculateAllowedCombinationsAndCSS(that.allCardIds, that.selectedElementIds, that.jsonCombinations, that.max);
+                    this.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
+                } else if (this.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
+                    this.recalculateAllowedCombinationsAndCSS(that.allCardIds, that.selectedElementIds, that.jsonCombinations, that.max);
                 }
             } else {
                 // If the max number of cards are selected and the user has auto accept on, we're done.
@@ -268,6 +296,17 @@ export default class gameDecision {
             }
 
             that.processButtons();
+        }
+    }
+
+    respondToActionSelection(actionId) {
+        this.selectedElementIds.push(actionId);
+        if (this.gameUi.gameSettings.get("autoAccept")) {
+           this.finishChoice();
+        } else {
+            this.gameUi.clearSelection();
+            getCardDivFromId(cardId).addClass("selectedCard");
+            this.processButtons();
         }
     }
 
@@ -326,145 +365,315 @@ export default class gameDecision {
             }
         }
     }
-}
 
-export function processDecision(decision, animate, gameUi) {
-    $("#main").queue(
-        function (next) {
-            let elementType = decision.elementType;
-            switch(elementType) {
-                case "ACTION":
-                case "CARD":
-                    let decisionObject = new gameDecision(decision, gameUi);
-                    decisionObject.processDecision();
-                    break;
-                case "INTEGER":
-                    integerDecision(decision, gameUi);
-                    break;
-                case "STRING":
-                    multipleChoiceDecision(decision, gameUi);
-                    break;
-                default:
-                    console.error(`Unknown decisionType: ${decisionType}`);
-                    next(); // bail out
-                    break;
-            }
-            if (!animate)
-                gameUi.layoutUI(false);
-            next();
+    recalculateCardSelectionOrder(cardArray) {
+        for (const [index, cardId] of this.selectedElementIds.entries()) {
+            let divToChange = getCardDivFromId(cardId);
+            divToChange.attr("selectedOrder", index + 1); // use a 1-index
+        }
+    }
+
+    selectAllCards() {
+        this.selectedElementIds = Array.from(this.selectableCardIds);
+        if (this.decisionType === "ARBITRARY_CARDS") {
+            this.recalculateCardSelectionOrder();
+            this.recalculateAllowedSelectionFromMaxCSS(this.selectableCardIds, this.selectedElementIds, this.max);
+        }
+        this.allowSelection();
+    }
+
+    createActionChoiceContextMenu(actions, event) {
+        var that = this;
+        // Remove context menus that may be showing
+        $(".contextMenu").remove();
+
+        var div = $("<ul class='contextMenu'></ul>");
+        for (var i = 0; i < actions.length; i++) {
+            var action = actions[i];
+            var text = action.actionText;
+            div.append("<li><a href='#" + action.actionId + "'>" + text + "</a></li>");
+        }
+
+        $("#main").append(div);
+
+        var x = event.pageX;
+        var y = event.pageY;
+        $(div).css({left: x, top: y}).fadeIn(150);
+
+        $(div).find('A').mouseover(
+            function () {
+                $(div).find('LI.hover').removeClass('hover');
+                $(this).parent().addClass('hover');
+            }).mouseout(function () {
+            $(div).find('LI.hover').removeClass('hover');
         });
-    if (gameUi.replayMode) {
-        $("#main").queue(
-            function (next) {
-                gameUi.animations.setTimeout(next, gameUi.getAnimationLength(gameUi.decisionDuration));
-            });
+
+        var getRidOfContextMenu = function () {
+            $(div).remove();
+            $(document).unbind("click", getRidOfContextMenu);
+            return false;
+        };
+
+        // When items are selected
+        $(div).find('A').unbind('click');
+        $(div).find('LI:not(.disabled) A').click(function () {
+            $(document).unbind('click', getRidOfContextMenu);
+            $(".contextMenu").remove();
+
+            var actionId = $(this).attr('href').substr(1);
+            that.respondToActionSelection(actionId);
+            return false;
+        });
+
+        // Hide bindings
+        setTimeout(function () { // Delay for Mozilla
+            $(document).click(getRidOfContextMenu);
+        }, 0);
+    }
+
+    recalculateAllowedSelectionFromMaxCSS(cardIds, selectedCardIds, max) {
+        if (max === 0) {
+            console.error("Max is 0, setting all cards to not selectable. This is probably a server bug.");
+            for (const cardId of cardIds.values()) {
+                getCardDivFromId(cardId).removeClass("selectableCard").removeClass("selectedCard").addClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+            }
+            return;
+        }
+        else {
+            for (const cardId of cardIds.values()) {
+                if (selectedCardIds.length === 0) {
+                    // everything is selectable
+                    getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                }
+                else {
+                    // selected
+                    if (selectedCardIds.includes(cardId)) {
+                        getCardDivFromId(cardId).removeClass("selectableCard").removeClass("notSelectableCard").addClass("selectedCard").addClass("selectedBadge");
+                    }
+                    // not selected
+                    else {
+                        // we hit the max, gray out unselected cards since we can't add more
+                        if (selectedCardIds.length === max) {
+                            getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                            continue;
+                        }
+                        else {
+                            getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        }
+                    }
+                }
+            }
+            return;
+        }
+    }
+
+    recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
+        if (typeof(jsonCombinations) !== 'object' || jsonCombinations == null) {
+            let inc_type = typeof(jsonCombinations);
+            throw new TypeError(`jsonCombinations must be an Object not a ${inc_type} or null.`);;
+        }
+
+        let allowedCombinationsRemaining = new Set();
+
+        if (selectedCardIds.length === 0) {
+            // DEBUG: console.log("No selected cards.");
+            allowedCombinationsRemaining = new Set(cardIds);
+            // DEBUG: console.log(`Allowed combinations remaining: ${Array.from(allowedCombinationsRemaining)}`);
+        }
+        else if (selectedCardIds.length === 1) {
+            // selected one card
+            // DEBUG: console.log(`Selected cards: ${selectedCardIds}`);
+            const cardId = selectedCardIds[0];
+            let this_card_allowed = new Array();
+            // DEBUG: console.log("let_this_card_allowed created");
+            // DEBUG: console.log(jsonCombinations[cardId]);
+            for (const compatible_cardId of jsonCombinations[cardId]) {
+                // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
+                this_card_allowed.push(compatible_cardId);
+            }
+            const this_allowed_as_set = new Set(this_card_allowed);
+            allowedCombinationsRemaining = this_allowed_as_set;
+
+            // DEBUG: console.log(`Allowed combinations remaining: ${Array.from(allowedCombinationsRemaining)}`);
+        }
+        else {
+            // selected two or more cards
+            // DEBUG: console.log(`Selected cards: ${selectedCardIds}`);
+            for (const [index, cardId] of selectedCardIds.entries()) {
+                let this_card_allowed = new Array();
+                // DEBUG: console.log("let_this_card_allowed created");
+                // DEBUG: console.log(jsonCombinations[cardId]);
+                for (const compatible_cardId of jsonCombinations[cardId]) {
+                    // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
+                    this_card_allowed.push(compatible_cardId);
+                }
+                const this_allowed_as_set = new Set(this_card_allowed);
+
+                if (index === 0) {
+                    // Don't use .intersection on the first pass, since the intersection of empty set and valid choices is nothing.
+                    allowedCombinationsRemaining = this_allowed_as_set;
+                }
+                else {
+                    allowedCombinationsRemaining = allowedCombinationsRemaining.intersection(this_allowed_as_set);
+                }
+                // DEBUG: console.log(`Allowed combinations remaining: ${Array.from(allowedCombinationsRemaining)}`);
+            }
+        }
+
+
+        // Apply CSS
+        // BUG: Normally I'd split this into another function but when I did, JQuery
+        //      didn't pass the Sets around properly. IDK. One big function it is.
+        for (const cardId of cardIds.values()) {
+            if (selectedCardIds.length === 0) {
+                // everything is selectable
+                // DEBUG: console.log("Everything is selectable.");
+                getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+            }
+            else {
+                // selected
+                if (selectedCardIds.includes(cardId)) {
+                    getCardDivFromId(cardId).removeClass("selectableCard").removeClass("notSelectableCard").addClass("selectedCard").addClass("selectedBadge");
+                }
+                // not selected
+                else {
+                    // we hit the max, treat unselected cards as if they are not compatible
+                    if (selectedCardIds.length === max) {
+                        getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                        continue;
+                    }
+
+                    // Not selected, not at the max, and compatible with other selected cards
+                    if (allowedCombinationsRemaining.has(cardId)) {
+                        // DEBUG: console.log(`Not selected, compatible: ${cardId}`);
+                        getCardDivFromId(cardId).addClass("selectableCard").removeClass("selectedCard").removeClass("notSelectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                    }
+                    // Not selected, not at the max, but not compatible with other selected cards
+                    else {
+                        // DEBUG: console.log(`Not selected, not compatible: ${cardId}`);
+                        // same as above but w/o selectableCard
+                        getCardDivFromId(cardId).addClass("notSelectableCard").removeClass("selectableCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+                    }
+                }
+            }
+
+        }
+
     }
 }
 
-    export function integerDecision(decision, gameUi) {
-        let id = decision.decisionId;
-        let text = decision.text;
-        var val = 0;
+export function integerDecision(decision, gameUi) {
+    let id = decision.decisionId;
+    let text = decision.text;
+    var val = 0;
 
-        var min = decision.min;
-        if (min == null) {
-            min = 0;
-        }
-        var max = decision.max;
-        if (max == null) {
-            max = 1000;
-        }
+    var min = decision.min;
+    if (min == null) {
+        min = 0;
+    }
+    var max = decision.max;
+    if (max == null) {
+        max = 1000;
+    }
 
-        var defaultValue = decision.defaultValue;
-        if (defaultValue != null) {
-            val = parseInt(defaultValue);
-        }
+    var defaultValue = decision.defaultValue;
+    if (defaultValue != null) {
+        val = parseInt(defaultValue);
+    }
 
-        gameUi.smallDialog.html(text + `<br /><input id='integerDecision' value='${val}'>`);
+    gameUi.smallDialog.html(text + `<br /><input id='integerDecision' value='${val}'>`);
+
+    if (!gameUi.replayMode) {
+        gameUi.smallDialog.dialog("option", "buttons",
+            {
+                "OK": function () {
+                    let retval = document.getElementById("integerDecision").value
+                    $(this).dialog("close");
+                    gameUi.decisionFunction(id, retval);
+                }
+            });
+    }
+
+    $("#integerDecision").spinner({
+        min: parseInt(min),
+        max: parseInt(max)
+    });
+
+    gameUi.smallDialog.dialog("open");
+    $('.ui-dialog :button').blur();
+}
+
+export function multipleChoiceDecision(decision, gameUi) {
+    var id = decision.decisionId;
+    let serverText = decision.text; // raw string from the server for the user message
+    let context = decision.context;
+    let serverValues = decision.results; // raw strings that are passed from the server
+    let results = new Array();
+    let text;
+
+    if (context === "SEED_MISSION_INDEX_SELECTION") {
+        // For this decision, the serverValues are strings representing the spaceline indices where the mission
+        // can be seeded. This array should be in ascending numerical order.
+        text = "Seed mission on the left or right?";
+        results.push("LEFT");
+        results.push("RIGHT");
+    } else {
+        text = serverText;
+        results = serverValues;
+    }
+
+    gameUi.smallDialog.html(text);
+
+    if (results.length > 2 || gameUi.gameSettings.get("alwaysDropDown")) {
+        var html = "<br /><select id='multipleChoiceDecision' selectedIndex='0'>";
+        for (var i = 0; i < results.length; i++) {
+            html += "<option value='" + i + "'>" + results[i] + "</option>";
+        }
+        html += "</select>";
+        gameUi.smallDialog.append(html);
 
         if (!gameUi.replayMode) {
             gameUi.smallDialog.dialog("option", "buttons",
                 {
                     "OK": function () {
-                        let retval = document.getElementById("integerDecision").value
-                        $(this).dialog("close");
-                        gameUi.decisionFunction(id, retval);
+                        gameUi.smallDialog.dialog("close");
+                        gameUi.decisionFunction(id, $("#multipleChoiceDecision").val());
                     }
                 });
         }
-
-        $("#integerDecision").spinner({
-            min: parseInt(min),
-            max: parseInt(max)
-        });
-
-        gameUi.smallDialog.dialog("open");
-        $('.ui-dialog :button').blur();
-    }
-
-    export function multipleChoiceDecision(decision, gameUi) {
-        var id = decision.decisionId;
-        let serverText = decision.text; // raw string from the server for the user message
-        let context = decision.context;
-        let serverValues = decision.results; // raw strings that are passed from the server
-        let results = new Array();
-        let text;
-
-        if (context === "SEED_MISSION_INDEX_SELECTION") {
-            // For this decision, the serverValues are strings representing the spaceline indices where the mission
-            // can be seeded. This array should be in ascending numerical order.
-            text = "Seed mission on the left or right?";
-            results.push("LEFT");
-            results.push("RIGHT");
-        } else {
-            text = serverText;
-            results = serverValues;
-        }
-
-        gameUi.smallDialog.html(text);
-
-        if (results.length > 2 || gameUi.gameSettings.get("alwaysDropDown")) {
-            var html = "<br /><select id='multipleChoiceDecision' selectedIndex='0'>";
-            for (var i = 0; i < results.length; i++) {
-                html += "<option value='" + i + "'>" + results[i] + "</option>";
+    } else {
+        gameUi.smallDialog.append("<br />");
+        for (var i = 0; i < results.length; i++) {
+            if (i > 0) {
+                gameUi.smallDialog.append(" ");
             }
-            html += "</select>";
-            gameUi.smallDialog.append(html);
 
+            var but = $("<button></button>").html(results[i]).button();
             if (!gameUi.replayMode) {
-                gameUi.smallDialog.dialog("option", "buttons",
-                    {
-                        "OK": function () {
+                but.click(
+                    (function (ind) {
+                        return function () {
                             gameUi.smallDialog.dialog("close");
-                            gameUi.decisionFunction(id, $("#multipleChoiceDecision").val());
+                            gameUi.decisionFunction(id, "" + ind);
                         }
-                    });
+                    })(i));
             }
-        } else {
-            gameUi.smallDialog.append("<br />");
-            for (var i = 0; i < results.length; i++) {
-                if (i > 0) {
-                    gameUi.smallDialog.append(" ");
-                }
-
-                var but = $("<button></button>").html(results[i]).button();
-                if (!gameUi.replayMode) {
-                    but.click(
-                        (function (ind) {
-                            return function () {
-                                gameUi.smallDialog.dialog("close");
-                                gameUi.decisionFunction(id, "" + ind);
-                            }
-                        })(i));
-                }
-                gameUi.smallDialog.append(but);
-            }
-            if (!gameUi.replayMode) {
-                gameUi.smallDialog.dialog("option", "buttons", {});
-                gameUi.PlayAwaitActionSound();
-            }
+            gameUi.smallDialog.append(but);
         }
-
-        gameUi.smallDialog.dialog("open");
-        $('.ui-dialog :button').blur();
+        if (!gameUi.replayMode) {
+            gameUi.smallDialog.dialog("option", "buttons", {});
+            PlayAwaitActionSound();
+        }
     }
+
+    gameUi.smallDialog.dialog("open");
+    $('.ui-dialog :button').blur();
+}
+
+export function PlayAwaitActionSound() {
+    let audio = new Audio(awaitingActionAudio);
+    if(!document.hasFocus() || document.hidden || document.msHidden || document.webkitHidden)
+    {
+        audio.play();
+    }
+}
