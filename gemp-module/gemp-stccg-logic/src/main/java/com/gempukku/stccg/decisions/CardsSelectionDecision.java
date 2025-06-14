@@ -114,7 +114,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         List<Map<Object, Object>> result = new ArrayList<>();
         for (PhysicalCard card : _physicalCards) {
             Map<Object, Object> mapToAdd = new HashMap<>();
-            mapToAdd.put("cardId", card.getCardId());
+            mapToAdd.put("cardId", String.valueOf(card.getCardId()));
             mapToAdd.put("blueprintId", card.getBlueprintId());
             mapToAdd.put("imageUrl", card.getImageUrl());
             mapToAdd.put("selectable", "true");
