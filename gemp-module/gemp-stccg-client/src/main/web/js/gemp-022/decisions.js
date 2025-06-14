@@ -5,21 +5,22 @@ import { openSizeDialog } from "./common.js";
 
 export default class gameDecision {
 
-    gameUi;
-    decisionType;
-    decisionId;
-    decisionText;
-    selectedElementIds;
-    allCardIds;
-    displayedCards;
-    min; // smallest number of elements that can be selected
-    max; // largest number of elements that can be selected
-    selectableCardIds;
-    cardIds;
-    jsonCombinations;
-    useDialog;
-    elementType;
-    trackSelectionOrder;
+    gameUi; // GameTableUI object
+    decisionType; // string; this is being deprecated
+    decisionId; // integer; unique identifier for decision object in server
+    decisionText; // string; prompt to display to user (for example, "Select a card to discard")
+    elementType; // string representing the type of object that's being selected (ACTION or CARD)
+
+    displayedCards; // JSON
+    allCardIds; // string array
+    selectableCardIds; // string array
+    selectedElementIds; // string array
+
+    min; // integer; smallest number of elements that can be selected
+    max; // integer; largest number of elements that can be selected
+    useDialog; // boolean; if true, cards will be shown in a pop-up dialog
+    jsonCombinations; // JSON
+    trackSelectionOrder; // boolean; if true, decision UI shows what order cards were selected in using badges
 
     constructor(decisionJson, gameUi) {
         this.decisionType = decisionJson.decisionType;
