@@ -207,15 +207,9 @@ export default class gameDecision {
         this.processButtons();
     }
 
-    attachSelectionFunctions(cardIds, selection) {
-        if (selection) {
-            if (cardIds.length > 0) {
-                $(".card:cardId(" + cardIds + ")").addClass("selectableCard");
-            }
-        } else {
-            if (cardIds.length > 0) {
-                $(".card:cardId(" + cardIds + ")").addClass("actionableCard");
-            }
+    attachSelectionFunctions(cardIds) {
+        if (cardIds.length > 0) {
+            $(".card:cardId(" + cardIds + ")").addClass("selectableCard");
         }
     }
 

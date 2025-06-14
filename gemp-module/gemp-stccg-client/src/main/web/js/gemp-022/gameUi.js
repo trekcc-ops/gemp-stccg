@@ -540,8 +540,7 @@ export default class GameTableUI {
                 if (event.shiftKey || event.which > 1) {
                     this.displayCardInfo(selectedCardElem.data("card"));
                 }
-                else if ((selectedCardElem.hasClass("selectableCard") || 
-                          selectedCardElem.hasClass("actionableCard") ||
+                else if ((selectedCardElem.hasClass("selectableCard") ||
                           selectedCardElem.hasClass("selectedCard"))
                         &&
                         !this.replayMode
@@ -1606,7 +1605,6 @@ export default class GameTableUI {
 
     clearSelection() {
         $(".selectableCard").removeClass("selectableCard").data("action", null);
-        $(".actionableCard").removeClass("actionableCard").data("action", null);
         $(".selectedCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
         this.selectionFunction = null;
     }
