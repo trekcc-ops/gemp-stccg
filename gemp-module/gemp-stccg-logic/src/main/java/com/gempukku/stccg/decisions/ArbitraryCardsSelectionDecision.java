@@ -113,7 +113,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         String[] result = new String[physicalCards.size()];
         int index = 0;
         for (PhysicalCard physicalCard : physicalCards) {
-            result[index] = "temp" + index;
+            result[index] = String.valueOf(physicalCard.getCardId());
             index++;
         }
         return result;
@@ -121,13 +121,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     // Only used for testing
     public String getCardIdForCard(PhysicalCard card) throws InvalidGameLogicException {
-        int index = 0;
-        for (PhysicalCard physicalCard : _physicalCards) {
-            if (card == physicalCard)
-                return "temp" + index;
-            index++;
-        }
-        throw new InvalidGameLogicException("Card not found in decision");
+        return String.valueOf(card.getCardId());
     }
 
     private String[] getBlueprintIds(Collection<? extends PhysicalCard> physicalCards) {
@@ -163,7 +157,8 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         List<PhysicalCard> result = new LinkedList<>();
         try {
             for (String cardId : cardIds) {
-                int idNum = Integer.parseInt(cardId.substring(4));
+                List<String> cardIdList = Arrays.asList(_cardIds);
+                int idNum = cardIdList.indexOf(cardId);
                 PhysicalCard card = _physicalCards.get(idNum);
                 if (result.contains(card) || !_selectable.contains(card))
                     throw new DecisionResultInvalidException();
@@ -187,7 +182,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         StringJoiner sj = new StringJoiner(",");
         for (PhysicalCard card : cards) {
             if (_physicalCards.contains(card))
-                sj.add("temp" + _physicalCards.indexOf(card));
+                sj.add(String.valueOf(card.getCardId()));
             else throw new DecisionResultInvalidException(
                     "Could not find card " + card.getCardId() + " in decision parameters");
         }

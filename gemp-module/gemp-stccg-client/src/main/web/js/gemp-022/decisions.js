@@ -114,7 +114,7 @@ export default class gameDecision {
     elementType; // string representing the type of object that's being selected (ACTION or CARD)
 
     displayedCards; // JSON map
-    allCardIds; // string array representing all cards to be shown in this selection
+    allCardIds = new Array(); // string array representing all cards to be shown in this selection
     selectableCardIds = new Array(); // string array; only those cards that can be selected
     selectedElementIds = new Array(); // string array; only those cards that are already selected
 
@@ -128,7 +128,6 @@ export default class gameDecision {
         this.decisionType = decisionJson.decisionType;
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
-        this.allCardIds = decisionJson.cardIds;
         this.min = decisionJson.min;
         this.max = decisionJson.max;
         this.elementType = decisionJson.elementType;
@@ -136,8 +135,10 @@ export default class gameDecision {
         this.useDialog = useDialog;
 
         for (let i = 0; i < this.displayedCards.length; i++) {
+            let cardDivName = (this.useDialog) ? ("temp" + i.toString()) : this.displayedCards[i].cardId.toString();
+            this.allCardIds.push(cardDivName);
             if (this.displayedCards[i].selectable === "true") {
-                this.selectableCardIds.push(this.displayedCards[i].cardId);
+                this.selectableCardIds.push(cardDivName);
             }
         }
 
@@ -203,6 +204,14 @@ export default class gameDecision {
             }
         }
 
+        if (this.elementType === "CARD" && this.useDialog) {
+            for (let i = 0; i < this.selectedElementIds.length; i++) {
+                if (this.selectedElementIds[i].substring(0,4) === "temp") {
+                    let indexNum = parseInt(this.selectedElementIds[i].substring(4));
+                    this.selectedElementIds[i] = this.displayedCards[i].cardId.toString();
+                }
+            }
+        }
         this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
     }
 
@@ -359,7 +368,7 @@ export default class gameDecision {
         for (let i = 0; i < this.displayedCards.length; i++) {
             // Create the cards and fill the dialog with them
             let displayedCard = this.displayedCards[i];
-            let cardId = displayedCard.cardId; // for selections using the dialog, this is always a "temp" value
+            let cardId = this.allCardIds[i]; // for selections using the dialog, this is always a "temp" value
 
             // For action selections from visible cards, each relevant card is associated with a list of its
             //      available actions

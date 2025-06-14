@@ -64,7 +64,7 @@ public abstract class ActionSelectionDecision extends ActionDecision {
     public String[] getCardIds() {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = "temp" + i;
+            result[i] = String.valueOf(_actions.get(i).getCardIdForActionSelection());
         }
         return result;
     }
