@@ -30,8 +30,11 @@ export default class gameDecision {
         this.min = decisionJson.min;
         this.max = decisionJson.max;
 
-        if (this.decisionType === "CARD_ACTION_CHOICE") {
+        if (this.decisionType != "CARD_SELECTION") {
             this.displayedCards = decisionJson.displayedCards;
+        }
+
+        if (this.decisionType === "CARD_ACTION_CHOICE") {
             this.useDialog = false;
             this.elementType = "ACTION";
             this.selectableCardIds = new Array();
@@ -41,24 +44,21 @@ export default class gameDecision {
                 this.selectableCardIds.push(displayedCard.cardId);
             }
         } else if (this.decisionType === "ACTION_CHOICE") {
-            this.displayedCards = decisionJson.displayedCards;
             this.useDialog = true;
             this.elementType = "ACTION";
-            for (let i = 0; i < this.displayedCards.length; i++) {
-                this.allCardIds.push("temp" + i);
-            }
+            this.allCardIds = decisionJson.cardIds;
+            this.selectableCardIds = decisionJson.cardIds;
         } else if (this.decisionType === "ARBITRARY_CARDS") {
             this.selectableCardIds = new Array();
-            this.displayedCards = decisionJson.displayedCards;
             this.useDialog = true;
             this.elementType = "CARD";
         } else if (this.decisionType === "CARD_SELECTION") {
             // no displayedCards
             this.allCardIds = decisionJson.cardIds;
+            this.selectableCardIds = decisionJson.cardIds;
             this.useDialog = false;
             this.elementType = "CARD";
         } else if (this.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
-            this.displayedCards = decisionJson.displayedCards;
             this.selectableCardIds = new Array();
             this.allCardIds = decisionJson.cardIds;
             this.jsonCombinations = JSON.parse(decisionJson.validCombinations);
@@ -201,12 +201,6 @@ export default class gameDecision {
         this.processButtons();
     }
 
-    attachSelectionFunctions(cardIds) {
-        if (cardIds.length > 0) {
-            $(".card:cardId(" + cardIds + ")").addClass("selectableCard");
-        }
-    }
-
     respondToCardSelection(cardId, event) {
         var that = this;
         switch(this.decisionType) {
@@ -317,20 +311,9 @@ export default class gameDecision {
             that.respondToCardSelection(cardId, event);
         };
 
-        switch(this.decisionType) {
-            case "CARD_ACTION_CHOICE":
-                this.attachSelectionFunctions(this.selectableCardIds, false);
-                break;
-            case "ACTION_CHOICE":
-            case "CARD_SELECTION":
-                this.attachSelectionFunctions(this.allCardIds, true);
-                break;
-            case "ARBITRARY_CARDS":
-            case "CARD_SELECTION_FROM_COMBINATIONS":
-                this.attachSelectionFunctions(this.selectableCardIds, true);
-                break;
+        if (this.selectableCardIds.length > 0) {
+            $(".card:cardId(" + this.selectableCardIds + ")").addClass("selectableCard");
         }
-
         this.processButtons();
     }
 

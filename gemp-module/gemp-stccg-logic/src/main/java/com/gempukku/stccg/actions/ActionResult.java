@@ -210,13 +210,6 @@ public class ActionResult {
                                     throw new DecisionResultInvalidException(exp.getMessage());
                                 }
                             }
-
-                            @Override
-                            public String[] getCardIds() {
-                                return getDecisionParameters().get("cardId");
-                            }
-
-
                         });
             }
         } else if (_passCount < _optionalResponsePlayerOrder.getPlayerCount()) {

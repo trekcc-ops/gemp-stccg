@@ -21,12 +21,17 @@ public abstract class ActionSelectionDecision extends ActionDecision {
     @JsonProperty("max")
     private final int _max = 1;
 
+    @JsonProperty("cardIds")
+    private final String[] _cardIds;
+
     public ActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                    DefaultGame cardGame)
             throws CardNotFoundException {
         super(player, context, actions, AwaitingDecisionType.ACTION_CHOICE, cardGame);
+        _cardIds = getCardIds();
         setParam("blueprintId", getBlueprintIds(cardGame));
         setParam("imageUrl", getImageUrls(cardGame));
+        setParam("cardId", _cardIds);
     }
 
     private String[] getBlueprintIds(DefaultGame cardGame) throws CardNotFoundException {
@@ -62,6 +67,14 @@ public abstract class ActionSelectionDecision extends ActionDecision {
         } catch (NumberFormatException exp) {
             throw new DecisionResultInvalidException();
         }
+    }
+
+    public String[] getCardIds() {
+        String[] result = new String[_actions.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = "temp" + i;
+        }
+        return result;
     }
 
     @JsonProperty("displayedCards")
