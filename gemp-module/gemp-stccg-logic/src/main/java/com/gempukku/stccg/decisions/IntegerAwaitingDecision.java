@@ -48,4 +48,6 @@ public abstract class IntegerAwaitingDecision extends AbstractAwaitingDecision {
         return null;
     }
 
+    public String getElementType() { return "INTEGER"; }
+
 }

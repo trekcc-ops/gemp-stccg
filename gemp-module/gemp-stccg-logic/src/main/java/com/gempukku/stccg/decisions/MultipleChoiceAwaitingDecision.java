@@ -72,4 +72,6 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
     public String[] getCardIds() {
         return null;
     }
+
+    public String getElementType() { return "STRING"; }
 }

@@ -94,6 +94,8 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         setParam("selectable", getSelectable(physicalCards, physicalCards));
     }
 
+    public String getElementType() { return "CARD"; }
+
 
 
     private String[] getSelectable(Collection<? extends PhysicalCard> physicalCards,

@@ -31,6 +31,8 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
         }
     }
 
+    public String getElementType() { return "ACTION"; }
+
 
 
     protected String[] getActionIds() {

@@ -47,6 +47,8 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         return _cardIds;
     }
 
+    public String getElementType() { return "CARD"; }
+
     protected PhysicalCard getSelectedCardByResponse(String response) throws DecisionResultInvalidException {
         if (_minimum != 1 || _maximum != 1 || response.isEmpty())
             throw new DecisionResultInvalidException();
