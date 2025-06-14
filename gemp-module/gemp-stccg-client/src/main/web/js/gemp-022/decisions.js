@@ -20,7 +20,6 @@ export default class gameDecision {
     max; // integer; largest number of elements that can be selected
     useDialog; // boolean; if true, cards will be shown in a pop-up dialog
     jsonCombinations; // JSON
-    trackSelectionOrder; // boolean; if true, decision UI shows what order cards were selected in using badges
 
     constructor(decisionJson, gameUi) {
         this.decisionType = decisionJson.decisionType;
@@ -32,8 +31,6 @@ export default class gameDecision {
         this.min = decisionJson.min;
         this.max = decisionJson.max;
         this.elementType = decisionJson.elementType;
-
-        this.trackSelectionOrder = (this.decisionType === "CARD_SELECTION" && this.max > 1);
 
         if (this.decisionType != "CARD_SELECTION") {
             this.displayedCards = decisionJson.displayedCards;
@@ -242,14 +239,14 @@ export default class gameDecision {
             if (this.selectedElementIds.includes(cardId)) {
                 let index = this.selectedElementIds.indexOf(cardId);
                 this.selectedElementIds.splice(index, 1);
-                if (this.trackSelectionOrder) {
+                if (this.elementType === "CARD_SELECTION") {
                     getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                 }
             }
             // Otherwise, if the cardId is not already selected, add it.
             else {
                 that.selectedElementIds.push(cardId);
-                if (this.trackSelectionOrder) {
+                if (this.elementType === "CARD_SELECTION") {
                     getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");
                 }
             }
