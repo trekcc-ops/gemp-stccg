@@ -85,6 +85,7 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
             mapToAdd.put("actionId", getActionIds()[i]);
             mapToAdd.put("actionText", getDecisionParameters().get("actionText")[i]);
             mapToAdd.put("actionType", getActionTypes()[i]);
+            mapToAdd.put("selectable", "true");
             result.add(mapToAdd);
         }
         return result;

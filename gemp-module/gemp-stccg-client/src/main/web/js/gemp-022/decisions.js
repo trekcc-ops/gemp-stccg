@@ -15,7 +15,7 @@ export function getUserMessage(decision, gameState) {
                 return "Optional responses";
             case "SELECT_PHASE_ACTION":
                 let phaseName = getFriendlyPhaseName(gameState.currentPhase);
-                return "Play " + phaseName + " action" + (decision.min == 0) ? " or pass" : "";
+                return "Play " + phaseName + " action" + ((decision.min == 0) ? " or pass" : "");
             case "SELECT_REQUIRED_RESPONSE_ACTION":
                 return "Required responses";
             case "SELECT_TRIBBLES_ACTION":
@@ -27,7 +27,36 @@ export function getUserMessage(decision, gameState) {
     } else if (decision.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
         return "Select " + decision.min + " to " + decision.max + " cards";
     } else {
-        return decision.text; // some user prompts are decided by the server; hopefully this will be deprecated over time
+        return decision.text; // some user prompts are decided by the server; ideally this will be deprecated over time
+    }
+}
+
+export function getUseDialog(decision, gameState, gameUi) {
+    if (decision.elementType === "ACTION") {
+        return decision.context === "SELECT_REQUIRED_RESPONSE_ACTION";
+    } else if (decision.elementType === "CARD") {
+        let cardIds = decision.cardIds;
+        for (let i = 0; i < cardIds.length; i++) {
+            let cardId = cardIds[i];
+            let yourPlayerName = gameUi.bottomPlayerId;
+            let cardData = gameState.visibleCardsInGame[cardId.toString()];
+            let cardIsVisible = false;
+            if (cardData != null) {
+                if (cardData.isInPlay && (cardData.cardType === "FACILITY" || cardData.cardType === "MISSION")) {
+                    cardIsVisible = true;
+                }
+            }
+            for (let i = 0; i < gameState.players.length; i++) {
+                // Cards in hand don't need the dialog
+                if (gameState.players[i].playerName === yourPlayerName && gameState.players[i].cardGroups["HAND"].includes(cardId)) {
+                    cardIsVisible = true;
+                }
+            }
+            if (!cardIsVisible) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
@@ -43,10 +72,11 @@ export function processDecision(decision, animate, gameUi, gameState) {
                         gameUi.decisionFunction(decision.decisionId, "");
                     } else {
                         let userMessage = getUserMessage(decision, gameState);
-                        let decisionObject = new gameDecision(decision, gameUi);
+                        let useDialog = getUseDialog(decision, gameState, gameUi);
+                        let decisionObject = new gameDecision(decision, gameUi, useDialog);
                         decisionObject.createUiElements(userMessage);
                         decisionObject.allowSelection();
-                        decisionObject.goDing();
+                        goDing(gameUi);
                         if (decisionObject.useDialog) {
                             decisionObject.resizeDialog();
                         }
@@ -60,7 +90,7 @@ export function processDecision(decision, animate, gameUi, gameState) {
                     multipleChoiceDecision(decision, gameUi);
                     break;
                 default:
-                    console.error(`Unknown decisionType: ${decisionType}`);
+                    console.error(`Unknown elementType: ${elementType}`);
                     next(); // bail out
                     break;
             }
@@ -91,44 +121,31 @@ export default class gameDecision {
     min; // integer; smallest number of elements that can be selected
     max; // integer; largest number of elements that can be selected
     useDialog; // boolean; if true, cards will be shown in a pop-up dialog
+    canSelectAll; // boolean; false if selectable cards are interdependent (for example, selecting 5 different cards)
     jsonCombinations; // JSON map
 
-    constructor(decisionJson, gameUi) {
+    constructor(decisionJson, gameUi, useDialog) {
         this.decisionType = decisionJson.decisionType;
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
         this.allCardIds = decisionJson.cardIds;
-
         this.min = decisionJson.min;
         this.max = decisionJson.max;
         this.elementType = decisionJson.elementType;
+        this.displayedCards = decisionJson.displayedCards;
+        this.useDialog = useDialog;
 
-        if (this.decisionType != "CARD_SELECTION") {
-            this.displayedCards = decisionJson.displayedCards;
+        for (let i = 0; i < this.displayedCards.length; i++) {
+            if (this.displayedCards[i].selectable === "true") {
+                this.selectableCardIds.push(this.displayedCards[i].cardId);
+            }
         }
 
-        if (decisionJson.elementType === "ACTION") {
-            for (let i = 0; i < this.allCardIds.length; i++) {
-                this.selectableCardIds.push(this.allCardIds[i]);
-            }
-            this.useDialog = (decisionJson.context === "SELECT_REQUIRED_RESPONSE_ACTION");
-        } else if (decisionJson.elementType === "CARD") {
-            this.useDialog = (this.decisionType != "CARD_SELECTION");
-            if (!this.useDialog) {
-                for (let i = 0; i < this.allCardIds.length; i++) {
-                    this.selectableCardIds.push(this.allCardIds[i]);
-                }
-            }
-            if (this.useDialog) {
-                for (let i = 0; i < this.displayedCards.length; i++) {
-                    if (this.displayedCards[i].selectable === "true") {
-                        this.selectableCardIds.push(this.displayedCards[i].cardId);
-                    }
-                }
-            }
-            if (this.decisionType == "CARD_SELECTION_FROM_COMBINATIONS") {
-                this.jsonCombinations = JSON.parse(decisionJson.validCombinations);
-            }
+        if (this.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
+            this.canSelectAll = false;
+            this.jsonCombinations = JSON.parse(decisionJson.validCombinations);
+        } else {
+            this.canSelectAll = true;
         }
     }
 
@@ -141,22 +158,13 @@ export default class gameDecision {
             this.gameUi.alertText.html(userMessage);
             let alertBoxClass = this.elementType === "ACTION" ? "alert-box-highlight" : "alert-box-card-selection";
             this.gameUi.alertBox.addClass(alertBoxClass);
-
-            switch(this.elementType) {
-                case "CARD":
-                    this.createSelectableDivs();
-                    break;
-                case "ACTION":
-                    this.gameUi.hand.layoutCards();
-                    break;
-            }
-
         }
-    }
 
-    goDing() {
-        if (!this.gameUi.replayMode) {
-            PlayAwaitActionSound();
+        if (this.elementType === "ACTION" || this.useDialog) {
+            this.createSelectableDivs();
+            if (!this.useDialog) {
+                this.gameUi.hand.layoutCards();
+            }
         }
     }
 
@@ -169,20 +177,6 @@ export default class gameDecision {
         $(':button').blur();
         if (this.useDialog) {
             $('.ui-dialog').blur();
-        }
-    }
-
-    processDecision() {
-        if (this.elementType === "ACTION" && this.displayedCards.length == 0 && this.gameUi.gameSettings.get("autoPass") && !this.gameUi.replayMode) {
-            this.gameUi.decisionFunction(this.decisionId, "");
-        } else {
-            this.createUiElements();
-            this.allowSelection();
-            this.goDing();
-            if (this.useDialog) {
-                this.resizeDialog();
-            }
-            this.resetFocus();
         }
     }
 
@@ -237,7 +231,7 @@ export default class gameDecision {
         } else {
             let buttons = {};
             let selectedElementCount = this.selectedElementIds.length;
-            if (this.allCardIds.length <= this.max && selectedElementCount != this.max) {
+            if (this.allCardIds.length <= this.max && selectedElementCount != this.max && this.canSelectAll && this.elementType === "CARD") {
                 buttons["Select all"] = function() {
                     that.selectAllCards();
                 }
@@ -303,14 +297,14 @@ export default class gameDecision {
             if (this.selectedElementIds.includes(cardId)) {
                 let index = this.selectedElementIds.indexOf(cardId);
                 this.selectedElementIds.splice(index, 1);
-                if (this.elementType === "CARD_SELECTION") {
+                if (!this.useDialog) {
                     getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                 }
             }
             // Otherwise, if the cardId is not already selected, add it.
             else {
                 that.selectedElementIds.push(cardId);
-                if (this.elementType === "CARD_SELECTION") {
+                if (!this.useDialog) {
                     getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");
                 }
             }
@@ -318,9 +312,9 @@ export default class gameDecision {
             this.recalculateCardSelectionOrder();
 
             if (this.useDialog) {
-                if (this.decisionType === "ARBITRARY_CARDS") {
+                if (this.canSelectAll) {
                     this.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
-                } else if (this.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
+                } else {
                     this.recalculateAllowedCombinationsAndCSS(that.allCardIds, that.selectedElementIds, that.jsonCombinations, that.max);
                 }
             } else {
@@ -402,7 +396,7 @@ export default class gameDecision {
         }
     }
 
-    recalculateCardSelectionOrder(cardArray) {
+    recalculateCardSelectionOrder() {
         for (const [index, cardId] of this.selectedElementIds.entries()) {
             let divToChange = getCardDivFromId(cardId);
             divToChange.attr("selectedOrder", index + 1); // use a 1-index
@@ -411,10 +405,8 @@ export default class gameDecision {
 
     selectAllCards() {
         this.selectedElementIds = Array.from(this.selectableCardIds);
-        if (this.decisionType === "ARBITRARY_CARDS") {
-            this.recalculateCardSelectionOrder();
-            this.recalculateAllowedSelectionFromMaxCSS(this.selectableCardIds, this.selectedElementIds, this.max);
-        }
+        this.recalculateCardSelectionOrder();
+        this.recalculateAllowedSelectionFromMaxCSS(this.selectableCardIds, this.selectedElementIds, this.max);
         this.allowSelection();
     }
 
@@ -711,5 +703,11 @@ export function PlayAwaitActionSound() {
     if(!document.hasFocus() || document.hidden || document.msHidden || document.webkitHidden)
     {
         audio.play();
+    }
+}
+
+export function goDing(gameUi) {
+    if (!gameUi.replayMode) {
+        PlayAwaitActionSound();
     }
 }

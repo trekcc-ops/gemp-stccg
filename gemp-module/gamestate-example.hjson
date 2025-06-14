@@ -200,6 +200,22 @@
             "timeRemaining": 3600
         }
     ],
+    "pendingDecision": {
+        // pendingDecision only included in the player-specific client-facing game state
+        "decisionId": 1,
+        "decisionType":
+        "text":
+        "noPass":
+        "min":
+        "max":
+        "defaultValue":
+        "results":
+        "validCombinations":
+        "cardIds":
+        "displayedCards":
+        "context":
+        "elementType":
+    }
     // channelNumber added 18 Feb 2025
     // timeStamp added 19 Feb 2025
 }

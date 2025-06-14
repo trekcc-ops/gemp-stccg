@@ -109,4 +109,18 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         decisionMade(sj.toString());
     }
 
+    @JsonProperty("displayedCards")
+    private List<Map<Object, Object>> getDisplayedCards() {
+        List<Map<Object, Object>> result = new ArrayList<>();
+        for (PhysicalCard card : _physicalCards) {
+            Map<Object, Object> mapToAdd = new HashMap<>();
+            mapToAdd.put("cardId", card.getCardId());
+            mapToAdd.put("blueprintId", card.getBlueprintId());
+            mapToAdd.put("imageUrl", card.getImageUrl());
+            mapToAdd.put("selectable", "true");
+            result.add(mapToAdd);
+        }
+        return result;
+    }
+
 }
