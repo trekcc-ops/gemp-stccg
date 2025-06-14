@@ -34,10 +34,19 @@ export default class gameDecision {
             this.displayedCards = decisionJson.displayedCards;
             this.useDialog = false;
             this.elementType = "ACTION";
+            this.selectableCardIds = new Array();
+            for (let i = 0; i < this.displayedCards.length; i++) {
+                let displayedCard = displayedCards[i];
+                this.allCardIds.push(displayedCard.cardId);
+                this.selectableCardIds.push(displayedCard.cardId);
+            }
         } else if (this.decisionType === "ACTION_CHOICE") {
             this.displayedCards = decisionJson.displayedCards;
             this.useDialog = true;
             this.elementType = "ACTION";
+            for (let i = 0; i < this.displayedCards.length; i++) {
+                this.allCardIds.push("temp" + i);
+            }
         } else if (this.decisionType === "ARBITRARY_CARDS") {
             this.selectableCardIds = new Array();
             this.displayedCards = decisionJson.displayedCards;
@@ -322,7 +331,7 @@ export default class gameDecision {
 
         switch(this.decisionType) {
             case "CARD_ACTION_CHOICE":
-                this.attachSelectionFunctions(this.allCardIds, false);
+                this.attachSelectionFunctions(this.selectableCardIds, false);
                 break;
             case "ACTION_CHOICE":
             case "CARD_SELECTION":
@@ -354,10 +363,7 @@ export default class gameDecision {
             switch(this.decisionType) {
                 case "ACTION_CHOICE":
                     cardId = "temp" + i;
-
-                    this.allCardIds.push(cardId);
                     card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
-
                     cardDiv = this.gameUi.createCardDivWithData(card, displayedCard.actionText);
                     break;
                 case "ARBITRARY_CARDS":
@@ -377,26 +383,7 @@ export default class gameDecision {
                     let actionText = displayedCard.actionText;
                     cardId = displayedCard.cardId;
                     let actionType = displayedCard.actionType;
-                    let cardIdElem;
-
-                    if (blueprintId === "inPlay") {
-                        // in play, do not add "extra" to card id value when doing lookup
-                        cardIdElem = getCardDivFromId(cardId);
-                        this.allCardIds.push(cardId);
-                    } else {
-                        // not in play, need to add "extra" to card id value when doing lookup
-                        cardIdElem = getCardDivFromId(`extra${cardId}`);
-                        this.allCardIds.push(`extra${cardId}`);
-                        zone = "EXTRA";
-                        // No new cardId - interesting that it's going to retrieve an extra{cardId} but
-                        //                 create one with a regular cardId. Intentional?
-                        card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
-
-                        cardDiv = this.gameUi.createCardDivWithData(card);
-                        $(cardDiv).css({opacity: "0.8"});
-
-                        $("#main").append(cardDiv);
-                    }
+                    let cardIdElem = getCardDivFromId(cardId);
 
                     if (cardIdElem.data("action") == null) {
                         cardIdElem.data("action", new Array());
