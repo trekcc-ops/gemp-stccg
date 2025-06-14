@@ -1183,7 +1183,7 @@ export default class GameTableUI {
 
             let pendingDecision = gameState.pendingDecision;
             if (pendingDecision != null) {
-                processDecision(pendingDecision, true, this);
+                processDecision(pendingDecision, true, this, gameState);
                 this.startAnimatingTitle();
             } else {
                 this.animations.updateGameState(false);
@@ -1251,7 +1251,7 @@ export default class GameTableUI {
                     let userDecision = gameState.pendingDecision;
                     if (this.hasDecision === false && userDecision != null && typeof userDecision != "undefined") {
                         this.hasDecision = true;
-                        processDecision(userDecision, animate, this);
+                        processDecision(userDecision, animate, this, gameState);
                         this.startAnimatingTitle();
                     }
                 }

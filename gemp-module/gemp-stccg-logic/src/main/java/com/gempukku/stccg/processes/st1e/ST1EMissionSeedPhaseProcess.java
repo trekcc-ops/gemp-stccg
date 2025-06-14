@@ -47,7 +47,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             _consecutivePasses++;
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(currentPlayer, DecisionContext.SELECT_MISSION_PHASE_ACTION,
+                    new CardActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, true, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {

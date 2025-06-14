@@ -22,7 +22,6 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
@@ -71,7 +70,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
 
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardActionSelectionDecision(cardGame.getPlayer(playerId),
-                            DecisionContext.SELECT_MISSION_FOR_PRESEEDING, seedActions, cardGame) {
+                            DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             TopLevelSelectableAction action = getSelectedAction(result);

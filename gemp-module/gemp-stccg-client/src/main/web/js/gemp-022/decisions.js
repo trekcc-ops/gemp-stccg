@@ -1,18 +1,57 @@
 import Card from './jCards.js';
 import { getCardDivFromId } from './jCards.js';
 import { openSizeDialog } from "./common.js";
+import { getFriendlyPhaseName } from "./common.js";
 import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
 
 
-export function processDecision(decision, animate, gameUi) {
+export function getUserMessage(decision, gameState) {
+    if (decision.elementType === "ACTION") {
+        let context = decision.context;
+        switch(context) {
+            case "SELECT_MISSION_FOR_SEED_CARDS":
+                return "Select a mission to seed cards under or remove seed cards from";
+            case "SELECT_OPTIONAL_RESPONSE_ACTION":
+                return "Optional responses";
+            case "SELECT_PHASE_ACTION":
+                let phaseName = getFriendlyPhaseName(gameState.currentPhase);
+                return "Play " + phaseName + " action" + (decision.min == 0) ? " or pass" : "";
+            case "SELECT_REQUIRED_RESPONSE_ACTION":
+                return "Required responses";
+            case "SELECT_TRIBBLES_ACTION":
+                return "Select an action";
+            default:
+                console.error(`Unknown action selection decision context: ${context}`);
+                return;
+        }
+    } else if (decision.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
+        return "Select " + decision.min + " to " + decision.max + " cards";
+    } else {
+        return decision.text; // some user prompts are decided by the server; hopefully this will be deprecated over time
+    }
+}
+
+
+export function processDecision(decision, animate, gameUi, gameState) {
     $("#main").queue(
         function (next) {
             let elementType = decision.elementType;
             switch(elementType) {
                 case "ACTION":
                 case "CARD":
-                    let decisionObject = new gameDecision(decision, gameUi);
-                    decisionObject.processDecision();
+                    if (elementType === "ACTION" && decision.displayedCards.length == 0 && gameUi.gameSettings.get("autoPass") && !gameUi.replayMode) {
+                        gameUi.decisionFunction(decision.decisionId, "");
+                    } else {
+                        let userMessage = getUserMessage(decision, gameState);
+                        let decisionObject = new gameDecision(decision, gameUi);
+                        decisionObject.createUiElements(userMessage);
+                        decisionObject.allowSelection();
+                        decisionObject.goDing();
+                        if (decisionObject.useDialog) {
+                            decisionObject.resizeDialog();
+                        }
+                        decisionObject.resetFocus();
+                    }
                     break;
                 case "INTEGER":
                     integerDecision(decision, gameUi);
@@ -42,7 +81,6 @@ export default class gameDecision {
     gameUi; // GameTableUI object
     decisionType; // string; this is being deprecated
     decisionId; // integer; unique identifier for decision object in server
-    decisionText; // string; prompt to display to user (for example, "Select a card to discard")
     elementType; // string representing the type of object that's being selected (ACTION or CARD)
 
     displayedCards; // JSON map
@@ -61,7 +99,6 @@ export default class gameDecision {
         this.decisionId = decisionJson.decisionId;
         this.allCardIds = decisionJson.cardIds;
 
-        this.decisionText = decisionJson.text;
         this.min = decisionJson.min;
         this.max = decisionJson.max;
         this.elementType = decisionJson.elementType;
@@ -91,18 +128,17 @@ export default class gameDecision {
             }
             if (this.decisionType == "CARD_SELECTION_FROM_COMBINATIONS") {
                 this.jsonCombinations = JSON.parse(decisionJson.validCombinations);
-                this.decisionText = "Select " + this.min + " to " + this.max + " cards";
             }
         }
     }
 
-    createUiElements() {
+    createUiElements(userMessage) {
         if (this.useDialog) {
             this.gameUi.cardActionDialog
                 .html("<div id='cardSelectionDialog'></div>")
-                .dialog("option", "title", this.decisionText);
+                .dialog("option", "title", userMessage);
         } else {
-            this.gameUi.alertText.html(this.decisionText);
+            this.gameUi.alertText.html(userMessage);
             let alertBoxClass = this.elementType === "ACTION" ? "alert-box-highlight" : "alert-box-card-selection";
             this.gameUi.alertBox.addClass(alertBoxClass);
 
