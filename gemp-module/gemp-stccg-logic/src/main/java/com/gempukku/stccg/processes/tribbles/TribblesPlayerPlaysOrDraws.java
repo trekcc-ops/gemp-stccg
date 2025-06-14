@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -27,14 +28,8 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
             _consecutivePasses++;
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            String userMessage;
-            if (playableActions.isEmpty()) {
-                userMessage = "No Tribbles can be played. Click 'Pass' to draw a card.";
-            } else {
-                userMessage = "Select Tribble to play or click 'Pass' to draw a card.";
-            }
             _game.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(currentPlayer, userMessage, playableActions, cardGame) {
+                    new CardActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

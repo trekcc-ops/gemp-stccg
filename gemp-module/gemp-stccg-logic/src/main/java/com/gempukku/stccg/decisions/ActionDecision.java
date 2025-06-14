@@ -1,5 +1,6 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.AwaitingDecisionType;
@@ -14,21 +15,13 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
 
     final List<TopLevelSelectableAction> _actions;
 
-    ActionDecision(Player player, String text, List<TopLevelSelectableAction> actions, AwaitingDecisionType type,
-                   DefaultGame cardGame) {
-        super(player, text, type, cardGame);
-        _actions = actions;
-        setParam("actionId", getActionIds());
-        try {
-            setParam("actionText", getActionTexts(cardGame));
-        } catch(InvalidGameLogicException exp) {
-            setParam("actionText", "Select action");
-        }
-    }
+    @JsonProperty("context")
+    private final DecisionContext _context;
 
     ActionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                    AwaitingDecisionType type, DefaultGame cardGame) {
         super(player, context, type, cardGame);
+        _context = context;
         _actions = actions;
         setParam("actionId", getActionIds());
         try {

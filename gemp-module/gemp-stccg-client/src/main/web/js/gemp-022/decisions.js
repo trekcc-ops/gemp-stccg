@@ -27,36 +27,28 @@ export default class gameDecision {
         this.allCardIds = new Array();
         this.decisionText = decisionJson.text;
         this.selectedElementIds = new Array();
+        this.min = decisionJson.min;
+        this.max = decisionJson.max;
 
         if (this.decisionType === "CARD_ACTION_CHOICE") {
-            this.min = decisionJson.noPass ? 1 : 0;
-            this.max = 1;
             this.displayedCards = decisionJson.displayedCards;
             this.useDialog = false;
             this.elementType = "ACTION";
         } else if (this.decisionType === "ACTION_CHOICE") {
-            this.min = 1;
-            this.max = 1;
             this.displayedCards = decisionJson.displayedCards;
             this.useDialog = true;
             this.elementType = "ACTION";
         } else if (this.decisionType === "ARBITRARY_CARDS") {
-            this.min = parseInt(decisionJson.min);
-            this.max = parseInt(decisionJson.max);
             this.selectableCardIds = new Array();
             this.displayedCards = decisionJson.displayedCards;
             this.useDialog = true;
             this.elementType = "CARD";
         } else if (this.decisionType === "CARD_SELECTION") {
             // no displayedCards
-            this.min = parseInt(decisionJson.min);
-            this.max = parseInt(decisionJson.max);
             this.allCardIds = decisionJson.cardIds;
             this.useDialog = false;
             this.elementType = "CARD";
         } else if (this.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
-            this.min = parseInt(decisionJson.min);
-            this.max = parseInt(decisionJson.max);
             this.displayedCards = decisionJson.displayedCards;
             this.selectableCardIds = new Array();
             this.allCardIds = decisionJson.cardIds;
@@ -68,24 +60,16 @@ export default class gameDecision {
     }
 
     createUiElements() {
-        switch(this.decisionType) {
-            case "CARD_ACTION_CHOICE":
-                this.gameUi.alertText.html(this.decisionText);
-                this.gameUi.alertBox.addClass("alert-box-highlight");
-                break;
-            case "ACTION_CHOICE":
-            case "ARBITRARY_CARDS":
-            case "CARD_SELECTION_FROM_COMBINATIONS":
-                this.gameUi.cardActionDialog
-                    .html("<div id='cardSelectionDialog'></div>")
-                    .dialog("option", "title", this.decisionText);
-                break;
-            case "CARD_SELECTION":
-                this.gameUi.alertText.html(this.decisionText);
-                this.gameUi.alertBox.addClass("alert-box-card-selection");
-                break;
+        if (this.useDialog) {
+            this.gameUi.cardActionDialog
+                .html("<div id='cardSelectionDialog'></div>")
+                .dialog("option", "title", this.decisionText);
+            break;
+        } else {
+            this.gameUi.alertText.html(this.decisionText);
+            let alertBoxClass = this.elementType === "ACTION" ? "alert-box-highlight" : "alert-box-card-selection";
+            this.gameUi.alertBox.addClass(alertBoxClass);
         }
-
         if (this.decisionType != "CARD_SELECTION") {
             this.createSelectableDivs();
         }
@@ -103,17 +87,9 @@ export default class gameDecision {
     }
 
     resetFocus() {
-        switch(this.decisionType) {
-            case "CARD_ACTION_CHOICE":
-                $(':button').blur();
-                break;
-            case "ACTION_CHOICE":
-            case "ARBITRARY_CARDS":
-            case "CARD_SELECTION_FROM_COMBINATIONS":
-                $('.ui-dialog :button').blur();
-                break;
-            case "CARD_SELECTION":
-                break; // Not sure why this one doesn't do anything
+        $(':button').blur();
+        if (this.useDialog) {
+            $('.ui-dialog').blur();
         }
     }
 
@@ -132,12 +108,17 @@ export default class gameDecision {
     }
 
     finishChoice() {
-        switch(this.decisionType) {
-            case "CARD_ACTION_CHOICE":
-                this.gameUi.alertText.html("");
-                this.gameUi.alertBox.removeClass("alert-box-highlight");
-                this.gameUi.alertButtons.html("");
-                this.gameUi.clearSelection();
+        if (this.useDialog) {
+            this.gameUi.cardActionDialog.dialog("close");
+            $("#cardSelectionDialog").html("");
+            this.gameUi.clearSelection();
+        } else {
+            this.gameUi.alertText.html("");
+            let alertBoxClass = this.elementType === "ACTION" ? "alert-box-highlight" : "alert-box-card-selection";
+            this.gameUi.alertBox.removeClass(alertBoxClass);
+            this.gameUi.alertButtons.html("");
+            this.gameUi.clearSelection();
+            if (this.elementType === "ACTION") {
                 $(".card").each(
                     function () {
                         var card = $(this).data("card");
@@ -146,20 +127,7 @@ export default class gameDecision {
                         }
                     });
                 this.gameUi.hand.layoutCards();
-                break;
-            case "ACTION_CHOICE":
-            case "ARBITRARY_CARDS":
-            case "CARD_SELECTION_FROM_COMBINATIONS":
-                this.gameUi.cardActionDialog.dialog("close");
-                $("#cardSelectionDialog").html("");
-                this.gameUi.clearSelection();
-                break;
-            case "CARD_SELECTION":
-                this.gameUi.alertText.html("");
-                this.gameUi.alertBox.removeClass("alert-box-card-selection");
-                this.gameUi.alertButtons.html("");
-                this.gameUi.clearSelection();
-                break;
+            }
         }
 
         this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);

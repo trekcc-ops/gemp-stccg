@@ -11,23 +11,14 @@ import java.util.*;
 
 public abstract class CardActionSelectionDecision extends ActionDecision {
 
-    @JsonProperty("noPass")
-    protected final boolean _noPass;
-    
+    @JsonProperty("min")
+    protected final int _min;
+
+    @JsonProperty("max")
+    protected final int _max = 1;
+
     @JsonProperty("cardIds")
     private final String[] _cardIds;
-
-    public CardActionSelectionDecision(Player player, String text, List<TopLevelSelectableAction> actions,
-                                       DefaultGame cardGame) {
-        super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE, cardGame);
-        _noPass = false;
-        _cardIds = getCardIds();
-        setParam("cardId", getCardIds());
-        setParam("blueprintId", getBlueprintIds()); // done in super
-        setParam("imageUrl", getImageUrls()); // done in super
-        setParam("actionType", getActionTypes());
-        setParam("noPass", String.valueOf(_noPass));
-    }
 
     public CardActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                        DefaultGame cardGame) {
@@ -37,14 +28,13 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
 
     public CardActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                        boolean noPass, DefaultGame cardGame) {
-        super(player, context.getClientText(), actions, AwaitingDecisionType.CARD_ACTION_CHOICE, cardGame);
-        _noPass = noPass;
+        super(player, context, actions, AwaitingDecisionType.CARD_ACTION_CHOICE, cardGame);
+        _min = noPass ? 1 : 0;
         _cardIds = getCardIds();
         setParam("cardId", getCardIds());
         setParam("blueprintId", getBlueprintIds()); // done in super
         setParam("imageUrl", getImageUrls()); // done in super
         setParam("actionType", getActionTypes());
-        setParam("noPass", String.valueOf(noPass));
     }
 
 

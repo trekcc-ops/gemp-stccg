@@ -21,7 +21,7 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
                                           DefaultGame cardGame) {
         super(player, text, AwaitingDecisionType.MULTIPLE_CHOICE, cardGame);
         _possibleResults = possibleResults;
-        _context = DecisionContext.OTHER;
+        _context = DecisionContext.GENERAL_MULTIPLE_CHOICE;
     }
 
     public MultipleChoiceAwaitingDecision(Player player, DecisionContext context, String[] possibleResults,

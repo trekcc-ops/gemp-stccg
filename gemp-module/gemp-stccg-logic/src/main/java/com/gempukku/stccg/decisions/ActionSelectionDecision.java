@@ -16,6 +16,11 @@ import java.util.Map;
 
 public abstract class ActionSelectionDecision extends ActionDecision {
 
+    @JsonProperty("min")
+    private final int _min = 1;
+    @JsonProperty("max")
+    private final int _max = 1;
+
     public ActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                    DefaultGame cardGame)
             throws CardNotFoundException {
