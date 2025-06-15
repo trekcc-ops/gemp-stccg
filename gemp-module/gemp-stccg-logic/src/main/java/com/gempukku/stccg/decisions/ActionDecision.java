@@ -26,6 +26,7 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
     protected final String[] _cardIds;
 
     protected final List<String> _blueprintIds = new ArrayList<>();
+    private final String[] _actionTexts;
 
     ActionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                    DefaultGame cardGame) {
@@ -33,11 +34,7 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
         _context = context;
         _actions = actions;
         setParam("actionId", getActionIds());
-        try {
-            setParam("actionText", getActionTexts(cardGame));
-        } catch(InvalidGameLogicException exp) {
-            setParam("actionText", "Select action");
-        }
+        _actionTexts = getActionTexts(cardGame);
         _cardIds = getCardIds();
     }
 
@@ -60,10 +57,14 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
     }
 
 
-    protected String[] getActionTexts(DefaultGame game) throws InvalidGameLogicException {
+    public String[] getActionTexts(DefaultGame game) {
         String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
-            result[i] = _actions.get(i).getActionSelectionText(game);
+            try {
+                result[i] = _actions.get(i).getActionSelectionText(game);
+            } catch(InvalidGameLogicException exp) {
+                result[i] = "Select action";
+            }
         return result;
     }
 
@@ -83,7 +84,7 @@ public abstract class ActionDecision extends AbstractAwaitingDecision {
             mapToAdd.put("cardId", _cardIds[i]);
             mapToAdd.put("blueprintId", _blueprintIds.get(i));
             mapToAdd.put("actionId", getActionIds()[i]);
-            mapToAdd.put("actionText", getDecisionParameters().get("actionText")[i]);
+            mapToAdd.put("actionText", _actionTexts[i]);
             mapToAdd.put("actionType", getActionTypes()[i]);
             mapToAdd.put("selectable", "true");
             result.add(mapToAdd);

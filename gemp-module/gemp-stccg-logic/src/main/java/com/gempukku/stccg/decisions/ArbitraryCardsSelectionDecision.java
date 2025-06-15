@@ -205,12 +205,12 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     @JsonProperty("displayedCards")
     private List<Map<Object, Object>> getDisplayedCards() {
         List<Map<Object, Object>> result = new ArrayList<>();
-        for (int i = 0; i < _cardIds.length; i++) {
+        for (PhysicalCard card : _physicalCards) {
             Map<Object, Object> mapToAdd = new HashMap<>();
-            mapToAdd.put("cardId", _cardIds[i]);
-            mapToAdd.put("blueprintId", getDecisionParameters().get("blueprintId")[i]);
-            mapToAdd.put("imageUrl", getDecisionParameters().get("imageUrl")[i]);
-            mapToAdd.put("selectable", getDecisionParameters().get("selectable")[i]);
+            mapToAdd.put("cardId", card.getCardId());
+            mapToAdd.put("blueprintId", card.getBlueprintId());
+            mapToAdd.put("imageUrl", card.getImageUrl());
+            mapToAdd.put("selectable", String.valueOf(_selectable.contains(card)));
             result.add(mapToAdd);
         }
         return result;

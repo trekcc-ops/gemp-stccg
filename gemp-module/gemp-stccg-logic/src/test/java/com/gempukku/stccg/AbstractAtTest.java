@@ -529,17 +529,20 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Player player = seedCard.getOwner();
         int cardId = mission.getCardId();
         AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
-        Map<String, String[]> decisionParameters = missionSelection.getDecisionParameters();
-        String decisionId = null;
-        for (int i = 0; i < decisionParameters.get("actionId").length; i++) {
-            if (Objects.equals(decisionParameters.get("cardId")[i], String.valueOf(cardId)) &&
-                    decisionParameters.get("actionText")[i].startsWith("Seed cards under")) {
-                decisionId = String.valueOf(i);
+        if (missionSelection instanceof ActionDecision actionDecision) {
+            String decisionId = null;
+            for (int i = 0; i < actionDecision.getActions().size(); i++) {
+                if (Objects.equals(missionSelection.getCardIds()[i], String.valueOf(cardId)) &&
+                        actionDecision.getActionTexts(_game)[i].startsWith("Seed cards under")) {
+                    decisionId = String.valueOf(i);
+                }
             }
-        }
-        playerDecided(player.getPlayerId(), decisionId);
+            playerDecided(player.getPlayerId(), decisionId);
 
-        playerDecided(player.getPlayerId(), String.valueOf(seedCard.getCardId()));
+            playerDecided(player.getPlayerId(), String.valueOf(seedCard.getCardId()));
+        } else {
+            throw new DecisionResultInvalidException("Could not find action selection decision");
+        }
     }
 
     protected void removeDilemma(PhysicalCard seedCard, PhysicalCard mission) throws DecisionResultInvalidException,
@@ -547,19 +550,20 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Player player = seedCard.getOwner();
         int cardId = mission.getCardId();
         AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
-        Map<String, String[]> decisionParameters = missionSelection.getDecisionParameters();
-        String decisionId = null;
-        for (int i = 0; i < decisionParameters.get("actionId").length; i++) {
-            if (Objects.equals(decisionParameters.get("cardId")[i], String.valueOf(cardId)) &&
-                    decisionParameters.get("actionText")[i].startsWith("Remove seed cards from")) {
-                decisionId = String.valueOf(i);
+        if (missionSelection instanceof ActionDecision actionDecision) {
+            String actionId = null;
+            for (int i = 0; i < actionDecision.getActions().size(); i++) {
+                if (Objects.equals(missionSelection.getCardIds()[i], String.valueOf(cardId)) &&
+                        actionDecision.getActionTexts(_game)[i].startsWith("Remove seed cards from")) {
+                    actionId = String.valueOf(i);
+                }
             }
-        }
-        playerDecided(player.getPlayerId(), decisionId);
+            playerDecided(player.getPlayerId(), actionId);
 
-        if (_userFeedback.getAwaitingDecision(player.getPlayerId()) instanceof ArbitraryCardsSelectionDecision dilemmaSelection)
-            playerDecided(player.getPlayerId(), dilemmaSelection.getCardIdForCard(seedCard));
-        else throw new InvalidGameLogicException("Player decision is not the expected type");
+            if (_userFeedback.getAwaitingDecision(player.getPlayerId()) instanceof ArbitraryCardsSelectionDecision dilemmaSelection)
+                playerDecided(player.getPlayerId(), dilemmaSelection.getCardIdForCard(seedCard));
+            else throw new InvalidGameLogicException("Player decision is not the expected type");
+        } else throw new DecisionResultInvalidException("Unable to find action selection decision");
     }
 
 
@@ -570,26 +574,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                 playerDecided(P1, "0");
             } else if (_userFeedback.getAwaitingDecision(P2) != null) {
                 playerDecided(P2, "0");
-            }
-        }
-    }
-
-    protected void autoSeedDoorway() throws DecisionResultInvalidException, InvalidGameOperationException {
-        while (_game.getGameState().getCurrentPhase() == Phase.SEED_DOORWAY) {
-            if (_userFeedback.getAwaitingDecision(P1) != null) {
-                if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
-                    playerDecided(P1, cardIdList.getFirst());
-                }
-                else
-                    playerDecided(P1, "0");
-            } else if (_userFeedback.getAwaitingDecision(P2) != null) {
-                if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
-                    playerDecided(P2, cardIdList.getFirst());
-                }
-                else
-                    playerDecided(P2, "0");
             }
         }
     }

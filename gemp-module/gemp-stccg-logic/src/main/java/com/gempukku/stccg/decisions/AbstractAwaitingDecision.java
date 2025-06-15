@@ -59,10 +59,5 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
         return _decisionType;
     }
 
-    @Override
-    public Map<String, String[]> getDecisionParameters() {
-        return _params;
-    }
-
     public String getDecidingPlayerId() { return _decidingPlayerId; }
 }

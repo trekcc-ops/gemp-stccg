@@ -92,8 +92,8 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         } */
 
         selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
-        List<String> selectableCards =
-                List.of(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardIds"));
+
+        List<String> selectableCards = List.of(_userFeedback.getAwaitingDecision(P1).getCardIds());
 
         for (PhysicalCard card : playableCards) {
             assertTrue(selectableCards.contains(String.valueOf(card.getCardId())));

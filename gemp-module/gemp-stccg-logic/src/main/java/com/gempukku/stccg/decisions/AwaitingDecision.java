@@ -24,8 +24,6 @@ public interface AwaitingDecision {
     @JsonProperty("elementType")
     String getElementType();
 
-    Map<String, String[]> getDecisionParameters();
-
     void decisionMade(String result) throws DecisionResultInvalidException;
 
     String getDecidingPlayerId();
