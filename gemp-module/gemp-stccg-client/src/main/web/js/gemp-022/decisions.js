@@ -392,51 +392,43 @@ export default class gameDecision {
     }
 
     createSelectableDivs() {
-        for (let i = 0; i < this.displayedCards.length; i++) {
-            // Create the cards and fill the dialog with them
-            let displayedCard = this.displayedCards[i];
-            let cardId = this.allDecisionUiCardIds[i];
+        // For action selections from visible cards, each relevant card is associated with a list of its
+        //      available actions
+        if (this.elementType === "ACTION" && !this.useDialog) {
+            for (let i = 0; i < this.displayedCards.length; i++) {
+                let displayedCard = this.displayedCards[i];
+                let cardId = this.allDecisionUiCardIds[i];
+                let actionId = displayedCard.actionId;
+                let actionText = displayedCard.actionText;
+                let actionType = displayedCard.actionType;
+                let cardIdElem = getCardDivFromId(cardId);
 
-            // For action selections from visible cards, each relevant card is associated with a list of its
-            //      available actions
-            if (this.elementType === "ACTION" && !this.useDialog) {
-                for (let i = 0; i < this.displayedCards.length; i++) {
-                    let displayedCard = this.displayedCards[i];
-                    let cardId = this.allDecisionUiCardIds[i];
-                    let actionId = displayedCard.actionId;
-                    let actionText = displayedCard.actionText;
-                    let actionType = displayedCard.actionType;
-                    let cardIdElem = getCardDivFromId(cardId);
-
-                    if (cardIdElem.data("action") == null) {
-                        cardIdElem.data("action", new Array());
-                    }
-                    let actions = cardIdElem.data("action");
-                    actions.push({actionId: actionId, actionText: actionText, actionType: actionType});
+                if (cardIdElem.data("action") == null) {
+                    cardIdElem.data("action", new Array());
                 }
+                let actions = cardIdElem.data("action");
+                actions.push({actionId: actionId, actionText: actionText, actionType: actionType});
             }
-
-            if (this.useDialog) {
-                for (let i = 0; i < this.allDecisionUiCardIds) {
-                    let decisionUiCardId = this.allDecisionUiCardIds[i];
-                    let serverCardId = this.getRealCardId(decisionUiCardId);
-                    let gameStateCard = this.gameState.visibleCardsInGame[serverCardId];
-                    let blueprintId = gameStateCard.blueprintId;
-                    let imageUrl = gameStateCard.imageUrl;
-                    let zone = "SPECIAL";
-                    let noOwner = "";
-                    let noLocationIndex = "";
-                    let upsideDown = false;
-                    let card = new Card(blueprintId, zone, decisionUiCardId, noOwner, imageUrl, noLocationIndex, upsideDown);
-                    let cardDiv;
-                    switch(this.elementType) {
-                        case "ACTION":
-                            cardDiv = this.gameUi.createCardDivWithData(card, displayedCard.actionText);
-                        case "CARD":
-                            cardDiv = this.gameUi.createCardDivWithData(card);
-                    }
-                    $("#cardSelectionDialog").append(cardDiv);
+        } else if (this.useDialog) {
+            for (let i = 0; i < this.allDecisionUiCardIds) {
+                let decisionUiCardId = this.allDecisionUiCardIds[i];
+                let serverCardId = this.getRealCardId(decisionUiCardId);
+                let gameStateCard = this.gameState.visibleCardsInGame[serverCardId];
+                let blueprintId = gameStateCard.blueprintId;
+                let imageUrl = gameStateCard.imageUrl;
+                let zone = "SPECIAL";
+                let noOwner = "";
+                let noLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, zone, decisionUiCardId, noOwner, imageUrl, noLocationIndex, upsideDown);
+                let cardDiv;
+                switch(this.elementType) {
+                    case "ACTION":
+                        cardDiv = this.gameUi.createCardDivWithData(card, displayedCard.actionText);
+                    case "CARD":
+                        cardDiv = this.gameUi.createCardDivWithData(card);
                 }
+                $("#cardSelectionDialog").append(cardDiv);
             }
         }
     }
