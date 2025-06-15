@@ -2,6 +2,8 @@ package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
@@ -26,7 +28,7 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
                                        boolean noPass, DefaultGame cardGame) {
         super(player, context, actions, cardGame);
         _min = noPass ? 1 : 0;
-        setBlueprintIds();
+        setBlueprintIds(cardGame);
         setParam("cardId", getCardIds());
         setParam("blueprintId", _blueprintIds.toArray(new String[0])); // done in super
         setParam("imageUrl", getImageUrls()); // done in super
@@ -34,10 +36,16 @@ public abstract class CardActionSelectionDecision extends ActionDecision {
     }
 
 
-    private void setBlueprintIds() {
+    private void setBlueprintIds(DefaultGame cardGame) {
         _blueprintIds.clear();
         for (TopLevelSelectableAction action : _actions) {
-            _blueprintIds.add("inPlay");
+            int cardId = action.getCardIdForActionSelection();
+            try {
+                PhysicalCard physicalCard = cardGame.getCardFromCardId(cardId);
+                _blueprintIds.add(String.valueOf(physicalCard.getBlueprintId()));
+            } catch(CardNotFoundException exp) {
+                _blueprintIds.add("inPlay");
+            }
         }
     }
 
