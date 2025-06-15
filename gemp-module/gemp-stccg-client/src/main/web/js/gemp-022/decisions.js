@@ -73,7 +73,7 @@ export function processDecision(decision, animate, gameUi, gameState) {
                     } else {
                         let userMessage = getUserMessage(decision, gameState);
                         let useDialog = getUseDialog(decision, gameState, gameUi);
-                        let decisionObject = new gameDecision(decision, gameUi, useDialog);
+                        let decisionObject = new gameDecision(decision, gameUi, useDialog, gameState);
                         decisionObject.createUiElements(userMessage);
                         decisionObject.allowSelection();
                         goDing(gameUi);
@@ -114,9 +114,19 @@ export default class gameDecision {
     elementType; // string representing the type of object that's being selected (ACTION or CARD)
 
     displayedCards; // JSON map
-    allCardIds = new Array(); // string array representing all cards to be shown in this selection
-    selectableCardIds = new Array(); // string array; only those cards that can be selected
-    selectedElementIds = new Array(); // string array; only those cards that are already selected
+
+    /* Card IDs - For dialog decisions, only "allServerCardIds" has the same cardId values shown in the server.
+          The other cardID arrays have values that have been modified for use in the UI.
+          Creating two card divs with the same card ID in the UI causes some conflicts in the way jCards work,
+          so for decisions using the dialog, the "decision UI card IDs" are assigned temporary values.
+            ("temp0", "temp1", etc.)
+    */
+    allServerCardIds = new Array(); // string array (all cards to be shown; server ids)
+    allDecisionUiCardIds = new Array(); // string array (all cards to be shown; ui ids)
+    selectableCardIds = new Array(); // string array (selectable cards; ui ids)
+
+    // selected element ids uses a different id scheme for action selection decisions
+    selectedElementIds = new Array(); // string array (selected elements; ui ids if cards)
 
     min; // integer; smallest number of elements that can be selected
     max; // integer; largest number of elements that can be selected
@@ -124,7 +134,9 @@ export default class gameDecision {
     canSelectAll; // boolean; false if selectable cards are interdependent (for example, selecting 5 different cards)
     jsonCombinations; // JSON map
 
-    constructor(decisionJson, gameUi, useDialog) {
+    gameState;
+
+    constructor(decisionJson, gameUi, useDialog, gameState) {
         this.decisionType = decisionJson.decisionType;
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
@@ -133,10 +145,12 @@ export default class gameDecision {
         this.elementType = decisionJson.elementType;
         this.displayedCards = decisionJson.displayedCards;
         this.useDialog = useDialog;
+        this.gameState = gameState;
 
         for (let i = 0; i < this.displayedCards.length; i++) {
             let cardDivName = (this.useDialog) ? ("temp" + i.toString()) : this.displayedCards[i].cardId.toString();
-            this.allCardIds.push(cardDivName);
+            this.allServerCardIds.push(this.displayedCards[i].cardId);
+            this.allDecisionUiCardIds.push(cardDivName);
             if (this.displayedCards[i].selectable === "true") {
                 this.selectableCardIds.push(cardDivName);
             }
@@ -237,7 +251,7 @@ export default class gameDecision {
         } else {
             let buttons = {};
             let selectedElementCount = this.selectedElementIds.length;
-            if (this.allCardIds.length <= this.max && selectedElementCount != this.max && this.canSelectAll && this.elementType === "CARD") {
+            if (this.allServerCardIds.length <= this.max && selectedElementCount != this.max && this.canSelectAll && this.elementType === "CARD") {
                 buttons["Select all"] = function() {
                     that.selectAllCards();
                 }
@@ -324,7 +338,7 @@ export default class gameDecision {
                 if (this.canSelectAll) {
                     this.recalculateAllowedSelectionFromMaxCSS(that.selectableCardIds, that.selectedElementIds, that.max);
                 } else {
-                    this.recalculateAllowedCombinationsAndCSS(that.allCardIds, that.selectedElementIds, that.jsonCombinations, that.max);
+                    this.recalculateAllowedCombinationsAndCSS(that.allDecisionUiCardIds, that.selectedElementIds, that.jsonCombinations, that.max);
                 }
                 // DEBUG
                 let divClasses = new Array();
@@ -381,39 +395,48 @@ export default class gameDecision {
         for (let i = 0; i < this.displayedCards.length; i++) {
             // Create the cards and fill the dialog with them
             let displayedCard = this.displayedCards[i];
-            let cardId = this.allCardIds[i]; // for selections using the dialog, this is always a "temp" value
+            let cardId = this.allDecisionUiCardIds[i];
 
             // For action selections from visible cards, each relevant card is associated with a list of its
             //      available actions
             if (this.elementType === "ACTION" && !this.useDialog) {
-                let actionId = displayedCard.actionId;
-                let actionText = displayedCard.actionText;
-                let actionType = displayedCard.actionType;
-                let cardIdElem = getCardDivFromId(cardId);
+                for (let i = 0; i < this.displayedCards.length; i++) {
+                    let displayedCard = this.displayedCards[i];
+                    let cardId = this.allDecisionUiCardIds[i];
+                    let actionId = displayedCard.actionId;
+                    let actionText = displayedCard.actionText;
+                    let actionType = displayedCard.actionType;
+                    let cardIdElem = getCardDivFromId(cardId);
 
-                if (cardIdElem.data("action") == null) {
-                    cardIdElem.data("action", new Array());
+                    if (cardIdElem.data("action") == null) {
+                        cardIdElem.data("action", new Array());
+                    }
+                    let actions = cardIdElem.data("action");
+                    actions.push({actionId: actionId, actionText: actionText, actionType: actionType});
                 }
-                let actions = cardIdElem.data("action");
-                actions.push({actionId: actionId, actionText: actionText, actionType: actionType});
             }
 
             if (this.useDialog) {
-                let blueprintId = displayedCard.blueprintId;
-                let imageUrl = displayedCard.imageUrl;
-                let zone = "SPECIAL";
-                let noOwner = "";
-                let noLocationIndex = "";
-                let upsideDown = false;
-                let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, noLocationIndex, upsideDown);
-                let cardDiv;
-                switch(this.elementType) {
-                    case "ACTION":
-                        cardDiv = this.gameUi.createCardDivWithData(card, displayedCard.actionText);
-                    case "CARD":
-                        cardDiv = this.gameUi.createCardDivWithData(card);
+                for (let i = 0; i < this.allDecisionUiCardIds) {
+                    let decisionUiCardId = this.allDecisionUiCardIds[i];
+                    let serverCardId = this.getRealCardId(decisionUiCardId);
+                    let gameStateCard = this.gameState.visibleCardsInGame[serverCardId];
+                    let blueprintId = gameStateCard.blueprintId;
+                    let imageUrl = gameStateCard.imageUrl;
+                    let zone = "SPECIAL";
+                    let noOwner = "";
+                    let noLocationIndex = "";
+                    let upsideDown = false;
+                    let card = new Card(blueprintId, zone, decisionUiCardId, noOwner, imageUrl, noLocationIndex, upsideDown);
+                    let cardDiv;
+                    switch(this.elementType) {
+                        case "ACTION":
+                            cardDiv = this.gameUi.createCardDivWithData(card, displayedCard.actionText);
+                        case "CARD":
+                            cardDiv = this.gameUi.createCardDivWithData(card);
+                    }
+                    $("#cardSelectionDialog").append(cardDiv);
                 }
-                $("#cardSelectionDialog").append(cardDiv);
             }
         }
     }
@@ -517,19 +540,14 @@ export default class gameDecision {
         }
     }
 
-    getTempCardId(realCardId) {
-        let indexNum;
-        for (let i = 0; i < this.displayedCards.length; i++) {
-            if (this.displayedCards[i].cardId.toString() === realCardId.toString()) {
-                indexNum = i;
-            }
-        }
-        return this.allCardIds[indexNum];
+    getDecisionUiCardId(realCardId) {
+        let indexNum = this.allServerCardIds.indexOf(realCardId);
+        return this.allDecisionUiCardIds[indexNum];
     }
 
-    getRealCardId(tempCardId) {
-        let indexNum = this.allCardIds.indexOf(tempCardId);
-        return this.displayedCards[indexNum].cardId.toString();
+    getRealCardId(decisionUiCardId) {
+        let indexNum = this.allDecisionUiCardIds.indexOf(decisionUiCardId);
+        return this.allServerCardIds[indexNum];
     }
 
     recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
@@ -554,7 +572,7 @@ export default class gameDecision {
             // DEBUG: console.log(jsonCombinations[cardId]);
             for (const compatible_cardId of jsonCombinations[this.getRealCardId(cardId)]) {
                 // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
-                this_card_allowed.push(this.getTempCardId(compatible_cardId));
+                this_card_allowed.push(this.getDecisionUiCardId(compatible_cardId));
             }
             const this_allowed_as_set = new Set(this_card_allowed);
             allowedCombinationsRemaining = this_allowed_as_set;
@@ -570,7 +588,7 @@ export default class gameDecision {
                 // DEBUG: console.log(jsonCombinations[cardId]);
                 for (const compatible_cardId of jsonCombinations[this.getRealCardId(cardId)]) {
                     // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
-                    this_card_allowed.push(this.getTempCardId(compatible_cardId));
+                    this_card_allowed.push(this.getDecisionUiCardId(compatible_cardId));
                 }
                 const this_allowed_as_set = new Set(this_card_allowed);
 
