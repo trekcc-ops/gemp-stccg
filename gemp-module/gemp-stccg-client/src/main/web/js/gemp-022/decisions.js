@@ -206,10 +206,7 @@ export default class gameDecision {
 
         if (this.elementType === "CARD" && this.useDialog) {
             for (let i = 0; i < this.selectedElementIds.length; i++) {
-                if (this.selectedElementIds[i].substring(0,4) === "temp") {
-                    let indexNum = parseInt(this.selectedElementIds[i].substring(4));
-                    this.selectedElementIds[i] = this.displayedCards[i].cardId.toString();
-                }
+                this.selectedElementIds[i] = this.getRealCardId(this.selectedElementIds[i]);
             }
         }
         this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
@@ -272,6 +269,7 @@ export default class gameDecision {
     }
 
     respondToCardSelection(cardId, event) {
+        console.log("selected card " + cardId);
         var that = this;
 
         if (this.elementType === "ACTION" && this.useDialog) {
@@ -304,6 +302,7 @@ export default class gameDecision {
         if (this.elementType === "CARD") {
             // If the cardId is already selected, remove it.
             if (this.selectedElementIds.includes(cardId)) {
+                console.log("Removing card " + cardId + " from selectedElementIds");
                 let index = this.selectedElementIds.indexOf(cardId);
                 this.selectedElementIds.splice(index, 1);
                 if (!this.useDialog) {
@@ -312,7 +311,8 @@ export default class gameDecision {
             }
             // Otherwise, if the cardId is not already selected, add it.
             else {
-                that.selectedElementIds.push(cardId);
+                console.log("Adding card " + cardId + " to selectedElementIds");
+                this.selectedElementIds.push(cardId);
                 if (!this.useDialog) {
                     getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");
                 }
@@ -326,6 +326,19 @@ export default class gameDecision {
                 } else {
                     this.recalculateAllowedCombinationsAndCSS(that.allCardIds, that.selectedElementIds, that.jsonCombinations, that.max);
                 }
+                // DEBUG
+                let divClasses = new Array();
+                let cardDiv = getCardDivFromId(cardId);
+                if (cardDiv.hasClass("selectableCard")) {
+                    divClasses.push("selectableCard");
+                }
+                if (cardDiv.hasClass("notSelectableCard")) {
+                    divClasses.push("notSelectableCard");
+                }
+                if (cardDiv.hasClass("selectedCard")) {
+                    divClasses.push("selectedCard");
+                }
+                console.log("Classes for div '" + cardId + "': " + divClasses);
             } else {
                 // If the max number of cards are selected and the user has auto accept on, we're done.
                 if ((that.selectedElementIds.length == that.max) && (this.gameUi.gameSettings.get("autoAccept"))) {
@@ -504,6 +517,21 @@ export default class gameDecision {
         }
     }
 
+    getTempCardId(realCardId) {
+        let indexNum;
+        for (let i = 0; i < this.displayedCards.length; i++) {
+            if (this.displayedCards[i].cardId.toString() === realCardId.toString()) {
+                indexNum = i;
+            }
+        }
+        return this.allCardIds[indexNum];
+    }
+
+    getRealCardId(tempCardId) {
+        let indexNum = this.allCardIds.indexOf(tempCardId);
+        return this.displayedCards[indexNum].cardId.toString();
+    }
+
     recalculateAllowedCombinationsAndCSS(cardIds, selectedCardIds, jsonCombinations, max) {
         if (typeof(jsonCombinations) !== 'object' || jsonCombinations == null) {
             let inc_type = typeof(jsonCombinations);
@@ -524,9 +552,9 @@ export default class gameDecision {
             let this_card_allowed = new Array();
             // DEBUG: console.log("let_this_card_allowed created");
             // DEBUG: console.log(jsonCombinations[cardId]);
-            for (const compatible_cardId of jsonCombinations[cardId]) {
+            for (const compatible_cardId of jsonCombinations[this.getRealCardId(cardId)]) {
                 // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
-                this_card_allowed.push(compatible_cardId);
+                this_card_allowed.push(this.getTempCardId(compatible_cardId));
             }
             const this_allowed_as_set = new Set(this_card_allowed);
             allowedCombinationsRemaining = this_allowed_as_set;
@@ -540,9 +568,9 @@ export default class gameDecision {
                 let this_card_allowed = new Array();
                 // DEBUG: console.log("let_this_card_allowed created");
                 // DEBUG: console.log(jsonCombinations[cardId]);
-                for (const compatible_cardId of jsonCombinations[cardId]) {
+                for (const compatible_cardId of jsonCombinations[this.getRealCardId(cardId)]) {
                     // DEBUG: console.log("iterating through cards in jsonCombinations[" + cardId + "]");
-                    this_card_allowed.push(compatible_cardId);
+                    this_card_allowed.push(this.getTempCardId(compatible_cardId));
                 }
                 const this_allowed_as_set = new Set(this_card_allowed);
 
