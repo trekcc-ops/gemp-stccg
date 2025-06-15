@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
@@ -61,9 +61,9 @@ public class ContinuingMissionTest extends AbstractAtTest {
         String ownerId = card.getOwnerName();
         // Assumes there is only one valid location for the card to seed at
         assertNotNull(_userFeedback.getAwaitingDecision(ownerId));
-        assertInstanceOf(CardActionSelectionDecision.class, _userFeedback.getAwaitingDecision(ownerId));
-        CardActionSelectionDecision decision =
-                (CardActionSelectionDecision) _userFeedback.getAwaitingDecision(ownerId);
+        assertInstanceOf(ActionSelectionDecision.class, _userFeedback.getAwaitingDecision(ownerId));
+        ActionSelectionDecision decision =
+                (ActionSelectionDecision) _userFeedback.getAwaitingDecision(ownerId);
         List<? extends Action> possibleActions = decision.getActions();
         int decisionIndex = -1;
         for (Action action : possibleActions) {

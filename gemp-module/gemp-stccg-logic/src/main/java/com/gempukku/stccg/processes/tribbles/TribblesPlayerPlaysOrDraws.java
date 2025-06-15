@@ -1,7 +1,7 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.decisions.DecisionContext;
@@ -29,7 +29,7 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
             _game.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, cardGame) {
+                    new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

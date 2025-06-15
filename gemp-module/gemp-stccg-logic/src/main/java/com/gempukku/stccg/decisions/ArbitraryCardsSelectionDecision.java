@@ -52,12 +52,6 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         _minimum = minimum;
         _maximum = maximum;
         _cardIds = getCardIds(physicalCards);
-        setParam("min", String.valueOf(minimum));
-        setParam("max", String.valueOf(maximum));
-        setParam("cardId", getCardIds(physicalCards));
-        setParam("blueprintId", getBlueprintIds(physicalCards));
-        setParam("imageUrl", getImageUrls(physicalCards));
-        setParam("selectable", getSelectable(physicalCards, selectable));
     }
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
@@ -85,29 +79,10 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         }
         
         _cardIds = getCardIds(physicalCards);
-
-        setParam("min", String.valueOf(minimum));
-        setParam("max", String.valueOf(maximum));
-        setParam("cardId", getCardIds(physicalCards));
-        setParam("blueprintId", getBlueprintIds(physicalCards));
-        setParam("imageUrl", getImageUrls(physicalCards));
-        setParam("selectable", getSelectable(physicalCards, physicalCards));
     }
 
     public String getElementType() { return "CARD"; }
 
-
-
-    private String[] getSelectable(Collection<? extends PhysicalCard> physicalCards,
-                                   Collection<? extends PhysicalCard> selectable) {
-        String[] result = new String[physicalCards.size()];
-        int index = 0;
-        for (PhysicalCard physicalCard : physicalCards) {
-            result[index] = String.valueOf(selectable.contains(physicalCard));
-            index++;
-        }
-        return result;
-    }
 
     private String[] getCardIds(Collection<? extends PhysicalCard> physicalCards) {
         String[] result = new String[physicalCards.size()];

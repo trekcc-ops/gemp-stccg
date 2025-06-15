@@ -529,7 +529,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Player player = seedCard.getOwner();
         int cardId = mission.getCardId();
         AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
-        if (missionSelection instanceof ActionDecision actionDecision) {
+        if (missionSelection instanceof ActionSelectionDecision actionDecision) {
             String decisionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
                 if (Objects.equals(missionSelection.getCardIds()[i], String.valueOf(cardId)) &&
@@ -550,7 +550,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Player player = seedCard.getOwner();
         int cardId = mission.getCardId();
         AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
-        if (missionSelection instanceof ActionDecision actionDecision) {
+        if (missionSelection instanceof ActionSelectionDecision actionDecision) {
             String actionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
                 if (Objects.equals(missionSelection.getCardIds()[i], String.valueOf(cardId)) &&
@@ -607,7 +607,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         SeedOutpostAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof SeedOutpostAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
                     choice = seedAction;
@@ -626,7 +626,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         ReportCardAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof ReportCardAction reportAction &&
                         reportAction.getCardEnteringPlay() == cardToReport) {
@@ -646,7 +646,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         PlayCardAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof PlayCardAction playCardAction &&
                         playCardAction.getCardEnteringPlay() == cardToPlay) {
@@ -666,7 +666,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         BeamCardsAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof BeamCardsAction beamAction &&
                         beamAction.getCardUsingTransporters() == cardWithTransporters)
@@ -687,7 +687,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         UndockAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof UndockAction undockAction &&
                         undockAction.getCardToMove() == ship)
@@ -707,7 +707,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         BeamCardsAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof BeamCardsAction beamAction &&
                         beamAction.getCardUsingTransporters() == cardWithTransporters)
@@ -730,7 +730,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void seedCard(String playerId, PhysicalCard cardToSeed) throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof SeedCardAction seedAction &&
                         seedAction.getCardEnteringPlay() == cardToSeed)
@@ -750,7 +750,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void chooseOnlyAction(String playerId) throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             if (actionDecision.getActions().size() == 1) {
                 choice = actionDecision.getActions().getFirst();
                 actionDecision.decisionMade(choice);
@@ -767,7 +767,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameLogicException, InvalidGameOperationException {
         AttemptMissionAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
                         attemptAction.getLocation() == mission.getGameLocation())
@@ -786,7 +786,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameLogicException, InvalidGameOperationException {
         AttemptMissionAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
                         attemptAction.getLocation() == mission)
@@ -804,7 +804,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         T choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof ActionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
                 if (clazz.isAssignableFrom(action.getClass()) && action.getCardIdForActionSelection() == card.getCardId())
                     choice = (T) action;
@@ -847,7 +847,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void useGameText(PhysicalCard card, String playerId) throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof CardActionSelectionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
                 if (action.getCardIdForActionSelection() == card.getCardId())
                     choice = action;
@@ -865,7 +865,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
-        if (decision instanceof CardActionSelectionDecision actionDecision) {
+        if (decision instanceof ActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
                 if (action.getCardIdForActionSelection() == performingCard.getCardId() &&
                         actionClass.isAssignableFrom(action.getClass()))

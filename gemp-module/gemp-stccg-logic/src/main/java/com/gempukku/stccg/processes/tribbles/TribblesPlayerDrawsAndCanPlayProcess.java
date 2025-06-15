@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.*;
@@ -45,7 +45,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
                 playerPassed();
             } else {
                 _game.getUserFeedback().sendAwaitingDecision(
-                        new CardActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, _game) {
+                        new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, _game, false) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 try {

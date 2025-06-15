@@ -10,8 +10,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -175,7 +175,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     private boolean canUseCardAgain() throws CardNotFoundException {
         boolean result = false;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(P1);
-        if (decision instanceof CardActionSelectionDecision actionSelection) {
+        if (decision instanceof ActionSelectionDecision actionSelection) {
             for (TopLevelSelectableAction action : actionSelection.getActions()) {
                 int cardId = action.getCardIdForActionSelection();
                 PhysicalCard cardSource = _game.getCardFromCardId(cardId);

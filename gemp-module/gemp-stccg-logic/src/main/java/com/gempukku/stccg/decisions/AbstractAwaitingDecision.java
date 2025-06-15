@@ -11,7 +11,6 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
     private final int _decisionId;
     private final String _text;
     private final AwaitingDecisionType _decisionType;
-    private final Map<String, String[]> _params = new HashMap<>();
     private final String _decidingPlayerId;
 
     public AbstractAwaitingDecision(Player player, String text, AwaitingDecisionType decisionType,
@@ -30,19 +29,6 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
         _decidingPlayerId = player.getPlayerId();
     }
 
-
-
-    final void setParam(String name, String value) {
-        setParam(name, new String[] {value});
-    }
-    final void setParam(String name, int value) {
-        String stringValue = String.valueOf(value);
-        setParam(name, new String[] {stringValue});
-    }
-
-    final void setParam(String name, String[] value) {
-        _params.put(name, value);
-    }
 
     @Override
     public int getDecisionId() {

@@ -10,10 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.decisions.DecisionContext;
+import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -69,8 +66,8 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             }
 
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(cardGame.getPlayer(playerId),
-                            DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame) {
+                    new ActionSelectionDecision(cardGame.getPlayer(playerId),
+                            DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             TopLevelSelectableAction action = getSelectedAction(result);

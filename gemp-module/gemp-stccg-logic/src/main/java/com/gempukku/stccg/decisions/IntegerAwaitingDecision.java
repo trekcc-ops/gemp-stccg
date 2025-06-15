@@ -22,16 +22,8 @@ public abstract class IntegerAwaitingDecision extends AbstractAwaitingDecision {
         super(performingPlayer, context, AwaitingDecisionType.INTEGER, cardGame);
         _min = min;
         _max = max;
-        setParam("min", _min);
-        setParam("max", _max);
     }
 
-
-
-    public void setDefaultValue(int defaultValue) {
-        _defaultValue = defaultValue;
-        setParam("defaultValue", defaultValue);
-    }
 
     protected int getValidatedResult(String result) throws DecisionResultInvalidException {
         try {

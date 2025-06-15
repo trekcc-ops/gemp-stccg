@@ -32,15 +32,9 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;
-
-
         _cardIds = new String[physicalCards.size()];
         for (int i = 0; i < physicalCards.size(); i++)
             _cardIds[i] = String.valueOf(_physicalCards.get(i).getCardId());
-
-        setParam("min", String.valueOf(minimum));
-        setParam("max", String.valueOf(maximum));
-        setParam("cardIds", _cardIds);
     }
 
     public String[] getCardIds() {
