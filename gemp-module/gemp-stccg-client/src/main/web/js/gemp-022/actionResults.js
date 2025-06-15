@@ -142,6 +142,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "ATTEMPT_MISSION": // Note that ATTEMPT_MISSION is only sent when the mission attempt is ended, either by solving the mission or failing it.
         case "FAIL_DILEMMA":
         case "KILL": // only the kill part of the action; typically this will result in a separate discard action
+        case "NULLIFY": // only the kill part of the action; typically this will result in a separate discard action
         case "SCORE_POINTS":
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
@@ -214,6 +215,13 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "KILL":
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             message = performingPlayerId + " killed ";
+            message = message + showLinkableCardTitle(targetCard) + " using ";
+            message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        case "NULLIFY":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            message = performingPlayerId + " nullified ";
             message = message + showLinkableCardTitle(targetCard) + " using ";
             message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
             gameChat.appendMessage(message, "gameMessage");
