@@ -299,19 +299,6 @@ export default class gameDecision {
             } else {
                 this.recalculateAllowedCombinationsAndCSS(that.allDecisionUiCardIds, that.selectedElementIds, that.jsonCombinations, that.max);
             }
-            // DEBUG
-            let divClasses = new Array();
-            let cardDiv = getCardDivFromId(cardId);
-            if (cardDiv.hasClass("selectableCard")) {
-                divClasses.push("selectableCard");
-            }
-            if (cardDiv.hasClass("notSelectableCard")) {
-                divClasses.push("notSelectableCard");
-            }
-            if (cardDiv.hasClass("selectedCard")) {
-                divClasses.push("selectedCard");
-            }
-            console.log("Classes for div '" + cardId + "': " + divClasses);
         } else {
             // If the max number of cards are selected and the user has auto accept on, we're done.
             if ((that.selectedElementIds.length == that.max) && (this.gameUi.gameSettings.get("autoAccept"))) {
@@ -321,17 +308,6 @@ export default class gameDecision {
         }
 
         that.processButtons();
-    }
-
-    respondToActionSelection(actionId) {
-        this.selectedElementIds.push(actionId);
-        if (this.gameUi.gameSettings.get("autoAccept")) {
-           this.finishChoice();
-        } else {
-            this.gameUi.clearSelection();
-            getCardDivFromId(cardId).addClass("selectedCard");
-            this.processButtons();
-        }
     }
 
     allowSelection() {
