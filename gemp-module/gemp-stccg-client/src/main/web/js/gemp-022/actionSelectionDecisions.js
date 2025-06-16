@@ -306,6 +306,8 @@ export function getActionInitiationCardActionMap(action, gameState, acceptAllMap
             acceptAllMappings = true: the action will be mapped to both the card being played and the card whose
                 gametext enabled the card play
             acceptAllMappings = false: the action will only be mapped to one of these cards
+
+        [CL] The majority of mappings as of 6/16/25 only have one option.
     */
 
     let cardActionMap = new Map();
@@ -316,9 +318,9 @@ export function getActionInitiationCardActionMap(action, gameState, acceptAllMap
     let performingCardId = action.performingCardId;
 
     switch(actionType) {
-        case "ADD_CARD_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"
-            // targetCardId for this action represents the mission (or Empok Nor)
-            cardActionMap.set(targetCardId, "Add seed cards");
+        case "ADD_CARDS_TO_PRESEED_STACK":
+            // TODO - Will need additional implementation for this with a card like Empok Nor
+            cardActionMap.set(getTopMissionCardIdForLocation(action.locationId), "Add seed cards");
             return cardActionMap;
         case "ADD_MODIFIER":
             // performingCardId for this action represents the card whose gametext adds the modifier
@@ -329,17 +331,8 @@ export function getActionInitiationCardActionMap(action, gameState, acceptAllMap
             cardActionMap.set(targetCardId, "Attempt mission");
             return cardActionMap;
         case "BATTLE":
-            // TODO - Designed to work for ship battles only
-            for (let i = 0; i < gameState.spacelineLocations.length; i++) {
-                let spacelineLocation = gameState.spacelineLocations[i];
-                if (spacelineLocation.locationId == action.locationId) {
-                    // Get the top mission card for where this battle is to be initiated
-                    let missionCardId = spacelineLocation.missionCards[(spacelineLocation.missionCards.length - 1)];
-                    cardActionMap.set(missionCardId, "Initiate battle");
-                    return cardActionMap;
-                }
-            }
-            console.error("Unable to find location for ship battle");
+            // TODO - Will need additional implementation for this once we have multiple battle options
+            cardActionMap.set(getTopMissionCardIdForLocation(action.locationId), "Initiate battle");
             return cardActionMap;
         case "BEAM_CARDS":
             // performingCardId for this action represents the card whose transporters are used
@@ -390,7 +383,7 @@ export function getActionInitiationCardActionMap(action, gameState, acceptAllMap
                If this is the normal card play (i.e. no card is enabling it because it is allowed by the rules),
                     performingCardId and targetCardId are the same.
             */
-            // TODO - Get more specific for a card like Attention All Hands ("report a personnel for free")
+            // TODO - Get more specific for a card like Attention All Hands (e.g., "report a personnel for free")
             if (targetCardId != null && typeof targetCardId != "undefined") {
                 cardActionMap.set(targetCardId, "Play card");
             }
@@ -400,9 +393,9 @@ export function getActionInitiationCardActionMap(action, gameState, acceptAllMap
                 }
             }
             return cardActionMap;
-        case "REMOVE_CARD_FROM_PRESEED_STACK": // preparing for dilemma seeds; returns card to seed deck pile
-            // targetCardId for this action represents the mission (or Empok Nor)
-            cardActionMap.set(targetCardId, "Remove seed cards");
+        case "REMOVE_CARDS_FROM_PRESEED_STACK":
+            // TODO - Will need additional implementation for this with a card like Empok Nor
+            cardActionMap.set(getTopMissionCardIdForLocation(action.locationId), "Remove seed cards");
             return cardActionMap;
         case "SCORE_POINTS":
             // performingCardId for this action represents the card whose gametext enables the point scoring
@@ -462,4 +455,16 @@ export function getActionInitiationCardActionMap(action, gameState, acceptAllMap
             console.error("No action initiation user message available for action type: '" + actionType + "'.");
             return cardActionMap;
     }
+}
+
+function export getTopMissionCardIdForLocation(gameState, targetLocationId) {
+    for (let i = 0; i < gameState.spacelineLocations.length; i++) {
+        let spacelineLocation = gameState.spacelineLocations[i];
+        if (spacelineLocation.locationId === targetLocationId) {
+            let missionCards = spacelineLocation.missionCards;
+            return missionCards[(missionCards.length - i)];
+        }
+    }
+    console.error("Unable to identify top mission card for location with id " + targetLocationId);
+    return -1;
 }

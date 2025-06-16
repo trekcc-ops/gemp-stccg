@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -26,13 +25,13 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
     }
 
     @Override
-    List<MissionCard> getAvailableMissions(ST1EGame stGame, String playerId) {
-        List<MissionCard> result = new ArrayList<>();
+    List<MissionLocation> getAvailableMissions(ST1EGame stGame, String playerId) {
+        List<MissionLocation> result = new ArrayList<>();
         try {
             for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
                 MissionCard mission = location.getMissionCards().getFirst();
                 if (location.getMissionCards().size() == 1 && mission.getOwner() == stGame.getPlayer(playerId))
-                    result.add(mission);
+                    result.add(location);
             }
         } catch(PlayerNotFoundException exp) {
             stGame.sendErrorMessage(exp);
@@ -40,11 +39,6 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
         return result;
     }
 
-
-    @Override
-    protected String getDecisionText(DefaultGame cardGame, Player player) {
-        return "Select your mission to seed cards under or remove cards from";
-    }
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {

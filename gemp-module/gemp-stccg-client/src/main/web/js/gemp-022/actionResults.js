@@ -22,9 +22,8 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     }
 
     switch(actionType) {
-        case "ADD_CARD_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"
-            cardList.push(jsonAction.targetCardId);
-            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+        case "ADD_CARDS_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"
+            gameAnimations.removeCardFromPlay(jsonAction.targetCardIds, jsonAction.performingPlayerId, true);
             break;
         case "BEAM_CARDS": // Same animation for both beaming and walking
         case "WALK_CARDS":
@@ -84,12 +83,13 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.addCardToHiddenZone(targetCard, "REMOVED", targetCard.owner);
             break;
-        case "REMOVE_CARD_FROM_PRESEED_STACK": // preparing for dilemma seeds; returns card to seed deck pile
+        case "REMOVE_CARDS_FROM_PRESEED_STACK": // preparing for dilemma seeds; returns card to seed deck pile
             if (jsonAction.performingPlayerId === gameAnimations.game.bottomPlayerId) {
-                cardList.push(jsonAction.targetCardId);
-                gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
-                targetCard = getActionTargetCard(jsonAction, jsonGameState);
-                gameAnimations.addCardToHiddenZone(targetCard, "SEED_DECK", targetCard.owner);
+                gameAnimations.removeCardFromPlay(jsonAction.targetCardIds, jsonAction.performingPlayerId, true);
+                for (const cardId of jsonAction.targetCardIds) {
+                    targetCard = jsonGameState.visibleCardsInGame[cardId];
+                    gameAnimations.addCardToHiddenZone(targetCard, "SEED_DECK", targetCard.owner);
+                }
             }
             break;
         case "SEED_CARD":
@@ -262,7 +262,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = message + " to " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.destinationCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "ADD_CARD_TO_PRESEED_STACK":
+        case "ADD_CARDS_TO_PRESEED_STACK":
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "DOCK_SHIP":
         case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
@@ -282,7 +282,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "PLACE_CARD_ON_MISSION":
         case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
         case "PLACE_CARDS_BENEATH_DRAW_DECK":
-        case "REMOVE_CARD_FROM_PRESEED_STACK":
+        case "REMOVE_CARDS_FROM_PRESEED_STACK":
         case "REVEAL_SEED_CARD":
         case "SHUFFLE_CARDS_INTO_DRAW_DECK":
             break;
