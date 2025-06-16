@@ -28,5 +28,4 @@ public interface AwaitingDecision {
 
     String getDecidingPlayerId();
 
-    String[] getCardIds();
 }

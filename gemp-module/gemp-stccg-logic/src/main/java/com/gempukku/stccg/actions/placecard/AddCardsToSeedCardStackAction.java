@@ -78,4 +78,6 @@ public class AddCardsToSeedCardStackAction extends ActionyAction implements TopL
     public String getLocationName() {
         return _location.getLocationName();
     }
+
+    public MissionLocation getLocation() { return _location; }
 }

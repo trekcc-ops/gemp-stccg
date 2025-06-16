@@ -6,13 +6,9 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
@@ -21,9 +17,6 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
     @JsonProperty("context")
     private final DecisionContext _context;
-
-    @JsonProperty("cardIds")
-    protected final String[] _cardIds;
 
     @JsonProperty("min")
     private final int _minActions;
@@ -35,29 +28,10 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
         super(player, context, AwaitingDecisionType.ACTION_CHOICE, cardGame);
         _context = context;
         _actions = actions;
-        _cardIds = getCardIds();
         _minActions = required ? 1 : 0;
     }
 
     public String getElementType() { return "ACTION"; }
-
-    public String[] getActionTexts(DefaultGame game) {
-        String[] result = new String[_actions.size()];
-        for (int i = 0; i < result.length; i++)
-            try {
-                result[i] = _actions.get(i).getActionSelectionText(game);
-            } catch(InvalidGameLogicException exp) {
-                result[i] = "Select action";
-            }
-        return result;
-    }
-
-    public String[] getCardIds() {
-        String[] result = new String[_actions.size()];
-        for (int i = 0; i < result.length; i++)
-            result[i] = String.valueOf(_actions.get(i).getCardIdForActionSelection());
-        return result;
-    }
 
     public List<TopLevelSelectableAction> getActions() { return _actions; }
 

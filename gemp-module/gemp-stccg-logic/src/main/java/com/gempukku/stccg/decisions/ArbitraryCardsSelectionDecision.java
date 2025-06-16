@@ -13,7 +13,7 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.*;
 
-public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDecision {
+public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDecision implements CardSelectionDecision {
     private final List<PhysicalCard> _physicalCards = new LinkedList<>();
     private final Collection<? extends PhysicalCard> _selectable;
 

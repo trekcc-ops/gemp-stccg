@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.decisions.CardSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -93,7 +94,10 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
         selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
 
-        List<String> selectableCards = List.of(_userFeedback.getAwaitingDecision(P1).getCardIds());
+        assertTrue(CardSelectionDecision.class.isAssignableFrom(_userFeedback.getAwaitingDecision(P1).getClass()));
+        CardSelectionDecision cardDecision = (CardSelectionDecision) _userFeedback.getAwaitingDecision(P1);
+
+        List<String> selectableCards = List.of(cardDecision.getCardIds());
 
         for (PhysicalCard card : playableCards) {
             assertTrue(selectableCards.contains(String.valueOf(card.getCardId())));

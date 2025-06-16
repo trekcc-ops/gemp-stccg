@@ -36,10 +36,6 @@ public abstract class IntegerAwaitingDecision extends AbstractAwaitingDecision {
         }
     }
 
-    public String[] getCardIds() {
-        return null;
-    }
-
     public String getElementType() { return "INTEGER"; }
 
 }

@@ -9,7 +9,7 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.*;
 
-public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
+public abstract class CardsSelectionDecision extends AbstractAwaitingDecision implements CardSelectionDecision {
     private final List<? extends PhysicalCard> _physicalCards;
 
     @JsonProperty("min")
