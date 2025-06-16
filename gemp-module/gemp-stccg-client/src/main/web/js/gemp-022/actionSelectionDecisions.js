@@ -6,48 +6,26 @@ import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
 export default class ActionSelectionDecision {
 
     gameUi; // GameTableUI object
-    decisionId; // integer; unique identifier for decision object in server
-    elementType; // string representing the type of object that's being selected (ACTION or CARD)
-
-    actions;
-
-    // selected element ids uses a different id scheme for action selection decisions
-    selectedElementIds = new Array(); // string array (selected elements; ui ids if cards)
-
-    min; // integer; smallest number of elements that can be selected
-    max; // integer; largest number of elements that can be selected
-    useDialog; // boolean; if true, cards will be shown in a pop-up dialog
-
     gameState;
 
-    constructor(decisionJson, gameUi, useDialog, gameState) {
+    decisionId; // integer; unique identifier for decision object in server
+    actions;
+    selectedActionIds = new Array(); // integer array
+    min; // integer; smallest number of actions that can be selected (either 0 or 1)
+
+    constructor(decisionJson, gameUi, gameState) {
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
         this.min = decisionJson.min;
-        this.max = decisionJson.max;
-        this.elementType = decisionJson.elementType;
-        this.useDialog = useDialog;
         this.gameState = gameState;
         this.actions = decisionJson.actions;
     }
 
     createUiElements(userMessage) {
-        if (this.useDialog) {
-            this.gameUi.cardActionDialog
-                .html("<div id='cardSelectionDialog'></div>")
-                .dialog("option", "title", userMessage);
-        } else {
-            this.gameUi.alertText.html(userMessage);
-            let alertBoxClass = this.elementType === "ACTION" ? "alert-box-highlight" : "alert-box-card-selection";
-            this.gameUi.alertBox.addClass(alertBoxClass);
-        }
-
-        if (this.elementType === "ACTION" || this.useDialog) {
-            this.createSelectableDivs();
-            if (!this.useDialog) {
-                this.gameUi.hand.layoutCards();
-            }
-        }
+        this.gameUi.alertText.html(userMessage);
+        this.gameUi.alertBox.addClass("alert-box-highlight");
+        this.createSelectableDivs();
+        this.gameUi.hand.layoutCards();
     }
 
     resizeDialog() {
@@ -57,84 +35,47 @@ export default class ActionSelectionDecision {
 
     resetFocus() {
         $(':button').blur();
-        if (this.useDialog) {
-            $('.ui-dialog').blur();
-        }
     }
 
     finishChoice() {
-        if (this.useDialog) {
-            this.gameUi.cardActionDialog.dialog("close");
-            $("#cardSelectionDialog").html("");
-            this.gameUi.clearSelection();
-        } else {
-            this.gameUi.alertText.html("");
-            let alertBoxClass = this.elementType === "ACTION" ? "alert-box-highlight" : "alert-box-card-selection";
-            this.gameUi.alertBox.removeClass(alertBoxClass);
-            this.gameUi.alertButtons.html("");
-            this.gameUi.clearSelection();
-            if (this.elementType === "ACTION") {
-                $(".card").each(
-                    function () {
-                        var card = $(this).data("card");
-                        if (card.zone == "EXTRA") {
-                            $(this).remove();
-                        }
-                    });
-                this.gameUi.hand.layoutCards();
-            }
-        }
-
-        this.gameUi.decisionFunction(this.decisionId, "" + this.selectedElementIds);
+        this.gameUi.alertText.html("");
+        this.gameUi.alertBox.removeClass("alert-box-highlight");
+        this.gameUi.alertButtons.html("");
+        this.gameUi.clearSelection();
+        this.gameUi.hand.layoutCards();
+        this.gameUi.decisionFunction(this.decisionId, "" + this.selectedActionIds);
     }
 
     processButtons() {
         var that = this;
-
-        if (!this.useDialog) {
-            this.gameUi.alertButtons.html("");
-            if (this.min == 0 && this.selectedElementIds.length == 0) {
-                this.gameUi.alertButtons.append("<button id='Pass'>Pass</button>");
-                $("#Pass").button().click(function () {
-                    that.finishChoice();
-                });
-            } else if (this.selectedElementIds.length >= this.min) {
-                this.gameUi.alertButtons.append("<button id='Done'>Done</button>");
-                $("#Done").button().click(function () {
-                    that.finishChoice();
-                });
-            }
-            if (this.selectedElementIds.length > 0) {
-                this.gameUi.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
-                $("#ClearSelection").button().click(function () {
-                    that.resetChoice();
-                });
-            }
-        } else {
-            let buttons = {};
-            let selectedElementCount = this.selectedElementIds.length;
-            if (selectedElementCount > 0) {
-                buttons["Clear selection"] = function () {
-                    that.resetChoice();
-                };
-            }
-            if (selectedElementCount >= this.min && selectedElementCount <= this.max) {
-                buttons["Done"] = function () {
-                    that.finishChoice();
-                };
-            }
-            this.gameUi.cardActionDialog.dialog("option", "buttons", buttons);
+        this.gameUi.alertButtons.html("");
+        if (this.min == 0 && this.selectedActionIds.length == 0) {
+            this.gameUi.alertButtons.append("<button id='Pass'>Pass</button>");
+            $("#Pass").button().click(function () {
+                that.finishChoice();
+            });
+        } else if (this.selectedActionIds.length >= this.min) {
+            this.gameUi.alertButtons.append("<button id='Done'>Done</button>");
+            $("#Done").button().click(function () {
+                that.finishChoice();
+            });
+        }
+        if (this.selectedActionIds.length > 0) {
+            this.gameUi.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
+            $("#ClearSelection").button().click(function () {
+                that.resetChoice();
+            });
         }
     }
 
     resetChoice() {
-        this.selectedElementIds = new Array();
+        this.selectedActionIds = new Array();
         this.gameUi.clearSelection();
-        if (this.elementType === "ACTION" && !this.useDialog) {
-            // Selecting cards with this decision removes all the divs, so they need to be re-created
-            this.createSelectableDivs();
-            this.gameUi.hand.layoutCards();
-        }
+        
+        // Selecting cards with this decision removes all the divs, so they need to be re-created
+        this.createSelectableDivs();
+        this.gameUi.hand.layoutCards();
+        
         this.allowSelection();
         this.processButtons();
     }
@@ -143,37 +84,21 @@ export default class ActionSelectionDecision {
         console.log("selected card " + cardId);
         var that = this;
 
-        if (this.elementType === "ACTION" && this.useDialog) {
-            let cardIdElem = getCardDivFromId(cardId);
-            let actionId = cardIdElem.data("actionId");
-            that.selectedElementIds.push(actionId);
-            that.gameUi.clearSelection();
-            if (that.gameUi.gameSettings.get("autoAccept")) {
-                that.finishChoice();
-            } else {
-                that.processButtons();
-                getCardDivFromId(cardId).addClass("selectedCard");
-            }
-        }
+        let cardIdElem = getCardDivFromId(cardId);
+        let cardActions = cardIdElem.data("action");
 
-        if (this.elementType === "ACTION" && !this.useDialog) {
-            // DEBUG: console.log("cardActionChoiceDecision -> allowSelection -> selectionFunction");
-            let cardIdElem = getCardDivFromId(cardId);
-            let actions = cardIdElem.data("action");
-
-            // If the only legal action is a card play, perform action automatically by clicking
-            // Otherwise show a drop-down menu with the action options by clicking
-            if (actions.length == 1 &&
-                    (actions[0].actionType == "PLAY_CARD" || actions[0].actionType == "SEED_CARD")) {
-                this.respondToActionSelection(actions[0].actionId);
-            } else {
-                this.createActionChoiceContextMenu(actions, event);
-            }
+        // If the only legal action is a card play, perform action automatically by clicking
+        // Otherwise show a drop-down menu with the action options by clicking
+        if (cardActions.length == 1 &&
+                (cardActions[0].actionType == "PLAY_CARD" || cardActions[0].actionType == "SEED_CARD")) {
+            this.respondToActionSelection(cardActions[0].actionId);
+        } else {
+            this.createActionChoiceContextMenu(cardActions, event);
         }
     }
 
     respondToActionSelection(actionId) {
-        this.selectedElementIds.push(actionId);
+        this.selectedActionIds.push(actionId);
         if (this.gameUi.gameSettings.get("autoAccept")) {
            this.finishChoice();
         } else {
@@ -198,52 +123,18 @@ export default class ActionSelectionDecision {
     createSelectableDivs() {
         // For action selections from visible cards, each relevant card is associated with a list of its
         //      available actions
-        if (!this.useDialog) {
-            for (let i = 0; i < this.actions.length; i++) {
-                let action = this.actions[i];
-                let acceptAllMappings = true;
-                let cardActionMap = getActionInitiationCardActionMap(action, this.gameState, acceptAllMappings);
-                for (const [cardId, actionText] of cardActionMap) {
-                    let cardIdElem = getCardDivFromId(cardId);
-                    if (cardIdElem.data("action") == null) {
-                        cardIdElem.data("action", new Array());
-                    }
-                    let cardActions = cardIdElem.data("action");
-                    cardActions.push({actionId: action.actionId, actionText: actionText, actionType: action.actionType});
-                    cardIdElem.addClass("selectableCard");
+        for (let i = 0; i < this.actions.length; i++) {
+            let action = this.actions[i];
+            let cardActionMap = getActionInitiationCardActionMap(action, this.gameState);
+            for (const [cardId, actionText] of cardActionMap) {
+                let cardIdElem = getCardDivFromId(cardId);
+                if (cardIdElem.data("action") == null) {
+                    cardIdElem.data("action", new Array());
                 }
+                let cardActions = cardIdElem.data("action");
+                cardActions.push({actionId: action.actionId, actionText: actionText, actionType: action.actionType});
+                cardIdElem.addClass("selectableCard");
             }
-        } else if (this.useDialog) {
-            for (let i = 0; i < this.actions.length; i++) {
-                let action = this.actions[i];
-                let acceptAllMappings = false;
-                let cardActionMap = getActionInitiationCardActionMap(action, this.gameState, acceptAllMappings);
-                if (cardActionMap.size > 1) {
-                    console.error("Created cardActionMap of incorrect size");
-                }
-                for (const [cardId, actionText] of cardActionMap) {
-                    let decisionUiCardId = "temp" + i.toString();
-                    let gameStateCard = this.gameState.visibleCardsInGame[cardId];
-                    let blueprintId = gameStateCard.blueprintId;
-                    let imageUrl = gameStateCard.imageUrl;
-                    let zone = "SPECIAL";
-                    let noOwner = "";
-                    let noLocationIndex = "";
-                    let upsideDown = false;
-                    let card = new Card(blueprintId, zone, decisionUiCardId, noOwner, imageUrl, noLocationIndex, upsideDown);
-                    let cardDiv = this.gameUi.createCardDivWithData(card, actionText);
-                    cardDiv.data("actionId", action.actionId);
-                    cardDiv.addClass("selectableCard");
-                    $("#cardSelectionDialog").append(cardDiv);
-                }
-            }
-        }
-    }
-
-    recalculateCardSelectionOrder() {
-        for (const [index, cardId] of this.selectedElementIds.entries()) {
-            let divToChange = getCardDivFromId(cardId);
-            divToChange.attr("selectedOrder", index + 1); // use a 1-index
         }
     }
 
@@ -298,15 +189,7 @@ export default class ActionSelectionDecision {
 
 }
 
-export function getActionInitiationCardActionMap(action, gameState, acceptAllMappings) {
-    /* acceptAllMappings - if true, the map returned may have multiple options for each action
-       For example, if a card can be played by using another card's gametext:
-            acceptAllMappings = true: the action will be mapped to both the card being played and the card whose
-                gametext enabled the card play
-            acceptAllMappings = false: the action will only be mapped to one of these cards
-
-        [CL] The majority of mappings as of 6/16/25 only have one option.
-    */
+export function getActionInitiationCardActionMap(action, gameState) {
 
     let cardActionMap = new Map();
     let actionType = action.actionType;
@@ -385,10 +268,8 @@ export function getActionInitiationCardActionMap(action, gameState, acceptAllMap
             if (targetCardId != null && typeof targetCardId != "undefined") {
                 cardActionMap.set(targetCardId, "Play card");
             }
-            if (acceptAllMappings || cardActionMap.size === 0) {
-                if (performingCardId != null && typeof performingCardId != "undefined" && performingCardId != targetCardId) {
-                    cardActionMap.set(performingCardId, "Play card");
-                }
+            if (performingCardId != null && typeof performingCardId != "undefined" && performingCardId != targetCardId) {
+                cardActionMap.set(performingCardId, "Play card");
             }
             return cardActionMap;
         case "REMOVE_CARDS_FROM_PRESEED_STACK":

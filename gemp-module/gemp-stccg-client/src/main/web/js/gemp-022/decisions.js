@@ -33,9 +33,7 @@ export function getUserMessage(decision, gameState) {
 }
 
 export function getUseDialog(decision, gameState, gameUi) {
-    if (decision.elementType === "ACTION") {
-        return decision.context === "SELECT_REQUIRED_RESPONSE_ACTION";
-    } else if (decision.elementType === "CARD") {
+    if (decision.elementType === "CARD") {
         let cardIds = decision.cardIds;
         for (let i = 0; i < cardIds.length; i++) {
             let cardId = cardIds[i];
@@ -59,6 +57,7 @@ export function getUseDialog(decision, gameState, gameUi) {
         }
         return false;
     }
+    return false;
 }
 
 
@@ -75,8 +74,7 @@ export function processDecision(decision, animate, gameUi, gameState) {
                         gameUi.decisionFunction(decision.decisionId, "");
                     } else {
                         userMessage = getUserMessage(decision, gameState);
-                        useDialog = getUseDialog(decision, gameState, gameUi);
-                        decisionObject = new ActionSelectionDecision(decision, gameUi, useDialog, gameState);
+                        decisionObject = new ActionSelectionDecision(decision, gameUi, gameState);
                         decisionObject.createUiElements(userMessage);
                         decisionObject.allowSelection();
                         goDing(gameUi);
