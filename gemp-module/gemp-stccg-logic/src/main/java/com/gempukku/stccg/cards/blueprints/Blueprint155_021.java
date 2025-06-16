@@ -53,7 +53,6 @@ public class Blueprint155_021 extends CardBlueprint {
                                 destinationFilterBlueprint);
                 action1.setCardActionPrefix("1");
                 action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
-                action1.setText("Report a personnel for free");
                 if (action1.canBeInitiated(cardGame))
                     actions.add(action1);
 
@@ -77,7 +76,6 @@ public class Blueprint155_021 extends CardBlueprint {
                 action2.setCardActionPrefix("2");
                 action2.appendUsage(new UseOncePerGameAction(action2, thisCard, player));
                 action2.appendCost(new UseNormalCardPlayAction(cardGame, player));
-                action2.setText("Download a card");
                 if (action2.canBeInitiated(cardGame))
                     actions.add(action2);
             }

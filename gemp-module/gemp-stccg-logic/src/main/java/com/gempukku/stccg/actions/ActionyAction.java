@@ -27,7 +27,6 @@ public abstract class ActionyAction implements Action {
     private final LinkedList<Action> _actionEffects = new LinkedList<>();
     private final LinkedList<Action> _processedActions = new LinkedList<>();
     private final LinkedList<Action> _usageCosts = new LinkedList<>();
-    protected String _text;
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
@@ -53,7 +52,6 @@ public abstract class ActionyAction implements Action {
 
     protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType) {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-        _text = text;
     }
 
 
@@ -67,7 +65,6 @@ public abstract class ActionyAction implements Action {
     protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType,
                             Enum<?>[] progressTypes) {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-        _text = text;
         for (Enum<?> progressType : progressTypes) {
             _progressIndicators.put(progressType.name(), false);
         }
@@ -103,14 +100,6 @@ public abstract class ActionyAction implements Action {
 
     public final void insertAction(Action action) {
         _actionEffects.addAll(0, Collections.singletonList(action));
-    }
-
-    /**
-     * Sets the text shown for the action selection on the User Interface.
-     * @param text the text to show for the action selection
-     */
-    public void setText(String text) {
-        _text = text;
     }
 
     protected boolean isCostFailed() {

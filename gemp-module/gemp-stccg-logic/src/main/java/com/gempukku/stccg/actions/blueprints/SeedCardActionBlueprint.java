@@ -14,7 +14,7 @@ public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     public SeedCardActionBlueprint(@JsonProperty(value = "where", required = true)
                                 Zone seedToZone
     ) {
-        super("Seed card", 0);
+        super(0);
         _seedToZone = seedToZone;
     }
 

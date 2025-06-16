@@ -14,7 +14,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
 
     public TribblesPlayCardAction(TribblesPhysicalCard card) {
         super(card, card, card.getOwner(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
-        setText("Play " + card.getFullName());
     }
 
     @Override

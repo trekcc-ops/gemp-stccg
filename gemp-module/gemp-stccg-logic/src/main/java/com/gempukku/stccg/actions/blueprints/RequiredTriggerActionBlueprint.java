@@ -15,9 +15,7 @@ import java.util.List;
 
 public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
 
-    public RequiredTriggerActionBlueprint(@JsonProperty("text")
-                                       String text,
-                                          @JsonProperty(value="limitPerTurn", defaultValue="0")
+    public RequiredTriggerActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
                                        int limitPerTurn,
                                           @JsonProperty(value="triggerDuringSeed", required = true)
                                       boolean triggerDuringSeed,
@@ -31,7 +29,7 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                           @JsonProperty("effect")
                                        List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(text, limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed);
+        super(limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed);
     }
 
     @Override

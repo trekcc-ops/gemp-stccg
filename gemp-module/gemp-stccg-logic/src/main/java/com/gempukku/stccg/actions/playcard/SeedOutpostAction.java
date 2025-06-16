@@ -32,7 +32,6 @@ public class SeedOutpostAction extends PlayCardAction {
     public SeedOutpostAction(FacilityCard cardToSeed) {
         super(cardToSeed, cardToSeed, cardToSeed.getOwner(), Zone.AT_LOCATION,
                 ActionType.SEED_CARD, Progress.values());
-        setText("Seed " + _cardEnteringPlay.getFullName());
         if (!cardToSeed.isMultiAffiliation()) {
             setProgress(Progress.affiliationSelected);
             _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(cardToSeed.getAffiliationOptions()));

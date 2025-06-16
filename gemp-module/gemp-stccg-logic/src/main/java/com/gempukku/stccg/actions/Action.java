@@ -28,7 +28,7 @@ public interface Action {
     String getPerformingPlayerId();
 
     boolean canBeInitiated(DefaultGame cardGame);
-    void setText(String text);
+
     boolean wasCarriedOut();
 
     void insertEffect(Action actionEffect);
