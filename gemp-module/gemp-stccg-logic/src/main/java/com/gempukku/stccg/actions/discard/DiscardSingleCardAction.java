@@ -18,7 +18,8 @@ import com.google.common.collect.Iterables;
 import java.util.Collection;
 
 public class DiscardSingleCardAction extends ActionyAction implements TopLevelSelectableAction {
-
+    @JsonProperty("performingCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardTarget;
     private Collection<PhysicalCard> _cardsDiscarded; // may not be initialized

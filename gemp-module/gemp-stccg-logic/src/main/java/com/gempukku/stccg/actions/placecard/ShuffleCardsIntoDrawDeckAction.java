@@ -16,6 +16,8 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.Collection;
 
 public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements TopLevelSelectableAction {
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("performingCardId")
     private final PhysicalCard _performingCard;
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("cardTarget")

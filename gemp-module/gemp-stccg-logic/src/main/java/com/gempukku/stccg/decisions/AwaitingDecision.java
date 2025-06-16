@@ -9,7 +9,7 @@ import java.util.Map;
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="decisionId")
 @JsonIncludeProperties({ "decisionId", "decisionType", "text", "noPass", "min", "max", "defaultValue", "results",
-        "validCombinations", "cardIds", "displayedCards", "context", "elementType" })
+        "validCombinations", "cardIds", "displayedCards", "context", "elementType", "actions" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface AwaitingDecision {
     @JsonProperty("decisionId")

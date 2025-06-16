@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.usage;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -9,11 +11,16 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 
 public class UseGameTextAction extends ActionyAction implements TopLevelSelectableAction {
+
     private final PhysicalCard _performingCard;
+
+    @JsonProperty("actionText")
+    private final String _actionText;
 
     public UseGameTextAction(PhysicalCard physicalCard, Player performingPlayer, String text) {
         super(physicalCard.getGame(), performingPlayer, text, ActionType.USE_GAME_TEXT);
         _performingCard = physicalCard;
+        _actionText = text;
     }
 
 

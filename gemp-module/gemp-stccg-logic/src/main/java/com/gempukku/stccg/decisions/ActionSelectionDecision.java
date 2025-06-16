@@ -16,6 +16,7 @@ import java.util.Map;
 
 public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
+    @JsonProperty("actions")
     final List<TopLevelSelectableAction> _actions;
 
     @JsonProperty("context")
@@ -23,8 +24,6 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
     @JsonProperty("cardIds")
     protected final String[] _cardIds;
-
-    private final String[] _actionTexts;
 
     @JsonProperty("min")
     private final int _minActions;
@@ -36,7 +35,6 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
         super(player, context, AwaitingDecisionType.ACTION_CHOICE, cardGame);
         _context = context;
         _actions = actions;
-        _actionTexts = getActionTexts(cardGame);
         _cardIds = getCardIds();
         _minActions = required ? 1 : 0;
     }
@@ -65,7 +63,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
     public void decisionMade(Action action) throws DecisionResultInvalidException {
         if (action instanceof TopLevelSelectableAction && _actions.contains(action))
-            decisionMade(String.valueOf(_actions.indexOf(action)));
+            decisionMade(String.valueOf(action.getActionId()));
         else throw new DecisionResultInvalidException("Action not found in ActionDecision");
     }
 
@@ -73,29 +71,20 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
         if (result.isEmpty())
             return null;
         try {
-            int actionIndex = Integer.parseInt(result);
-            if (actionIndex < 0 || actionIndex >= _actions.size())
-                throw new DecisionResultInvalidException();
-
-            return _actions.get(actionIndex);
+            int actionId = Integer.parseInt(result);
+            for (TopLevelSelectableAction action : _actions) {
+                if (action.getActionId() == actionId) {
+                    return action;
+                }
+            }
+            throw new DecisionResultInvalidException();
         } catch (NumberFormatException exp) {
             throw new DecisionResultInvalidException();
         }
     }
 
-    @JsonProperty("displayedCards")
-    protected List<Map<Object, Object>> getDisplayedCards() {
-        List<Map<Object, Object>> result = new ArrayList<>();
-        for (int i = 0; i < _cardIds.length; i++) {
-            Map<Object, Object> mapToAdd = new HashMap<>();
-            mapToAdd.put("cardId", _cardIds[i]);
-            mapToAdd.put("actionId", String.valueOf(i));
-            mapToAdd.put("actionText", _actionTexts[i]);
-            mapToAdd.put("actionType", _actions.get(i).getActionType());
-            mapToAdd.put("selectable", "true");
-            result.add(mapToAdd);
-        }
-        return result;
+    public void selectFirstAction() throws DecisionResultInvalidException {
+        decisionMade(_actions.getFirst());
     }
 
 }

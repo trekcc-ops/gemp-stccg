@@ -22,7 +22,7 @@ public class CreateGameTest extends AbstractAtTest {
         assertNull(_userFeedback.getAwaitingDecision(player2));
         assertEquals(Phase.SEED_MISSION, _game.getGameState().getCurrentPhase());
 
-        playerDecided(player1, "0"); // This should seed the first mission, then seeding should advance to player2
+        selectFirstAction(player1); // This should seed the first mission, then seeding should advance to player2
 
         assertNotNull(_userFeedback.getAwaitingDecision(player2));
         assertNull(_userFeedback.getAwaitingDecision(player1));
@@ -30,7 +30,7 @@ public class CreateGameTest extends AbstractAtTest {
         assertEquals(1, _game.getGameState().getSpacelineLocations().size());
 
         // Player2 will need to decide twice - once to select the mission, then once to decide where to seed it
-        playerDecided(player2, "0");
+        selectFirstAction(player2);
         assertNotNull(_userFeedback.getAwaitingDecision(player2));
         playerDecided(player2, "0");
 

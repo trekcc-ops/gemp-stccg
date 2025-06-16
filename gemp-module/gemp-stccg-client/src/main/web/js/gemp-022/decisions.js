@@ -3,6 +3,7 @@ import { getCardDivFromId } from './jCards.js';
 import { openSizeDialog } from "./common.js";
 import { getFriendlyPhaseName } from "./common.js";
 import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
+import ActionSelectionDecision from './actionSelectionDecisions.js';
 
 
 export function getUserMessage(decision, gameState) {
@@ -65,15 +66,17 @@ export function processDecision(decision, animate, gameUi, gameState) {
     $("#main").queue(
         function (next) {
             let elementType = decision.elementType;
+            let userMessage;
+            let useDialog;
+            let decisionObject;
             switch(elementType) {
                 case "ACTION":
-                case "CARD":
-                    if (elementType === "ACTION" && decision.displayedCards.length == 0 && gameUi.gameSettings.get("autoPass") && !gameUi.replayMode) {
+                    if (decision.actions.length == 0 && gameUi.gameSettings.get("autoPass") && !gameUi.replayMode) {
                         gameUi.decisionFunction(decision.decisionId, "");
                     } else {
-                        let userMessage = getUserMessage(decision, gameState);
-                        let useDialog = getUseDialog(decision, gameState, gameUi);
-                        let decisionObject = new gameDecision(decision, gameUi, useDialog, gameState);
+                        userMessage = getUserMessage(decision, gameState);
+                        useDialog = getUseDialog(decision, gameState, gameUi);
+                        decisionObject = new ActionSelectionDecision(decision, gameUi, useDialog, gameState);
                         decisionObject.createUiElements(userMessage);
                         decisionObject.allowSelection();
                         goDing(gameUi);
@@ -82,6 +85,18 @@ export function processDecision(decision, animate, gameUi, gameState) {
                         }
                         decisionObject.resetFocus();
                     }
+                    break;
+                case "CARD":
+                    userMessage = getUserMessage(decision, gameState);
+                    useDialog = getUseDialog(decision, gameState, gameUi);
+                    decisionObject = new gameDecision(decision, gameUi, useDialog, gameState);
+                    decisionObject.createUiElements(userMessage);
+                    decisionObject.allowSelection();
+                    goDing(gameUi);
+                    if (decisionObject.useDialog) {
+                        decisionObject.resizeDialog();
+                    }
+                    decisionObject.resetFocus();
                     break;
                 case "INTEGER":
                     integerDecision(decision, gameUi);
@@ -394,23 +409,8 @@ export default class gameDecision {
     createSelectableDivs() {
         // For action selections from visible cards, each relevant card is associated with a list of its
         //      available actions
-        if (this.elementType === "ACTION" && !this.useDialog) {
-            for (let i = 0; i < this.displayedCards.length; i++) {
-                let displayedCard = this.displayedCards[i];
-                let cardId = this.allDecisionUiCardIds[i];
-                let actionId = displayedCard.actionId;
-                let actionText = displayedCard.actionText;
-                let actionType = displayedCard.actionType;
-                let cardIdElem = getCardDivFromId(cardId);
-
-                if (cardIdElem.data("action") == null) {
-                    cardIdElem.data("action", new Array());
-                }
-                let actions = cardIdElem.data("action");
-                actions.push({actionId: actionId, actionText: actionText, actionType: actionType});
-            }
-        } else if (this.useDialog) {
-            for (let i = 0; i < this.allDecisionUiCardIds) {
+        if (this.useDialog) {
+            for (let i = 0; i < this.allDecisionUiCardIds.length; i++) {
                 let decisionUiCardId = this.allDecisionUiCardIds[i];
                 let serverCardId = this.getRealCardId(decisionUiCardId);
                 let gameStateCard = this.gameState.visibleCardsInGame[serverCardId];

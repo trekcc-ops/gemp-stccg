@@ -34,6 +34,9 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
+
+    @JsonProperty("performingCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     final PhysicalNounCard1E _cardSource;
 
     @JsonProperty("originCardId")

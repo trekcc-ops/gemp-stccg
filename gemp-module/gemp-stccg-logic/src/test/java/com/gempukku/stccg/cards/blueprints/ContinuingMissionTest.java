@@ -66,12 +66,16 @@ public class ContinuingMissionTest extends AbstractAtTest {
                 (ActionSelectionDecision) _userFeedback.getAwaitingDecision(ownerId);
         List<? extends Action> possibleActions = decision.getActions();
         int decisionIndex = -1;
+        SeedCardAction seedAction = null;
         for (Action action : possibleActions) {
-            if (action instanceof SeedCardAction seedAction && seedAction.getCardEnteringPlay() == card) {
+            if (action instanceof SeedCardAction seedThisAction && seedThisAction.getCardEnteringPlay() == card) {
                 decisionIndex = possibleActions.indexOf(action);
+                seedAction = seedThisAction;
             }
         }
         assertNotEquals(-1, decisionIndex);
-        playerDecided(ownerId, String.valueOf(decisionIndex));
+        if (seedAction != null) {
+            playerDecided(ownerId, String.valueOf(seedAction.getActionId()));
+        }
     }
 }

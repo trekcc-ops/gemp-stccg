@@ -87,7 +87,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Respond by downloading Simon Tarses
         assertNotNull(_userFeedback.getAwaitingDecision(P1));
-        playerDecided(P1,"0");
+        selectFirstAction(P1);
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P1));
         ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
                 .decisionMade(tarses);

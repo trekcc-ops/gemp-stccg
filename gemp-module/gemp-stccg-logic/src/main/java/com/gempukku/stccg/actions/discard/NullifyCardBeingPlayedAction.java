@@ -19,8 +19,14 @@ import java.util.Collection;
 
 public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLevelSelectableAction {
 
+    @JsonProperty("performingCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _performingCard;
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _cardToNullify;
+
     private final ActionyAction _actionToCancel;
     private boolean _wasCardDiscarded;
 
