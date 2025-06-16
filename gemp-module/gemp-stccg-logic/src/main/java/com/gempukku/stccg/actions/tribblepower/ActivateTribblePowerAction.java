@@ -32,11 +32,6 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
     }
 
 
-    @Override
-    public String getActionSelectionText(DefaultGame cardGame) {
-        return "Activate " + _performingCard.getCardLink();
-    }
-
     public PhysicalCard getSource() {
         return _performingCard;
     }

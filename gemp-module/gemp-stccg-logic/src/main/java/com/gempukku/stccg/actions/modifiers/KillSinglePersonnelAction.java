@@ -45,19 +45,6 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     }
 
     @Override
-    public String getActionSelectionText(DefaultGame cardGame) throws InvalidGameLogicException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Kill ");
-        if (_cardTarget.isResolved() && _cardTarget.getCards(cardGame).size() == 1) {
-            PhysicalCard victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
-            sb.append(victim.getTitle());
-        } else {
-            sb.append("a personnel");
-        }
-        return sb.toString();
-    }
-
-    @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();

@@ -23,7 +23,6 @@ public interface Action {
 
     @JsonProperty("actionType")
     ActionType getActionType();
-    String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException;
 
     @JsonProperty("performingPlayerId")
     String getPerformingPlayerId();

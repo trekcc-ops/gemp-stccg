@@ -17,11 +17,6 @@ public class DrawMultipleCardsUnrespondableAction extends ActionyAction {
         _cardsToDraw = cardsToDraw;
     }
 
-    @Override
-    public String getActionSelectionText(DefaultGame cardGame) {
-        return "Draw card";
-    }
-
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

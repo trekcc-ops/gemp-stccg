@@ -23,8 +23,10 @@ import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
 import com.gempukku.stccg.modifiers.attributes.RangeModifier;
 import com.gempukku.stccg.player.Player;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Blueprint155_026 extends CardBlueprint {
     // Get It Done
@@ -55,8 +57,13 @@ public class Blueprint155_026 extends CardBlueprint {
             TopLevelSelectableAction choice2 = choice2(game, thisCard, player);
             TopLevelSelectableAction choice3 = choice3(thisCard, player);
 
+            Map<Action, String> actionMessageMap = new HashMap<>();
+            actionMessageMap.put(choice1, "Modify personnel attributes");
+            actionMessageMap.put(choice2, "Modify ship attributes");
+            actionMessageMap.put(choice3, "Shuffle cards from discard pile into draw deck");
+
             Action chooseAction =
-                    new SelectAndInsertAction(game, getItDoneAction, player, choice1, choice2, choice3);
+                    new SelectAndInsertAction(game, getItDoneAction, player, actionMessageMap);
             getItDoneAction.appendEffect(chooseAction);
 
             // after any use, discard incident OR discard a [TNG] card from hand

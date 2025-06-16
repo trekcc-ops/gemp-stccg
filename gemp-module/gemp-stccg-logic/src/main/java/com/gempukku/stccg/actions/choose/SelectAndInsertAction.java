@@ -13,15 +13,12 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class SelectAndInsertAction extends ActionyAction {
     @JsonProperty("selectableActions")
     @JsonIdentityReference(alwaysAsId=true)
-    private final List<TopLevelSelectableAction> _selectableActions = new LinkedList<>();
+    private final List<Action> _selectableActions = new LinkedList<>();
     @JsonProperty("parentAction")
     @JsonIdentityReference(alwaysAsId=true)
     private final ActionyAction _parentAction;
@@ -32,12 +29,16 @@ public class SelectAndInsertAction extends ActionyAction {
     @JsonIdentityReference(alwaysAsId=true)
     private AwaitingDecision _decision;
 
+    private final Map<Action, String> _actionMessageMap;
+
     public SelectAndInsertAction(DefaultGame cardGame, ActionyAction parentAction, Player selectingPlayer,
-                                 TopLevelSelectableAction... actions) {
+                                 Map<Action, String> actionMessageMap) {
         super(cardGame, selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
-        _selectableActions.addAll(Arrays.asList(actions));
+        _selectableActions.addAll(actionMessageMap.keySet());
         _parentAction = parentAction;
+        _actionMessageMap = actionMessageMap;
     }
+
 
 
     public boolean requirementsAreMet(DefaultGame game) {
@@ -53,12 +54,12 @@ public class SelectAndInsertAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (_decision == null) {
-            List<TopLevelSelectableAction> performableActions = new LinkedList<>();
+            List<Action> performableActions = new LinkedList<>();
             List<String> actionTexts = new LinkedList<>();
-            for (TopLevelSelectableAction action : _selectableActions) {
+            for (Action action : _selectableActions) {
                 if (action.canBeInitiated(cardGame)) {
                     performableActions.add(action);
-                    actionTexts.add(action.getActionSelectionText(cardGame));
+                    actionTexts.add(_actionMessageMap.get(action));
                 }
             }
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);

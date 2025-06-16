@@ -916,30 +916,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
 
-    protected void showSerializedActions() throws InvalidGameLogicException, JsonProcessingException {
-
-        int maxActionId = _game.getActionsEnvironment().getNextActionId() - 1;
-        for (int i = 1; i <= maxActionId; i++) {
-            Action action = _game.getActionsEnvironment().getActionById(i);
-            String message = i + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
-                    " (" + action.getActionType().name() + ")";
-            String actionType = action.getClass().getSimpleName();
-            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
-                if (action.getActionSelectionText(_game) != null)
-                    message = message + " - " + action.getActionSelectionText(_game);
-                if (action instanceof SubAction)
-                    message = message + " (SubAction)";
-                System.out.println(message);
-                String serialized = new ObjectMapper().writeValueAsString(action);
-                System.out.println(serialized);
-            } else {
-                System.out.println(message);
-                String serialized = new ObjectMapper().writeValueAsString(action);
-                System.out.println(serialized);
-            }
-        }
-    }
-
     protected void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) throws InvalidGameLogicException {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {

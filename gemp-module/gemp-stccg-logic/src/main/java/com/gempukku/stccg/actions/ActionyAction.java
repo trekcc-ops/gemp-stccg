@@ -113,9 +113,6 @@ public abstract class ActionyAction implements Action {
         _text = text;
     }
 
-    @Override
-    public String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException { return _text; }
-
     protected boolean isCostFailed() {
         for (Action processedCost : _processedCosts) {
             if (!processedCost.wasCarriedOut())

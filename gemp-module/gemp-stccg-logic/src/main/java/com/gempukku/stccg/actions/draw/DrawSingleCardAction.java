@@ -12,11 +12,6 @@ public class DrawSingleCardAction extends ActionyAction {
         super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
     }
 
-    @Override
-    public String getActionSelectionText(DefaultGame cardGame) {
-        return "Draw card";
-    }
-
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
