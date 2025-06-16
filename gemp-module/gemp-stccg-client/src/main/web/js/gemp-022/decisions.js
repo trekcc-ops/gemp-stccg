@@ -56,8 +56,10 @@ export function getUseDialog(decision, gameState, gameUi) {
             }
         }
         return false;
+    } else {
+        console.error("Unexpected elementType in getUseDialog: '" + elementType + "'");
+        return false;
     }
-    return false;
 }
 
 
@@ -75,13 +77,7 @@ export function processDecision(decision, animate, gameUi, gameState) {
                     } else {
                         userMessage = getUserMessage(decision, gameState);
                         decisionObject = new ActionSelectionDecision(decision, gameUi, gameState);
-                        decisionObject.createUiElements(userMessage);
-                        decisionObject.allowSelection();
-                        goDing(gameUi);
-                        if (decisionObject.useDialog) {
-                            decisionObject.resizeDialog();
-                        }
-                        decisionObject.resetFocus();
+                        decisionObject.initializeUi(userMessage);
                     }
                     break;
                 case "CARD":

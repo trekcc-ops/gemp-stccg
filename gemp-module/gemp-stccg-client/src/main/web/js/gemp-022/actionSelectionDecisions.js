@@ -1,7 +1,7 @@
 import Card from './jCards.js';
 import { getCardDivFromId } from './jCards.js';
 import { openSizeDialog } from "./common.js";
-import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
+import { goDing } from "./decisions.js";
 
 export default class ActionSelectionDecision {
 
@@ -21,20 +21,19 @@ export default class ActionSelectionDecision {
         this.actions = decisionJson.actions;
     }
 
-    createUiElements(userMessage) {
+    initializeUi(userMessage) {
         this.gameUi.alertText.html(userMessage);
         this.gameUi.alertBox.addClass("alert-box-highlight");
         this.createSelectableDivs();
         this.gameUi.hand.layoutCards();
+        this.allowSelection();
+        goDing(this.gameUi);
+        $(':button').blur();
     }
 
     resizeDialog() {
         openSizeDialog(this.gameUi.cardActionDialog);
         this.gameUi.arbitraryDialogResize(false);
-    }
-
-    resetFocus() {
-        $(':button').blur();
     }
 
     finishChoice() {
@@ -336,7 +335,7 @@ export function getActionInitiationCardActionMap(action, gameState) {
     }
 }
 
-function export getTopMissionCardIdForLocation(gameState, targetLocationId) {
+export function getTopMissionCardIdForLocation(gameState, targetLocationId) {
     for (let i = 0; i < gameState.spacelineLocations.length; i++) {
         let spacelineLocation = gameState.spacelineLocations[i];
         if (spacelineLocation.locationId === targetLocationId) {
