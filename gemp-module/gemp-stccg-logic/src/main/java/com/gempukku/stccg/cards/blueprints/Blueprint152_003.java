@@ -52,12 +52,16 @@ public class Blueprint152_003 extends CardBlueprint {
         TopLevelSelectableAction action2 =
                 new DrawCardsAction(game, thisCard, game.getPlayer(opponentId), skillDotEvaluator);
 
+        List<Action> selectableActions = new ArrayList<>();
+        selectableActions.add(action1);
+        selectableActions.add(action2);
+
         Map<Action, String> actionMessageMap = new HashMap<>();
         actionMessageMap.put(action1, "Kill personnel");
         actionMessageMap.put(action2, "Draw card(s)");
 
         Action multipleChoiceDecision = new SelectAndInsertAction(game, action, attemptingUnit.getPlayer(),
-                actionMessageMap);
+                selectableActions, actionMessageMap);
 
         result.add(randomSelection);
         result.add(stopAction);
