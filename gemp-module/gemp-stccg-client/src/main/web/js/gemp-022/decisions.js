@@ -426,7 +426,7 @@ export default class gameDecision {
                     case "ACTION":
                         cardDiv = this.gameUi.createCardDivWithData(card, displayedCard.actionText);
                     case "CARD":
-                        cardDiv = this.gameUi.createCardDivWithData(card);
+                        cardDiv = this.gameUi.createCardDivWithData(card, "");
                 }
                 $("#cardSelectionDialog").append(cardDiv);
             }

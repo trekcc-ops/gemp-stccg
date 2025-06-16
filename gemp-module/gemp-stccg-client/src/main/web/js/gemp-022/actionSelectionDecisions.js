@@ -6,7 +6,6 @@ import awaitingActionAudio from "../../src/assets/awaiting_decision.mp3";
 export default class ActionSelectionDecision {
 
     gameUi; // GameTableUI object
-    decisionType; // string; this is being deprecated
     decisionId; // integer; unique identifier for decision object in server
     elementType; // string representing the type of object that's being selected (ACTION or CARD)
 
@@ -22,7 +21,6 @@ export default class ActionSelectionDecision {
     gameState;
 
     constructor(decisionJson, gameUi, useDialog, gameState) {
-        this.decisionType = decisionJson.decisionType;
         this.gameUi = gameUi;
         this.decisionId = decisionJson.decisionId;
         this.min = decisionJson.min;
