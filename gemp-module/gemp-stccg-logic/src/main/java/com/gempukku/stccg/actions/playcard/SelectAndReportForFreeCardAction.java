@@ -53,10 +53,6 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
         return true;
     }
 
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return !_cardToPlayTarget.willProbablyBeEmpty(cardGame);

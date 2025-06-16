@@ -3,6 +3,7 @@ package com.gempukku.stccg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -837,8 +838,11 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (clazz.isAssignableFrom(action.getClass()) && action.getCardIdForActionSelection() == card.getCardId())
-                    choice = (T) action;
+                if (clazz.isAssignableFrom(action.getClass())) {
+                    if (action.getPerformingCard() == card) {
+                        choice = (T) action;
+                    }
+                }
             }
             actionDecision.decisionMade(choice);
             _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
@@ -880,7 +884,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (action.getCardIdForActionSelection() == card.getCardId())
+                if (action.getPerformingCard() == card)
                     choice = action;
             }
             actionDecision.decisionMade(choice);
@@ -898,7 +902,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (action.getCardIdForActionSelection() == performingCard.getCardId() &&
+                if (action.getPerformingCard() == performingCard &&
                         actionClass.isAssignableFrom(action.getClass()))
                     choice = action;
             }

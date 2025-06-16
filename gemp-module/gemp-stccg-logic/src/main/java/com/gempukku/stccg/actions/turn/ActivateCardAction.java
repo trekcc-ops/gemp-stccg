@@ -24,11 +24,6 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
     // TODO - Not sure this is accurate. Also not sure we need this class at all.
     public boolean requirementsAreMet(DefaultGame game) { return true; }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
 
     public void prevent() {
         setProgress(Progress.prevented);

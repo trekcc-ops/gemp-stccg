@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -80,8 +79,6 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return sb.toString();
     }
 
-    @Override
-    public int getCardIdForActionSelection() { return _cardSource.getCardId(); }
     @Override
     public PhysicalCard getPerformingCard() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);

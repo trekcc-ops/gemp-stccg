@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
-import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.game.DefaultGame;
@@ -38,11 +37,6 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
-    }
-
-    @Override
-    public int getCardIdForActionSelection() {
-        return getPerformingCard().getCardId();
     }
 
     @Override

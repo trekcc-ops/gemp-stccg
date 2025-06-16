@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.usage;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
@@ -30,11 +29,6 @@ public class UseGameTextAction extends ActionyAction implements TopLevelSelectab
     }
 
     public boolean requirementsAreMet(DefaultGame game) { return true; }
-
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {

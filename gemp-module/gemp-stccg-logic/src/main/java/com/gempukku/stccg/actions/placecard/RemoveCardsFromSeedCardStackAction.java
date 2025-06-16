@@ -64,11 +64,6 @@ public class RemoveCardsFromSeedCardStackAction extends ActionyAction implements
         return _performingCard;
     }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
     public String getLocationName() {
         return _location.getLocationName();
     }

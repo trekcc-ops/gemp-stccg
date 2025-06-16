@@ -3,19 +3,11 @@ package com.gempukku.stccg.actions.discard;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.google.common.collect.Iterables;
-
-import java.util.Collection;
 
 public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLevelSelectableAction {
 
@@ -58,11 +50,6 @@ public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLe
         }
         setAsSuccessful();
         return getNextAction();
-    }
-
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
     }
 
 }

@@ -154,9 +154,4 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
         return _performingCard;
     }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
 }

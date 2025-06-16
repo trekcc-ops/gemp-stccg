@@ -61,11 +61,6 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     }
 
     @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);

@@ -70,11 +70,6 @@ public class AddCardsToSeedCardStackAction extends ActionyAction implements TopL
         _cardsBeingSeeded.addAll(seedCards);
     }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
     public String getLocationName() {
         return _location.getLocationName();
     }

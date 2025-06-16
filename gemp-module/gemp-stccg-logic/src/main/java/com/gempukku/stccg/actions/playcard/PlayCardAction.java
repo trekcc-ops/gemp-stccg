@@ -52,10 +52,6 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         return _performingCard;
     }
 
-    public int getCardIdForActionSelection() {
-        return _cardEnteringPlay.getCardId();
-    }
-
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }

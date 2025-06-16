@@ -88,8 +88,4 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
         return _performingCard;
     }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
 }

@@ -89,11 +89,6 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
         return getNextAction();
     }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private PhysicalCard cardsDiscarded() {

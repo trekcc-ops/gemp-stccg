@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -61,11 +60,6 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
-    }
-
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
     }
 
     public void processEffect(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
