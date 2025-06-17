@@ -200,7 +200,7 @@ export function getActionInitiationCardActionMap(action, gameState) {
     switch(actionType) {
         case "ADD_CARDS_TO_PRESEED_STACK":
             // TODO - Will need additional implementation for this with a card like Empok Nor
-            cardActionMap.set(getTopMissionCardIdForLocation(action.locationId), "Add seed cards");
+            cardActionMap.set(getTopMissionCardIdForLocation(gameState, action.locationId), "Add seed cards");
             return cardActionMap;
         case "ADD_MODIFIER":
             // performingCardId for this action represents the card whose gametext adds the modifier
@@ -212,7 +212,7 @@ export function getActionInitiationCardActionMap(action, gameState) {
             return cardActionMap;
         case "BATTLE":
             // TODO - Will need additional implementation for this once we have multiple battle options
-            cardActionMap.set(getTopMissionCardIdForLocation(action.locationId), "Initiate battle");
+            cardActionMap.set(getTopMissionCardIdForLocation(gameState, action.locationId), "Initiate battle");
             return cardActionMap;
         case "BEAM_CARDS":
             // performingCardId for this action represents the card whose transporters are used
@@ -273,7 +273,7 @@ export function getActionInitiationCardActionMap(action, gameState) {
             return cardActionMap;
         case "REMOVE_CARDS_FROM_PRESEED_STACK":
             // TODO - Will need additional implementation for this with a card like Empok Nor
-            cardActionMap.set(getTopMissionCardIdForLocation(action.locationId), "Remove seed cards");
+            cardActionMap.set(getTopMissionCardIdForLocation(gameState, action.locationId), "Remove seed cards");
             return cardActionMap;
         case "SCORE_POINTS":
             // performingCardId for this action represents the card whose gametext enables the point scoring
@@ -339,8 +339,8 @@ export function getTopMissionCardIdForLocation(gameState, targetLocationId) {
     for (let i = 0; i < gameState.spacelineLocations.length; i++) {
         let spacelineLocation = gameState.spacelineLocations[i];
         if (spacelineLocation.locationId === targetLocationId) {
-            let missionCards = spacelineLocation.missionCards;
-            return missionCards[(missionCards.length - i)];
+            let missionCards = spacelineLocation.missionCardIds;
+            return missionCards[(missionCards.length - 1)];
         }
     }
     console.error("Unable to identify top mission card for location with id " + targetLocationId);
