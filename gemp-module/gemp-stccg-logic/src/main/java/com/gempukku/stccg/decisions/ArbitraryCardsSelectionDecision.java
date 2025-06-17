@@ -24,7 +24,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     private final int _maximum;
     
     @JsonProperty("validCombinations")
-    private Map<String, List<String>> _validCombinations;
+    private Map<PhysicalCard, List<Integer>> _validCombinations;
 
     @JsonProperty("cardIds")
     private final String[] _cardIds;
@@ -65,19 +65,14 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         _maximum = maximum;
         _validCombinations = new HashMap<>();
 
-        try {
-            for (PersonnelCard personnel : validCombinations.keySet()) {
-                String cardId = getCardIdForCard(personnel);
-                List<String> pairingsList = new LinkedList<>();
-                for (PersonnelCard pairing : validCombinations.get(personnel)) {
-                    pairingsList.add(getCardIdForCard(pairing));
-                }
-                _validCombinations.put(cardId, pairingsList);
+        for (PersonnelCard personnel : validCombinations.keySet()) {
+            List<Integer> pairingsList = new LinkedList<>();
+            for (PersonnelCard pairing : validCombinations.get(personnel)) {
+                pairingsList.add(pairing.getCardId());
             }
-        } catch(InvalidGameLogicException exp) {
-            cardGame.sendErrorMessage(exp);
+            _validCombinations.put(personnel, pairingsList);
         }
-        
+
         _cardIds = getCardIds(physicalCards);
     }
 
@@ -97,26 +92,6 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     // Only used for testing
     public String getCardIdForCard(PhysicalCard card) throws InvalidGameLogicException {
         return String.valueOf(card.getCardId());
-    }
-
-    private String[] getBlueprintIds(Collection<? extends PhysicalCard> physicalCards) {
-        String[] result = new String[physicalCards.size()];
-        int index = 0;
-        for (PhysicalCard physicalCard : physicalCards) {
-            result[index] = physicalCard.getBlueprintId();
-            index++;
-        }
-        return result;
-    }
-
-    private String[] getImageUrls(Collection<? extends PhysicalCard> physicalCards) {
-        String[] images = new String[physicalCards.size()];
-        int index = 0;
-        for (PhysicalCard physicalCard : physicalCards) {
-            images[index] = physicalCard.getImageUrl();
-            index++;
-        }
-        return images;
     }
 
     protected List<PhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
@@ -164,28 +139,16 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         decisionMade(sj.toString());
     }
 
-    public String getValidCombinations() throws JsonProcessingException {
-        if (_validCombinations == null)
-            return null;
-        else {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(_validCombinations);
-        }
-    }
-
-    public Map<String, List<String>> getValidCombinationsMap() {
-        return _validCombinations;
-    }
-
     @JsonProperty("displayedCards")
     private List<Map<Object, Object>> getDisplayedCards() {
         List<Map<Object, Object>> result = new ArrayList<>();
         for (PhysicalCard card : _physicalCards) {
             Map<Object, Object> mapToAdd = new HashMap<>();
             mapToAdd.put("cardId", card.getCardId());
-            mapToAdd.put("blueprintId", card.getBlueprintId());
-            mapToAdd.put("imageUrl", card.getImageUrl());
-            mapToAdd.put("selectable", String.valueOf(_selectable.contains(card)));
+            mapToAdd.put("selectable", _selectable.contains(card));
+            if (_validCombinations != null && _validCombinations.get(card) != null) {
+                mapToAdd.put("compatibleCardIds", _validCombinations.get(card));
+            }
             result.add(mapToAdd);
         }
         return result;
