@@ -241,41 +241,49 @@ export default class CardSelectionDecision {
 
         if (!this.useDialog) {
             this.gameUi.alertButtons.html("");
-            if (this.min == 0 && selectedCardCount == 0) {
-                this.gameUi.alertButtons.append("<button id='Pass'>Pass</button>");
-                $("#Pass").button().click(function () {
-                    that.finishChoice();
-                });
-            } else if (selectedCardCount >= this.min) {
-                this.gameUi.alertButtons.append("<button id='Done'>Done</button>");
-                $("#Done").button().click(function () {
-                    that.finishChoice();
-                });
+            if (selectedCardCount >= this.min) {
+                let buttonText = (selectedCardCount === 0) ? "Pass" : "Done";
+                this.gameUi.alertButtons.append("<button id='endDecisionButton'>${buttonText}</button>");
             }
             if (selectedCardCount > 0) {
-                this.gameUi.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
-                $("#ClearSelection").button().click(function () {
-                    that.resetChoice();
-                });
+                this.gameUi.alertButtons.append("<button id='resetDecisionButton'>Reset choice</button>");
             }
         } else {
-            let buttons = {};
+            let dialogButtons = new Array();
             if (this.initiallySelectableCardDivIds.length <= this.max && selectedCardCount < this.max && this.canSelectAll) {
-                buttons["Select all"] = function() {
-                    that.selectAllCards();
-                }
+                dialogButtons.push({
+                    text: "Select all",
+                    id: "selectAllDecisionButton"
+                });
             }
             if (selectedCardCount > 0) {
-                buttons["Clear selection"] = function () {
-                    that.resetChoice();
-                };
+                dialogButtons.push({
+                    text: "Clear selection",
+                    id: "resetDecisionButton"
+                });
             }
             if (selectedCardCount >= this.min && selectedCardCount <= this.max) {
-                buttons["Done"] = function () {
-                    that.finishChoice();
-                };
+                dialogButtons.push({
+                    text: "Done",
+                    id: "endDecisionButton"
+                });
             }
-            this.gameUi.cardActionDialog.dialog("option", "buttons", buttons);
+            this.gameUi.cardActionDialog.dialog("option", "buttons", dialogButtons);
+        }
+
+        let passButton = document.getElementById("endDecisionButton");
+        if (passButton) {
+            passButton.addEventListener('click', this.finishChoice);
+        }
+
+        let resetButton = document.getElementById("resetDecisionButton");
+        if (resetButton) {
+            resetButton.addEventListener('click', this.resetChoice);
+        }
+
+        let selectAllButton = document.getElementById("selectAllDecisionButton");
+        if (selectAllButton) {
+            selectAllButton.addEventListener('click', this.selectAllCards);
         }
     }
 
@@ -415,12 +423,12 @@ export default class CardSelectionDecision {
         let selectedCardCount = this.selectedDivIds.length;
 
         if (selectedCardCount === 0) {
-            allowedCombinationsRemaining = new Set(this.initiallySelectableDivIds);
+            allowedCombinationsRemaining = new Set(this.initiallySelectableCardDivIds);
         } else if (selectedCardCount < this.max) {
             // selected one or more cards
             for (const [index, cardDivId] of this.selectedDivIds.entries()) {
                 let this_card_allowed = new Array();
-                for (const compatible_divId of this.validCombinations[cardDivId]) {
+                for (const compatible_divId of this.validCombinations.get(cardDivId)) {
                     this_card_allowed.push(compatible_divId);
                 }
                 const this_allowed_as_set = new Set(this_card_allowed);
