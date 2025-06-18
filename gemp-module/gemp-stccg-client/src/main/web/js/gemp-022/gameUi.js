@@ -1409,8 +1409,9 @@ export default class GameTableUI {
     }
 
     clearSelection() {
+        $(".notSelectableCard").removeClass("notSelectableCard").data("action", null);
         $(".selectableCard").removeClass("selectableCard").data("action", null);
-        $(".selectedCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
+        $(".selectedCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder").data("action", null);
         this.selectionFunction = null;
     }
 
