@@ -31,11 +31,6 @@ export default class ActionSelectionDecision {
         $(':button').blur();
     }
 
-    resizeDialog() {
-        openSizeDialog(this.gameUi.cardActionDialog);
-        this.gameUi.arbitraryDialogResize(false);
-    }
-
     finishChoice() {
         this.gameUi.alertText.html("");
         this.gameUi.alertBox.removeClass("alert-box-highlight");
