@@ -1,7 +1,6 @@
 package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
@@ -14,12 +13,9 @@ public abstract class IntegerAwaitingDecision extends AbstractAwaitingDecision {
     @JsonProperty("max")
     private final int _max;
 
-    @JsonProperty("defaultValue")
-    private Integer _defaultValue;
-
     public IntegerAwaitingDecision(Player performingPlayer, DecisionContext context, int min, int max,
                                    DefaultGame cardGame) {
-        super(performingPlayer, context, AwaitingDecisionType.INTEGER, cardGame);
+        super(performingPlayer, context, cardGame);
         _min = min;
         _max = max;
     }

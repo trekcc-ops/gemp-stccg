@@ -1,5 +1,0 @@
-package com.gempukku.stccg.common;
-
-public enum AwaitingDecisionType {
-    INTEGER, MULTIPLE_CHOICE, ARBITRARY_CARDS, ACTION_CHOICE, CARD_SELECTION_FROM_COMBINATIONS, CARD_SELECTION
-}

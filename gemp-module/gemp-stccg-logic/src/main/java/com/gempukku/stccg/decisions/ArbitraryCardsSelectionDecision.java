@@ -1,11 +1,8 @@
 package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -23,11 +20,13 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     @JsonProperty("max")
     private final int _maximum;
     
-    @JsonProperty("validCombinations")
     private Map<PhysicalCard, List<Integer>> _validCombinations;
 
     @JsonProperty("cardIds")
     private final String[] _cardIds;
+
+    @JsonProperty("independentlySelectable")
+    private final boolean _independentlySelectable;
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards, DefaultGame cardGame) {
@@ -46,19 +45,20 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
                                            Collection<? extends PhysicalCard> physicalCards,
                                            Collection<? extends PhysicalCard> selectable, int minimum, int maximum,
                                            DefaultGame cardGame) {
-        super(player, text, AwaitingDecisionType.ARBITRARY_CARDS, cardGame);
+        super(player, text, cardGame);
         _physicalCards.addAll(physicalCards);
         _selectable = selectable;
         _minimum = minimum;
         _maximum = maximum;
         _cardIds = getCardIds(physicalCards);
+        _independentlySelectable = true;
     }
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards,
                                            Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                            int minimum, int maximum, DefaultGame cardGame) {
-        super(player, text, AwaitingDecisionType.CARD_SELECTION_FROM_COMBINATIONS, cardGame);
+        super(player, text, cardGame);
         _physicalCards.addAll(physicalCards);
         _selectable = physicalCards;
         _minimum = minimum;
@@ -74,6 +74,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         }
 
         _cardIds = getCardIds(physicalCards);
+        _independentlySelectable = false;
     }
 
     public String getElementType() { return "CARD"; }

@@ -2,7 +2,6 @@ package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
@@ -18,8 +17,10 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
     @JsonProperty("max")
     private final int _maximum;
 
-    @JsonProperty("cardIds")
     private final String[] _cardIds;
+
+    @JsonProperty("independentlySelectable")
+    private final boolean _independentlySelectable = true;
 
     public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
                                   DefaultGame cardGame) {
@@ -28,7 +29,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
 
     public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
                                   int minimum, int maximum, DefaultGame cardGame) {
-        super(player, text, AwaitingDecisionType.CARD_SELECTION, cardGame);
+        super(player, text, cardGame);
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;
@@ -89,8 +90,6 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
         throw new DecisionResultInvalidException();
     }
 
-    public List<? extends PhysicalCard> getCardOptions() { return _physicalCards; }
-
     public void decisionMade(PhysicalCard card) throws DecisionResultInvalidException {
         decisionMade(String.valueOf(card.getCardId()));
     }
@@ -109,9 +108,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
         for (PhysicalCard card : _physicalCards) {
             Map<Object, Object> mapToAdd = new HashMap<>();
             mapToAdd.put("cardId", String.valueOf(card.getCardId()));
-            mapToAdd.put("blueprintId", card.getBlueprintId());
-            mapToAdd.put("imageUrl", card.getImageUrl());
-            mapToAdd.put("selectable", "true");
+            mapToAdd.put("selectable", true);
             result.add(mapToAdd);
         }
         return result;

@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
-import com.gempukku.stccg.actions.choose.SelectValidCardCombinationFromDialogAction;
+import com.gempukku.stccg.actions.choose.SelectValidCardCombinationFromDialogToDownloadAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -82,7 +82,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
         if (!getProgress(Progress.cardsToDownloadSelected)) {
             if (_selectCardsToDownloadAction == null) {
-                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogAction(cardGame, performingPlayer,
+                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogToDownloadAction(cardGame, performingPlayer,
                         "Choose card(s) to download", getPlayableCards(), _validCombinations, _maxCardCount);
                 return _selectCardsToDownloadAction;
             } else if (!_selectCardsToDownloadAction.wasCarriedOut()) {

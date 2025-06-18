@@ -3,7 +3,6 @@ package com.gempukku.stccg.decisions;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
@@ -25,7 +24,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
     public ActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                    DefaultGame cardGame, boolean required) {
-        super(player, context, AwaitingDecisionType.ACTION_CHOICE, cardGame);
+        super(player, context, cardGame);
         _context = context;
         _actions = actions;
         _minActions = required ? 1 : 0;

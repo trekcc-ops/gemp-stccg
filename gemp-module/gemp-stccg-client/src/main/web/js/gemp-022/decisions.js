@@ -25,8 +25,6 @@ export function getUserMessage(decision, gameState) {
                 console.error(`Unknown action selection decision context: ${context}`);
                 return;
         }
-    } else if (decision.decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
-        return "Select " + decision.min + " to " + decision.max + " cards";
     } else {
         return decision.text; // some user prompts are decided by the server; ideally this will be deprecated over time
     }
@@ -34,9 +32,9 @@ export function getUserMessage(decision, gameState) {
 
 export function getUseDialog(decision, gameState, gameUi) {
     if (decision.elementType === "CARD") {
-        let cardIds = decision.cardIds;
-        for (let i = 0; i < cardIds.length; i++) {
-            let cardId = cardIds[i];
+        let displayedCards = decision.displayedCards;
+        for (let i = 0; i < displayedCards.length; i++) {
+            let cardId = displayedCards[i].cardId;
             let yourPlayerName = gameUi.bottomPlayerId;
             let cardData = gameState.visibleCardsInGame[cardId.toString()];
             let cardIsVisible = false;
@@ -120,10 +118,12 @@ export default class CardSelectionDecision {
     initiallySelectableCardDivIds = new Array();
     selectedDivIds = new Array();
 
+    // boolean; false if selectable cards are interdependent (for example, selecting 5 different cards)
+    independentlySelectable;
+
     min; // integer; smallest number of elements that can be selected
     max; // integer; largest number of elements that can be selected
     useDialog; // boolean; if true, cards will be shown in a pop-up dialog
-    canSelectAll; // boolean; false if selectable cards are interdependent (for example, selecting 5 different cards)
     validCombinations = new Map();
 
     gameState;
@@ -135,6 +135,7 @@ export default class CardSelectionDecision {
         this.max = decisionJson.max;
         this.useDialog = useDialog;
         this.gameState = gameState;
+        this.independentlySelectable = decisionJson.independentlySelectable;
 
         for (let i = 0; i < decisionJson.displayedCards.length; i++) {
             let thisCardMap = new Map();
@@ -158,8 +159,6 @@ export default class CardSelectionDecision {
             }
             this.allCards.set(cardDivId, thisCardMap);
         }
-
-        this.canSelectAll = (decisionJson.decisionType != "CARD_SELECTION_FROM_COMBINATIONS");
     }
 
     getDivIdFromCardId(cardId) {
@@ -262,7 +261,7 @@ export default class CardSelectionDecision {
             }
         } else {
             let buttons = {};
-            if (this.initiallySelectableCardDivIds.length <= this.max && selectedCardCount < this.max && this.canSelectAll) {
+            if (this.initiallySelectableCardDivIds.length <= this.max && selectedCardCount < this.max && this.independentlySelectable) {
                 buttons["Select all"] = function() {
                     that.selectAllCards();
                 }
@@ -336,10 +335,10 @@ export default class CardSelectionDecision {
             this.allCards.get(cardDivId).set("selected", true);
         }
 
-        if (!this.canSelectAll) {
-            this.recalculateSelectableDivsBasedOnCombinations();
-        } else {
+        if (this.independentlySelectable) {
             this.recalculateSelectableDivsBasedOnMaxAllowed();
+        } else {
+            this.recalculateSelectableDivsBasedOnCombinations();
         }
 
         this.applyCardDivCSS();
@@ -452,7 +451,6 @@ export default class CardSelectionDecision {
 export function integerDecision(decision, gameUi) {
     let id = decision.decisionId;
     let text = decision.text;
-    var val = 0;
 
     var min = decision.min;
     if (min == null) {
@@ -463,10 +461,8 @@ export function integerDecision(decision, gameUi) {
         max = 1000;
     }
 
-    var defaultValue = decision.defaultValue;
-    if (defaultValue != null) {
-        val = parseInt(defaultValue);
-    }
+    // Default value. Used to be sent by the server, but will be up to the client going forward.
+    let val = min;
 
     gameUi.smallDialog.html(text + `<br /><input id='integerDecision' value='${val}'>`);
 

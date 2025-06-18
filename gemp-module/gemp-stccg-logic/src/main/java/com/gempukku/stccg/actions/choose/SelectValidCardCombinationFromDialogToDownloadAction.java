@@ -17,23 +17,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class SelectValidCardCombinationFromDialogAction extends ActionyAction implements SelectCardsAction {
+public class SelectValidCardCombinationFromDialogToDownloadAction extends ActionyAction implements SelectCardsAction {
     private final Collection<? extends PhysicalCard> _selectableCards;
-    private final static int MINIMUM = 0;
+    private final static int MINIMUM = 1;
     private final Map<PersonnelCard, List<PersonnelCard>> _validCombinations;
     private final int _maximum;
     private final String _choiceText;
     private Collection<PhysicalCard> _selectedCards;
 
-    public SelectValidCardCombinationFromDialogAction(DefaultGame cardGame, Player performingPlayer, String choiceText,
-                                                      Collection<PhysicalCard> selectableCards,
-                                                      Map<PersonnelCard, List<PersonnelCard>> validCombinations,
-                                                      int maximum) {
+    public SelectValidCardCombinationFromDialogToDownloadAction(DefaultGame cardGame, Player performingPlayer, String choiceText,
+                                                                Collection<PhysicalCard> selectableCards,
+                                                                Map<PersonnelCard, List<PersonnelCard>> validCombinations,
+                                                                int maximum) {
         super(cardGame, performingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCards = selectableCards;
         _maximum = maximum;
         _validCombinations = validCombinations;
-        _choiceText = choiceText;
+        if (selectableCards.isEmpty()) {
+            _choiceText = "No cards can be downloaded";
+        } else {
+            _choiceText = "Select " + MINIMUM + " to " + maximum + " cards";
+        }
     }
 
 
