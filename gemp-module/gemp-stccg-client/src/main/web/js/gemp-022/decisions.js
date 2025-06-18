@@ -204,6 +204,8 @@ export default class CardSelectionDecision {
     }
 
     createSelectableDivs() {
+        // Only created if using the card selection dialog. Otherwise this decision relies on existing card divs
+        //      already in the game table UI.
         for (let i = 0; i < this.orderedCardDivIds.length; i++) {
             let cardDivId = this.orderedCardDivIds[i];
             let cardId = this.getCardIdFromDivId(cardDivId);
