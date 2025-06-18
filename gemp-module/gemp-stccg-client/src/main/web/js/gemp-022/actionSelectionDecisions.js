@@ -75,7 +75,6 @@ export default class ActionSelectionDecision {
     }
 
     respondToCardSelection(cardId, event) {
-        console.log("selected card " + cardId);
         var that = this;
 
         let cardIdElem = getCardDivFromId(cardId);
