@@ -246,7 +246,7 @@
             "decisionId": 4,
             "elementType": "STRING", // STRING is a multiple choice selection between different texts
             "text": "Choose an affiliation",
-            "results": [ // texts to be shown to the user
+            "options": [ // texts to be shown to the user
                 "Federation",
                 "Klingon"
             ]

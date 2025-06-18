@@ -490,7 +490,7 @@ export function multipleChoiceDecision(decision, gameUi) {
     var id = decision.decisionId;
     let serverText = decision.text; // raw string from the server for the user message
     let context = decision.context;
-    let serverValues = decision.results; // raw strings that are passed from the server
+    let serverValues = decision.options; // raw strings that are passed from the server
     let results = new Array();
     let text;
 

@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDecision {
 
-    @JsonProperty("results")
+    @JsonProperty("options")
     private final String[] _possibleResults;
 
     @JsonProperty("context")
