@@ -241,49 +241,41 @@ export default class CardSelectionDecision {
 
         if (!this.useDialog) {
             this.gameUi.alertButtons.html("");
-            if (selectedCardCount >= this.min) {
-                let buttonText = (selectedCardCount === 0) ? "Pass" : "Done";
-                this.gameUi.alertButtons.append("<button id='endDecisionButton'>${buttonText}</button>");
+            if (this.min == 0 && selectedCardCount == 0) {
+                this.gameUi.alertButtons.append("<button id='Pass'>Pass</button>");
+                $("#Pass").button().click(function () {
+                    that.finishChoice();
+                });
+            } else if (selectedCardCount >= this.min) {
+                this.gameUi.alertButtons.append("<button id='Done'>Done</button>");
+                $("#Done").button().click(function () {
+                    that.finishChoice();
+                });
             }
             if (selectedCardCount > 0) {
-                this.gameUi.alertButtons.append("<button id='resetDecisionButton'>Reset choice</button>");
+                this.gameUi.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
+                $("#ClearSelection").button().click(function () {
+                    that.resetChoice();
+                });
             }
         } else {
-            let dialogButtons = new Array();
+            let buttons = {};
             if (this.initiallySelectableCardDivIds.length <= this.max && selectedCardCount < this.max && this.canSelectAll) {
-                dialogButtons.push({
-                    text: "Select all",
-                    id: "selectAllDecisionButton"
-                });
+                buttons["Select all"] = function() {
+                    that.selectAllCards();
+                }
             }
             if (selectedCardCount > 0) {
-                dialogButtons.push({
-                    text: "Clear selection",
-                    id: "resetDecisionButton"
-                });
+                buttons["Clear selection"] = function () {
+                    that.resetChoice();
+                };
             }
             if (selectedCardCount >= this.min && selectedCardCount <= this.max) {
-                dialogButtons.push({
-                    text: "Done",
-                    id: "endDecisionButton"
-                });
+                buttons["Done"] = function () {
+                    that.finishChoice();
+                };
             }
-            this.gameUi.cardActionDialog.dialog("option", "buttons", dialogButtons);
-        }
-
-        let passButton = document.getElementById("endDecisionButton");
-        if (passButton) {
-            passButton.addEventListener('click', this.finishChoice);
-        }
-
-        let resetButton = document.getElementById("resetDecisionButton");
-        if (resetButton) {
-            resetButton.addEventListener('click', this.resetChoice);
-        }
-
-        let selectAllButton = document.getElementById("selectAllDecisionButton");
-        if (selectAllButton) {
-            selectAllButton.addEventListener('click', this.selectAllCards);
+            this.gameUi.cardActionDialog.dialog("option", "buttons", buttons);
         }
     }
 
