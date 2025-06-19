@@ -181,12 +181,9 @@ export default class CardSelectionDecision {
             // resize dialog
             openSizeDialog(this.gameUi.cardActionDialog);
             this.gameUi.arbitraryDialogResize(false);
-        }
 
-        // Reset focus
-        $(':button').blur();
-        if (this.useDialog) {
-            $('.ui-dialog').blur();
+            // Reset focus
+            $('.ui-dialog :button').blur();
         }
     }
 
