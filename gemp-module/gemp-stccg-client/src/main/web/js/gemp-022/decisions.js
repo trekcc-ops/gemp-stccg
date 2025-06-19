@@ -228,7 +228,7 @@ export default class CardSelectionDecision {
         // gameUi.selectionFunction is called when a card is clicked
         //   thanks to the code in gameUi.clickCardFunction()
         this.gameUi.selectionFunction = function (cardDivId, event) {
-            that.respondToCardSelection(cardDivId, event);
+            that.respondToCardSelection(cardDivId);
         };
 
         if (this.initiallySelectableCardDivIds.length > 0) {
@@ -322,7 +322,7 @@ export default class CardSelectionDecision {
         this.allowSelection();
     }
 
-    respondToCardSelection(cardDivId, event) {
+    respondToCardSelection(cardDivId) {
 
         if (this.selectedDivIds.includes(cardDivId)) {
             // If the card div id is already selected, remove it.
