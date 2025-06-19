@@ -144,6 +144,7 @@ export default class ActionSelectionDecision {
 
         var x = event.pageX;
         var y = event.pageY;
+        // BUG: possible race condition
         $(div).css({left: x, top: y}).fadeIn(150);
 
         $(div).find('A').mouseover(
