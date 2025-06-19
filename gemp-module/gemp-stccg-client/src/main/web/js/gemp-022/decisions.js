@@ -14,9 +14,10 @@ export function getUserMessage(decision, gameState) {
                 return "Select a mission to seed cards under or remove seed cards from";
             case "SELECT_OPTIONAL_RESPONSE_ACTION":
                 return "Optional responses";
-            case "SELECT_PHASE_ACTION":
+            case "SELECT_PHASE_ACTION": {
                 let phaseName = getFriendlyPhaseName(gameState.currentPhase);
                 return "Play " + phaseName + " action" + ((decision.min == 0) ? " or pass" : "");
+            }
             case "SELECT_REQUIRED_RESPONSE_ACTION":
                 return "Required responses";
             case "SELECT_TRIBBLES_ACTION":
@@ -55,7 +56,7 @@ export function getUseDialog(decision, gameState, gameUi) {
         }
         return false;
     } else {
-        console.error("Unexpected elementType in getUseDialog: '" + elementType + "'");
+        console.error("Unexpected elementType in getUseDialog: '" + decision.elementType + "'");
         return false;
     }
 }
@@ -322,7 +323,6 @@ export default class CardSelectionDecision {
     }
 
     respondToCardSelection(cardDivId, event) {
-        let cardDiv = getCardDivFromId(cardDivId);
 
         if (this.selectedDivIds.includes(cardDivId)) {
             // If the card div id is already selected, remove it.

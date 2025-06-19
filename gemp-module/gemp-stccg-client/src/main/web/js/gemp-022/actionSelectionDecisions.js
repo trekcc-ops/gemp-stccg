@@ -1,6 +1,4 @@
-import Card from './jCards.js';
 import { getCardDivFromId } from './jCards.js';
-import { openSizeDialog } from "./common.js";
 import { goDing } from "./decisions.js";
 
 export default class ActionSelectionDecision {
@@ -75,7 +73,6 @@ export default class ActionSelectionDecision {
     }
 
     respondToCardSelection(cardId, event) {
-        var that = this;
 
         let cardIdElem = getCardDivFromId(cardId);
         let cardActions = cardIdElem.data("action");
@@ -84,13 +81,13 @@ export default class ActionSelectionDecision {
         // Otherwise show a drop-down menu with the action options by clicking
         if (cardActions.length == 1 &&
                 (cardActions[0].actionType == "PLAY_CARD" || cardActions[0].actionType == "SEED_CARD")) {
-            this.respondToActionSelection(cardActions[0].actionId);
+            this.respondToActionSelection(cardId, cardActions[0].actionId);
         } else {
-            this.createActionChoiceContextMenu(cardActions, event);
+            this.createActionChoiceContextMenu(cardId, cardActions, event);
         }
     }
 
-    respondToActionSelection(actionId) {
+    respondToActionSelection(cardId, actionId) {
         this.selectedActionIds.push(actionId);
         if (this.gameUi.gameSettings.get("autoAccept")) {
            this.finishChoice();
@@ -131,7 +128,7 @@ export default class ActionSelectionDecision {
         }
     }
 
-    createActionChoiceContextMenu(actions, event) {
+    createActionChoiceContextMenu(cardId, actions, event) {
         var that = this;
         // Remove context menus that may be showing
         $(".contextMenu").remove();
@@ -170,7 +167,7 @@ export default class ActionSelectionDecision {
             $(".contextMenu").remove();
 
             var actionId = $(this).attr('href').substr(1);
-            that.respondToActionSelection(actionId);
+            that.respondToActionSelection(cardId, actionId);
             return false;
         });
 
