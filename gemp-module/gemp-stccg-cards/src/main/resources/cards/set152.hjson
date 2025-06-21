@@ -47,5 +47,21 @@
             image-url: https://www.trekcc.org/1e/cardimages/homefront2/7.jpg
             rarity: V
         }
+        {
+            blueprintId: 152_040
+            title: Andrea Brand
+            type: personnel
+            affiliation: federation
+            icons: command
+            lore: "Academy Superintendent during the Nova Squadron incident in 2368. Promoted to rear admiral prior to accepting the post. A formidable woman."
+            classification: V.I.P.
+            property-logo: tng-logo
+            skill-box: "[*] Leadership x2 [*] Navigation [*] Law [*] Transporter Skill"
+            integrity: 6
+            cunning: 7
+            strength: 3
+            image-url: https://www.trekcc.org/1e/cardimages/homefront2/40.jpg
+            rarity: V
+        }
     ]
 }
