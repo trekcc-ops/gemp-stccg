@@ -1909,6 +1909,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR323.jpg
         }
         {
+            blueprintId: 101_324
+            title: Thei
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Subcommander representative of officers serving in the Romulan Star Empire. He was an ally of the Sisters of Duras during the Klingon Civil War.
+            skill-box: "[*] Geology [*] Physics"
+            integrity: 4
+            cunning: 6
+            strength: 8
+            rarity: C
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR325.jpg
+        }
+        {
             blueprintId: 101_329
             title: Toreth
             type: personnel
