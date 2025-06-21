@@ -1893,6 +1893,22 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg
         }
         {
+            blueprintId: 101_323
+            title: Taul
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SECURITY
+            icons: staff
+            lore: Typical Romulan male trained in the field of security. Assistant to Commander Konsab of the Romulan Intelligence Academy.
+            skill-box: "[*] Treachery [*] Archaeology"
+            integrity: 4
+            cunning: 7
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR323.jpg
+        }
+        {
             blueprintId: 101_329
             title: Toreth
             type: personnel
