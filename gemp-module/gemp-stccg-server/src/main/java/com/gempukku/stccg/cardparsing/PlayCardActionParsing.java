@@ -55,7 +55,7 @@ public class PlayCardActionParsing {
                         for (RegexResult result : matchingResults) {
                             System.out.println(result._regexDescription.getRegex());
                         }
-                        throw new RuntimeException("Sentence matched " + matchingResults.size() + " subPatterns");
+   //                     throw new RuntimeException("Sentence matched " + matchingResults.size() + " subPatterns");
                     } else {
                         RegexResult subMatchResult = Iterables.getOnlyElement(matchingResults);
                         regexResults.add(subMatchResult);
@@ -93,45 +93,76 @@ public class PlayCardActionParsing {
         result.add(new RegexDescription(Pattern.compile("leave\\splay[^eis]"), "leave play"));
         result.add(new RegexDescription(Pattern.compile("leaves\\splay[^eis]"), "leaves play"));
 
-        result.add(new RegexDescription(Pattern.compile("played", Pattern.CASE_INSENSITIVE), "played"));
-        result.add(new RegexDescription(Pattern.compile("playing"), "playing"));
+        // Modify timing of card play actions
+        result.add(new RegexDescription(Pattern.compile("cards play at any time"), "play at any time"));
 
         // Play action as a required response to or cost for another action
         result.add(new RegexDescription(Pattern.compile("you may.+[,:] (then )?play(?=\\s)"), "you may..., then play"));
         result.add(new RegexDescription(Pattern.compile("you must play \\S+ to", Pattern.CASE_INSENSITIVE), "you must play... to"));
         result.add(new RegexDescription(Pattern.compile("must\\simmediately play[^eis]"), "must immediately play"));
+        result.add(new RegexDescription(Pattern.compile("If .+, play\\s"), "If..., play"));
+        result.add(new RegexDescription(Pattern.compile("put it into play"), "put it into play"));
+            // Cochrane Memorial - "Play one personnel to planet"
+        result.add(new RegexDescription(Pattern.compile("\\sPlay one personnel"), "'Play one personnel' at start of sentence"));
+        result.add(new RegexDescription(Pattern.compile("must be played", Pattern.CASE_INSENSITIVE), "'must be played'"));
+        result.add(new RegexDescription(Pattern.compile("Opponent plays"), "'Opponent plays' at start of sentence"));
 
         // Allowing cards to be played
         result.add(new RegexDescription(Pattern.compile("allowing.+to\\senter\\splay", Pattern.CASE_INSENSITIVE), "allowing... to enter play"));
+        result.add(new RegexDescription(Pattern.compile("can be played", Pattern.CASE_INSENSITIVE), "'can be played'"));
+        result.add(new RegexDescription(Pattern.compile("may be played", Pattern.CASE_INSENSITIVE), "'may be played'"));
 
-        // Not allowing cards to be played
+        // Response to a card play action
+        result.add(new RegexDescription(Pattern.compile("if you.+, or play"), "RESPONSE: if you..., or play"));
+        result.add(new RegexDescription(Pattern.compile("if you (subsequently )?play\\s(\\()?(or have played)?", Pattern.CASE_INSENSITIVE), "RESPONSE: if you play"));
+        result.add(new RegexDescription(Pattern.compile("if you have played", Pattern.CASE_INSENSITIVE), "RESPONSE: if you have played"));
+        result.add(new RegexDescription(Pattern.compile("when\\syou\\splay[^es]", Pattern.CASE_INSENSITIVE), "RESPONSE: when you play"));
+        result.add(new RegexDescription(Pattern.compile("time\\syou\\splay[^es]", Pattern.CASE_INSENSITIVE), "RESPONSE: time you play"));
+        result.add(new RegexDescription(Pattern.compile("just[-\\s]played", Pattern.CASE_INSENSITIVE), "RESPONSE: 'just played'"));
+        result.add(new RegexDescription(Pattern.compile("if (they )?played", Pattern.CASE_INSENSITIVE), "RESPONSE: 'if [they] played'"));
+        result.add(new RegexDescription(Pattern.compile("your personnel enter play stopped", Pattern.CASE_INSENSITIVE), "RESPONSE: 'your personnel enter play stopped'"));
+        result.add(new RegexDescription(Pattern.compile("enter(ed|s)\\splay[^eis]", Pattern.CASE_INSENSITIVE), "RESPONSE: entered/enters play"));
+        result.add(new RegexDescription(Pattern.compile("opponent\\splays"), "RESPONSE: 'opponent plays'"));
+        result.add(new RegexDescription(Pattern.compile("[^,rt]\\splays"), "RESPONSE: 'plays' following space"));
+        result.add(new RegexDescription(Pattern.compile("Q's Tent played from hand"), "RESPONSE: 'Q's Tent played from hand'"));
 
-        result.add(new RegexDescription(Pattern.compile("[^o]\\senter\\splay[^eis]", Pattern.CASE_INSENSITIVE), "enter play"));
-        result.add(new RegexDescription(Pattern.compile("(can|may)\\s(?!only)(not )?(immediately )?(.+ or )?(immediately )?play[^es]", Pattern.CASE_INSENSITIVE), "can/may (not/immediately) (? or) (immediately) play"));
-        result.add(new RegexDescription(Pattern.compile("[^f]\\syou\\splay[^es]"), "you play"));
-        result.add(new RegexDescription(Pattern.compile("card\\splay[^eis]"), "card play"));
+        // Counting from gamestate or action history
+        result.add(new RegexDescription(Pattern.compile("each of your objectives played"), "each of your objectives played"));
+
+        // Description of how this or another card is played
+        result.add(new RegexDescription(Pattern.compile("\\(plays for free if"), "plays for free if"));
+        result.add(new RegexDescription(Pattern.compile("\\sPlays"), "'Plays' at beginning of sentence following space"));
+        result.add(new RegexDescription(Pattern.compile("^Plays"), "'Plays' at beginning of sentence"));
+        result.add(new RegexDescription(Pattern.compile(",\\splays"), ", plays'"));
+        result.add(new RegexDescription(Pattern.compile("Seeds\\sor\\splays"), "Seeds or plays"));
+        result.add(new RegexDescription(Pattern.compile(",\\sseeds\\sor\\splays"), ", seeds or plays"));
+        result.add(new RegexDescription(Pattern.compile("[^s]\\sor\\splays"), "'or plays'"));
+        result.add(new RegexDescription(Pattern.compile("^Play one"), "'Play one' at beginning of sentence"));
+        result.add(new RegexDescription(Pattern.compile("place in hand until played", Pattern.CASE_INSENSITIVE), "'place in hand until played'"));
+        result.add(new RegexDescription(Pattern.compile("play on table", Pattern.CASE_INSENSITIVE), "play on table"));
+        result.add(new RegexDescription(Pattern.compile("^play[^es][^o][^n]", Pattern.CASE_INSENSITIVE), "Start of sentence"));
+
+        // Restricting card play actions
+        result.add(new RegexDescription(Pattern.compile("may\\snot\\sotherwise\\splay[^eis]"), "may not otherwise play"));
+        result.add(new RegexDescription(Pattern.compile("may not be played", Pattern.CASE_INSENSITIVE), "'may not be played'"));
+        result.add(new RegexDescription(Pattern.compile("may not enter play", Pattern.CASE_INSENSITIVE), "'may not enter play'"));
+        result.add(new RegexDescription(Pattern.compile("[^efn]\\syou\\splay must be"), "'you play must be'"));
         result.add(new RegexDescription(Pattern.compile("may only (seed or )?play"), "may only (seed or) play"));
-        result.add(new RegexDescription(Pattern.compile("play at any time"), "play at any time"));
+        result.add(new RegexDescription(Pattern.compile("may only download .+[^t]\\sinto play"), "may only download into play"));
+
+        // Unclear
+        result.add(new RegexDescription(Pattern.compile("to be played", Pattern.CASE_INSENSITIVE), "'to be played'"));
+        result.add(new RegexDescription(Pattern.compile("playing"), "playing"));
+        result.add(new RegexDescription(Pattern.compile("(can|may)\\s(?!only)(not )?(immediately )?(.+ or )?(immediately )?play[^es]", Pattern.CASE_INSENSITIVE), "can/may (not/immediately) (? or) (immediately) play"));
+        result.add(new RegexDescription(Pattern.compile("card\\splay[^eis]"), "card play"));
         result.add(new RegexDescription(Pattern.compile("and\\s(\\(once per turn\\) )?play[^eis]"), "and play"));
         result.add(new RegexDescription(Pattern.compile("suspend(s)?(ing)?\\splay[^eis]", Pattern.CASE_INSENSITIVE), "suspend(s/ing) play"));
-        result.add(new RegexDescription(Pattern.compile("enter(ed|s)\\splay[^eis]", Pattern.CASE_INSENSITIVE), "entered/enters play"));
         result.add(new RegexDescription(Pattern.compile("[^ny]\\splay for free"), "play for free"));
-        result.add(new RegexDescription(Pattern.compile("otherwise\\splay[^eis]"), "otherwise play"));
-        result.add(new RegexDescription(Pattern.compile("[^-\\s]play[^es]"), "Lowercase with no leading space"));
-        result.add(new RegexDescription(Pattern.compile("play on table", Pattern.CASE_INSENSITIVE), "play on table"));
-        result.add(new RegexDescription(Pattern.compile("plays", Pattern.CASE_INSENSITIVE), "plays"));
-        result.add(new RegexDescription(Pattern.compile("^play[^es][^o][^n]", Pattern.CASE_INSENSITIVE), "Start of sentence"));
         result.add(new RegexDescription(Pattern.compile("^(immediately )?play on [^t]", Pattern.CASE_INSENSITIVE), "play on"));
-        result.add(new RegexDescription(Pattern.compile("^Play one"), "Play one at beginning of sentence"));
-        result.add(new RegexDescription(Pattern.compile("If .+, play\\s"), "If..., play"));
         result.add(new RegexDescription(Pattern.compile(" to play\\s[^f]"), " to play"));
-        result.add(new RegexDescription(Pattern.compile("if you.+, or play"), "if you..., or play"));
         result.add(new RegexDescription(Pattern.compile("OR play on any spaceline"), "OR play on any spaceline"));
-        result.add(new RegexDescription(Pattern.compile("if you (subsequently )?play\\s", Pattern.CASE_INSENSITIVE), "if you play"));
         result.add(new RegexDescription(Pattern.compile("play or place in hand", Pattern.CASE_INSENSITIVE), "play or place in hand"));
-        result.add(new RegexDescription(Pattern.compile("put it into play"), "put it into play"));
         result.add(new RegexDescription(Pattern.compile("play Wormhole"), "play Wormhole"));
-        result.add(new RegexDescription(Pattern.compile("download .+[^t]\\sinto play"), "download into play"));
         return result;
     }
 
