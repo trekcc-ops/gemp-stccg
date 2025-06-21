@@ -4,6 +4,7 @@ public enum ActionType {
 
     // Don't change these names, because they are passed directly to serialized game state
     ACTIVATE_TRIBBLE_POWER,
+    ADD_CARDS_TO_PRESEED_STACK,
     ADD_MODIFIER,
     ALL_PLAYERS_DISCARD,
     ATTEMPT_MISSION,
@@ -27,8 +28,7 @@ public enum ActionType {
     PLACE_CARD_IN_PLAY_PILE, // needs to be revisited when Tribbles is implemented
     PLAY_CARD,
     REMOVE_CARD_FROM_GAME,
-    ADD_CARD_TO_PRESEED_STACK,
-    REMOVE_CARD_FROM_PRESEED_STACK,
+    REMOVE_CARDS_FROM_PRESEED_STACK,
     REVEAL_SEED_CARD,
     SCORE_POINTS,
     SEED_CARD,

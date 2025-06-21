@@ -44,8 +44,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
 
     @Override
-    public int getCardIdForActionSelection() { return _performingCard.getCardId(); }
-    @Override
     public PhysicalCard getPerformingCard() { return _performingCard; }
 
     @Override

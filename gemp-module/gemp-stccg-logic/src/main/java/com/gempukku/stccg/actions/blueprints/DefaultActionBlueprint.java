@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.Collections;
@@ -21,17 +20,13 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
     protected final List<SubActionBlueprint> effects = new LinkedList<>();
 
-    protected String _text;
-
-    public DefaultActionBlueprint(String text, int limitPerTurn) {
-        if (text != null)
-            setText(text);
+    public DefaultActionBlueprint(int limitPerTurn) {
         if (limitPerTurn > 0)
             setTurnLimit(limitPerTurn);
     }
-    public DefaultActionBlueprint(String text, int limitPerTurn, List<SubActionBlueprint> costs,
+    public DefaultActionBlueprint(int limitPerTurn, List<SubActionBlueprint> costs,
                                   List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        this(text, limitPerTurn);
+        this(limitPerTurn);
 
         if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
@@ -50,10 +45,6 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
                 addEffect(blueprint);
             }
         }
-    }
-
-    public void setText(String text) {
-        this._text = text;
     }
 
     public void addRequirement(Requirement requirement) {
@@ -75,11 +66,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     @Override
     public void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext) {
-        if (_text != null)
-            action.setText(actionContext.substituteText(_text));
-
         costs.forEach(cost -> cost.addEffectToAction(true, action, actionContext));
-
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 

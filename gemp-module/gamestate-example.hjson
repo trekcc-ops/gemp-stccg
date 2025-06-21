@@ -200,6 +200,59 @@
             "timeRemaining": 3600
         }
     ],
+    "pendingDecision": {
+        // pendingDecision only included in the player-specific client-facing game state
+        // Each client should only have one pending decision at a time, but several examples are shown below
+        {
+            "decisionId": 1, // unique server id number for decision
+            "elementType": "CARD", // selecting a card
+            "text": "Select 0 to 3 cards", // user prompt to be displayed; this will eventually be deprecated
+            "min": 0, // min number of elements that can be selected
+            "max": 3, // max number of elements that can be selected
+            "context": "SELECT_CARD", // a high-level description of the decision to inform client
+            "independentlySelectable": false, // boolean; false if selecting some cards will make others unselectable
+            "displayedCards": [
+                {
+                    "cardId": 5,
+                    "selectable": true,
+                    "compatibleCardIds": [ // only included if independentlySelectable is false
+                        6,
+                        7
+                    ]
+                },
+                // etc.
+            ]
+        }
+        {
+            "decisionId": 2,
+            "elementType": "ACTION", // selecting an action to initiate
+            "text": "Required responses", // ignore this for ACTION decisions; it is being deprecated
+            "min": 0, // min number of actions that can be selected (basically 0 if all the actions are optional)
+            "max": 1, // max for action selection should always be 1
+            "context": "SELECT_PHASE_ACTION",
+            "actions": [
+                // list of selectable actions; these follow the same format as the main actions game state element
+            ]
+        }
+        {
+            "decisionId": 3,
+            "elementType": "INTEGER", // INTEGER is selecting a number within a range
+            "text": "Select a number",
+            "min": 0, // lowest valid number
+            "max": 3, // highest valid number
+            "context": "SELECT_NUMBER"
+        }
+        {
+            "decisionId": 4,
+            "elementType": "STRING", // STRING is a multiple choice selection between different texts
+            "text": "Choose an affiliation",
+            "options": [ // texts to be shown to the user
+                "Federation",
+                "Klingon"
+            ]
+            "context": "GENERAL_MULTIPLE_CHOICE"
+        }
+    }
     // channelNumber added 18 Feb 2025
     // timeStamp added 19 Feb 2025
 }

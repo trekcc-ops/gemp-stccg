@@ -6,8 +6,9 @@ import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -43,14 +44,8 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
                 playerPassed();
             } else {
-                String userMessage;
-                if (playableActions.isEmpty()) {
-                    userMessage = "The card drawn can't be played. Click 'Pass' to end your turn.";
-                } else {
-                    userMessage = "Play card that was just drawn or click 'Pass' to end your turn.";
-                }
                 _game.getUserFeedback().sendAwaitingDecision(
-                        new CardActionSelectionDecision(currentPlayer, userMessage, playableActions, _game) {
+                        new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, _game, false) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 try {

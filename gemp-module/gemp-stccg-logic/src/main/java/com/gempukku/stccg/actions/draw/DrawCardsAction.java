@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.draw;
 
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
@@ -42,27 +41,10 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         _cardDrawCountEvaluator = new ConstantEvaluator(count);
     }
 
-    @Override
-    public String getActionSelectionText(DefaultGame cardGame) {
-        try {
-            int drawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
-            if (drawCount == 0)
-                return "Draw " + TextUtils.plural(drawCount, "card");
-            else return "Draw card(s)";
-        } catch(Exception exp) {
-            return "Draw card(s)";
-        }
-    }
-
 
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
-    }
-
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
     }
 
     @Override

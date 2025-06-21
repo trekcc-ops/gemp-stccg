@@ -19,7 +19,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 public interface ActionBlueprint {
 
     boolean isValid(ActionContext actionContext);
-    void setText(String text);
+
     void addRequirement(Requirement requirement);
 
     void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext);

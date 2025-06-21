@@ -9,7 +9,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
 @JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "status", "targetCardId", "targetCardIds",
-        "performingCardId", "pointsScored", "originCardId", "destinationCardId" })
+        "performingCardId", "pointsScored", "originCardId", "destinationCardId", "locationId" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
     String getCardActionPrefix();
@@ -23,13 +23,12 @@ public interface Action {
 
     @JsonProperty("actionType")
     ActionType getActionType();
-    String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException;
 
     @JsonProperty("performingPlayerId")
     String getPerformingPlayerId();
 
     boolean canBeInitiated(DefaultGame cardGame);
-    void setText(String text);
+
     boolean wasCarriedOut();
 
     void insertEffect(Action actionEffect);

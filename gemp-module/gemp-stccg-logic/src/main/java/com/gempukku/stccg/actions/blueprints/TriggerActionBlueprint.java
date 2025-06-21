@@ -9,12 +9,12 @@ import java.util.List;
 
 public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
 
-    protected TriggerActionBlueprint(String text, int limitPerTurn,
+    protected TriggerActionBlueprint(int limitPerTurn,
                                      TriggerChecker triggerChecker, List<Requirement> requirements,
                                      List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
                                      boolean triggerDuringSeed)
             throws InvalidCardDefinitionException {
-        super(text, limitPerTurn, costs, effects);
+        super(limitPerTurn, costs, effects);
         if (requirements != null) {
             _requirements.addAll(requirements);
         }

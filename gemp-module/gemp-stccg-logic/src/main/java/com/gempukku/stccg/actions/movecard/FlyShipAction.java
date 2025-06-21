@@ -51,9 +51,6 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
     }
 
     @Override
-    public int getCardIdForActionSelection() { return _flyingCard.getCardId(); }
-
-    @Override
     public PhysicalCard getPerformingCard() { return _flyingCard; }
 
     @Override

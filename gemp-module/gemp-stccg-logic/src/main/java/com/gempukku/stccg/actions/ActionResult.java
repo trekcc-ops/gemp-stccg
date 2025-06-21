@@ -3,10 +3,7 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.decisions.ActionSelectionDecision;
-import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.decisions.DecisionContext;
+import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
@@ -153,8 +150,8 @@ public class ActionResult {
     }
 
     private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame, List<TopLevelSelectableAction> possibleActions, Player activePlayer) {
-        return new CardActionSelectionDecision(activePlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
-                possibleActions, cardGame) {
+        return new ActionSelectionDecision(activePlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
+                possibleActions, cardGame, false) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 try {
@@ -199,7 +196,7 @@ public class ActionResult {
             } else {
                 cardGame.getUserFeedback().sendAwaitingDecision(
                         new ActionSelectionDecision(cardGame.getCurrentPlayer(),
-                                DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _requiredResponses, cardGame) {
+                                DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _requiredResponses, cardGame, true) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 try {
@@ -210,13 +207,6 @@ public class ActionResult {
                                     throw new DecisionResultInvalidException(exp.getMessage());
                                 }
                             }
-
-                            @Override
-                            public String[] getCardIds() {
-                                return getDecisionParameters().get("cardId");
-                            }
-
-
                         });
             }
         } else if (_passCount < _optionalResponsePlayerOrder.getPlayerCount()) {

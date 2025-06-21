@@ -12,12 +12,7 @@ import java.util.List;
 @JsonIncludeProperties({ "cards" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class MissionCardPile {
-    private final Zone _zone;
     private final List<MissionCard> _cards = new LinkedList<>();
-
-    public MissionCardPile(Zone zone) {
-        _zone = zone;
-    }
 
     public void addCard(MissionCard card) { _cards.add(card); }
 
@@ -31,4 +26,6 @@ public class MissionCardPile {
     }
 
     public PhysicalCard getBottomCard() { return _cards.getFirst(); }
+
+    public int size() { return _cards.size(); }
 }

@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -22,8 +21,6 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.google.common.collect.Iterables;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -34,6 +31,9 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
+
+    @JsonProperty("performingCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     final PhysicalNounCard1E _cardSource;
 
     @JsonProperty("originCardId")
@@ -63,22 +63,6 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
     protected abstract String actionVerb();
 
-    @Override
-    public String getActionSelectionText(DefaultGame game) {
-        List<PhysicalCard> validFromCards = getValidFromCards(game);
-        StringBuilder sb = new StringBuilder();
-        sb.append(StringUtils.capitalize(actionVerb())).append(" cards");
-        List<PhysicalCard> destinations = _destinationOptions.stream().toList();
-        if (destinations.size() == 1 && destinations.getFirst() != _cardSource) {
-            sb.append(" to ").append(Iterables.getOnlyElement(destinations).getTitle());
-        }
-        else if (validFromCards.size() == 1 && validFromCards.getFirst() != _cardSource)
-            sb.append(" from ").append(Iterables.getOnlyElement(validFromCards).getTitle());
-        return sb.toString();
-    }
-
-    @Override
-    public int getCardIdForActionSelection() { return _cardSource.getCardId(); }
     @Override
     public PhysicalCard getPerformingCard() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);

@@ -9,7 +9,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -27,7 +26,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
     public EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                             List<SubActionBlueprint> effects) {
-        super("Encounter card", 0);
+        super(0);
         _effects = Objects.requireNonNullElse(effects, new LinkedList<>());
     }
 

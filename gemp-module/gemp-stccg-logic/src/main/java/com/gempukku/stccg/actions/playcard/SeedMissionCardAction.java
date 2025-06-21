@@ -33,7 +33,6 @@ public class SeedMissionCardAction extends PlayCardAction {
 
     public SeedMissionCardAction(MissionCard cardToPlay) {
         super(cardToPlay, cardToPlay, cardToPlay.getOwner(), Zone.SPACELINE, ActionType.SEED_CARD);
-        setText("Seed " + _cardEnteringPlay.getFullName());
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         _missionLocation = _cardEnteringPlay.getBlueprint().getLocation();
         ST1EGameState gameState = cardToPlay.getGame().getGameState();

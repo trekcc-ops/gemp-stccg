@@ -3,11 +3,10 @@ package com.gempukku.stccg.processes.st1e;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -19,7 +18,6 @@ import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.beans.ConstructorProperties;
-import java.util.LinkedList;
 import java.util.List;
 
 @JsonTypeName("ST1EMissionSeedPhaseProcess")
@@ -47,8 +45,8 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             _consecutivePasses++;
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(currentPlayer, DecisionContext.SELECT_MISSION_PHASE_ACTION,
-                            playableActions, true, cardGame) {
+                    new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
+                            playableActions, cardGame, true) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

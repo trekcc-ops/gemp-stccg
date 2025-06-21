@@ -37,11 +37,6 @@ public class AddUntilEndOfTurnModifierAction extends ActionyAction implements To
     }
 
     @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

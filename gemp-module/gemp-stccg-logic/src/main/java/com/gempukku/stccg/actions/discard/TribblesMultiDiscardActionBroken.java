@@ -82,11 +82,6 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
         return getNextAction();
     }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> cardsDiscarded() {

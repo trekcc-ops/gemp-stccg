@@ -33,12 +33,6 @@ public class ScorePointsAction extends ActionyAction {
     }
 
 
-
-    @Override
-    public String getActionSelectionText(DefaultGame cardGame) {
-        return "Score points";
-    }
-
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;

@@ -20,11 +20,13 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     private final List<String> _presentedOptions = new LinkedList<>();
     private final List<AttemptingUnit> _eligibleUnits;
     private AttemptingUnit _selectedResponse;
+    private final String _decisionText;
 
     public SelectAttemptingUnitAction(DefaultGame cardGame, Player player, Collection<AttemptingUnit> attemptingUnits,
                                       String selectionText)
             throws InvalidGameLogicException {
         super(cardGame, player, selectionText, ActionType.SELECT_AWAY_TEAM);
+        _decisionText = selectionText;
         _eligibleUnits = new LinkedList<>(attemptingUnits);
         for (AttemptingUnit unit : _eligibleUnits) {
             String decisionText;
@@ -52,7 +54,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
         } else {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new MultipleChoiceAwaitingDecision(performingPlayer, _text, _presentedOptions, cardGame) {
+                    new MultipleChoiceAwaitingDecision(performingPlayer, _decisionText, _presentedOptions, cardGame) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             attemptingUnitChosen(_eligibleUnits.get(index));

@@ -24,11 +24,6 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
     }
 
     @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
-    }
-
-    @Override
     public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
         if (isCostFailed()) {
             return null;

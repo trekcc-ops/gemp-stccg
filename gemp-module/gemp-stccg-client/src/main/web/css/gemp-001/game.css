@@ -199,8 +199,7 @@ ul {
     background-color: #1b1b207d;
 }
 
-.selectableCard .borderOverlay,
-.actionableCard .borderOverlay {
+.selectableCard .borderOverlay {
     border-color: #7f7fff;
     cursor: pointer;
 }

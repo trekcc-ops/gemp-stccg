@@ -22,9 +22,8 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     }
 
     switch(actionType) {
-        case "ADD_CARD_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"
-            cardList.push(jsonAction.targetCardId);
-            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+        case "ADD_CARDS_TO_PRESEED_STACK": // preparing for dilemma seeds; only animation is to remove from "hand"
+            gameAnimations.removeCardFromPlay(jsonAction.targetCardIds, jsonAction.performingPlayerId, true);
             break;
         case "BEAM_CARDS": // Same animation for both beaming and walking
         case "WALK_CARDS":
@@ -84,12 +83,13 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.addCardToHiddenZone(targetCard, "REMOVED", targetCard.owner);
             break;
-        case "REMOVE_CARD_FROM_PRESEED_STACK": // preparing for dilemma seeds; returns card to seed deck pile
+        case "REMOVE_CARDS_FROM_PRESEED_STACK": // preparing for dilemma seeds; returns card to seed deck pile
             if (jsonAction.performingPlayerId === gameAnimations.game.bottomPlayerId) {
-                cardList.push(jsonAction.targetCardId);
-                gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
-                targetCard = getActionTargetCard(jsonAction, jsonGameState);
-                gameAnimations.addCardToHiddenZone(targetCard, "SEED_DECK", targetCard.owner);
+                gameAnimations.removeCardFromPlay(jsonAction.targetCardIds, jsonAction.performingPlayerId, true);
+                for (const cardId of jsonAction.targetCardIds) {
+                    targetCard = jsonGameState.visibleCardsInGame[cardId];
+                    gameAnimations.addCardToHiddenZone(targetCard, "SEED_DECK", targetCard.owner);
+                }
             }
             break;
         case "SEED_CARD":
@@ -142,6 +142,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "ATTEMPT_MISSION": // Note that ATTEMPT_MISSION is only sent when the mission attempt is ended, either by solving the mission or failing it.
         case "FAIL_DILEMMA":
         case "KILL": // only the kill part of the action; typically this will result in a separate discard action
+        case "NULLIFY": // only the kill part of the action; typically this will result in a separate discard action
         case "SCORE_POINTS":
         case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
@@ -218,6 +219,13 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
+        case "NULLIFY":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            message = performingPlayerId + " nullified ";
+            message = message + showLinkableCardTitle(targetCard) + " using ";
+            message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
         case "PLAY_CARD":
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             message = performingPlayerId + " played " + showLinkableCardTitle(targetCard);
@@ -254,7 +262,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = message + " to " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.destinationCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
-        case "ADD_CARD_TO_PRESEED_STACK":
+        case "ADD_CARDS_TO_PRESEED_STACK":
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "DOCK_SHIP":
         case "DOWNLOAD_CARD": // currently this is just a wrapper for PLAY_CARD
@@ -274,7 +282,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "PLACE_CARD_ON_MISSION":
         case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
         case "PLACE_CARDS_BENEATH_DRAW_DECK":
-        case "REMOVE_CARD_FROM_PRESEED_STACK":
+        case "REMOVE_CARDS_FROM_PRESEED_STACK":
         case "REVEAL_SEED_CARD":
         case "SHUFFLE_CARDS_INTO_DRAW_DECK":
             break;

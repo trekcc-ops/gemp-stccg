@@ -73,10 +73,5 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
         return _cardTarget.getCard();
     }
 
-    @Override
-    public int getCardIdForActionSelection() {
-        return _cardTarget.getCard().getCardId();
-    }
-
 
 }

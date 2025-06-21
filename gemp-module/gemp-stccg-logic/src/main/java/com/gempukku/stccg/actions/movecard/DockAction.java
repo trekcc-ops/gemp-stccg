@@ -39,8 +39,6 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     }
 
     @Override
-    public int getCardIdForActionSelection() { return _cardToDock.getCardId(); }
-    @Override
     public PhysicalCard getPerformingCard() { return _cardToDock; }
 
     @Override

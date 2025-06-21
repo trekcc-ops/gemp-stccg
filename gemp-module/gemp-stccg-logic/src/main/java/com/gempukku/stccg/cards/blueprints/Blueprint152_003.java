@@ -16,7 +16,9 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Blueprint152_003 extends CardBlueprint {
@@ -45,11 +47,21 @@ public class Blueprint152_003 extends CardBlueprint {
         Action stopAction = new StopCardsAction(game, thisCard.getOwner(), randomSelection);
         TopLevelSelectableAction action1 =
                 new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);
+
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection);
         TopLevelSelectableAction action2 =
                 new DrawCardsAction(game, thisCard, game.getPlayer(opponentId), skillDotEvaluator);
+
+        List<Action> selectableActions = new ArrayList<>();
+        selectableActions.add(action1);
+        selectableActions.add(action2);
+
+        Map<Action, String> actionMessageMap = new HashMap<>();
+        actionMessageMap.put(action1, "Kill personnel");
+        actionMessageMap.put(action2, "Draw card(s)");
+
         Action multipleChoiceDecision = new SelectAndInsertAction(game, action, attemptingUnit.getPlayer(),
-                action1, action2);
+                selectableActions, actionMessageMap);
 
         result.add(randomSelection);
         result.add(stopAction);

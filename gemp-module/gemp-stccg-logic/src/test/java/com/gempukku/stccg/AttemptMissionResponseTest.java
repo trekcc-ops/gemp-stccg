@@ -87,7 +87,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Respond by downloading Simon Tarses
         assertNotNull(_userFeedback.getAwaitingDecision(P1));
-        playerDecided(P1,"0");
+        selectFirstAction(P1);
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P1));
         ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
                 .decisionMade(tarses);
@@ -105,59 +105,6 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         assertEquals(2, beamAction.getValidFromCards(_game).size());
         selectCard(P1, outpost);
         assertEquals(picard.getAwayTeam(), tarses.getAwayTeam());
-
-        List<Action> performedActions = _game.getActionsEnvironment().getPerformedActions();
-        int performedId = 1;
-
-        int maxActionId = _game.getActionsEnvironment().getNextActionId() - 1;
-        for (int i = 1; i <= maxActionId; i++) {
-            Action action = _game.getActionsEnvironment().getActionById(i);
-            String message = i + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
-                    " (" + action.getActionType().name() + ")";
-            String actionType = action.getClass().getSimpleName();
-            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
-                if (action.getActionSelectionText(_game) != null)
-                    message = message + " - " + action.getActionSelectionText(_game);
-                if (action instanceof SubAction)
-                    message = message + " (SubAction)";
-                System.out.println(message);
-            } else {
-                System.out.println(message);
-            }
-        };
-
-        System.out.println();
-        System.out.println();
-        for (Action action : _game.getActionsEnvironment().getActionStack()) {
-            String message = action.getActionId() + " - " + action.getClass().getSimpleName() +
-                    " (" + action.getActionType().name() + ")";
-            String actionType = action.getClass().getSimpleName();
-            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
-                if (action.getActionSelectionText(_game) != null)
-                    message = message + " - " + action.getActionSelectionText(_game);
-                if (action instanceof SubAction)
-                    message = message + " (SubAction)";
-                System.out.println(message);
-            } else {
-                System.out.println(message);
-            }
-        };
-
-/*        for (Action action : performedActions) {
-            String message = performedId + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
-                    " (" + action.getActionType().name() + ")";
-            String actionType = action.getClass().getSimpleName();
-            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
-                if (action.getActionSelectionText(_game) != null)
-                    message = message + " - " + action.getActionSelectionText(_game);
-                if (action instanceof SubAction)
-                    message = message + " (SubAction)";
-                if (action instanceof PlayOutOptionalAfterResponsesAction response)
-                    message = message + " [ EffectResult = " + response.getEffectResults();
-                System.out.println(message);
-                performedId++;
-            }
-        } */
     }
 
 }
