@@ -31,6 +31,22 @@
             image-url: https://www.trekcc.org/1e/cardimages/engage/24.jpg
         }
         {
+            blueprintId: 161_033
+            title: Corak
+            type: personnel
+            affiliation: cardassian
+            property-logo: tng-logo
+            classification: SCIENCE
+            uniqueness: universal
+            icons: staff
+            lore: "Representative of Cardassians researching new means of interrogation. Glinn. Visited the U.S.S. Enterprise in 2369 as Gul Lemec's aide."
+            skill-box: "[*] Biology [*] Physics"
+            integrity: 4
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/engage/33.jpg
+        }
+        {
             blueprintId: 161_038
             title: Agyer
             type: personnel
