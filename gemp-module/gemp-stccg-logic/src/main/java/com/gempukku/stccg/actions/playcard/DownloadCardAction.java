@@ -25,8 +25,7 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
 
     public DownloadCardAction(DefaultGame cardGame, Zone fromZone, Player player, Filterable playableCardFilter,
                               PhysicalCard performingCard) {
-        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(),
-                ActionType.DOWNLOAD_CARD);
+        super(cardGame, player, ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = new SelectCardsResolver(
                 new SelectCardsFromDialogAction(cardGame, player, "Select a card to download",
                         Filters.and(playableCardFilter, fromZone)));
@@ -35,7 +34,7 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
 
     public DownloadCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
                               PhysicalCard performingCard) {
-        super(cardGame, player, "Download card", ActionType.DOWNLOAD_CARD);
+        super(cardGame, player, ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
     }

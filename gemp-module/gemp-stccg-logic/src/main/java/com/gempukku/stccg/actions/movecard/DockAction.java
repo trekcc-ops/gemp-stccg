@@ -29,7 +29,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     private SelectVisibleCardAction _selectAction;
 
     public DockAction(Player player, PhysicalShipCard cardToDock, ST1EGame cardGame) {
-        super(cardGame, player, "Dock", ActionType.DOCK_SHIP);
+        super(cardGame, player, ActionType.DOCK_SHIP);
         _cardToDock = cardToDock;
 
         _dockingTargetOptions = Filters.yourFacilitiesInPlay(cardGame, player).stream()

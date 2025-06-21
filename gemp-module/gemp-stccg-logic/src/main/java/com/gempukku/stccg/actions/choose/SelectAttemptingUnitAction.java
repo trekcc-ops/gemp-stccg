@@ -25,7 +25,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     public SelectAttemptingUnitAction(DefaultGame cardGame, Player player, Collection<AttemptingUnit> attemptingUnits,
                                       String selectionText)
             throws InvalidGameLogicException {
-        super(cardGame, player, selectionText, ActionType.SELECT_AWAY_TEAM);
+        super(cardGame, player, ActionType.SELECT_AWAY_TEAM);
         _decisionText = selectionText;
         _eligibleUnits = new LinkedList<>(attemptingUnits);
         for (AttemptingUnit unit : _eligibleUnits) {

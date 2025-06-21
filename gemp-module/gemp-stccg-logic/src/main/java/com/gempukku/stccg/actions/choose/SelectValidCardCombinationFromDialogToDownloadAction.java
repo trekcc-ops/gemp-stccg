@@ -29,7 +29,7 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
                                                                 Collection<PhysicalCard> selectableCards,
                                                                 Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                                 int maximum) {
-        super(cardGame, performingPlayer, choiceText, ActionType.SELECT_CARDS);
+        super(cardGame, performingPlayer, ActionType.SELECT_CARDS);
         _selectableCards = selectableCards;
         _maximum = maximum;
         _validCombinations = validCombinations;

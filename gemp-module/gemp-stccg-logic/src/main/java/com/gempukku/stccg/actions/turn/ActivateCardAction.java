@@ -11,8 +11,7 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
     private enum Progress {activated, prevented }
 
     public ActivateCardAction(DefaultGame cardGame, PhysicalCard physicalCard) {
-        super(cardGame, physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.USE_GAME_TEXT,
-                Progress.values());
+        super(cardGame, physicalCard.getOwner(), ActionType.USE_GAME_TEXT, Progress.values());
         _performingCard = physicalCard;
     }
 

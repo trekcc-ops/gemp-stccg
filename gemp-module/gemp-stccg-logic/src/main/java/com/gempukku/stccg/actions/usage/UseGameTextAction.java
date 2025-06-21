@@ -17,7 +17,7 @@ public class UseGameTextAction extends ActionyAction implements TopLevelSelectab
     private final String _actionText;
 
     public UseGameTextAction(PhysicalCard physicalCard, Player performingPlayer, String text) {
-        super(physicalCard.getGame(), performingPlayer, text, ActionType.USE_GAME_TEXT);
+        super(physicalCard.getGame(), performingPlayer, ActionType.USE_GAME_TEXT);
         _performingCard = physicalCard;
         _actionText = text;
     }

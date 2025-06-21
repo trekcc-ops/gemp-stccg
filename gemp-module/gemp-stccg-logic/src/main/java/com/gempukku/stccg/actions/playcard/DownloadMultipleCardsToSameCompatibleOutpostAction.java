@@ -43,8 +43,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
                                                               PhysicalCard actionSource,
                                                               Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                               int maxCardCount) {
-        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(), ActionType.DOWNLOAD_CARD,
-                Progress.values());
+        super(cardGame, player, ActionType.DOWNLOAD_CARD, Progress.values());
         _performingCard = actionSource;
         _validCombinations = validCombinations;
         _fromZone = fromZone;

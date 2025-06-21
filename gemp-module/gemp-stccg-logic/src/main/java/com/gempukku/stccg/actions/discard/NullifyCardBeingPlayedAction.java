@@ -24,7 +24,7 @@ public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLe
 
     public NullifyCardBeingPlayedAction(PhysicalCard performingCard, Player performingPlayer,
                                         PhysicalCard cardBeingPlayed, ActionyAction playCardAction) {
-        super(performingCard.getGame(), performingPlayer, "Nullify", ActionType.NULLIFY);
+        super(performingCard.getGame(), performingPlayer, ActionType.NULLIFY);
         _performingCard = performingCard;
         _cardToNullify = cardBeingPlayed;
         _actionToCancel = playCardAction;

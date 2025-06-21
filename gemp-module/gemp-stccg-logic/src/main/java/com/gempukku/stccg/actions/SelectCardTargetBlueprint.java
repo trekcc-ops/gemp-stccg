@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -42,7 +41,7 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
         SelectCardsAction selectAction;
         if (_randomSelection) {
             selectAction = new SelectRandomCardAction(
-                    context.getGame(), context.getPerformingPlayer(), "Select a card",
+                    context.getGame(), context.getPerformingPlayer(),
                     selectableCards);
         } else {
             selectAction = new SelectCardsFromDialogAction(

@@ -26,7 +26,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
                                    MissionLocation location)
             throws InvalidGameLogicException {
-        super(cardGame, encounteringPlayer, "Encounter seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        super(cardGame, encounteringPlayer, ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);

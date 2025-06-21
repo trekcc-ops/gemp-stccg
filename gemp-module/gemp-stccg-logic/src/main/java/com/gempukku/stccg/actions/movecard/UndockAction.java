@@ -16,7 +16,7 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
     private final PhysicalShipCard _performingCard;
 
     public UndockAction(Player player, PhysicalShipCard cardUndocking) {
-        super(cardUndocking.getGame(), player, "Undock", ActionType.UNDOCK_SHIP);
+        super(cardUndocking.getGame(), player, ActionType.UNDOCK_SHIP);
         _performingCard = cardUndocking;
     }
 

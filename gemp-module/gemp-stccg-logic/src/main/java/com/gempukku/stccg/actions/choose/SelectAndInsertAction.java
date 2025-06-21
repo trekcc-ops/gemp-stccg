@@ -33,7 +33,7 @@ public class SelectAndInsertAction extends ActionyAction {
 
     public SelectAndInsertAction(DefaultGame cardGame, ActionyAction parentAction, Player selectingPlayer,
                                  List<Action> selectableActions, Map<Action, String> actionMessageMap) {
-        super(cardGame, selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
+        super(cardGame, selectingPlayer, ActionType.SELECT_ACTION);
         _selectableActions.addAll(selectableActions);
         _parentAction = parentAction;
         _actionMessageMap = actionMessageMap;

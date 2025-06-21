@@ -21,7 +21,7 @@ public class SelectMissionSeedIndexAction extends ActionyAction {
     private final List<String> _selectionOptions = new ArrayList<>();
 
     public SelectMissionSeedIndexAction(DefaultGame cardGame, Player performingPlayer, List<Integer> options) {
-        super(cardGame, performingPlayer, "Select location for mission", ActionType.MAKE_DECISION);
+        super(cardGame, performingPlayer, ActionType.MAKE_DECISION);
         _choiceText = "Select location for mission";
         for (Integer option : options) {
             _selectionOptions.add(String.valueOf(option));

@@ -13,7 +13,7 @@ public class DrawMultipleCardsUnrespondableAction extends ActionyAction {
     private final int _cardsToDraw;
 
     public DrawMultipleCardsUnrespondableAction(DefaultGame cardGame, Player performingPlayer, int cardsToDraw) {
-        super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
+        super(cardGame, performingPlayer, ActionType.DRAW_CARD);
         _cardsToDraw = cardsToDraw;
     }
 

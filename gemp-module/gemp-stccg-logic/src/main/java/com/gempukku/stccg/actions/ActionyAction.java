@@ -50,22 +50,9 @@ public abstract class ActionyAction implements Action {
     }
 
 
-    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType) {
-        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-    }
-
-
     protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType, Enum<?>[] progressValues) {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
         for (Enum<?> progressType : progressValues) {
-            _progressIndicators.put(progressType.name(), false);
-        }
-    }
-
-    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType,
-                            Enum<?>[] progressTypes) {
-        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-        for (Enum<?> progressType : progressTypes) {
             _progressIndicators.put(progressType.name(), false);
         }
     }

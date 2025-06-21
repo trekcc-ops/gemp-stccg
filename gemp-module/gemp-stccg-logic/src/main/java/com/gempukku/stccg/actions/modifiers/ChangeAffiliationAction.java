@@ -26,7 +26,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     private SelectAffiliationAction _selectAffiliationAction;
 
     public ChangeAffiliationAction(ST1EGame cardGame, Player player, AffiliatedCard card) {
-        super(cardGame, player, "Change affiliation", ActionType.CHANGE_AFFILIATION);
+        super(cardGame, player, ActionType.CHANGE_AFFILIATION);
         _performingCard = card;
     }
 

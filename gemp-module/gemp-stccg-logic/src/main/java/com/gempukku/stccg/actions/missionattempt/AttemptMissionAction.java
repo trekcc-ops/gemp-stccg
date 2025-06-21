@@ -37,7 +37,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction, MissionLocation mission)
             throws InvalidGameLogicException {
-        super(cardGame, player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
+        super(cardGame, player, ActionType.ATTEMPT_MISSION, Progress.values());
         _performingCard = cardForAction;
         _missionLocation = mission;
     }

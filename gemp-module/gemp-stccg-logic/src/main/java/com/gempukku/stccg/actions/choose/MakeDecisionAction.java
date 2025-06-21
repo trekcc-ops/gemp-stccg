@@ -13,7 +13,7 @@ public abstract class MakeDecisionAction extends ActionyAction {
     protected final String _choiceText;
 
     public MakeDecisionAction(DefaultGame cardGame, Player performingPlayer, String choiceText) {
-        super(cardGame, performingPlayer, choiceText, ActionType.MAKE_DECISION);
+        super(cardGame, performingPlayer, ActionType.MAKE_DECISION);
         _choiceText = choiceText;
     }
 

@@ -9,7 +9,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public class DrawSingleCardAction extends ActionyAction {
 
     public DrawSingleCardAction(DefaultGame cardGame, Player performingPlayer) {
-        super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
+        super(cardGame, performingPlayer, ActionType.DRAW_CARD);
     }
 
 

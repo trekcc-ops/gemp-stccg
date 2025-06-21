@@ -27,7 +27,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
 
     public SelectCardsFromDialogAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                        CardFilter cardFilter) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+        super(cardGame, selectingPlayer, ActionType.SELECT_CARDS);
         _decisionText = choiceText;
         _selectableCardsTarget = new CardFilterResolver(cardFilter);
         _minimum = 1;

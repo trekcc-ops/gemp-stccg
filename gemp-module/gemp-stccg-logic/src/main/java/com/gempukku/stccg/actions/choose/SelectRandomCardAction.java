@@ -16,14 +16,14 @@ public class SelectRandomCardAction extends ActionyAction implements SelectCardA
     private final ActionCardResolver _selectableCardTarget;
     private PhysicalCard _selectedCard;
 
-    public SelectRandomCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, CardFilter cardFilter) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+    public SelectRandomCardAction(DefaultGame cardGame, Player selectingPlayer, CardFilter cardFilter) {
+        super(cardGame, selectingPlayer, ActionType.SELECT_CARDS);
         _selectableCardTarget = new CardFilterResolver(cardFilter);
     }
 
-    public SelectRandomCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
+    public SelectRandomCardAction(DefaultGame cardGame, Player selectingPlayer,
                                   Collection<? extends PhysicalCard> cards) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+        super(cardGame, selectingPlayer, ActionType.SELECT_CARDS);
         _selectableCardTarget = new FixedCardsResolver(cards);
     }
 

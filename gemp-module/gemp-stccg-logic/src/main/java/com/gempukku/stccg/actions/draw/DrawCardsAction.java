@@ -22,7 +22,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
 
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
                            SkillDotCountEvaluator drawCountEvaluator) {
-        super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
+        super(cardGame, performingPlayer, ActionType.DRAW_CARD);
         _cardDrawCountEvaluator = drawCountEvaluator;
         _performingCard = performingCard;
     }
@@ -36,7 +36,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     }
 
     public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, boolean optional, int count) {
-        super(performingCard.getGame(), performingPlayer, "Draw a card", ActionType.DRAW_CARD);
+        super(performingCard.getGame(), performingPlayer, ActionType.DRAW_CARD);
         _performingCard = performingCard;
         _cardDrawCountEvaluator = new ConstantEvaluator(count);
     }

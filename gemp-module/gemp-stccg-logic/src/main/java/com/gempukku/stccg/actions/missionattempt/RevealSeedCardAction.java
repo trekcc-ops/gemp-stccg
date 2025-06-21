@@ -26,7 +26,7 @@ public class RevealSeedCardAction extends ActionyAction {
 
     public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, AttemptMissionAction attemptAction,
                                 MissionLocation mission) {
-        super(revealedCard.getGame(), revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
+        super(revealedCard.getGame(), revealingPlayer, ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCardId = revealedCard.getCardId();
         _missionAttemptActionId = attemptAction.getActionId();
         _missionLocation = mission;

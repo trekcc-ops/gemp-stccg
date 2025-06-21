@@ -58,15 +58,6 @@ public class SeedMissionCardAction extends PlayCardAction {
                 } else if (!gameState.hasLocationsInQuadrant(quadrant)) {
                     possibleIndices.add(0);
                     possibleIndices.add(spacelineLocations.size());
-/*                    for (MissionLocation location : spacelineLocations) {
-                        int locationIndex = spacelineLocations.indexOf(location);
-                        if (locationIndex < spacelineLocations.size() - 1) {
-                            MissionLocation nextLocation = spacelineLocations.get(locationIndex + 1);
-                            if (location.getQuadrant() != nextLocation.getQuadrant()) {
-                                possibleIndices.add(locationIndex + 1);
-                            }
-                        }
-                    } */
                 } else if (gameState.firstInRegion(region, quadrant) != null) {
                     possibleIndices.add(gameState.firstInRegion(region, quadrant));
                     possibleIndices.add(gameState.lastInRegion(region, quadrant) + 1);
