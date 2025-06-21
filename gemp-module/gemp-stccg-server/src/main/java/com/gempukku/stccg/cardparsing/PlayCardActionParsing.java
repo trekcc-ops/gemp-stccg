@@ -12,13 +12,12 @@ import java.util.regex.Pattern;
 
 public class PlayCardActionParsing {
 
-    public static void main(String[] args) {
+    private static Map<RegexDescription, List<RegexResult>> getResultMap(List<RegexDescription> regexes) {
         System.out.println("if you don't see this, the text got truncated");
         int matchingSentences = 0;
         int wordInstances = 0;
 
         Pattern playPattern = Pattern.compile("play", Pattern.CASE_INSENSITIVE);
-        List<RegexDescription> regexes = getRegexDescriptions();
         List<RegexResult> regexResults = new LinkedList<>();
         Map<RegexDescription, List<RegexResult>> resultMap = new HashMap<>();
         for (RegexDescription descr : regexes) {
@@ -55,7 +54,7 @@ public class PlayCardActionParsing {
                         for (RegexResult result : matchingResults) {
                             System.out.println(result._regexDescription.getRegex());
                         }
-   //                     throw new RuntimeException("Sentence matched " + matchingResults.size() + " subPatterns");
+                        //                     throw new RuntimeException("Sentence matched " + matchingResults.size() + " subPatterns");
                     } else {
                         RegexResult subMatchResult = Iterables.getOnlyElement(matchingResults);
                         regexResults.add(subMatchResult);
@@ -70,7 +69,28 @@ public class PlayCardActionParsing {
         System.out.println(wordInstances + " instances of word");
         System.out.println(regexResults.size() + " results matched");
         System.out.println(matchingSentences + " sentences");
+        return resultMap;
+    }
 
+    public static void main(String[] args) {
+
+        List<RegexDescription> regexes = getRegexDescriptions();
+        Map<RegexDescription, List<RegexResult>> resultMap = getResultMap(regexes);
+
+        // showAllRegexes(regexes, resultMap);
+
+        for (RegexDescription descr : regexes) {
+            List<RegexResult> descResults = resultMap.get(descr);
+            if (!descResults.isEmpty() && descr._description.startsWith("RESPONSE")) {
+                System.out.println(descr._description + " - " + resultMap.get(descr).size());
+                for (RegexResult descResult : descResults) {
+                    System.out.println("    " + descResult.getSentenceWithHighlights());
+                }
+            }
+        }
+    }
+
+    private static void showAllRegexes(List<RegexDescription> regexes, Map<RegexDescription, List<RegexResult>> resultMap) {
         for (RegexDescription descr : regexes) {
             List<RegexResult> descResults = resultMap.get(descr);
             if (!descResults.isEmpty()) {

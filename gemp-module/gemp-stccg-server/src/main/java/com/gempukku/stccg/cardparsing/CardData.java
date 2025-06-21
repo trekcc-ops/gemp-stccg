@@ -23,6 +23,10 @@ public class CardData {
         _csvSource = csvSource;
         List<String> gameTextPieces = Arrays.asList(_rawGameText.split("(" + endOfSentenceFollowedBySpace() +
                 "OR)"));
+        if (_rawGameText.contains("James T.")) {
+            int x = 5;
+            int y = x + 3;
+        }
         if (gameTextPieces.size() > 1) {
             _gameText = new ChooseOptionGameText(gameTextPieces);
         }
