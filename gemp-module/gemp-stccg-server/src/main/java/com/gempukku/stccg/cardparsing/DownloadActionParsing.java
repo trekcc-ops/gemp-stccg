@@ -1,7 +1,6 @@
 package com.gempukku.stccg.cardparsing;
 
 import com.google.common.collect.Iterables;
-import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayCardActionParsing {
+public class DownloadActionParsing {
 
     public static void main(String[] args) {
 
@@ -26,7 +25,7 @@ public class PlayCardActionParsing {
         int matchingSentences = 0;
         int wordInstances = 0;
 
-        Pattern playPattern = Pattern.compile("play", Pattern.CASE_INSENSITIVE);
+        Pattern playPattern = Pattern.compile("download", Pattern.CASE_INSENSITIVE);
         List<RegexResult> regexResults = new LinkedList<>();
         Map<RegexDescription, List<RegexResult>> resultMap = new HashMap<>();
         for (RegexDescription descr : regexes) {
@@ -108,13 +107,15 @@ public class PlayCardActionParsing {
     private static List<RegexDescription> getRegexDescriptions() {
         List<RegexDescription> result = new LinkedList<>();
 
-        // Game terms not related to card play actions
-        result.add(new RegexDescription(Pattern.compile("player", Pattern.CASE_INSENSITIVE), "player"));
-        result.add(new RegexDescription(Pattern.compile("[\\s(\"]in\\splay"), "in play"));
-        result.add(new RegexDescription(Pattern.compile("from\\splay[^i]"), "from play"));
-        result.add(new RegexDescription(Pattern.compile("out[-\\s]of[-\\s]play"), "out of play"));
-        result.add(new RegexDescription(Pattern.compile("leave\\splay[^eis]"), "leave play"));
-        result.add(new RegexDescription(Pattern.compile("leaves\\splay[^eis]"), "leaves play"));
+        // in place of your normal card play
+        result.add(new RegexDescription(Pattern.compile("in place of your normal card play, you may download", Pattern.CASE_INSENSITIVE), "In place of your normal card play"));
+
+        // once per turn/game
+        result.add(new RegexDescription(Pattern.compile("once each turn, (you )?may (discard objective to )?download", Pattern.CASE_INSENSITIVE), "once per turn"));
+        result.add(new RegexDescription(Pattern.compile("once per game, (you )?(may )?download", Pattern.CASE_INSENSITIVE), "once per game"));
+
+        // no timing specified (or clearly immediate from context)
+        result.add(new RegexDescription(Pattern.compile("; (you )?may download", Pattern.CASE_INSENSITIVE), "'may download' (no timing)"));
 
         // Modify timing of card play actions
         result.add(new RegexDescription(Pattern.compile("cards play at any time"), "play at any time"));
