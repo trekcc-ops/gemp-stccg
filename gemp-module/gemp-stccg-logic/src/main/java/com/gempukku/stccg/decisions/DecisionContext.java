@@ -9,6 +9,11 @@ public enum DecisionContext {
     SELECT_REQUIRED_RESPONSE_ACTION("Required responses"),
     SELECT_TRIBBLES_ACTION(""),
 
+
+    // New stuff
+    SHIP_BATTLE_TARGETS("Select targets for ship battle"),
+
+
     // Multiple choice
     RETURN_FIRE("Do you want to return fire?"),
     SEED_MISSION_INDEX_SELECTION("Select location for mission"),

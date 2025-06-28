@@ -7,7 +7,9 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
+import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -40,6 +42,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
     private final Map<Player, Integer> _damageSustained = new HashMap<>();
     private boolean _winnerDetermined;
     private boolean _battleResolved;
+    private final Map<PhysicalCard, Map<String, List<PhysicalCard>>> _targetMap;
 
     private enum OpenFireResult {
         HIT, DIRECT_HIT, MISS
@@ -47,6 +50,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
 
     public InitiateShipBattleAction(Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap, DefaultGame game, Player performingPlayer) {
         super(game, performingPlayer, ActionType.BATTLE);
+        _targetMap = targetMap;
     }
 
     private OpenFireResult calculateOpenFireResult(Player player) {
@@ -62,13 +66,18 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         else return OpenFireResult.MISS;
     }
 
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
 
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;
+
+            Player attackingPlayer = cardGame.getPlayer(_performingPlayerId);
+
+            AwaitingDecision attackTargetDecision = new ShipBattleTargetDecision(attackingPlayer, DecisionContext.SHIP_BATTLE_TARGETS, _targetMap, cardGame);
+            cardGame.sendAwaitingDecision(attackTargetDecision);
         }
 
-        if (_forces.get(_attackingPlayer) == null) {
+//        if (_forces.get(_attackingPlayer) == null) {
             // TODO - Need to include some compatibility check here
 /* SelectForceEffect:
             return new ChooseCardsOnTableEffect(this, player,
@@ -80,9 +89,9 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
                 }
             }; */
 //            return new SubAction(this, selectForceEffect(_attackingPlayer));
-        }
+//        }
 
-        if (_targets.get(_attackingPlayer) == null) {
+//        if (_targets.get(_attackingPlayer) == null) {
 /*            return new ChooseCardsOnTableEffect(this, player,
                     "Choose target", 1, 1, getTargetOptions(player)) {
                 @Override
@@ -92,8 +101,9 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
             };*/
 
 //            return new SubAction(this, getTargetEffect(_attackingPlayer));
-        }
+//        }
 
+        /*
         if (!_returnFireDecisionMade) {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new YesNoDecision(_defendingPlayer, DecisionContext.RETURN_FIRE, cardGame) {
@@ -144,7 +154,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
                 _winner = _attackingPlayer;
             else _noWinner = true;
             _winnerDetermined = true;
-        }
+        } */
 
                 // TODO - Commented out below because I need to define some additional methods for this to work
 /*        if (!_battleResolved) {
@@ -173,7 +183,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
 
     @Override
     public PhysicalCard getPerformingCard() {
-        return _actionSource;
+        return null;
     }
 
     public boolean wasCarriedOut() {
