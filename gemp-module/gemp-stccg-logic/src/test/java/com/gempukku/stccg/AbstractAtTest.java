@@ -23,15 +23,16 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
+import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SuppressWarnings("MethodWithMultipleReturnPoints")
 public abstract class AbstractAtTest extends AbstractLogicTest {
@@ -48,11 +49,20 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected MissionCard _rogueComet;
 
     protected void initializeSimple1EGame(int deckSize) {
+        setupSimple1EGame(deckSize, "101_104"); // fill the deck full of Fed Outposts
+        _game.startGame();
+    }
+
+    protected void setupSimple1EGame(int deckSize) {
+        setupSimple1EGame(deckSize, "991_001"); // dummy 1E dilemmas
+    }
+
+    protected void setupSimple1EGame(int deckSize, String blueprintId) {
         Map<String, CardDeck> decks = new HashMap<>();
         GameFormat format = formatLibrary.get("debug1e");
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < deckSize; i++) {
-            testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
+            testDeck.addCard(SubDeck.DRAW_DECK, blueprintId); // Federation Outpost
         }
 
         decks.put(P1, testDeck);
@@ -61,8 +71,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
         _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
         _userFeedback = _game.getUserFeedback();
-        _game.startGame();
-
     }
 
     protected void initializeSimple1EGameWithSharedMission(int deckSize) {
@@ -920,5 +928,24 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
+    protected <T extends PhysicalCard> T getCard(DefaultGame cardGame, Player owner, String cardTitle, Class<T> clazz)
+            throws CardNotFoundException {
+        List<T> cardsFound = new ArrayList<>();
+        for (PhysicalCard card : cardGame.getGameState().getAllCardsInGame()) {
+            if (Objects.equals(card.getTitle(), cardTitle) && clazz.isAssignableFrom(card.getClass()) && card.getOwner() == owner) {
+                cardsFound.add((T) card);
+            }
+        }
+        if (cardsFound.size() == 1) {
+            return cardsFound.getFirst();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Found ").append(cardsFound.size()).append(" cards with title ");
+            sb.append("'").append(cardTitle).append("'");
+            sb.append(" owned by ");
+            sb.append("'").append(owner.getPlayerId()).append("'");
+            throw new CardNotFoundException(sb.toString());
+        }
+    }
 
 }

@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.cardgroup.MissionCardPile;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -69,7 +70,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         } else if (phase == Phase.CARD_PLAY) {
             for (PhysicalCard card : Filters.filter(player.getCardsInHand(), _game)) {
                 if (isCurrentPlayer) {
-                    if (card.canBePlayed(_game)) {
+                    if (card.canBePlayed(_game) && card.getCardType() != CardType.DILEMMA) {
                         TopLevelSelectableAction action = card.getPlayCardAction();
                         if (action != null && action.canBeInitiated(_game))
                             result.add(action);
