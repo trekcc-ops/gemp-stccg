@@ -13,7 +13,7 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
-public class DownloadCardAction extends ActionyAction implements CardPerformedAction {
+public class DownloadCardAction extends ActionyAction implements TopLevelSelectableAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
@@ -87,4 +87,5 @@ public class DownloadCardAction extends ActionyAction implements CardPerformedAc
     public PhysicalCard getPerformingCard() {
         return _performingCard;
     }
+
 }

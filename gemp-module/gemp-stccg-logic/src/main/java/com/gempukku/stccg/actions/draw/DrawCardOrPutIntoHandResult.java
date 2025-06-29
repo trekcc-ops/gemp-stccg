@@ -9,7 +9,7 @@ public class DrawCardOrPutIntoHandResult extends ActionResult {
     private final boolean _draw;
 
     public DrawCardOrPutIntoHandResult(Action action, PhysicalCard performingCard, boolean draw) {
-        super(ActionResult.Type.DRAW_CARD_OR_PUT_INTO_HAND, action, performingCard);
+        super(ActionResult.Type.DRAW_CARD_OR_PUT_INTO_HAND, action);
         _playerId = action.getPerformingPlayerId();
         _draw = draw;
     }

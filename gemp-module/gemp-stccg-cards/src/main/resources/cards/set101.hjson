@@ -119,19 +119,52 @@
             title: Engineering Kit
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of specialized engineering instruments. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR55.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: engineer
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=officer
+                }
+            ]
+        }
+        {
+            blueprintId: 101_056
+            title: Engineering PADD
+            type: equipment
+            property-logo: tng-logo
+            lore: Representative of Personal Access Display Devices designed specifically for engineering functions. Such equipment has been developed by many races.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR56.jpg
+            rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: engineer
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=science
+                }
+            ]
         }
         {
             blueprintId: 101_057
             title: Federation PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Standard Federation Personal Access Display Device for computerized information.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR57.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: personnel + affiliation=federation
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_058
@@ -139,75 +172,146 @@
             lore: Phase-disruptor used by Klingons and other races. Similar to a phaser.
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR58.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: (affiliation=klingon OR affiliation=non-aligned) + personnel
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_059
             title: Klingon PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR59.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: personnel + affiliation=klingon
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_060
             title: Medical Kit
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of specialized medical equipment. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR60.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: medical
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=officer
+                }
+            ]
         }
         {
             blueprintId: 101_061
             title: Medical Tricorder
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of a specialized tricorder optimized for medical use. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR61.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: medical
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=science
+                }
+            ]
         }
         {
             blueprintId: 101_062
             title: Romulan Disruptor
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Directed-energy weapon used by Romulans and other races. Disruptor fire can be identified by a high residue of antiprotons that linger for several hours.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR62.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: (affiliation=romulan OR affiliation=non-aligned) + personnel
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_063
             title: Romulan PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Standard Romulan Personal Access Display Device for computerized information.
             rarity: C
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR63.jpg
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: personnel + affiliation=romulan
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_064
             title: Starfleet Type II Phaser
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Handheld weapon can be set for stun, heat and disruption. PHASER is an acronym for PHASed Energy Rectification.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR64.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithYourCard
+                        otherCardFilter: (affiliation=federation OR affiliation=non-aligned) + personnel
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_065
             title: Tricorder
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg
             lore: Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: science
+                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=engineer
+                }
+            ]
         }
         {
             blueprintId: 101_104
@@ -258,6 +362,36 @@
             lore: Romulus is one of the two homeworlds for the Romulans. The Romulan Star Empire establishes outposts throughout its territory.
             shields: 32
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR106.jpg
+            rarity: C
+        }
+        {
+            blueprintId: 101_108
+            title: Amanda Rogers
+            type: interrupt
+            java-blueprint: true
+            property-logo: tng-logo
+            lore: Female Q raised as a human on Earth. Was taken to the Q continuum by Q after she could not resist the benevolent use of her powers.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR108.jpg
+            rarity: U
+        }
+        {
+            blueprintId: 101_125
+            title: Klingon Death Yell
+            java-blueprint: true
+            type: interrupt
+            property-logo: tng-logo
+            lore: Warning for the dead to beware; a Klingon warrior is about to arrive. In Klingon myth, killed warriors with honor go to Sto-Vo-Kor. Dishonored dead go to Gre-thor.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR125.jpg
+            rarity: R
+        }
+        {
+            blueprintId: 101_131
+            title: "Palor Toff: Alien Trader"
+            type: interrupt
+            java-blueprint: true
+            property-logo: tng-logo
+            lore: Rich merchant and trader from an unknown race. Friend of Kivas Fajo. Snappy dresser.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR131.jpg
             rarity: C
         }
         {
@@ -1223,6 +1357,7 @@
             property-logo: tng-logo
             classification: SECURITY
             icons: command
+            species: klingon
             lore: Lieutenant Worf is chief of security on the U.S.S. Enterprise. Klingon warrior and Starfleet officer. Son of Mogh. Raised on Earth by foster parents.
             skill-box: "[*] Honor x2 [*] Navigation [*] Diplomacy"
             integrity: 8
@@ -1756,6 +1891,39 @@
             cunning: 7
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg
+        }
+        {
+            blueprintId: 101_323
+            title: Taul
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SECURITY
+            icons: staff
+            lore: Typical Romulan male trained in the field of security. Assistant to Commander Konsab of the Romulan Intelligence Academy.
+            skill-box: "[*] Treachery [*] Archaeology"
+            integrity: 4
+            cunning: 7
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR323.jpg
+        }
+        {
+            blueprintId: 101_324
+            title: Thei
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Subcommander representative of officers serving in the Romulan Star Empire. He was an ally of the Sisters of Duras during the Klingon Civil War.
+            skill-box: "[*] Geology [*] Physics"
+            integrity: 4
+            cunning: 6
+            strength: 8
+            rarity: C
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR325.jpg
         }
         {
             blueprintId: 101_329

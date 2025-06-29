@@ -3,7 +3,6 @@ package com.gempukku.stccg.modifiers.attributes;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.FixedCardResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Filterable;

@@ -31,6 +31,7 @@ public class Blueprint_156_010_Surprise_Party_Test extends AbstractAtTest {
 
         playCard(P1, party);
         assertEquals(6, hand1.size());
+        assertEquals(7, hand2.size());
         assertNotNull(_userFeedback.getAwaitingDecision(P2));
 
         chooseOnlyAction(P2);

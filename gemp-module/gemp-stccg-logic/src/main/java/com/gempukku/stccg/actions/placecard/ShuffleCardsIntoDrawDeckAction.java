@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -16,6 +15,8 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.Collection;
 
 public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements TopLevelSelectableAction {
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("performingCardId")
     private final PhysicalCard _performingCard;
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("cardTarget")
@@ -59,11 +60,6 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
-    }
-
-    @Override
-    public int getCardIdForActionSelection() {
-        return _performingCard.getCardId();
     }
 
     public void processEffect(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {

@@ -38,9 +38,6 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     @Override
     public PhysicalCard getPerformingCard() { return _performingCard; }
 
-    @Override
-    public int getCardIdForActionSelection() { return _performingCard.getCardId(); }
-
     private List<Affiliation> getAffiliationOptions() {
         List<Affiliation> _affiliationOptions = new LinkedList<>();
         _performingCard.getAffiliationOptions().forEach(affiliation -> {

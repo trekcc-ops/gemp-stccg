@@ -10,7 +10,8 @@ import com.gempukku.stccg.cards.ActionContext;
     "tribblesequencebroken"}),
         @JsonSubTypes.Type(value = ComparatorRequirement.class, names = {"isequal", "isgreaterthan", "isgreaterthanorequal",
         "islessthan", "islessthanorequal", "isnotequal"}),
-        @JsonSubTypes.Type(value = PlayOutOfSequenceCondition.class, name = "playOutOfSequenceCondition")
+        @JsonSubTypes.Type(value = PlayOutOfSequenceCondition.class, name = "playOutOfSequenceCondition"),
+        @JsonSubTypes.Type(value = ThisCardPresentWithYourCardRequirement.class, names = "thisCardPresentWithYourCard")
 })
 public interface Requirement {
 

@@ -16,7 +16,6 @@ public class SeedCardAction extends PlayCardAction {
 
     public SeedCardAction(PhysicalCard cardToSeed, Zone zone) {
         super(cardToSeed, cardToSeed, cardToSeed.getOwner(), zone, ActionType.SEED_CARD);
-        setText("Seed " + cardToSeed.getFullName());
     }
 
     @Override
@@ -25,7 +24,7 @@ public class SeedCardAction extends PlayCardAction {
         gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
         gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
         setAsSuccessful();
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
+        saveResult(new PlayCardResult(this, _cardEnteringPlay));
     }
 
 }

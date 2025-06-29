@@ -17,7 +17,7 @@ import java.util.*;
 @JsonIncludeProperties({"actions"})
 public interface ActionsEnvironment {
 
-    List<TopLevelSelectableAction> getRequiredAfterTriggers(Collection<? extends ActionResult> effectResults);
+    List<TopLevelSelectableAction> getRequiredAfterTriggers(ActionResult actionResult);
 
     Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, Player player,
                                                        Collection<? extends ActionResult> effectResults);
@@ -31,9 +31,6 @@ public interface ActionsEnvironment {
 
     void addActionToStack(Action action) throws InvalidGameLogicException;
 
-    void emitEffectResult(ActionResult actionResult);
-
-    Set<ActionResult> consumeEffectResults();
     void signalEndOfTurn();
     void addAlwaysOnActionProxy(ActionProxy actionProxy);
 

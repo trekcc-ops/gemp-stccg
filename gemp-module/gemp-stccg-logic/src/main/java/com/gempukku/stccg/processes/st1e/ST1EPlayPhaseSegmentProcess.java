@@ -5,7 +5,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -28,8 +29,8 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(cardGame.getCurrentPlayer(), "Play " + phase + " action or Pass",
-                            playableActions, cardGame) {
+                    new ActionSelectionDecision(cardGame.getCurrentPlayer(), DecisionContext.SELECT_PHASE_ACTION,
+                            playableActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             try {

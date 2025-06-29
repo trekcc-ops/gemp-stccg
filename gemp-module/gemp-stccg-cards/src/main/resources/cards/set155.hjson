@@ -65,6 +65,7 @@
                         type: played
                         filter: self
                     }
+                    triggerDuringSeed: true
                     effect: {
                         type: download
                         target: {
@@ -76,6 +77,7 @@
                 }
                 {
                     type: requiredTrigger
+                    triggerDuringSeed: true
                     trigger: {
                         type: played
                         player: you
@@ -93,6 +95,7 @@
                         player: you
                         filter: personnel + tng-icon + skill-dots<=4 + sd-icons=0
                     }
+                    triggerDuringSeed: false
                     effect: {
                         type: drawCards
                     }

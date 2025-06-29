@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.actions.placecard.AddCardToSeedCardStack;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
@@ -40,7 +39,7 @@ public class MissionLocation implements GameLocation {
     private boolean _isCompleted;
     @JsonProperty("locationId")
     private final int _locationId;
-    private final MissionCardPile _missionCards = new MissionCardPile(Zone.SPACELINE);
+    private final MissionCardPile _missionCards = new MissionCardPile();
     private Map<Player, CardPile> _preSeedCards = new HashMap<>();
     private final CardPile _seedCards;
     public MissionLocation(MissionCard mission, int locationId) {
@@ -91,14 +90,13 @@ public class MissionLocation implements GameLocation {
     public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
         PhysicalCard result = null;
         Collection<? extends PhysicalCard> missionCards = getMissionCards();
-        if (missionCards.size() == 1) {
-            result = Iterables.getOnlyElement(missionCards);
-        }
-        else if (missionCards.size() == 2) {
+        if (isSharedMission()) {
             for (PhysicalCard missionCard : missionCards) {
                 if (Objects.equals(missionCard.getOwnerName(), playerId))
                     result = missionCard;
             }
+        } else {
+            result = Iterables.getOnlyElement(missionCards);
         }
         if (result instanceof MissionCard missionCard)
             return missionCard;
@@ -362,9 +360,17 @@ public class MissionLocation implements GameLocation {
         }
     }
 
+    public boolean hasCardSeededUnderneath(PhysicalCard card) {
+        return _seedCards.contains(card);
+    }
+
 
     public int getLocationId() {
         return _locationId;
+    }
+
+    public boolean isSharedMission() {
+        return _missionCards.size() == 2;
     }
 
     public boolean isInSameQuadrantAs(GameLocation currentLocation) {

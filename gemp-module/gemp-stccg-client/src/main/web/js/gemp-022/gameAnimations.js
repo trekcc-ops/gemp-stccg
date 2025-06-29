@@ -957,45 +957,6 @@ export default class GameAnimations {
             });
     }
 
-    processDecision(decision, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                let decisionType = decision.decisionType;
-                if (decisionType === "INTEGER") {
-                    that.game.integerDecision(decision);
-                } else if (decisionType === "MULTIPLE_CHOICE") {
-                    that.game.multipleChoiceDecision(decision);
-                } else if (decisionType === "ARBITRARY_CARDS") {
-                    that.game.arbitraryCardsDecision(decision);
-                } else if (decisionType === "ACTION_CHOICE") {
-                    that.game.actionChoiceDecision(decision);
-                } else if (decisionType === "CARD_ACTION_CHOICE") {
-                    that.game.cardActionChoiceDecision(decision);
-                } else if (decisionType === "CARD_SELECTION") {
-                    that.game.cardSelectionDecision(decision);
-                } else if (decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
-                    that.game.cardSelectionFromCombinations(decision);
-                }
-                else {
-                    console.error(`Unknown decisionType: ${decisionType}`);
-                    next(); // bail out
-                }
-                
-
-                if (!animate)
-                    that.game.layoutUI(false);
-
-                next();
-            });
-        if (that.game.replayMode) {
-            $("#main").queue(
-                function (next) {
-                    setTimeout(next, that.getAnimationLength(that.decisionDuration));
-                });
-        }
-    }
-
     updateGameState(animate) {
         var that = this;
         $("#main").queue(
@@ -1027,14 +988,16 @@ export default class GameAnimations {
             function () {
                 let cardData = $(this).data("card");
                 let index = -1;
-                for (let i = 0; i < cardData.attachedCards.length; i++)
+                if (cardData != null) {
+                    for (let i = 0; i < cardData.attachedCards.length; i++)
                     if (cardData.attachedCards[i].data("card").cardId == cardId) {
                         index = i;
                         break;
                     }
-                if (index != -1) {
-                    cardData.attachedCards.splice(index, 1);
-                    getCardDivFromId(cardId).data("card").attachedToCard = null;
+                    if (index != -1) {
+                        cardData.attachedCards.splice(index, 1);
+                        getCardDivFromId(cardId).data("card").attachedToCard = null;
+                    }
                 }
             }
         );

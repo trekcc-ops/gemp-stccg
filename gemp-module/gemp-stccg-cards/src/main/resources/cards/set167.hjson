@@ -20,6 +20,7 @@
                         type: played
                         filter: self
                     }
+                    triggerDuringSeed: true
                     effect: {
                         type: download
                         target: {
@@ -31,6 +32,7 @@
                 }
                 {
                     type: requiredTrigger
+                    triggerDuringSeed: true
                     trigger: {
                         type: played
                         player: you

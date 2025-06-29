@@ -75,9 +75,14 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
 
         undockShip(P1, runabout);
         assertFalse(friendly.isPlacedOnMission());
+        assertTrue(_mission.getGameLocation().hasCardSeededUnderneath(friendly));
+        assertFalse(friendly.isInPlay());
 
         attemptMission(P1, runabout, _mission);
         assertTrue(friendly.isPlacedOnMission());
+        assertFalse(_mission.getGameLocation().hasCardSeededUnderneath(friendly));
+        assertTrue(friendly.isInPlay());
+
     }
 
 }

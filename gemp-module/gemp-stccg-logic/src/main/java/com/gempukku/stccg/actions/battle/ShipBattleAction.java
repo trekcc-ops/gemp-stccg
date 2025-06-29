@@ -1,10 +1,13 @@
 package com.gempukku.stccg.actions.battle;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -27,6 +30,8 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
     private boolean _actionWasInitiated = false;
     private boolean _returningFire;
     private boolean _virtualCardAction;
+    @JsonProperty("locationId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final MissionLocation _location;
     private boolean _returnFireDecisionMade;
     private boolean _damageApplied;
@@ -126,7 +131,7 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
 
         if (!_returnFireDecisionMade) {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new YesNoDecision(_defendingPlayer, "Do you want to return fire?", cardGame) {
+                    new YesNoDecision(_defendingPlayer, DecisionContext.RETURN_FIRE, cardGame) {
                 @Override
                         protected void yes() {
                     _returnFireDecisionMade = true;
@@ -204,11 +209,6 @@ public class ShipBattleAction extends ActionyAction implements TopLevelSelectabl
     @Override
     public PhysicalCard getPerformingCard() {
         return _actionSource;
-    }
-
-    @Override
-    public int getCardIdForActionSelection() {
-        return _actionSource.getCardId();
     }
 
     public boolean wasCarriedOut() {

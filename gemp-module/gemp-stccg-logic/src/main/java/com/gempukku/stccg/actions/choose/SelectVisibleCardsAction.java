@@ -24,33 +24,24 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     private Integer _maximum;
     private ActionContext _actionContext;
     private String _memory;
+    private final String _decisionText;
 
     public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new FixedCardsResolver(cards);
         _minimum = minimum;
+        _decisionText = choiceText;
     }
 
-    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, CardFilter selectionFilter, int minimum,
-                                    int maximum) {
+    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
+                                    CardFilter selectionFilter, int minimum, int maximum) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new CardFilterResolver(selectionFilter);
         _minimum = minimum;
         _maximum = maximum;
+        _decisionText = choiceText;
     }
-
-
-    public SelectVisibleCardsAction(Player selectingPlayer, String choiceText, CardFilter selectionFilter, int minimum,
-                                    int maximum, ActionContext context, String memory) {
-        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARDS);
-        _selectableCardsResolver = new CardFilterResolver(selectionFilter);
-        _minimum = minimum;
-        _maximum = maximum;
-        _actionContext = context;
-        _memory = memory;
-    }
-
 
 
     public boolean requirementsAreMet(DefaultGame game) {
@@ -78,7 +69,7 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
             setAsSuccessful();
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
-                    new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
+                    new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
                             _minimum, _maximum, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {

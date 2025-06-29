@@ -9,11 +9,9 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 public class StopCardsAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
@@ -34,15 +32,6 @@ public class StopCardsAction extends ActionyAction {
         _cardTarget = new SelectCardsResolver(selectionAction);
     }
 
-
-    @Override
-    public String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException {
-        if (_cardTarget.isResolved() && _cardTarget.getCards(game).size() == 1) {
-            return "Stop" + Iterables.getOnlyElement(_cardTarget.getCards(game)).getTitle();
-        } else {
-            return "Stop personnel";
-        }
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

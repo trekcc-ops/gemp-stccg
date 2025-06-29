@@ -21,16 +21,19 @@ import java.util.LinkedList;
 public class SelectVisibleCardAction extends ActionyAction implements SelectCardAction {
     private final ActionCardResolver _selectableCards;
     private PhysicalCard _selectedCard;
+    private final String _decisionText;
 
     public SelectVisibleCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                    Collection<? extends PhysicalCard> cards) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCards = new FixedCardsResolver(cards);
+        _decisionText = choiceText;
     }
 
     public SelectVisibleCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, CardFilter cardFilter) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCards = new CardFilterResolver(cardFilter);
+        _decisionText = choiceText;
     }
 
 
@@ -54,7 +57,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
             setAsSuccessful();
         } else {
             AwaitingDecision decision = new CardsSelectionDecision(
-                                cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
+                                cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
                                 1, 1, cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {

@@ -15,9 +15,6 @@ public class UseNormalCardPlayAction extends ActionyAction {
     }
 
     @Override
-    public String getActionSelectionText(DefaultGame cardGame) { return "Use normal card play"; }
-
-    @Override
     public boolean wasCarriedOut() { return _wasCarriedOut; }
 
     @Override

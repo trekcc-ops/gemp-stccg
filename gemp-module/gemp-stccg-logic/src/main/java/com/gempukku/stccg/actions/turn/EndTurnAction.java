@@ -2,14 +2,14 @@ package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.player.Player;
 
 public class EndTurnAction extends SystemQueueAction {
 
-    public EndTurnAction(DefaultGame cardGame) {
+    public EndTurnAction(DefaultGame cardGame, Player currentPlayer) {
         super(cardGame);
-        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.END_OF_TURN));
+        saveResult(new ActionResult(ActionResult.Type.END_OF_TURN, currentPlayer.getPlayerId()));
     }
     @Override
     protected void processEffect(DefaultGame cardGame) {

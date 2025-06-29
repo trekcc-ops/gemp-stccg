@@ -5,7 +5,7 @@ import java.util.List;
 public class ActionOrder {
     private final List<String> _playOrder;
     private final boolean _looped;
-    private String _lastPlayer;
+    private String _currentPlayer;
     private int _nextPlayerIndex;
 
     public ActionOrder(List<String> playOrder, boolean looped) {
@@ -13,20 +13,25 @@ public class ActionOrder {
         _looped = looped;
     }
 
-    public String getLastPlayer() {
-        return _lastPlayer;
+    public String getNextPlayer() {
+        advancePlayer();
+        return _currentPlayer;
     }
 
-    public String getNextPlayer() {
-        if (_nextPlayerIndex >= getPlayerCount())
-            return null;
+    public void advancePlayer() {
+        if (_nextPlayerIndex >= getPlayerCount()) {
+            _currentPlayer = null;
+        } else {
+            String nextPlayer = _playOrder.get(_nextPlayerIndex);
+            _nextPlayerIndex++;
+            if (_nextPlayerIndex >= getPlayerCount() && _looped)
+                _nextPlayerIndex = 0;
+            _currentPlayer = nextPlayer;
+        }
+    }
 
-        String nextPlayer = _playOrder.get(_nextPlayerIndex);
-        _nextPlayerIndex++;
-        if (_nextPlayerIndex >= getPlayerCount() && _looped)
-            _nextPlayerIndex = 0;
-        _lastPlayer = nextPlayer;
-        return nextPlayer;
+    public String getCurrentPlayerName() {
+        return _currentPlayer;
     }
 
     public int getPlayerCount() {

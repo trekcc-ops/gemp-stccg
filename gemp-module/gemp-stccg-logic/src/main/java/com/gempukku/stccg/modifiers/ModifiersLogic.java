@@ -30,6 +30,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
     private final Collection<Modifier> _skipSet = new HashSet<>();
+    private final Map<String, LimitCounter> _gameLimitCounters = new HashMap<>();
     private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
     private final Map<ActionBlueprint, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
     private final DefaultGame _game;
@@ -45,6 +46,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card) {
         return getUntilEndOfTurnLimitCounter(card, "");
+    }
+
+    @Override
+    public LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix) {
+        return _gameLimitCounters.computeIfAbsent(prefix + "_" + card.getCardId(), entry -> new DefaultLimitCounter());
     }
 
     @Override

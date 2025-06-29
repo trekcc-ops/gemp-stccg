@@ -50,7 +50,7 @@ public class GameStateSerializerTest extends AbstractAtTest {
         assertNotNull(homeward);
         MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
         assertNotNull(homewardLocation);
-        seedDilemma(archer, homeward);
+        seedDilemma(archer, homewardLocation);
 
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
             skipDilemma();

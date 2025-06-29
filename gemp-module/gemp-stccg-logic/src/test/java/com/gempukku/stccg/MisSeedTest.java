@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -19,7 +20,7 @@ public class MisSeedTest extends AbstractAtTest {
 
     @Test
     public void misSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException {
+            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
@@ -50,6 +51,8 @@ public class MisSeedTest extends AbstractAtTest {
         assertNotNull(excavation);
         assertNotNull(picard);
         assertNotNull(tarses);
+        picard.removeFromCardGroup();
+        _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
 
         ST1EPhysicalCard maglock =
                 (ST1EPhysicalCard) _game.addCardToGame("109_010", _cardLibrary, P1);

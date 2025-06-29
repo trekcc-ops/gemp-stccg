@@ -73,9 +73,10 @@ public class LibraryFunctions {
         String notFollowedByOrAndLowercase = "(?!OR\\s[a-z])";
         String notDr = "(?<!Dr\\.\\s)";
         String notvs = "(?<!\svs\\.\\s)";
+        String notJamesT = "(?<!\sJames\\sT\\.\\s)";
         String fullRegex =
                 periodFollowedBySpace + notUSS + notIKC + notIKS + notFollowedByLowercase +
-                        notFollowedByOrAndLowercase + notDr + notvs;
+                        notFollowedByOrAndLowercase + notDr + notvs + notJamesT;
         String[] splitString = text.split(fullRegex);
         List<String> result = new ArrayList<>();
         for (String string : splitString) {

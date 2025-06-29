@@ -152,7 +152,7 @@ public class CardBlueprint {
     private List<ActionBlueprint> inDiscardPhaseActions;
 
     @JsonProperty("modifiers")
-    private final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
+    protected final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
 
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
@@ -360,10 +360,13 @@ public class CardBlueprint {
         _optionalInHandTriggers.add(actionBlueprint);
     }
 
-    public void appendTrigger(TriggerActionBlueprint actionSource) {
-        RequiredType requiredType = actionSource.getRequiredType();
-        _afterTriggers.computeIfAbsent(requiredType, k -> new LinkedList<>());
-        _afterTriggers.get(requiredType).add(actionSource);
+    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
+        for (ActionBlueprint trigger : _optionalInHandTriggers) {
+            TopLevelSelectableAction action = trigger.createActionWithNewContext(thisCard, actionResult);
+            if (action != null) result.add(action);
+        }
+        return result;
     }
 
     public void appendPlayRequirement(Requirement requirement) {
@@ -404,6 +407,10 @@ public class CardBlueprint {
     public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionBlueprint> getActivatedTriggers() {
         return _activatedTriggers;
+    }
+    public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player,
+                                                                     DefaultGame cardGame) {
+        return new ArrayList<>();
     }
     public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
@@ -612,7 +619,6 @@ public class CardBlueprint {
     public ShipClass getShipClass() {
         return _shipClass;
     }
-
 
     public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
         return switch(_cardType) {

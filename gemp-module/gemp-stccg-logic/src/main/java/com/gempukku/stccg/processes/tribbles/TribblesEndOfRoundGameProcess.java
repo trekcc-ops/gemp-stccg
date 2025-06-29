@@ -1,6 +1,5 @@
 package com.gempukku.stccg.processes.tribbles;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -8,11 +7,10 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.actions.scorepoints.PlayerWentOutResult;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -39,7 +37,8 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                 scorePointsAction.processEffect(_game);
                 _game.getActionsEnvironment().logCompletedActionNotInStack(scorePointsAction);
                 _game.sendActionResultToClient(); // for updated points
-                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
+                    // TODO - This doesn't work because we removed emitEffectResult
+//                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
             }
 
             // Each player then shuffles their play pile into their decks.

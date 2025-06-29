@@ -23,23 +23,15 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     private String _memory;
     private AwaitingDecision _decision;
     private final ActionCardResolver _selectableCardsTarget;
+    private final String _decisionText;
 
     public SelectCardsFromDialogAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                        CardFilter cardFilter) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+        _decisionText = choiceText;
         _selectableCardsTarget = new CardFilterResolver(cardFilter);
         _minimum = 1;
         _maximum = 1;
-    }
-
-    public SelectCardsFromDialogAction(Player selectingPlayer, String choiceText, CardFilter cardFilter, int minimum,
-                                       int maximum, ActionContext context, String memory) {
-        super(context.getGame(), selectingPlayer, choiceText, ActionType.SELECT_CARDS);
-        _selectableCardsTarget = new CardFilterResolver(cardFilter);
-        _minimum = minimum;
-        _maximum = maximum;
-        _actionContext = context;
-        _memory = memory;
     }
 
 
@@ -61,7 +53,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
             setCardToMemory();
         } else if (_decision == null) {
             _decision = new ArbitraryCardsSelectionDecision(
-                                cardGame.getPlayer(_performingPlayerId), _text, selectableCards,
+                                cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
                                 _minimum, _maximum, cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {

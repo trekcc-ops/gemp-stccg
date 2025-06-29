@@ -14,7 +14,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
 
     public TribblesPlayCardAction(TribblesPhysicalCard card) {
         super(card, card, card.getOwner(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
-        setText("Play " + card.getFullName());
     }
 
     @Override
@@ -43,7 +42,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setNextTribbleInSequence(nextTribble);
 
         gameState.setChainBroken(false);
-        cardGame.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
+        saveResult(new PlayCardResult(this, _cardEnteringPlay));
         _wasCarriedOut = true;
         setAsSuccessful();
         return null;
