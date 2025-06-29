@@ -18,6 +18,7 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
+import org.apache.logging.log4j.core.net.Facility;
 
 import java.util.HashSet;
 import java.util.List;
@@ -102,23 +103,28 @@ public class SeedOutpostAction extends PlayCardAction {
             }
 
             if (!getProgress(Progress.cardWasSeeded)) {
-                Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
-                facility.changeAffiliation(selectedAffiliation);
-
-                gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
-                performingPlayer.addPlayedAffiliation(facility.getCurrentAffiliation());
-                PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
-                GameLocation destinationLocation = destinationCard.getGameLocation();
-                gameState.seedFacilityAtLocation(facility, destinationLocation);
-                saveResult(new PlayCardResult(this, _cardEnteringPlay));
-                setProgress(Progress.cardWasSeeded);
-                setAsSuccessful();
+                processEffect(facility.getGame(), performingPlayer);
                 return getNextAction();
             }
             return null;
         } else {
             throw new InvalidGameLogicException("Tried to process SeedOutpostAction with a non-facility card");
         }
+    }
+
+    public void processEffect(ST1EGame stGame, Player performingPlayer) throws InvalidGameLogicException {
+        Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
+        FacilityCard facility = (FacilityCard) _cardEnteringPlay;
+        facility.changeAffiliation(selectedAffiliation);
+
+        stGame.getGameState().removeCardsFromZoneWithoutSendingToClient(stGame, List.of(_cardEnteringPlay));
+        performingPlayer.addPlayedAffiliation(facility.getCurrentAffiliation());
+        PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(stGame));
+        GameLocation destinationLocation = destinationCard.getGameLocation();
+        stGame.getGameState().seedFacilityAtLocation(facility, destinationLocation);
+        saveResult(new PlayCardResult(this, _cardEnteringPlay));
+        setProgress(Progress.cardWasSeeded);
+        setAsSuccessful();
     }
 
     public void setDestination(MissionLocation location) {

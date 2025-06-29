@@ -99,7 +99,7 @@ public class SeedMissionCardAction extends PlayCardAction {
         return getNextAction();
     }
 
-    private void seedCard(DefaultGame game) {
+    public void seedCard(DefaultGame game) {
         if (game.getGameState() instanceof ST1EGameState gameState && _cardEnteringPlay instanceof MissionCard mission) {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
@@ -125,5 +125,9 @@ public class SeedMissionCardAction extends PlayCardAction {
 
     public boolean wasCarriedOut() {
         return _cardPlayed && _actionCarriedOut;
+    }
+
+    public void setLocationZoneIndex(int indexNum) {
+        _locationZoneIndex = indexNum;
     }
 }
