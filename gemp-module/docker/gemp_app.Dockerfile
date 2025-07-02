@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn install -DskipTests
 #
 # Stage 1, Client build
 #
-FROM node:20-alpine AS client-build
+FROM node:22-alpine AS client-build
 
 # Make and switch to a /gemp-client folder
 RUN mkdir -p /gemp-client
