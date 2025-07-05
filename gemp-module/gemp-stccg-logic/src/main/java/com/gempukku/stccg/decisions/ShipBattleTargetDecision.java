@@ -74,4 +74,12 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
         }
     }
 
+    public List<PhysicalCard> getAttackingCards() {
+        return Collections.unmodifiableList(_attackingCards);
+    }
+
+    public PhysicalCard getTarget() {
+        return _defendingTarget;
+    }
+
 }
