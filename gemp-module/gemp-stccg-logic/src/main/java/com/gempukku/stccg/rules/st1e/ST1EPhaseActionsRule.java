@@ -31,13 +31,16 @@ public class ST1EPhaseActionsRule extends ST1ERule {
                     card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
             Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
                     card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+        }
 
+        if (currentPhase == Phase.EXECUTE_ORDERS) {
             Map<PhysicalCard, Map<String, List<PhysicalCard>>> shipBattleTargets =
                     ShipBattleRules.getTargetsForShipBattleInitiation(_game, player);
             if (!shipBattleTargets.isEmpty()) {
                 result.add(new InitiateShipBattleAction(shipBattleTargets, _game, player));
             }
         }
+
         Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }

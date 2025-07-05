@@ -14,6 +14,7 @@ import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.st1e.ST1EFacilitySeedPhaseProcess;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         _game.startGame();
     }
 
-//    @Test
+    @Test
     public void initiateBattleTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
     }
