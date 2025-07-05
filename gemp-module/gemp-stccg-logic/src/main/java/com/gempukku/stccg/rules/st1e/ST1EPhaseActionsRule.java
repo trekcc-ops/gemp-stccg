@@ -2,14 +2,13 @@ package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
-import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.Player;
 
 import java.util.LinkedList;
 import java.util.List;

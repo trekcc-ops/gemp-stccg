@@ -157,4 +157,8 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         return true;
     }
 
+    public boolean wasWonBy(Player player) {
+        return _winner == player;
+    }
+
 }

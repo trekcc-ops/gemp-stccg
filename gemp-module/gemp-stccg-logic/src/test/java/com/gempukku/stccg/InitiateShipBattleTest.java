@@ -75,13 +75,12 @@ public class InitiateShipBattleTest extends AbstractAtTest {
     @Test
     public void initiateBattleTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-        selectAction(InitiateShipBattleAction.class, null, P1);
+        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
         ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
         decision.decisionMade(List.of(lukara), kratak);
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
         _game.carryOutPendingActionsUntilDecisionNeeded();
-        int x = 5;
-        int y = x + 3;
+        assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
     }
 
 }
