@@ -14,7 +14,7 @@ public class SkillDotCountEvaluator extends Evaluator {
         _selectAction = selectAction;
     }
 
-    public int evaluateExpression(DefaultGame cardGame) {
+    public float evaluateExpression(DefaultGame cardGame) {
         try {
             if (_selectAction != null && _selectAction.wasCarriedOut()) {
                 PhysicalCard selectedCard = _selectAction.getSelectedCard();
@@ -27,10 +27,5 @@ public class SkillDotCountEvaluator extends Evaluator {
             cardGame.sendErrorMessage(exp);
             return 0;
         }
-    }
-
-    @Override
-    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-        return evaluateExpression(game);
     }
 }

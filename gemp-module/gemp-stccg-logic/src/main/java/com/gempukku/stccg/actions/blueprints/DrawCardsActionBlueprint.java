@@ -39,7 +39,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         final String targetPlayerId = _drawingPlayerSource.getPlayerId(context);
         DefaultGame cardGame = context.getGame();
         Player targetPlayer = cardGame.getPlayer(targetPlayerId);
-        final int count = _countSource.evaluateExpression(context, null);
+        final int count = (int) _countSource.evaluateExpression(context);
         List<Action> result = new LinkedList<>();
         int numberOfEffects = 1;
         for (int i = 0; i < numberOfEffects; i++) {
@@ -51,7 +51,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     @Override
     public boolean isPlayableInFull(ActionContext context) {
         try {
-            final int count = _countSource.evaluateExpression(context, null);
+            final int count = (int) _countSource.evaluateExpression(context);
             final String targetPlayerId = _drawingPlayerSource.getPlayerId(context);
             Player targetPlayer = context.getGame().getPlayer(targetPlayerId);
             return targetPlayer.getCardsInDrawDeck().size() >= count;

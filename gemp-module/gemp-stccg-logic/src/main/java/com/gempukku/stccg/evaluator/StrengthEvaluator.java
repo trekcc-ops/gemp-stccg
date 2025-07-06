@@ -4,16 +4,17 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ConstantEvaluator extends Evaluator {
-    private final float _value;
+public class StrengthEvaluator extends Evaluator {
 
-    public ConstantEvaluator(int value) {
+    private final PhysicalCard _cardWithStrength;
+
+    public StrengthEvaluator(PhysicalCard cardWithStrength) {
         super();
-        _value = value;
+        _cardWithStrength = cardWithStrength;
     }
 
     @Override
     public float evaluateExpression(DefaultGame cardGame) {
-        return _value;
+        return _cardWithStrength.getStrength(cardGame);
     }
 }

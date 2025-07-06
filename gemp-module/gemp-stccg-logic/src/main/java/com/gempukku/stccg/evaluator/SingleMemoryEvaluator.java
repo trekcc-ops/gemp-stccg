@@ -1,22 +1,20 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class SingleMemoryEvaluator extends Evaluator {
-    private Integer _rememberedValue;
+    private Float _rememberedValue;
     private final Evaluator _evaluator;
 
-    public SingleMemoryEvaluator(ActionContext actionContext, Evaluator evaluator) {
+    public SingleMemoryEvaluator(Evaluator evaluator) {
         super();
         _evaluator = evaluator;
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+    public float evaluateExpression(DefaultGame game) {
         if (_rememberedValue == null)
-            _rememberedValue = _evaluator.evaluateExpression(game, cardAffected);
+            _rememberedValue = _evaluator.evaluateExpression(game);
         return _rememberedValue;
     }
 }

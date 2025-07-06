@@ -15,13 +15,13 @@ public class ConstantValueSource implements ValueSource {
     public Evaluator getEvaluator(ActionContext actionContext) {
         return new Evaluator() {
             @Override
-            public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+            public float evaluateExpression(DefaultGame game) {
                 return _value;
             }
         };
     }
 
-    public int getMinimum(ActionContext actionContext) { return _value; }
+    public float getMinimum(ActionContext actionContext) { return _value; }
 
-    public int getMaximum(ActionContext actionContext) { return _value; }
+    public float getMaximum(ActionContext actionContext) { return _value; }
 }

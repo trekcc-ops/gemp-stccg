@@ -44,7 +44,7 @@ public class TextUtils {
         return sb.toString();
     }
 
-    public static String signed(int value) {
+    public static String signed(float value) {
         return (value >= 0 ? "+" : "") + value;
     }
 

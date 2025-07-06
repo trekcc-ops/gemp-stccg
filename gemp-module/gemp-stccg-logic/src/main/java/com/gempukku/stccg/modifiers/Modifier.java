@@ -30,7 +30,7 @@ public interface Modifier {
 
     boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard);
 
-    int getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard);
+    float getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard);
 
     boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTaget);
 
