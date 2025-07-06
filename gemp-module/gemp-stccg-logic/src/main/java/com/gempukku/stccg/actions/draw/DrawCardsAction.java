@@ -51,8 +51,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            return performingPlayer.getCardsInDrawDeck().size() >=
-                    _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
+            return performingPlayer.getCardsInDrawDeck().size() >= (int) _cardDrawCountEvaluator.evaluateExpression(cardGame);
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
@@ -61,7 +60,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        int totalDrawCount = _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
+        int totalDrawCount = (int) _cardDrawCountEvaluator.evaluateExpression(cardGame);
         if (isBeingInitiated())
             setAsInitiated();
         if (_cardsAlreadyDrawnCount < totalDrawCount) {

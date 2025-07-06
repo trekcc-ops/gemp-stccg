@@ -19,8 +19,8 @@ public class SelectNumberAction extends MakeDecisionAction {
 
     public SelectNumberAction(ActionContext context, String choiceText, ValueSource valueSource, String memoryId) {
         super(context.getGame(), context.getPerformingPlayer(), choiceText);
-        _minimum = valueSource.getMinimum(context);
-        _maximum = valueSource.getMaximum(context);
+        _minimum = (int) valueSource.getMinimum(context);
+        _maximum = (int) valueSource.getMaximum(context);
         _actionContext = context;
         _memoryId = memoryId;
     }
