@@ -8,10 +8,7 @@ import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.FacilityType;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
@@ -121,6 +118,10 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
 
     public int getHullIntegrity() {
         return _hullIntegrity;
+    }
+
+    public int getShields(DefaultGame cardGame) {
+        return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.SHIELDS);
     }
 
 }

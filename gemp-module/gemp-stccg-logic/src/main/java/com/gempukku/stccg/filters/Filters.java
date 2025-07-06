@@ -12,6 +12,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.GameLocation;
+import org.apache.logging.log4j.core.net.Facility;
 
 import java.util.*;
 
@@ -217,6 +218,10 @@ public class Filters {
             }
             return matching;
         };
+    }
+
+    public static CardFilter dockedAt(FacilityCard facility) {
+        return (game, physicalCard) -> physicalCard instanceof PhysicalShipCard shipCard && shipCard.isDockedAt(facility);
     }
 
 

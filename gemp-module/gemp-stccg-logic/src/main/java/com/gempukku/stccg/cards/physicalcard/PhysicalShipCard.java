@@ -93,6 +93,10 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         }
     }
 
+    public boolean isDockedAt(FacilityCard facility) {
+        return facility.getCardId() == _dockedAtCardId;
+    }
+
     public Collection<PhysicalCard> getCrew() {
         return getAttachedCards(_game);
     }
@@ -136,6 +140,10 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     public int getFullRange() {
         return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
+    }
+
+    public int getShields(DefaultGame cardGame) {
+        return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.SHIELDS);
     }
 
     public int getRangeAvailable() {

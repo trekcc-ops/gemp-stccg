@@ -51,8 +51,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            return performingPlayer.getCardsInDrawDeck().size() >=
-                    _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
+            return performingPlayer.getCardsInDrawDeck().size() >= _cardDrawCountEvaluator.evaluateExpression(cardGame, _performingCard);
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
