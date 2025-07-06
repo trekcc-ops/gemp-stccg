@@ -94,7 +94,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public boolean isDockedAt(FacilityCard facility) {
-        return facility.getCardId() == _dockedAtCardId;
+        return _dockedAtCardId != null && _dockedAtCardId == facility.getCardId();
     }
 
     public Collection<PhysicalCard> getCrew() {
