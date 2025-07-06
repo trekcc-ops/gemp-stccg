@@ -15,7 +15,7 @@ public class ConstantValueSource implements ValueSource {
     public Evaluator getEvaluator(ActionContext actionContext) {
         return new Evaluator() {
             @Override
-            public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+            public int evaluateExpression(DefaultGame game) {
                 return _value;
             }
         };

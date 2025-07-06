@@ -28,9 +28,4 @@ public class SkillDotCountEvaluator extends Evaluator {
             return 0;
         }
     }
-
-    @Override
-    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-        return evaluateExpression(game);
-    }
 }

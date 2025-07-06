@@ -21,7 +21,7 @@ public class MultiplyEvaluator extends Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, PhysicalCard self) {
-        return _multiplier.evaluateExpression(_game, self) * _source.evaluateExpression(_game, self);
+    public int evaluateExpression(DefaultGame game) {
+        return _multiplier.evaluateExpression(_game) * _source.evaluateExpression(_game);
     }
 }

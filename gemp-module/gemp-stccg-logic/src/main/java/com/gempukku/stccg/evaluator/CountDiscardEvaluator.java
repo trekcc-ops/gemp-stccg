@@ -43,7 +43,7 @@ public class CountDiscardEvaluator implements ValueSource {
         return new MultiplyEvaluator(actionContext, _multiplier, new Evaluator() {
             final String playerId = _playerSource.getPlayerId(actionContext);
             @Override
-            public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+            public int evaluateExpression(DefaultGame game) {
                 try {
                     Player player = game.getPlayer(playerId);
                     final Filterable filterable = _filterBlueprint.getFilterable(actionContext);

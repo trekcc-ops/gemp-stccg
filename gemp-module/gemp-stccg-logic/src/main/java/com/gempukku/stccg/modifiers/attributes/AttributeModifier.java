@@ -73,13 +73,13 @@ public class AttributeModifier extends AbstractModifier {
             attributeString = _attributes.getFirst().toString();
         }
 
-        return attributeString +  " " + TextUtils.signed(_evaluator.evaluateExpression(affectedCard.getGame(), affectedCard)) +
+        return attributeString +  " " + TextUtils.signed(_evaluator.evaluateExpression(cardGame)) +
                 " from " + _cardSource.getCardLink();
     }
 
     @Override
     public int getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard) {
-        return _evaluator.evaluateExpression(cardGame, physicalCard);
+        return _evaluator.evaluateExpression(cardGame);
     }
 
     public List<CardAttribute> getAttributesModified() {

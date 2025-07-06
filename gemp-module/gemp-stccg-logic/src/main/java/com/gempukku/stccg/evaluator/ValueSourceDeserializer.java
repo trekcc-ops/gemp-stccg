@@ -7,15 +7,14 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.io.IOException;
@@ -132,12 +131,12 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                     @Override
                     public int getMinimum(ActionContext actionContext) {
-                        return fromValue.evaluateExpression(actionContext, null);
+                        return fromValue.evaluateExpression(actionContext);
                     }
 
                     @Override
                     public int getMaximum(ActionContext actionContext) {
-                        return toValue.evaluateExpression(actionContext, null);
+                        return toValue.evaluateExpression(actionContext);
                     }
                 };
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
@@ -146,7 +145,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         PlayerResolver.resolvePlayer(getString(object, "owner", "you"));
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         try {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
@@ -172,11 +171,11 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 ValueSource falseValue = resolveEvaluator(ctxt, object.get("false"));
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         if (actionContext.acceptsAllRequirements(conditions)) {
-                            return trueValue.evaluateExpression(actionContext, cardAffected);
+                            return trueValue.evaluateExpression(actionContext);
                         } else {
-                            return falseValue.evaluateExpression(actionContext, cardAffected);
+                            return falseValue.evaluateExpression(actionContext);
                         }
                     }
                 };
@@ -224,7 +223,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         (actionContext -> Filters.any);
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         try {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
@@ -245,7 +244,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         (actionContext -> Filters.any);
                 return actionContext -> new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         try {
                             String playerId = playerSource.getPlayerId(actionContext);
                             Player player = game.getPlayer(playerId);
@@ -274,46 +273,12 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final ValueSource multiplier = resolveEvaluator(ctxt, object.get("multiplier"));
                 final ValueSource valueSource = resolveEvaluator(ctxt, object.get("source"), 0);
                 return (actionContext) -> new MultiplyEvaluator(actionContext, multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
-            } else if (type.equalsIgnoreCase("forEachStrength")) {
-                validateAllowedFields(object, "multiplier", "over", "filter");
-                final int multiplier = getInteger(object, "multiplier", 1);
-                final int over = getInteger(object, "over", 0);
-                final String filter = getString(object, "filter", "any");
-                final FilterBlueprint strengthSource = object.has("filter") ?
-                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
-                        (actionContext -> Filters.any);
-
-                return (actionContext) -> {
-                    if (filter.equals("any")) {
-                        return new MultiplyEvaluator(actionContext, multiplier,
-                                new Evaluator() {
-                                    @Override
-                                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                        return Math.max(0, actionContext.getGame().getGameState().getModifiersQuerying().getStrength(cardAffected) - over);
-                                    }
-                                });
-                    } else {
-                        return new MultiplyEvaluator(actionContext, multiplier,
-                                new Evaluator() {
-                                    @Override
-                                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                        final Filterable filterable = strengthSource.getFilterable(actionContext);
-                                        int strength = 0;
-                                        for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
-                                            strength += actionContext.getGame().getGameState().getModifiersQuerying().getStrength(physicalCard);
-                                        }
-
-                                        return Math.max(0, strength - over);
-                                    }
-                                });
-                    }
-                };
             } else if (type.equalsIgnoreCase("printedStrengthFromMemory")) {
                 validateAllowedFields(object, "memory");
 
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         int result = 0;
                         for (PhysicalCard physicalCard :
                                 actionContext.getCardsFromMemory(object.get("memory").textValue())) {
@@ -328,7 +293,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         int result = 0;
                         for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
                             result += actionContext.getGame().getGameState().getModifiersQuerying().getStrength(physicalCard);
@@ -342,7 +307,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         int result = 0;
                         for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
                             result += physicalCard.getBlueprint().getTribbleValue();
@@ -359,9 +324,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         resolveEvaluator(ctxt, object.get("secondNumber"), 0);
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        final int first = firstNumber.evaluateExpression(actionContext, null);
-                        final int second = secondNumber.evaluateExpression(actionContext, null);
+                    public int evaluateExpression(DefaultGame game) {
+                        final int first = firstNumber.evaluateExpression(actionContext);
+                        final int second = secondNumber.evaluateExpression(actionContext);
                         return first - second;
                     }
                 };
@@ -372,10 +337,10 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         return Math.max(
-                                first.evaluateExpression(actionContext, null),
-                                second.evaluateExpression(actionContext, null)
+                                first.evaluateExpression(actionContext),
+                                second.evaluateExpression(actionContext)
                         );
                     }
                 };
@@ -386,10 +351,10 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
+                    public int evaluateExpression(DefaultGame game) {
                         return Math.min(
-                                first.evaluateExpression(actionContext, null),
-                                second.evaluateExpression(actionContext, null)
+                                first.evaluateExpression(actionContext),
+                                second.evaluateExpression(actionContext)
                         );
                     }
                 };

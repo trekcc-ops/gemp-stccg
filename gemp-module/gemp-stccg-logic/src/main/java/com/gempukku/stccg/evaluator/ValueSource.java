@@ -9,11 +9,11 @@ public interface ValueSource {
     Evaluator getEvaluator(ActionContext actionContext);
 
     default int getMinimum(ActionContext actionContext) {
-        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame());
     }
 
     default int getMaximum(ActionContext actionContext) {
-        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame());
     }
 
     default int evaluateExpression(ActionContext actionContext) {
@@ -21,7 +21,7 @@ public interface ValueSource {
     }
 
     default int evaluateExpression(ActionContext actionContext, PhysicalCard cardAffected) {
-        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), cardAffected);
+        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame());
     }
 
 }

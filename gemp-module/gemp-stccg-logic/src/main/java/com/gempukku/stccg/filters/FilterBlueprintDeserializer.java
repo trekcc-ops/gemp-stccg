@@ -113,28 +113,6 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                     final FilterBlueprint filterBlueprint = generateFilter(parameterSplit[1]);
                     return (actionContext) -> Filters.hasStacked(count, filterBlueprint.getFilterable(actionContext));
                 });
-        parameterFilters.put("loweststrength",
-                (parameter) -> {
-                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
-                    return actionContext -> {
-                        final Filterable sourceFilterable = filterBlueprint.getFilterable(actionContext);
-                        return Filters.and(
-                                sourceFilterable, Filters.strengthEqual(
-                                        new SingleMemoryEvaluator(actionContext,
-                                                new Evaluator() {
-                                                    @Override
-                                                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                                        int minStrength = Integer.MAX_VALUE;
-                                                        for (PhysicalCard card : Filters.filterActive(cardAffected.getGame(), sourceFilterable))
-                                                            minStrength = Math.min(minStrength, cardAffected.getGame().getGameState().getModifiersQuerying().getStrength(card));
-                                                        return minStrength;
-                                                    }
-                                                }
-                                        )
-                                )
-                        );
-                    };
-                });
         parameterFilters.put("memory",
                 (parameter) -> (actionContext) -> Filters.in(actionContext.getCardsFromMemory(parameter)));
 

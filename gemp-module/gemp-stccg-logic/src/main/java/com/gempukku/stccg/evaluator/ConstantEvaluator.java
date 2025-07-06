@@ -21,7 +21,7 @@ public class ConstantEvaluator extends Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, PhysicalCard self) {
+    public int evaluateExpression(DefaultGame cardGame) {
         return _value;
     }
 }

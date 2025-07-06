@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class Evaluator implements ValueSource {
-    public abstract int evaluateExpression(DefaultGame game, PhysicalCard cardAffected);
     @Override
     public Evaluator getEvaluator(ActionContext actionContext) { return this; }
+    public abstract int evaluateExpression(DefaultGame cardGame);
 }
