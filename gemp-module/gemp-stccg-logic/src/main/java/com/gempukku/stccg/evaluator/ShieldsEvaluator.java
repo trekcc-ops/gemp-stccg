@@ -12,12 +12,7 @@ public class ShieldsEvaluator extends Evaluator {
         _cardWithShields = cardWithShields;
     }
 
-    public int evaluateExpression(DefaultGame cardGame) {
+    public float evaluateExpression(DefaultGame cardGame) {
         return _cardWithShields.getShields(cardGame);
-    }
-
-    @Override
-    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-        return evaluateExpression(game);
     }
 }
