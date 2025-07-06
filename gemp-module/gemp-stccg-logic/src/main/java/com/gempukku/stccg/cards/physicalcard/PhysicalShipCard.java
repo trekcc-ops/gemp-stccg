@@ -139,10 +139,14 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public int getFullRange() {
-        return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
+        return (int) _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.RANGE);
     }
 
-    public int getShields(DefaultGame cardGame) {
+    public float getWeapons(DefaultGame cardGame) {
+        return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.WEAPONS);
+    }
+
+    public float getShields(DefaultGame cardGame) {
         return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.SHIELDS);
     }
 

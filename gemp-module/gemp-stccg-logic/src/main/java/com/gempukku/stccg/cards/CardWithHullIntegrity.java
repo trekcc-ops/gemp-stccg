@@ -9,7 +9,9 @@ public interface CardWithHullIntegrity extends PhysicalCard {
 
     int getHullIntegrity();
 
-    int getShields(DefaultGame cardGame);
+    float getShields(DefaultGame cardGame);
+
+    float getWeapons(DefaultGame cardGame);
 
     void stop();
 

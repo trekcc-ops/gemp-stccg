@@ -51,12 +51,12 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         _targetMap = targetMap;
     }
 
-    private OpenFireResult calculateOpenFireResult(Player player) {
-        int attackTotal = 0;
-        for (PhysicalCard ship : _forces.get(player)) {
-            attackTotal += ship.getBlueprint().getWeapons();
+    private OpenFireResult calculateOpenFireResult(Player player, DefaultGame cardGame) {
+        float attackTotal = 0;
+        for (CardWithHullIntegrity ship : _forces.get(player)) {
+            attackTotal += ship.getWeapons(cardGame);
         }
-        int defenseTotal = _targets.get(player).getBlueprint().getShields();
+        float defenseTotal = _targets.get(player).getShields(cardGame);
         if (attackTotal > defenseTotal * 2)
             return OpenFireResult.DIRECT_HIT;
         else if (attackTotal > defenseTotal)
@@ -86,12 +86,12 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         if (_actionWasInitiated) {
             if (!_openedFire) {
                 _openedFire = true;
-                _openFireResults.put(attackingPlayer, calculateOpenFireResult(attackingPlayer));
+                _openFireResults.put(attackingPlayer, calculateOpenFireResult(attackingPlayer, cardGame));
             }
 
             if (!_returnedFire && _returningFire) {
                 _returnedFire = true;
-                _openFireResults.put(_defendingPlayer, calculateOpenFireResult(_defendingPlayer));
+                _openFireResults.put(_defendingPlayer, calculateOpenFireResult(_defendingPlayer, cardGame));
             }
 
             if (!_damageApplied) {

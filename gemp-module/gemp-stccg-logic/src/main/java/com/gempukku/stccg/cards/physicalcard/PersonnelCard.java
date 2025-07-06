@@ -20,7 +20,7 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
     }
 
     public Integer getAttribute(CardAttribute attribute) {
-        return _game.getGameState().getModifiersQuerying().getAttribute(this, attribute);
+        return (int) _game.getGameState().getModifiersQuerying().getAttribute(this, attribute);
     }
 
     public Integer getSkillLevel(SkillName skillName) {

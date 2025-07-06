@@ -324,8 +324,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public int getAttribute(PhysicalCard card, CardAttribute attribute) {
-        int result = switch(attribute) {
+    public float getAttribute(PhysicalCard card, CardAttribute attribute) {
+        float result = switch(attribute) {
             case INTEGRITY -> card.getBlueprint().getIntegrity();
             case CUNNING -> card.getBlueprint().getCunning();
             case STRENGTH -> card.getBlueprint().getStrength();
@@ -353,11 +353,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 result += modifier.getAttributeModifier(_game, card);
             }
         }
-        return Math.max(0, result);
+        if (result < 0)
+            return 0;
+        else
+            return result;
     }
 
     @Override
-    public int getStrength(PhysicalCard physicalCard) {
+    public float getStrength(PhysicalCard physicalCard) {
         return getAttribute(physicalCard, CardAttribute.STRENGTH);
     }
 

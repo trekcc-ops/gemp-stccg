@@ -120,7 +120,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return _hullIntegrity;
     }
 
-    public int getShields(DefaultGame cardGame) {
+    public float getWeapons(DefaultGame cardGame) {
+        return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.WEAPONS);
+    }
+
+    public float getShields(DefaultGame cardGame) {
         return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.SHIELDS);
     }
 

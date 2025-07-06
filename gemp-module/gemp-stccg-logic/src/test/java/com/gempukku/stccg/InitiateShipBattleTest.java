@@ -74,6 +74,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
         defendingTarget = (PhysicalShipCard) newCardForGame("103_118", P2); // I.K.S. K'Ratak (6-8-6)
         setupGameState();
+        defendingTarget.undockFromFacility();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
         InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
         ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
@@ -93,6 +94,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
         defendingTarget = (PhysicalShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
         setupGameState();
+        defendingTarget.undockFromFacility();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
         InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
         ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
