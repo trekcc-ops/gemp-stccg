@@ -17,10 +17,6 @@ public interface ValueSource {
     }
 
     default float evaluateExpression(ActionContext actionContext) {
-        return evaluateExpression(actionContext, actionContext.getSource());
-    }
-
-    default float evaluateExpression(ActionContext actionContext, PhysicalCard cardAffected) {
         return getEvaluator(actionContext).evaluateExpression(actionContext.getGame());
     }
 

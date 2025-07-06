@@ -180,7 +180,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                         final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
 
                         return (actionContext) -> {
-                            float amount = valueSource.evaluateExpression(actionContext, null);
+                            float amount = valueSource.evaluateExpression(actionContext);
                             return Filters.moreStrengthThan(amount);
                         };
                     }
