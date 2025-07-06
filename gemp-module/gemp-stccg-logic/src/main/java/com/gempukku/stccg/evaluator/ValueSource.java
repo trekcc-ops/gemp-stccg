@@ -8,19 +8,19 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 public interface ValueSource {
     Evaluator getEvaluator(ActionContext actionContext);
 
-    default int getMinimum(ActionContext actionContext) {
+    default float getMinimum(ActionContext actionContext) {
         return getEvaluator(actionContext).evaluateExpression(actionContext.getGame());
     }
 
-    default int getMaximum(ActionContext actionContext) {
+    default float getMaximum(ActionContext actionContext) {
         return getEvaluator(actionContext).evaluateExpression(actionContext.getGame());
     }
 
-    default int evaluateExpression(ActionContext actionContext) {
+    default float evaluateExpression(ActionContext actionContext) {
         return evaluateExpression(actionContext, actionContext.getSource());
     }
 
-    default int evaluateExpression(ActionContext actionContext, PhysicalCard cardAffected) {
+    default float evaluateExpression(ActionContext actionContext, PhysicalCard cardAffected) {
         return getEvaluator(actionContext).evaluateExpression(actionContext.getGame());
     }
 

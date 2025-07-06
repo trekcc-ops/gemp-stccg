@@ -95,12 +95,12 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 }
 
                 @Override
-                public int getMinimum(ActionContext actionContext) {
+                public float getMinimum(ActionContext actionContext) {
                     return min;
                 }
 
                 @Override
-                public int getMaximum(ActionContext actionContext) {
+                public float getMaximum(ActionContext actionContext) {
                     return max;
                 }
             };
@@ -130,12 +130,12 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     }
 
                     @Override
-                    public int getMinimum(ActionContext actionContext) {
+                    public float getMinimum(ActionContext actionContext) {
                         return fromValue.evaluateExpression(actionContext);
                     }
 
                     @Override
-                    public int getMaximum(ActionContext actionContext) {
+                    public float getMaximum(ActionContext actionContext) {
                         return toValue.evaluateExpression(actionContext);
                     }
                 };
@@ -145,7 +145,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         PlayerResolver.resolvePlayer(getString(object, "owner", "you"));
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         try {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
@@ -171,7 +171,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 ValueSource falseValue = resolveEvaluator(ctxt, object.get("false"));
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         if (actionContext.acceptsAllRequirements(conditions)) {
                             return trueValue.evaluateExpression(actionContext);
                         } else {
@@ -186,7 +186,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final int limit = ctxt.readTreeAsValue(object.get("limit"), Integer.class); // Set to MAX_VALUE if fails
                 return (actionContext) -> {
                     final int count = actionContext.getCardsFromMemory(memory).size();
-                    return new ConstantEvaluator(actionContext, Math.min(limit, count));
+                    return new ConstantEvaluator(Math.min(limit, count));
                 };
             } else if (type.equalsIgnoreCase("forEachMatchingInMemory")) {
                 validateAllowedFields(object, "memory", "filter", "limit");
@@ -196,7 +196,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return (actionContext) -> {
                     final int count = Filters.filter(actionContext.getCardsFromMemory(memory), actionContext.getGame(),
                             filterBlueprint.getFilterable(actionContext)).size();
-                    return new ConstantEvaluator(actionContext, Math.min(limit, count));
+                    return new ConstantEvaluator(Math.min(limit, count));
                 };
             } else if (type.equalsIgnoreCase("limit")) {
                 validateAllowedFields(object, "limit", "value");
@@ -223,7 +223,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         (actionContext -> Filters.any);
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         try {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
@@ -244,7 +244,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         (actionContext -> Filters.any);
                 return actionContext -> new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         try {
                             String playerId = playerSource.getPlayerId(actionContext);
                             Player player = game.getPlayer(playerId);
@@ -266,7 +266,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
                 return (actionContext) -> {
                     int value1 = Integer.parseInt(actionContext.getValueFromMemory(memory));
-                    return new ConstantEvaluator(actionContext, Math.min(limit, multiplier * value1));
+                    return new ConstantEvaluator(Math.min(limit, multiplier * value1));
                 };
             } else if (type.equalsIgnoreCase("multiply")) {
                 validateAllowedFields(object, "multiplier", "source");
@@ -278,7 +278,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         int result = 0;
                         for (PhysicalCard physicalCard :
                                 actionContext.getCardsFromMemory(object.get("memory").textValue())) {
@@ -293,7 +293,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         int result = 0;
                         for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
                             result += actionContext.getGame().getGameState().getModifiersQuerying().getStrength(physicalCard);
@@ -307,7 +307,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         int result = 0;
                         for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
                             result += physicalCard.getBlueprint().getTribbleValue();
@@ -324,9 +324,9 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         resolveEvaluator(ctxt, object.get("secondNumber"), 0);
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
-                        final int first = firstNumber.evaluateExpression(actionContext);
-                        final int second = secondNumber.evaluateExpression(actionContext);
+                    public float evaluateExpression(DefaultGame game) {
+                        final float first = firstNumber.evaluateExpression(actionContext);
+                        final float second = secondNumber.evaluateExpression(actionContext);
                         return first - second;
                     }
                 };
@@ -337,7 +337,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         return Math.max(
                                 first.evaluateExpression(actionContext),
                                 second.evaluateExpression(actionContext)
@@ -351,7 +351,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
 
                 return actionContext -> new Evaluator() {
                     @Override
-                    public int evaluateExpression(DefaultGame game) {
+                    public float evaluateExpression(DefaultGame game) {
                         return Math.min(
                                 first.evaluateExpression(actionContext),
                                 second.evaluateExpression(actionContext)

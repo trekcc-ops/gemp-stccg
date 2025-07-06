@@ -17,11 +17,11 @@ public class MultiplyEvaluator extends Evaluator {
     }
 
     public MultiplyEvaluator(ActionContext context, int multiplier, Evaluator source) {
-        this(context, new ConstantValueSource(multiplier).getEvaluator(context), source);
+        this(context, new ConstantEvaluator(multiplier), source);
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game) {
+    public float evaluateExpression(DefaultGame game) {
         return _multiplier.evaluateExpression(_game) * _source.evaluateExpression(_game);
     }
 }

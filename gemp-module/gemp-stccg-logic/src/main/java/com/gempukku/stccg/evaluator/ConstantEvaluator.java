@@ -5,23 +5,15 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class ConstantEvaluator extends Evaluator {
-    private final int _value;
+    private final float _value;
 
     public ConstantEvaluator(int value) {
         super();
         _value = value;
     }
 
-    public ConstantEvaluator(DefaultGame game, int value) {
-        this(value);
-    }
-
-    public ConstantEvaluator(ActionContext context, int value) {
-        this(value);
-    }
-
     @Override
-    public int evaluateExpression(DefaultGame cardGame) {
+    public float evaluateExpression(DefaultGame cardGame) {
         return _value;
     }
 }

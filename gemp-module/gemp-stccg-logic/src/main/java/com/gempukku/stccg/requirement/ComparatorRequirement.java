@@ -27,8 +27,8 @@ public class ComparatorRequirement implements Requirement {
     }
 
     public boolean accepts(ActionContext actionContext) {
-        final int firstQuantity = _firstNumber.evaluateExpression(actionContext, null);
-        final int secondQuantity = _secondNumber.evaluateExpression(actionContext, null);
+        final float firstQuantity = _firstNumber.evaluateExpression(actionContext, null);
+        final float secondQuantity = _secondNumber.evaluateExpression(actionContext, null);
         return switch(_comparatorType) {
                 case ISEQUAL -> firstQuantity == secondQuantity;
                 case ISGREATERTHAN -> firstQuantity > secondQuantity;

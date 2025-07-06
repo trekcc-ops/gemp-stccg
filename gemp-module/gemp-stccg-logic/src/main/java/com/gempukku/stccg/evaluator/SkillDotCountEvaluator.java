@@ -14,7 +14,7 @@ public class SkillDotCountEvaluator extends Evaluator {
         _selectAction = selectAction;
     }
 
-    public int evaluateExpression(DefaultGame cardGame) {
+    public float evaluateExpression(DefaultGame cardGame) {
         try {
             if (_selectAction != null && _selectAction.wasCarriedOut()) {
                 PhysicalCard selectedCard = _selectAction.getSelectedCard();

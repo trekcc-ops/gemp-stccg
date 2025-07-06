@@ -7,5 +7,5 @@ import com.gempukku.stccg.game.DefaultGame;
 public abstract class Evaluator implements ValueSource {
     @Override
     public Evaluator getEvaluator(ActionContext actionContext) { return this; }
-    public abstract int evaluateExpression(DefaultGame cardGame);
+    public abstract float evaluateExpression(DefaultGame cardGame);
 }

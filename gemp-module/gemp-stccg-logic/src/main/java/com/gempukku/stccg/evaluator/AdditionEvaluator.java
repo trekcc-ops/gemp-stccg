@@ -14,8 +14,8 @@ public class AdditionEvaluator extends Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame) {
-        int subtotal = 0;
+    public float evaluateExpression(DefaultGame cardGame) {
+        float subtotal = 0;
         for (Evaluator evaluator : _evaluators) {
             subtotal = subtotal + evaluator.evaluateExpression(cardGame);
         }

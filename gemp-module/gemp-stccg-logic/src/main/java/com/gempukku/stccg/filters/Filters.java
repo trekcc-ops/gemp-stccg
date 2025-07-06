@@ -155,15 +155,14 @@ public class Filters {
 
     // Filters available
     public static CardFilter strengthEqual(final Evaluator evaluator) {
-        return (game, physicalCard) ->
-                game.getGameState().getModifiersQuerying().getStrength(physicalCard) == evaluator.evaluateExpression(game);
+        return (game, physicalCard) -> physicalCard.getStrength(game) == (int) evaluator.evaluateExpression(game);
     }
 
-    public static CardFilter moreStrengthThan(final int strength) {
+    public static CardFilter moreStrengthThan(final float strength) {
         return (game, physicalCard) -> physicalCard.getStrength(game) > strength;
     }
 
-    public static CardFilter lessStrengthThan(final int strength) {
+    public static CardFilter lessStrengthThan(final float strength) {
         return (game, physicalCard) -> physicalCard.getStrength(game) < strength;
     }
 

@@ -14,7 +14,7 @@ public class StrengthEvaluator extends Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame) {
+    public float evaluateExpression(DefaultGame cardGame) {
         return _cardWithStrength.getStrength(cardGame);
     }
 }

@@ -17,7 +17,7 @@ public class LimitEvaluator extends Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game) {
+    public float evaluateExpression(DefaultGame game) {
         return Math.min( _limit.evaluateExpression(_actionContext), _value.evaluateExpression(_actionContext));
     }
 }

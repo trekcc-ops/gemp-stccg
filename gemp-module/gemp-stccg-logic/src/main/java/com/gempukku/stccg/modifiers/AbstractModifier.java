@@ -107,7 +107,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard) {
+    public float getAttributeModifier(DefaultGame cardGame, PhysicalCard physicalCard) {
         return 0;
     }
 

@@ -30,12 +30,12 @@ public class DefaultValueSource implements ValueSource {
     }
 
     @Override
-    public int getMinimum(ActionContext actionContext) {
+    public float getMinimum(ActionContext actionContext) {
         return _min;
     }
 
     @Override
-    public int getMaximum(ActionContext actionContext) {
+    public float getMaximum(ActionContext actionContext) {
         return _max;
     }
 

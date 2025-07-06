@@ -169,7 +169,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                     final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
 
                     return (actionContext) -> {
-                        int amount = valueSource.evaluateExpression(actionContext, null);
+                        float amount = valueSource.evaluateExpression(actionContext);
                         return Filters.lessStrengthThan(amount);
                     };
                 });
@@ -180,7 +180,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                         final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
 
                         return (actionContext) -> {
-                            int amount = valueSource.evaluateExpression(actionContext, null);
+                            float amount = valueSource.evaluateExpression(actionContext, null);
                             return Filters.moreStrengthThan(amount);
                         };
                     }
