@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
@@ -23,7 +24,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, CardWithCrew {
+public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, CardWithCrew, CardWithHullIntegrity {
+
+    private int _hullIntegrity = 100;
     public FacilityCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
     }
@@ -111,4 +114,13 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     public boolean isOutpost() {
         return getFacilityType() == FacilityType.OUTPOST;
     }
+
+    public void applyDamage(Integer damageAmount) {
+        _hullIntegrity = _hullIntegrity - damageAmount;
+    }
+
+    public int getHullIntegrity() {
+        return _hullIntegrity;
+    }
+
 }

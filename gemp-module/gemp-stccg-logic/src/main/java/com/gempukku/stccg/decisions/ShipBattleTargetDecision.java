@@ -1,6 +1,7 @@
 package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -13,8 +14,8 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
     @JsonProperty("independentlySelectable")
     private final boolean _independentlySelectable = true;
 
-    private List<PhysicalCard> _attackingCards;
-    private PhysicalCard _defendingTarget;
+    private List<CardWithHullIntegrity> _attackingCards;
+    private CardWithHullIntegrity _defendingTarget;
 
     private final Map<PhysicalCard, Map<String, List<PhysicalCard>>> _targetMap;
 
@@ -53,11 +54,11 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
         }
     }
 
-    public void decisionMade(List<PhysicalCard> attackingCards, PhysicalCard defendingTarget)
+    public void decisionMade(List<CardWithHullIntegrity> attackingCards, CardWithHullIntegrity defendingTarget)
             throws DecisionResultInvalidException {
         boolean passesValidation = true;
-        for (PhysicalCard attackingCard1 : attackingCards) {
-            for (PhysicalCard attackingCard2 : attackingCards) {
+        for (CardWithHullIntegrity attackingCard1 : attackingCards) {
+            for (CardWithHullIntegrity attackingCard2 : attackingCards) {
                 if (attackingCard1 != attackingCard2 && !attackingCardsAreCompatible(attackingCard1, attackingCard2))
                     passesValidation = false;
             }
@@ -74,11 +75,11 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
         }
     }
 
-    public List<PhysicalCard> getAttackingCards() {
+    public List<CardWithHullIntegrity> getAttackingCards() {
         return Collections.unmodifiableList(_attackingCards);
     }
 
-    public PhysicalCard getTarget() {
+    public CardWithHullIntegrity getTarget() {
         return _defendingTarget;
     }
 

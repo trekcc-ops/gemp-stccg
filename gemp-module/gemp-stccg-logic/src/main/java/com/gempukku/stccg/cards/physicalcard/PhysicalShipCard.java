@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -25,13 +26,14 @@ import java.util.stream.Stream;
 
 
 public class PhysicalShipCard extends PhysicalReportableCard1E
-        implements AffiliatedCard, AttemptingUnit, CardWithCrew {
+        implements AffiliatedCard, AttemptingUnit, CardWithCrew, CardWithHullIntegrity {
 
     private boolean _docked = false;
     @JsonProperty("dockedAtCardId")
     private Integer _dockedAtCardId;
     int _rangeAvailable;
     int _usedRange;
+    private int _hullIntegrity = 100;
 
     public PhysicalShipCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
@@ -186,5 +188,13 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     public List<CardIcon> getStaffingRequirements() {
         return _blueprint.getStaffing();
+    }
+
+    public void applyDamage(Integer damageAmount) {
+        _hullIntegrity = _hullIntegrity - damageAmount;
+    }
+
+    public int getHullIntegrity() {
+        return _hullIntegrity;
     }
 }

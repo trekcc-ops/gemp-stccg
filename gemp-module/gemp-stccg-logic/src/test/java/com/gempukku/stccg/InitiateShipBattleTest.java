@@ -24,15 +24,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InitiateShipBattleTest extends AbstractAtTest {
 
-    private PhysicalShipCard lukara;
-    private PhysicalShipCard kratak;
+    private PhysicalShipCard attackingShip;
+    private PhysicalShipCard defendingTarget;
 
-    public InitiateShipBattleTest() throws InvalidGameOperationException, DecisionResultInvalidException,
-            PlayerNotFoundException, CardNotFoundException, InvalidGameLogicException {
-        setupSimple1EGame(30);
-
-        lukara = (PhysicalShipCard) newCardForGame("116_105", P1); // 7-7-7
-        kratak = (PhysicalShipCard) newCardForGame("103_118", P2); // 6-8-6
+    private void setupGameState() throws CardNotFoundException, InvalidGameLogicException,
+            InvalidGameOperationException, DecisionResultInvalidException {
         MissionCard mission = (MissionCard) newCardForGame("101_194", P1); // Wormhole Negotiations
 
         PersonnelCard klag1 = (PersonnelCard) newCardForGame("101_270", P1);
@@ -52,35 +48,63 @@ public class InitiateShipBattleTest extends AbstractAtTest {
             seedOutpostAction.processEffect(_game, facility.getOwner());
         }
 
-        this.lukara.reportToFacility(outpost1);
+        this.attackingShip.reportToFacility(outpost1);
         klag1.reportToFacility(outpost1);
-        kratak.reportToFacility(outpost2);
+        defendingTarget.reportToFacility(outpost2);
         klag2.reportToFacility(outpost2);
 
-        assertTrue(this.lukara.isDocked());
-        assertTrue(kratak.isDocked());
+        assertTrue(this.attackingShip.isDocked());
+        assertTrue(defendingTarget.isDocked());
 
         _game.getGameState().initializePlayerOrder(new PlayerOrder(List.of(P1, P2)));
         _game.getGameState().setCurrentProcess(new ST1EFacilitySeedPhaseProcess(2));
 
         _game.startGame();
 
-        beamCard(P1, this.lukara, klag1, this.lukara);
-        undockShip(P1, this.lukara);
+        beamCard(P1, this.attackingShip, klag1, this.attackingShip);
+        undockShip(P1, this.attackingShip);
 
-        assertFalse(this.lukara.isDocked());
-        assertTrue(this.lukara.getCrew().contains(klag1));
+        assertFalse(this.attackingShip.isDocked());
+        assertTrue(this.attackingShip.getCrew().contains(klag1));
     }
 
     @Test
-    public void initiateBattleTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
+    public void initiateBattleTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
+        setupSimple1EGame(30);
+        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
+        defendingTarget = (PhysicalShipCard) newCardForGame("103_118", P2); // I.K.S. K'Ratak (6-8-6)
+        setupGameState();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
         InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
         ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
-        decision.decisionMade(List.of(lukara), kratak);
+        decision.decisionMade(List.of(attackingShip), defendingTarget);
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
+        assertTrue(attackingShip.isStopped());
+        assertTrue(defendingTarget.isStopped());
+        assertEquals(100, attackingShip.getHullIntegrity());
+        assertEquals(50, defendingTarget.getHullIntegrity());
     }
+
+    @Test
+    public void directHitBattleTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
+        setupSimple1EGame(30);
+        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
+        defendingTarget = (PhysicalShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
+        setupGameState();
+        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
+        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
+        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
+        decision.decisionMade(List.of(attackingShip), defendingTarget);
+        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
+        _game.carryOutPendingActionsUntilDecisionNeeded();
+        assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
+        assertTrue(attackingShip.isStopped());
+        assertFalse(defendingTarget.isStopped());
+        assertEquals(100, attackingShip.getHullIntegrity());
+        assertEquals(0, defendingTarget.getHullIntegrity());
+    }
+
 
 }

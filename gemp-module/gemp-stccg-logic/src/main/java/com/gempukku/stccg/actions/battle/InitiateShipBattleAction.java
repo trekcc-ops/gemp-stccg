@@ -1,20 +1,16 @@
 package com.gempukku.stccg.actions.battle;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
-import com.gempukku.stccg.decisions.YesNoDecision;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -33,13 +29,12 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
     private Player _winner;
     private boolean _noWinner;
     private boolean _returningFire;
-    private boolean _virtualCardAction;
     private boolean _returnFireDecisionMade;
     private boolean _damageApplied;
     private Player _defendingPlayer;
     private boolean _returnedFire;
-    private final Map<Player, PhysicalCard> _targets = new HashMap<>();
-    private final Map<Player, Collection<PhysicalCard>> _forces = new HashMap<>();
+    private final Map<Player, CardWithHullIntegrity> _targets = new HashMap<>();
+    private final Map<Player, Collection<CardWithHullIntegrity>> _forces = new HashMap<>();
     private final Map<Player, OpenFireResult> _openFireResults = new HashMap<>();
     private final Map<Player, Integer> _damageSustained = new HashMap<>();
     private boolean _winnerDetermined;
@@ -69,7 +64,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         else return OpenFireResult.MISS;
     }
 
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
 
         Player attackingPlayer = cardGame.getPlayer(_performingPlayerId);
         _defendingPlayer = cardGame.getOpponent(attackingPlayer);
@@ -114,24 +109,30 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
                 _winnerDetermined = true;
             }
 
+            if (!_battleResolved) {
+                if (_targets.get(attackingPlayer) != null) {
+                    _targets.get(attackingPlayer).applyDamage(_damageSustained.get(_defendingPlayer));
+                }
+
+                if (_targets.get(_defendingPlayer) != null) {
+                    _targets.get(_defendingPlayer).applyDamage(_damageSustained.get(attackingPlayer));
+                }
+
+                for (CardWithHullIntegrity card : _forces.get(attackingPlayer)) {
+                    if (card.getHullIntegrity() > 0)
+                        card.stop();
+                }
+                for (CardWithHullIntegrity card : _forces.get(_defendingPlayer)) {
+                    if (card.getHullIntegrity() > 0)
+                        card.stop();
+                }
+                _battleResolved = true;
+            }
+
             setAsSuccessful();
         }
 
 
-                // TODO - Commented out below because I need to define some additional methods for this to work
-/*        if (!_battleResolved) {
-            _targets.get(_attackingPlayer).applyDamage(_damageSustained.get(_defendingPlayer));
-            _targets.get(_defendingPlayer).applyDamage(_damageSustained.get(_attackingPlayer));
-            for (PhysicalCard card : _forces.get(_attackingPlayer)) {
-                if (!card.isDestroyed())
-                    card.stop();
-            }
-            for (PhysicalCard card : _forces.get(_defendingPlayer)) {
-                if (!card.isDestroyed())
-                    card.stop();
-            }
-            _battleResolved = true;
-        }*/
         return getNextAction();
     }
 
@@ -140,6 +141,8 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
             return 100;
         else if (result == OpenFireResult.HIT)
             return 50;
+        else if (result == OpenFireResult.MISS)
+            return 0;
         else return 0;
     }
 
