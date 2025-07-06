@@ -8,16 +8,14 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
+import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
@@ -539,6 +537,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+        RuleSet ruleSet = cardGame.getRules();
+        List<Modifier> modifiersPerRules = ruleSet.getModifiersWhileCardIsInPlay(card);
+        for (Modifier modifier : modifiersPerRules) {
+            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+        }
     }
 
 

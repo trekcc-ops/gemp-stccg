@@ -1,10 +1,12 @@
 package com.gempukku.stccg.rules.generic;
 
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ActionProxy;
+import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,10 @@ public class RuleSet<T extends DefaultGame> {
         respondingPlayerOrder.add(opponentPlayerId);
         respondingPlayerOrder.add(actionPlayerId);
         return new ActionOrder(respondingPlayerOrder, true);
+    }
+
+    public List<Modifier> getModifiersWhileCardIsInPlay(PhysicalCard card) {
+        return new ArrayList<>();
     }
 
 }
