@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.condition.TrueCondition;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -28,6 +29,10 @@ public abstract class AbstractModifier implements Modifier {
         _cardResolver = new CardFilterResolver(Filters.any);
         _condition = null;
         _effect = effect;
+    }
+
+    protected AbstractModifier(String text, Filterable affectFilter, ModifierEffect effect) {
+        this(null, text, affectFilter, new TrueCondition(), effect);
     }
 
 

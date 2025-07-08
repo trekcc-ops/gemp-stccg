@@ -7,9 +7,12 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.filters.CardFilter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.attributes.WeaponsDisabledModifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
@@ -64,6 +67,20 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
         if (card instanceof FacilityCard facility) {
             result.add(_dockingRules.getExtendedShieldsModifier(facility));
         }
+        return result;
+    }
+
+    public List<Modifier> getGlobalRulesBasedModifiersForCardsInPlay() {
+        // Rule about using WEAPONS
+        List<Modifier> result = new ArrayList<>();
+        CardFilter facilityOrExposedShip = Filters.or(Filters.exposedShip, CardType.FACILITY);
+        CardFilter controllerControlsMatchingPersonnelAboard = Filters.controllerControlsMatchingPersonnelAboard;
+        CardFilter affectedFilter = Filters.and(
+                Filters.or(Filters.ship, Filters.facility),
+                Filters.notAll(Filters.active, facilityOrExposedShip, controllerControlsMatchingPersonnelAboard)
+        );
+        Modifier weaponsModifier = new WeaponsDisabledModifier(affectedFilter);
+        result.add(weaponsModifier);
         return result;
     }
 

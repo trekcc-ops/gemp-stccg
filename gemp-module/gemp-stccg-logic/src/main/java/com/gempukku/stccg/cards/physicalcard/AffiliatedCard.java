@@ -17,7 +17,11 @@ public interface AffiliatedCard extends PhysicalCard {
     Set<Affiliation> getAffiliationOptions();
     String getCardLink();
 
-    default boolean matchesAffiliationOf(AffiliatedCard affiliatedCard) {
-        return getCurrentAffiliation() == affiliatedCard.getCurrentAffiliation();
+    default boolean matchesAffiliationOf(PhysicalCard otherCard) {
+        if (otherCard instanceof AffiliatedCard affiliatedCard) {
+            return getCurrentAffiliation() == affiliatedCard.getCurrentAffiliation();
+        } else {
+            return false;
+        }
     }
 }

@@ -128,4 +128,8 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return _game.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.SHIELDS);
     }
 
+    public Collection<PersonnelCard> getPersonnelAboard() {
+        return getPersonnelInCrew();
+    }
+
 }

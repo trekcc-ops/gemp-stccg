@@ -1,7 +1,10 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+
+import java.util.Collection;
 
 public interface CardWithHullIntegrity extends PhysicalCard {
 
@@ -15,4 +18,5 @@ public interface CardWithHullIntegrity extends PhysicalCard {
 
     void stop();
 
+    Collection<PersonnelCard> getPersonnelAboard();
 }

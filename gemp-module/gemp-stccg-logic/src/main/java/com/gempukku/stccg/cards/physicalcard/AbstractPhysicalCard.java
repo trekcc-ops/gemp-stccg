@@ -5,10 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.DefaultActionContext;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
@@ -428,4 +425,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _revealedSeedCard = true;
     }
 
+    public boolean hasSameControllerAsCard(DefaultGame cardGame, PhysicalCard otherCard) {
+        for (Player player : cardGame.getPlayers()) {
+            if (this.isControlledBy(player) && otherCard.isControlledBy(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

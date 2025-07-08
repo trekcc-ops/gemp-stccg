@@ -209,4 +209,14 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     public int getHullIntegrity() {
         return _hullIntegrity;
     }
+
+    public boolean isExposed() {
+        // TODO - can't be cloaked, landed, or carried
+        return !_docked;
+    }
+
+    public Collection<PersonnelCard> getPersonnelAboard() {
+        // TODO - Doesn't include intruders
+        return getPersonnelInCrew();
+    }
 }

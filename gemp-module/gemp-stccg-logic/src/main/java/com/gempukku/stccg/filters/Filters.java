@@ -3,6 +3,7 @@ package com.gempukku.stccg.filters;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -197,6 +198,27 @@ public class Filters {
     public static final CardFilter android = Filters.or(Species.ANDROID);
 
     public static final CardFilter hologram = Filters.or(Species.HOLOGRAM);
+
+    public static final CardFilter exposedShip = (game, physicalCard) -> {
+        if (physicalCard instanceof PhysicalShipCard shipCard) {
+            return shipCard.isExposed();
+        } else {
+            return false;
+        }
+    };
+
+    public static final CardFilter controllerControlsMatchingPersonnelAboard = (game, physicalCard) -> {
+        if (physicalCard instanceof CardWithHullIntegrity hullCard) {
+            Collection<PersonnelCard> cardsAboard = hullCard.getPersonnelAboard();
+            for (PersonnelCard personnel : cardsAboard) {
+                if (personnel.matchesAffiliationOf(hullCard) && personnel.hasSameControllerAsCard(game, hullCard))
+                    return true;
+            }
+        }
+        return false;
+    };
+
+
     public static CardFilter matchingAffiliation(final PhysicalCard cardToMatch) {
         return (game, physicalCard) -> {
             if (physicalCard instanceof AffiliatedCard affilCard1 && cardToMatch instanceof AffiliatedCard affilCard2) {
@@ -362,8 +384,16 @@ public class Filters {
         };
     }
 
-    public static CardFilter not(final Filterable... filters) {
+    public static CardFilter notAll(final Filterable... filters) {
         return (game, physicalCard) -> !Filters.and(filters).accepts(game, physicalCard);
+    }
+
+    public static CardFilter notAny(final Filterable... filters) {
+        return (game, physicalCard) -> !Filters.or(filters).accepts(game, physicalCard);
+    }
+
+    public static CardFilter not(final Filterable filter) {
+        return (game, physicalCard) -> !and(filter).accepts(game, physicalCard);
     }
 
     public static CardFilter other(final PhysicalCard card) {
