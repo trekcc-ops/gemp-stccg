@@ -334,6 +334,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             case SHIELDS -> card.getBlueprint().getShields();
         };
 
+        if (attribute == CardAttribute.WEAPONS && !getModifiersAffectingCard(ModifierEffect.WEAPONS_DISABLED_MODIFIER, card).isEmpty()) {
+            return 0;
+        }
+
         ModifierEffect effectType;
         if (attribute == CardAttribute.STRENGTH)
             effectType = ModifierEffect.STRENGTH_MODIFIER;

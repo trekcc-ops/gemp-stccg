@@ -37,6 +37,11 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
                 new ST1EPhaseActionsRule(cardGame)
         );
 
+        List<Modifier> modifiers = getGlobalRulesBasedModifiersForCardsInPlay();
+        for (Modifier modifier : modifiers) {
+            cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
+        }
+
         new ST1EAffiliationAttackRestrictionsRule(cardGame).applyRule();
     }
 

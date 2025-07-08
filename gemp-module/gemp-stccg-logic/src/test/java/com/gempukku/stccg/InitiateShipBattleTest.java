@@ -26,15 +26,17 @@ public class InitiateShipBattleTest extends AbstractAtTest {
 
     private PhysicalShipCard attackingShip;
     private PhysicalShipCard defendingTarget;
+    private PersonnelCard klag1;
+    private FacilityCard outpost1;
 
     private void setupGameState() throws CardNotFoundException, InvalidGameLogicException,
             InvalidGameOperationException, DecisionResultInvalidException {
         MissionCard mission = (MissionCard) newCardForGame("101_194", P1); // Wormhole Negotiations
 
-        PersonnelCard klag1 = (PersonnelCard) newCardForGame("101_270", P1);
+        klag1 = (PersonnelCard) newCardForGame("101_270", P1);
         PersonnelCard klag2 = (PersonnelCard) newCardForGame("101_270", P2);
 
-        FacilityCard outpost1 = (FacilityCard) newCardForGame("101_105", P1); // Klingon Outpost
+        outpost1 = (FacilityCard) newCardForGame("101_105", P1); // Klingon Outpost
         FacilityCard outpost2 = (FacilityCard) newCardForGame("101_105", P2); // Klingon Outpost
         List<FacilityCard> outpostsToSeed = List.of(outpost1, outpost2);
 
@@ -108,5 +110,25 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         assertEquals(0, defendingTarget.getHullIntegrity());
     }
 
+    @Test
+    public void noWeaponsTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
+        setupSimple1EGame(30);
+        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
+        defendingTarget = (PhysicalShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
+        setupGameState();
+        beamCard(P1, this.attackingShip, klag1, outpost1);
+        defendingTarget.undockFromFacility();
+        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
+        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
+        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
+        decision.decisionMade(List.of(attackingShip), defendingTarget);
+        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
+        _game.carryOutPendingActionsUntilDecisionNeeded();
+        assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
+        assertTrue(attackingShip.isStopped());
+        assertFalse(defendingTarget.isStopped());
+        assertEquals(100, attackingShip.getHullIntegrity());
+        assertEquals(0, defendingTarget.getHullIntegrity());
+    }
 
 }
