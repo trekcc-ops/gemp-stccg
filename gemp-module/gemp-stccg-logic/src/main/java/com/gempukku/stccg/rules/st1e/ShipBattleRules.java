@@ -35,7 +35,7 @@ public class ShipBattleRules {
             // TODO - does not check for WEAPONS
         for (PhysicalCard card : stGame.getGameState().getAllCardsInPlay()) {
             if (card instanceof PhysicalShipCard shipCard) {
-                if (card.isControlledBy(initiatingPlayer) && !shipCard.isDocked()) {
+                if (card.isControlledBy(initiatingPlayer) && !shipCard.isDocked() && shipCard.getWeapons(stGame) > 1) {
                     initiatingPlayerCards.add(shipCard);
                 } else {
                     defendingCards.add(shipCard);

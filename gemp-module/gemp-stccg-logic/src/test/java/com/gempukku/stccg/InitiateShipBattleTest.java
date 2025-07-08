@@ -119,16 +119,15 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         beamCard(P1, this.attackingShip, klag1, outpost1);
         defendingTarget.undockFromFacility();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
-        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
-        decision.decisionMade(List.of(attackingShip), defendingTarget);
-        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
-        _game.carryOutPendingActionsUntilDecisionNeeded();
-        assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
-        assertTrue(attackingShip.isStopped());
-        assertFalse(defendingTarget.isStopped());
-        assertEquals(100, attackingShip.getHullIntegrity());
-        assertEquals(0, defendingTarget.getHullIntegrity());
+
+        boolean actionNotFound = false;
+
+        try {
+            selectAction(InitiateShipBattleAction.class, null, P1);
+        } catch(DecisionResultInvalidException exp) {
+            actionNotFound = true;
+        }
+        assertTrue(actionNotFound);
     }
 
 }
