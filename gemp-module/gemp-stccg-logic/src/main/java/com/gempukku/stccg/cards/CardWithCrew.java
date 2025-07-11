@@ -7,7 +7,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public interface CardWithCrew {
+public interface CardWithCrew extends CardWithHullIntegrity {
     Collection<PhysicalCard> getCrew();
     boolean isCompatibleWith(Affiliation affiliation);
 
