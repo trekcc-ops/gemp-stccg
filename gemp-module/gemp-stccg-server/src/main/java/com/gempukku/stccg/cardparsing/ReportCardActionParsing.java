@@ -74,7 +74,7 @@ public class ReportCardActionParsing {
             List<RegexResult> descResults = resultMap.get(descr);
             if (!descResults.isEmpty()) {
                 System.out.println(descr._description + " - " + resultMap.get(descr).size());
-                for (int i = 0; i < 5 && i < descResults.size(); i++) {
+                for (int i = 0; i < 30 && i < descResults.size(); i++) {
                     System.out.println("    " + descResults.get(i).getSentenceWithHighlights());
                 }
             }
