@@ -25,7 +25,7 @@ public class DownloadActionParsing {
         int matchingSentences = 0;
         int wordInstances = 0;
 
-        Pattern playPattern = Pattern.compile("download", Pattern.CASE_INSENSITIVE);
+        Pattern downloadPattern = Pattern.compile("download", Pattern.CASE_INSENSITIVE);
         List<RegexResult> regexResults = new LinkedList<>();
         Map<RegexDescription, List<RegexResult>> resultMap = new HashMap<>();
         for (RegexDescription descr : regexes) {
@@ -37,7 +37,7 @@ public class DownloadActionParsing {
             for (Sentence sentence : card._gameText.getSentences()) {
                 String sentenceText = sentence.toString();
 
-                Matcher parentMatcher = playPattern.matcher(sentenceText);
+                Matcher parentMatcher = downloadPattern.matcher(sentenceText);
                 boolean sentenceMatches = false;
                 while (parentMatcher.find()) { // Iterate through matches on the parent pattern
                     sentenceMatches = true;
@@ -85,7 +85,7 @@ public class DownloadActionParsing {
             List<RegexResult> descResults = resultMap.get(descr);
             if (!descResults.isEmpty()) {
                 System.out.println(descr._description + " - " + resultMap.get(descr).size());
-                for (int i = 0; i < 5 && i < descResults.size(); i++) {
+                for (int i = 0; i < 50 && i < descResults.size(); i++) {
                     System.out.println("    " + descResults.get(i).getSentenceWithHighlights());
                 }
             }
@@ -107,86 +107,84 @@ public class DownloadActionParsing {
     private static List<RegexDescription> getRegexDescriptions() {
         List<RegexDescription> result = new LinkedList<>();
 
-        // in place of your normal card play
-        result.add(new RegexDescription(Pattern.compile("in place of your normal card play, you may download", Pattern.CASE_INSENSITIVE), "In place of your normal card play"));
+        // in place of your normal card download
+        result.add(new RegexDescription(Pattern.compile("in place of your normal card download, you may download", Pattern.CASE_INSENSITIVE), "In place of your normal card download"));
 
         // once per turn/game
         result.add(new RegexDescription(Pattern.compile("once each turn, (you )?may (discard objective to )?download", Pattern.CASE_INSENSITIVE), "once per turn"));
-        result.add(new RegexDescription(Pattern.compile("once per game, (you )?(may )?download", Pattern.CASE_INSENSITIVE), "once per game"));
+        result.add(new RegexDescription(Pattern.compile("once per game[,)] download ", Pattern.CASE_INSENSITIVE), "once per game"));
 
-        // no timing specified (or clearly immediate from context)
-        result.add(new RegexDescription(Pattern.compile("; (you )?may download", Pattern.CASE_INSENSITIVE), "'may download' (no timing)"));
+        // Modify timing of card download actions
+        result.add(new RegexDescription(Pattern.compile("cards download at any time"), "download at any time"));
 
-        // Modify timing of card play actions
-        result.add(new RegexDescription(Pattern.compile("cards play at any time"), "play at any time"));
+        // download action as a required response to or cost for another action
+        result.add(new RegexDescription(Pattern.compile("you may.+[,:] (then )?download(?=\\s)"), "you may..., then download"));
+        result.add(new RegexDescription(Pattern.compile("you must download \\S+ to", Pattern.CASE_INSENSITIVE), "you must download... to"));
+        result.add(new RegexDescription(Pattern.compile("must (if possible) download", Pattern.CASE_INSENSITIVE), "must (if possible) download"));
+        result.add(new RegexDescription(Pattern.compile("must\\simmediately download[^eis]"), "must immediately download"));
+        result.add(new RegexDescription(Pattern.compile("If .+, download\\s"), "If..., download"));
+        result.add(new RegexDescription(Pattern.compile("put it into download"), "put it into download"));
+            // Cochrane Memorial - "download one personnel to planet"
+        result.add(new RegexDescription(Pattern.compile("\\sdownload one personnel"), "'download one personnel' at start of sentence"));
+        result.add(new RegexDescription(Pattern.compile("must be downloaded", Pattern.CASE_INSENSITIVE), "'must be downloaded'"));
+        result.add(new RegexDescription(Pattern.compile("Opponent downloads"), "'Opponent downloads' at start of sentence"));
 
-        // Play action as a required response to or cost for another action
-        result.add(new RegexDescription(Pattern.compile("you may.+[,:] (then )?play(?=\\s)"), "you may..., then play"));
-        result.add(new RegexDescription(Pattern.compile("you must play \\S+ to", Pattern.CASE_INSENSITIVE), "you must play... to"));
-        result.add(new RegexDescription(Pattern.compile("must\\simmediately play[^eis]"), "must immediately play"));
-        result.add(new RegexDescription(Pattern.compile("If .+, play\\s"), "If..., play"));
-        result.add(new RegexDescription(Pattern.compile("put it into play"), "put it into play"));
-            // Cochrane Memorial - "Play one personnel to planet"
-        result.add(new RegexDescription(Pattern.compile("\\sPlay one personnel"), "'Play one personnel' at start of sentence"));
-        result.add(new RegexDescription(Pattern.compile("must be played", Pattern.CASE_INSENSITIVE), "'must be played'"));
-        result.add(new RegexDescription(Pattern.compile("Opponent plays"), "'Opponent plays' at start of sentence"));
+        // Allowing cards to be downloaded (or not)
+        result.add(new RegexDescription(Pattern.compile("allowing.+to\\senter\\sdownload", Pattern.CASE_INSENSITIVE), "allowing... to enter download"));
+        result.add(new RegexDescription(Pattern.compile("can be downloaded", Pattern.CASE_INSENSITIVE), "'can be downloaded'"));
+        result.add(new RegexDescription(Pattern.compile("(can|may)\\s(?!only)(not )?(immediately |then )?(.+ or )?(immediately )?(download[^es]|be downloaded)", Pattern.CASE_INSENSITIVE), "can/may (not/immediately) (? or) (immediately) download"));
 
-        // Allowing cards to be played
-        result.add(new RegexDescription(Pattern.compile("allowing.+to\\senter\\splay", Pattern.CASE_INSENSITIVE), "allowing... to enter play"));
-        result.add(new RegexDescription(Pattern.compile("can be played", Pattern.CASE_INSENSITIVE), "'can be played'"));
-        result.add(new RegexDescription(Pattern.compile("may be played", Pattern.CASE_INSENSITIVE), "'may be played'"));
-
-        // Response to a card play action
-        result.add(new RegexDescription(Pattern.compile("if you.+, or play"), "RESPONSE: if you..., or play"));
-        result.add(new RegexDescription(Pattern.compile("if you (subsequently )?play\\s(\\()?(or have played)?", Pattern.CASE_INSENSITIVE), "RESPONSE: if you play"));
-        result.add(new RegexDescription(Pattern.compile("if you have played", Pattern.CASE_INSENSITIVE), "RESPONSE: if you have played"));
-        result.add(new RegexDescription(Pattern.compile("when\\syou\\splay[^es]", Pattern.CASE_INSENSITIVE), "RESPONSE: when you play"));
-        result.add(new RegexDescription(Pattern.compile("time\\syou\\splay[^es]", Pattern.CASE_INSENSITIVE), "RESPONSE: time you play"));
-        result.add(new RegexDescription(Pattern.compile("just[-\\s]played", Pattern.CASE_INSENSITIVE), "RESPONSE: 'just played'"));
-        result.add(new RegexDescription(Pattern.compile("if (they )?played", Pattern.CASE_INSENSITIVE), "RESPONSE: 'if [they] played'"));
-        result.add(new RegexDescription(Pattern.compile("your personnel enter play stopped", Pattern.CASE_INSENSITIVE), "RESPONSE: 'your personnel enter play stopped'"));
-        result.add(new RegexDescription(Pattern.compile("enter(ed|s)\\splay[^eis]", Pattern.CASE_INSENSITIVE), "RESPONSE: entered/enters play"));
-        result.add(new RegexDescription(Pattern.compile("opponent\\splays"), "RESPONSE: 'opponent plays'"));
-        result.add(new RegexDescription(Pattern.compile("[^,rt]\\splays"), "RESPONSE: 'plays' following space"));
-        result.add(new RegexDescription(Pattern.compile("Q's Tent played from hand"), "RESPONSE: 'Q's Tent played from hand'"));
+        // Response to a card download action
+        result.add(new RegexDescription(Pattern.compile("if you.+, or download"), "RESPONSE: if you..., or download"));
+        result.add(new RegexDescription(Pattern.compile("if you (subsequently )?download\\s(\\()?(or have downloaded)?", Pattern.CASE_INSENSITIVE), "RESPONSE: if you download"));
+        result.add(new RegexDescription(Pattern.compile("if you have downloaded", Pattern.CASE_INSENSITIVE), "RESPONSE: if you have downloaded"));
+        result.add(new RegexDescription(Pattern.compile("when\\syou\\sdownload[^es]", Pattern.CASE_INSENSITIVE), "RESPONSE: when you download"));
+        result.add(new RegexDescription(Pattern.compile("time\\syou\\sdownload[^es]", Pattern.CASE_INSENSITIVE), "RESPONSE: time you download"));
+        result.add(new RegexDescription(Pattern.compile("just[-\\s]downloaded", Pattern.CASE_INSENSITIVE), "RESPONSE: 'just downloaded'"));
+        result.add(new RegexDescription(Pattern.compile("if (they )?downloaded", Pattern.CASE_INSENSITIVE), "RESPONSE: 'if [they] downloaded'"));
+        result.add(new RegexDescription(Pattern.compile("your personnel enter download stopped", Pattern.CASE_INSENSITIVE), "RESPONSE: 'your personnel enter download stopped'"));
+        result.add(new RegexDescription(Pattern.compile("enter(ed|s)\\sdownload[^eis]", Pattern.CASE_INSENSITIVE), "RESPONSE: entered/enters download"));
+        result.add(new RegexDescription(Pattern.compile("opponent\\sdownloads"), "RESPONSE: 'opponent downloads'"));
+        result.add(new RegexDescription(Pattern.compile("[^,rt]\\sdownloads"), "RESPONSE: 'downloads' following space"));
+        result.add(new RegexDescription(Pattern.compile("Q's Tent downloaded from hand"), "RESPONSE: 'Q's Tent downloaded from hand'"));
 
         // Counting from gamestate or action history
-        result.add(new RegexDescription(Pattern.compile("each of your objectives played"), "each of your objectives played"));
+        result.add(new RegexDescription(Pattern.compile("each of your objectives downloaded"), "each of your objectives downloaded"));
 
-        // Description of how this or another card is played
-        result.add(new RegexDescription(Pattern.compile("\\(plays for free if"), "plays for free if"));
-        result.add(new RegexDescription(Pattern.compile("\\sPlays"), "'Plays' at beginning of sentence following space"));
-        result.add(new RegexDescription(Pattern.compile("^Plays"), "'Plays' at beginning of sentence"));
-        result.add(new RegexDescription(Pattern.compile(",\\splays"), ", plays'"));
-        result.add(new RegexDescription(Pattern.compile("Seeds\\sor\\splays"), "Seeds or plays"));
-        result.add(new RegexDescription(Pattern.compile(",\\sseeds\\sor\\splays"), ", seeds or plays"));
-        result.add(new RegexDescription(Pattern.compile("[^s]\\sor\\splays"), "'or plays'"));
-        result.add(new RegexDescription(Pattern.compile("^Play one"), "'Play one' at beginning of sentence"));
-        result.add(new RegexDescription(Pattern.compile("place in hand until played", Pattern.CASE_INSENSITIVE), "'place in hand until played'"));
-        result.add(new RegexDescription(Pattern.compile("play on table", Pattern.CASE_INSENSITIVE), "play on table"));
-        result.add(new RegexDescription(Pattern.compile("^play[^es][^o][^n]", Pattern.CASE_INSENSITIVE), "Start of sentence"));
+        // Description of how this or another card is downloaded
+        result.add(new RegexDescription(Pattern.compile("\\(downloads for free if"), "downloads for free if"));
+        result.add(new RegexDescription(Pattern.compile("\\sDownloads"), "'downloads' at beginning of sentence following space"));
+        result.add(new RegexDescription(Pattern.compile("^Downloads"), "'downloads' at beginning of sentence"));
+        result.add(new RegexDescription(Pattern.compile(",\\sdownloads"), ", downloads'"));
+        result.add(new RegexDescription(Pattern.compile("Seeds\\sor\\sdownloads"), "Seeds or downloads"));
+        result.add(new RegexDescription(Pattern.compile(",\\sseeds\\sor\\sdownloads"), ", seeds or downloads"));
+        result.add(new RegexDescription(Pattern.compile("[^s]\\sor\\sdownloads"), "'or downloads'"));
+        result.add(new RegexDescription(Pattern.compile("^download one"), "'download one' at beginning of sentence"));
+        result.add(new RegexDescription(Pattern.compile("place in hand until downloaded", Pattern.CASE_INSENSITIVE), "'place in hand until downloaded'"));
+        result.add(new RegexDescription(Pattern.compile("download on table", Pattern.CASE_INSENSITIVE), "download on table"));
+        result.add(new RegexDescription(Pattern.compile("^download[^es][^o][^n]", Pattern.CASE_INSENSITIVE), "Start of sentence"));
+        result.add(new RegexDescription(Pattern.compile("; download ", Pattern.CASE_INSENSITIVE), "'download' after a semicolon"));
 
-        // Restricting card play actions
-        result.add(new RegexDescription(Pattern.compile("may\\snot\\sotherwise\\splay[^eis]"), "may not otherwise play"));
-        result.add(new RegexDescription(Pattern.compile("may not be played", Pattern.CASE_INSENSITIVE), "'may not be played'"));
-        result.add(new RegexDescription(Pattern.compile("may not enter play", Pattern.CASE_INSENSITIVE), "'may not enter play'"));
-        result.add(new RegexDescription(Pattern.compile("[^efn]\\syou\\splay must be"), "'you play must be'"));
-        result.add(new RegexDescription(Pattern.compile("may only (seed or )?play"), "may only (seed or) play"));
-        result.add(new RegexDescription(Pattern.compile("may only download .+[^t]\\sinto play"), "may only download into play"));
+        // Restricting card download actions
+        result.add(new RegexDescription(Pattern.compile("may\\snot\\sotherwise\\sdownload[^eis]"), "may not otherwise download"));
+        result.add(new RegexDescription(Pattern.compile("may not be downloaded", Pattern.CASE_INSENSITIVE), "'may not be downloaded'"));
+        result.add(new RegexDescription(Pattern.compile("may not enter download", Pattern.CASE_INSENSITIVE), "'may not enter download'"));
+        result.add(new RegexDescription(Pattern.compile("[^efn]\\syou\\sdownload must be"), "'you download must be'"));
+        result.add(new RegexDescription(Pattern.compile("may only (seed or )?download"), "may only (seed or) download"));
+        result.add(new RegexDescription(Pattern.compile("may only download .+[^t]\\sinto download"), "may only download into download"));
 
         // Unclear
-        result.add(new RegexDescription(Pattern.compile("to be played", Pattern.CASE_INSENSITIVE), "'to be played'"));
-        result.add(new RegexDescription(Pattern.compile("playing"), "playing"));
-        result.add(new RegexDescription(Pattern.compile("(can|may)\\s(?!only)(not )?(immediately )?(.+ or )?(immediately )?play[^es]", Pattern.CASE_INSENSITIVE), "can/may (not/immediately) (? or) (immediately) play"));
-        result.add(new RegexDescription(Pattern.compile("card\\splay[^eis]"), "card play"));
-        result.add(new RegexDescription(Pattern.compile("and\\s(\\(once per turn\\) )?play[^eis]"), "and play"));
-        result.add(new RegexDescription(Pattern.compile("suspend(s)?(ing)?\\splay[^eis]", Pattern.CASE_INSENSITIVE), "suspend(s/ing) play"));
-        result.add(new RegexDescription(Pattern.compile("[^ny]\\splay for free"), "play for free"));
-        result.add(new RegexDescription(Pattern.compile("^(immediately )?play on [^t]", Pattern.CASE_INSENSITIVE), "play on"));
-        result.add(new RegexDescription(Pattern.compile(" to play\\s[^f]"), " to play"));
-        result.add(new RegexDescription(Pattern.compile("OR play on any spaceline"), "OR play on any spaceline"));
-        result.add(new RegexDescription(Pattern.compile("play or place in hand", Pattern.CASE_INSENSITIVE), "play or place in hand"));
-        result.add(new RegexDescription(Pattern.compile("play Wormhole"), "play Wormhole"));
+        result.add(new RegexDescription(Pattern.compile("to be downloaded", Pattern.CASE_INSENSITIVE), "'to be downloaded'"));
+        result.add(new RegexDescription(Pattern.compile("downloading"), "downloading"));
+        result.add(new RegexDescription(Pattern.compile("card\\sdownload[^eis]"), "card download"));
+        result.add(new RegexDescription(Pattern.compile("and\\s(\\(once per turn\\) )?download[^eis]"), "and download"));
+        result.add(new RegexDescription(Pattern.compile("suspend(s)?(ing)?\\sdownload[^eis]", Pattern.CASE_INSENSITIVE), "suspend(s/ing) download"));
+        result.add(new RegexDescription(Pattern.compile("[^ny]\\sdownload for free"), "download for free"));
+        result.add(new RegexDescription(Pattern.compile("^(immediately )?download on [^t]", Pattern.CASE_INSENSITIVE), "download on"));
+        result.add(new RegexDescription(Pattern.compile(" to download\\s[^f]"), " to download"));
+        result.add(new RegexDescription(Pattern.compile("OR download on any spaceline"), "OR download on any spaceline"));
+        result.add(new RegexDescription(Pattern.compile("download or place in hand", Pattern.CASE_INSENSITIVE), "download or place in hand"));
+        result.add(new RegexDescription(Pattern.compile("download Wormhole"), "download Wormhole"));
         return result;
     }
 
@@ -202,9 +200,9 @@ public class DownloadActionParsing {
 
     private static List<RegexDescription> commonDescriptions() {
         List<RegexDescription> result = new LinkedList<>();
-        result.add(new RegexDescription(Pattern.compile("\\splay"), "Lowercase with a space"));
-        result.add(new RegexDescription(Pattern.compile("[^\\s]play"), "Lowercase with no space"));
-        result.add(new RegexDescription(Pattern.compile("Play"), "Uppercase"));
+        result.add(new RegexDescription(Pattern.compile("\\sdownload"), "Lowercase with a space"));
+        result.add(new RegexDescription(Pattern.compile("[^\\s]download"), "Lowercase with no space"));
+        result.add(new RegexDescription(Pattern.compile("download"), "Uppercase"));
         return result;
     }
 

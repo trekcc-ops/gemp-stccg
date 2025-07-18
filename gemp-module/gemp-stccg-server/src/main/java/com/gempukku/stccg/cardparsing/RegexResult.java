@@ -31,4 +31,8 @@ public class RegexResult {
         stringBuilder.append(_sentence.substring(_end, _sentence.length()));
         return stringBuilder.toString();
     }
+
+    public String getCardTitle() {
+        return _cardTitle;
+    }
 }

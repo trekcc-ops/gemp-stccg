@@ -17,8 +17,8 @@ public class PlayCardActionParsing {
         List<RegexDescription> regexes = getRegexDescriptions();
         Map<RegexDescription, List<RegexResult>> resultMap = getResultMap(regexes);
 
-        showAllRegexes(regexes, resultMap);
-        // showResponseRegexes(regexes, resultMap);
+        // showAllRegexes(regexes, resultMap);
+        showResponseRegexes(regexes, resultMap);
     }
 
     private static Map<RegexDescription, List<RegexResult>> getResultMap(List<RegexDescription> regexes) {
