@@ -272,7 +272,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 validateAllowedFields(object, "multiplier", "source");
                 final ValueSource multiplier = resolveEvaluator(ctxt, object.get("multiplier"));
                 final ValueSource valueSource = resolveEvaluator(ctxt, object.get("source"), 0);
-                return (actionContext) -> new MultiplyEvaluator(actionContext, multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
+                return (actionContext) -> new MultiplyEvaluator(multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
             } else if (type.equalsIgnoreCase("printedStrengthFromMemory")) {
                 validateAllowedFields(object, "memory");
 

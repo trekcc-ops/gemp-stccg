@@ -30,10 +30,10 @@ public interface ModifiersQuerying {
 
     Collection<Modifier> getModifiersAffecting(PhysicalCard card);
 
-    int getAttribute(PhysicalCard card, CardAttribute attribute);
+    float getAttribute(PhysicalCard card, CardAttribute attribute);
 
     // Stats
-    int getStrength(PhysicalCard physicalCard);
+    float getStrength(PhysicalCard physicalCard);
 
     // Playing actions
     boolean canPerformAction(String performingPlayer, Action action);

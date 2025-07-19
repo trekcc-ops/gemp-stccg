@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.player.PlayerResolver;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -40,7 +39,7 @@ public class CountDiscardEvaluator implements ValueSource {
 
     @Override
     public Evaluator getEvaluator(ActionContext actionContext) {
-        return new MultiplyEvaluator(actionContext, _multiplier, new Evaluator() {
+        return new MultiplyEvaluator(_multiplier, new Evaluator() {
             final String playerId = _playerSource.getPlayerId(actionContext);
             @Override
             public float evaluateExpression(DefaultGame game) {

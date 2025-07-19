@@ -7,7 +7,7 @@ import com.gempukku.stccg.game.DefaultGame;
 public class ConstantEvaluator extends Evaluator {
     private final float _value;
 
-    public ConstantEvaluator(int value) {
+    public ConstantEvaluator(float value) {
         super();
         _value = value;
     }

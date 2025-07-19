@@ -1,27 +1,32 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class MultiplyEvaluator extends Evaluator {
-    private final Evaluator _source;
-    private final Evaluator _multiplier;
-    private final DefaultGame _game;
+import java.util.ArrayList;
+import java.util.List;
 
-    public MultiplyEvaluator(ActionContext context, Evaluator multiplier, Evaluator source) {
+public class MultiplyEvaluator extends Evaluator {
+
+    private final List<Evaluator> _evaluators;
+
+    public MultiplyEvaluator(Evaluator... evaluators) {
         super();
-        _multiplier = multiplier;
-        _game = context.getGame();
-        _source = source;
+        _evaluators = List.of(evaluators);
     }
 
-    public MultiplyEvaluator(ActionContext context, int multiplier, Evaluator source) {
-        this(context, new ConstantEvaluator(multiplier), source);
+    public MultiplyEvaluator(float multiplier, Evaluator... evaluators) {
+        super();
+        _evaluators = new ArrayList<>();
+        _evaluators.addAll(List.of(evaluators));
+        _evaluators.add(new ConstantEvaluator(multiplier));
     }
 
     @Override
     public float evaluateExpression(DefaultGame game) {
-        return _multiplier.evaluateExpression(_game) * _source.evaluateExpression(_game);
+        float subtotal = 1;
+        for (Evaluator evaluator : _evaluators) {
+            subtotal = subtotal * evaluator.evaluateExpression(game);
+        }
+        return subtotal;
     }
 }

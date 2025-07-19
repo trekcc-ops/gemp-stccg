@@ -8,16 +8,14 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
+import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
@@ -326,8 +324,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public int getAttribute(PhysicalCard card, CardAttribute attribute) {
-        int result = switch(attribute) {
+    public float getAttribute(PhysicalCard card, CardAttribute attribute) {
+        float result = switch(attribute) {
             case INTEGRITY -> card.getBlueprint().getIntegrity();
             case CUNNING -> card.getBlueprint().getCunning();
             case STRENGTH -> card.getBlueprint().getStrength();
@@ -335,6 +333,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             case WEAPONS -> card.getBlueprint().getWeapons();
             case SHIELDS -> card.getBlueprint().getShields();
         };
+
+        if (attribute == CardAttribute.WEAPONS && !getModifiersAffectingCard(ModifierEffect.WEAPONS_DISABLED_MODIFIER, card).isEmpty()) {
+            return 0;
+        }
 
         ModifierEffect effectType;
         if (attribute == CardAttribute.STRENGTH)
@@ -355,11 +357,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 result += modifier.getAttributeModifier(_game, card);
             }
         }
-        return Math.max(0, result);
+        if (result < 0)
+            return 0;
+        else
+            return result;
     }
 
     @Override
-    public int getStrength(PhysicalCard physicalCard) {
+    public float getStrength(PhysicalCard physicalCard) {
         return getAttribute(physicalCard, CardAttribute.STRENGTH);
     }
 
@@ -539,6 +544,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+        RuleSet ruleSet = cardGame.getRules();
+        List<Modifier> modifiersPerRules = ruleSet.getModifiersWhileCardIsInPlay(card);
+        for (Modifier modifier : modifiersPerRules) {
+            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+        }
     }
 
 

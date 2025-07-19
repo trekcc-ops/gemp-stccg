@@ -169,7 +169,7 @@ public interface PhysicalCard extends Filterable {
 
     @JsonIgnore
     default Integer getStrength(DefaultGame cardGame) {
-        return cardGame.getGameState().getModifiersQuerying().getStrength(this);
+        return (int) cardGame.getGameState().getModifiersQuerying().getStrength(this);
     }
 
     void reveal();

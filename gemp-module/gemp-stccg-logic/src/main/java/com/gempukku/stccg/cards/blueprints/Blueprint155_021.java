@@ -37,7 +37,7 @@ public class Blueprint155_021 extends CardBlueprint {
 
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
                     Filters.youHaveNoCopiesInPlay(thisCard.getOwner()),
-                    Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON),
+                    Filters.notAny(Filters.android, Filters.hologram, CardIcon.AU_ICON),
                     Filters.inYourHand(player), Filters.youControlAMatchingOutpost(player));
 
             Collection<PhysicalCard> playableCards = Filters.filter(cardGame, playableCardFilter);
