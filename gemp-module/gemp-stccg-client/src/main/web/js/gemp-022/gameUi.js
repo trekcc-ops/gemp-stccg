@@ -899,11 +899,19 @@ export default class GameTableUI {
         var that = this;
         this.stopAnimatingTitle();
         this.hasDecision = false;
-        this.communication.gameDecisionMade(decisionId, result,
-            this.channelNumber,
-            function (json) {
-                that.processGameEvents(json, true);
-            }, this.gameErrorMap());
+
+        let jsonResult = {
+            id: decisionId,
+            value: result
+        };
+
+       let promise = this.communication.gameDecisionMade(jsonResult, this.channelNumber);
+        return promise.then((json) => {
+            that.processGameEvents(json, true);
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
 
     gameErrorMap() {

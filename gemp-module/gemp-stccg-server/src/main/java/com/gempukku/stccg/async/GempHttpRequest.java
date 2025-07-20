@@ -1,11 +1,13 @@
 package com.gempukku.stccg.async;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.async.handler.WebRequestHandler;
+import com.gempukku.stccg.async.handler.game.DecisionResponseRequestHandler;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.database.IpBanDAO;
 import com.gempukku.stccg.database.PlayerDAO;
@@ -243,8 +245,16 @@ public class GempHttpRequest {
         }
 
         try {
-            UriRequestHandler newHandler = new ObjectMapper().convertValue(parameters, UriRequestHandler.class);
-            newHandler.handleRequest(this, _responseWriter, serverObjects);
+            if (handlerType.equals("decisionResponse")) {
+                String jsonString = parameters.get("params").toString();
+                JsonNode tree = new ObjectMapper().readTree(jsonString);
+                UriRequestHandler decisionHandler =
+                        new ObjectMapper().treeToValue(tree, DecisionResponseRequestHandler.class);
+                decisionHandler.handleRequest(this, _responseWriter, serverObjects);
+            } else {
+                UriRequestHandler newHandler = new ObjectMapper().convertValue(parameters, UriRequestHandler.class);
+                newHandler.handleRequest(this, _responseWriter, serverObjects);
+            }
         } catch (IllegalArgumentException exp) {
             if (exp.getCause() instanceof InvalidTypeIdException) {
                 // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer

@@ -274,21 +274,41 @@ export default class GempClientCommunication {
         });
     }
 
-    gameDecisionMade(decisionId, response, channelNumber, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/decisionResponse",
-            cache:false,
-            data:{
-                gameId:getUrlParam("gameId"),
-                channelNumber:channelNumber,
-                decisionId:decisionId,
-                decisionValue:response },
-            success:this.deliveryCheck(callback),
-            timeout: 20000,
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
+    async gameDecisionMade(response, channelNumber) {
+        const url = this.url + "/decisionResponse";
+        const jsonData = {
+            gameId:getUrlParam("gameId"),
+            channelNumber:channelNumber,
+            type:"decisionResponse",
+            decisionResponse:response
+        };
+        const jsonString = JSON.stringify(jsonData);
+
+        try {
+            let response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: `params=${jsonString}`
+            });
+
+            if (!response.ok) {
+                if (response.status == 400) {
+                    alert("Error 400 for decision response.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                let retval = await response.json();
+                return retval;
+            }
+        }
+        catch(error) {
+            console.error({"decisionResponse fetch error": error.message});
+        }
     }
 
     concede(errorMap) {
