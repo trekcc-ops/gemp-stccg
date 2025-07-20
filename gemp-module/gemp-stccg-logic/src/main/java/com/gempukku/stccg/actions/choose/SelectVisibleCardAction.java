@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.CardFilter;
@@ -60,8 +59,8 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
                                 cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
                                 1, 1, cardGame) {
                             @Override
-                            public void decisionMade(String result) throws DecisionResultInvalidException {
-                                _selectedCard = getSelectedCardByResponse(result);
+                            public void followUp() {
+                                _selectedCard = Iterables.getOnlyElement(_decisionSelectedCards);
                                 _wasCarriedOut = true;
                                 setAsSuccessful();
                             }

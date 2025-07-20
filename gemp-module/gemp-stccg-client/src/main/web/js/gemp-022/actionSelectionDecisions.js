@@ -35,7 +35,12 @@ export default class ActionSelectionDecision {
         this.gameUi.alertButtons.html("");
         this.gameUi.clearSelection();
         this.gameUi.hand.layoutCards();
-        this.gameUi.decisionFunction(this.decisionId, "" + this.selectedActionIds);
+        let response = {
+            type: "ACTION",
+            decisionId: this.decisionId,
+            actionIds: this.selectedActionIds
+        };
+        this.gameUi.decisionFunction(response);
     }
 
     processButtons() {

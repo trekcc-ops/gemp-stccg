@@ -1,12 +1,16 @@
 package com.gempukku.stccg.decisions;
 
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.responses.DecisionResponse;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 
 public abstract class AbstractAwaitingDecision implements AwaitingDecision {
     private final int _decisionId;
     private final String _text;
     private final String _decidingPlayerId;
+    protected boolean _responded;
 
     public AbstractAwaitingDecision(Player player, String text,
                                     DefaultGame cardGame) {
@@ -22,7 +26,6 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
         _decidingPlayerId = player.getPlayerId();
     }
 
-
     @Override
     public int getDecisionId() {
         return _decisionId;
@@ -34,4 +37,8 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
     }
 
     public String getDecidingPlayerId() { return _decidingPlayerId; }
+
+    public void followUp() throws DecisionResultInvalidException, InvalidGameLogicException {
+
+    }
 }

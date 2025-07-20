@@ -24,8 +24,8 @@ public class SelectTribblePowerAction extends MakeDecisionAction {
         return new MultipleChoiceAwaitingDecision(_actionContext.getPerformingPlayer(),
                 "Choose a Tribble power", Arrays.asList(TribblePower.names()), cardGame) {
             @Override
-            protected void validDecisionMade(int index, String result) {
-                _actionContext.setValueToMemory(_memoryId, result);
+            public void followUp() {
+                _actionContext.setValueToMemory(_memoryId, _selectedValue);
                 setAsSuccessful();
             }
         };

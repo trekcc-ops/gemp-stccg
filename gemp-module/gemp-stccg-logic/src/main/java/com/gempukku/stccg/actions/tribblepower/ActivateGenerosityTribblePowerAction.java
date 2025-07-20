@@ -44,10 +44,10 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                             "Choose a player to score 25,000 points", opponentsArray, cardGame) {
                         @Override
-                        protected void validDecisionMade(int index, String result)
+                        public void followUp()
                                 throws DecisionResultInvalidException {
                             try {
-                                playerChosen(result, cardGame);
+                                playerChosen(_selectedValue, cardGame);
                             } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }

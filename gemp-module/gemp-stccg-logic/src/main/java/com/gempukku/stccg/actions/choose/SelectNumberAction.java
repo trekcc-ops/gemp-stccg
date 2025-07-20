@@ -30,11 +30,10 @@ public class SelectNumberAction extends MakeDecisionAction {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         return new IntegerAwaitingDecision(performingPlayer, DecisionContext.SELECT_NUMBER, _minimum, _maximum, cardGame) {
             @Override
-            public void decisionMade(String result) throws DecisionResultInvalidException {
-                _actionContext.setValueToMemory(_memoryId, String.valueOf(getValidatedResult(result)));
+            public void followUp() {
+                _actionContext.setValueToMemory(_memoryId, String.valueOf(_selectedValue));
                 setAsSuccessful();
             }
-
         };
     }
 

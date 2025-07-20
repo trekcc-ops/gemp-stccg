@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
@@ -51,8 +50,8 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
                         new CardsSelectionDecision(player, "Choose a card to discard", hand,
                                 1, 1, cardGame) {
                             @Override
-                            public void decisionMade(String result) throws DecisionResultInvalidException {
-                                Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
+                            public void followUp() {
+                                Set<PhysicalCard> cards = new HashSet<>(_decisionSelectedCards);
                                 discardCards(cardGame, player, cards);
                             }
                         });

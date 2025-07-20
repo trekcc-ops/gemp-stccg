@@ -60,10 +60,10 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                         "Choose a player to discard a card", players, cardGame) {
                     @Override
-                    protected void validDecisionMade(int index, String result)
+                    public void followUp()
                             throws DecisionResultInvalidException {
                         try {
-                            firstPlayerChosen(players, result, cardGame);
+                            firstPlayerChosen(players, _selectedValue, cardGame);
                         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                             throw new DecisionResultInvalidException(exp.getMessage());
                         }
@@ -86,10 +86,9 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
                             "Choose a player to place a card from hand on the bottom of their deck",
                             newSelectablePlayers, game) {
                         @Override
-                        protected void validDecisionMade(int index, String result)
-                                throws DecisionResultInvalidException {
+                        public void followUp() throws DecisionResultInvalidException {
                             try {
-                                secondPlayerChosen(result, game);
+                                secondPlayerChosen(_selectedValue, game);
                             } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }

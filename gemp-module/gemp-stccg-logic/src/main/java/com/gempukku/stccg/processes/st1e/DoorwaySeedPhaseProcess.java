@@ -43,9 +43,9 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                         new ArbitraryCardsSelectionDecision(player, message, doorwaySeeds,
                                 cardGame) {
                             @Override
-                            public void decisionMade(String result) throws DecisionResultInvalidException {
+                            public void followUp() throws DecisionResultInvalidException {
                                 try {
-                                    List<PhysicalCard> cards = getSelectedCardsByResponse(result);
+                                    List<PhysicalCard> cards = getSelectedCards();
                                     for (PhysicalCard card : cards) {
                                         List<TopLevelSelectableAction> seedActions = card.createSeedCardActions();
                                         if (seedActions.size() != 1) {

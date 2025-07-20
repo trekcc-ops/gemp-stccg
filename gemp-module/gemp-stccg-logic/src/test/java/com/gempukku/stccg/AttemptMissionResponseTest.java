@@ -1,7 +1,5 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -15,7 +13,6 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,7 +87,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         selectFirstAction(P1);
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P1));
         ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
-                .decisionMade(tarses);
+                .setResponseAndFollowUp(tarses);
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
         assertFalse(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
         _game.carryOutPendingActionsUntilDecisionNeeded();

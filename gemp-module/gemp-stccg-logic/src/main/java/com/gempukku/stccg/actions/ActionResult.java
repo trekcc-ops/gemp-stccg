@@ -152,19 +152,14 @@ public class ActionResult {
     private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame, List<TopLevelSelectableAction> possibleActions, Player activePlayer) {
         return new ActionSelectionDecision(activePlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
                 possibleActions, cardGame, false) {
-            @Override
-            public void decisionMade(String result) throws DecisionResultInvalidException {
-                try {
-                    Action action = getSelectedAction(result);
-                    if (action != null) {
-                        cardGame.getActionsEnvironment().addActionToStack(action);
-                        markActionAsUsed(action, cardGame, activePlayer);
-                        _passCount = 0;
-                    } else {
-                        _passCount++;
-                    }
-                } catch(InvalidGameLogicException exp) {
-                    throw new DecisionResultInvalidException(exp.getMessage());
+            public void followUp() throws DecisionResultInvalidException, InvalidGameLogicException {
+                Action action = getSelectedAction();
+                if (action != null) {
+                    cardGame.getActionsEnvironment().addActionToStack(action);
+                    markActionAsUsed(action, cardGame, activePlayer);
+                    _passCount = 0;
+                } else {
+                    _passCount++;
                 }
             }
         };
@@ -184,8 +179,8 @@ public class ActionResult {
         return result;
     }
 
-    public void addNextActionToStack(DefaultGame cardGame, Action parentAction) throws InvalidGameLogicException, PlayerNotFoundException,
-            CardNotFoundException {
+    public void addNextActionToStack(DefaultGame cardGame, Action parentAction)
+            throws InvalidGameLogicException, PlayerNotFoundException {
         if (!_requiredResponses.isEmpty()) {
             ActionsEnvironment environment = cardGame.getActionsEnvironment();
             if (_requiredResponses.size() == 1) {
@@ -198,14 +193,10 @@ public class ActionResult {
                         new ActionSelectionDecision(cardGame.getCurrentPlayer(),
                                 DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _requiredResponses, cardGame, true) {
                             @Override
-                            public void decisionMade(String result) throws DecisionResultInvalidException {
-                                try {
-                                    Action action = getSelectedAction(result);
-                                    environment.addActionToStack(action);
-                                    _requiredResponses.remove(action);
-                                } catch(InvalidGameLogicException exp) {
-                                    throw new DecisionResultInvalidException(exp.getMessage());
-                                }
+                            public void followUp() throws DecisionResultInvalidException, InvalidGameLogicException {
+                                Action action = getSelectedAction();
+                                environment.addActionToStack(action);
+                                _requiredResponses.remove(action);
                             }
                         });
             }

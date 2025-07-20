@@ -47,14 +47,11 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, true) {
+
                         @Override
-                        public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                cardGame.getActionsEnvironment().addActionToStack(action);
-                            } catch(InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
-                            }
+                        public void followUp() throws DecisionResultInvalidException, InvalidGameLogicException {
+                            Action action = getSelectedAction();
+                            cardGame.getActionsEnvironment().addActionToStack(action);
                         }
                     });
         }

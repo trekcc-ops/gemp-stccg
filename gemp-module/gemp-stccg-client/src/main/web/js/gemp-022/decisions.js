@@ -69,10 +69,16 @@ export function processDecision(decision, animate, gameUi, gameState) {
             let userMessage;
             let useDialog;
             let decisionObject;
+            let response;
             switch(elementType) {
                 case "ACTION":
                     if (decision.actions.length == 0 && gameUi.gameSettings.get("autoPass") && !gameUi.replayMode) {
-                        gameUi.decisionFunction(decision.decisionId, "");
+                        response = {
+                            type: "ACTION",
+                            decisionId: decision.decisionId,
+                            actionId: new Array()
+                        };
+                        gameUi.decisionFunction(response);
                     } else {
                         userMessage = getUserMessage(decision, gameState);
                         decisionObject = new ActionSelectionDecision(decision, gameUi, gameState);
@@ -296,7 +302,12 @@ export default class CardSelectionDecision {
             this.gameUi.clearSelection();
             selectedCardIds = Array.from(this.selectedDivIds);
         }
-        this.gameUi.decisionFunction(this.decisionId, "" + selectedCardIds);
+        let response = {
+            type: "CARD_SELECTION",
+            decisionId: this.decisionId,
+            cardIds: selectedCardIds
+        };
+        this.gameUi.decisionFunction(response);
     }
 
     resetChoice() {
@@ -469,7 +480,12 @@ export function integerDecision(decision, gameUi) {
                 "OK": function () {
                     let retval = document.getElementById("integerDecision").value
                     $(this).dialog("close");
-                    gameUi.decisionFunction(id, retval);
+                    let response = {
+                        type: "INTEGER",
+                        decisionId: id,
+                        selectedValue: retval
+                    }
+                    gameUi.decisionFunction(response);
                 }
             });
     }
@@ -517,7 +533,12 @@ export function multipleChoiceDecision(decision, gameUi) {
                 {
                     "OK": function () {
                         gameUi.smallDialog.dialog("close");
-                        gameUi.decisionFunction(id, $("#multipleChoiceDecision").val());
+                        let response = {
+                            type: "MULTIPLE_CHOICE",
+                            decisionId: id,
+                            responseIndex: $("#multipleChoiceDecision").val()
+                        };
+                        gameUi.decisionFunction(response);
                     }
                 });
         }
@@ -534,7 +555,12 @@ export function multipleChoiceDecision(decision, gameUi) {
                     (function (ind) {
                         return function () {
                             gameUi.smallDialog.dialog("close");
-                            gameUi.decisionFunction(id, "" + ind);
+                            let response = {
+                                type: "MULTIPLE_CHOICE",
+                                decisionId: id,
+                                responseIndex: ind
+                            };
+                            gameUi.decisionFunction(response);
                         }
                     })(i));
             }

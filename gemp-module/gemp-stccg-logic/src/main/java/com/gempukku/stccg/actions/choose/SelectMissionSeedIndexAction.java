@@ -17,7 +17,7 @@ import java.util.List;
 
 public class SelectMissionSeedIndexAction extends ActionyAction {
     protected final String _choiceText;
-    private Integer _selectedIndex = null;
+    private Integer _selectedSpacelineIndex = null;
     private final List<String> _selectionOptions = new ArrayList<>();
 
     public SelectMissionSeedIndexAction(DefaultGame cardGame, Player performingPlayer, List<Integer> options) {
@@ -38,8 +38,8 @@ public class SelectMissionSeedIndexAction extends ActionyAction {
         return new MultipleChoiceAwaitingDecision(performingPlayer,
                 _selectionOptions, cardGame, DecisionContext.SEED_MISSION_INDEX_SELECTION) {
             @Override
-            protected void validDecisionMade(int index, String result) {
-                _selectedIndex = Integer.valueOf(result);
+            public void followUp() {
+                _selectedSpacelineIndex = Integer.valueOf(_selectedValue);
             }
         };
     }
@@ -53,10 +53,10 @@ public class SelectMissionSeedIndexAction extends ActionyAction {
     }
 
     public Integer getSelectedIndex() throws DecisionResultInvalidException {
-        if (_selectedIndex == null) {
+        if (_selectedSpacelineIndex == null) {
             throw new DecisionResultInvalidException("Got null response from SelectMissionSeedIndexAction");
         } else {
-            return _selectedIndex;
+            return _selectedSpacelineIndex;
         }
     }
 

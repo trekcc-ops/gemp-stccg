@@ -75,7 +75,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
         }
         assertNotEquals(-1, decisionIndex);
         if (seedAction != null) {
-            playerDecided(ownerId, String.valueOf(seedAction.getActionId()));
+            selectActionFromDecisionAndContinueGame(ownerId, decision, seedAction);
         }
     }
 }

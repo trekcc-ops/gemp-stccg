@@ -37,10 +37,10 @@ public class ActivateRecycleTribblePowerAction extends ActivateTribblePowerActio
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a player",
                             playersWithCards, cardGame) {
                         @Override
-                        protected void validDecisionMade(int index, String result)
+                        public void followUp()
                                 throws DecisionResultInvalidException {
                             try {
-                                playerChosen(result, cardGame);
+                                playerChosen(_selectedValue, cardGame);
                             } catch(PlayerNotFoundException exp) {
                                 throw new DecisionResultInvalidException(exp.getMessage());
                             }

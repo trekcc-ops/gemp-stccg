@@ -21,7 +21,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     private Collection<PhysicalCard> _selectedCards;
     private ActionContext _actionContext;
     private String _memory;
-    private AwaitingDecision _decision;
+    private ArbitraryCardsSelectionDecision _decision;
     private final ActionCardResolver _selectableCardsTarget;
     private final String _decisionText;
 
@@ -52,17 +52,17 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
             setAsSuccessful();
             setCardToMemory();
         } else if (_decision == null) {
-            _decision = new ArbitraryCardsSelectionDecision(
-                                cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
-                                _minimum, _maximum, cardGame) {
-                            @Override
-                            public void decisionMade(String result) throws DecisionResultInvalidException {
-                                _selectedCards = getSelectedCardsByResponse(result);
-                                setAsSuccessful();
-                                setCardToMemory();
-                            }
-                        };
+            _decision = new ArbitraryCardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _decisionText,
+                    selectableCards, _minimum, _maximum, cardGame) {
+                @Override
+                public void followUp() { }
+
+            };
             cardGame.getUserFeedback().sendAwaitingDecision(_decision);
+        } else {
+            _selectedCards = _decision.getSelectedCards();
+            setAsSuccessful();
+            setCardToMemory();
         }
 
         return getNextAction();

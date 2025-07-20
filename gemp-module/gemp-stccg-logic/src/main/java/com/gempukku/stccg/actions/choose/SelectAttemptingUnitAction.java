@@ -56,8 +56,8 @@ public class SelectAttemptingUnitAction extends ActionyAction {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(performingPlayer, _decisionText, _presentedOptions, cardGame) {
                         @Override
-                        protected void validDecisionMade(int index, String result) {
-                            attemptingUnitChosen(_eligibleUnits.get(index));
+                        public void followUp() {
+                            attemptingUnitChosen(_eligibleUnits.get(_selectedIndex));
                         }
                     });
         }

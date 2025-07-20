@@ -27,8 +27,8 @@ public class SelectPlayerAction extends MakeDecisionAction {
                 _selectablePlayerIds, cardGame) {
 
             @Override
-            protected void validDecisionMade(int index, String result) {
-                _actionContext.setValueToMemory(_memoryId, result);
+            public void followUp() {
+                _actionContext.setValueToMemory(_memoryId, _selectedValue);
                 setAsSuccessful();
             }
         };

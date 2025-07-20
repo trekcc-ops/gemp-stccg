@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.responses.DecisionResponse;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 
@@ -28,11 +29,6 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
 
     public String getElementType() { return "CARD"; }
 
-    @Override
-    public void decisionMade(String result) throws DecisionResultInvalidException {
-        // don't do anything, wip
-    }
-
     private boolean attackingCardsAreCompatible(PhysicalCard card1, PhysicalCard card2) {
         if (_targetMap.get(card1) == null || _targetMap.get(card2) == null) {
             return false;
@@ -52,6 +48,12 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
             List<PhysicalCard> validTargets = _targetMap.get(attackingCard).get("canTarget");
             return validTargets != null && validTargets.contains(targetCard);
         }
+    }
+
+    public void setDecisionResponse(DefaultGame cardGame, DecisionResponse response)
+            throws DecisionResultInvalidException {
+        // TODO - Currently nothing happening here
+        throw new DecisionResultInvalidException("Missing code for decision response");
     }
 
     public void decisionMade(List<CardWithHullIntegrity> attackingCards, CardWithHullIntegrity defendingTarget)

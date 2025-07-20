@@ -45,16 +45,12 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
                     new ActionSelectionDecision(cardGame.getCurrentPlayer(), DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, false) {
                         @Override
-                        public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    cardGame.getActionsEnvironment().addActionToStack(action);
-                                } else {
-                                    _consecutivePasses++;
-                                }
-                            } catch(InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
+                        public void followUp() throws DecisionResultInvalidException, InvalidGameLogicException {
+                            Action action = getSelectedAction();
+                            if (action != null) {
+                                cardGame.getActionsEnvironment().addActionToStack(action);
+                            } else {
+                                _consecutivePasses++;
                             }
                         }
                     });

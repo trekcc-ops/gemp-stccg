@@ -1,11 +1,15 @@
 package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.responses.CardSelectionDecisionResponse;
+import com.gempukku.stccg.decisions.responses.DecisionResponse;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 
 import java.util.*;
@@ -27,6 +31,8 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     @JsonProperty("independentlySelectable")
     private final boolean _independentlySelectable;
+
+    protected final List<PhysicalCard> _decisionSelectedCards = new ArrayList<>();
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards, DefaultGame cardGame) {
@@ -95,6 +101,50 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         return String.valueOf(card.getCardId());
     }
 
+    public void setDecisionResponse(DefaultGame cardGame, DecisionResponse response) throws DecisionResultInvalidException {
+        if (_responded || !_decisionSelectedCards.isEmpty()) {
+            throw new DecisionResultInvalidException("Trying to set response for an already-completed decision");
+        } else if (response instanceof CardSelectionDecisionResponse cardResponse) {
+            if (cardResponse.getCardIds() == null) {
+                throw new DecisionResultInvalidException("Unable to identify cards selected for decision");
+            }
+            List<PhysicalCard> responseCards = new ArrayList<>();
+            for (Integer cardId : cardResponse.getCardIds()) {
+                try {
+                    PhysicalCard cardToAdd = cardGame.getCardFromCardId(cardId);
+                    if (cardToAdd != null) {
+                        responseCards.add(cardToAdd);
+                    } else {
+                        throw new DecisionResultInvalidException("Selected invalid card for decision");
+                    }
+                } catch (CardNotFoundException exp) {
+                    throw new DecisionResultInvalidException(exp.getMessage());
+                }
+            }
+            setDecisionResponse(responseCards);
+        }
+    }
+
+    public void setDecisionResponse(List<PhysicalCard> cards) throws DecisionResultInvalidException {
+        if (_responded || !_decisionSelectedCards.isEmpty()) {
+            throw new DecisionResultInvalidException("Trying to set response for an already-completed decision");
+        }
+        if (cards.size() < _minimum || cards.size() > _maximum) {
+            throw new DecisionResultInvalidException("Received incorrect number of cards in response to decision");
+        }
+        List<PhysicalCard> cardsToAdd = new ArrayList<>();
+        for (PhysicalCard cardToAdd : cards) {
+            // TODO - Check against valid combinations
+            if (cardToAdd != null && _selectable.contains(cardToAdd)) {
+                cardsToAdd.add(cardToAdd);
+            } else {
+                throw new DecisionResultInvalidException("Selected invalid card for decision");
+            }
+        }
+        _decisionSelectedCards.addAll(cardsToAdd);
+        _responded = true;
+    }
+
     protected List<PhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
         String[] cardIds;
         if (response.isEmpty())
@@ -122,22 +172,18 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         return result;
     }
 
-    public void decisionMade(PhysicalCard card) throws DecisionResultInvalidException {
-        List<PhysicalCard> cardList = new LinkedList<>();
-        cardList.add(card);
-        decisionMade(cardList);
+    public void setResponseAndFollowUp(PhysicalCard card) throws DecisionResultInvalidException, InvalidGameOperationException {
+        setResponseAndFollowUp(List.of(card));
     }
 
 
-    public void decisionMade(List<PhysicalCard> cards) throws DecisionResultInvalidException {
-        StringJoiner sj = new StringJoiner(",");
-        for (PhysicalCard card : cards) {
-            if (_physicalCards.contains(card))
-                sj.add(String.valueOf(card.getCardId()));
-            else throw new DecisionResultInvalidException(
-                    "Could not find card " + card.getCardId() + " in decision parameters");
+    public void setResponseAndFollowUp(List<PhysicalCard> cards) throws DecisionResultInvalidException, InvalidGameOperationException {
+        setDecisionResponse(cards);
+        try {
+            followUp();
+        } catch(InvalidGameLogicException exp) {
+            throw new InvalidGameOperationException(exp.getMessage());
         }
-        decisionMade(sj.toString());
     }
 
     @JsonProperty("displayedCards")
@@ -157,6 +203,14 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     public String[] getCardIds() {
         return _cardIds;
+    }
+
+    public List<PhysicalCard> getSelectedCards() {
+        return _decisionSelectedCards;
+    }
+
+    public List<? extends PhysicalCard> getSelectableCards() {
+        return new ArrayList<PhysicalCard>(_selectable);
     }
 
 }

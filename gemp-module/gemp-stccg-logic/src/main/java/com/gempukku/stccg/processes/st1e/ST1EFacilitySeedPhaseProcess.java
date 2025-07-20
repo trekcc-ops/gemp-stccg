@@ -45,9 +45,9 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, false) {
                         @Override
-                        public void decisionMade(String result) throws DecisionResultInvalidException {
+                        public void followUp() throws DecisionResultInvalidException {
                             try {
-                                Action action = getSelectedAction(result);
+                                Action action = getSelectedAction();
                                 if (action != null) {
                                     _consecutivePasses = 0;
                                     cardGame.getActionsEnvironment().addActionToStack(action);

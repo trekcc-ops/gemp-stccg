@@ -9,10 +9,9 @@ public class YesNoDecision extends MultipleChoiceAwaitingDecision {
         super(player, context, new String[]{"Yes", "No"}, cardGame);
     }
 
-
     @Override
-    protected final void validDecisionMade(int index, String result) {
-        if (index == 0)
+    public void followUp() {
+        if (_selectedIndex == 0)
             yes();
         else
             no();

@@ -34,8 +34,8 @@ public class SelectSkillAction extends ActionyAction {
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a skill",
                         _skillOptions.keySet(), cardGame) {
                     @Override
-                    protected void validDecisionMade(int index, String result) {
-                        _selectedSkill = _skillOptions.get(result);
+                    public void followUp() {
+                        _selectedSkill = _skillOptions.get(_selectedValue);
                         setAsSuccessful();
                     }
                 });

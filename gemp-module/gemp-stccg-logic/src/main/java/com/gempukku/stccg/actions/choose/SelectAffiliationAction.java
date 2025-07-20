@@ -52,8 +52,8 @@ public class SelectAffiliationAction extends ActionyAction {
                     cardGame.getPlayer(_performingPlayerId), "Choose an affiliation", affiliationStrings,
                     cardGame) {
                 @Override
-                protected void validDecisionMade(int index, String result) {
-                    _selectedAffiliation = affiliationStringMap.get(result);
+                public void followUp() {
+                    _selectedAffiliation = affiliationStringMap.get(_selectedValue);
                     if (_selectedAffiliation == null) {
                         setAsFailed();
                     } else {

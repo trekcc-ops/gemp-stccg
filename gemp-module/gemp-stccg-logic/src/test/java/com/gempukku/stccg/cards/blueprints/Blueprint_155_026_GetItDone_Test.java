@@ -38,7 +38,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     public void actionOption1() throws DecisionResultInvalidException, CardNotFoundException,
             InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         runGameUntilActionSelection();
-        playerDecided(P1, "0");
+        respondToMultipleChoiceAndContinueGame(P1, 0);
         selectCard(P1, cardToDiscard);
         assertEquals(11, picard.getAttribute(CardAttribute.INTEGRITY));
         assertEquals(10, picard.getAttribute(CardAttribute.CUNNING));
@@ -58,7 +58,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     public void actionOption2() throws DecisionResultInvalidException, CardNotFoundException,
             InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         runGameUntilActionSelection();
-        playerDecided(P1, "1");
+        respondToMultipleChoiceAndContinueGame(P1, 1);
         selectCard(P1, cardToDiscard);
         assertEquals(9, runabout.getFullRange());
         assertFalse(canUseCardAgain());
@@ -81,7 +81,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
                 System.out.println(card);
             }
         }
-        playerDecided(P1, "2");
+        respondToMultipleChoiceAndContinueGame(P1, 2);
         selectCard(P1, cardToDiscard);
         for (PhysicalCard wallace : wallaces) {
             assertEquals(Zone.DRAW_DECK, wallace.getZone());

@@ -51,10 +51,10 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
                         new MultipleChoiceAwaitingDecision(performingPlayer, DecisionContext.SELECT_PLAYER,
                                 playersWithCardsArr, cardGame) {
                             @Override
-                            protected void validDecisionMade(int index, String result)
+                            public void followUp()
                                     throws DecisionResultInvalidException {
                                 try {
-                                    playerChosen(result, cardGame);
+                                    playerChosen(_selectedValue, cardGame);
                                 } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
                                     throw new DecisionResultInvalidException(exp.getMessage());
                                 }

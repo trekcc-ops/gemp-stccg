@@ -32,7 +32,7 @@ public class CreateGameTest extends AbstractAtTest {
         // Player2 will need to decide twice - once to select the mission, then once to decide where to seed it
         selectFirstAction(player2);
         assertNotNull(_userFeedback.getAwaitingDecision(player2));
-        playerDecided(player2, "0");
+        respondToMultipleChoiceAndContinueGame(player2, 0);
 
         assertNotNull(_userFeedback.getAwaitingDecision(player1));
         assertNull(_userFeedback.getAwaitingDecision(player2));

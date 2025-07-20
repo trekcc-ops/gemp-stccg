@@ -91,7 +91,7 @@ public class ActionSerializerTest extends AbstractAtTest {
         data.reportToFacility(_outpost);
         runabout.reportToFacility(_outpost);
         reportCard(P1, mvil, _klingonOutpost);
-        playerDecided(P1, "0"); // pick affiliation
+        respondToMultipleChoiceAndContinueGame(P1, 0); // pick affiliation
 
         assertTrue(_outpost.getCrew().contains(troi));
         assertTrue(_outpost.getCrew().contains(hobson));

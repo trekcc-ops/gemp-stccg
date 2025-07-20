@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToSeedCardStackAction;
 import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
@@ -68,8 +69,8 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     new ActionSelectionDecision(cardGame.getPlayer(playerId),
                             DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame, false) {
                         @Override
-                        public void decisionMade(String result) throws DecisionResultInvalidException {
-                            TopLevelSelectableAction action = getSelectedAction(result);
+                        public void followUp() throws DecisionResultInvalidException {
+                            Action action = getSelectedAction();
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {
@@ -92,10 +93,9 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                 new CardsSelectionDecision(player, "Select cards to seed under " + seedCardsAction.getLocationName(),
                         availableCards, cardGame) {
                     @Override
-                    public void decisionMade (String result) throws DecisionResultInvalidException {
+                    public void followUp() throws DecisionResultInvalidException {
                         try {
-                            Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                            seedCardsAction.setSeedCards(selectedCards);
+                            seedCardsAction.setSeedCards(_decisionSelectedCards);
                             seedCardsAction.processEffect(player, cardGame);
                             cardGame.getActionsEnvironment().logCompletedActionNotInStack(seedCardsAction);
                             cardGame.sendActionResultToClient();
@@ -116,8 +116,8 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                 new ArbitraryCardsSelectionDecision(player, "Select cards to remove from " + mission.getLocationName(),
                         availableCards, cardGame) {
                     @Override
-                    public void decisionMade (String result) throws DecisionResultInvalidException {
-                        Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
+                    public void followUp() throws DecisionResultInvalidException {
+                        Collection<PhysicalCard> selectedCards = getSelectedCards();
                         try {
                             removeAction.setCardsToRemove(selectedCards);
                             removeAction.processEffect(player, cardGame);

@@ -11,8 +11,10 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An effect that causes the specified player to choose cards on the table.
@@ -72,8 +74,9 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
                     new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
                             _minimum, _maximum, cardGame) {
                         @Override
-                        public void decisionMade(String result) throws DecisionResultInvalidException {
-                            _selectedCards = getSelectedCardsByResponse(result);
+                        public void followUp() {
+                            _selectedCards.clear();
+                            _selectedCards.addAll(_decisionSelectedCards);
                             _wasCarriedOut = true;
                             setAsSuccessful();
                             if (_actionContext != null) {

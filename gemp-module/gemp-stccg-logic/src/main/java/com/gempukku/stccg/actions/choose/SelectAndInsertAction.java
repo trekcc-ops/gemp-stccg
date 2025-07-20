@@ -66,9 +66,9 @@ public class SelectAndInsertAction extends ActionyAction {
             _decision = new MultipleChoiceAwaitingDecision(performingPlayer, "Choose an action",
                     actionTexts, cardGame) {
                 @Override
-                protected void validDecisionMade(int index, String result) {
+                public void followUp() {
                     try {
-                        _selectedAction = performableActions.get(index);
+                        _selectedAction = performableActions.get(_selectedIndex);
                         _parentAction.insertAction(_selectedAction);
                         setAsSuccessful();
                         _wasCarriedOut = true;

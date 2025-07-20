@@ -16,6 +16,7 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.responses.DecisionResponse;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -207,7 +208,7 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final synchronized void playerAnswered(User player, int channelNumber, int decisionId, String answer)
+    public final synchronized void playerAnswered(User player, int channelNumber, DecisionResponse response)
             throws HttpProcessingException {
         String playerName = player.getName();
         _writeLock.lock();
@@ -221,11 +222,12 @@ public abstract class CardGameMediator {
             AwaitingDecision awaitingDecision = game.getAwaitingDecision(playerName);
 
             if (awaitingDecision != null) {
-                if (awaitingDecision.getDecisionId() == decisionId && !game.isFinished()) {
+                if (awaitingDecision.getDecisionId() == response.getDecisionId() && !game.isFinished()) {
                     GameState gameState = game.getGameState();
                     try {
                         gameState.playerDecisionFinished(playerName, game.getUserFeedback());
-                        awaitingDecision.decisionMade(answer);
+                        awaitingDecision.setDecisionResponse(game, response);
+                        awaitingDecision.followUp();
 
                         // Decision successfully made, add the time to user clock
                         addTimeSpentOnDecisionToUserClock(playerName);
@@ -238,7 +240,7 @@ public abstract class CardGameMediator {
                         and ask again for the same decision */
                         game.sendWarning(playerName, exp.getWarningMessage());
                         game.sendAwaitingDecision(awaitingDecision);
-                    } catch (InvalidGameOperationException | RuntimeException runtimeException) {
+                    } catch (InvalidGameOperationException | InvalidGameLogicException | RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
                         game.cancelGame();
                     }

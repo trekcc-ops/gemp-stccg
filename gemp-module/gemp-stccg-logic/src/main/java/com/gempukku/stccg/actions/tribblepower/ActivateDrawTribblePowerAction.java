@@ -30,10 +30,9 @@ public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
                         new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                                 "Choose a player", players, cardGame) {
                             @Override
-                            protected void validDecisionMade(int index, String result)
-                                    throws DecisionResultInvalidException {
+                            public void followUp() throws DecisionResultInvalidException {
                                 try {
-                                    playerChosen(result, cardGame);
+                                    playerChosen(_selectedValue, cardGame);
                                 } catch(PlayerNotFoundException exp) {
                                     throw new DecisionResultInvalidException(exp.getMessage());
                                 }

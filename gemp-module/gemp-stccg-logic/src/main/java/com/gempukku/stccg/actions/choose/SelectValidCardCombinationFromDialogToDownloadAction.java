@@ -13,6 +13,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,9 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
         AwaitingDecision decision = new ArbitraryCardsSelectionDecision(performingPlayer, _choiceText,
                 _selectableCards, _validCombinations, MINIMUM, _maximum, cardGame) {
             @Override
-            public void decisionMade(String result) throws DecisionResultInvalidException {
-                _selectedCards = getSelectedCardsByResponse(result);
+            public void followUp() {
+                _selectedCards = new ArrayList<>();
+                _selectedCards.addAll(_decisionSelectedCards);
                 _wasCarriedOut = true;
                 setAsSuccessful();
             }

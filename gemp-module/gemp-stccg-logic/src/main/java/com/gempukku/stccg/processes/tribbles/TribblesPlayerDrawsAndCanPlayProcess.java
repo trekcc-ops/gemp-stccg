@@ -47,9 +47,9 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
                 _game.getUserFeedback().sendAwaitingDecision(
                         new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, _game, false) {
                             @Override
-                            public void decisionMade(String result) throws DecisionResultInvalidException {
+                            public void followUp() throws DecisionResultInvalidException {
                                 try {
-                                    Action action = getSelectedAction(result);
+                                    Action action = getSelectedAction();
                                     if (action != null) {
                                         thisGame.getActionsEnvironment().addActionToStack(action);
                                     } else
