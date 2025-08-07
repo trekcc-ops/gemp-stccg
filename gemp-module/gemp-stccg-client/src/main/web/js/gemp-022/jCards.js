@@ -349,6 +349,9 @@ export default class Card {
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
     let baseCardDiv = document.createElement("div");
     baseCardDiv.classList.add("card");
+    if (cardId != null) {
+        baseCardDiv.id = cardId.toString(); // coerce to string just in case
+    }
     baseCardDiv.textContent = (text) ? text : "";
 
     let threeDScene = document.createElement("div");
@@ -513,6 +516,7 @@ export function createSimpleCardDiv(image) {
     return cardDiv;
 }
 
+// TODO: Work on replacing this with standard DOM ID lookups.
 export function getCardDivFromId(cardId) {
     // This depends on the $.expr[':'].cardId variable set in gameUi.js
     return $(".card:cardId(" + cardId + ")");
