@@ -2,8 +2,6 @@ package com.gempukku.stccg.decisions.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
 public class MultipleChoiceDecisionResponse implements DecisionResponse {
 
     @JsonProperty("decisionId")
