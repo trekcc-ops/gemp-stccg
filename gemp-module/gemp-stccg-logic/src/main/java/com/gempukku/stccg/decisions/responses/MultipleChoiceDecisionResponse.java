@@ -9,7 +9,7 @@ public class MultipleChoiceDecisionResponse implements DecisionResponse {
     @JsonProperty("decisionId")
     private int _decisionId;
 
-    @JsonProperty("actionIds")
+    @JsonProperty("responseIndex")
     private int _responseIndex;
 
     @Override

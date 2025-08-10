@@ -274,13 +274,13 @@ export default class GempClientCommunication {
         });
     }
 
-    async gameDecisionMade(response, channelNumber) {
+    async gameDecisionMade(decisionResponse, channelNumber) {
         const url = this.url + "/decisionResponse";
         const jsonData = {
             gameId:getUrlParam("gameId"),
             channelNumber:channelNumber,
             type:"decisionResponse",
-            decisionResponse:response
+            decisionResponse:decisionResponse
         };
         const jsonString = JSON.stringify(jsonData);
 
