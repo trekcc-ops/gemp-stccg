@@ -60,4 +60,8 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
     public List<Skill> getSkills() {
         return _blueprint.getSkills(_game, this);
     }
+
+    public boolean isLeader() {
+        return hasSkill(SkillName.OFFICER) || hasSkill(SkillName.LEADERSHIP);
+    }
 }

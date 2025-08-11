@@ -37,7 +37,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected Zone _zone;
     private Integer _attachedToCardId;
     private Integer _stackedOnCardId;
-    protected MissionLocation _currentLocation;
     protected GameLocation _currentGameLocation;
     private boolean _placedOnMission = false;
     private boolean _revealedSeedCard = false;
@@ -78,6 +77,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             result = _blueprint.getImageUrl();
         }
         return result;
+    }
+
+    public boolean isAtLocation(GameLocation location) {
+        return _currentGameLocation == location;
     }
 
     public int getCardId() { return _cardId; }

@@ -7,12 +7,15 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.rules.st1e.ShipBattleRules;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 public class InitiateShipBattleAction extends ActionyAction implements TopLevelSelectableAction {
-        // TODO - For now, ignores affiliation attack restrictions, as well as tactics, as well as leadership requirements
-        // TODO - Very much not complete
-                // i.e. it is just an action to compare numbers
 
     private boolean _openedFire;
     private boolean _actionWasInitiated = false;
@@ -41,6 +41,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
     private boolean _battleResolved;
     private final Map<PhysicalCard, Map<String, List<PhysicalCard>>> _targetMap;
     private ShipBattleTargetDecision _attackTargetDecision;
+    private ShipBattleTargetDecision _returnFireDecision;
 
     private enum OpenFireResult {
         HIT, DIRECT_HIT, MISS
@@ -73,13 +74,30 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
             if (_attackTargetDecision == null) {
                 _attackTargetDecision = new ShipBattleTargetDecision(attackingPlayer, DecisionContext.SHIP_BATTLE_TARGETS, _targetMap, cardGame);
                 cardGame.sendAwaitingDecision(_attackTargetDecision);
-            } else {
-                // TODO - Not allowing player 2 to pick additional forces or targets yet
+            } else if (_returnFireDecision == null) {
+                CardWithHullIntegrity targetCard = _attackTargetDecision.getTarget();
                 _forces.put(attackingPlayer, _attackTargetDecision.getAttackingCards());
-                _forces.put(_defendingPlayer, List.of(_attackTargetDecision.getTarget()));
-                _targets.put(attackingPlayer, _attackTargetDecision.getTarget());
+                _targets.put(attackingPlayer, targetCard);
+                Map<PhysicalCard, Map<String, List<PhysicalCard>>> defendingTargetMap =
+                        ShipBattleRules.getTargetsForReturningFire(cardGame, _defendingPlayer, targetCard, _attackTargetDecision.getAttackingCards());
+                if (defendingTargetMap.isEmpty()) {
+                    _forces.put(_defendingPlayer, List.of(_attackTargetDecision.getTarget()));
+                    _returningFire = false;
+                    _actionWasInitiated = true;
+                } else {
+                    _returnFireDecision = new ShipBattleTargetDecision(_defendingPlayer, DecisionContext.SHIP_BATTLE_TARGETS, defendingTargetMap, cardGame);
+                    cardGame.sendAwaitingDecision(_returnFireDecision);
+                }
+            } else {
+                if (_returnFireDecision.getTarget() == null) {
+                    _returningFire = false;
+                    _forces.put(_defendingPlayer, List.of(_attackTargetDecision.getTarget()));
+                } else {
+                    _targets.put(_defendingPlayer, _returnFireDecision.getTarget());
+                    _forces.put(_defendingPlayer, _returnFireDecision.getAttackingCards());
+                    _returningFire = true;
+                }
                 _actionWasInitiated = true;
-                _returningFire = false; // TODO not returning fire
             }
         }
 

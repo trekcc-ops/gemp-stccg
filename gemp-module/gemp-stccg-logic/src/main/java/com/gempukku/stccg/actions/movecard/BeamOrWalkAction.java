@@ -133,7 +133,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return null;
     }
 
-    private void processEffect(DefaultGame cardGame) {
+    public void processEffect(DefaultGame cardGame) {
         if (!_wasCarriedOut) {
             GameLocation destinationLocation = _destination.getGameLocation();
             for (PhysicalCard card : _cardsToMove) {

@@ -16,4 +16,5 @@ public interface CardWithHullIntegrity extends PhysicalCard {
     void stop();
     Collection<PersonnelCard> getPersonnelAboard();
     boolean isCompatibleWith(PhysicalNounCard1E otherCard);
+    boolean hasLeaderPresent();
 }

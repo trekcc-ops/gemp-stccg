@@ -4,12 +4,14 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface AffiliatedCard extends PhysicalCard {
     ST1EGame getGame();
 
     boolean isAffiliation(Affiliation affiliation);
+
     boolean isMultiAffiliation();
     Affiliation getCurrentAffiliation();
     void setCurrentAffiliation(Affiliation affiliation);
@@ -23,5 +25,14 @@ public interface AffiliatedCard extends PhysicalCard {
         } else {
             return false;
         }
+    }
+
+    default boolean hasAffiliationInList(Collection<Affiliation> affiliationList) {
+        for (Affiliation affiliation : affiliationList) {
+            if (isAffiliation(affiliation)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

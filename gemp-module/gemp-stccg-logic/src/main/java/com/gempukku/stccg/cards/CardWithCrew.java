@@ -19,4 +19,16 @@ public interface CardWithCrew extends CardWithHullIntegrity {
         }
         return personnelInCrew;
     }
+
+    default Collection<PersonnelCard> getPersonnelPresent() {
+        return getPersonnelInCrew();
+    }
+
+    default boolean hasLeaderPresent() {
+        for (PersonnelCard personnel : getPersonnelPresent()) {
+            if (personnel.isLeader())
+                return true;
+        }
+        return false;
+    }
 }

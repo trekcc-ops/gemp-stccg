@@ -181,4 +181,6 @@ public interface PhysicalCard extends Filterable {
     default List<TopLevelSelectableAction> getPlayActionsFromGameText(Player player, DefaultGame cardGame) {
         return getBlueprint().getPlayActionsFromGameText(this, player, cardGame);
     }
+
+    boolean isAtLocation(GameLocation location);
 }

@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, CardWithCrew, CardWithHullIntegrity {
+public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, CardWithCrew {
 
     private int _hullIntegrity = 100;
     public FacilityCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
