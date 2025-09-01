@@ -279,7 +279,22 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         }
         case "FAIL_DILEMMA":
         case "OVERCOME_DILEMMA":
-        case "PLACE_CARD_ON_MISSION":
+            break;
+        case "PLACE_CARD_ON_MISSION": {
+            let cardId = jsonAction.targetCardId;
+            targetCard = jsonGameState.visibleCardsInGame[cardId];
+            let location;
+            for (const spacelineLocation of jsonGameState.spacelineLocations) {
+                if (spacelineLocation.locationId == targetCard.locationId) {
+                    location = spacelineLocation;
+                    break;
+                }
+            }
+            let missionId = location.missionCardIds[0]; // just get the first one
+            message = showLinkableCardTitle(targetCard) + " was placed on " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[missionId]) + ".";
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        }
         case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
         case "PLACE_CARDS_BENEATH_DRAW_DECK":
         case "REMOVE_CARDS_FROM_PRESEED_STACK":
