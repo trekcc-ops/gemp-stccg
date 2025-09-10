@@ -24,15 +24,21 @@ export default class CardGroup {
         this.container.append(this.groupDiv);
     }
 
-    addCard(cardElement, position = -1) {
+    addCard(cardElement, position = 999) {
         // TODO: assert cardElement is a HTMLElement class
-
-        if (position === -1) {
-            // add to end (bottom)
+        let num_children = this.groupDiv.children.length;
+        if ((position > 0) && (position < num_children)) {
+            let elem_in_current_position = this.groupDiv.children[position];
+            elem_in_current_position.before(cardElement);
+        }
+        else if ((position <= 0)) {
+            this.groupDiv.prepend(cardElement);
+        }
+        else if ((position >= num_children)) {
             this.groupDiv.append(cardElement);
         }
         else {
-            // add to position, addafter
+            throw new Error(`addCard: position ${position} not recognized.`);
         }
 
         //relayout
@@ -61,7 +67,7 @@ export default class CardGroup {
                 cardsToLayout.push(elem);
             }
         }
-        
+
         return cardsToLayout;
     }
 

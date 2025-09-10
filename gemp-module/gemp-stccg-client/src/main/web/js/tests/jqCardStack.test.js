@@ -53,7 +53,7 @@ describe('CardGroup', () => {
         // to be told how to determine if a card is in its group. These are things like
         // PlayPileCardGroup (a subclass) being told to check against card.zone == "PLAY_PILE".
         // STUB, ignored
-        let belongTestFunc = jest.fn(card => card.classList.contains("card"));
+        let belongTestFunc = jest.fn();
 
         let _groupUnderTest = new CardGroup(container, belongTestFunc, "Tanagra");
         expect(document.getElementById("Tanagra")).not.toEqual(null);
@@ -98,7 +98,7 @@ describe('CardGroup', () => {
         // PlayPileCardGroup (a subclass) being told to check against card.zone == "PLAY_PILE"
         // where "card" is the JSON data stored in JQ.data("card": {})
         // STUB, ignored
-        let belongTestFunc = jest.fn(card => card.classList.contains("card"));
+        let belongTestFunc = jest.fn();
 
         let _groupUnderTest = new CardGroup(container, belongTestFunc, "Tanagra");
         expect(document.getElementById("Tanagra")).not.toEqual(null);
@@ -130,78 +130,123 @@ describe('CardGroup', () => {
         expect(_groupUnderTest.getCardElems()).toEqual(expected_result);
     });
 
-    test.skip('CardGroup getCardElems will depend on data stored in a jQuery .data object', () => {
+    test('CardGroup addCard lets you append cards by default', () => {
         document.body.innerHTML = `
-            <div id='Tanagra'>
-                <div class='card' id='Darmok' />
-                <div class='card' id='Jalad' />
-                <div class='notacard' id='Picard' />
-            </div>
+            <div id='container'/>
         `;
-        let jqContainer = $('#Tanagra');
+        let container = document.getElementById("container");
+        let belongTestFunc = jest.fn();
+        let _groupUnderTest = new CardGroup(container, belongTestFunc, "Tanagra");
+        expect(document.getElementById("Tanagra")).not.toEqual(null);
+        
+        let darmok = document.createElement("div");
+        darmok.id = "Darmok";
+        darmok.classList.add("card");
 
-        // Because the card group isn't actually an array containing anything, it has
-        // to be told how to determine if a card is in its group. These are things like
-        // PlayPileCardGroup (a subclass) being told to check against card.zone == "PLAY_PILE"
-        // where "card" is the JSON data stored in JQ.data("card": {})
-        let belongTestFunc = jest.fn(card_data => card_data.blueprintid < 3);
+        let jalad = document.createElement("div");
+        jalad.id = "Jalad";
+        jalad.classList.add("card");
 
-        let _groupUnderTest = new CardGroup(jqContainer, belongTestFunc, "Tanagra");
+        expect(_groupUnderTest.groupDiv.children.length).toBe(0);
 
-        // assign jquery card data expected by the func
-        $('#Darmok').data("card", {class: "card", "blueprintid": 1});
-        $('#Jalad').data("card", {class: "card", "blueprintid": 2});
-        $('#Picard').data("card", {class: "notacard", "blueprintid": 3});
+        _groupUnderTest.addCard(darmok);
+        expect(_groupUnderTest.groupDiv.children.length).toBe(1);
 
-        expect(_groupUnderTest.cardBelongs($("#Darmok").data("card"))).toEqual(true);
-        expect(_groupUnderTest.cardBelongs($("#Jalad").data("card"))).toEqual(true);
-        expect(_groupUnderTest.cardBelongs($("#Picard").data("card"))).toEqual(false);
+        _groupUnderTest.addCard(jalad);
+        expect(_groupUnderTest.groupDiv.children.length).toBe(2);
 
-        expect(belongTestFunc.mock.calls.length).toEqual(0);
+        // check order was append
+        expect(_groupUnderTest.groupDiv.children[1]).toEqual(jalad);
     });
 
-    test.skip('CardGroup getCardElems passes card class objects to the belong func', () => {
+    test('CardGroup addCard lets you prepend cards with 0 or negative number', () => {
         document.body.innerHTML = `
-            <div id='Tanagra'>
-                <div class='card' id='Darmok' />
-                <div class='card' id='Jalad' />
-                <div class='notacard' id='Picard' />
-            </div>
-            <div id='Balcony'>
-                <div class='card' id='Juliet' />
-            </div>
+            <div id='container'/>
         `;
-        let jqContainer = $('#Tanagra');
+        let container = document.getElementById("container");
+        let belongTestFunc = jest.fn();
+        let _groupUnderTest = new CardGroup(container, belongTestFunc, "Tanagra");
+        expect(document.getElementById("Tanagra")).not.toEqual(null);
+        
+        let darmok = document.createElement("div");
+        darmok.id = "Darmok";
+        darmok.classList.add("card");
 
-        // Because the card group isn't actually an array containing anything, it has
-        // to be told how to determine if a card is in its group. These are things like
-        // PlayPileCardGroup (a subclass) being told to check against card.zone == "PLAY_PILE"
-        // where "card" is the JSON data stored in JQ.data("card": {})
-        let belongTestFunc = jest.fn(card_data => card_data.blueprintid < 3);
-        //let belongTestFunc = jest.fn(card_data => console.log(card_data.blueprintid));
+        let jalad = document.createElement("div");
+        jalad.id = "Jalad";
+        jalad.classList.add("card");
 
-        let _groupUnderTest = new CardGroup(jqContainer, belongTestFunc);
+        expect(_groupUnderTest.groupDiv.children.length).toBe(0);
 
-        // assign jquery card data expected by the func
-        $('#Darmok').data("card", {class: "card", "blueprintid": 1});
-        $('#Jalad').data("card", {class: "card", "blueprintid": 2});
-        $('#Picard').data("card", {class: "notacard", "blueprintid": 3});
-        $('#Juliet').data("card", {class: "card", "blueprintid": 0});
+        _groupUnderTest.addCard(darmok, 0);
+        expect(_groupUnderTest.groupDiv.children.length).toBe(1);
 
-        // BUG: Because the container is Tanagra, Juliet should not be there even though
-        // she matches the belongTestFunc.
-        // Unfortunately, the getCardElems func is checking everything on the page not just
-        // things in the constructor as expected.
-        let expected = [
-            $('#Darmok'),
-            $('#Jalad'),
-            $('#Juliet')
-        ];
+        _groupUnderTest.addCard(jalad, -5);
+        expect(_groupUnderTest.groupDiv.children.length).toBe(2);
 
-        let result = _groupUnderTest.getCardElems();
+        // check order was append
+        expect(_groupUnderTest.groupDiv.children[1]).toEqual(darmok);
+    });
 
-        expect(belongTestFunc.mock.calls.length).toEqual(3);
-        expect(result).toEqual(expected);
+    test('CardGroup addCard lets you insert cards', () => {
+        document.body.innerHTML = `
+            <div id='container'/>
+        `;
+        let container = document.getElementById("container");
+        let belongTestFunc = jest.fn();
+        let _groupUnderTest = new CardGroup(container, belongTestFunc, "Enterprise");
+        expect(document.getElementById("Enterprise")).not.toEqual(null);
+        
+        let archer = document.createElement("div");
+        archer.id = "Archer";
+        archer.classList.add("card");
+
+        let tripp = document.createElement("div");
+        tripp.id = "Tripp";
+        tripp.classList.add("card");
+
+        let tpol = document.createElement("div");
+        tpol.id = "T'Pol";
+        tpol.classList.add("card");
+
+        let reed = document.createElement("div");
+        reed.id = "Reed";
+        reed.classList.add("card");
+
+        _groupUnderTest.addCard(archer);
+        _groupUnderTest.addCard(tripp);
+        _groupUnderTest.addCard(tpol);
+        _groupUnderTest.addCard(reed);
+
+        expect(_groupUnderTest.groupDiv.children.length).toEqual(4);
+        expect(_groupUnderTest.groupDiv.children[2]).toEqual(tpol);
+
+        let hoshi = document.createElement("div");
+        hoshi.id = "Hoshi";
+        hoshi.classList.add("card");
+
+        _groupUnderTest.addCard(hoshi, 2);
+
+        // check we inserted and tpol moved down
+        expect(_groupUnderTest.groupDiv.children.length).toEqual(5);
+        expect(_groupUnderTest.groupDiv.children[2]).toEqual(hoshi);
+        expect(_groupUnderTest.groupDiv.children[3]).toEqual(tpol);
+    });
+
+    test('CardGroup addCard throws on an invalid position', () => {
+        document.body.innerHTML = `
+            <div id='container'/>
+        `;
+        let container = document.getElementById("container");
+        let belongTestFunc = jest.fn();
+        let _groupUnderTest = new CardGroup(container, belongTestFunc, "Tanagra");
+        expect(document.getElementById("Tanagra")).not.toEqual(null);
+        
+        let darmok = document.createElement("div");
+        darmok.id = "Darmok";
+        darmok.classList.add("card");
+
+        expect(() => _groupUnderTest.addCard(darmok, "string")).toThrow(Error);
     });
 
     test.skip('CardGroup setBounds assigns mostly static values', () => {
