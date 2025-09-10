@@ -14,31 +14,33 @@ describe('CardGroup', () => {
         document.body.innerHTML = `
             <div id='container'/>
         `;
-        let jqContainer = $('#container');
+        let jqContainer = document.getElementById("container");
         
-        // So apparently jQuery hands me all the newlines and whitespace, so that's fun.
-        let expected = `\n        <div id="" class="ui-widget-content card-group"></div>`;
+        let expected = document.createElement("div");
+        expected.id = "";
+        expected.classList.add("ui-widget-content", "card-group");
         let belongTestFunc = jest.fn();
 
         let _groupUnderTest = new CardGroup(jqContainer, belongTestFunc);
         expect(belongTestFunc.mock.calls.length).toEqual(0); // assert not called
-        expect(jqContainer.html()).toBe(expected);
+        expect(jqContainer.children[0]).toEqual(expected);
     });
 
     test('CardGroup constructor uses a string as the ID when handed a string', () => {
         document.body.innerHTML = `
             <div id='container'/>
         `;
-        let jqContainer = $('#container');
+        let jqContainer = document.getElementById("container");
         let thestring = "thestring";
         
-        // So apparently jQuery hands me all the newlines and whitespace, so that's fun.
-        let expected = `\n        <div id="thestring" class="ui-widget-content card-group"></div>`;
+        let expected = document.createElement("div");
+        expected.id = "thestring";
+        expected.classList.add("ui-widget-content", "card-group");
         let belongTestFunc = jest.fn();
 
         let _groupUnderTest = new CardGroup(jqContainer, belongTestFunc, thestring);
         expect(belongTestFunc.mock.calls.length).toEqual(0); // assert not called
-        expect(jqContainer.html()).toBe(expected);
+        expect(jqContainer.children[0]).toEqual(expected);
     });
 
     test('CardGroup cardBelongs can identify cards in the group', () => {
