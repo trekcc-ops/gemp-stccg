@@ -114,7 +114,11 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "DOWNLOAD_CARD": // no animation, currently this is just a wrapper for PLAY_CARD
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
-        case "PLACE_CARD_ON_MISSION": // no animation included yet
+            break;
+        case "PLACE_CARD_ON_MISSION":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
+            gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             break;
         case "REVEAL_SEED_CARD":
             gameAnimations.revealCard(jsonAction.targetCardId, jsonGameState).then(() => {return});

@@ -209,12 +209,13 @@ export default class CardSelectionDecision {
             let gameStateCard = this.gameState.visibleCardsInGame[cardId];
             let blueprintId = gameStateCard.blueprintId;
             let imageUrl = gameStateCard.imageUrl;
+            let cardTitle = (gameStateCard.title) ? gameStateCard.title : null;
             let zone = "SPECIAL";
             let noOwner = "";
             let noLocationIndex = "";
             let upsideDown = false;
             let card = new Card(blueprintId, zone, cardDivId, noOwner, imageUrl, noLocationIndex, upsideDown);
-            let cardDiv = this.gameUi.createCardDivWithData(card, "");
+            let cardDiv = this.gameUi.createCardDivWithData(card, cardTitle);
             $("#cardSelectionDialog").append(cardDiv);
         }
     }
