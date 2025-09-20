@@ -484,27 +484,80 @@ export function getFoilPresentation() {
 }
 
 export function createFullCardDiv(image, foil, horizontal, noBorder) {
-    var orientation;
-    if (horizontal) orientation = "Horizontal";
-    else orientation = "Vertical";
+    let fullCardDiv = document.createElement("div");
 
-    var borderClass;
-    if (noBorder) borderClass = "noBorderOverlay";
-    else borderClass = "borderOverlay";
+    let fullCardWrapper = document.createElement("div");
+    fullCardWrapper.classList.add("fullCardWrapper");
 
-    var cardDiv = $("<div class='fullCardDiv" + orientation + "'></div>");
-    cardDiv.append($("<div class='fullCardWrapper'>" +
-        "<img class='fullCardImg" + orientation + "' src='" + image + "'></div>"));
-    cardDiv.append($("<div class='" + borderClass + orientation + "'>" +
-        `<img class='actionArea' src='${pixelImg}' width='100%' height='100%'></div>`));
-
-    if (foil && getFoilPresentation() !== 'none') {
-        var foilImage = (getFoilPresentation() === 'animated') ? "foil.gif" : "holo.jpg";
-        cardDiv.append($("<div class='foilOverlay" + orientation + "'>" +
-            "<img src='/gemp-module/images/" + foilImage + "' width='100%' height='100%'></div>"));
+    let fullCardImg = document.createElement("img");
+    fullCardImg.src = image;
+    
+    if (horizontal) {
+        fullCardDiv.classList.add("fullCardDivHorizontal");
+        fullCardImg.classList.add("fullCardImgHorizontal");
+    }
+    else {
+        fullCardDiv.classList.add("fullCardDivVertical");
+        fullCardImg.classList.add("fullCardImgVertical");
     }
 
-    return cardDiv;
+    let actionDiv = document.createElement("div");
+    let actionArea = document.createElement("img");
+    actionArea.classList.add("actionArea");
+    actionArea.src = pixelImg;
+    actionArea.style.width = "100%";
+    actionArea.style.height = "100%";
+
+    actionDiv.appendChild(actionArea);
+
+    if (noBorder) {
+        // TODO: Why are we applying a No Border theme? Just do nothing.
+        if (horizontal) {
+            fullCardWrapper.classList.add("noBorderOverlayHorizontal");
+            actionDiv.classList.add("noBorderOverlayHorizontal");
+        }
+        else {
+            fullCardWrapper.classList.add("noBorderOverlayVertical");
+            actionDiv.classList.add("noBorderOverlayVertical");
+        }
+    }
+    else { // Border
+        if (horizontal) {
+            actionDiv.classList.add("borderOverlayHorizontal");
+        }
+        else {
+            actionDiv.classList.add("borderOverlayVertical");
+        }
+    }
+
+    fullCardWrapper.appendChild(fullCardImg);
+    fullCardDiv.appendChild(fullCardWrapper);
+    fullCardDiv.appendChild(actionDiv);
+
+    if (foil && getFoilPresentation() !== 'none') {
+        let foilImageSrc = (getFoilPresentation() === 'animated') ? "foil.gif" : "holo.jpg";
+
+        let foilOverlayDiv = document.createElement("div");
+        //foilOverlayDiv.classList.add("foilOverlay");
+        
+        if (horizontal) {
+            foilOverlayDiv.classList.add("foilOverlayHorizontal");
+        }
+        else {
+            foilOverlayDiv.classList.add("foilOverlayVertical");
+        }
+
+        let foilImg = document.createElement("img");
+        foilImg.src = "/gemp-module/images/" + foilImageSrc; // TODO: don't append this
+        foilImg.style.width = "100%";
+        foilImg.style.height = "100%";
+
+        foilOverlayDiv.appendChild(foilImg);
+        fullCardDiv.appendChild(foilOverlayDiv);
+    }
+
+    let jqFullCardDiv = $(fullCardDiv);
+    return jqFullCardDiv;
 }
 
 export function createSimpleCardDiv(image) {

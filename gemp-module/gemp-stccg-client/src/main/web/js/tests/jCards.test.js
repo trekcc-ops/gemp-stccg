@@ -914,7 +914,7 @@ describe('jquery-card-details-dialog', () => {
 
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
 
-        let expected = `<div style="scroll: auto"></div><div class="fullCardDivVertical"><div class="fullCardWrapper"><img class="fullCardImgVertical" src="${imageUrl}"></div><div class="borderOverlayVertical"><img class="actionArea" src="test-file-stub" width="100%" height="100%"></div></div>`;
+        let expected = `<div style="scroll: auto"></div><div class="fullCardDivVertical"><div class="fullCardWrapper"><img src="${imageUrl}" class="fullCardImgVertical"></div><div class="borderOverlayVertical"><img class="actionArea" src="test-file-stub" style="width: 100%; height: 100%;"></div></div>`;
 
         let container_jq = $('#container');
         
@@ -938,7 +938,7 @@ describe('jquery-card-details-dialog', () => {
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
         cardUnderTest.horizontal = true;
 
-        let expected = `<div style="scroll: auto"></div><div class="fullCardDivHorizontal"><div class="fullCardWrapper"><img class="fullCardImgHorizontal" src="${imageUrl}"></div><div class="borderOverlayHorizontal"><img class="actionArea" src="test-file-stub" width="100%" height="100%"></div></div>`;
+        let expected = `<div style="scroll: auto"></div><div class="fullCardDivHorizontal"><div class="fullCardWrapper"><img src="${imageUrl}" class="fullCardImgHorizontal"></div><div class="borderOverlayHorizontal"><img class="actionArea" src="test-file-stub" style="width: 100%; height: 100%;"></div></div>`;
 
         let container_jq = $('#container');
         
