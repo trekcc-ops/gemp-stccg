@@ -667,7 +667,9 @@ export default class GameTableUI {
         this.infoDialog.html("");
         this.infoDialog.html("<div style='scroll: auto'></div>");
         var floatCardDiv = $("<div style='float: left;'></div>");
-        floatCardDiv.append(createFullCardDiv(card.imageUrl, card.foil, card.horizontal));
+        let cardDiv = createFullCardDiv(card.imageUrl, card.foil, card.horizontal);
+        let jqCardDiv = $(cardDiv);
+        floatCardDiv.append(jqCardDiv);
         this.infoDialog.append(floatCardDiv);
         if (extraSpace) {
             this.infoDialog.append("<div id='cardEffects'></div>");

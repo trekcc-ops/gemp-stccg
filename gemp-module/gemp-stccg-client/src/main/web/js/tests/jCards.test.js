@@ -914,7 +914,7 @@ describe('jquery-card-details-dialog', () => {
 
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
 
-        let expected = `<div style="scroll: auto"></div><div class="fullCardDivVertical"><div class="fullCardWrapper"><img src="${imageUrl}" class="fullCardImgVertical"></div><div class="borderOverlayVertical"><img class="actionArea" src="test-file-stub" style="width: 100%; height: 100%;"></div></div>`;
+        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivVertical\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><img class=\"card_img\" src=\"https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg\" style=\"width: 100%; height: 100%;\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');
         
@@ -938,7 +938,7 @@ describe('jquery-card-details-dialog', () => {
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
         cardUnderTest.horizontal = true;
 
-        let expected = `<div style="scroll: auto"></div><div class="fullCardDivHorizontal"><div class="fullCardWrapper"><img src="${imageUrl}" class="fullCardImgHorizontal"></div><div class="borderOverlayHorizontal"><img class="actionArea" src="test-file-stub" style="width: 100%; height: 100%;"></div></div>`;
+        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivHorizontal\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><img class=\"card_img\" src=\"https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg\" style=\"width: 100%; height: 100%;\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');
         
@@ -1151,119 +1151,95 @@ describe('createFullCardDiv', () => {
     test('default data', () => {
         // valid data
         var image = "img_filepath.jpg";
-        var foil = true; //bool
+        var foil = false; //bool
         var horizontal = false; //bool
-        var noBorder = true; //bool
-        
-        let divUnderTest = createFullCardDiv(image, foil, horizontal, noBorder)[0];
-        let fullcardwrapper = divUnderTest.children[0];
-        let fullcardwrapper_img = fullcardwrapper.children[0];
-        let border_tag = divUnderTest.children[1];
-        let border_img = border_tag.children[0];
-        let foil_tag = divUnderTest.children[2];
-        let foil_img = foil_tag.children[0];
+        var noBorder = false; //bool
+        let divUnderTest = createFullCardDiv(image, foil, horizontal, noBorder);
 
+
+        // other assumed values
+        let text = "";
+        let tokens = false;
+        let errata = false;
+        let upsideDown = false;
+        let cardId; // null
+
+        // card - used for backwards compatibility
+        //   three-d-card-scene - used to impl the 3d effect
+        //     three-d-card - composed of front and back faces
+        //       card_face - one side of the card
+        //         img
+        //         tokenOverlay
+        //         borderOverlay
+        let threeDScene = divUnderTest.children[0];
+        let threeDCard = threeDScene.children[0];
+        let front_face = threeDCard.children[1];
+        let image_tag = front_face.children[0];
+        let border_tag = front_face.children[1];
+        let border_img = border_tag.children[0];
+
+        // null value set to an empty string
+        expect(divUnderTest.textContent).toBe("");
         expect(divUnderTest.classList.contains("fullCardDivVertical")).toBe(true);
 
-        expect(fullcardwrapper.classList.contains("fullCardWrapper")).toBe(true);
-        expect(fullcardwrapper_img.classList.contains("fullCardImgVertical")).toBe(true);
-        expect(fullcardwrapper_img.src).toBe("http://localhost/" + image);
+        // image tags
+        expect(image_tag.src).toBe("http://localhost/" + image);
+        expect(image_tag.classList.contains("card_img")).toBe(true);
+        expect(image_tag.classList.contains("upside-down")).toBe(false);
+        expect(image_tag.classList.contains("card_img_")).toBe(false);
 
-        expect(border_tag.classList.contains("noBorderOverlayVertical")).toBe(true);
-        expect(border_img.classList.contains("actionArea")).toBe(true);
+        // border tag
+        expect(border_tag.classList.contains('borderOverlay')).toBe(true);
+        expect(border_tag.classList.contains('noBorder')).toBe(false);
+        expect(border_img.classList.contains('actionArea')).toBe(true);
         expect(border_img.src).toBe("http://localhost/" + "test-file-stub");
-
-        expect(foil_tag.classList.contains('foilOverlayVertical')).toBe(true);
-        expect(foil_img.src).toBe("http://localhost/gemp-module/images/" + "holo.jpg");
     });
 
-    test('horizontal true', () => {
-        // valid data
-        var image = "img_filepath.jpg";
-        var foil = true; //bool
-        var horizontal = true; //bool
-        var noBorder = true; //bool
-        
-        let divUnderTest = createFullCardDiv(image, foil, horizontal, noBorder)[0];
-        let fullcardwrapper = divUnderTest.children[0];
-        let fullcardwrapper_img = fullcardwrapper.children[0];
-        let border_tag = divUnderTest.children[1];
-        let border_img = border_tag.children[0];
-        let foil_tag = divUnderTest.children[2];
-        let foil_img = foil_tag.children[0];
-
-        expect(divUnderTest.classList.contains("fullCardDivHorizontal")).toBe(true);
-
-        expect(fullcardwrapper.classList.contains("fullCardWrapper")).toBe(true);
-        expect(fullcardwrapper_img.classList.contains("fullCardImgHorizontal")).toBe(true);
-        expect(fullcardwrapper_img.src).toBe("http://localhost/" + image);
-
-        expect(border_tag.classList.contains("noBorderOverlayHorizontal")).toBe(true);
-        expect(border_img.classList.contains("actionArea")).toBe(true);
-        expect(border_img.src).toBe("http://localhost/" + "test-file-stub");
-
-        expect(foil_tag.classList.contains('foilOverlayHorizontal')).toBe(true);
-        expect(foil_img.src).toBe("http://localhost/gemp-module/images/" + "holo.jpg");
-    });
-
-    test('if foil cookie true and foil is true change foil img tag', () => {
-        // valid data
-        var image = "img_filepath.jpg";
-        var foil = true; //bool
-        var horizontal = false; //bool
-        var noBorder = true; //bool
-
-        Cookies.set('foilPresentation', true);
-        
-        let divUnderTest = createFullCardDiv(image, foil, horizontal, noBorder)[0];
-        let fullcardwrapper = divUnderTest.children[0];
-        let fullcardwrapper_img = fullcardwrapper.children[0];
-        let border_tag = divUnderTest.children[1];
-        let border_img = border_tag.children[0];
-        let foil_tag = divUnderTest.children[2];
-        let foil_img = foil_tag.children[0];
-
-        Cookies.set('foilPresentation', false);
-
-        expect(divUnderTest.classList.contains("fullCardDivVertical")).toBe(true);
-
-        expect(fullcardwrapper.classList.contains("fullCardWrapper")).toBe(true);
-        expect(fullcardwrapper_img.classList.contains("fullCardImgVertical")).toBe(true);
-        expect(fullcardwrapper_img.src).toBe("http://localhost/" + image);
-
-        expect(border_tag.classList.contains("noBorderOverlayVertical")).toBe(true);
-        expect(border_img.classList.contains("actionArea")).toBe(true);
-        expect(border_img.src).toBe("http://localhost/" + "test-file-stub");
-
-        expect(foil_tag.classList.contains('foilOverlayVertical')).toBe(true);
-        expect(foil_img.src).toBe("http://localhost/gemp-module/images/" + "foil.gif");
-    });
-
-    test('foil off, no foiloverlay', () => {
+    test('default data but horizontal', () => {
         // valid data
         var image = "img_filepath.jpg";
         var foil = false; //bool
-        var horizontal = false; //bool
-        var noBorder = true; //bool
-        
-        let divUnderTest = createFullCardDiv(image, foil, horizontal, noBorder)[0];
-        let fullcardwrapper = divUnderTest.children[0];
-        let fullcardwrapper_img = fullcardwrapper.children[0];
-        let border_tag = divUnderTest.children[1];
+        var horizontal = true; //bool
+        var noBorder = false; //bool
+        let divUnderTest = createFullCardDiv(image, foil, horizontal, noBorder);
+
+
+        // other assumed values
+        let text = "";
+        let tokens = false;
+        let errata = false;
+        let upsideDown = false;
+        let cardId; // null
+
+        // card - used for backwards compatibility
+        //   three-d-card-scene - used to impl the 3d effect
+        //     three-d-card - composed of front and back faces
+        //       card_face - one side of the card
+        //         img
+        //         tokenOverlay
+        //         borderOverlay
+        let threeDScene = divUnderTest.children[0];
+        let threeDCard = threeDScene.children[0];
+        let front_face = threeDCard.children[1];
+        let image_tag = front_face.children[0];
+        let border_tag = front_face.children[1];
         let border_img = border_tag.children[0];
-        let foil_tag = divUnderTest.children[2];
 
-        expect(divUnderTest.classList.contains("fullCardDivVertical")).toBe(true);
+        // null value set to an empty string
+        expect(divUnderTest.textContent).toBe("");
+        expect(divUnderTest.classList.contains("fullCardDivHorizontal")).toBe(true);
 
-        expect(fullcardwrapper.classList.contains("fullCardWrapper")).toBe(true);
-        expect(fullcardwrapper_img.classList.contains("fullCardImgVertical")).toBe(true);
-        expect(fullcardwrapper_img.src).toBe("http://localhost/" + image);
+        // image tags
+        expect(image_tag.src).toBe("http://localhost/" + image);
+        expect(image_tag.classList.contains("card_img")).toBe(true);
+        expect(image_tag.classList.contains("upside-down")).toBe(false);
+        expect(image_tag.classList.contains("card_img_")).toBe(false);
 
-        expect(border_tag.classList.contains("noBorderOverlayVertical")).toBe(true);
-        expect(border_img.classList.contains("actionArea")).toBe(true);
+        // border tag
+        expect(border_tag.classList.contains('borderOverlay')).toBe(true);
+        expect(border_tag.classList.contains('noBorder')).toBe(false);
+        expect(border_img.classList.contains('actionArea')).toBe(true);
         expect(border_img.src).toBe("http://localhost/" + "test-file-stub");
-
-        expect(foil_tag).toBe(undefined);
     });
 });
 

@@ -10,6 +10,7 @@ import { gatherData, sortOptionsByName, leagueErrorMap } from "../../js/gemp-022
 import { susUserPopulate, banErrorMap } from "../../js/gemp-022/manage.js";
 import TournamentResultsUI from "../../js/gemp-022/tournamentResultsUi.js";
 import { formatPrice, getDateString } from "../../js/gemp-022/common.js";
+import { Card, createFullCardDiv } from "../../js/gemp-022/jCards.js";
 
 var chat;
 var hall;
@@ -56,7 +57,9 @@ document.addEventListener("DOMContentLoaded", function() {
 					var blueprintId = ids[i];
 					var card = new Card(blueprintId, "SPECIAL", "hint", "", "", "", false);
 					horiz = horiz || card.horizontal;
-					floatCardDiv.append(createFullCardDiv(card.imageUrl, card.foil, card.horizontal));
+					let cardDiv = createFullCardDiv(card.imageUrl, card.foil, card.horizontal);
+					let jqCardDiv = $(cardDiv);
+					floatCardDiv.append(jqCardDiv);
 				}
 				
 				infoDialog.append(floatCardDiv);

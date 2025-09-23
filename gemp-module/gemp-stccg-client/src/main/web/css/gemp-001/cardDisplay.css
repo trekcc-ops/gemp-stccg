@@ -31,8 +31,7 @@
     transform: rotateY( 180deg );
 }
 
-
-.card, .card_img, .fullCardImgHorizontal, .fullCardImgVertical {
+.card, .card_img {
     border-radius: 3.5%;
 }
 
@@ -74,42 +73,16 @@
     flex: 0 1 20px;
 }
 
-.fullCardDivHorizontal, .fullCardDivVertical {
-    border-radius: 3.5%;
-    position: relative;
-}
 
-.noBorderOverlayHorizontal, .noBorderOverlayVertical, .borderOverlayHorizontal, .borderOverlayVertical, .foilOverlayHorizontal, .foilOverlayVertical, .fullCardWrapper {
-    border-radius: 3.5%;
-    position: absolute;
-}
-
-.noBorderOverlayHorizontal, .noBorderOverlayVertical {
-    border-width: 0px;
-}
-
-.borderOverlayHorizontal, .borderOverlayVertical {
-    border-width: 16px;
-}
-
-.noBorderOverlayHorizontal, .foilOverlayHorizontal, .fullCardDivHorizontal, .fullCardImgHorizontal {
-    width: 497px;
-    height: 357px;
-}
-
-.noBorderOverlayVertical, .foilOverlayVertical, .fullCardDivVertical, .fullCardImgVertical {
+.fullCardDivHorizontal {
     width: 357px;
     height: 497px;
+    transform: rotate(-0.25turn);
 }
 
-.borderOverlayHorizontal {
-    width: 465px;
-    height: 325px;
-}
-
-.borderOverlayVertical {
-    width: 325px;
-    height: 465px;
+.fullCardDivVertical {
+    width: 357px;
+    height: 497px;
 }
 
 .card-group {
