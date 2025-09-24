@@ -232,7 +232,12 @@ export function getAffiliationHtml(affiliationEnum) {
     // Receives the server enum name for an affiliation and provides an in-line icon
     let iconURL = getAffiliationIcon(affiliationEnum);
     let userFriendlyName = getAffiliationName(affiliationEnum);
-    return "<img src='" + iconURL + "' class='inline-icon' title='" + userFriendlyName + "'>";
+
+    let affiliationImg = document.createElement("img");
+    affiliationImg.src = iconURL;
+    affiliationImg.classList.add("inline-icon");
+    affiliationImg.title = userFriendlyName;
+    return affiliationImg;
 }
 
 export function getFriendlyPhaseName(phaseEnum) {
