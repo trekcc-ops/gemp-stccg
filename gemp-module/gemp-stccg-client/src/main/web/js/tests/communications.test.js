@@ -1,4 +1,6 @@
+import {describe, beforeEach, expect, test} from '@jest/globals';
 import GempClientCommunication from "../gemp-022/communication.js";
+import { userAgent } from '../gemp-022/common.js';
 
 beforeEach(() => {
     // clear any stored fetch mock statistics
@@ -224,4 +226,33 @@ test('getSets handles fetch errors with a console.error', async () => {
     expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
     let lastcall_firstarg = errmock.mock.lastCall[0];
     expect(lastcall_firstarg).toEqual(errmockobj); // Console.error had the expected output.
+});
+
+describe('fetchTrekCCImage', () => {
+    test('sends accept list and useragent in headers', async () => {
+        let thisUrl = "/gemp-stccg-server";
+        let failure = null;
+        let comms = new GempClientCommunication(thisUrl, failure);
+        
+        const server_retval = JSON.stringify(
+            {"updateSetOptions": []}
+        );
+        fetchMock.mockResponse(server_retval);
+        
+        let url = "https://www.trekcc.org/images/icons/1e/1E-BAJ.gif";
+
+        let expected_url = url;
+        let expected_headers = new Headers();
+        expected_headers.append("Accept", "image/png,image/jpeg,image/gif");
+        expected_headers.append("User-Agent", userAgent);
+
+        let actual = await comms.fetchTrekCCImage(url);
+        
+        expect(fetch.mock.calls.length).toEqual(1) // Fetch was called once
+        let lastcall_url = fetch.mock.lastCall[0];
+        let lastcall_headers = fetch.mock.lastCall[1]["headers"];
+
+        expect(lastcall_url).toEqual(expected_url); // Fetch called the right URL
+        expect(lastcall_headers).toEqual(expected_headers); // Fetch sent the right body
+    });
 });

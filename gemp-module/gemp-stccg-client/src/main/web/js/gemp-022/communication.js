@@ -1,4 +1,4 @@
-import { getUrlParam } from './common.js';
+import { getUrlParam, userAgent } from './common.js';
 
 export default class GempClientCommunication {
     constructor(url, failure) {
@@ -1093,5 +1093,28 @@ export default class GempClientCommunication {
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
+    }
+
+    async fetchTrekCCImage(url) {
+        try {
+            const imgReqHeaders = new Headers();
+            imgReqHeaders.append("Accept", "image/png,image/jpeg,image/gif");
+            imgReqHeaders.append("User-Agent", userAgent);
+            let response = await fetch(url, {
+                method: "GET",
+                headers: imgReqHeaders
+            });
+            
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            else {
+                let retval = await response.blob();
+                return retval;
+            }
+        }
+        catch(error) {
+            console.error({"fetchTrekCCImage fetch error": error.message});
+        }
     }
 };
