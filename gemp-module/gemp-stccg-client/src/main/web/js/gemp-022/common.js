@@ -241,6 +241,29 @@ export function getAffiliationHtml(affiliationEnum) {
     return affiliationImg;
 }
 
+export function getAffiliationHtmlAsync(comms, affiliationEnum) {
+    // Receives the server enum name for an affiliation and provides an in-line icon
+    let iconURL = getAffiliationIcon(affiliationEnum);
+    let imageBlobPromise = comms.fetchTrekCCImage(iconURL);
+    return imageBlobPromise.then((imageBlob) => {
+        let imageUrlResource = URL.createObjectURL(imageBlob);
+        console.log(`imageBlob: ${imageBlob}`);
+        console.log(`imageUrlResource: ${imageUrlResource}`);
+
+        let userFriendlyName = getAffiliationName(affiliationEnum);
+
+        let affiliationImg = document.createElement("img");
+        affiliationImg.src = imageUrlResource;
+        affiliationImg.classList.add("inline-icon");
+        affiliationImg.title = userFriendlyName;
+        return affiliationImg;
+    })
+    .catch((error) => {
+        console.error({"getAffiliationHtml fetch error": error.message});
+        return;
+    });
+}
+
 export function getFriendlyPhaseName(phaseEnum) {
     switch(phaseEnum) {
         case "BETWEEN_TURNS":

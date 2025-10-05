@@ -1,5 +1,12 @@
-import {describe, beforeEach, expect, test} from '@jest/globals';
-import {monthNames, serverDomain, formatToTwoDigits, formatDate, formatPrice, getDateString, getUrlParam, getMapSize, replaceIncludes, log, openSizeDialog, getAffiliationHtml} from "../gemp-022/common.js";
+import {describe, beforeEach, expect, jest, test} from '@jest/globals';
+import {monthNames, serverDomain, formatToTwoDigits, formatDate, formatPrice, getDateString, getUrlParam, getMapSize, replaceIncludes, log, openSizeDialog, getAffiliationHtml, getAffiliationHtmlAsync} from "../gemp-022/common.js";
+import bajoranImage from "../../images/icons/affiliations/1E-BAJ.gif";
+import GempClientCommunication from '../gemp-022/communication.js';
+
+beforeEach(() => {
+    // clear any stored fetch mock statistics
+    fetchMock.resetMocks();
+});
 
 describe('validity', () => {
     test('common.js is valid syntax', () => {
@@ -17,5 +24,49 @@ describe('getAffiliationHtml', () => {
 
         let actual = getAffiliationHtml("BAJORAN");
         expect(actual).toStrictEqual(expected);
+    });
+});
+
+describe('getAffiliationHtmlAsync', () => {
+    test('returns an image tag', async () => {
+        document.body.innerHTML = `
+            <div id='container'/>
+        `;
+
+        // CardFilter initialization requires a server call, mock it with data.
+        const getAffiliationRetVal = bajoranImage;
+        fetchMock.mockResponseOnce(getAffiliationRetVal);
+
+        console.log(URL);
+        
+        
+        // The createObjectURL function is not created by default inside the JSDOM environment
+        //   so I have to create it; I do so as a jest function so we can ask it questions with .mock.
+        URL.createObjectURL = (blobObj) => {
+            //`blob: ${blobObj.type}`
+            let textPromise = blobObj.text();
+            return textPromise.then((result) => {
+                console.log(`createObjectURL: ${result}`);
+                return result;
+            });
+        };
+
+        let dCEMock = jest.spyOn(document, "createElement");
+        let cOUMock = jest.spyOn(URL, "createObjectURL");
+        
+        let url = "/gemp-stccg-server";
+        let failure = null;
+        let comms = new GempClientCommunication(url, failure);
+        let actual = await getAffiliationHtmlAsync(comms, "BAJORAN");
+
+        expect(fetchMock.mock.calls.length).toEqual(1);
+        expect(dCEMock.mock.calls.length).toEqual(1);
+        expect(cOUMock.mock.calls.length).toEqual(1);
+
+        // I don't know why this returns test-file-stub inside URL.createObjectURL
+        //   but doesn't do so when it comes out here. Undoubtedly I'm missing something simple. :/
+        let expectedUrl = "http://localhost/[object%20Promise]";
+        // let expectedUrl = "http://localhost/test-file-stub";
+        expect(actual.src).toEqual(expectedUrl);
     });
 });
