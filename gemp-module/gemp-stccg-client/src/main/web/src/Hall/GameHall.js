@@ -10,7 +10,8 @@ import { gatherData, sortOptionsByName, leagueErrorMap } from "../../js/gemp-022
 import { susUserPopulate, banErrorMap } from "../../js/gemp-022/manage.js";
 import TournamentResultsUI from "../../js/gemp-022/tournamentResultsUi.js";
 import { formatPrice, getDateString } from "../../js/gemp-022/common.js";
-import { Card, createFullCardDiv } from "../../js/gemp-022/jCards.js";
+import Card from "../../js/gemp-022/jCards.js";
+import { createFullCardDiv } from "../../js/gemp-022/jCards.js";
 
 var chat;
 var hall;
