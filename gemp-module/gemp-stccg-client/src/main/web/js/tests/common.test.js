@@ -37,7 +37,7 @@ describe('getAffiliationHtmlAsync', () => {
         const getAffiliationRetVal = bajoranImage;
         fetchMock.mockResponseOnce(getAffiliationRetVal);
 
-        console.log(URL);
+        //console.log(URL);
         
         
         // The createObjectURL function is not created by default inside the JSDOM environment
@@ -46,7 +46,7 @@ describe('getAffiliationHtmlAsync', () => {
             //`blob: ${blobObj.type}`
             let textPromise = blobObj.text();
             return textPromise.then((result) => {
-                console.log(`createObjectURL: ${result}`);
+                //console.log(`createObjectURL: ${result}`);
                 return result;
             });
         };

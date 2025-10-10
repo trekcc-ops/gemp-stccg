@@ -247,8 +247,8 @@ export function getAffiliationHtmlAsync(comms, affiliationEnum) {
     let imageBlobPromise = comms.fetchTrekCCImage(iconURL);
     return imageBlobPromise.then((imageBlob) => {
         let imageUrlResource = URL.createObjectURL(imageBlob);
-        console.log(`imageBlob: ${imageBlob}`);
-        console.log(`imageUrlResource: ${imageUrlResource}`);
+        //console.log(`imageBlob: ${imageBlob}`);
+        //console.log(`imageUrlResource: ${imageUrlResource}`);
 
         let userFriendlyName = getAffiliationName(affiliationEnum);
 
