@@ -88,3 +88,28 @@
 .card-group {
     border-radius: 7px;
 }
+
+.card-load-spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(farthest-side,#766DF4 94%,#0000) top/8px 8px no-repeat,
+    conic-gradient(#0000 30%,#766DF4);
+  mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+  animation:s3 1s infinite linear;
+  /* center it in both directions */
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+@keyframes s3{ 
+  100%{transform: rotate(1turn)}
+}
