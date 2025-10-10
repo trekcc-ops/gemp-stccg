@@ -4,6 +4,8 @@ import {cardCache, cardScale, packBlueprints, createCardDiv, getFoilPresentation
 import Card from "../gemp-022/jCards.js";
 
 beforeEach(() => {
+    // clear any stored fetch mock statistics
+    fetchMock.resetMocks();
 });
 
 describe('validity', () => {
@@ -914,7 +916,7 @@ describe('jquery-card-details-dialog', () => {
 
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
 
-        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivVertical\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><img class=\"card_img\" src=\"https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg\" style=\"width: 100%; height: 100%;\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
+        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivVertical\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');
         
@@ -938,7 +940,7 @@ describe('jquery-card-details-dialog', () => {
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
         cardUnderTest.horizontal = true;
 
-        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivHorizontal\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><img class=\"card_img\" src=\"https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg\" style=\"width: 100%; height: 100%;\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
+        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivHorizontal\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');
         
@@ -971,20 +973,22 @@ describe('createCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let image_tag = front_face.children[0];
-        let errata_tag = front_face.children[1];
+        let loading_spinner = front_face.children[0];
+        let image_tag = front_face.children[1];
+        let errata_tag = front_face.children[2];
         let errata_img = errata_tag.children[0];
-        let foil_tag = front_face.children[2];
+        let foil_tag = front_face.children[3];
         let foil_img = foil_tag.children[0];
-        let tokens_tag = front_face.children[3];
-        let border_tag = front_face.children[4];
+        let tokens_tag = front_face.children[4];
+        let border_tag = front_face.children[5];
         let border_img = border_tag.children[0];
 
         // null value set to an empty string
         expect(divUnderTest.textContent).toBe("");
 
         // image tags
-        expect(image_tag.src).toBe("http://localhost/" + image);
+        expect(image_tag.src).toBe(""); // we dynamically fetch now, no src until loaded
+        expect(fetchMock.mock.calls.length).toEqual(1); // verify we tried to fetch
         expect(image_tag.classList.contains("card_img")).toBe(true);
         expect(image_tag.classList.contains("upside-down")).toBe(true);
         expect(image_tag.classList.contains("card_img_")).toBe(false);
@@ -1024,7 +1028,7 @@ describe('createCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let foil_tag = front_face.children[2];
+        let foil_tag = front_face.children[3];
         let foil_img = foil_tag.children[0];
 
         Cookies.remove('foilPresentation'); // clean up cookie before potentially failing
@@ -1049,7 +1053,7 @@ describe('createCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let image_tag = front_face.children[0];
+        let image_tag = front_face.children[1];
 
         expect(image_tag.classList.contains("card_img_1234")).toBe(true);
     });
@@ -1069,7 +1073,8 @@ describe('createCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let image_tag = front_face.children[0];
+        let loading_spinner = front_face.children[0];
+        let image_tag = front_face.children[1];
 
         expect(image_tag.classList.contains("card_img_what")).toBe(true);
     });
@@ -1089,13 +1094,14 @@ describe('createCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let image_tag = front_face.children[0];
+        let loading_spinner = front_face.children[0];
+        let image_tag = front_face.children[1];
 
         // null value set to an empty string
         expect(divUnderTest.textContent).toBe("");
 
         // image tags
-        expect(image_tag.src).toBe("http://localhost/" + image);
+        expect(image_tag.src).toBe(""); // we dynamically fetch now, no src until loaded
         expect(image_tag.classList.contains("card_img")).toBe(true);
         expect(image_tag.classList.contains("upside-down")).toBe(false);
         expect(image_tag.classList.contains("card_img_")).toBe(false);
@@ -1116,13 +1122,14 @@ describe('createCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let image_tag = front_face.children[0];
+        let loading_spinner = front_face.children[0];
+        let image_tag = front_face.children[1];
 
         // null value set to an empty string
         expect(divUnderTest.textContent).toBe("");
 
         // image tags
-        expect(image_tag.src).toBe("http://localhost/" + image);
+        expect(image_tag.src).toBe(""); // we dynamically fetch now, no src until loaded
         expect(image_tag.classList.contains("card_img")).toBe(true);
         expect(image_tag.classList.contains("upside-down")).toBe(false);
         expect(image_tag.classList.contains("card_img_1234")).toBe(true);
@@ -1174,8 +1181,9 @@ describe('createFullCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let image_tag = front_face.children[0];
-        let border_tag = front_face.children[1];
+        let loading_spinner = front_face.children[0];
+        let image_tag = front_face.children[1];
+        let border_tag = front_face.children[2];
         let border_img = border_tag.children[0];
 
         // null value set to an empty string
@@ -1183,7 +1191,8 @@ describe('createFullCardDiv', () => {
         expect(divUnderTest.classList.contains("fullCardDivVertical")).toBe(true);
 
         // image tags
-        expect(image_tag.src).toBe("http://localhost/" + image);
+        expect(image_tag.src).toBe(""); // we dynamically fetch now, no src until loaded
+        expect(fetchMock.mock.calls.length).toEqual(1); // verify we tried to fetch
         expect(image_tag.classList.contains("card_img")).toBe(true);
         expect(image_tag.classList.contains("upside-down")).toBe(false);
         expect(image_tag.classList.contains("card_img_")).toBe(false);
@@ -1221,8 +1230,9 @@ describe('createFullCardDiv', () => {
         let threeDScene = divUnderTest.children[0];
         let threeDCard = threeDScene.children[0];
         let front_face = threeDCard.children[1];
-        let image_tag = front_face.children[0];
-        let border_tag = front_face.children[1];
+        let loading_spinner = front_face.children[0];
+        let image_tag = front_face.children[1];
+        let border_tag = front_face.children[2];
         let border_img = border_tag.children[0];
 
         // null value set to an empty string
@@ -1230,7 +1240,7 @@ describe('createFullCardDiv', () => {
         expect(divUnderTest.classList.contains("fullCardDivHorizontal")).toBe(true);
 
         // image tags
-        expect(image_tag.src).toBe("http://localhost/" + image);
+        expect(image_tag.src).toBe(""); // we dynamically fetch now, no src until loaded
         expect(image_tag.classList.contains("card_img")).toBe(true);
         expect(image_tag.classList.contains("upside-down")).toBe(false);
         expect(image_tag.classList.contains("card_img_")).toBe(false);
