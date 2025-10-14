@@ -1144,10 +1144,56 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
 
 
     getDeckHtml(deckJson) {
+        let cardListDiv = document.createElement("div");
+        
+        let formatDiv = document.createElement("div");
+        let formatH2 = document.createElement("h2");
+        formatH2.append(`Format: ${deckJson.targetFormat.formatName}`);
+        formatDiv.append(formatH2);
+        cardListDiv.append(formatDiv);
+
+        for (const key in deckJson.cards) {
+            if (Object.prototype.hasOwnProperty.call(deckJson.cards, key)) {
+                let subDeckName = key;
+
+                let subDeckNameHeader = document.createElement("div");
+                let subDeckNameBold = document.createElement("b");
+                subDeckNameBold.append(`${subDeckName}`);
+                subDeckNameHeader.append(subDeckNameBold);
+                cardListDiv.append(subDeckNameHeader);
+
+                // TODO: Spans here is pretty terrible and a relic of passing raw html.
+                // We need an absolute positioned block item probably.
+                
+                let cardsInSubDeck = deckJson.cards[key];
+                for (const card of cardsInSubDeck) {
+                    let cardDiv = document.createElement("div");
+                    let cardTitleAndCountSpan = document.createElement("span");
+                    cardTitleAndCountSpan.classList.add("tooltip");
+                    let cardTitle = card.cardTitle;
+                    cardTitleAndCountSpan.append(`${cardTitle}`);
+
+                    let cardImageSpan = document.createElement("span");
+                    let cardDivTag = createCardDiv(card.imageUrl, card.cardTitle, false, false, false, false, false, null);
+                    cardDivTag.classList.add("ttimage");
+                    cardImageSpan.append(cardDivTag);
+                    cardTitleAndCountSpan.append(cardImageSpan);
+
+                    cardTitleAndCountSpan.append(` x${card.count}`);
+                    
+                    cardDiv.append(cardTitleAndCountSpan)
+                    cardListDiv.append(cardDiv);
+                }
+            }
+        }
+        
+        //console.log(deckJson);
+
+        /*
         let html = "";
         html = html + "<h2>Format: " + deckJson.targetFormat.formatName + "</h2><br/>";
         for (const key in deckJson.cards) {
-            if (deckJson.cards.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(deckJson.cards, key)) {
                 let subDeck = key;
                 html = html + "<br/><b>" + subDeck + "</b><br/>";
                 let value = deckJson.cards[key];
@@ -1161,9 +1207,26 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
                 }
             }
         }
+        
         if (deckJson.notes != null && deckJson.notes != "null") {
             html = html + "<h3>Notes:<br/>" + deckJson.notes.replaceAll("\n", "<br/>");
         }
-        return html;
+        */
+        if (deckJson.notes != null && deckJson.notes != "null") {
+            let notesDiv = document.createElement("div");
+            let notesH3 = document.createElement("h3");
+            notesH3.append("Notes:")
+            notesDiv.append(notesH3);
+
+            let notesText = document.createElement("div");
+            notesText.append(`${deckJson.notes.replaceAll("\n", "<br/>")}`); // TODO: Improve somewhat
+            notesDiv.append(notesText);
+
+            cardListDiv.append(notesDiv);
+        }
+
+        let cardListDivJQ = $(cardListDiv);
+
+        return cardListDivJQ;
     }
 }
