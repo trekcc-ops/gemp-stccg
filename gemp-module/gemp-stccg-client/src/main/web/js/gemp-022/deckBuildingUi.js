@@ -1238,6 +1238,8 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
         for (const card of imageMatches) {
             let srcAttribute = card.getAttribute("src");
             if (srcAttribute != null && srcAttribute !== "") {
+                // TODO: Need to also ensure the URL isn't in use in the 
+                // card search results pane or an image there will break (but only in Chrome!).
                 URL.revokeObjectURL(srcAttribute);
             }
         }
