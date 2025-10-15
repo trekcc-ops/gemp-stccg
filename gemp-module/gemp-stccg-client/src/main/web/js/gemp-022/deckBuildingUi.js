@@ -1137,6 +1137,8 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
                 modal:true
             });
 
+        deckDetailsDialog.on("dialogbeforeclose", this.discardDeckHtml);
+
         let htmlText = this.getDeckHtml(deckJson);
         deckDetailsDialog.append(htmlText);
         deckDetailsDialog.dialog("open");
@@ -1228,5 +1230,16 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
         let cardListDivJQ = $(cardListDiv);
 
         return cardListDivJQ;
+    }
+
+    discardDeckHtml(event, _ui) {
+        let deckDetailsDialog = event.target;
+        let imageMatches = deckDetailsDialog.querySelectorAll('img[class="card_img"]');
+        for (const card of imageMatches) {
+            let srcAttribute = card.getAttribute("src");
+            if (srcAttribute != null && srcAttribute !== "") {
+                URL.revokeObjectURL(srcAttribute);
+            }
+        }
     }
 }
