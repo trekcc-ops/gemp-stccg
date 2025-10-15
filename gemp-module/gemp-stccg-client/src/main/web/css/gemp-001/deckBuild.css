@@ -206,7 +206,7 @@ button.navigation-butt {
     display: flex;
 }
 
-.deckDetailsDialog {
+#deckDetailsDialog {
     display: none;
 }
 

@@ -1126,7 +1126,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
     }
 
     showLibraryDeckInHtml(deckJson) {
-        let deckDetailsDialog = $('<div class="deckDetailsDialog"></div>')
+        let deckDetailsDialog = $('<div id="deckDetailsDialog"></div>')
             .dialog({
                 title:"Details for '" + deckJson.deckName + "' Deck",
                 autoOpen:false,
