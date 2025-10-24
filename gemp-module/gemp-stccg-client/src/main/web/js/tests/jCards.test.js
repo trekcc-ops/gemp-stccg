@@ -1054,6 +1054,22 @@ describe('createCardDiv', () => {
         expect(image_tag.classList.contains("card_img_1234")).toBe(true);
     });
 
+    test('card id also set as top level id', () => {
+        // valid data
+        var image = "img_filepath.jpg";
+        var text; //null or str
+        var foil = true; //bool
+        var tokens = true; //undef or bool
+        var noBorder = true; //bool
+        var errata = true; //bool
+        var upsideDown = true; //bool
+        var cardId = "1234"; // null or str
+        
+        let divUnderTest = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId);
+
+        expect(divUnderTest.id).toStrictEqual("1234");
+    });
+
     test('card ids could be any string', () => {
         // valid data
         var image = "img_filepath.jpg";

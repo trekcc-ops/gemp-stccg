@@ -114,7 +114,11 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "DOWNLOAD_CARD": // no animation, currently this is just a wrapper for PLAY_CARD
         case "ENCOUNTER_SEED_CARD": // no animation
         case "OVERCOME_DILEMMA": // no animation
-        case "PLACE_CARD_ON_MISSION": // no animation included yet
+            break;
+        case "PLACE_CARD_ON_MISSION":
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
+            gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             break;
         case "REVEAL_SEED_CARD":
             gameAnimations.revealCard(jsonAction.targetCardId, jsonGameState).then(() => {return});
@@ -279,7 +283,22 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         }
         case "FAIL_DILEMMA":
         case "OVERCOME_DILEMMA":
-        case "PLACE_CARD_ON_MISSION":
+            break;
+        case "PLACE_CARD_ON_MISSION": {
+            let cardId = jsonAction.targetCardId;
+            targetCard = jsonGameState.visibleCardsInGame[cardId];
+            let location;
+            for (const spacelineLocation of jsonGameState.spacelineLocations) {
+                if (spacelineLocation.locationId == targetCard.locationId) {
+                    location = spacelineLocation;
+                    break;
+                }
+            }
+            let missionId = location.missionCardIds[0]; // just get the first one
+            message = showLinkableCardTitle(targetCard) + " was placed on " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[missionId]) + ".";
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        }
         case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
         case "PLACE_CARDS_BENEATH_DRAW_DECK":
         case "REMOVE_CARDS_FROM_PRESEED_STACK":
