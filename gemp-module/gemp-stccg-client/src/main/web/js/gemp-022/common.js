@@ -2,7 +2,7 @@ import goldImg from '../../images/gold.png';
 import silverImg from '../../images/silver.png';
 import { createTheme } from '@mui/material/styles';
 
-export const userAgent = "Nebula/0.0.1 (pre-alpha)";
+export const userAgent = "Velara/0.0.1 (pre-alpha)"; // See TNG s01e18 "Home Soil"
 
 export const theme = createTheme({
   palette: {
