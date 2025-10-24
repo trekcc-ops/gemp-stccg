@@ -31,7 +31,14 @@
     transform: rotateY( 180deg );
 }
 
-.card, .card_img {
+.card__face--front {
+    background-color:#596ac2;
+    align-content: center;
+    text-align: center;
+}
+
+
+.card, .card_img, .fullCardImgHorizontal, .fullCardImgVertical {
     border-radius: 3.5%;
 }
 

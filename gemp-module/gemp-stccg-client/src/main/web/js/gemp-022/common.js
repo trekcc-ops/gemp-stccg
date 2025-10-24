@@ -114,6 +114,7 @@ export const zones_all = [
     "SPACELINE",
     "AT_LOCATION",
     "ATTACHED",
+    "PLACED_ON_MISSION",
     "REMOVED",
     "PLAY_PILE",
     "HAND",

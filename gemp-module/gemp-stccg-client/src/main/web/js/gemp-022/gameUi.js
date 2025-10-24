@@ -1693,10 +1693,17 @@ export class ST1EGameTableUI extends GameTableUI {
 
         this.locationDivs.splice(index, 0, newDiv);
 
+        let missionOrOnTopOfMission = function(card) {
+            if (card.locationIndex == this.locationIndex) {
+                if (card.zone == "SPACELINE" || card.zone == "PLACED_ON_MISSION") {
+                    return true;
+                }
+            }
+            // else
+            return false;
+        };
         // TODO - MissionCardGroup class exists for this, but using TableCardGroup to test beaming function
-        let missionCardGroup = new TableCardGroup($("#main"), function (card) {
-            return (card.zone == "SPACELINE" && card.locationIndex == this.locationIndex );
-        }, false, index, this.bottomPlayerId);
+        let missionCardGroup = new TableCardGroup($("#main"), missionOrOnTopOfMission, false, index, this.bottomPlayerId);
         this.missionCardGroups.splice(index, 0, missionCardGroup);
 
         let opponentAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {

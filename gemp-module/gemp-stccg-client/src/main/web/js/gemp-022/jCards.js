@@ -379,7 +379,9 @@ async function fetchTrekCCImage(url) {
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
     let baseCardDiv = document.createElement("div");
     baseCardDiv.classList.add("card");
-    baseCardDiv.textContent = (text) ? text : "";
+    if (cardId != null) {
+        baseCardDiv.id = cardId.toString(); // coerce to string just in case
+    }
 
     let threeDScene = document.createElement("div");
     threeDScene.classList.add("three-d-card-scene");
@@ -431,6 +433,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     
     imageTag.style.width = "100%";
     imageTag.style.height = "100%";
+    imageTag.alt = (text) ? text : "";
 
     front_face.appendChild(imageTag);
 
@@ -543,12 +546,24 @@ export function createFullCardDiv(image, foil, horizontal, noBorder) {
     return fullCardDiv;
 }
 
-export function createSimpleCardDiv(image) {
-    var cardDiv = $("<div class='card'><img src='" + image + "' width='100%' height='100%'></div>");
+export function createSimpleCardDiv(image, alt_text="") {
+    let cardDiv = document.createElement("div");
+    cardDiv.classList.add("card");
 
-    return cardDiv;
+    let imageElem = document.createElement("img");
+    imageElem.src = image;
+    imageElem.alt = alt_text;
+    imageElem.width = "100%";
+    imageElem.height = "100%";
+
+    cardDiv.appendChild(imageElem);
+
+    let jqCardDiv = $(cardDiv);
+
+    return jqCardDiv;
 }
 
+// TODO: Work on replacing this with standard DOM ID lookups.
 export function getCardDivFromId(cardId) {
     // This depends on the $.expr[':'].cardId variable set in gameUi.js
     return $(".card:cardId(" + cardId + ")");

@@ -204,7 +204,8 @@ export function getActionInitiationCardActionMap(action, gameState) {
             return cardActionMap;
         case "BATTLE":
             // TODO - Will need additional implementation for this once we have multiple battle options
-            cardActionMap.set(getTopMissionCardIdForLocation(gameState, action.locationId), "Initiate battle");
+            // BUG: locationId not sent from server side, commenting this out.
+            //      cardActionMap.set(getTopMissionCardIdForLocation(gameState, action.locationId), "Initiate battle");
             return cardActionMap;
         case "BEAM_CARDS":
             // performingCardId for this action represents the card whose transporters are used
