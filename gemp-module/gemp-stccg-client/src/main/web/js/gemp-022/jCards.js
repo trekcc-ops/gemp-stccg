@@ -362,8 +362,11 @@ async function fetchTrekCCImage(url) {
             throw new Error(response.statusText);
         }
         else {
-            let retval = await response.blob();
-            return retval;
+            let blob = await response.blob();
+            // NOTE: It is up to the caller to revoke this object URL via
+            //       URL.revokeObjectURL(url) if they want to reclaim the memory.
+            let url = URL.createObjectURL(blob);
+            return url;
         }
     }
     catch(error) {

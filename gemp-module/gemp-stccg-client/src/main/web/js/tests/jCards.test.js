@@ -1,7 +1,18 @@
-import {describe, beforeEach, expect, test} from '@jest/globals';
+import {describe, beforeEach, expect, test, beforeAll} from '@jest/globals';
 import Cookies from "js-cookie";
 import {cardCache, cardScale, packBlueprints, createCardDiv, getFoilPresentation, createFullCardDiv, createSimpleCardDiv, getCardDivFromId} from "../gemp-022/jCards.js";
 import Card from "../gemp-022/jCards.js";
+
+beforeAll(() => {
+    // The createObjectURL function is not created by default inside the JSDOM environment
+    //   so I have to create it; I do so as a jest function so we can ask it questions with .mock.
+    URL.createObjectURL = (blobObj) => {
+        let textPromise = blobObj.text();
+        return textPromise.then((result) => {
+            return result;
+        });
+    };
+});
 
 beforeEach(() => {
     // clear any stored fetch mock statistics
