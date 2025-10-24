@@ -1233,13 +1233,47 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
     }
 
     discardDeckHtml(event, _ui) {
+        // This function removes the in-memory result of URLs that were stored as blobs via fetch(),
+        // returning their memory to the browser. On Firefox, this would correctly only remove
+        // the image loaded in the dialog box, but on Chrome, all graphics sharing the same URL are
+        // removed.
+        //
+        // If a card is shown in the dialog and in the loaded deck or in the search
+        // results, that image would accidentally be removed too, which we don't want.
+        // So, search for any duplicates and leave those in memory.
+        //
+        // See reasoning and examples of behavior at https://stackoverflow.com/a/73498140
+
         let deckDetailsDialog = event.target;
-        let imageMatches = deckDetailsDialog.querySelectorAll('img[class="card_img"]');
-        for (const card of imageMatches) {
-            let srcAttribute = card.getAttribute("src");
+        let notDialogSrcURLs = new Set();
+
+        // Collect image urls from deck pane, in background
+        let deckPane = document.querySelector("#deckDiv");
+        let deckPaneImageMatches = deckPane.querySelectorAll('img[class="card_img"]');
+        for (const deckPaneCard in deckPaneImageMatches) {
+            let srcAttribute = deckPaneCard.getAttribute("src");
             if (srcAttribute != null && srcAttribute !== "") {
-                // TODO: Need to also ensure the URL isn't in use in the 
-                // card search results pane or an image there will break (but only in Chrome!).
+                notDialogSrcURLs.add(srcAttribute);
+            }
+        }
+
+        // Collect image urls from search pane, in background
+        let searchPane = document.querySelector("#collection-display");
+        let searchPaneImageMatches = searchPane.querySelectorAll('img[class="card_img"]');
+        for (const searchPaneCard in searchPaneImageMatches) {
+            let srcAttribute = searchPaneCard.getAttribute("src");
+            if (srcAttribute != null && srcAttribute !== "") {
+                notDialogSrcURLs.add(srcAttribute);
+            }
+        }
+
+        // Determine if we can safely remove the image URL used in the dialog, then do so.
+        let dialogImageMatches = deckDetailsDialog.querySelectorAll('img[class="card_img"]');
+        for (const dialogCard of dialogImageMatches) {
+            let srcAttribute = dialogCard.getAttribute("src");
+            if (srcAttribute != null && // not undefined
+                srcAttribute !== "" && // not empty string
+                notDialogSrcURLs.has(srcAttribute) == false) { // and not used elsewhere on the page
                 URL.revokeObjectURL(srcAttribute);
             }
         }
