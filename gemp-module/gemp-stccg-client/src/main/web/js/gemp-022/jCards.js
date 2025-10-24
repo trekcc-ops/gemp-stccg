@@ -529,13 +529,13 @@ export function getFoilPresentation() {
     return "static";
 }
 
-export function createFullCardDiv(image, foil, horizontal, noBorder) {
-    let text = "";
+export function createFullCardDiv(image, foil, horizontal, noBorder, text) {
+    let alt = (text) ? text : "";
     let tokens = false;
     let errata = false;
     let upsideDown = false;
     let cardId;
-    let fullCardDiv = createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId);
+    let fullCardDiv = createCardDiv(image, alt, foil, tokens, noBorder, errata, upsideDown, cardId);
     if (horizontal) {
         fullCardDiv.classList.add("fullCardDivHorizontal");
     }

@@ -518,11 +518,12 @@ export default class GameTableUI {
             let cardId = "hint";
             let noOwner = "";
             let imageUrl = tar.attr("card_img_url");
+            let title = tar.attr("data-title");
             let emptyLocationIndex = "";
             let upsideDown = false;
 
             let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-            this.displayCard(card, false);
+            this.displayCard(card, false, title);
             event.stopPropagation();
             return false;
         }
@@ -663,11 +664,12 @@ export default class GameTableUI {
         return true;
     }
 
-    displayCard(card, extraSpace) {
+    displayCard(card, extraSpace, card_title) {
         this.infoDialog.html("");
         this.infoDialog.html("<div style='scroll: auto'></div>");
         var floatCardDiv = $("<div style='float: left;'></div>");
-        let cardDiv = createFullCardDiv(card.imageUrl, card.foil, card.horizontal);
+        let noborder = false;
+        let cardDiv = createFullCardDiv(card.imageUrl, card.foil, card.horizontal, noborder, card_title);
         let jqCardDiv = $(cardDiv);
         floatCardDiv.append(jqCardDiv);
         this.infoDialog.append(floatCardDiv);

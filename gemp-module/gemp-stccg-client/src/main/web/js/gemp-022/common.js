@@ -142,7 +142,7 @@ export function showLinkableCardTitle(cardNode) {
     let imageUrl = cardNode.imageUrl; // string
 
     let html = "";
-    html = html + "<div class='cardHint' value='" + blueprintId + "' card_img_url='" + imageUrl + "'>";
+    html = html + `<div class='cardHint' value='${blueprintId}' card_img_url='${imageUrl}' data-title='${title}'>`;
     if (hasUniversalIcon) {
         html = html + "&#x2756&nbsp;"; // unicode for universal symbol
     }
