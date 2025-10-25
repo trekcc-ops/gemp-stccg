@@ -791,7 +791,7 @@ export default class GempLotrDeckBuildingUI {
 
     addAllCardsToDeck(deckJson) {
         for (const key in deckJson.cards) {
-            if (deckJson.cards.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(deckJson.cards, key)) {
                 let subDeck = key;
                 let value = deckJson.cards[key];
                 for (const card of value) {
