@@ -626,12 +626,7 @@ export default class GempLotrDeckBuildingUI {
         container.append(cardDiv);
         return cardDiv;
     }
-
-    addCardToDeckDontLayout(blueprintId, imageUrl, zone) {
-        var that = this;
-        this.addCardToDeck(blueprintId, imageUrl, zone);
-    }
-
+    
     addCardToDeckAndLayout(cardElem, imageUrl, zone) {
         var that = this;
         let cardData = cardElem.data("card");
@@ -1208,31 +1203,6 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
             }
         }
         
-        //console.log(deckJson);
-
-        /*
-        let html = "";
-        html = html + "<h2>Format: " + deckJson.targetFormat.formatName + "</h2><br/>";
-        for (const key in deckJson.cards) {
-            if (Object.prototype.hasOwnProperty.call(deckJson.cards, key)) {
-                let subDeck = key;
-                html = html + "<br/><b>" + subDeck + "</b><br/>";
-                let value = deckJson.cards[key];
-                for (const card of value) {
-                    let cardTitle = card.cardTitle;
-                    let imageUrl = card.imageUrl;
-                    let count = card.count;
-                    html = html + "<span class='tooltip'>" + cardTitle;
-                    html = html + "<span><img class='ttimage' src='" + imageUrl + "'></span></span>"
-                    html = html + " x" + count + "<br/>"
-                }
-            }
-        }
-        
-        if (deckJson.notes != null && deckJson.notes != "null") {
-            html = html + "<h3>Notes:<br/>" + deckJson.notes.replaceAll("\n", "<br/>");
-        }
-        */
         if (deckJson.notes != null && deckJson.notes != "null") {
             let notesDiv = document.createElement("div");
             let notesH3 = document.createElement("h3");
