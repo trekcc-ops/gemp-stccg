@@ -3,7 +3,10 @@ import silverImg from '../../images/silver.png';
 import { createTheme } from '@mui/material/styles';
 import { fetchImage } from './communication.js';
 
-export const userAgent = "Velara/0.0.1 (pre-alpha)"; // See TNG s01e18 "Home Soil"
+export const softwareName = "Velara"; // See TNG s01e18 "Home Soil"
+export const versionNumber = "0.0.1";
+export const versionDescription = "Pre-alpha";
+export const userAgent = `${softwareName}/${versionNumber} (${versionDescription})`;
 
 export const theme = createTheme({
   palette: {
