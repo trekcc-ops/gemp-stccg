@@ -46,8 +46,14 @@ export default class GempLotrDeckBuildingUI {
                     that.clearCollection();
                 },
                 function (elem, type, blueprintId, count, imageUrl) {
-                    that.addCardToCollection(type, blueprintId, count,
-                        elem.getAttribute("contents"), elem.getAttribute("imageUrl"));
+                    that.addCardToCollection(
+                        type,
+                        blueprintId,
+                        count,
+                        elem.getAttribute("contents"),
+                        elem.getAttribute("imageUrl"),
+                        elem.getAttribute("title")
+                    );
                 },
                 function () {
                     that.finishCollection();
@@ -557,7 +563,7 @@ export default class GempLotrDeckBuildingUI {
                         let selection = selectedCardElem.data("selection");
                         let blueprintIds = selection.split("|");
                         for (let i = 0; i < blueprintIds.length; i++) {
-                            let title=""; // TODO: Fill in alt text from card data
+                            let title = (cardData.title) ? cardData.title : "";
                             let emptyImageUrl = "";
                             let emptyLocationIndex = "";
                             let upsideDown = false;
@@ -801,12 +807,12 @@ export default class GempLotrDeckBuildingUI {
         $(".card", this.normalCollectionDiv).remove();
     }
 
-    addCardToCollection(type, blueprintId, count, contents, imageUrl) {
+    addCardToCollection(type, blueprintId, count, contents, imageUrl, title) {
         if (type === "pack") {
             let cardDiv;
             if (blueprintId.substr(0, 3) === "(S)") {
                 let emptyLocationIndex = "";
-                let title=""; // TODO: Fill in alt text from card data
+                let title=""; // Do packs have titles? Are we keeping packs?
                 let card = new Card(blueprintId, "pack", "collection", "player", title, imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
@@ -816,7 +822,7 @@ export default class GempLotrDeckBuildingUI {
                 cardDiv.addClass("selectionInCollection");
             } else {
                 let emptyLocationIndex = "";
-                let title=""; // TODO: Fill in alt text from card data
+                let title=""; // Do packs have titles? Are we keeping packs?
                 let card = new Card(blueprintId, "pack", "collection", "player", title, imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);

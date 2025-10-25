@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				closeText: ""
 			});
 
-	$("body").click(
+	$("body").on("click",
 		function (event) {
 			var tar = $(event.target);
 
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				var horiz = false;
 				for(var i = 0; i < ids.length; i++) {
 					var blueprintId = ids[i];
-					let title=""; // TODO: Fill in alt text from card data
+					let title="";
 					var card = new Card(blueprintId, "SPECIAL", "hint", "", "", title, "", false);
 					horiz = horiz || card.horizontal;
 					let cardDiv = createFullCardDiv(card.imageUrl, card.foil, card.horizontal);

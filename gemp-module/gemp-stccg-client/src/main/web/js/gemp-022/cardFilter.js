@@ -335,7 +335,9 @@ export default class CardFilter {
             let packElem = packs[i];
             let blueprintId = packElem.getAttribute("blueprintId");
             let count = packElem.getAttribute("count");
-            this.addCardFunc(packElem, "pack", blueprintId, count);
+            let imageUrl = packElem.getAttribute("imageUrl");
+            let title = packElem.getAttribute("title");
+            this.addCardFunc(packElem, "pack", blueprintId, count, imageUrl, title);
         }
 
         let cards = root.getElementsByTagName("card");
@@ -344,7 +346,8 @@ export default class CardFilter {
             let blueprintId = cardElem.getAttribute("blueprintId");
             let count = cardElem.getAttribute("count");
             let imageUrl = cardElem.getAttribute("imageUrl");
-            this.addCardFunc(cardElem, "card", blueprintId, count, imageUrl);
+            let title = cardElem.getAttribute("title");
+            this.addCardFunc(cardElem, "card", blueprintId, count, imageUrl, title);
         }
 
         this.finishCollectionFunc();

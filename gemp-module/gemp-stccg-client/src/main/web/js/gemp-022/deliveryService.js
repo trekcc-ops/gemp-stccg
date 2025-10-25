@@ -52,7 +52,7 @@ export default function deliveryService(xml) {
                 let packElem = packs[j];
                 let blueprintId = packElem.getAttribute("blueprintId");
                 let count = packElem.getAttribute("count");
-                let title=""; // TODO: Fill in alt text from card data
+                let title=""; // Do packs have titles? Are we keeping packs?
                 let imageUrl = packElem.getAttribute("imageUrl");
                 let emptyLocationIndex = "";
                 let upsideDown = false;
@@ -69,7 +69,7 @@ export default function deliveryService(xml) {
                 let cardElem = cards[j];
                 let blueprintId = cardElem.getAttribute("blueprintId");
                 let count = cardElem.getAttribute("count");
-                let title=""; // TODO: Fill in alt text from card data
+                let title= cardElem.getAttribute("title");
                 let imageUrl = cardElem.getAttribute("imageUrl");
                 let emptyLocationIndex = "";
                 let upsideDown = false;

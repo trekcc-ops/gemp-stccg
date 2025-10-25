@@ -72,7 +72,7 @@ export default class GameAnimations {
                 let cardId = "anim";
                 let emptyLocationIndex = "";
                 let upsideDown = false;
-                let title=""; // TODO: Fill in alt text from card data
+                let title = element.getAttribute("title");
                 let card = new Card(blueprintId, zone, cardId, participantId, title, imageUrl, emptyLocationIndex, upsideDown);
                 let cardDiv = createSimpleCardDiv(card.imageUrl);
 
@@ -150,7 +150,7 @@ export default class GameAnimations {
                             let cardId = `anim${i}`;
                             let emptyLocationIndex = "";
                             let upsideDown = false;
-                            let title=""; // TODO: Fill in alt text from card data
+                            let title = element.getAttribute("title");
                             let card = new Card(blueprintId, zone, cardId, participantId, title, imageUrl, emptyLocationIndex, upsideDown);
                             let cardDiv = createSimpleCardDiv(card.imageUrl);
 
