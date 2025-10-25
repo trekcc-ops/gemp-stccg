@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", function() {
 				var horiz = false;
 				for(var i = 0; i < ids.length; i++) {
 					var blueprintId = ids[i];
-					var card = new Card(blueprintId, "SPECIAL", "hint", "", "", "", false);
+					let title=""; // TODO: Fill in alt text from card data
+					var card = new Card(blueprintId, "SPECIAL", "hint", "", "", title, "", false);
 					horiz = horiz || card.horizontal;
 					let cardDiv = createFullCardDiv(card.imageUrl, card.foil, card.horizontal);
 					let jqCardDiv = $(cardDiv);

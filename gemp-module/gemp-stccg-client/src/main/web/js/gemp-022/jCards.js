@@ -32,12 +32,13 @@ export default class Card {
     zone;
     cardId;
     owner;
+    title;
     siteNumber = 1;
     attachedCards;
     errata;
     status_tokens;
 
-    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown, tokens) {
+    constructor(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown, tokens) {
         if (typeof(blueprintId) != 'string') {
             throw new TypeError(`blueprintId '${blueprintId}' must be a string.`);
         }
@@ -52,6 +53,10 @@ export default class Card {
 
         if (typeof(owner) != 'string') {
             throw new TypeError(`owner '${owner}' must be a string.`);
+        }
+
+        if (typeof(title) != 'string') {
+            throw new TypeError(`title '${title}' must be a string.`);
         }
 
         if (typeof(imageUrl) != 'string') {
@@ -82,6 +87,7 @@ export default class Card {
         this.status_tokens = (tokens instanceof Set) ? tokens : new Set();
 
         this.blueprintId = blueprintId;
+        this.title = title;
         this.imageUrl = imageUrl;
         this.upsideDown = upsideDown;
 

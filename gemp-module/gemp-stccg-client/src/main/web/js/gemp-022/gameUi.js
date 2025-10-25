@@ -522,8 +522,8 @@ export default class GameTableUI {
             let emptyLocationIndex = "";
             let upsideDown = false;
 
-            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-            this.displayCard(card, false, title);
+            let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
+            this.displayCard(card, false, title); // TODO: Remove third argument
             event.stopPropagation();
             return false;
         }

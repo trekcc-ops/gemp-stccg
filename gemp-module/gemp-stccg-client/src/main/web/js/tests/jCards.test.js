@@ -34,8 +34,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
     
         expect(cardUnderTest.blueprintId).toBe("101_312");
         expect(cardUnderTest.zone).toBe("ATTACHED");
@@ -44,6 +45,7 @@ describe('Constructor', () => {
         expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
         expect(cardUnderTest.locationIndex).toBe(8);
         expect(cardUnderTest.upsideDown).toBe(false);
+        expect(cardUnderTest.title).toBe("N'Vek");
     });
     
     test('constructor throws error when blueprintId is bad', () => {
@@ -54,8 +56,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
     test('constructor throws error when zone is bad', () => {
@@ -66,14 +69,15 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     
         zone=123;
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     
         zone={zone:"ATTACHED"};
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
     test('constructor throws error when cardId is not integer or string', () => {
@@ -84,12 +88,13 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
 
         cardId = undefined;
         
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
 
     test('constructor accepts an integer as cardId and saves it as a string', () => {
@@ -100,8 +105,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
     
         expect(cardUnderTest.blueprintId).toBe("101_312");
         expect(cardUnderTest.zone).toBe("ATTACHED");
@@ -110,6 +116,7 @@ describe('Constructor', () => {
         expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
         expect(cardUnderTest.locationIndex).toBe(8);
         expect(cardUnderTest.upsideDown).toBe(false);
+        expect(cardUnderTest.title).toBe("N'Vek");
     });
 
     test('constructor accepts a non-numeric string as cardId and saves it as-is', () => {
@@ -120,8 +127,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
     
         expect(cardUnderTest.blueprintId).toBe("101_312");
         expect(cardUnderTest.zone).toBe("ATTACHED");
@@ -129,6 +137,7 @@ describe('Constructor', () => {
         expect(cardUnderTest.owner).toBe("andrew2");
         expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
         expect(cardUnderTest.locationIndex).toBe(8);
+        expect(cardUnderTest.upsideDown).toBe(false);
         expect(cardUnderTest.upsideDown).toBe(false);
     });
     
@@ -140,8 +149,34 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+    });
+
+    test('constructor throws error when title is not a string', () => {
+        let blueprintId="101_312";
+        let zone="ATTACHED";
+        let cardId="1";
+        let owner="andrew2";
+        let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
+        let locationIndex="8";
+        let upsideDown=false;
+
+        let title;
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+
+        title = null
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+
+        title=12;
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+
+        title={title: "N'Vek"};
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+
+        title=["N'Vek"];
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
     test('constructor throws error when imageUrl is bad', () => {
@@ -152,8 +187,9 @@ describe('Constructor', () => {
         let imageUrl={url: "https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg"};
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
     test('constructor throws error when locationIndex is not an integer or a string', () => {
@@ -164,12 +200,13 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex=["array", "of", "strings"];
         let upsideDown=false;
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
 
         locationIndex = undefined;
 
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
 
     test('constructor accepts a numeric string as locationIndex and saves it as a number', () => {
@@ -180,8 +217,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
     
         expect(cardUnderTest.blueprintId).toBe("101_312");
         expect(cardUnderTest.zone).toBe("ATTACHED");
@@ -193,11 +231,11 @@ describe('Constructor', () => {
 
         locationIndex="1453.23";
 
-        cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.locationIndex).toBe(1453);
 
         locationIndex="1499,23"; // euro style
-        cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.locationIndex).toBe(1499);
     });
 
@@ -209,8 +247,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex=8;
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
     
         expect(cardUnderTest.blueprintId).toBe("101_312");
         expect(cardUnderTest.zone).toBe("ATTACHED");
@@ -219,6 +258,7 @@ describe('Constructor', () => {
         expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
         expect(cardUnderTest.locationIndex).toBe(8);
         expect(cardUnderTest.upsideDown).toBe(false);
+        expect(cardUnderTest.title).toBe("N'Vek");
     });
 
     test('constructor accepts an empty string as locationIndex and returns it as -1', () => {
@@ -229,8 +269,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
     
         expect(cardUnderTest.blueprintId).toBe("101_312");
         expect(cardUnderTest.zone).toBe("ATTACHED");
@@ -239,6 +280,7 @@ describe('Constructor', () => {
         expect(cardUnderTest.imageUrl).toBe("https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg");
         expect(cardUnderTest.locationIndex).toBe(-1);
         expect(cardUnderTest.upsideDown).toBe(false);
+        expect(cardUnderTest.title).toBe("N'Vek");
     });
 
     test('constructor throws error when locationIndex is a not-empty string but not translatable to an int', () => {
@@ -249,8 +291,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="invalidLocationIndex";
         let upsideDown=false;
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
     test('constructor throws error when upsideDown is bad', () => {
@@ -261,8 +304,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown="false";
+        let title="N'Vek";
     
-        expect(() => new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown)).toThrow(Error);
+        expect(() => new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown)).toThrow(Error);
     });
     
     test('constructor sets foil value based on last blueprintId character', () => {
@@ -273,12 +317,13 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.foil).toBe(false);
     
         blueprintId="101_312*";
-        cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.foil).toBe(true);
     });
     
@@ -290,12 +335,13 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.tengwar).toBe(false);
     
         blueprintId="101_312T";
-        cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.tengwar).toBe(true);
     });
     
@@ -307,13 +353,14 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
         // apparently everything has a wiki by default
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.hasWiki).toBe(true);
     
         blueprintId="Special-01";
-        cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.hasWiki).toBe(false);
     });
     
@@ -325,10 +372,11 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
         let empty_array = [];
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.attachedCards).toStrictEqual(empty_array);
     });
     
@@ -340,8 +388,9 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         // BUG: This should probably say "../../images/rules.png" but it's unclear how to get this to work in Jest
         //      so instead I just verify it's stubbed as a file which means it's one of our imports. Close enough.
         expect(cardUnderTest.imageUrl).toBe("test-file-stub");
@@ -355,6 +404,7 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
         // WORKAROUND: Having the cardCache in the global namespace means we can't easily reset it,
         //             so this object needs to match all card types (except foil) created in previous tests.
@@ -378,7 +428,7 @@ describe('Constructor', () => {
         }
     
         expect(cardCache).toStrictEqual(card_cache_from_previous_tests);
-        let _cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let _cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardCache).toStrictEqual(card_cache_from_previous_tests);
     });
     
@@ -390,6 +440,7 @@ describe('Constructor', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
         // WORKAROUND: Having the cardCache in the global namespace means we can't easily reset it,
         //             so this object needs to match all card types (except foil) created in previous tests.
@@ -437,7 +488,7 @@ describe('Constructor', () => {
     
         expect(cardCache).toStrictEqual(card_cache_from_previous_tests);
     
-        let _cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let _cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
     
         expect(cardCache).toStrictEqual(card_cache_with_new_id)    
     });
@@ -452,8 +503,9 @@ describe('property getters', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.tengwar).toBe(false);
         expect(cardUnderTest.isTengwar()).toBe(false);
     
@@ -469,8 +521,9 @@ describe('property getters', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.foil).toBe(false);
         expect(cardUnderTest.isFoil()).toBe(false);
     
@@ -486,8 +539,9 @@ describe('property getters', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.upsideDown).toBe(false);
         expect(cardUnderTest.isUpsideDown()).toBe(false);
     
@@ -503,8 +557,9 @@ describe('property getters', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.errata).toBe(false);
         expect(cardUnderTest.hasErrata()).toBe(false);
     
@@ -520,8 +575,9 @@ describe('property getters', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.errata).toBe(false);
         expect(cardUnderTest.hasErrata()).toBe(false);
     
@@ -560,8 +616,9 @@ describe('property getters', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.isPack()).toBe(false);
     
         cardUnderTest.blueprintId="Special-01";
@@ -576,8 +633,9 @@ describe('property getters', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.isHorizontal()).toBe(false);
     });
 });
@@ -591,9 +649,10 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
         let ignoreErrata = true;
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.blueprintId = "Special-01";
 
         // BUG: This should probably say "../../images/rules.png" but it's unclear how to get this to work in Jest
@@ -609,9 +668,10 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
         let ignoreErrata = false;
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.blueprintId = "7_10"; // has errata
 
         expect(cardUnderTest.getUrlByBlueprintId(cardUnderTest.blueprintId, ignoreErrata)).toBe('/gemp-module/images/erratas/LOTR07010.jpg');
@@ -625,9 +685,10 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
         let ignoreErrata = true;
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.blueprintId = "7_10"; // has errata
 
         expect(cardUnderTest.getUrlByBlueprintId(cardUnderTest.blueprintId, ignoreErrata)).toBe('https://i.lotrtcgpc.net/decipher/LOTR07010.jpg');
@@ -641,9 +702,10 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
         let ignoreErrata = true;
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.blueprintId = "7_10"; // has errata
 
         expect(cardUnderTest.getUrlByBlueprintId(cardUnderTest.blueprintId, ignoreErrata)).toBe('https://i.lotrtcgpc.net/decipher/LOTR07010.jpg');
@@ -663,9 +725,10 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
         let ignoreErrata = true;
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.blueprintId = "12_195"; // masterwork
 
         expect(cardUnderTest.getUrlByBlueprintId(cardUnderTest.blueprintId, ignoreErrata)).toBe('https://i.lotrtcgpc.net/decipher/LOTR12O01.jpg');
@@ -682,9 +745,10 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
         let ignoreErrata = true;
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.blueprintId = "7_10"; // has errata
         
         // URL starts as https://i.lotrtcgpc.net/decipher/LOTR07010.jpg
@@ -700,8 +764,9 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
     
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         expect(cardUnderTest.hasWikiInfo()).toBe(true);
     
         cardUnderTest.hasWiki = false;
@@ -716,8 +781,9 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
 
         // real card values
         expect(cardUnderTest.getMainLocation(7, 10)).toBe('https://i.lotrtcgpc.net/decipher/');
@@ -742,8 +808,9 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
 
         expect(cardUnderTest.getMasterworksOffset(17)).toBe(148);
         expect(cardUnderTest.getMasterworksOffset(18)).toBe(140);
@@ -761,8 +828,9 @@ describe('wiki stuff', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
 
         // possible, and true conditions
         expect(cardUnderTest.isMasterworks(12, 195)).toBe(true);
@@ -798,8 +866,9 @@ describe('card sizing', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
 
         // Card scale is 0.718309859155; all input values get divided by it, then rounded down.
         // exact division
@@ -828,8 +897,9 @@ describe('card sizing', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
 
         // Card scale is 0.718309859155; all input values get multiplied by it, then rounded down.
         // exact division
@@ -858,8 +928,9 @@ describe('card sizing', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
 
         // Card scale is 0.718309859155; all input values get divided by it, then rounded down.
         // exact division
@@ -888,8 +959,9 @@ describe('card sizing', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
 
         // Card scale is 0.718309859155; all input values get multiplied by it, then rounded down.
         // exact division
@@ -924,9 +996,10 @@ describe('jquery-card-details-dialog', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
-
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
+        // TODO: Fill in alt text with title
         let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivVertical\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\" alt=\"\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');
@@ -947,10 +1020,11 @@ describe('jquery-card-details-dialog', () => {
         let imageUrl="https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg";
         let locationIndex="8";
         let upsideDown=false;
+        let title="N'Vek";
 
-        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown);
+        let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.horizontal = true;
-
+        // TODO: Fill in alt text with title
         let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivHorizontal\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\" alt=\"\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');

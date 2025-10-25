@@ -557,10 +557,11 @@ export default class GempLotrDeckBuildingUI {
                         let selection = selectedCardElem.data("selection");
                         let blueprintIds = selection.split("|");
                         for (let i = 0; i < blueprintIds.length; i++) {
+                            let title=""; // TODO: Fill in alt text from card data
                             let emptyImageUrl = "";
                             let emptyLocationIndex = "";
                             let upsideDown = false;
-                            let card = new Card(blueprintIds[i], "selection", "selection" + i, "player", emptyImageUrl, emptyLocationIndex, upsideDown);
+                            let card = new Card(blueprintIds[i], "selection", "selection" + i, "player", title, emptyImageUrl, emptyLocationIndex, upsideDown);
                             let baseCardDiv = createCardDiv(
                                 card.imageUrl, null, card.isFoil(), false, card.isPack(), card.hasErrata()
                             );
@@ -604,7 +605,8 @@ export default class GempLotrDeckBuildingUI {
     addCardToContainer(blueprintId, imageUrl, subDeck, container, tokens) {
         let emptyLocationIndex = "";
         let upsideDown = false;
-        let card = new Card(blueprintId, subDeck, "deck", "player", imageUrl, emptyLocationIndex, upsideDown);
+        let title=""; // TODO: Fill in alt text from card data
+        let card = new Card(blueprintId, subDeck, "deck", "player", title, imageUrl, emptyLocationIndex, upsideDown);
         let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
         let cardDiv = $(baseCardDiv); // convert to jQuery object
         cardDiv.data("card", card);
@@ -804,7 +806,8 @@ export default class GempLotrDeckBuildingUI {
             let cardDiv;
             if (blueprintId.substr(0, 3) === "(S)") {
                 let emptyLocationIndex = "";
-                let card = new Card(blueprintId, "pack", "collection", "player", imageUrl, emptyLocationIndex, false);
+                let title=""; // TODO: Fill in alt text from card data
+                let card = new Card(blueprintId, "pack", "collection", "player", title, imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv = $(baseCardDiv); // convert to jQuery object
@@ -813,7 +816,8 @@ export default class GempLotrDeckBuildingUI {
                 cardDiv.addClass("selectionInCollection");
             } else {
                 let emptyLocationIndex = "";
-                let card = new Card(blueprintId, "pack", "collection", "player", imageUrl, emptyLocationIndex, false);
+                let title=""; // TODO: Fill in alt text from card data
+                let card = new Card(blueprintId, "pack", "collection", "player", title, imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv = $(baseCardDiv); // convert to jQuery object
@@ -825,7 +829,8 @@ export default class GempLotrDeckBuildingUI {
         } else if (type === "card") {
             let locationIndex = "";
             let upsideDown = false;
-            let card = new Card(blueprintId, "VOID", "collection", "player", imageUrl, locationIndex, upsideDown);
+            let title=""; // TODO: Fill in alt text from card data
+            let card = new Card(blueprintId, "VOID", "collection", "player", title, imageUrl, locationIndex, upsideDown);
             let countInDeck = 0;
             $(".card", this.deckDiv).each(
                     function () {
