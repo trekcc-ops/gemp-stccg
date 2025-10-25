@@ -1239,7 +1239,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
         // Collect image urls from deck pane, in background
         let deckPane = document.querySelector("#deckDiv");
         let deckPaneImageMatches = deckPane.querySelectorAll('img[class="card_img"]');
-        for (const deckPaneCard in deckPaneImageMatches) {
+        for (const deckPaneCard of deckPaneImageMatches) {
             let srcAttribute = deckPaneCard.getAttribute("src");
             if (srcAttribute != null && srcAttribute !== "") {
                 notDialogSrcURLs.add(srcAttribute);
@@ -1249,7 +1249,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
         // Collect image urls from search pane, in background
         let searchPane = document.querySelector("#collection-display");
         let searchPaneImageMatches = searchPane.querySelectorAll('img[class="card_img"]');
-        for (const searchPaneCard in searchPaneImageMatches) {
+        for (const searchPaneCard of searchPaneImageMatches) {
             let srcAttribute = searchPaneCard.getAttribute("src");
             if (srcAttribute != null && srcAttribute !== "") {
                 notDialogSrcURLs.add(srcAttribute);
