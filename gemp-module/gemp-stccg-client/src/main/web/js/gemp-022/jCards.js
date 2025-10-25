@@ -311,7 +311,7 @@ export default class Card {
         let that = this;
         container.html("");
         container.html("<div style='scroll: auto'></div>");
-        let cardDiv = createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack());
+        let cardDiv = createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack(), that.title);
         let jqCardDiv = $(cardDiv);
         container.append(jqCardDiv);
 //        if (that.hasWikiInfo())

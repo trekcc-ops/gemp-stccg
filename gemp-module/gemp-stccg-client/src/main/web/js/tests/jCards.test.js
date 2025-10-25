@@ -1000,7 +1000,7 @@ describe('jquery-card-details-dialog', () => {
 
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         // TODO: Fill in alt text with title
-        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivVertical\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\" alt=\"\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
+        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivVertical\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\" alt=\"N'Vek\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');
         
@@ -1025,7 +1025,7 @@ describe('jquery-card-details-dialog', () => {
         let cardUnderTest = new Card(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown);
         cardUnderTest.horizontal = true;
         // TODO: Fill in alt text with title
-        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivHorizontal\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\" alt=\"\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
+        let expected = `<div style=\"scroll: auto\"></div><div class=\"card fullCardDivHorizontal\"><div class=\"three-d-card-scene\"><div class=\"three-d-card\"><div class=\"card__face card__face--back\"><img src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div><div class=\"card__face card__face--front\"><div class=\"card-load-spinner\"></div><img class=\"card_img\" style=\"width: 100%; height: 100%;\" alt=\"N'Vek\"><div class=\"borderOverlay\"><img class=\"actionArea\" src=\"test-file-stub\" style=\"width: 100%; height: 100%;\"></div></div></div></div></div>`;
 
         let container_jq = $('#container');
         
