@@ -317,11 +317,13 @@ export default class GameTableUI {
             return that.dragContinuesCardFunction(event);
         };
 
+        // Left click on card
         $("body").click(
             function (event) {
                 return that.clickCardFunction(event);
             });
 
+        // Right click on card
         $("body")[0].addEventListener("contextmenu",
             function (event) {
                 if(!that.clickCardFunction(event)) {
@@ -510,8 +512,10 @@ export default class GameTableUI {
     }
 
     clickCardFunction(event) {
+        // Return false == handled, return true == not handled
         var tar = $(event.target);
 
+        // Clicked on linked card name in chat, see showLinkableCardTitle()
         if (tar.hasClass("cardHint")) {
             let blueprintId = tar.attr("value");
             let zone = "SPECIAL";
@@ -523,7 +527,7 @@ export default class GameTableUI {
             let upsideDown = false;
 
             let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
-            this.displayCard(card, false, title); // TODO: Remove third argument
+            this.displayCard(card, false);
             event.stopPropagation();
             return false;
         }
@@ -534,6 +538,7 @@ export default class GameTableUI {
             return false;
         }
 
+        // Click on card
         if (tar.hasClass("actionArea")) {
             var selectedCardElem = tar.closest(".card");
             if (!this.successfulDrag) {
@@ -664,12 +669,12 @@ export default class GameTableUI {
         return true;
     }
 
-    displayCard(card, extraSpace, card_title) {
+    displayCard(cardData, extraSpace) {
         this.infoDialog.html("");
         this.infoDialog.html("<div style='scroll: auto'></div>");
         var floatCardDiv = $("<div style='float: left;'></div>");
         let noborder = false;
-        let cardDiv = createFullCardDiv(card.imageUrl, card.foil, card.horizontal, noborder, card_title);
+        let cardDiv = createFullCardDiv(cardData.imageUrl, cardData.foil, cardData.horizontal, noborder, cardData.title);
         let jqCardDiv = $(cardDiv);
         floatCardDiv.append(jqCardDiv);
         this.infoDialog.append(floatCardDiv);
@@ -683,7 +688,7 @@ export default class GameTableUI {
         var horSpace = (extraSpace ? 200 : 0) + 30;
         var vertSpace = 45;
 
-        if (card.horizontal) {
+        if (cardData.horizontal) {
             // 500x360
             this.infoDialog.dialog({
                 width: Math.min(500 + horSpace, windowWidth),
@@ -699,9 +704,9 @@ export default class GameTableUI {
         this.infoDialog.dialog("open");
     }
 
-    displayCardInfo(card) {
+    displayCardInfo(cardData) {
         let showModifiers = false;
-        var cardId = card.cardId;
+        var cardId = cardData.cardId;
         if (cardId == null || (cardId.length >= 5 && cardId.substring(0, 5) == "extra")) {
             showModifiers = false;
         }
@@ -711,7 +716,7 @@ export default class GameTableUI {
         // DEBUG: console.log("displayCardInfo for cardId " + cardId);
         // DEBUG: console.log("showModifiers = " + showModifiers);
 
-        this.displayCard(card, showModifiers);
+        this.displayCard(cardData, showModifiers);
 
         if (showModifiers) {
             this.getCardModifiersFunction(cardId, this.setCardModifiers);
