@@ -1186,8 +1186,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
                     let cardDiv = document.createElement("div");
                     let cardTitleAndCountSpan = document.createElement("span");
                     cardTitleAndCountSpan.classList.add("tooltip");
-                    let cardTitle = card.cardTitle;
-                    cardTitleAndCountSpan.append(`${cardTitle}`);
+                    cardTitleAndCountSpan.append(`${card.cardTitle}`);
 
                     let cardImageSpan = document.createElement("span");
                     let cardDivTag = createCardDiv(card.imageUrl, card.cardTitle, false, false, false, false, false, null);
