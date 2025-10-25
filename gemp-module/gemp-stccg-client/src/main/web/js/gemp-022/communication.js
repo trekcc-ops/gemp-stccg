@@ -1094,27 +1094,31 @@ export default class GempClientCommunication {
             dataType:"xml"
         });
     }
+};
 
-    async fetchTrekCCImage(url) {
-        try {
-            const imgReqHeaders = new Headers();
-            imgReqHeaders.append("Accept", "image/png,image/jpeg,image/gif");
-            imgReqHeaders.append("User-Agent", userAgent);
-            let response = await fetch(url, {
-                method: "GET",
-                headers: imgReqHeaders
-            });
-            
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            else {
-                let retval = await response.blob();
-                return retval;
-            }
+export async function fetchImage(url) {
+    try {
+        const imgReqHeaders = new Headers();
+        imgReqHeaders.append("Accept", "image/png,image/jpeg,image/gif");
+        imgReqHeaders.append("User-Agent", userAgent);
+        let response = await fetch(url, {
+            method: "GET",
+            headers: imgReqHeaders
+        });
+        
+        if (!response.ok) {
+            throw new Error(response.statusText);
         }
-        catch(error) {
-            console.error({"fetchTrekCCImage fetch error": error.message});
+        else {
+            let blob = await response.blob();
+            // NOTE: It is up to the caller to revoke this object URL via
+            //       URL.revokeObjectURL(url) if they want to reclaim the memory.
+            let url = URL.createObjectURL(blob);
+            return url;
         }
+    }
+    catch(error) {
+        console.error({"fetchImage fetch error": error.message});
+        return;
     }
 };

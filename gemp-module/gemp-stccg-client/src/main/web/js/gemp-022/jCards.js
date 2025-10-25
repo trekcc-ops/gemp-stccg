@@ -1,4 +1,5 @@
 import { zones_all } from "./common.js";
+import { fetchImage } from "./communication.js";
 import Cookies from "js-cookie";
 import special01Img from "../../images/boosters/special-01.png";
 import rulesImg from "../../images/rules.png";
@@ -8,7 +9,6 @@ import cardBackImg from "../../images/decipher_card_back.svg?url";
 import stoppedImg from "../../images/emblem-error.svg?url";
 import disabledImg from "../../images/emblem-locked.svg?url";
 import capturedImg from "../../images/emblem-symbolic-link.svg?url";
-import { userAgent } from "./common.js";
 
 export var cardCache = {};
 export var cardScale = 357 / 497;
@@ -354,33 +354,6 @@ export default class Card {
     }
 }
 
-async function fetchTrekCCImage(url) {
-    try {
-        const imgReqHeaders = new Headers();
-        imgReqHeaders.append("Accept", "image/png,image/jpeg,image/gif");
-        imgReqHeaders.append("User-Agent", userAgent);
-        let response = await fetch(url, {
-            method: "GET",
-            headers: imgReqHeaders
-        });
-        
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-        else {
-            let blob = await response.blob();
-            // NOTE: It is up to the caller to revoke this object URL via
-            //       URL.revokeObjectURL(url) if they want to reclaim the memory.
-            let url = URL.createObjectURL(blob);
-            return url;
-        }
-    }
-    catch(error) {
-        console.error({"fetchTrekCCImage fetch error": error.message});
-        return;
-    }
-}
-
 // TODO: This should be an instance function.
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
     let baseCardDiv = document.createElement("div");
@@ -427,7 +400,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     loadingSpinner.classList.add("card-load-spinner");
     front_face.appendChild(loadingSpinner);
 
-    fetchTrekCCImage(image).then((url) => {
+    fetchImage(image).then((url) => {
         front_face.removeChild(loadingSpinner);
         if (url == null) {
             imageTag.src = "";

@@ -53,20 +53,14 @@ describe('getAffiliationHtmlAsync', () => {
 
         let dCEMock = jest.spyOn(document, "createElement");
         let cOUMock = jest.spyOn(URL, "createObjectURL");
-        
-        let url = "/gemp-stccg-server";
-        let failure = null;
-        let comms = new GempClientCommunication(url, failure);
-        let actual = await getAffiliationHtmlAsync(comms, "BAJORAN");
+
+        let actual = await getAffiliationHtmlAsync("BAJORAN");
 
         expect(fetchMock.mock.calls.length).toEqual(1);
         expect(dCEMock.mock.calls.length).toEqual(1);
         expect(cOUMock.mock.calls.length).toEqual(1);
 
-        // I don't know why this returns test-file-stub inside URL.createObjectURL
-        //   but doesn't do so when it comes out here. Undoubtedly I'm missing something simple. :/
-        let expectedUrl = "http://localhost/[object%20Promise]";
-        // let expectedUrl = "http://localhost/test-file-stub";
+        let expectedUrl = "http://localhost/test-file-stub";
         expect(actual.src).toEqual(expectedUrl);
     });
 });

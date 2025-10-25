@@ -1,6 +1,7 @@
 import goldImg from '../../images/gold.png';
 import silverImg from '../../images/silver.png';
 import { createTheme } from '@mui/material/styles';
+import { fetchImage } from './communication.js';
 
 export const userAgent = "Velara/0.0.1 (pre-alpha)"; // See TNG s01e18 "Home Soil"
 
@@ -242,19 +243,15 @@ export function getAffiliationHtml(affiliationEnum) {
     return affiliationImg;
 }
 
-export function getAffiliationHtmlAsync(comms, affiliationEnum) {
+export function getAffiliationHtmlAsync(affiliationEnum) {
     // Receives the server enum name for an affiliation and provides an in-line icon
     let iconURL = getAffiliationIcon(affiliationEnum);
-    let imageBlobPromise = comms.fetchTrekCCImage(iconURL);
-    return imageBlobPromise.then((imageBlob) => {
-        let imageUrlResource = URL.createObjectURL(imageBlob);
-        //console.log(`imageBlob: ${imageBlob}`);
-        //console.log(`imageUrlResource: ${imageUrlResource}`);
-
+    let imageBlobPromise = fetchImage(iconURL);
+    return imageBlobPromise.then((imageUrl) => {
         let userFriendlyName = getAffiliationName(affiliationEnum);
 
         let affiliationImg = document.createElement("img");
-        affiliationImg.src = imageUrlResource;
+        affiliationImg.src = imageUrl;
         affiliationImg.classList.add("inline-icon");
         affiliationImg.title = userFriendlyName;
         return affiliationImg;

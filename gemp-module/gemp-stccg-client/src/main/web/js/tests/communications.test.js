@@ -1,5 +1,6 @@
 import {describe, beforeEach, expect, test} from '@jest/globals';
 import GempClientCommunication from "../gemp-022/communication.js";
+import { fetchImage } from '../gemp-022/communication.js';
 import { userAgent } from '../gemp-022/common.js';
 
 beforeEach(() => {
@@ -228,12 +229,8 @@ test('getSets handles fetch errors with a console.error', async () => {
     expect(lastcall_firstarg).toEqual(errmockobj); // Console.error had the expected output.
 });
 
-describe('fetchTrekCCImage', () => {
+describe('fetchImage', () => {
     test('sends accept list and useragent in headers', async () => {
-        let thisUrl = "/gemp-stccg-server";
-        let failure = null;
-        let comms = new GempClientCommunication(thisUrl, failure);
-        
         const server_retval = JSON.stringify(
             {"updateSetOptions": []}
         );
@@ -246,7 +243,7 @@ describe('fetchTrekCCImage', () => {
         expected_headers.append("Accept", "image/png,image/jpeg,image/gif");
         expected_headers.append("User-Agent", userAgent);
 
-        let actual = await comms.fetchTrekCCImage(url);
+        let actual = await fetchImage(url);
         
         expect(fetch.mock.calls.length).toEqual(1) // Fetch was called once
         let lastcall_url = fetch.mock.lastCall[0];
