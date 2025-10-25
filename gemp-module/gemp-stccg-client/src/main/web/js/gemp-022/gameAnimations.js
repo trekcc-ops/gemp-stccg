@@ -251,7 +251,7 @@ export default class GameAnimations {
             function (next) {
 
                 let card = new Card(blueprintId, zone, cardId, controllerId, cardTitle, imageUrl, locationIndex, upsideDown);
-                let cardDiv = that.game.createCardDivWithData(card, cardTitle); // TODO: Remove second argument
+                let cardDiv = that.game.createCardDivWithData(card);
 
                 if (zone == "DISCARD")
                     that.game.discardPileDialogs[controllerId].append(cardDiv);
@@ -302,7 +302,7 @@ export default class GameAnimations {
                 }
 
                 let card = new Card(blueprintId, zone, cardId, participantId, cardTitle, imageUrl, locationIndex, upsideDown);
-                let cardDiv = thisGame.createCardDivWithData(card, cardTitle); // TODO: Remove second argument
+                let cardDiv = thisGame.createCardDivWithData(card);
 
                 $("#main").append(cardDiv);
                 next();
@@ -345,7 +345,7 @@ export default class GameAnimations {
             function (next) {
 
                 let card = new Card(blueprintId, zone, cardId, performingPlayerId, cardTitle, imageUrl, spacelineIndex, upsideDown);
-                let cardDiv = that.game.createCardDivWithData(card, cardTitle); // TODO: Remove second argument
+                let cardDiv = that.game.createCardDivWithData(card);
 
                 $("#main").append(cardDiv);
 

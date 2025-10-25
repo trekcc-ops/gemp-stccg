@@ -215,7 +215,7 @@ export default class CardSelectionDecision {
             let noLocationIndex = "";
             let upsideDown = false;
             let card = new Card(blueprintId, zone, cardDivId, noOwner, cardTitle, imageUrl, noLocationIndex, upsideDown);
-            let cardDiv = this.gameUi.createCardDivWithData(card, cardTitle); // TODO: Remove second item
+            let cardDiv = this.gameUi.createCardDivWithData(card);
             $("#cardSelectionDialog").append(cardDiv);
         }
     }
