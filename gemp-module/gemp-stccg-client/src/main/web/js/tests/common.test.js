@@ -18,7 +18,7 @@ describe('getAffiliationHtml', () => {
     test('returns an image tag', () => {
 
         let expected = new Image();
-        expected.src = "https://www.trekcc.org/images/icons/1e/1E-BAJ.gif";
+        expected.src = "test-file-stub";
         expected.classList.add("inline-icon");
         expected.title = "Bajoran";
 
