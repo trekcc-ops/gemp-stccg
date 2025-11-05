@@ -9,17 +9,18 @@ public enum Affiliation implements Filterable {
     BORG("Borg",""),
     CARDASSIAN("Cardassian",""),
     DOMINION("Dominion",""),
-    FEDERATION("Federation", "https://www.trekcc.org/images/icons/1e/1E-FED.gif"),
+    FEDERATION("Federation", ""),
     FERENGI("Ferengi",""),
     HIROGEN("Hirogen",""),
     KAZON("Kazon",""),
-    KLINGON("Klingon","https://www.trekcc.org/images/icons/1e/1E-KLG.gif"),
-    NEUTRAL("Neutral","https://www.trekcc.org/images/icons/1e/1E-NEU.gif"),
-    NON_ALIGNED("Non-Aligned","https://www.trekcc.org/images/icons/1e/1E-NON.gif"),
-    ROMULAN("Romulan","https://www.trekcc.org/images/icons/1e/1E-ROM.gif"),
+    KLINGON("Klingon",""),
+    NEUTRAL("Neutral",""),
+    NON_ALIGNED("Non-Aligned",""),
+    ROMULAN("Romulan",""),
     STARFLEET("Starfleet",""),
     VIDIIAN("Vidiian",""),
-    VULCAN("Vulcan", "https://www.trekcc.org/images/icons/1e/1E-VUL.gif");
+    VULCAN("Vulcan", ""),
+    XINDI("Xindi", "");
 
     private final String humanReadable, iconURL;
 
