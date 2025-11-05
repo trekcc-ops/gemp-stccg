@@ -262,25 +262,6 @@ export function getAffiliationHtml(affiliationEnum) {
     return affiliationImg;
 }
 
-export function getAffiliationHtmlAsync(affiliationEnum) {
-    // Receives the server enum name for an affiliation and provides an in-line icon
-    let iconURL = getAffiliationIcon(affiliationEnum);
-    let imageBlobPromise = fetchImage(iconURL);
-    return imageBlobPromise.then((imageUrl) => {
-        let userFriendlyName = getAffiliationName(affiliationEnum);
-
-        let affiliationImg = document.createElement("img");
-        affiliationImg.src = imageUrl;
-        affiliationImg.classList.add("inline-icon");
-        affiliationImg.title = userFriendlyName;
-        return affiliationImg;
-    })
-    .catch((error) => {
-        console.error({"getAffiliationHtml fetch error": error.message});
-        return;
-    });
-}
-
 export function getFriendlyPhaseName(phaseEnum) {
     switch(phaseEnum) {
         case "BETWEEN_TURNS":
