@@ -1,7 +1,7 @@
 package com.gempukku.stccg.common.filterable;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Locale;
 
