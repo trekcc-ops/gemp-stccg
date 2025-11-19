@@ -21,6 +21,8 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import CardTree from './card-tree.jsx';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import ChatIcon from '@mui/icons-material/Chat';
+import HistoryIcon from '@mui/icons-material/History';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
 import ActiveCardPane from './active-card-pane.jsx';
@@ -251,6 +253,72 @@ export default function MiniDrawer() {
                             />
                         </ListItemButton>
                     </ListItem>
+
+                    <Divider />
+                    
+                    {/* Chat button */}
+                    <ListItem disablePadding sx={{display: 'block'}}
+                    >
+                        <ListItemButton sx={[
+                                    {
+                                        minHeight: 48,
+                                        px: 2.5,
+                                    },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                ]}
+                            >
+                            <ListItemIcon sx={[
+                                    {
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                    },
+                                    /* Adjust right margin when closed */
+                                    open ? {mr: 3,} : {mr: 'auto',},
+                                ]}>
+                                <ChatIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Chat"
+                                sx={[
+                                        /* Hide text when closed */
+                                        open ? {opacity: 1,} : {opacity: 0,},
+                                    ]}
+                            />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <Divider />
+                    
+                    {/* Chat button */}
+                    <ListItem disablePadding sx={{display: 'block'}}
+                    >
+                        <ListItemButton sx={[
+                                    {
+                                        minHeight: 48,
+                                        px: 2.5,
+                                    },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                ]}
+                            >
+                            <ListItemIcon sx={[
+                                    {
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                    },
+                                    /* Adjust right margin when closed */
+                                    open ? {mr: 3,} : {mr: 'auto',},
+                                ]}>
+                                <HistoryIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Card Play History"
+                                sx={[
+                                        /* Hide text when closed */
+                                        open ? {opacity: 1,} : {opacity: 0,},
+                                    ]}
+                            />
+                        </ListItemButton>
+                    </ListItem>
                     
                     {/* Built-in stuff */}
                     
@@ -332,18 +400,8 @@ export default function MiniDrawer() {
                 <div id="main-layout-grid">
                     <div id="table">TABLE</div>
                     <div id="hand-pane"><Hand gamestate={get_gamestate()} /></div>
-                    <div id="active-card-pane">
-                        <ActiveCardPane style={{height: 240}} card={card_in_active_pane} />
-                        {
-                        /*
-                        For other demo cases:
-                        <ActiveCardPane style={{height: 240}} />
-                        */
-                        }
-                    </div>
                     <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
                     <div id="player-score-pane"><PlayerScorePane gamestate={get_gamestate()}/></div>
-                    <div id="chat-pane">CHAT</div>
                 </div>
                 
             </Box>
