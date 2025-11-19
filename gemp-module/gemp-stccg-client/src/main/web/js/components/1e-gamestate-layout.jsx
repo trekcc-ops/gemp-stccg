@@ -25,6 +25,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import HistoryIcon from '@mui/icons-material/History';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
+import ActionReactionPane from './action-reaction-pane.jsx';
 import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
 import Hand from './hand.jsx';
@@ -400,6 +401,7 @@ export default function MiniDrawer() {
                 <div id="main-layout-grid">
                     <div id="table">TABLE</div>
                     <div id="hand-pane"><Hand gamestate={get_gamestate()} /></div>
+                    <div id="action-reaction-pane"><ActionReactionPane gamestate={get_gamestate()}/></div>
                     <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
                     <div id="player-score-pane"><PlayerScorePane gamestate={get_gamestate()}/></div>
                 </div>
