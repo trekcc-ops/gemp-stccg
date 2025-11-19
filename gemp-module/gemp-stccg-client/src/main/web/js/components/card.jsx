@@ -26,6 +26,8 @@ export default function Card( {card} ) {
         overlay = {filter: "grayscale(80%)"};
     }
 
+    // TODO: Instead of raw url, use comms.fetchImage() after PR 225 merges.
+
     return(
         <Box data-cardid={card.cardId} sx={{height: 1, width: 1}} >
             <Badge color={badge_color} badgeContent={stopped_badge}>
