@@ -41,89 +41,42 @@ function get_player_data(player_id, gamestate) {
     }
 }
 
-function get_your_player_data(gamestate) {
-    let your_player_id = gamestate["requestingPlayer"];
-    return get_player_data(your_player_id, gamestate);
-}
-
-function get_opponent_player_data(gamestate) {
-    let your_player_id = gamestate["requestingPlayer"];
-    let opponent_player_data = gamestate["players"].filter((data) => data["playerId"] != your_player_id);
-    let opponent_player_id = opponent_player_data[0]["playerId"];
-    return get_player_data(opponent_player_id, gamestate);
-}
-
-export default function PlayerScorePane ( {gamestate} ) {
+export default function PlayerScorePane ( {gamestate, player_id} ) {
     let badge_color = 'secondary';
-    let your_player_data = get_your_player_data(gamestate);
-    let opponent_player_data = get_opponent_player_data(gamestate);
+    let player_data = get_player_data(player_id, gamestate);
 
     return(
-        <Box id="PlayerScorePane">
-            {/* YOUR ROW */}
-            <Box id="yourPlayerName">
-                <Typography>{your_player_data.username}</Typography>
+        <Box class="PlayerScorePane">
+            <Box className="PlayerName">
+                <Typography>{player_data.username}</Typography>
             </Box>
             <Box>
-                <Tooltip title="Your remaining clock">
-                    <Typography>{your_player_data.clock}</Typography>
+                <Tooltip title="Remaining clock">
+                    <Typography>{player_data.clock}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="DrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Draw deck size">
-                    <Typography align='center'>{your_player_data.drawsize}</Typography>
+                    <Typography align='center'>{player_data.drawsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="HandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Hand size">
-                    <Typography align='center'>{your_player_data.handsize}</Typography>
+                    <Typography align='center'>{player_data.handsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="DiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Discard size">
-                    <Typography align='center'>{your_player_data.discardsize}</Typography>
+                    <Typography align='center'>{player_data.discardsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourRemovedSize" sx={{backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="RemovedSize" sx={{backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Removed from game">
-                    <Typography align='center'>{your_player_data.removedsize}</Typography>
+                    <Typography align='center'>{player_data.removedsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box id="yourScore">
-                <Typography align='center'>SCORE: {your_player_data.score}</Typography>
-            </Box>
-
-            {/* OPPONENT ROW */}
-            <Box id="opponentPlayerName">
-                <Typography>{opponent_player_data.username}</Typography>
-            </Box>
-            <Box>
-                <Tooltip title="Opponent's remaining clock">
-                    <Typography>{opponent_player_data.clock}</Typography>
-                </Tooltip>
-            </Box>
-            <Box id="opponentDrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-                <Tooltip title="Draw deck size">
-                    <Typography align='center'>{opponent_player_data.drawsize}</Typography>
-                </Tooltip>
-            </Box>
-            <Box id="opponentHandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-                <Tooltip title="Hand size">
-                    <Typography align='center'>{opponent_player_data.handsize}</Typography>
-                </Tooltip>
-            </Box>
-            <Box id="opponentDiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-                <Tooltip title="Discard size">
-                    <Typography align='center'>{opponent_player_data.discardsize}</Typography>
-                </Tooltip>
-            </Box>
-            <Box id="opponentRemovedSize" sx={{backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-                <Tooltip title="Removed from game">
-                    <Typography align='center'>{opponent_player_data.removedsize}</Typography>
-                </Tooltip>
-            </Box>
-            <Box id="opponentScore">
-                <Typography align='center'>SCORE: {opponent_player_data.score}</Typography>
+            <Box className="Score">
+                <Typography align='center'>SCORE: {player_data.score}</Typography>
             </Box>
         </Box>
     );

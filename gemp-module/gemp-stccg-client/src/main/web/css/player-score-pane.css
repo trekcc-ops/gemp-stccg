@@ -1,7 +1,7 @@
-#PlayerScorePane {
+.PlayerScorePane {
     display: grid;
     grid-template-columns: [name] 2fr [clock] 1fr [draw] 1fr [hand] 1fr [discard] 1fr [removed] 1fr [score] 2fr;
-    grid-template-rows: [yours] 50px [opponents] 50px;
+    grid-template-rows: [player] 50px;
 }
 /*
 .playerStats .clickable {
@@ -13,72 +13,37 @@
 }
 */
 
-#yourPlayerName {
+.PlayerScorePane > .PlayerName {
     grid-column-start: name;
-    grid-row-start: yours;
+    grid-row-start: player;
 }
 
-#yourClock {
+.PlayerScorePane > .Clock {
     grid-column-start: clock;
-    grid-row-start: yours;
+    grid-row-start: player;
 }
 
-#yourDrawDeckSize {
+.PlayerScorePane > .DrawDeckSize {
     grid-column-start: draw;
-    grid-row-start: yours;
+    grid-row-start: player;
 }
 
-#yourHandSize {
+.PlayerScorePane > .HandSize {
     grid-column-start: hand;
-    grid-row-start: yours;
+    grid-row-start: player;
 }
 
-#yourDiscardSize {
+.PlayerScorePane > .DiscardSize {
     grid-column-start: discard;
-    grid-row-start: yours;
+    grid-row-start: player;
 }
 
-#yourRemovedSize {
+.PlayerScorePane > .RemovedSize {
     grid-column-start: removed;
-    grid-row-start: yours;
+    grid-row-start: player;
 }
 
-#yourScore {
+.PlayerScorePane > .Score {
     grid-column-start: score;
-    grid-row-start: yours;
-}
-
-#opponentPlayerName {
-    grid-column-start: name;
-    grid-row-start: opponents;
-}
-
-#opponentClock {
-    grid-column-start: clock;
-    grid-row-start: opponents;
-}
-
-#opponentDrawDeckSize {
-    grid-column-start: draw;
-    grid-row-start: opponents;
-}
-
-#opponentHandSize {
-    grid-column-start: hand;
-    grid-row-start: opponents;
-}
-
-#opponentDiscardSize {
-    grid-column-start: discard;
-    grid-row-start: opponents;
-}
-
-#opponentRemovedSize {
-    grid-column-start: removed;
-    grid-row-start: opponents;
-}
-
-#opponentScore {
-    grid-column-start: score;
-    grid-row-start: opponents;
+    grid-row-start: player;
 }

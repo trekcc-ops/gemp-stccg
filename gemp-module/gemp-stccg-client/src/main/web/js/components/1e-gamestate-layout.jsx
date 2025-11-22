@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -38,6 +39,16 @@ function get_gamestate() {
     request.send(null)
     let the_state = JSON.parse(request.responseText);
     return the_state;
+}
+
+function get_your_player_id(gamestate) {
+    return gamestate["requestingPlayer"];
+}
+
+function get_opponent_player_id(gamestate) {
+    let your_player_id = gamestate["requestingPlayer"];
+    let opponent_player_data = gamestate["players"].filter((data) => data["playerId"] != your_player_id);
+    return opponent_player_data[0]["playerId"];
 }
 
 // DEBUG / DEMO DATA
@@ -172,7 +183,20 @@ export default function MiniDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Box sx={{flexGrow: 1}} /> {/* expanding box to push icons right */}
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            flexGrow: 1
+                        }}>
+
+                        <PlayerScorePane id="opponent-player-score-pane" gamestate={get_gamestate()} player_id={get_opponent_player_id(get_gamestate())}/>
+                        <PlayerScorePane id="your-player-score-pane" gamestate={get_gamestate()} player_id={get_your_player_id(get_gamestate())}/>
+                            
+                    </Stack>
+                    <Divider orientation="vertical" flexItem sx={{padding: "10px"}} />
                     <Tooltip title="Account">
                         <IconButton
                             aria-label="account"
@@ -403,7 +427,6 @@ export default function MiniDrawer() {
                     <div id="hand-pane"><Hand gamestate={get_gamestate()} /></div>
                     <div id="action-reaction-pane"><ActionReactionPane gamestate={get_gamestate()}/></div>
                     <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
-                    <div id="player-score-pane"><PlayerScorePane gamestate={get_gamestate()}/></div>
                 </div>
                 
             </Box>
