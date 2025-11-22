@@ -46,7 +46,7 @@ export default function PlayerScorePane ( {gamestate, player_id} ) {
     let player_data = get_player_data(player_id, gamestate);
 
     return(
-        <Box class="PlayerScorePane">
+        <Box className="PlayerScorePane">
             <Box className="PlayerName">
                 <Typography>{player_data.username}</Typography>
             </Box>
