@@ -66,6 +66,8 @@ let card_in_active_pane = {
   }
 //let card_in_active_pane;
 
+let loadedGameState = get_gamestate();
+
 const drawerWidth = 240;
 
 // CSS theming overrides for opening
@@ -192,8 +194,8 @@ export default function MiniDrawer() {
                             flexGrow: 1
                         }}>
 
-                        <PlayerScorePane id="opponent-player-score-pane" gamestate={get_gamestate()} player_id={get_opponent_player_id(get_gamestate())}/>
-                        <PlayerScorePane id="your-player-score-pane" gamestate={get_gamestate()} player_id={get_your_player_id(get_gamestate())}/>
+                        <PlayerScorePane id="opponent-player-score-pane" gamestate={loadedGameState} player_id={get_opponent_player_id(loadedGameState)}/>
+                        <PlayerScorePane id="your-player-score-pane" gamestate={loadedGameState} player_id={get_your_player_id(loadedGameState)}/>
                             
                     </Stack>
                     <Divider orientation="vertical" flexItem sx={{padding: "10px"}} />
@@ -241,7 +243,7 @@ export default function MiniDrawer() {
                             <ListItemText sx={[
                                         open ? {opacity: 1,} : {opacity: 0,},
                                     ]} >
-                                    <CardTree gamestate={get_gamestate()} ></CardTree>
+                                    <CardTree gamestate={loadedGameState} ></CardTree>
                             </ListItemText>
                         </ListItemButton>
                     </ListItem>
@@ -424,9 +426,9 @@ export default function MiniDrawer() {
                 <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
                 <div id="main-layout-grid">
                     <div id="table">TABLE</div>
-                    <div id="hand-pane"><Hand gamestate={get_gamestate()} /></div>
-                    <div id="action-reaction-pane"><ActionReactionPane gamestate={get_gamestate()}/></div>
-                    <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
+                    <div id="hand-pane"><Hand gamestate={loadedGameState} /></div>
+                    <div id="action-reaction-pane"><ActionReactionPane gamestate={loadedGameState}/></div>
+                    <div id="phase-pane"><PhaseIndicator gamestate={loadedGameState} /></div>
                 </div>
                 
             </Box>
