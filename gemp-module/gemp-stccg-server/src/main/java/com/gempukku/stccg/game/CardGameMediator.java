@@ -424,7 +424,7 @@ public abstract class CardGameMediator {
         if (card instanceof AffiliatedCard affiliatedCard) {
             for (Affiliation affiliation : Affiliation.values()) {
                 if (affiliatedCard.isAffiliation(affiliation)) {
-                    affiliationTexts.add(affiliation.toHTML());
+                    affiliationTexts.add(affiliation.name());
                 }
             }
         }

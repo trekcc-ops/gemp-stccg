@@ -1,5 +1,5 @@
 import GempClientCommunication from './communication.js';
-import { log, getUrlParam } from './common.js';
+import { log, getUrlParam, getAffiliationName } from './common.js';
 import Card from './jCards.js';
 import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js';
 import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
@@ -727,7 +727,7 @@ export default class GameTableUI {
         // DEBUG: console.log("Calling setCardModifiers");
         let modifiers = json.modifiers; // list of HTML strings
         let isStopped = json.isStopped; // boolean
-        let affiliations = json.affiliations; // list of HTML strings
+        let affiliations = json.affiliations; // list of affiliation enum names
         let icons = json.icons; // list of HTML strings
         let crew = json.crew; // list of other cards with specific properties
         let dockedCards = json.dockedCards; // list of other cards with specific properties
@@ -760,16 +760,16 @@ export default class GameTableUI {
             html = html + "<i>Stopped</i><br/>";
         }
 
-        // Show icons for affiliation(s)
+        // Show names of affiliation(s)
         if (affiliations != null && affiliations.length > 0) {
             html = html + "<b>Affiliation:</b> ";
             for (const affiliation of affiliations) {
-                html = html + affiliation;
+                html = html + getAffiliationName(affiliation);
             }
             html = html + "<br/>";
         }
 
-        // Show other card icons
+        // Show card icons
         if (icons != null && icons.length > 0) {
             html = html + "<b>Icons:</b> ";
             for (const icon of icons) {

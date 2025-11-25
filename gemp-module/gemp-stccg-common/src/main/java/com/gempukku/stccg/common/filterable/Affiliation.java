@@ -5,39 +5,32 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 public enum Affiliation implements Filterable {
-    BAJORAN("Bajoran", ""),
-    BORG("Borg",""),
-    CARDASSIAN("Cardassian",""),
-    DOMINION("Dominion",""),
-    FEDERATION("Federation", ""),
-    FERENGI("Ferengi",""),
-    HIROGEN("Hirogen",""),
-    KAZON("Kazon",""),
-    KLINGON("Klingon",""),
-    NEUTRAL("Neutral",""),
-    NON_ALIGNED("Non-Aligned",""),
-    ROMULAN("Romulan",""),
-    STARFLEET("Starfleet",""),
-    VIDIIAN("Vidiian",""),
-    VULCAN("Vulcan", ""),
-    XINDI("Xindi", "");
+    BAJORAN("Bajoran"),
+    BORG("Borg"),
+    CARDASSIAN("Cardassian"),
+    DOMINION("Dominion"),
+    FEDERATION("Federation"),
+    FERENGI("Ferengi"),
+    HIROGEN("Hirogen"),
+    KAZON("Kazon"),
+    KLINGON("Klingon"),
+    NEUTRAL("Neutral"),
+    NON_ALIGNED("Non-Aligned"),
+    ROMULAN("Romulan"),
+    STARFLEET("Starfleet"),
+    VIDIIAN("Vidiian"),
+    VULCAN("Vulcan"),
+    XINDI("Xindi");
 
-    private final String humanReadable, iconURL;
+    private final String humanReadable;
 
-    Affiliation(String humanReadable, String iconURL) {
+    Affiliation(String humanReadable) {
         this.humanReadable = humanReadable;
-        this.iconURL = iconURL;
     }
 
     public String getHumanReadable() {
         return this.humanReadable;
     }
-
-    public String toHTML() {
-        if (iconURL.isEmpty())
-            return humanReadable;
-        else
-            return "<img src='" + iconURL + "' class='inline-icon' title='" + this.humanReadable + "'>"; }
 
     public static Affiliation findAffiliation(String name) {
         Stream<Affiliation> affiliationValues = Arrays.stream(values());
