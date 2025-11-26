@@ -3,7 +3,7 @@ package com.gempukku.stccg.tournament;
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
