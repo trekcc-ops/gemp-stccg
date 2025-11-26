@@ -1,7 +1,6 @@
 import goldImg from '../../images/gold.png';
 import silverImg from '../../images/silver.png';
 import { createTheme } from '@mui/material/styles';
-import { fetchImage } from './communication.js';
 import bajAffilIcon from "../../images/icons/affiliations/1E-BAJ.gif";
 import borgAffilIcon from "../../images/icons/affiliations/1E-BORG.gif";
 import cardAffilIcon from "../../images/icons/affiliations/1E-CARD.gif";
