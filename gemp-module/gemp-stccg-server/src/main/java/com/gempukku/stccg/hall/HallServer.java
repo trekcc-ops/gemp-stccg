@@ -68,7 +68,6 @@ public class HallServer extends AbstractServer {
         _hallChat = new HallChatRoomMediator(_serverObjects, HALL_TIMEOUT_PERIOD);
         _messageOfTheDay = DEFAULT_MESSAGE_OF_THE_DAY;
         objects.getChatServer().addChatRoom(_hallChat);
-        createStartupGameTable();
     }
 
     final void hallChanged() {
@@ -79,6 +78,7 @@ public class HallServer extends AbstractServer {
     private void doAfterStartup() {
         for (Tournament tournament : _serverObjects.getTournamentService().getLiveTournaments())
             _runningTournaments.put(tournament.getTournamentId(), tournament);
+        createStartupGameTable();
     }
 
     public final void setShutdown(boolean shutdown) throws SQLException, IOException {
