@@ -416,7 +416,6 @@ public class HallServer extends AbstractServer {
     final void processHall(User player, Map<String, Map<String, String>> tournamentQueuesOnServer,
                            Set<String> playedGamesOnServer, Map<String, Map<String, String>> tablesOnServer,
                            Map<String, Map<String, String>> tournamentsOnServer, Map<Object, Object> itemsToSerialize) {
-        final boolean isAdmin = player.isAdmin();
         _hallDataAccessLock.readLock().lock();
         try {
             String currentTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
@@ -424,7 +423,7 @@ public class HallServer extends AbstractServer {
             if (_messageOfTheDay != null)
                 itemsToSerialize.put("messageOfTheDay", _messageOfTheDay);
 
-            tableHolder.processTables(isAdmin, player, playedGamesOnServer, tablesOnServer);
+            tableHolder.processTables(player, playedGamesOnServer, tablesOnServer);
 
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();

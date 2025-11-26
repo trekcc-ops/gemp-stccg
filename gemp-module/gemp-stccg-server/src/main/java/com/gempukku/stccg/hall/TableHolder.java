@@ -155,8 +155,10 @@ class TableHolder {
         return result;
     }
 
-    final void processTables(boolean isAdmin, User player, Set<String> playedGamesOnServer,
+    final void processTables(User player, Set<String> playedGamesOnServer,
                              Map<String, Map<String, String>> tablesOnServer) {
+
+        boolean isAdmin = player.isAdmin();
 
         // First waiting
         for (Map.Entry<String, GameTable> tableInformation : awaitingTables.entrySet()) {
