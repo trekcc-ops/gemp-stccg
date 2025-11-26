@@ -14,12 +14,8 @@ import io.netty.handler.logging.LoggingHandler;
 
 public class GempServer {
 
-    private final static long DATABASE_CREATION_TIME = 2000;
-
     public static void main(String[] server) throws InterruptedException {
         int httpPort = AppConfig.getPort();
-
-        Thread.sleep(DATABASE_CREATION_TIME); // sleep for 2 sec to allow time to create database
 
         ServerObjects objects = new ServerObjects();
 

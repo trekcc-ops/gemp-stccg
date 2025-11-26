@@ -5,7 +5,6 @@ import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.DefaultGame;
-import org.apache.commons.lang.mutable.MutableObject;
 
 import java.util.*;
 
