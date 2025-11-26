@@ -6,7 +6,6 @@ import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.*;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -27,8 +26,6 @@ import com.gempukku.stccg.tournament.TournamentPlayerDAO;
 import com.gempukku.stccg.tournament.TournamentService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Collection;
 
 public class ServerObjects {
     private static final Logger LOGGER = LogManager.getLogger(ServerObjects.class);
@@ -118,7 +115,7 @@ public class ServerObjects {
                 _tournamentDAO, _tournamentPlayerDAO, _tournamentMatchDAO, _cardBlueprintLibrary);
         _merchantService = new MerchantService(_cardBlueprintLibrary, _collectionsManager);
         _chatServer = new ChatServer(this);
-        _gameServer = new GameServer(_deckDAO, _cardBlueprintLibrary, _chatServer, _gameRecorder);
+        _gameServer = new GameServer(_cardBlueprintLibrary, _chatServer, _gameRecorder);
         _hallServer = new HallServer(this);
     }
 

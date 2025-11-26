@@ -467,7 +467,7 @@ public class HallServer extends AbstractServer {
     }
 
     private CardDeck validateUserAndDeck(GameFormat format, User player, String deckName) throws HallException {
-        CardDeck cardDeck = _serverObjects.getGameServer().getParticipantDeck(player, deckName);
+        CardDeck cardDeck = _serverObjects.getDeckDAO().getDeckForUser(player, deckName);
         if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
 
@@ -516,7 +516,8 @@ public class HallServer extends AbstractServer {
     private void createGameMediator(GameParticipant[] participants, String tournamentName,
                                     GameTable gameTable, GameResultListener... listeners) {
         final CardGameMediator cardGameMediator =
-                _serverObjects.getGameServer().createNewGame(tournamentName, participants, gameTable.getGameSettings());
+                _serverObjects.getGameServer().createNewGame(tournamentName, participants, gameTable.getGameSettings(),
+                        _serverObjects.getCardBlueprintLibrary());
 
         for (GameResultListener listener : listeners) {
             cardGameMediator.addGameResultListener(listener);

@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameSettings;
@@ -21,7 +20,6 @@ public class GameServer extends AbstractServer {
 
     private static final long MILLIS_TO_MINUTES = 1000 * 60;
     private static final int TIMEOUT_PERIOD = 30;
-    private final CardBlueprintLibrary _CardBlueprintLibrary;
 
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
     private final Collection<String> _gameDeathWarningsSent = new HashSet<>();
@@ -30,16 +28,12 @@ public class GameServer extends AbstractServer {
 
     private int _nextGameId = 1;
 
-    private final DeckDAO _deckDao;
-
     private final ChatServer _chatServer;
     private final GameRecorder _gameRecorder;
 
     private final ReadWriteLock _lock = new ReentrantReadWriteLock();
 
-    public GameServer(DeckDAO deckDao, CardBlueprintLibrary library, ChatServer chatServer, GameRecorder gameRecorder) {
-        _deckDao = deckDao;
-        _CardBlueprintLibrary = library;
+    public GameServer(CardBlueprintLibrary library, ChatServer chatServer, GameRecorder gameRecorder) {
         _chatServer = chatServer;
         _gameRecorder = gameRecorder;
     }
@@ -93,7 +87,7 @@ public class GameServer extends AbstractServer {
     }
 
     public final CardGameMediator createNewGame(String tournamentName, final GameParticipant[] participants,
-                                                GameSettings gameSettings) {
+                                                GameSettings gameSettings, CardBlueprintLibrary blueprintLibrary) {
         _lock.writeLock().lock();
         try {
             if (participants.length < 2)
@@ -111,7 +105,8 @@ public class GameServer extends AbstractServer {
                         getChatRoomName(gameId), false, TIMEOUT_PERIOD, false);
 
             // Allow spectators for leagues, but not tournaments
-            CardGameMediator cardGameMediator = getCardGameMediator(participants, gameSettings, gameId);
+            CardGameMediator cardGameMediator =
+                    createGameMediator(participants, gameSettings, gameId, blueprintLibrary);
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
@@ -171,20 +166,16 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings,
-                                                 String gameId) {
+    private CardGameMediator createGameMediator(GameParticipant[] participants, GameSettings gameSettings,
+                                                String gameId, CardBlueprintLibrary blueprintLibrary) {
 
         GameFormat gameFormat = gameSettings.getGameFormat();
 
         return switch (gameFormat.getGameType()) {
-            case FIRST_EDITION -> new ST1EGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
-            case SECOND_EDITION -> new ST2EGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
-            case TRIBBLES -> new TribblesGameMediator(gameId, participants, _CardBlueprintLibrary, gameSettings);
+            case FIRST_EDITION -> new ST1EGameMediator(gameId, participants, blueprintLibrary, gameSettings);
+            case SECOND_EDITION -> new ST2EGameMediator(gameId, participants, blueprintLibrary, gameSettings);
+            case TRIBBLES -> new TribblesGameMediator(gameId, participants, blueprintLibrary, gameSettings);
         };
-    }
-
-    public final CardDeck getParticipantDeck(User player, String deckName) {
-        return _deckDao.getDeckForUser(player, deckName);
     }
 
     public final CardGameMediator getGameById(String gameId) throws HttpProcessingException {
