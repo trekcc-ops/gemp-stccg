@@ -1098,10 +1098,21 @@ export default class GempClientCommunication {
 
 export async function fetchImage(url) {
     try {
+        // HACK, TODO: Temporarily override URLs to point at TrekCC.dev
+        // Long term we should update the .json files to the intended host.
+        let newUrl;
+        if (url.startsWith("https://www.trekcc.org/1e/cardimages/")) {
+            newUrl = url.replace("https://www.trekcc.org/1e/cardimages/", "https://trekcc.dev/1e/images/imgp.php?src=")
+            newUrl = newUrl + "&w=330&q=100&sharpen&sa=webp"
+        }
+        else {
+            newUrl = url;
+        }
+
         const imgReqHeaders = new Headers();
-        imgReqHeaders.append("Accept", "image/png,image/jpeg,image/gif");
+        imgReqHeaders.append("Accept", "image/webp,image/png,image/jpeg,image/gif");
         imgReqHeaders.append("User-Agent", userAgent);
-        let response = await fetch(url, {
+        let response = await fetch(newUrl, {
             method: "GET",
             headers: imgReqHeaders
         });
