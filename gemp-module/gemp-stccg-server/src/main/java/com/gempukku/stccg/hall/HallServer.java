@@ -190,6 +190,19 @@ public class HallServer extends AbstractServer {
         }
     }
 
+    public void createTournamentGameInternal(GameSettings gameSettings, GameParticipant[] participants,
+                                             String tournamentName, GameResultListener listener) {
+        _hallDataAccessLock.writeLock().lock();
+        try {
+            if (!_shutdown) {
+                final GameTable gameTable = tableHolder.createTable(gameSettings, participants);
+                createGameMediator(participants, tournamentName, gameTable, listener);
+            }
+        } finally {
+            _hallDataAccessLock.writeLock().unlock();
+        }
+    }
+
     private GameSettings createGameSettings(String formatSelection, GameTimer timer, String description,
                                             boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
@@ -554,8 +567,9 @@ public class HallServer extends AbstractServer {
 
             for (Map.Entry<String, Tournament> tournamentEntry : new HashMap<>(_runningTournaments).entrySet()) {
                 Tournament runningTournament = tournamentEntry.getValue();
+                GameFormat tournamentFormat = _formatLibrary.get(runningTournament.getFormat());
                 boolean changed = runningTournament.advanceTournament(
-                        new HallTournamentCallback(runningTournament), _collectionsManager);
+                        new HallTournamentCallback(this, runningTournament, tournamentFormat), _collectionsManager);
                 if (runningTournament.getTournamentStage() == Tournament.Stage.FINISHED)
                     _runningTournaments.remove(tournamentEntry.getKey());
                 if (changed)
@@ -585,70 +599,13 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private class HallTournamentCallback implements TournamentCallback {
-        private final Tournament _tournament;
-        private final GameSettings tournamentGameSettings;
-
-        private HallTournamentCallback(Tournament tournament) {
-            _tournament = tournament;
-            tournamentGameSettings = new GameSettings(_formatLibrary.get(_tournament.getFormat()),
-                    null, null, true, false, false, false,
-                    GameTimer.TOURNAMENT_TIMER, null);
-        }
-
-        @Override
-        public final void createGame(String playerOne, CardDeck deckOne, String playerTwo, CardDeck deckTwo) {
-            final GameParticipant[] participants = new GameParticipant[2];
-            participants[0] = new GameParticipant(playerOne, deckOne);
-            participants[1] = new GameParticipant(playerTwo, deckTwo);
-            createGameInternal(participants);
-        }
-
-        private void createGameInternal(final GameParticipant[] participants) {
-            _hallDataAccessLock.writeLock().lock();
-            try {
-                if (!_shutdown) {
-                    final GameTable gameTable = tableHolder.createTable(tournamentGameSettings, participants);
-                    createGameMediator(participants, _tournament.getTournamentName(), gameTable,
-                            new MyGameResultListener(participants));
-                }
-            } finally {
-                _hallDataAccessLock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public final void broadcastMessage(String message) {
-            try {
-                _hallChat.sendChatMessage("TournamentSystem", message, true);
-            } catch (PrivateInformationException exp) {
-                // Ignore, sent as admin
-            } catch (ChatCommandErrorException e) {
-                // Ignore, no command
-            }
-        }
-
-        private class MyGameResultListener implements GameResultListener {
-            private final GameParticipant[] participants;
-
-            public MyGameResultListener(GameParticipant[] participants) {
-                this.participants = participants;
-            }
-
-            @Override
-            public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
-                _tournament.reportGameFinished(winnerPlayerId, loserReasons.keySet().iterator().next());
-            }
-
-            @Override
-            public void gameCancelled() {
-                createGameInternal(participants);
-            }
-        }
-    }
-
     public final void startServer() {
         basicStartup();
         doAfterStartup();
+    }
+
+    public void sendAdminMessage(String senderName, String message)
+            throws PrivateInformationException, ChatCommandErrorException {
+        _hallChat.sendChatMessage(senderName, message, true);
     }
 }
