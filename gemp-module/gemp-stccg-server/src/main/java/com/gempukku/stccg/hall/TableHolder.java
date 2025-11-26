@@ -7,7 +7,6 @@ import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
 import com.gempukku.stccg.league.League;
-import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,31 +36,69 @@ class TableHolder {
         awaitingTables.clear();
     }
 
-    public final GameTable createTable(User player, GameSettings gameSettings, CardDeck deck) throws HallException {
-        LOGGER.debug("TableHolder - createTable function called");
-        String tableId = String.valueOf(_nextTableId++);
-
+    public void validatePlayerForLeague(String userName, GameSettings gameSettings) throws HallException {
         final League league = gameSettings.getLeague();
         if (league != null) {
-            verifyNotPlayingLeagueGame(player, league);
+            for (GameTable awaitingTable : awaitingTables.values()) {
+                if (league.equals(awaitingTable.getGameSettings().getLeague())
+                        && awaitingTable.hasPlayer(userName)) {
+                    throw new HallException("You can't play in multiple league games at the same time");
+                }
+            }
 
-            if (!leagueService.isPlayerInLeague(league, player))
+            for (GameTable runningTable : runningTables.values()) {
+                if (league.equals(runningTable.getGameSettings().getLeague())) {
+                    CardGameMediator game = runningTable.getMediator();
+                    if (game != null && !game.getGame().isFinished() && game.getPlayersPlaying().contains(userName))
+                        throw new HallException("You can't play in multiple league games at the same time");
+                }
+            }
+
+            if (!leagueService.isPlayerInLeague(league, userName))
                 throw new HallException("You're not in that league");
 
-            if (!leagueService.canPlayRankedGame(league, gameSettings.getSeriesData(), player.getName()))
+            if (!leagueService.canPlayRankedGame(league, gameSettings.getSeriesData(), userName))
                 throw new HallException("You have already played max games in league");
         }
+    }
 
-        GameTable table = new GameTable(gameSettings);
+    private void validateOpponentForLeague(User user, GameTable awaitingTable)
+            throws HallException {
+        GameSettings gameSettings = awaitingTable.getGameSettings();
+        League league = gameSettings.getLeague();
+        if (league != null) {
+            if (!awaitingTable.getPlayerNames().isEmpty() &&
+                    !leagueService.canPlayRankedGameAgainst(league, gameSettings.getSeriesData(),
+                            awaitingTable.getPlayerNames().getFirst(), user.getName()))
+                throw new HallException(
+                        "You have already played ranked league game against this player in that series");
+        }
+    }
 
-        boolean tableFull = table.addPlayer(new GameParticipant(player, deck));
-        if (tableFull) {
-            addTableToRunningTables(table, tableId);
-            return table;
+    public final GameTable createTable(GameSettings gameSettings, GameParticipant... participants) {
+        int tableId = _nextTableId;
+        _nextTableId++;
+        GameTable table = new GameTable(tableId, gameSettings);
+        for (GameParticipant participant : participants) {
+            table.addPlayer(participant);
         }
 
-        awaitingTables.put(tableId, table);
-        return null;
+        awaitingTables.put(String.valueOf(table.getTableId()), table);
+        runTableIfFull(table);
+        return table;
+    }
+
+    private void runTableIfFull(GameTable table) {
+        if (table.isFull()) {
+            String tableId = String.valueOf(table.getTableId());
+            awaitingTables.remove(tableId);
+            runningTables.put(tableId, table);
+            table.setAsPlaying();
+
+            // Leave all other tables players are waiting on
+            for (GameParticipant awaitingTablePlayer : table.getPlayers())
+                leaveAwaitingTablesForPlayer(awaitingTablePlayer.getPlayerId());
+        }
     }
 
     public final GameTable joinTable(String tableId, User player, CardDeck deck) throws HallException {
@@ -73,53 +110,14 @@ class TableHolder {
         if (awaitingTable.hasPlayer(player))
             throw new HallException("You can't play against yourself");
 
-        final League league = awaitingTable.getGameSettings().getLeague();
-        if (league != null) {
-            verifyNotPlayingLeagueGame(player, league);
+        validatePlayerForLeague(player.getName(), awaitingTable.getGameSettings());
+        validateOpponentForLeague(player, awaitingTable);
 
-            if (!leagueService.isPlayerInLeague(league, player))
-                throw new HallException("You're not in that league");
-
-            LeagueSeriesData seriesData = awaitingTable.getGameSettings().getSeriesData();
-            if (!leagueService.canPlayRankedGame(league, seriesData, player.getName()))
-                throw new HallException("You have already played max games in league");
-            if (!awaitingTable.getPlayerNames().isEmpty() &&
-                    !leagueService.canPlayRankedGameAgainst(league, seriesData,
-                            awaitingTable.getPlayerNames().getFirst(), player.getName()))
-                throw new HallException(
-                        "You have already played ranked league game against this player in that series");
-        }
-
-        final boolean tableFull = awaitingTable.addPlayer(new GameParticipant(player.getName(), deck));
-        if (tableFull) {
-            awaitingTables.remove(tableId);
-            addTableToRunningTables(awaitingTable, tableId);
-
-            // Leave all other tables this player is waiting on
-            for (GameParticipant awaitingTablePlayer : awaitingTable.getPlayers())
-                leaveAwaitingTablesForPlayer(awaitingTablePlayer.getPlayerId());
-
-            return awaitingTable;
-        }
-        return null;
+        awaitingTable.addPlayer(new GameParticipant(player.getName(), deck));
+        runTableIfFull(awaitingTable);
+        return awaitingTable;
     }
 
-    public final GameTable setupTournamentTable(GameSettings gameSettings, GameParticipant[] participants) {
-        String tableId = String.valueOf(_nextTableId++);
-
-        GameTable table = new GameTable(gameSettings);
-        for (GameParticipant participant : participants) {
-            table.addPlayer(participant);
-        }
-        addTableToRunningTables(table, tableId);
-
-        return table;
-    }
-
-    private void addTableToRunningTables(GameTable table, String tableId) {
-        runningTables.put(tableId, table);
-        table.setAsPlaying();
-    }
 
     public final GameSettings getGameSettings(String tableId) throws HallException {
         final GameTable gameTable = awaitingTables.get(tableId);
@@ -142,11 +140,7 @@ class TableHolder {
         return false;
     }
 
-    public final boolean leaveAwaitingTablesForPlayer(User player) {
-        return leaveAwaitingTablesForPlayer(player.getName());
-    }
-
-    private boolean leaveAwaitingTablesForPlayer(String playerId) {
+    public boolean leaveAwaitingTablesForPlayer(String playerId) {
         boolean result = false;
         final Iterator<Map.Entry<String, GameTable>> iterator = awaitingTables.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -159,23 +153,6 @@ class TableHolder {
             }
         }
         return result;
-    }
-
-    private void verifyNotPlayingLeagueGame(User player, League league) throws HallException {
-        for (GameTable awaitingTable : awaitingTables.values()) {
-            if (league.equals(awaitingTable.getGameSettings().getLeague())
-                    && awaitingTable.hasPlayer(player.getName())) {
-                throw new HallException("You can't play in multiple league games at the same time");
-            }
-        }
-
-        for (GameTable runningTable : runningTables.values()) {
-            if (league.equals(runningTable.getGameSettings().getLeague())) {
-                CardGameMediator game = runningTable.getMediator();
-                if (game != null && !game.getGame().isFinished() && game.getPlayersPlaying().contains(player.getName()))
-                    throw new HallException("You can't play in multiple league games at the same time");
-            }
-        }
     }
 
     final void processTables(boolean isAdmin, User player, Set<String> playedGamesOnServer,
@@ -261,11 +238,4 @@ class TableHolder {
         return true;
     }
 
-    private static String getTournamentName(GameTable table) {
-        final League league = table.getGameSettings().getLeague();
-        if (league != null)
-            return league.getName() + " - " + table.getGameSettings().getSeriesData().getName();
-        else
-            return "Casual - " + table.getGameSettings().getTimeSettings().name();
-    }
 }

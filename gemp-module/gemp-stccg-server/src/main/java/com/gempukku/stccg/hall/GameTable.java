@@ -15,6 +15,7 @@ public class GameTable {
 
     private final GameSettings gameSettings;
     private final Map<String, GameParticipant> players = new HashMap<>();
+    private final int _tableId;
 
     private CardGameMediator cardGameMediator;
     private final int capacity;
@@ -24,9 +25,10 @@ public class GameTable {
         WAITING, PLAYING, FINISHED
     }
 
-    public GameTable(GameSettings gameSettings) {
+    public GameTable(int tableId, GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.capacity = 2; // manually change Tribbles player limit
+        _tableId = tableId;
         _tableStatus = TableStatus.WAITING;
         LOGGER.debug("Capacity of game: {}", this.capacity);
     }
@@ -44,9 +46,8 @@ public class GameTable {
         return cardGameMediator != null;
     }
 
-    public final boolean addPlayer(GameParticipant player) {
+    public final void addPlayer(GameParticipant player) {
         players.put(player.getPlayerId(), player);
-        return players.size() == capacity;
     }
 
     public final boolean removePlayer(String playerId) {
@@ -125,4 +126,11 @@ public class GameTable {
 
     public void setAsPlaying() { _tableStatus = TableStatus.PLAYING; }
     public void setAsFinished() { _tableStatus = TableStatus.FINISHED; }
+
+    public int getTableId() { return _tableId; }
+
+    public boolean isFull() {
+        return players.size() == capacity;
+    }
+
 }

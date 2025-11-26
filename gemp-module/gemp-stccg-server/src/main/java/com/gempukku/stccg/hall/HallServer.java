@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.UserNotFoundException;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
@@ -67,6 +68,7 @@ public class HallServer extends AbstractServer {
         _hallChat = new HallChatRoomMediator(_serverObjects, HALL_TIMEOUT_PERIOD);
         _messageOfTheDay = DEFAULT_MESSAGE_OF_THE_DAY;
         objects.getChatServer().addChatRoom(_hallChat);
+        createStartupGameTable();
     }
 
     final void hallChanged() {
@@ -139,12 +141,6 @@ public class HallServer extends AbstractServer {
             tournamentQueue.leaveAllPlayers(_collectionsManager);
     }
 
-    public final void createNewTable(String type, User deckOwner, String deckName, GameTimer timer,
-                                     String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
-            throws HallException {
-        createNewTable(type, deckOwner, deckOwner, deckName, timer, description, isInviteOnly, isPrivate, isHidden);
-    }
-
     public final void createNewTable(String type, User player, User deckOwner, String deckName, GameTimer timer,
                                      String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
@@ -156,11 +152,39 @@ public class HallServer extends AbstractServer {
 
         _hallDataAccessLock.writeLock().lock();
         try {
-            final GameTable table = tableHolder.createTable(player, gameSettings, cardDeck);
-            if (table != null)
+            GameParticipant participant = new GameParticipant(player, cardDeck);
+            tableHolder.validatePlayerForLeague(player.getName(), gameSettings);
+            final GameTable table = tableHolder.createTable(gameSettings, participant);
+            if (table.isFull())
                 createGameFromTable(table);
 
             hallChanged();
+        } finally {
+            _hallDataAccessLock.writeLock().unlock();
+        }
+    }
+
+    private void createStartupGameTable() {
+
+        _hallDataAccessLock.writeLock().lock();
+        try {
+            GameSettings gameSettings = createGameSettings("debug1e", GameTimer.DEBUG_TIMER,
+                    "Startup Sample Game", false, false, false);
+
+            User player1 = _serverObjects.getPlayerDAO().getPlayer("asdf");
+            User player2 = _serverObjects.getPlayerDAO().getPlayer("qwer");
+
+            CardDeck cardDeck1 = validateUserAndDeck(gameSettings.getGameFormat(), player1, "AMS Deck");
+            CardDeck cardDeck2 = validateUserAndDeck(gameSettings.getGameFormat(), player2, "Rommie Test");
+
+            GameParticipant participant1 = new GameParticipant("asdf", cardDeck1);
+            GameParticipant participant2 = new GameParticipant("qwer", cardDeck2);
+
+            final GameTable table = tableHolder.createTable(gameSettings, participant1, participant2);
+            createGameFromTable(table);
+            hallChanged();
+        } catch (UserNotFoundException | HallException exp) {
+            LOGGER.error(exp);
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
@@ -252,7 +276,7 @@ public class HallServer extends AbstractServer {
         _hallDataAccessLock.writeLock().lock();
         try {
             final GameTable runningTable = tableHolder.joinTable(tableId, player, cardDeck);
-            if (runningTable != null)
+            if (runningTable.isFull())
                 createGameFromTable(runningTable);
 
             hallChanged();
@@ -274,7 +298,7 @@ public class HallServer extends AbstractServer {
         _hallDataAccessLock.writeLock().lock();
         try {
             final GameTable runningTable = tableHolder.joinTable(tableId, player, cardDeck);
-            if (runningTable != null)
+            if (runningTable.isFull())
                 createGameFromTable(runningTable);
 
             hallChanged();
@@ -339,7 +363,7 @@ public class HallServer extends AbstractServer {
     private boolean leaveAwaitingTablesForLeavingPlayer(User player) {
         _hallDataAccessLock.writeLock().lock();
         try {
-            return tableHolder.leaveAwaitingTablesForPlayer(player);
+            return tableHolder.leaveAwaitingTablesForPlayer(player.getName());
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
@@ -458,56 +482,36 @@ public class HallServer extends AbstractServer {
     }
 
 
-    private static String getTournamentName(GameTable table) {
-        final League league = table.getGameSettings().getLeague();
-        if (league != null)
-            return league.getName() + " - " + table.getGameSettings().getSeriesData().getName();
-        else
-            return "Casual - " + table.getGameSettings().getTimeSettings().name();
-    }
-
     private void createGameFromTable(GameTable gameTable) {
         Set<GameParticipant> players = gameTable.getPlayers();
         GameParticipant[] participants = players.toArray(new GameParticipant[0]);
         final League league = gameTable.getGameSettings().getLeague();
         final LeagueSeriesData seriesData = gameTable.getGameSettings().getSeriesData();
 
-        GameResultListener listener = getGameResultListener(league, seriesData);
+        String tournamentName = (league != null) ?
+                (league.getName() + " - " + seriesData.getName()) :
+                ("Casual - " + gameTable.getGameSettings().getTimeSettings().name());
 
-        CardGameMediator mediator =
-                createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
-        gameTable.startGame(mediator);
-    }
-
-    private GameResultListener getGameResultListener(League league, LeagueSeriesData seriesData) {
-        GameResultListener listener = null;
-        if (league != null) {
-            listener = new GameResultListener() {
-                @Override
-                public void gameFinished(String winnerPlayerId, String winReason,
-                                         Map<String, String> loserReasons) {
-                    _serverObjects.getLeagueService().reportLeagueGameResult(
-                            league, seriesData, winnerPlayerId, loserReasons.keySet().iterator().next());
-                }
-
-                @Override
-                public void gameCancelled() {
-                    // Do nothing...
-                }
-            };
+        if (league == null) {
+            createGameMediator(participants, tournamentName, gameTable);
+        } else {
+            GameResultListener listener =
+                    new LeagueGameResultListener(league, seriesData, _serverObjects.getLeagueService());
+            createGameMediator(participants, tournamentName, gameTable, listener);
         }
-        return listener;
     }
 
-    private CardGameMediator createGameMediator(GameParticipant[] participants, GameResultListener listener,
-                                                String tournamentName, GameSettings gameSettings) {
+    private void createGameMediator(GameParticipant[] participants, String tournamentName,
+                                    GameTable gameTable, GameResultListener... listeners) {
         final CardGameMediator cardGameMediator =
-                _serverObjects.getGameServer().createNewGame(tournamentName, participants, gameSettings);
-        if (listener != null)
+                _serverObjects.getGameServer().createNewGame(tournamentName, participants, gameTable.getGameSettings());
+
+        for (GameResultListener listener : listeners) {
             cardGameMediator.addGameResultListener(listener);
+        }
         cardGameMediator.startGame();
         cardGameMediator.addGameResultListener(new NotifyHallListenersGameResultListener(this));
-        return cardGameMediator;
+        gameTable.startGame(cardGameMediator);
     }
 
     @Override
@@ -604,11 +608,9 @@ public class HallServer extends AbstractServer {
             _hallDataAccessLock.writeLock().lock();
             try {
                 if (!_shutdown) {
-                    final GameTable gameTable = tableHolder.setupTournamentTable(tournamentGameSettings, participants);
-                    final CardGameMediator mediator =
-                            createGameMediator(participants, new MyGameResultListener(participants),
-                                    _tournament.getTournamentName(), tournamentGameSettings);
-                    gameTable.startGame(mediator);
+                    final GameTable gameTable = tableHolder.createTable(tournamentGameSettings, participants);
+                    createGameMediator(participants, _tournament.getTournamentName(), gameTable,
+                            new MyGameResultListener(participants));
                 }
             } finally {
                 _hallDataAccessLock.writeLock().unlock();

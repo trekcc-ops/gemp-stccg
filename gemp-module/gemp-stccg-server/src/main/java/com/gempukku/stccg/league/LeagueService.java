@@ -108,6 +108,10 @@ public class LeagueService {
         }
     }
 
+    public synchronized boolean isPlayerInLeague(League league, String userName) {
+        return _leagueParticipationDAO.getUsersParticipating(league.getType()).contains(userName);
+    }
+
     public synchronized boolean isPlayerInLeague(League league, User player) {
         return _leagueParticipationDAO.getUsersParticipating(league.getType()).contains(player.getName());
     }

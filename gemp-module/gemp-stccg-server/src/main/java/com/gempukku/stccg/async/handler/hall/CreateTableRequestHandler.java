@@ -81,8 +81,8 @@ public class CreateTableRequestHandler implements UriRequestHandler {
 
 
         try {
-            hallServer.createNewTable(
-                    _format, resourceOwner, _deckName, _timer, _desc, _isInviteOnly, _isPrivate, !isVisible);
+            hallServer.createNewTable(_format, resourceOwner, resourceOwner, _deckName, _timer, _desc,
+                    _isInviteOnly, _isPrivate, !isVisible);
             responseWriter.writeXmlOkResponse();
         } catch (HallException e) {
             try {
