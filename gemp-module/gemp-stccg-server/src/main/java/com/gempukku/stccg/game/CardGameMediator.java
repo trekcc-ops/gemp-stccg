@@ -8,6 +8,7 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.chat.PrivateInformationException;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -72,8 +74,7 @@ public class CardGameMediator {
         }
 
         GameFormat gameFormat = gameSettings.getGameFormat();
-
-        _game = switch (gameFormat.getGameType()) {
+        _game = switch (gameSettings.getGameType()) {
             case FIRST_EDITION -> new ST1EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
             case SECOND_EDITION -> new ST2EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
             case TRIBBLES -> new TribblesGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
@@ -116,14 +117,6 @@ public class CardGameMediator {
         _game.sendMessage(message);
     }
 
-    final void addGameStateListener(GameStateListener listener) {
-        _game.addGameStateListener(listener);
-    }
-
-    public final void addGameResultListener(GameResultListener listener) {
-        _game.addGameResultListener(listener);
-    }
-
     public final String getWinner() {
         return _game.getWinnerPlayerId();
     }
@@ -132,12 +125,13 @@ public class CardGameMediator {
         return new LinkedList<>(_playersPlaying);
     }
 
-    public final String produceCardInfo(int cardId) throws JsonProcessingException {
+    public final String produceCardInfo(int cardId) throws JsonProcessingException, HttpProcessingException {
         _readLock.lock();
         try {
-            GameState gameState = getGame().getGameState();
-            PhysicalCard card = gameState.findCardById(cardId);
-            return getCardInfoJson(getGame(), card);
+            PhysicalCard card = _game.getCardFromCardId(cardId);
+            return getCardInfoJson(_game, card);
+        } catch (CardNotFoundException e) {
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND, e.getMessage());
         } finally {
             _readLock.unlock();
         }
@@ -316,7 +310,7 @@ public class CardGameMediator {
 
             channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
             _communicationChannels.put(playerName, channel);
-            addGameStateListener(channel);
+            _game.addGameStateListener(channel);
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = getGame().getGameState().serializeForPlayer(player.getName());
             JsonNode gameState = mapper.readTree(jsonString);
@@ -524,7 +518,7 @@ public class CardGameMediator {
         listeners.add(new RecordingGameResultListener(_playersPlaying, gameRecordingInProgress));
 
         for (GameResultListener listener : listeners) {
-            addGameResultListener(listener);
+            _game.addGameResultListener(listener);
         }
     }
 }

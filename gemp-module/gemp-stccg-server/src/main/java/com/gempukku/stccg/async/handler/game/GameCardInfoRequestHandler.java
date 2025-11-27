@@ -24,7 +24,7 @@ public class GameCardInfoRequestHandler extends GameRequestHandlerNew implements
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
                                     ServerObjects serverObjects)
             throws Exception {
-            // getGameById throws 404 error if not found
+            // 404 error thrown if game or card not found
         CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
         responseWriter.writeJsonResponse(gameMediator.produceCardInfo(_cardId));
     }

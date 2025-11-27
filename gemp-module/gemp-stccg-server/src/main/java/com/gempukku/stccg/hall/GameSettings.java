@@ -1,6 +1,7 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
@@ -59,4 +60,6 @@ public class GameSettings {
     public final String getUserDescription() { return userDescription; }
 
     public final boolean isUserInviteOnly() { return isInviteOnly; }
+
+    public GameType getGameType() { return gameFormat.getGameType(); }
 }
