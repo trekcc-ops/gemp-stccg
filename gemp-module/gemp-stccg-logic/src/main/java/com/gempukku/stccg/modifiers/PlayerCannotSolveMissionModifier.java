@@ -1,6 +1,5 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 public class PlayerCannotSolveMissionModifier extends AbstractModifier {

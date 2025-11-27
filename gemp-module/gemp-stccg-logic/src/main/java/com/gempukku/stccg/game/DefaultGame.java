@@ -1,7 +1,6 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
