@@ -36,6 +36,7 @@ public class GameTable {
     public final void startGame(CardGameMediator cardGameMediator) {
         LOGGER.debug("GameTable - startGame function called;");
         this.cardGameMediator = cardGameMediator;
+        cardGameMediator.startGame();
     }
 
     public final CardGameMediator getMediator() {

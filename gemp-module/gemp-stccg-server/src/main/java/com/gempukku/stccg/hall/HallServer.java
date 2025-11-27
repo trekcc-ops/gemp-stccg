@@ -515,16 +515,12 @@ public class HallServer extends AbstractServer {
 
     private void createGameMediator(GameParticipant[] participants, String tournamentName,
                                     GameTable gameTable, GameResultListener... listeners) {
-        final CardGameMediator cardGameMediator =
-                _serverObjects.getGameServer().createNewGame(tournamentName, participants, gameTable.getGameSettings(),
-                        _serverObjects.getCardBlueprintLibrary());
 
-        for (GameResultListener listener : listeners) {
-            cardGameMediator.addGameResultListener(listener);
-        }
-        cardGameMediator.startGame();
-        cardGameMediator.addGameResultListener(new NotifyHallListenersGameResultListener(this));
-        gameTable.startGame(cardGameMediator);
+        List<GameResultListener> listenerList = new ArrayList<>(Arrays.asList(listeners));
+        listenerList.add(new NotifyHallListenersGameResultListener(this));
+
+        final CardGameMediator cardGameMediator = _serverObjects.getGameServer().createNewGame(
+                tournamentName, participants, gameTable, _serverObjects.getCardBlueprintLibrary(), listenerList);
     }
 
     @Override
