@@ -51,7 +51,7 @@ public class RevealSeedCardAction extends ActionyAction {
                     if (_performingPlayerId.equals(revealedCard.getOwnerName())) {
                         // TODO - Player also cannot solve objectives targeting the mission
                         Modifier modifier =
-                                new PlayerCannotSolveMissionModifier(cardGame, _missionLocation, _performingPlayerId);
+                                new PlayerCannotSolveMissionModifier(_missionLocation, _performingPlayerId);
                         cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
                     }
                     if (revealedCard instanceof ST1EPhysicalCard stCard) {
