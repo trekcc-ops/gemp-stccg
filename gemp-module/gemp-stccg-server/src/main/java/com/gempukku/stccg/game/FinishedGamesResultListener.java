@@ -1,6 +1,5 @@
 package com.gempukku.stccg.game;
 
-import java.util.Date;
 import java.util.Map;
 
 public class FinishedGamesResultListener implements GameResultListener {

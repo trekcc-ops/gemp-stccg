@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.CardDeck;
@@ -21,9 +19,7 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.hall.GameSettings;
-import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.PlayerClock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -129,7 +125,7 @@ public class CardGameMediator {
         _readLock.lock();
         try {
             PhysicalCard card = _game.getCardFromCardId(cardId);
-            return getCardInfoJson(_game, card);
+            return CardInfoSerializer.serialize(_game, card);
         } catch (CardNotFoundException e) {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND, e.getMessage());
         } finally {
@@ -209,7 +205,7 @@ public class CardGameMediator {
         _writeLock.lock();
         try {
             if (_playersPlaying.contains(playerId))
-                getGame().requestCancel(playerId);
+                _game.requestCancel(playerId);
         } finally {
             _writeLock.unlock();
         }
@@ -225,30 +221,29 @@ public class CardGameMediator {
                 throw new SubscriptionExpiredException();
             if (communicationChannel.getChannelNumber() != channelNumber)
                 throw new SubscriptionConflictException();
-            DefaultGame game = getGame();
-            AwaitingDecision awaitingDecision = game.getAwaitingDecision(playerName);
+            AwaitingDecision awaitingDecision = _game.getAwaitingDecision(playerName);
 
             if (awaitingDecision != null) {
-                if (awaitingDecision.getDecisionId() == decisionId && !game.isFinished()) {
-                    GameState gameState = game.getGameState();
+                if (awaitingDecision.getDecisionId() == decisionId && !_game.isFinished()) {
+                    GameState gameState = _game.getGameState();
                     try {
-                        gameState.playerDecisionFinished(playerName, game.getUserFeedback());
+                        gameState.playerDecisionFinished(playerName, _game.getUserFeedback());
                         awaitingDecision.decisionMade(answer);
 
                         // Decision successfully made, add the time to user clock
                         addTimeSpentOnDecisionToUserClock(playerName);
 
-                        game.carryOutPendingActionsUntilDecisionNeeded();
+                        _game.carryOutPendingActionsUntilDecisionNeeded();
                         startClocksForUsersPendingDecision();
 
                     } catch (DecisionResultInvalidException exp) {
                         /* Participant provided wrong answer - send a warning message,
                         and ask again for the same decision */
-                        game.sendWarning(playerName, exp.getWarningMessage());
-                        game.sendAwaitingDecision(awaitingDecision);
+                        _game.sendWarning(playerName, exp.getWarningMessage());
+                        _game.sendAwaitingDecision(awaitingDecision);
                     } catch (InvalidGameOperationException | RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
-                        game.cancelGame();
+                        _game.cancelGame();
                     }
                 }
             }
@@ -383,119 +378,6 @@ public class CardGameMediator {
         } finally {
             _readLock.unlock();
         }
-    }
-
-    private String getCardInfoJson(DefaultGame cardGame, PhysicalCard card) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<Object, Object> itemsToSerialize = new HashMap<>();
-        if (card == null || (!card.isInPlay() && !card.isInHand(cardGame)))
-            return mapper.writeValueAsString(itemsToSerialize);
-
-        Collection<String> modifiersToAdd = new ArrayList<>();
-        for (Modifier modifier : cardGame.getGameState().getModifiersQuerying().getModifiersAffecting(card)) {
-            if (modifier != null && !Objects.equals(modifier.getCardInfoText(getGame(), card), "null")) {
-                modifiersToAdd.add(modifier.getCardInfoText(getGame(), card));
-            }
-        }
-        itemsToSerialize.put("modifiers", modifiersToAdd);
-
-        if (card instanceof ST1EPhysicalCard stCard) {
-            itemsToSerialize.put("isStopped", stCard.isStopped());
-        }
-
-        List<String> affiliationTexts = new ArrayList<>();
-        if (card instanceof AffiliatedCard affiliatedCard) {
-            for (Affiliation affiliation : Affiliation.values()) {
-                if (affiliatedCard.isAffiliation(affiliation)) {
-                    affiliationTexts.add(affiliation.toHTML());
-                }
-            }
-        }
-        itemsToSerialize.put("affiliations", affiliationTexts);
-        
-        List<String> cardIconTexts = new ArrayList<>();
-        for (CardIcon icon : CardIcon.values()) {
-            if (card.hasIcon(getGame(), icon)) {
-                cardIconTexts.add(icon.toHTML());
-            }
-        }
-        itemsToSerialize.put("icons", cardIconTexts);
-        
-
-        List<Map<Object, Object>> crew = new ArrayList<>();
-        if (card instanceof CardWithCrew cardWithCrew) {
-            for (PhysicalCard crewCard : cardWithCrew.getCrew()) {
-                crew.add(getCardProperties(crewCard));
-            }
-        }
-        itemsToSerialize.put("crew", crew);
-
-        List<Map<Object, Object>> dockedCards = new ArrayList<>();
-        if (card instanceof FacilityCard facility) {
-            for (PhysicalCard ship : facility.getDockedShips()) {
-                dockedCards.add(getCardProperties(ship));
-            }
-        }
-        itemsToSerialize.put("dockedCards", dockedCards);
-
-        if (card instanceof PhysicalShipCard ship) {
-            List<String> staffingRequirements = new ArrayList<>();
-            if (!ship.getStaffingRequirements().isEmpty()) {
-                for (CardIcon icon : ship.getStaffingRequirements()) {
-                    staffingRequirements.add(icon.toHTML());
-                }
-            }
-            itemsToSerialize.put("staffingRequirements", staffingRequirements);
-
-            itemsToSerialize.put("isStaffed", ship.isStaffed());
-            itemsToSerialize.put("printedRange", ship.getBlueprint().getRange());
-            itemsToSerialize.put("rangeAvailable", ship.getRangeAvailable());
-        }
-
-        if (card instanceof MissionCard mission) {
-            ST1EGame stGame = mission.getGame();
-            itemsToSerialize.put("missionRequirements", mission.getMissionRequirements());
-
-            List<Map<Object, Object>> serializableAwayTeams = new ArrayList<>();
-            if (mission.getGameLocation() instanceof MissionLocation missionLocation && missionLocation.isPlanet()) {
-                List<AwayTeam> awayTeamsOnPlanet = missionLocation.getAwayTeamsOnSurface(stGame).toList();
-                for (AwayTeam team : awayTeamsOnPlanet) {
-                    Map<Object, Object> awayTeamInfo = new HashMap<>();
-                    awayTeamInfo.put("playerId", team.getPlayerId());
-                    List<Map<Object, Object>> awayTeamMembers = new ArrayList<>();
-                    for (PhysicalCard member : team.getCards()) {
-                        awayTeamMembers.add(getCardProperties(member));
-                    }
-                    awayTeamInfo.put("cardsInAwayTeam", awayTeamMembers);
-                    serializableAwayTeams.add(awayTeamInfo);
-                }
-            }
-            itemsToSerialize.put("awayTeams", serializableAwayTeams);
-        }
-
-        return mapper.writeValueAsString(itemsToSerialize);
-    }
-
-    private static Map<Object, Object> getCardProperties(PhysicalCard card) {
-        List<CardType> cardTypesShowingUniversal = new ArrayList<>();
-        cardTypesShowingUniversal.add(CardType.PERSONNEL);
-        cardTypesShowingUniversal.add(CardType.SHIP);
-        cardTypesShowingUniversal.add(CardType.FACILITY);
-        cardTypesShowingUniversal.add(CardType.SITE);
-
-
-        Map<Object, Object> cardMap = new HashMap<>();
-        cardMap.put("title", card.getTitle());
-        cardMap.put("cardId", card.getCardId());
-        cardMap.put("blueprintId", card.getBlueprintId());
-        cardMap.put("uniqueness", card.getUniqueness().name());
-        cardMap.put("cardType", card.getCardType().name());
-        cardMap.put("imageUrl", card.getImageUrl());
-        boolean hasUniversalIcon = card.isUniversal() &&
-                cardTypesShowingUniversal.contains(card.getCardType());
-        cardMap.put("hasUniversalIcon", hasUniversalIcon);
-
-        return cardMap;
     }
 
     public void initialize(GameRecorder gameRecorder, String tournamentName, List<GameResultListener> listeners) {
