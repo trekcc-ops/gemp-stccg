@@ -4,13 +4,10 @@ import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.*;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.hall.GameTable;
-import com.gempukku.stccg.hall.NotifyHallListenersGameResultListener;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -89,58 +86,35 @@ public class GameServer extends AbstractServer {
     }
 
     private void createGameChatRoom(GameSettings gameSettings, GameParticipant[] participants, String gameId) {
-        if (gameSettings.isCompetitive()) {
-            Set<String> allowedUsers = new HashSet<>();
+        String chatRoomName = getChatRoomName(gameId);
+        Set<String> allowedUsers = new HashSet<>();
+        boolean isCompetitive = gameSettings.isCompetitive();
+
+        if (isCompetitive) {
             for (GameParticipant participant : participants)
                 allowedUsers.add(participant.getPlayerId());
-            _chatServer.createPrivateChatRoom(
-                    getChatRoomName(gameId), false, allowedUsers, TIMEOUT_PERIOD);
-        } else
-            _chatServer.createChatRoom(
-                    getChatRoomName(gameId), false, TIMEOUT_PERIOD, false);
+        }
+        _chatServer.createChatRoom(chatRoomName, false, allowedUsers, TIMEOUT_PERIOD, isCompetitive);
     }
 
-    public final CardGameMediator createNewGame(String tournamentName, final GameParticipant[] participants,
-                                                GameTable gameTable, CardBlueprintLibrary blueprintLibrary,
-                                                List<GameResultListener> listeners) {
+    public final void createNewGame(String tournamentName, final GameParticipant[] participants,
+                                    GameTable gameTable, CardBlueprintLibrary blueprintLibrary,
+                                    List<GameResultListener> listeners) {
         _lock.writeLock().lock();
         try {
             if (participants.length < 2)
                 throw new IllegalArgumentException("There has to be at least two players");
             final String gameId = String.valueOf(_nextGameId);
             GameSettings gameSettings = gameTable.getGameSettings();
-            GameFormat gameFormat = gameSettings.getGameFormat();
+            listeners.add(new FinishedGamesResultListener(this, gameId));
 
             CardGameMediator cardGameMediator = new CardGameMediator(gameId, participants, blueprintLibrary,
                     gameSettings);
             createGameChatRoom(gameSettings, participants, gameId);
-            String formatName = gameFormat.getName();
-            cardGameMediator.sendMessageToPlayers("You're starting a game of " + formatName);
-            StringBuilder players = new StringBuilder();
-            Map<String, CardDeck> decks =  new HashMap<>();
-            for (GameParticipant participant : participants) {
-                if (!players.isEmpty())
-                    players.append(", ");
-                String playerId = participant.getPlayerId();
-                players.append(playerId);
-                decks.put(playerId, participant.getDeck());
-            }
-
-            cardGameMediator.sendMessageToPlayers("Players in the game are: " + players);
-
-            final var gameRecordingInProgress =
-                    _gameRecorder.recordGame(cardGameMediator, gameSettings.getGameFormat(), tournamentName, decks);
-
-            for (GameResultListener listener : listeners) {
-                cardGameMediator.addGameResultListener(listener);
-            }
-            cardGameMediator.addGameResultListener(new FinishedGamesResultListener(this, gameId));
-            cardGameMediator.addGameResultListener(new RecordingGameResultListener(participants, gameRecordingInProgress));
-
+            cardGameMediator.initialize(_gameRecorder, tournamentName, listeners);
             _runningGames.put(gameId, cardGameMediator);
             _nextGameId++;
             gameTable.startGame(cardGameMediator);
-            return cardGameMediator;
         } finally {
             _lock.writeLock().unlock();
         }

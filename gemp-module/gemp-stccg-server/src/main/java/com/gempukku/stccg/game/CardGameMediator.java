@@ -323,32 +323,7 @@ public class CardGameMediator {
             Map<String, Object> result = new HashMap<>();
             result.put("channelNumber", channelNumber);
             result.put("gameState", gameState);
-            String resultString = mapper.writeValueAsString(result);
-            return resultString;
-        } finally {
-            _readLock.unlock();
-        }
-    }
-
-
-
-    public final GameCommunicationChannel signupUserForGameAndGetChannel(User player)
-            throws PrivateInformationException {
-        String playerName = player.getName();
-        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
-            throw new PrivateInformationException();
-        GameCommunicationChannel channel;
-        int channelNumber;
-
-        _readLock.lock();
-        try {
-            channelNumber = _channelNextIndex;
-            _channelNextIndex++;
-
-            channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
-            _communicationChannels.put(playerName, channel);
-            addGameStateListener(channel);
-            return channel;
+            return mapper.writeValueAsString(result);
         } finally {
             _readLock.unlock();
         }
@@ -527,5 +502,29 @@ public class CardGameMediator {
         cardMap.put("hasUniversalIcon", hasUniversalIcon);
 
         return cardMap;
+    }
+
+    public void initialize(GameRecorder gameRecorder, String tournamentName, List<GameResultListener> listeners) {
+        GameFormat gameFormat = _game.getFormat();
+        sendMessageToPlayers("You're starting a game of " + gameFormat.getName());
+        StringBuilder players = new StringBuilder();
+        Map<String, CardDeck> decks =  new HashMap<>();
+
+        for (String playerName : _playersPlaying) {
+            if (!players.isEmpty())
+                players.append(", ");
+            players.append(playerName);
+            decks.put(playerName, _playerDecks.get(playerName));
+        }
+
+        sendMessageToPlayers("Players in the game are: " + players);
+
+        final var gameRecordingInProgress = gameRecorder.recordGame(this, gameFormat, tournamentName, decks);
+
+        listeners.add(new RecordingGameResultListener(_playersPlaying, gameRecordingInProgress));
+
+        for (GameResultListener listener : listeners) {
+            addGameResultListener(listener);
+        }
     }
 }

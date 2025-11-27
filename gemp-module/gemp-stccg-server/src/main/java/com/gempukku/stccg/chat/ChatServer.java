@@ -20,34 +20,19 @@ public class ChatServer extends AbstractServer {
     }
 
 
-    public final void createChatRoom(String name, boolean muteJoinPartMessages, int secondsTimeoutPeriod,
-                                     boolean allowIncognito) {
-        ChatRoomMediator chatRoom = new ChatRoomMediator(_serverObjects, muteJoinPartMessages,
-                secondsTimeoutPeriod, allowIncognito, null, name);
-        try {
-            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + name, true);
-        } catch (PrivateInformationException exp) {
-            // Ignore, sent as admin
-        } catch (ChatCommandErrorException e) {
-            // Ignore, no command
-        }
-        addChatRoom(chatRoom);
-    }
-
-
-    public final void createPrivateChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers,
-                                            int secondsTimeoutPeriod) {
+    public final void createChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers,
+                                     int secondsTimeoutPeriod, boolean isPrivate) {
+        String welcomeMessage = (isPrivate) ? "Welcome to private room" : "Welcome to room";
         ChatRoomMediator chatRoom = new ChatRoomMediator(_serverObjects, muteJoinPartMessages,
                 secondsTimeoutPeriod, allowedUsers, false, name);
         try {
-            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to private room: " + name, true);
-        } catch (PrivateInformationException exp) {
+            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID, welcomeMessage + ": " + name, true);
+        } catch (PrivateInformationException | ChatCommandErrorException exp) {
             // Ignore, sent as admin
-        } catch (ChatCommandErrorException e) {
-            // Ignore, no command
         }
         addChatRoom(chatRoom);
     }
+
 
     public final void sendSystemMessageToAllUsers(String message) {
         // Sends the message to all users in all chat rooms

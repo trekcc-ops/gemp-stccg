@@ -1,15 +1,16 @@
 package com.gempukku.stccg.game;
 
 import java.util.Map;
+import java.util.Set;
 
 public class RecordingGameResultListener implements GameResultListener {
 
-    final GameParticipant[] _participants;
+    final String[] _playerNames;
     final GameRecorder.GameRecordingInProgress _recording;
 
-    public RecordingGameResultListener(GameParticipant[] participants, GameRecorder.GameRecordingInProgress recording) {
+    public RecordingGameResultListener(Set<String> playerNames, GameRecorder.GameRecordingInProgress recording) {
         _recording = recording;
-        _participants = participants;
+        _playerNames = playerNames.toArray(new String[0]);
     }
     @Override
     public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
@@ -23,8 +24,7 @@ public class RecordingGameResultListener implements GameResultListener {
 
     @Override
     public void gameCancelled() {
-        _recording.finishRecording(_participants[0].getPlayerId(),
-                "Game cancelled due to error", _participants[1].getPlayerId(),
-                "Game cancelled due to error");
+        _recording.finishRecording(_playerNames[0], "Game cancelled due to error",
+                _playerNames[1], "Game cancelled due to error");
     }
 }

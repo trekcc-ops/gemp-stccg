@@ -42,7 +42,9 @@ public class ChatRoomMediator {
                             Set<String> allowedPlayers, boolean allowIncognito, String roomName) {
         _ignoreDAO = serverObjects.getIgnoreDAO();
         _playerDAO = serverObjects.getPlayerDAO();
-        _allowedPlayers.addAll(allowedPlayers);
+        if (!allowedPlayers.isEmpty()) {
+            _allowedPlayers.addAll(allowedPlayers);
+        }
         _channelInactivityTimeoutPeriod = 1000 * secondsTimeoutPeriod;
         _chatRoom = new ChatRoom(muteJoinPartMessages, allowIncognito);
         _roomName = roomName;

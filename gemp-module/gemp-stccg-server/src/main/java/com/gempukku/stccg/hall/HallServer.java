@@ -519,7 +519,7 @@ public class HallServer extends AbstractServer {
         List<GameResultListener> listenerList = new ArrayList<>(Arrays.asList(listeners));
         listenerList.add(new NotifyHallListenersGameResultListener(this));
 
-        final CardGameMediator cardGameMediator = _serverObjects.getGameServer().createNewGame(
+        _serverObjects.getGameServer().createNewGame(
                 tournamentName, participants, gameTable, _serverObjects.getCardBlueprintLibrary(), listenerList);
     }
 
