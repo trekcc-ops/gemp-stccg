@@ -111,12 +111,8 @@ public class GameServer extends AbstractServer {
             GameSettings gameSettings = gameTable.getGameSettings();
             GameFormat gameFormat = gameSettings.getGameFormat();
 
-            CardGameMediator cardGameMediator = switch (gameFormat.getGameType()) {
-                case FIRST_EDITION -> new ST1EGameMediator(gameId, participants, blueprintLibrary, gameSettings);
-                case SECOND_EDITION -> new ST2EGameMediator(gameId, participants, blueprintLibrary, gameSettings);
-                case TRIBBLES -> new TribblesGameMediator(gameId, participants, blueprintLibrary, gameSettings);
-            };
-
+            CardGameMediator cardGameMediator = new CardGameMediator(gameId, participants, blueprintLibrary,
+                    gameSettings);
             createGameChatRoom(gameSettings, participants, gameId);
             String formatName = gameFormat.getName();
             cardGameMediator.sendMessageToPlayers("You're starting a game of " + formatName);

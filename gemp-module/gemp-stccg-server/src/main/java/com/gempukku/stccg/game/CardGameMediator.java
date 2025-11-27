@@ -7,6 +7,7 @@ import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.AwayTeam;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.chat.PrivateInformationException;
@@ -16,6 +17,7 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -29,7 +31,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class CardGameMediator {
+public class CardGameMediator {
     private static final long MILLIS_TO_SECONDS = 1000L;
     private static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     private static final String ERROR_MESSAGE = "Error processing game decision";
@@ -48,9 +50,11 @@ public abstract class CardGameMediator {
     private final ReentrantReadWriteLock.WriteLock _writeLock = _lock.writeLock();
     private int _channelNextIndex;
     private volatile boolean _destroyed;
+    private final DefaultGame _game;
 
 
-    CardGameMediator(String gameId, GameParticipant[] participants, GameSettings gameSettings) {
+    CardGameMediator(String gameId, GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
+                     GameSettings gameSettings) {
         _allowSpectators = (gameSettings.getLeague() != null) ||
                 (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
         _gameId = gameId;
@@ -66,7 +70,16 @@ public abstract class CardGameMediator {
             _playerClocks.put(participantId, new PlayerClock(participantId, gameSettings.getTimeSettings()));
             _playersPlaying.add(participantId);
         }
+
+        GameFormat gameFormat = gameSettings.getGameFormat();
+
+        _game = switch (gameFormat.getGameType()) {
+            case FIRST_EDITION -> new ST1EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
+            case SECOND_EDITION -> new ST2EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
+            case TRIBBLES -> new TribblesGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
+        };
     }
+
 
     public final boolean isVisibleToUser(String username) {
         return !_showInGameHall || _playersPlaying.contains(username);
@@ -84,7 +97,9 @@ public abstract class CardGameMediator {
         return _gameId;
     }
 
-    public abstract DefaultGame getGame();
+    public DefaultGame getGame() {
+        return _game;
+    }
 
     public final boolean isAllowSpectators() {
         return _allowSpectators;
@@ -93,25 +108,24 @@ public abstract class CardGameMediator {
     public final void setPlayerAutoPassSettings(User user, Set<Phase> phases) {
         String userId = user.getName();
         if (_playersPlaying.contains(userId)) {
-            getGame().setPlayerAutoPassSettings(userId, phases);
+            _game.setPlayerAutoPassSettings(userId, phases);
         }
     }
 
     final void sendMessageToPlayers(String message) {
-        getGame().sendMessage(message);
+        _game.sendMessage(message);
     }
 
     final void addGameStateListener(GameStateListener listener) {
-        DefaultGame game = getGame();
-        game.addGameStateListener(listener);
+        _game.addGameStateListener(listener);
     }
 
     public final void addGameResultListener(GameResultListener listener) {
-        getGame().addGameResultListener(listener);
+        _game.addGameResultListener(listener);
     }
 
     public final String getWinner() {
-        return getGame().getWinnerPlayerId();
+        return _game.getWinnerPlayerId();
     }
 
     public final List<String> getPlayersPlaying() {
