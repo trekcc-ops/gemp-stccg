@@ -8,14 +8,12 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.GameTimer;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.GameState;
@@ -148,7 +146,6 @@ public class CardGameMediator {
         try {
             long currentTime = System.currentTimeMillis();
             Map<String, GameCommunicationChannel> channelsCopy = new HashMap<>(_communicationChannels);
-            DefaultGame game = getGame();
             for (Map.Entry<String, GameCommunicationChannel> playerChannels : channelsCopy.entrySet()) {
                 String playerId = playerChannels.getKey();
                 // Channel is stale (user no longer connected to game, to save memory, we remove the channel
@@ -156,19 +153,19 @@ public class CardGameMediator {
                 GameStateListener channel = playerChannels.getValue();
                 if (currentTime >
                         channel.getLastAccessed() + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
-                    game.removeGameStateListener(channel);
+                    _game.removeGameStateListener(channel);
                     _communicationChannels.remove(playerId);
                 }
             }
 
-            if (game != null && game.getWinnerPlayerId() == null) {
+            if (_game.getWinnerPlayerId() == null) {
                 Map<String, Long> decisionTimes = new HashMap<>(_decisionQuerySentTimes);
                 for (Map.Entry<String, Long> playerDecision : decisionTimes.entrySet()) {
                     String player = playerDecision.getKey();
                     long decisionSent = playerDecision.getValue();
                     if (currentTime > decisionSent + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
                         addTimeSpentOnDecisionToUserClock(player);
-                        game.playerLost(player, "Player decision timed-out");
+                        _game.playerLost(player, "Player decision timed-out");
                     }
                 }
 
@@ -177,7 +174,7 @@ public class CardGameMediator {
                     if (_timeSettings.maxSecondsPerPlayer() -
                             playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
                         addTimeSpentOnDecisionToUserClock(player);
-                        game.playerLost(player, "Player run out of time");
+                        _game.playerLost(player, "Player run out of time");
                     }
                 }
             }
@@ -213,39 +210,23 @@ public class CardGameMediator {
 
     public final synchronized void playerAnswered(User player, int channelNumber, int decisionId, String answer)
             throws HttpProcessingException {
-        String playerName = player.getName();
         _writeLock.lock();
         try {
+            String playerName = player.getName();
             GameStateListener communicationChannel = _communicationChannels.get(playerName);
             if (communicationChannel == null)
                 throw new SubscriptionExpiredException();
             if (communicationChannel.getChannelNumber() != channelNumber)
                 throw new SubscriptionConflictException();
-            AwaitingDecision awaitingDecision = _game.getAwaitingDecision(playerName);
-
-            if (awaitingDecision != null) {
-                if (awaitingDecision.getDecisionId() == decisionId && !_game.isFinished()) {
-                    GameState gameState = _game.getGameState();
-                    try {
-                        gameState.playerDecisionFinished(playerName, _game.getUserFeedback());
-                        awaitingDecision.decisionMade(answer);
-
-                        // Decision successfully made, add the time to user clock
-                        addTimeSpentOnDecisionToUserClock(playerName);
-
-                        _game.carryOutPendingActionsUntilDecisionNeeded();
-                        startClocksForUsersPendingDecision();
-
-                    } catch (DecisionResultInvalidException exp) {
-                        /* Participant provided wrong answer - send a warning message,
-                        and ask again for the same decision */
-                        _game.sendWarning(playerName, exp.getWarningMessage());
-                        _game.sendAwaitingDecision(awaitingDecision);
-                    } catch (InvalidGameOperationException | RuntimeException runtimeException) {
-                        LOGGER.error(ERROR_MESSAGE, runtimeException);
-                        _game.cancelGame();
-                    }
+            try {
+                boolean decisionAccepted = _game.processUserDecision(playerName, decisionId, answer);
+                if (decisionAccepted) {
+                    addTimeSpentOnDecisionToUserClock(playerName);
+                    _game.carryOutPendingActionsUntilDecisionNeeded();
+                    startClocksForUsersPendingDecision();
                 }
+            } catch (InvalidGameOperationException | RuntimeException runtimeException) {
+                LOGGER.error(ERROR_MESSAGE, runtimeException);
             }
         } finally {
             _writeLock.unlock();

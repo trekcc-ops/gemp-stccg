@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -354,5 +355,30 @@ public abstract class DefaultGame {
 
     public void continueCurrentProcess() throws PlayerNotFoundException, InvalidGameLogicException {
         getGameState().continueCurrentProcess(this);
+    }
+
+    public boolean processUserDecision(String playerName, int decisionId, String answer)
+            throws InvalidGameOperationException, RuntimeException {
+        AwaitingDecision awaitingDecision = getAwaitingDecision(playerName);
+
+        if (awaitingDecision != null) {
+            if (awaitingDecision.getDecisionId() == decisionId && !isFinished()) {
+                GameState gameState = getGameState();
+                try {
+                    gameState.playerDecisionFinished(playerName, getUserFeedback());
+                    awaitingDecision.decisionMade(answer);
+                    return true;
+                } catch (DecisionResultInvalidException exp) {
+                        /* Participant provided wrong answer - send a warning message,
+                        and ask again for the same decision */
+                    sendWarning(playerName, exp.getWarningMessage());
+                    sendAwaitingDecision(awaitingDecision);
+                } catch (RuntimeException exp) {
+                    cancelGame();
+                    throw exp;
+                }
+            }
+        }
+        return false;
     }
 }
