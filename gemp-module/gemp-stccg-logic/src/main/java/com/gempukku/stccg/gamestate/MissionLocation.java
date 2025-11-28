@@ -40,7 +40,7 @@ public class MissionLocation implements GameLocation {
     @JsonProperty("locationId")
     private final int _locationId;
     private final MissionCardPile _missionCards = new MissionCardPile();
-    private Map<Player, CardPile> _preSeedCards = new HashMap<>();
+    private Map<String, CardPile> _preSeedCardsNew = new HashMap<>();
     private final CardPile _seedCards;
     public MissionLocation(MissionCard mission, int locationId) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
@@ -229,7 +229,7 @@ public class MissionLocation implements GameLocation {
     }
 
     public int getPreSeedCardCountForPlayer(Player player) {
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile preSeeds = _preSeedCardsNew.get(player.getPlayerId());
         if (preSeeds == null) {
             return 0;
         } else {
@@ -242,7 +242,7 @@ public class MissionLocation implements GameLocation {
     }
 
     public Collection<PhysicalCard> getPreSeedCardsForPlayer(Player player) {
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile preSeeds = _preSeedCardsNew.get(player.getPlayerId());
         if (preSeeds == null) {
             return new LinkedList<>();
         } else {
@@ -256,15 +256,15 @@ public class MissionLocation implements GameLocation {
         List<String> playerNames = new LinkedList<>(stGame.getPlayerIds());
         int currentIndex = playerNames.indexOf(firstPlayerName);
 
-        while (!_preSeedCards.isEmpty()) {
+        while (!_preSeedCardsNew.isEmpty()) {
             if (currentIndex == players.size())
                 currentIndex = 0;
             Player currentPlayer = players.get(currentIndex);
-            CardPile currentPreSeedPile = _preSeedCards.get(currentPlayer);
+            CardPile currentPreSeedPile = _preSeedCardsNew.get(currentPlayer.getPlayerId());
             if (currentPreSeedPile == null) {
                 currentIndex++;
             } else if (currentPreSeedPile.isEmpty()) {
-                _preSeedCards.remove(currentPlayer);
+                _preSeedCardsNew.remove(currentPlayer.getPlayerId());
                 currentIndex++;
             } else {
                 PhysicalCard card = currentPreSeedPile.getBottomCard();
@@ -275,31 +275,32 @@ public class MissionLocation implements GameLocation {
     }
 
     public void seedPreSeedsForYourMissions() {
-        Set<Player> playersWithSeeds = _preSeedCards.keySet();
-        for (Player player : playersWithSeeds) {
-            seedCardPileOnTopOfSeedCards(_preSeedCards.get(player));
+        Set<String> playersWithSeeds = _preSeedCardsNew.keySet();
+        for (String player : playersWithSeeds) {
+            seedCardPileOnTopOfSeedCards(_preSeedCardsNew.get(player));
         }
     }
 
 
 
     public void seedPreSeedsForOpponentsMissions() {
-        Set<Player> playersWithSeeds = _preSeedCards.keySet();
-        for (Player player : playersWithSeeds) {
-            seedCardPileOnBottomOfSeedCards(_preSeedCards.get(player), this);
+        Set<String> playersWithSeeds = _preSeedCardsNew.keySet();
+        for (String player : playersWithSeeds) {
+            seedCardPileOnBottomOfSeedCards(_preSeedCardsNew.get(player), this);
         }
     }
 
     public void addCardToTopOfPreSeedPile(PhysicalCard card, Player player) {
-        if (_preSeedCards.get(player) == null) {
-            _preSeedCards.put(player, new CardPile());
+        String playerName = player.getPlayerId();
+        if (_preSeedCardsNew.get(playerName) == null) {
+            _preSeedCardsNew.put(playerName, new CardPile());
         }
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile preSeeds = _preSeedCardsNew.get(playerName);
         preSeeds.addCardToTop(card);
     }
 
     public void removePreSeedCard(PhysicalCard card, Player player) {
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile preSeeds = _preSeedCardsNew.get(player.getPlayerId());
         if (preSeeds != null) {
             preSeeds.removeCard(card);
         }
