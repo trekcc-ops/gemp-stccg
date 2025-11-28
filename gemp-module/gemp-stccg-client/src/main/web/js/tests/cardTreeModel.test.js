@@ -1,47 +1,5 @@
-import {describe, beforeEach, expect, test} from '@jest/globals';
-//import React from 'react';
-//import {render, fireEvent, screen} from '@testing-library/react';
-import {card_to_treeitem, cardFlatMapToTreeMap} from '../card-tree-view.jsx';
-//import CardTreeView from '../card-tree-view.jsx';
-
-
-describe('internal funcs', () => {
-    test('card_to_treeitem turns a card into a new tree friendly object', () => {
-        let cardInputData = {
-            "cardId": 30,
-            "title": "Jean-Luc Picard",
-            "blueprintId": "161_041",
-            "owner": "andrew2",
-            "affiliation": "ROMULAN",
-            "isStopped": false,
-            "imageUrl": "https://www.trekcc.org/1e/cardimages/engage/41.jpg",
-            "cardType": "PERSONNEL",
-            "uniqueness": "UNIQUE",
-            "hasUniversalIcon": false,
-            "isInPlay": false
-        }
-
-        let expected = {
-            id: "30",
-            label: "Jean-Luc Picard"
-        }
-
-        let actual = card_to_treeitem(cardInputData);
-
-        expect(actual).toMatchObject(expected);
-    });
-
-    test('card_to_treeitem handles not getting passed a card', () => {
-        let expected = {
-            id: "-1",
-            label: "ERROR"
-        }
-
-        let actual = card_to_treeitem();
-
-        expect(actual).toMatchObject(expected);
-    });
-});
+import {describe, expect, test} from '@jest/globals';
+import CardTreeModel from '../lib/cardTreeModel.js';
 
 describe('cardFlatMapToTreeMap', () => {
     test('errors if not given a cardid array', () => {
@@ -63,37 +21,37 @@ describe('cardFlatMapToTreeMap', () => {
                 "isInPlay": true
             },
         }
-        expect(() => cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
 
         not_array = null;
-        expect(() => cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
         
         not_array = "";
-        expect(() => cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
 
         not_array = 16;
-        expect(() => cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
 
         not_array = {};
-        expect(() => cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
     });
 
     test('errors if not given a card data map', () => {
         let card_id_array = [16];
         let not_map;
-        expect(() => cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
 
         not_map = null;
-        expect(() => cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
 
         not_map = "";
-        expect(() => cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
 
         not_map = 16;
-        expect(() => cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
 
         not_map = [];
-        expect(() => cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
     });
 
     test('can build a flat tree', () => {
@@ -150,7 +108,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         // no change because it's already flat
         let expected = full_card_data_no_nesting;
@@ -178,7 +136,7 @@ describe('cardFlatMapToTreeMap', () => {
             }
         }
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         let expected = {};
 
@@ -250,7 +208,7 @@ describe('cardFlatMapToTreeMap', () => {
             }
         }
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         // should not contain #23
         let expected = {
@@ -324,7 +282,7 @@ describe('cardFlatMapToTreeMap', () => {
             }
         }
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         let expected = {
             "16": {
@@ -417,7 +375,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         let expected = {
             "1": {
@@ -557,7 +515,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         let expected = {
             "1": {
@@ -697,7 +655,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         let expected = {
             "1": {
@@ -837,7 +795,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
 
         let expected = {
             "1": {
