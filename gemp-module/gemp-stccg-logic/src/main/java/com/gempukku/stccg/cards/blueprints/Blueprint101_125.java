@@ -43,9 +43,9 @@ public class Blueprint101_125 extends CardBlueprint {
     // Klingon Death Yell
     Blueprint101_125() {
             // filter: a Klingon with Honor
-        FilterBlueprint klingonFilter = (actionContext) -> Filters.Klingon;
-        FilterBlueprint personnelFilter = (actionContext) -> Filters.personnel;
-        FilterBlueprint honorFilter = (actionContext) -> Filters.and(SkillName.HONOR);
+        FilterBlueprint klingonFilter = (cardGame, actionContext) -> Filters.Klingon;
+        FilterBlueprint personnelFilter = (cardGame, actionContext) -> Filters.personnel;
+        FilterBlueprint honorFilter = (cardGame, actionContext) -> Filters.and(SkillName.HONOR);
         _killedPersonnelFilterBlueprint = new AndFilterBlueprint(klingonFilter, personnelFilter, honorFilter);
     }
 

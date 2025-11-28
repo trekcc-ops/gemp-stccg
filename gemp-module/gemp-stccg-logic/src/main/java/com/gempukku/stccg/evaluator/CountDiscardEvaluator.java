@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.filters.AnyCardFilterBlueprint;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -34,7 +35,7 @@ public class CountDiscardEvaluator implements ValueSource {
         _limit = Objects.requireNonNullElse(limit, Integer.MAX_VALUE);
         _playerSource = (playerText == null) ?
                 ActionContext::getPerformingPlayerId : PlayerResolver.resolvePlayer(playerText);
-        _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, actionContext -> Filters.any);
+        _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, new AnyCardFilterBlueprint());
     }
 
     @Override

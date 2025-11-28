@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.filters.AnyCardFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -43,7 +44,7 @@ public class MiscRequirement implements Requirement {
         _requirementType = requirementType;
         _playerSource = ActionContext::getPerformingPlayerId;
         _valueSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));
-        _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, actionContext -> Filters.any);
+        _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, new AnyCardFilterBlueprint());
     }
 
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
