@@ -2,8 +2,8 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.gamestate.TribblesGameState;
 
 import java.util.Objects;
 
@@ -26,14 +26,5 @@ public class TribblesActionContext extends DefaultActionContext {
     public TribblesGame getGame() {
         return _game;
     }
-
-    @Override
-    public TribblesGameState getGameState() { return _game.getGameState(); }
-
-    @Override
-    public ActionContext createDelegateContext(ActionResult actionResult) {
-        return new TribblesActionContext(this, getPerformingPlayerId(), getGame(), getSource(), actionResult);
-    }
-
 
 }

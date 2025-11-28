@@ -146,7 +146,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     private boolean canEnterPlay(DefaultGame game, List<Requirement> requirements) {
         if (cannotEnterPlayPerUniqueness())
             return false;
-        if (requirements != null && !createActionContext(game).acceptsAllRequirements(requirements))
+        if (requirements != null && !createActionContext(game).acceptsAllRequirements(game, requirements))
             return false;
         return !game.getGameState().getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
     }
@@ -341,7 +341,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public List<TopLevelSelectableAction> createSeedCardActions() {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         for (ActionBlueprint source : _blueprint.getSeedCardActionSources()) {
-            result.add(source.createActionWithNewContext(this));
+            result.add(source.createActionWithNewContext(getGame(), this));
         }
         return result;
     }

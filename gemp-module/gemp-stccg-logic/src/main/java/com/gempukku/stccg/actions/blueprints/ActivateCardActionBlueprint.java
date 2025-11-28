@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.turn.ActivateCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.List;
@@ -32,10 +33,11 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
     public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card.getGame(), card); }
 
     @Override
-    protected ActivateCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
-        if (isValid(actionContext)) {
+    protected ActivateCardAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
+                                                                ActionContext actionContext) {
+        if (isValid(cardGame, actionContext)) {
             ActivateCardAction action = createAction(card);
-            appendActionToContext(action, actionContext);
+            appendActionToContext(cardGame, action, actionContext);
             return action;
         }
         return null;

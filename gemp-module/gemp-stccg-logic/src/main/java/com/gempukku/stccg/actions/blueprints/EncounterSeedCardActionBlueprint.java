@@ -38,42 +38,31 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation);
-        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, encounterAction, actionContext));
-        return encounterAction;
-    }
-
-
-    public EncounterSeedCardAction createAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard thisCard,
-                                                 AttemptingUnit attemptingUnit, MissionLocation missionLocation,
-                                                 AttemptMissionAction missionAttemptAction)
-            throws InvalidGameLogicException {
-        ActionContext actionContext = new DefaultActionContext(cardGame, thisCard, performingPlayer);
-        EncounterSeedCardAction encounterAction =
-                new EncounterSeedCardAction(cardGame, performingPlayer, thisCard, attemptingUnit, missionAttemptAction,
-                        missionLocation);
-        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, encounterAction, actionContext));
+        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
         return encounterAction;
     }
 
     @Override
-    protected EncounterSeedCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext context) {
+    protected EncounterSeedCardAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
+                                                                     ActionContext context) {
         try {
-            Stack<Action> actionStack = context.getGame().getActionsEnvironment().getActionStack();
+            Stack<Action> actionStack = card.getGame().getActionsEnvironment().getActionStack();
             for (Action action : actionStack) {
                 if (action instanceof AttemptMissionAction attemptAction &&
                         attemptAction.getLocation() == card.getGameLocation()) {
                     Player performingPlayer = context.getPerformingPlayer();
-                    DefaultGame cardGame = context.getGame();
                     EncounterSeedCardAction encounterAction = new EncounterSeedCardAction(cardGame, performingPlayer,
                             card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocation());
-                    appendActionToContext(encounterAction, context);
+                    appendActionToContext(cardGame, encounterAction, context);
                     return encounterAction;
                 }
             }
             throw new InvalidGameLogicException("Could not identify an active mission attempt for this encounter");
         } catch(InvalidGameLogicException exp) {
-            context.getGame().sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return null;
         }
     }
+
+
 }

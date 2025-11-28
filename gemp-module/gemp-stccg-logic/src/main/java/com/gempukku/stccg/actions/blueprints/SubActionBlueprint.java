@@ -35,18 +35,22 @@ import java.util.List;
                         "shufflecardsfromplayintodrawdeck"}) */
 })
 public interface SubActionBlueprint {
-    default void addEffectToAction(boolean cost, CardPerformedAction action, ActionContext actionContext) {
-            final SystemQueueAction sysAction =
-                    new AddSubactionEffectsAction(actionContext, cost, action, this);
-            if (cost) {
-                action.appendCost(sysAction);
-            } else {
-                action.appendEffect(sysAction);
-            }
+
+    default void addEffectToAction(DefaultGame cardGame, boolean cost, CardPerformedAction action,
+                                   ActionContext actionContext) {
+        final SystemQueueAction sysAction =
+                new AddSubactionEffectsAction(cardGame, actionContext, cost, action, this);
+        if (cost) {
+            action.appendCost(sysAction);
+        } else {
+            action.appendEffect(sysAction);
+        }
     }
-    List<Action> createActions(CardPerformedAction action, ActionContext actionContext)
+
+    List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException;
-    default boolean isPlayableInFull(ActionContext actionContext) { return true; }
+    default boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) { return true; }
+
     default boolean isPlayabilityCheckedForEffect() {
         return false;
     }

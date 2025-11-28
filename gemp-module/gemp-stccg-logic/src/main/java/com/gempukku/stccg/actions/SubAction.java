@@ -13,21 +13,18 @@ public class SubAction extends ActionyAction implements CardPerformedAction {
 
     private final CardPerformedAction _parentAction;
 
-    public SubAction(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
-        super(context.getGame(), context.getGame().getPlayer(action.getPerformingPlayerId()), action.getActionType());
-        _parentAction = action;
-    }
-
-    public SubAction(CardPerformedAction action, ActionContext context,
+    public SubAction(DefaultGame cardGame, CardPerformedAction action, ActionContext context,
                      List<SubActionBlueprint> costAppenders, List<SubActionBlueprint> subActionBlueprints) throws PlayerNotFoundException {
-        this(action, context);
+        super(cardGame, cardGame.getPlayer(action.getPerformingPlayerId()), action.getActionType());
+        _parentAction = action;
 
         for (SubActionBlueprint costAppender : costAppenders) {
-            costAppender.addEffectToAction(true, this, context);
+            costAppender.addEffectToAction(cardGame, true, this, context);
         }
         for (SubActionBlueprint subActionBlueprint : subActionBlueprints)
-            subActionBlueprint.addEffectToAction(false, this, context);
+            subActionBlueprint.addEffectToAction(cardGame, false, this, context);
     }
+
 
     @Override
     public boolean canBeInitiated(DefaultGame cardGame) {

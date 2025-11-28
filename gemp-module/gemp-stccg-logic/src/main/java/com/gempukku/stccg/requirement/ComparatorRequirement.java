@@ -28,8 +28,8 @@ public class ComparatorRequirement implements Requirement {
     }
 
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        final float firstQuantity = _firstNumber.evaluateExpression(actionContext);
-        final float secondQuantity = _secondNumber.evaluateExpression(actionContext);
+        final float firstQuantity = _firstNumber.evaluateExpression(cardGame, actionContext);
+        final float secondQuantity = _secondNumber.evaluateExpression(cardGame, actionContext);
         return switch(_comparatorType) {
                 case ISEQUAL -> firstQuantity == secondQuantity;
                 case ISGREATERTHAN -> firstQuantity > secondQuantity;

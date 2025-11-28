@@ -58,7 +58,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
                 actionContext.setCardMemory(_saveToMemoryId, ((PlayCardResult) actionResult).getPlayedCard());
             return played;
         } catch(PlayerNotFoundException exp) {
-            actionContext.getGame().sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return false;
         }
     }

@@ -17,10 +17,11 @@ public class SelectNumberAction extends MakeDecisionAction {
     private final ActionContext _actionContext;
     private final String _memoryId;
 
-    public SelectNumberAction(ActionContext context, String choiceText, ValueSource valueSource, String memoryId) {
-        super(context.getGame(), context.getPerformingPlayer(), choiceText);
-        _minimum = (int) valueSource.getMinimum(context);
-        _maximum = (int) valueSource.getMaximum(context);
+    public SelectNumberAction(DefaultGame cardGame, ActionContext context, String choiceText, ValueSource valueSource,
+                              String memoryId) {
+        super(cardGame, context.getPerformingPlayer(), choiceText);
+        _minimum = (int) valueSource.getMinimum(cardGame, context);
+        _maximum = (int) valueSource.getMaximum(cardGame, context);
         _actionContext = context;
         _memoryId = memoryId;
     }

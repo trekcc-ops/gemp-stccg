@@ -20,9 +20,9 @@ import java.util.LinkedList;
 
 
 public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMutateTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateMutateTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws PlayerNotFoundException {
-        super(actionContext, power);
+        super(cardGame, actionContext, TribblePower.MUTATE);
     }
 
     @Override

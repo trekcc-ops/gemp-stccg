@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -33,10 +34,11 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
     }
 
     @Override
-    protected RequiredTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
-        if (isValid(actionContext)) {
+    protected RequiredTriggerAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
+                                                                   ActionContext actionContext) {
+        if (isValid(cardGame, actionContext)) {
             RequiredTriggerAction action = new RequiredTriggerAction(card);
-            appendActionToContext(action, actionContext);
+            appendActionToContext(cardGame, action, actionContext);
             return action;
         }
         return null;
@@ -44,7 +46,7 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
 
     @Override
     public RequiredTriggerAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
-        return createActionAndAppendToContext(card,
+        return createActionAndAppendToContext(card.getGame(), card,
                 new DefaultActionContext(card.getOwnerName(), card, actionResult));
     }
 

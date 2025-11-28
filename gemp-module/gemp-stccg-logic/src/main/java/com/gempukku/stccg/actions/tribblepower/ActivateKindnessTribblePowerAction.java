@@ -17,9 +17,8 @@ import com.gempukku.stccg.game.TribblesGame;
 
 public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerAction {
 
-    public ActivateKindnessTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+    public ActivateKindnessTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, TribblePower.KINDNESS);
         appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (Player player : cardGame.getPlayers()) {

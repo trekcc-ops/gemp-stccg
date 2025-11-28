@@ -11,10 +11,9 @@ import java.util.List;
 
 
 public class ActivateConvertTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateConvertTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateConvertTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+        super(cardGame, actionContext, TribblePower.CONVERT);
         appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, actionContext.getPerformingPlayer(),
                 List.of(_performingCard)));
         appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(cardGame,

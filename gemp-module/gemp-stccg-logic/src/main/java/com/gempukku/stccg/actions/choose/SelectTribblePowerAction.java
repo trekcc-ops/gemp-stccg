@@ -13,8 +13,8 @@ public class SelectTribblePowerAction extends MakeDecisionAction {
 
     private final ActionContext _actionContext;
     private final String _memoryId;
-    public SelectTribblePowerAction(ActionContext actionContext, String memoryId) {
-        super(actionContext.getGame(), actionContext.getPerformingPlayer(), "Choose a Tribble power");
+    public SelectTribblePowerAction(DefaultGame cardGame, ActionContext actionContext, String memoryId) {
+        super(cardGame, actionContext.getPerformingPlayer(), "Choose a Tribble power");
         _actionContext = actionContext;
         _memoryId = memoryId;
     }

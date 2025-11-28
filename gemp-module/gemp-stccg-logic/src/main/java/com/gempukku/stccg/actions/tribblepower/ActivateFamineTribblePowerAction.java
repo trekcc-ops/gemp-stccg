@@ -10,8 +10,8 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateFamineTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateFamineTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
-        super(actionContext, power);
+    public ActivateFamineTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, TribblePower.FAMINE);
     }
 
     @Override

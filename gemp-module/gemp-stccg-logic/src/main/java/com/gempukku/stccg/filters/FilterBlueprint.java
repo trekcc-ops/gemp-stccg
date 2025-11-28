@@ -7,4 +7,5 @@ import com.gempukku.stccg.common.filterable.Filterable;
 @JsonDeserialize(using = FilterBlueprintDeserializer.class)
 public interface FilterBlueprint {
     Filterable getFilterable(ActionContext actionContext);
+
 }

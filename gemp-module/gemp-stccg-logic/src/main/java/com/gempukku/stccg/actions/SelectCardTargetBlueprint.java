@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -32,9 +31,8 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
         _randomSelection = Objects.requireNonNullElse(randomSelection,false);
     }
 
-    public ActionCardResolver getTargetResolver(ActionContext context) {
+    public ActionCardResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
         List<Filterable> selectableCardFilter = new ArrayList<>();
-        DefaultGame cardGame = context.getGame();
         for (FilterBlueprint filterBlueprint : _filterBlueprints) {
             selectableCardFilter.add(filterBlueprint.getFilterable(context));
         }
@@ -42,11 +40,11 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
         SelectCardsAction selectAction;
         if (_randomSelection) {
             selectAction = new SelectRandomCardAction(
-                    context.getGame(), context.getPerformingPlayerId(), "Select a card",
+                    cardGame, context.getPerformingPlayerId(), "Select a card",
                     selectableCards);
         } else {
             selectAction = new SelectCardsFromDialogAction(
-                    context.getGame(), context.getPerformingPlayerId(), "Select a card",
+                    cardGame, context.getPerformingPlayerId(), "Select a card",
                     Filters.in(selectableCards));
         }
         return new SelectCardsResolver(selectAction);

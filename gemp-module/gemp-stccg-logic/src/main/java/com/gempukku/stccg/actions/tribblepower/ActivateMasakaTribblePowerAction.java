@@ -14,9 +14,8 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMasakaTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+    public ActivateMasakaTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, TribblePower.MASAKA);
         for (Player player : cardGame.getPlayers()) {
             int handSize = player.getCardsInHand().size();
             SelectCardsAction selectAction = new SelectVisibleCardsAction(cardGame,

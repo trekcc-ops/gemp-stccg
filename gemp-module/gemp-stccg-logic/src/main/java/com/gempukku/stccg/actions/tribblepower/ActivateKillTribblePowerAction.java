@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -21,9 +22,9 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
     private SelectPlayerAction _selectPlayerAction;
     private final TribblesActionContext _actionContext;
 
-    public ActivateKillTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateKillTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws InvalidGameLogicException, PlayerNotFoundException {
-        super(actionContext, power, Progress.values());
+        super(cardGame, actionContext, TribblePower.KILL, Progress.values());
         _actionContext = actionContext;
     }
 
@@ -43,7 +44,7 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
             else {
                 if (_selectPlayerAction == null) {
                     _selectPlayerAction =
-                            new SelectPlayerAction(_actionContext, "selectedPlayer", Arrays.asList(players));
+                            new SelectPlayerAction(cardGame, _actionContext, "selectedPlayer", Arrays.asList(players));
                     return _selectPlayerAction;
                 } else {
                     String targetPlayerId = _actionContext.getValueFromMemory("selectedPlayer");

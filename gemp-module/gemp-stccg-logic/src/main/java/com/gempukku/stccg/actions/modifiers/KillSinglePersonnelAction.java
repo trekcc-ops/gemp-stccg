@@ -24,6 +24,13 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
         this(performingPlayerName, performingCard, new SelectCardsResolver(selectVictimAction));
     }
 
+    public KillSinglePersonnelAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
+                                     ActionCardResolver targetResolver) {
+        super(cardGame, performingPlayerName, "Kill", ActionType.KILL);
+        _performingCard = performingCard;
+        _cardTarget = targetResolver;
+    }
+
     public KillSinglePersonnelAction(String performingPlayerName, PhysicalCard performingCard,
                                      ActionCardResolver targetResolver) {
         super(performingCard.getGame(), performingPlayerName, "Kill", ActionType.KILL);

@@ -14,12 +14,14 @@ public class SelectPlayerAction extends MakeDecisionAction {
     private final List<String> _selectablePlayerIds;
     private final String _memoryId;
 
-    public SelectPlayerAction(ActionContext actionContext, String memoryId, List<String> playerIds) {
-        super(actionContext.getGame(), actionContext.getPerformingPlayer(), "Choose a player");
+    public SelectPlayerAction(DefaultGame cardGame, ActionContext actionContext, String memoryId,
+                              List<String> playerIds) {
+        super(cardGame, actionContext.getPerformingPlayer(), "Choose a player");
         _actionContext = actionContext;
         _selectablePlayerIds = playerIds;
         _memoryId = memoryId;
     }
+
 
     @Override
     protected AwaitingDecision getDecision(DefaultGame cardGame) {

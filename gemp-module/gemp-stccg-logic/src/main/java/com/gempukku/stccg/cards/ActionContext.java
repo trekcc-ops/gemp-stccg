@@ -17,7 +17,7 @@ public interface ActionContext {
     Map<String, String> getValueMemory();
     Multimap<String, PhysicalCard> getCardMemory();
     DefaultGame getGame();
-    GameState getGameState();
+
     void setValueToMemory(String memory, String value);
     String getValueFromMemory(String memory);
     void setCardMemory(String memory, PhysicalCard card);
@@ -28,12 +28,10 @@ public interface ActionContext {
     String getPerformingPlayerId();
     PhysicalCard getSource();
     ActionResult getEffectResult();
+    boolean acceptsAllRequirements(DefaultGame cardGame, Iterable<Requirement> requirements);
 
-    boolean acceptsAllRequirements(Iterable<Requirement> requirements);
-    boolean acceptsAnyRequirements(Requirement[] requirementArray);
-
-    ActionContext createDelegateContext(ActionResult actionResult);
-    ActionContext createDelegateContext(String playerId);
+    ActionContext createDelegateContext(DefaultGame cardGame, ActionResult actionResult);
+    ActionContext createDelegateContext(DefaultGame cardGame, String playerId);
     String substituteText(String text);
 
     List<PhysicalCard> getZoneCards(Player player, Zone zone);

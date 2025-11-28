@@ -88,22 +88,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
             final int max = Integer.parseInt(split[1]);
             if (min > max || min < 0 || max < 1)
                 throw new InvalidCardDefinitionException("Unable to resolve count: " + stringValue);
-            return new ValueSource() {
-                @Override
-                public Evaluator getEvaluator(ActionContext actionContext) {
-                    throw new RuntimeException("Evaluator has resolved to range");
-                }
-
-                @Override
-                public float getMinimum(ActionContext actionContext) {
-                    return min;
-                }
-
-                @Override
-                public float getMaximum(ActionContext actionContext) {
-                    return max;
-                }
-            };
+            return new NumberRangeValueSource(min, max);
         } else
             return new ConstantValueSource(Integer.parseInt(stringValue));
     }
@@ -123,22 +108,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 validateAllowedFields(object, "from", "to");
                 ValueSource fromValue = resolveEvaluator(ctxt, object.get("from"));
                 ValueSource toValue = resolveEvaluator(ctxt, object.get("to"));
-                return new ValueSource() {
-                    @Override
-                    public Evaluator getEvaluator(ActionContext actionContext) {
-                        throw new RuntimeException("Evaluator has resolved to range");
-                    }
-
-                    @Override
-                    public float getMinimum(ActionContext actionContext) {
-                        return fromValue.evaluateExpression(actionContext);
-                    }
-
-                    @Override
-                    public float getMaximum(ActionContext actionContext) {
-                        return toValue.evaluateExpression(actionContext);
-                    }
-                };
+                return new VariableRangeValueSource(fromValue, toValue);
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
                 validateAllowedFields(object, "owner");
                 final PlayerSource player =
@@ -172,10 +142,10 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public float evaluateExpression(DefaultGame game) {
-                        if (actionContext.acceptsAllRequirements(conditions)) {
-                            return trueValue.evaluateExpression(actionContext);
+                        if (actionContext.acceptsAllRequirements(game, conditions)) {
+                            return trueValue.evaluateExpression(game, actionContext);
                         } else {
-                            return falseValue.evaluateExpression(actionContext);
+                            return falseValue.evaluateExpression(game, actionContext);
                         }
                     }
                 };
@@ -186,16 +156,6 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final int limit = ctxt.readTreeAsValue(object.get("limit"), Integer.class); // Set to MAX_VALUE if fails
                 return (actionContext) -> {
                     final int count = actionContext.getCardsFromMemory(memory).size();
-                    return new ConstantEvaluator(Math.min(limit, count));
-                };
-            } else if (type.equalsIgnoreCase("forEachMatchingInMemory")) {
-                validateAllowedFields(object, "memory", "filter", "limit");
-                final String memory = object.get("memory").textValue();
-                final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
-                final FilterBlueprint filterBlueprint = ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class);
-                return (actionContext) -> {
-                    final int count = Filters.filter(actionContext.getCardsFromMemory(memory), actionContext.getGame(),
-                            filterBlueprint.getFilterable(actionContext)).size();
                     return new ConstantEvaluator(Math.min(limit, count));
                 };
             } else if (type.equalsIgnoreCase("limit")) {
@@ -228,7 +188,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
                             return Filters.filter(playerObj.getCardsInHand(),
-                                    actionContext.getGame(), filterBlueprint.getFilterable(actionContext)).size();
+                                    game, filterBlueprint.getFilterable(actionContext)).size();
                         } catch(PlayerNotFoundException exp) {
                             game.sendErrorMessage(exp);
                             return 0;
@@ -296,7 +256,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     public float evaluateExpression(DefaultGame game) {
                         int result = 0;
                         for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
-                            result += actionContext.getGame().getGameState().getModifiersQuerying().getStrength(physicalCard);
+                            result += game.getGameState().getModifiersQuerying().getStrength(physicalCard);
                         }
                         return result;
                     }
@@ -325,8 +285,8 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public float evaluateExpression(DefaultGame game) {
-                        final float first = firstNumber.evaluateExpression(actionContext);
-                        final float second = secondNumber.evaluateExpression(actionContext);
+                        final float first = firstNumber.evaluateExpression(game, actionContext);
+                        final float second = secondNumber.evaluateExpression(game, actionContext);
                         return first - second;
                     }
                 };
@@ -334,16 +294,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 validateAllowedFields(object, "first", "second");
                 ValueSource first = resolveEvaluator(ctxt, object.get("first"));
                 ValueSource second = resolveEvaluator(ctxt, object.get("second"));
-
-                return actionContext -> new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        return Math.max(
-                                first.evaluateExpression(actionContext),
-                                second.evaluateExpression(actionContext)
-                        );
-                    }
-                };
+                return new MaximumValueSource(first, second);
             } else if (type.equalsIgnoreCase("min")) {
                 validateAllowedFields(object, "first", "second");
                 ValueSource first = resolveEvaluator(ctxt, object.get("first"));
@@ -353,8 +304,8 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                     @Override
                     public float evaluateExpression(DefaultGame game) {
                         return Math.min(
-                                first.evaluateExpression(actionContext),
-                                second.evaluateExpression(actionContext)
+                                first.evaluateExpression(game, actionContext),
+                                second.evaluateExpression(game, actionContext)
                         );
                     }
                 };

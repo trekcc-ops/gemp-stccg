@@ -19,7 +19,7 @@ public class ConditionTriggerChecker implements TriggerChecker {
     }
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        return actionContext.acceptsAllRequirements(_requirements);
+        return actionContext.acceptsAllRequirements(cardGame, _requirements);
     }
 
 }

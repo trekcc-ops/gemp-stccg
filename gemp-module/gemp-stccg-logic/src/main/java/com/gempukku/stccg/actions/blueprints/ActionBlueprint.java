@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
@@ -17,14 +18,13 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
         @JsonSubTypes.Type(value = RequiredTriggerActionBlueprint.class, name = "requiredTrigger")
 })
 public interface ActionBlueprint {
-
-    boolean isValid(ActionContext actionContext);
+    boolean isValid(DefaultGame cardGame, ActionContext actionContext);
 
     void addRequirement(Requirement requirement);
 
-    void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext);
+    void appendActionToContext(DefaultGame cardGame, TopLevelSelectableAction action, ActionContext actionContext);
 
-    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card);
+    TopLevelSelectableAction createActionWithNewContext(DefaultGame cardGame, PhysicalCard card);
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult);
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult);
 

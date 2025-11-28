@@ -11,10 +11,9 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateDiscardTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateDiscardTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateDiscardTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+        super(cardGame, actionContext, TribblePower.DISCARD);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         SelectVisibleCardAction selectAction =
                 new SelectVisibleCardAction(cardGame, performingPlayer, "select",

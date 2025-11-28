@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -31,10 +32,11 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
     }
 
     @Override
-    protected OptionalTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
-        if (isValid(actionContext)) {
+    protected OptionalTriggerAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
+                                                                   ActionContext actionContext) {
+        if (isValid(cardGame, actionContext)) {
                 OptionalTriggerAction action = new OptionalTriggerAction(card, this);
-                appendActionToContext(action, actionContext);
+                appendActionToContext(cardGame, action, actionContext);
                 return action;
         }
         return null;

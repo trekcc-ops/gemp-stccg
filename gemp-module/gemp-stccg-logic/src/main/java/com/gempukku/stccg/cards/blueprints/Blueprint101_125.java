@@ -56,7 +56,7 @@ public class Blueprint101_125 extends CardBlueprint {
             Requirement playRequirement = new KilledTriggerChecker(_killedPersonnelFilterBlueprint);
             List<Requirement> playRequirements = List.of(playRequirement);
             ActionContext context = new DefaultActionContext(player.getPlayerId(), thisCard, actionResult);
-            if (context.acceptsAllRequirements(playRequirements)) {
+            if (context.acceptsAllRequirements(thisCard.getGame(), playRequirements)) {
                 try {
                     TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);
                     playAction.appendEffect(new ScorePointsAction(thisCard.getGame(), thisCard, player, 5));

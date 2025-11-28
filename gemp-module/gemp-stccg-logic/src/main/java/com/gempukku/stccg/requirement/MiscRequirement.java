@@ -51,7 +51,7 @@ public class MiscRequirement implements Requirement {
         try {
             final String playerId = _playerSource.getPlayerId(actionContext);
             Player player = cardGame.getPlayer(playerId);
-            final int count = (int) _valueSource.evaluateExpression(actionContext);
+            final int count = (int) _valueSource.evaluateExpression(cardGame, actionContext);
             final Filterable filterable = _filterBlueprint.getFilterable(actionContext);
             return switch (_requirementType) {
                 case CARDSINDECKCOUNT -> player.getCardsInDrawDeck().size() == count;

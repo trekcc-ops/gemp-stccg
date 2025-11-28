@@ -3,10 +3,9 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.SeedQuantityLimitRequirement;
 
 public class SeedCardActionBlueprint extends DefaultActionBlueprint {
@@ -26,10 +25,11 @@ public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     }
 
     @Override
-    protected SeedCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
-        if (isValid(actionContext)) {
+    protected SeedCardAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
+                                                            ActionContext actionContext) {
+        if (isValid(cardGame, actionContext)) {
             SeedCardAction action = createAction(card);
-            appendActionToContext(action, actionContext);
+            appendActionToContext(cardGame, action, actionContext);
             return action;
         }
         return null;

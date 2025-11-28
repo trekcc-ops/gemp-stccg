@@ -10,8 +10,8 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateReverseTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateReverseTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
-        super(actionContext, power);
+    public ActivateReverseTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, TribblePower.REVERSE);
     }
 
     @Override

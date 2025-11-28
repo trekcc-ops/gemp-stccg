@@ -21,7 +21,7 @@ public class ConstantValueSource implements ValueSource {
         };
     }
 
-    public float getMinimum(ActionContext actionContext) { return _value; }
+    public float getMinimum(DefaultGame cardGame, ActionContext actionContext) { return _value; }
 
-    public float getMaximum(ActionContext actionContext) { return _value; }
+    public float getMaximum(DefaultGame cardGame, ActionContext actionContext) { return _value; }
 }

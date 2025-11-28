@@ -8,15 +8,16 @@ import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 
 public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
 
     private enum Progress { playerSelected }
-    public ActivateDrawTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateDrawTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws InvalidGameLogicException, PlayerNotFoundException {
-        super(actionContext, power, Progress.values());
+        super(cardGame, actionContext, TribblePower.DRAW, Progress.values());
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.game.DefaultGame;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -12,7 +13,7 @@ import com.gempukku.stccg.filters.FilterBlueprint;
 })
 public interface CardTargetBlueprint {
 
-    ActionCardResolver getTargetResolver(ActionContext context);
+    ActionCardResolver getTargetResolver(DefaultGame cardGame, ActionContext context);
 
     void addFilter(FilterBlueprint... filterBlueprint);
 

@@ -58,24 +58,23 @@ public class SelectSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(CardPerformedAction parentAction, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction parentAction, ActionContext context)
             throws PlayerNotFoundException {
-        DefaultGame cardGame = context.getGame();
         Action action = switch (_effectType) {
-            case CHOOSEANUMBER -> new SelectNumberAction(context, _choiceText, _valueSource, _saveToMemoryId);
+            case CHOOSEANUMBER -> new SelectNumberAction(cardGame, context, _choiceText, _valueSource, _saveToMemoryId);
             case CHOOSEOPPONENT -> {
                 List<String> playerIds = Arrays.asList(cardGame.getAllPlayerIds());
                 playerIds.remove(context.getPerformingPlayerId());
-                yield new SelectPlayerAction(context, _saveToMemoryId, playerIds);
+                yield new SelectPlayerAction(cardGame, context, _saveToMemoryId, playerIds);
             }
             case CHOOSEPLAYER ->
-                    new SelectPlayerAction(context, _saveToMemoryId, Arrays.asList(cardGame.getAllPlayerIds()));
+                    new SelectPlayerAction(cardGame, context, _saveToMemoryId, Arrays.asList(cardGame.getAllPlayerIds()));
             case CHOOSEPLAYEREXCEPT -> {
                 List<String> playerIds = Arrays.asList(cardGame.getAllPlayerIds());
                 playerIds.remove(_excludePlayerSource.getPlayerId(context));
-                yield new SelectPlayerAction(context, _saveToMemoryId, playerIds);
+                yield new SelectPlayerAction(cardGame, context, _saveToMemoryId, playerIds);
             }
-            case CHOOSETRIBBLEPOWER -> new SelectTribblePowerAction(context, _saveToMemoryId);
+            case CHOOSETRIBBLEPOWER -> new SelectTribblePowerAction(cardGame, context, _saveToMemoryId);
         };
         return List.of(action);
     }

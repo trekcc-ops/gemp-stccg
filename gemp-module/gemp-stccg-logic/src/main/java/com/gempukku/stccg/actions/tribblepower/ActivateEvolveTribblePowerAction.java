@@ -10,10 +10,9 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateEvolveTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateEvolveTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+        super(cardGame, actionContext, TribblePower.EVOLVE);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         // Count the number of cards in your hand

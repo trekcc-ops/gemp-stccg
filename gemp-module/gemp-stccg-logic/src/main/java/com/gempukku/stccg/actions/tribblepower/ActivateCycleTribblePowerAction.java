@@ -12,10 +12,9 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateCycleTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateCycleTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateCycleTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+        super(cardGame, actionContext, TribblePower.CYCLE);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(cardGame, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),

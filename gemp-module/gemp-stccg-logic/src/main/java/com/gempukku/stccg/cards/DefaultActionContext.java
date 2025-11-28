@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.gamestate.GameState;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -25,10 +24,6 @@ public class DefaultActionContext implements ActionContext {
 
     public DefaultActionContext(DefaultGame game, PhysicalCard thisCard, String performingPlayerId) {
         this(null, performingPlayerId, game, thisCard, null);
-    }
-
-    public DefaultActionContext(DefaultGame game, PhysicalCard thisCard, Player performingPlayer) {
-        this(null, performingPlayer.getPlayerId(), game, thisCard, null);
     }
 
 
@@ -52,12 +47,12 @@ public class DefaultActionContext implements ActionContext {
         _relevantContext = Objects.requireNonNullElse(delegate, this);
     }
 
-    public ActionContext createDelegateContext(ActionResult actionResult) {
-        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), actionResult);
+    public ActionContext createDelegateContext(DefaultGame cardGame, ActionResult actionResult) {
+        return new DefaultActionContext(this, getPerformingPlayerId(), cardGame, getSource(), actionResult);
     }
 
-    public ActionContext createDelegateContext(String playerId) {
-        return new DefaultActionContext(this, playerId, getGame(), getSource(), getEffectResult());
+    public ActionContext createDelegateContext(DefaultGame cardGame, String playerId) {
+        return new DefaultActionContext(this, playerId, cardGame, getSource(), getEffectResult());
     }
     public Map<String, String> getValueMemory() { return _valueMemory; }
     public Multimap<String, PhysicalCard> getCardMemory() { return _cardMemory; }
@@ -143,9 +138,6 @@ public class DefaultActionContext implements ActionContext {
         return _game;
     }
 
-    @Override
-    public GameState getGameState() { return _game.getGameState(); }
-
 
     public ActionResult getEffectResult() {
         return actionResult;
@@ -155,19 +147,14 @@ public class DefaultActionContext implements ActionContext {
         return actionResult != null && actionResult.getType() == type;
     }
 
-
-    public boolean acceptsAllRequirements(Iterable<Requirement> requirements) {
+    public boolean acceptsAllRequirements(DefaultGame cardGame, Iterable<Requirement> requirements) {
         if (requirements == null)
             return true;
         boolean result = true;
         for (Requirement requirement : requirements) {
-            if (!requirement.accepts(this, this.getGame())) result = false;
+            if (!requirement.accepts(this, cardGame)) result = false;
         }
         return result;
-    }
-
-    public boolean acceptsAnyRequirements(Requirement[] requirementArray) {
-        return Arrays.stream(requirementArray).anyMatch(requirement -> requirement.accepts(this, this.getGame()));
     }
 
     public String substituteText(String text) {

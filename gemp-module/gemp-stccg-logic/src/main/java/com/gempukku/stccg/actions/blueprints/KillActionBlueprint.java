@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -20,11 +21,11 @@ public class KillActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         return List.of(
-                new KillSinglePersonnelAction(context.getPerformingPlayerId(), context.getSource(),
-                        _targetResolver.getTargetResolver(context)));
+                new KillSinglePersonnelAction(cardGame, context.getPerformingPlayerId(), context.getSource(),
+                        _targetResolver.getTargetResolver(cardGame, context)));
     }
 
 }

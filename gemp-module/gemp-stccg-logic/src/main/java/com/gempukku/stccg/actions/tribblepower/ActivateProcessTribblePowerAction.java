@@ -12,9 +12,9 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateProcessTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateProcessTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame game = actionContext.getGame();
+    public ActivateProcessTribblePowerAction(TribblesGame game, TribblesActionContext actionContext)
+            throws PlayerNotFoundException {
+        super(game, actionContext, TribblePower.PROCESS);
         Player performingPlayer = game.getPlayer(_performingPlayerId);
         appendEffect(new DrawCardsAction(_performingCard, performingPlayer, 3, game));
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, performingPlayer,

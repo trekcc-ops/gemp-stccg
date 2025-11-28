@@ -164,27 +164,6 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                         return Filters.or(filters1);
                     };
                 });
-        parameterFilters.put("strengthlessthan",
-                (parameter) -> {
-                    final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
-
-                    return (actionContext) -> {
-                        float amount = valueSource.evaluateExpression(actionContext);
-                        return Filters.lessStrengthThan(amount);
-                    };
-                });
-        parameterFilters.put("strengthmorethan",
-                new FilterableSourceProducer() {
-                    @Override
-                    public FilterBlueprint createFilterableSource(String parameter) throws InvalidCardDefinitionException, JsonProcessingException {
-                        final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
-
-                        return (actionContext) -> {
-                            float amount = valueSource.evaluateExpression(actionContext);
-                            return Filters.moreStrengthThan(amount);
-                        };
-                    }
-                });
         parameterFilters.put("title",parameterFilters.get("name"));
         parameterFilters.put("zone",
                 (parameter) -> {

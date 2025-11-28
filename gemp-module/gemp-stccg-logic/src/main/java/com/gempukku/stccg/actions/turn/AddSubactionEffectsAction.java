@@ -21,20 +21,21 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
     private final ActionContext _actionContext;
     private final SubActionBlueprint _blueprint;
 
-    public AddSubactionEffectsAction(ActionContext actionContext, boolean isCost, CardPerformedAction parentAction,
-                                     SubActionBlueprint blueprint) {
-        super(actionContext.getGame());
+    public AddSubactionEffectsAction(DefaultGame cardGame, ActionContext actionContext, boolean isCost,
+                                     CardPerformedAction parentAction, SubActionBlueprint blueprint) {
+        super(cardGame);
         _isCost = isCost;
         _parentAction = parentAction;
         _actionContext = actionContext;
         _blueprint = blueprint;
     }
 
+
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         try {
             // Need to insert them, but in the reverse order
-            final List<Action> actions = _blueprint.createActions(_parentAction, _actionContext);
+            final List<Action> actions = _blueprint.createActions(cardGame, _parentAction, _actionContext);
             if (actions != null) {
                 final Action[] effectsArray = actions.toArray(new Action[0]);
                 for (int i = effectsArray.length - 1; i >= 0; i--)

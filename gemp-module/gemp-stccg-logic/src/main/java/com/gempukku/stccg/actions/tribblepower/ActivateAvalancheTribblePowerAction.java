@@ -13,10 +13,9 @@ import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateAvalancheTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateAvalancheTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateAvalancheTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
             throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+        super(cardGame, actionContext, TribblePower.AVALANCHE);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         appendEffect(new AllPlayersDiscardFromHandAction(cardGame, this, actionContext.getSource(), false, true));
         SelectVisibleCardAction selectAction =

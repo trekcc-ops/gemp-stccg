@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
 
@@ -28,35 +29,37 @@ public class SubActionWithCostBlueprint implements SubActionBlueprint {
         _subActionBlueprints = (effects == null) ? new LinkedList<>() : effects;
     }
     @Override
-    public List<Action> createActions(CardPerformedAction action, ActionContext context) throws PlayerNotFoundException {
+    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
+            throws PlayerNotFoundException {
 
         List<Action> result = new LinkedList<>();
-        if(requirementsNotMet(context)) {
-            SubAction subAction = new SubAction(action, context, _costAppenders, _subActionBlueprints);
+        if(requirementsNotMet(cardGame, context)) {
+            SubAction subAction = new SubAction(cardGame, action, context, _costAppenders, _subActionBlueprints);
             result.add(subAction);
         }
         return result;
     }
 
 
-    private boolean requirementsNotMet(ActionContext actionContext) {
-        return (!actionContext.acceptsAllRequirements(_requirements));
+    private boolean requirementsNotMet(DefaultGame cardGame, ActionContext actionContext) {
+        return (!actionContext.acceptsAllRequirements(cardGame, _requirements));
     }
 
-    @Override
-    public boolean isPlayableInFull(ActionContext actionContext) {
 
-        if(requirementsNotMet(actionContext))
+    @Override
+    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+
+        if(requirementsNotMet(cardGame, actionContext))
             return false;
 
         for (SubActionBlueprint costAppender : _costAppenders) {
-            if (!costAppender.isPlayableInFull(actionContext))
+            if (!costAppender.isPlayableInFull(cardGame, actionContext))
                 return false;
         }
 
         for (SubActionBlueprint subActionBlueprint : _subActionBlueprints) {
             if (subActionBlueprint.isPlayabilityCheckedForEffect()
-                    && !subActionBlueprint.isPlayableInFull(actionContext))
+                    && !subActionBlueprint.isPlayableInFull(cardGame, actionContext))
                 return false;
         }
 
