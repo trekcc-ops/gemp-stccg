@@ -58,6 +58,9 @@ export default class CardTreeModel {
 
         // already in the tree? skip
         // NOTE: Use == not === here for consistent matching
+        //   $..*  means "all objects in the tree"
+        //   [?(@.cardId)]  means "if they have a card id attribute"
+        //   == '${cardid}'  means "matching passed in card_id"
         let search_all_cardIds_for_this_id_jsonpath = `$..*[?(@.cardId == '${card_id}')]`;
         const result = JSONPath({path: search_all_cardIds_for_this_id_jsonpath, json: tree});
         if (Object.keys(result).length !== 0) {
@@ -70,6 +73,9 @@ export default class CardTreeModel {
             let parent_card_id = card_data[card_id].attachedToCardId;
             
             // NOTE: Use == not === here for consistent matching
+            //   $..*  means "all objects in the tree"
+            //   [?(@.cardId)]  means "if they have a card id attribute"
+            //   == '${parent_card_id}'  means "matching passed in parent_card_id"
             let search_all_cardIds_for_parent_id_jsonpath = `$..*[?(@.cardId == '${parent_card_id}')]`;
             const parent_result = JSONPath({path: search_all_cardIds_for_parent_id_jsonpath, json: tree});
             //console.log(`tree: ${JSON.stringify(tree)}`);
