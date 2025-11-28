@@ -1,24 +1,27 @@
 package com.gempukku.stccg.actions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +29,7 @@ public class ActionSerializerTest extends AbstractAtTest {
 
        @Test
     public void killAttemptSerializerTest() throws CardNotFoundException, DecisionResultInvalidException,
-            JsonProcessingException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
+            JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         KillSinglePersonnelAction action = new KillSinglePersonnelAction(P1, _game.getCardFromCardId(1),
                 new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));

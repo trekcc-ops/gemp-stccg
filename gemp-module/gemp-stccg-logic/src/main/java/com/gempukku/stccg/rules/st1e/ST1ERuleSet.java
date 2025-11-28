@@ -1,6 +1,5 @@
 package com.gempukku.stccg.rules.st1e;
 
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -9,17 +8,14 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.ActionOrder;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.WeaponsDisabledModifier;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.rules.UndefinedRuleException;
 import com.gempukku.stccg.rules.generic.RuleSet;
-import org.apache.logging.log4j.core.net.Facility;
 
 import java.util.ArrayList;
 import java.util.Collection;
