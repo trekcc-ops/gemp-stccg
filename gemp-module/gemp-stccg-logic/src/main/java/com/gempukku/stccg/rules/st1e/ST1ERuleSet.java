@@ -23,15 +23,12 @@ import java.util.List;
 
 public class ST1ERuleSet extends RuleSet<ST1EGame> {
 
-    // Based on Modern rules
-    private final DockingRules _dockingRules = new DockingRules();
-
     @Override
     protected void applySpecificRules(ST1EGame cardGame) {
         applyActionProxiesAsRules(cardGame,
-                new ST1EPlayCardInPhaseRule(cardGame),
-                new ST1EChangeAffiliationRule(cardGame),
-                new ST1EPhaseActionsRule(cardGame)
+                new ST1EPlayCardInPhaseRule(),
+                new ST1EChangeAffiliationRule(),
+                new ST1EPhaseActionsRule()
         );
 
         List<Modifier> modifiers = getGlobalRulesBasedModifiersForCardsInPlay();
@@ -69,7 +66,7 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
     public List<Modifier> getModifiersWhileCardIsInPlay(PhysicalCard card) {
         List<Modifier> result = new ArrayList<>();
         if (card instanceof FacilityCard facility) {
-            result.add(_dockingRules.getExtendedShieldsModifier(facility));
+            result.add(DockingRules.getExtendedShieldsModifier(facility));
         }
         return result;
     }

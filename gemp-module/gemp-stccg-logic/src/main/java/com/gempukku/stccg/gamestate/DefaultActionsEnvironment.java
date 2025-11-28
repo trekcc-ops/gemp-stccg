@@ -37,12 +37,12 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _untilEndOfTurnActionProxies.add(actionProxy);
     }
 
-    public List<TopLevelSelectableAction> getRequiredAfterTriggers(ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getRequiredAfterTriggers(DefaultGame cardGame, ActionResult actionResult) {
         List<TopLevelSelectableAction> gatheredActions = new LinkedList<>();
 
         if (actionResult != null) {
             for (ActionProxy actionProxy : _actionProxies) {
-                List<TopLevelSelectableAction> actions = actionProxy.getRequiredAfterTriggers(actionResult);
+                List<TopLevelSelectableAction> actions = actionProxy.getRequiredAfterTriggers(cardGame, actionResult);
                 if (actions != null)
                     gatheredActions.addAll(actions);
             }
@@ -82,7 +82,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (ActionResult actionResult : effectResults) {
                     List<TopLevelSelectableAction> actions =
-                            actionProxy.getOptionalAfterActions(player.getPlayerId(), actionResult);
+                            actionProxy.getOptionalAfterActions(cardGame, player.getPlayerId(), actionResult);
                     List<TopLevelSelectableAction> playableActions = getPlayableActions(cardGame, player, actions);
                     result.addAll(playableActions);
                 }
@@ -110,7 +110,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<TopLevelSelectableAction> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<TopLevelSelectableAction> actions = actionProxy.getPhaseActions(player);
+            List<TopLevelSelectableAction> actions = actionProxy.getPhaseActions(cardGame, player);
             List<TopLevelSelectableAction> playableActions = getPlayableActions(cardGame, player, actions);
             result.addAll(playableActions);
         }

@@ -110,7 +110,7 @@ public class ActionResult {
     public String getPerformingPlayerId() { return _performingPlayerId; }
 
     public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame) {
-        return cardGame.getActionsEnvironment().getRequiredAfterTriggers(this);
+        return cardGame.getActionsEnvironment().getRequiredAfterTriggers(cardGame, this);
     }
 
     public void initialize(DefaultGame cardGame) throws PlayerNotFoundException {

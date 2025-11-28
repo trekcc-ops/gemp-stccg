@@ -9,18 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TribblesPlayCardRule extends TribblesRule {
-    public TribblesPlayCardRule(TribblesGame game) {
-        super(game);
-    }
-
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
-        if (_game.getGameState().getCurrentPlayerId().equals(player.getPlayerId())) {
+    public List<TopLevelSelectableAction> getPhaseActions(TribblesGame cardGame, Player player) {
+        if (cardGame.getGameState().getCurrentPlayerId().equals(player.getPlayerId())) {
             List<TopLevelSelectableAction> result = new LinkedList<>();
             for (PhysicalCard card : player.getCardsInHand()) {
-                if (card.canBePlayed(_game)) {
+                if (card.canBePlayed(cardGame)) {
                     TopLevelSelectableAction action = card.getPlayCardAction();
-                    if (action.canBeInitiated(_game))
+                    if (action.canBeInitiated(cardGame))
                         result.add(action);
                 }
             }

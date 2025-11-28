@@ -14,7 +14,7 @@ public class DockingRules {
 
     // create a modifier that is turned on when a facility is played
 
-    public Modifier getExtendedShieldsModifier(FacilityCard dockedAtFacility) {
+    public static Modifier getExtendedShieldsModifier(FacilityCard dockedAtFacility) {
         CardFilter dockedAtCards = Filters.dockedAt(dockedAtFacility);
         Evaluator facilityShieldsEvaluator = new ShieldsEvaluator(dockedAtFacility);
         Evaluator halfOfShieldsEvaluator = new MultiplyEvaluator(HALF, facilityShieldsEvaluator);

@@ -10,15 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ActivateResponseAbilitiesRule extends GenericRule {
-    public ActivateResponseAbilitiesRule(DefaultGame game) {
-        super(game);
-    }
 
     @Override
-    public List<TopLevelSelectableAction> getOptionalAfterActions(String playerId, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId, ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        for (PhysicalCard card : Filters.filterCardsInPlay(_game, Filters.and(Filters.owner(playerId), Filters.active))) {
-            if (!card.hasTextRemoved(_game))
+        for (PhysicalCard card : Filters.filterCardsInPlay(cardGame, Filters.and(Filters.owner(playerId), Filters.active))) {
+            if (!card.hasTextRemoved(cardGame))
                 result.addAll(card.getOptionalResponseWhileInPlayActions(actionResult));
         }
         return result;

@@ -13,18 +13,14 @@ import java.util.List;
 
 public class ST1EChangeAffiliationRule extends ST1ERule {
 
-    ST1EChangeAffiliationRule(ST1EGame game) {
-        super(game);
-    }
-
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
+    public List<TopLevelSelectableAction> getPhaseActions(ST1EGame cardGame, Player player) {
         LinkedList<TopLevelSelectableAction> result = new LinkedList<>();
-        if (player.getPlayerId().equals(_game.getCurrentPlayerId())) {
-            for (PhysicalCard card : Filters.filterYourActive(_game, player)) {
+        if (player.getPlayerId().equals(cardGame.getCurrentPlayerId())) {
+            for (PhysicalCard card : Filters.filterYourActive(cardGame, player)) {
                 if (card instanceof AffiliatedCard affiliatedCard && affiliatedCard.getAffiliationOptions().size() > 1) {
-                    ChangeAffiliationAction action = new ChangeAffiliationAction(_game, player, affiliatedCard);
-                    if (action.canBeInitiated(_game))
+                    ChangeAffiliationAction action = new ChangeAffiliationAction(cardGame, player, affiliatedCard);
+                    if (action.canBeInitiated(cardGame))
                         result.add(action);
                 }
             }

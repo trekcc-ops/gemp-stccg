@@ -16,31 +16,27 @@ import java.util.Map;
 
 public class ST1EPhaseActionsRule extends ST1ERule {
 
-    public ST1EPhaseActionsRule(ST1EGame game) {
-        super(game);
-    }
-
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
+    public List<TopLevelSelectableAction> getPhaseActions(ST1EGame cardGame, Player player) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        final GameState gameState = _game.getGameState();
+        final GameState gameState = cardGame.getGameState();
         final Phase currentPhase = gameState.getCurrentPhase();
         if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
-            Filters.filterActive(_game, CardType.MISSION).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
-            Filters.filterYourActive(_game, player, Filters.not(CardType.MISSION)).forEach(
-                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, _game)));
+            Filters.filterActive(cardGame, CardType.MISSION).forEach(
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, cardGame)));
+            Filters.filterYourActive(cardGame, player, Filters.not(CardType.MISSION)).forEach(
+                    card -> result.addAll(card.getRulesActionsWhileInPlay(player, cardGame)));
         }
 
         if (currentPhase == Phase.EXECUTE_ORDERS) {
             Map<PhysicalCard, Map<String, List<PhysicalCard>>> shipBattleTargets =
-                    ShipBattleRules.getTargetsForShipBattleInitiation(_game, player);
+                    ShipBattleRules.getTargetsForShipBattleInitiation(cardGame, player);
             if (!shipBattleTargets.isEmpty()) {
-                result.add(new InitiateShipBattleAction(shipBattleTargets, _game, player));
+                result.add(new InitiateShipBattleAction(shipBattleTargets, cardGame, player));
             }
         }
 
-        Filters.filterActive(_game).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
+        Filters.filterActive(cardGame).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }
 
