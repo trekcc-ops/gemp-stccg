@@ -21,37 +21,37 @@ describe('cardFlatMapToTreeMap', () => {
                 "isInPlay": true
             },
         }
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_map, not_array)).toThrow(TypeError);
 
         not_array = null;
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_map, not_array)).toThrow(TypeError);
         
         not_array = "";
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_map, not_array)).toThrow(TypeError);
 
         not_array = 16;
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_map, not_array)).toThrow(TypeError);
 
         not_array = {};
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_array, card_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_map, not_array)).toThrow(TypeError);
     });
 
     test('errors if not given a card data map', () => {
         let card_id_array = [16];
         let not_map;
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_map, card_id_array)).toThrow(TypeError);
 
         not_map = null;
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_map, card_id_array)).toThrow(TypeError);
 
         not_map = "";
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_map, card_id_array)).toThrow(TypeError);
 
         not_map = 16;
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_map, card_id_array)).toThrow(TypeError);
 
         not_map = [];
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_id_array, not_map)).toThrow(TypeError);
+        expect(() => CardTreeModel.cardFlatMapToTreeMap(not_map, card_id_array)).toThrow(TypeError);
     });
 
     test('can build a flat tree', () => {
@@ -108,7 +108,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         // no change because it's already flat
         let expected = full_card_data_no_nesting;
@@ -136,7 +136,7 @@ describe('cardFlatMapToTreeMap', () => {
             }
         }
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         let expected = {};
 
@@ -208,7 +208,7 @@ describe('cardFlatMapToTreeMap', () => {
             }
         }
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         // should not contain #23
         let expected = {
@@ -282,7 +282,7 @@ describe('cardFlatMapToTreeMap', () => {
             }
         }
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         let expected = {
             "16": {
@@ -375,7 +375,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         let expected = {
             "1": {
@@ -515,7 +515,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         let expected = {
             "1": {
@@ -655,7 +655,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         let expected = {
             "1": {
@@ -795,7 +795,7 @@ describe('cardFlatMapToTreeMap', () => {
         //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
         //expect(typeof full_card_data_no_nesting.entries).toBe('function');
         
-        let actual = CardTreeModel.cardFlatMapToTreeMap(card_id_array, full_card_data_no_nesting);
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
         let expected = {
             "1": {

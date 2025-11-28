@@ -56,7 +56,7 @@ function cards_to_treeitems (gamestate) {
 }
 
 function build_cards_on_table_treeitems(table_arr, visible_cards) {
-    const treemap = CardTreeModel.cardFlatMapToTreeMap(table_arr, visible_cards);
+    const treemap = CardTreeModel.cardFlatMapToTreeMap(visible_cards, table_arr);
 
     let table_item = {id: 'table', label: 'On Table', children: []};
 

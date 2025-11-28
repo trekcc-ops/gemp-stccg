@@ -9,24 +9,36 @@ export default class CardTreeModel {
      * Creates a CardTreeModel from a flat JSON map {"id": {"card_data": ""}},
      *  such as GameState's visibleCardsInGame object.
      */
-    static cardFlatMapToTreeMap(card_ids_to_use, card_data) {
-        if (!(card_ids_to_use instanceof Array)) {
-            throw new TypeError(`card_ids_to_use '${card_ids_to_use}' must be an Array.`);
-        }
-
-        // if one of the cases is true, continue, otherwise throw error
+    static cardFlatMapToTreeMap(card_data, filter_by_ids) {
+        // Type check card_data for Map, Set or Object, otherwise throw error
         if (! ((card_data instanceof Map) || 
             (card_data instanceof Set) || 
             (card_data.constructor === Object))) {
 
-                throw new TypeError(`card_data '${card_data}' must be an Object, Set, or Map that is addressable with object[]`);
+                throw new TypeError(`card_data '${card_data}' must be a Map, Set, or Object that is addressable with object[]`);
         }
 
-        let new_tree = {};
-        for (const card_id of card_ids_to_use) {
-            CardTreeModel.addCardToTreeMap(card_id, card_data, new_tree);
+        if (typeof filter_by_ids === 'undefined') {
+            // No filter given to us, just iterate over the whole map
+            let new_tree = {};
+            for (const [card_id, card] of card_data) {
+                CardTreeModel.addCardToTreeMap(card_id, card, new_tree);
+            }
+            return new_tree;
         }
-        return new_tree;
+        else {
+            // Type check filter_by_ids parameter.
+            if (!(filter_by_ids instanceof Array)) {
+                throw new TypeError(`filter_by_ids '${filter_by_ids}' must be an Array.`);
+            }
+
+            let new_tree = {};
+            // Only use ids from the filter
+            for (const card_id of filter_by_ids) {
+                CardTreeModel.addCardToTreeMap(card_id, card_data, new_tree);
+            }
+            return new_tree;
+        }
     }
 
     static addCardToTreeMap(card_id, card_data, tree) {
