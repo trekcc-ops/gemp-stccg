@@ -240,7 +240,7 @@ describe('fetchImage', () => {
 
         let expected_url = url;
         let expected_headers = new Headers();
-        expected_headers.append("Accept", "image/png,image/jpeg,image/gif");
+        expected_headers.append("Accept", "image/webp,image/png,image/jpeg,image/gif");
         expected_headers.append("User-Agent", userAgent);
 
         let actual = await fetchImage(url);
