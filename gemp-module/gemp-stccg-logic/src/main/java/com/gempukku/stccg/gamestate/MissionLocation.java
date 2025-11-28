@@ -60,8 +60,15 @@ public class MissionLocation implements GameLocation {
     public Stream<AwayTeam> getYourAwayTeamsOnSurface(ST1EGame game, Player player) {
         Stream<AwayTeam> teamsOnSurface =
                 game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
-        return teamsOnSurface.filter(awayTeam -> awayTeam.getPlayer() == player);
+        return teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), player.getPlayerId()));
     }
+
+    public Stream<AwayTeam> getYourAwayTeamsOnSurface(ST1EGame game, String playerName) {
+        Stream<AwayTeam> teamsOnSurface =
+                game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
+        return teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), playerName));
+    }
+
 
 
     public Stream<AwayTeam> getAwayTeamsOnSurface(ST1EGame cardGame) {
@@ -149,7 +156,7 @@ public class MissionLocation implements GameLocation {
 
     private int getSpan(Player player) throws InvalidGameLogicException {
         MissionCard card = getMissionForPlayer(player.getPlayerId());
-        if (card.getOwner() == player)
+        if (card.isOwnedBy(player.getPlayerId()))
             return card.getBlueprint().getOwnerSpan();
         else return card.getBlueprint().getOpponentSpan();
     }
@@ -240,9 +247,10 @@ public class MissionLocation implements GameLocation {
     }
 
     public void seedPreSeedsForSharedMissions(ST1EGame stGame) {
-        Player firstPlayer = _missionCards.getBottomCard().getOwner();
+        String firstPlayerName = _missionCards.getBottomCard().getOwnerName();
         List<Player> players = new LinkedList<>(stGame.getPlayers());
-        int currentIndex = players.indexOf(firstPlayer);
+        List<String> playerNames = new LinkedList<>(stGame.getPlayerIds());
+        int currentIndex = playerNames.indexOf(firstPlayerName);
 
         while (!_preSeedCards.isEmpty()) {
             if (currentIndex == players.size())

@@ -23,6 +23,10 @@ public class DefaultActionContext implements ActionContext {
     protected final Multimap<String, PhysicalCard> _cardMemory = HashMultimap.create();
     protected final Map<String, String> _valueMemory = new HashMap<>();
 
+    public DefaultActionContext(DefaultGame game, PhysicalCard thisCard, String performingPlayerId) {
+        this(null, performingPlayerId, game, thisCard, null);
+    }
+
     public DefaultActionContext(DefaultGame game, PhysicalCard thisCard, Player performingPlayer) {
         this(null, performingPlayer.getPlayerId(), game, thisCard, null);
     }

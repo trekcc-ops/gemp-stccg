@@ -31,11 +31,11 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     public OvercomeDilemmaConditionAction(PhysicalCard dilemma, EncounterSeedCardAction encounterAction,
                                           MissionRequirement conditions, AttemptingUnit attemptingUnit,
                                           Action failDilemmaAction) {
-        super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
+        super(dilemma.getGame(), attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         _failAction =
                 new FailDilemmaAction(dilemma.getGame(), attemptingUnit, dilemma, failDilemmaAction, encounterAction);
-        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma
+        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), dilemma
         );
         _succeedActionId = succeedAction.getActionId();
         _conditions = conditions;
@@ -44,10 +44,10 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     public OvercomeDilemmaConditionAction(PhysicalCard dilemma, EncounterSeedCardAction action,
                                           MissionRequirement conditions, AttemptingUnit attemptingUnit) {
-        super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
+        super(dilemma.getGame(), attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, Progress.values());
         _attemptingUnit = attemptingUnit;
         _failAction = new FailDilemmaAction(attemptingUnit, dilemma, action);
-        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma);
+        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), dilemma);
         _succeedActionId = succeedAction.getActionId();
         _conditions = conditions;
         _encounterAction = action;

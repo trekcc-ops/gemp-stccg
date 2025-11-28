@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.st1e.ST1EFacilitySeedPhaseProcess;
@@ -30,7 +31,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
     private FacilityCard outpost1;
 
     private void setupGameState() throws CardNotFoundException, InvalidGameLogicException,
-            InvalidGameOperationException, DecisionResultInvalidException {
+            InvalidGameOperationException, DecisionResultInvalidException, PlayerNotFoundException {
         MissionCard mission = (MissionCard) newCardForGame("101_194", P1); // Wormhole Negotiations
 
         klag1 = (PersonnelCard) newCardForGame("101_270", P1);
@@ -45,9 +46,10 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         seedAction.seedCard(_game);
 
         for (FacilityCard facility : outpostsToSeed) {
+            Player facilityOwner = _game.getPlayer(facility.getOwnerName());
             SeedOutpostAction seedOutpostAction = new SeedOutpostAction(facility);
             seedOutpostAction.setDestination(mission.getLocationDeprecatedOnlyUseForTests());
-            seedOutpostAction.processEffect(_game, facility.getOwner());
+            seedOutpostAction.processEffect(_game, facilityOwner);
         }
 
         this.attackingShip.reportToFacility(outpost1);

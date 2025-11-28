@@ -80,7 +80,8 @@ public class Blueprint109_063 extends CardBlueprint {
             requirement
          */
 
-        if (actionResult.getType() == ActionResult.Type.START_OF_TURN && player == thisCard.getOwner() &&
+        if (actionResult.getType() == ActionResult.Type.START_OF_TURN &&
+                Objects.equals(player.getPlayerId(), thisCard.getOwnerName()) &&
                 player == cardGame.getCurrentPlayer()) {
             actions.add(new DiscardSingleCardAction(thisCard, player, thisCard));
         }

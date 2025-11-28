@@ -20,11 +20,10 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
     private final FixedCardResolver _cardTarget;
 
-    public RemoveCardFromPlayAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard cardToRemove) {
-        super(cardGame, performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
+    public RemoveCardFromPlayAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardToRemove) {
+        super(cardGame, performingPlayerName, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);
     }
-
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

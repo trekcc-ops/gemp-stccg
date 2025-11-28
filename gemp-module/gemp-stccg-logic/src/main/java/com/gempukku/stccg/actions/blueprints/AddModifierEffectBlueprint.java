@@ -8,9 +8,11 @@ import com.gempukku.stccg.actions.modifiers.AddUntilModifierAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddModifierEffectBlueprint implements SubActionBlueprint {
@@ -28,9 +30,15 @@ public class AddModifierEffectBlueprint implements SubActionBlueprint {
 
     @Override
     public List<Action> createActions(CardPerformedAction parentAction, ActionContext context) {
+        List<Action> result = new ArrayList<>();
         final Modifier modifier = _modifierSource.getModifier(context);
-        Action action = new AddUntilModifierAction(context.getSource(), modifier, _until);
-        return List.of(action);
+        PhysicalCard cardSource = context.getSource();
+        for (String playerName : context.getGame().getAllPlayerIds()) {
+            if (cardSource.isControlledBy(playerName)) {
+                result.add(new AddUntilModifierAction(context.getSource(), playerName, modifier, _until));
+            }
+        }
+        return result;
     }
 
 }

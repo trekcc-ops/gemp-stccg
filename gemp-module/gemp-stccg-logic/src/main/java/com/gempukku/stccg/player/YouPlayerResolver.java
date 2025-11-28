@@ -11,8 +11,8 @@ public class YouPlayerResolver {
         _gameTextCard = gameTextCard;
     }
 
-    public Player getPlayer() {
-        return _gameTextCard.getController();
+    public String getPlayerName() {
+        return _gameTextCard.getControllerName();
     }
 
 }

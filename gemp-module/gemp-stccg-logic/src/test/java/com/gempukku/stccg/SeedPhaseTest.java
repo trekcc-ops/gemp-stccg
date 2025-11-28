@@ -82,9 +82,9 @@ public class SeedPhaseTest extends AbstractAtTest {
         assertNotNull(homeward);
         MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
         assertNotNull(homewardLocation);
-        assertNotEquals(homeward.getOwner(), archer.getOwner());
+        assertNotEquals(homeward.getOwnerName(), archer.getOwnerName());
 
-        Player archerOwner = archer.getOwner();
+        Player archerOwner = _game.getPlayer(archer.getOwnerName());
 
         assertEquals(0, homewardLocation.getPreSeedCardCountForPlayer(archerOwner));
         seedDilemma(archer, homewardLocation);

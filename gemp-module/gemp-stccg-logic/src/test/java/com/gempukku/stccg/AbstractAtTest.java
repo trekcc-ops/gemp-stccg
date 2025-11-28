@@ -551,8 +551,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void seedDilemma(PhysicalCard seedCard, MissionLocation mission) throws DecisionResultInvalidException,
             InvalidGameOperationException {
-        Player player = seedCard.getOwner();
-        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
+        String playerName = seedCard.getOwnerName();
+        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(playerName);
         if (missionSelection instanceof ActionSelectionDecision actionDecision) {
             String actionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
@@ -561,9 +561,9 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     actionId = String.valueOf(seedAction.getActionId());
                 }
             }
-            playerDecided(player.getPlayerId(), actionId);
+            playerDecided(playerName, actionId);
 
-            playerDecided(player.getPlayerId(), String.valueOf(seedCard.getCardId()));
+            playerDecided(playerName, String.valueOf(seedCard.getCardId()));
         } else {
             throw new DecisionResultInvalidException("Could not find action selection decision");
         }
@@ -571,8 +571,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void removeDilemma(PhysicalCard seedCard, MissionLocation mission) throws DecisionResultInvalidException,
             InvalidGameLogicException, InvalidGameOperationException {
-        Player player = seedCard.getOwner();
-        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
+        String playerName = seedCard.getOwnerName();
+        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(playerName);
         if (missionSelection instanceof ActionSelectionDecision actionDecision) {
             String actionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
@@ -581,10 +581,10 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     actionId = String.valueOf(seedAction.getActionId());
                 }
             }
-            playerDecided(player.getPlayerId(), actionId);
+            playerDecided(playerName, actionId);
 
-            if (_userFeedback.getAwaitingDecision(player.getPlayerId()) instanceof ArbitraryCardsSelectionDecision dilemmaSelection)
-                playerDecided(player.getPlayerId(), dilemmaSelection.getCardIdForCard(seedCard));
+            if (_userFeedback.getAwaitingDecision(playerName) instanceof ArbitraryCardsSelectionDecision dilemmaSelection)
+                playerDecided(playerName, dilemmaSelection.getCardIdForCard(seedCard));
             else throw new InvalidGameLogicException("Player decision is not the expected type");
         } else throw new DecisionResultInvalidException("Unable to find action selection decision");
     }
@@ -932,7 +932,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throws CardNotFoundException {
         List<T> cardsFound = new ArrayList<>();
         for (PhysicalCard card : cardGame.getGameState().getAllCardsInGame()) {
-            if (Objects.equals(card.getTitle(), cardTitle) && clazz.isAssignableFrom(card.getClass()) && card.getOwner() == owner) {
+            if (Objects.equals(card.getTitle(), cardTitle) && clazz.isAssignableFrom(card.getClass()) &&
+                    card.isOwnedBy(owner.getPlayerId())) {
                 cardsFound.add((T) card);
             }
         }

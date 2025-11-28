@@ -24,9 +24,17 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     private boolean _cardPlayed;
     private final List<Action> _immediateGameTextActions = new ArrayList<>();
 
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
+    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerName,
                           Zone toZone, ActionType actionType) {
-        super(actionSource.getGame(), performingPlayer, actionType);
+        super(actionSource.getGame(), performingPlayerName, actionType);
+        _performingCard = actionSource;
+        _cardEnteringPlay = cardEnteringPlay;
+        _destinationZone = toZone;
+    }
+
+    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerName,
+                          Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
+        super(actionSource.getGame(), performingPlayerName, actionType, progressValues);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
@@ -89,7 +97,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
         if (performingPlayer.getCardsInDrawDeck().contains(_cardEnteringPlay)) {
             cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            _cardEnteringPlay.getOwner().shuffleDrawDeck(cardGame);
+            performingPlayer.shuffleDrawDeck(cardGame);
         }
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));

@@ -548,12 +548,12 @@ public class CardBlueprint {
         List<Action> result = new LinkedList<>();
         for (ActionBlueprint blueprint : _actionBlueprints) {
             if (blueprint instanceof EncounterSeedCardActionBlueprint encounterBlueprint) {
-                result.add(encounterBlueprint.createAction(game, attemptingUnit.getPlayer(), thisCard, attemptingUnit,
+                result.add(encounterBlueprint.createAction(game, attemptingUnit.getControllerName(), thisCard, attemptingUnit,
                         missionLocation, attemptAction));
             }
         }
         if (result.isEmpty()) {
-            EncounterSeedCardAction action = new EncounterSeedCardAction(game, attemptingUnit.getPlayer(), thisCard,
+            EncounterSeedCardAction action = new EncounterSeedCardAction(game, attemptingUnit.getControllerName(), thisCard,
                     attemptingUnit, attemptAction, missionLocation);
             List<Action> javaActions =
                     getEncounterActionsFromJava(thisCard, game, attemptingUnit, action, missionLocation);

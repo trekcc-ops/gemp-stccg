@@ -25,13 +25,15 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
     private final ActionCardResolver _cardToPlayTarget;
     private final MatchingFilterBlueprint _destinationFilterBlueprint;
 
-    public SelectAndReportForFreeCardAction(DefaultGame cardGame, Player player, ActionCardResolver playableCardTarget,
-                                            PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
-        super(cardGame, player, "Report card from hand", ActionType.PLAY_CARD);
+    public SelectAndReportForFreeCardAction(DefaultGame cardGame, String performingPlayerName,
+                                            ActionCardResolver playableCardTarget, PhysicalCard performingCard,
+                                            MatchingFilterBlueprint destinationFilterBlueprint) {
+        super(cardGame, performingPlayerName, "Report card from hand", ActionType.PLAY_CARD);
         _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;
     }
+
 
 
     protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {

@@ -14,6 +14,11 @@ public class UseNormalCardPlayAction extends ActionyAction {
         super(cardGame, performingPlayer, ActionType.USAGE_LIMIT);
     }
 
+    public UseNormalCardPlayAction(DefaultGame cardGame, String performingPlayerName) {
+        super(cardGame, performingPlayerName, ActionType.USAGE_LIMIT);
+    }
+
+
     @Override
     public boolean wasCarriedOut() { return _wasCarriedOut; }
 

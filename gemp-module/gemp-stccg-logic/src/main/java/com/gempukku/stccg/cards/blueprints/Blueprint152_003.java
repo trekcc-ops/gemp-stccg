@@ -32,7 +32,7 @@ public class Blueprint152_003 extends CardBlueprint {
                                                     EncounterSeedCardAction action, MissionLocation missionLocation)
             throws PlayerNotFoundException {
         List<Action> result = new ArrayList<>();
-        String opponentId = game.getOpponent(attemptingUnit.getPlayer().getPlayerId());
+        String opponentId = game.getOpponent(attemptingUnit.getControllerName());
 
         // One unique personnel is "stopped" (random selection).
         List<PersonnelCard> uniquePersonnel = new ArrayList<>();
@@ -42,11 +42,11 @@ public class Blueprint152_003 extends CardBlueprint {
         }
 
         SelectCardAction randomSelection =
-                new SelectRandomCardAction(game, thisCard.getOwner(), "Choose a personnel to be stopped",
+                new SelectRandomCardAction(game, thisCard.getOwnerName(), "Choose a personnel to be stopped",
                         uniquePersonnel);
-        Action stopAction = new StopCardsAction(game, thisCard.getOwner(), randomSelection);
+        Action stopAction = new StopCardsAction(game, thisCard.getOwnerName(), randomSelection);
         TopLevelSelectableAction action1 =
-                new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, randomSelection);
+                new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard, randomSelection);
 
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection);
         TopLevelSelectableAction action2 =
@@ -60,7 +60,7 @@ public class Blueprint152_003 extends CardBlueprint {
         actionMessageMap.put(action1, "Kill personnel");
         actionMessageMap.put(action2, "Draw card(s)");
 
-        Action multipleChoiceDecision = new SelectAndInsertAction(game, action, attemptingUnit.getPlayer(),
+        Action multipleChoiceDecision = new SelectAndInsertAction(game, action, attemptingUnit.getControllerName(),
                 selectableActions, actionMessageMap);
 
         result.add(randomSelection);

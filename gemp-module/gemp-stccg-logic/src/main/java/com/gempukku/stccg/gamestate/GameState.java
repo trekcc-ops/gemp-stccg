@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
+import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -135,6 +136,25 @@ public abstract class GameState {
         return Objects.requireNonNullElse(zoneCards, _inPlay);
     }
 
+    public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
+        try {
+            Player player = getPlayer(playerId);
+            List<PhysicalCard> zoneCards = player.getCardGroupCards(zone);
+            return Objects.requireNonNullElse(zoneCards, _inPlay);
+        } catch(PlayerNotFoundException exp) {
+            return new ArrayList<>();
+        }
+    }
+
+    public PhysicalCardGroup getCardGroup(String playerId, Zone zone) {
+        try {
+            Player player = getPlayer(playerId);
+            return player.getCardGroup(zone);
+        } catch(PlayerNotFoundException exp) {
+            return null;
+        }
+    }
+
 
     public void removeCardsFromZoneWithoutSendingToClient(DefaultGame cardGame, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
@@ -169,7 +189,7 @@ public abstract class GameState {
         }
 
         if (zone.hasList()) {
-            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), zone);
+            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
             zoneCardList.add(card);
         }
 
@@ -182,7 +202,7 @@ public abstract class GameState {
                 getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
             zone = Zone.REMOVED;
 
-        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwner(), zone);
+        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
         zoneCardList.addFirst(card);
 
         card.setZone(zone);

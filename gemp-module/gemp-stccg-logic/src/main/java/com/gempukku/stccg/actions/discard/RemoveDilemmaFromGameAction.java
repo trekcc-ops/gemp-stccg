@@ -22,6 +22,12 @@ import java.util.Collections;
 public class RemoveDilemmaFromGameAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
 
+    public RemoveDilemmaFromGameAction(String performingPlayerName, PhysicalCard cardToRemove) {
+        super(cardToRemove.getGame(), performingPlayerName, ActionType.REMOVE_CARD_FROM_GAME);
+        _cardTarget = new FixedCardResolver(cardToRemove);
+    }
+
+
     public RemoveDilemmaFromGameAction(Player performingPlayer, PhysicalCard cardToRemove) {
         super(cardToRemove.getGame(), performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);

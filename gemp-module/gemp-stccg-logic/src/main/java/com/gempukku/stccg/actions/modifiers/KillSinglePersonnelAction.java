@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
@@ -20,18 +19,17 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     private final ActionCardResolver _cardTarget;
     private PhysicalCard _victim;
 
-    public KillSinglePersonnelAction(Player performingPlayer, PhysicalCard performingCard,
+    public KillSinglePersonnelAction(String performingPlayerName, PhysicalCard performingCard,
                                      SelectCardsAction selectVictimAction) {
-        this(performingPlayer, performingCard, new SelectCardsResolver(selectVictimAction));
+        this(performingPlayerName, performingCard, new SelectCardsResolver(selectVictimAction));
     }
 
-    public KillSinglePersonnelAction(Player performingPlayer, PhysicalCard performingCard,
+    public KillSinglePersonnelAction(String performingPlayerName, PhysicalCard performingCard,
                                      ActionCardResolver targetResolver) {
-        super(performingCard.getGame(), performingPlayer, "Kill", ActionType.KILL);
+        super(performingCard.getGame(), performingPlayerName, "Kill", ActionType.KILL);
         _performingCard = performingCard;
         _cardTarget = targetResolver;
     }
-
 
 
     @Override

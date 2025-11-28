@@ -9,8 +9,14 @@ import com.gempukku.stccg.player.Player;
 
 public class STCCGPlayCardAction extends PlayCardAction {
 
+    public STCCGPlayCardAction(ST1EPhysicalCard card, Zone zone, String performingPlayerName, boolean forFree) {
+        super(card, card, performingPlayerName, zone, ActionType.PLAY_CARD);
+        if (!forFree)
+            appendCost(new UseNormalCardPlayAction(card.getGame(), performingPlayerName));
+    }
+
     public STCCGPlayCardAction(ST1EPhysicalCard card, Zone zone, Player player, boolean forFree) {
-        super(card, card, player, zone, ActionType.PLAY_CARD);
+        super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
         if (!forFree)
             appendCost(new UseNormalCardPlayAction(card.getGame(), player));
     }
@@ -21,6 +27,14 @@ public class STCCGPlayCardAction extends PlayCardAction {
         if (!forFree)
             appendCost(new UseNormalCardPlayAction(card.getGame(), player));
     }
+
+    public STCCGPlayCardAction(PhysicalCard card, Zone zone, String performingPlayerName, boolean forFree,
+                               Enum<?>[] progressValues) {
+        super(card, card, performingPlayerName, zone, ActionType.PLAY_CARD, progressValues);
+        if (!forFree)
+            appendCost(new UseNormalCardPlayAction(card.getGame(), performingPlayerName));
+    }
+
 
 
 }

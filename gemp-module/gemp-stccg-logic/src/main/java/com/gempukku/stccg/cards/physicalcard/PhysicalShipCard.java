@@ -73,11 +73,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         _dockedAtCardId = facilityCard.getCardId();
     }
 
-    public Player getPlayer() {
-        // TODO - Should be controller
-        return _owner;
-    }
-
     public void undockFromFacility() throws InvalidGameOperationException {
         _docked = false;
         _dockedAtCardId = null;
@@ -187,7 +182,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                 Affiliation personnelAffiliation = card.getCurrentAffiliation();
                 if (personnelAffiliation == _currentAffiliation)
                     matchesShip = true;
-                if (mission.getAffiliationIcons(_owner.getPlayerId()).contains(personnelAffiliation))
+                if (mission.getAffiliationIcons(_ownerName).contains(personnelAffiliation))
                     matchesMission = true;
             }
             return matchesShip && matchesMission;

@@ -21,7 +21,7 @@ public class ThisCardAtMissionCondition implements Condition {
     public boolean isFulfilled(DefaultGame cardGame) {
         try {
             if (_thisCard.getGameLocation() instanceof MissionLocation missionLocation) {
-                MissionCard missionCard = missionLocation.getMissionForPlayer(_thisCard.getController().getPlayerId());
+                MissionCard missionCard = missionLocation.getMissionForPlayer(_thisCard.getControllerName());
                 return _missionFilter.accepts(cardGame, missionCard);
             } else {
                 return false;

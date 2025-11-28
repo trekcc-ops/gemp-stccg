@@ -82,14 +82,6 @@ public class Player {
     }
 
 
-    public boolean hasACopyOfCardInPlay(DefaultGame cardGame, PhysicalCard card) {
-        for (PhysicalCard cardInPlay : cardGame.getGameState().getAllCardsInPlay()) {
-            if (cardInPlay.isCopyOf(card) && cardInPlay.getOwner() == this)
-                return true;
-        }
-        return false;
-    }
-
     public int getScore() {
         return _currentScore;
     }

@@ -51,21 +51,26 @@ public class Filters {
             _characteristicFilterMap.put(characteristic, characteristic(characteristic));
     }
 
+    public static Collection<PhysicalCard> filterYourActive(DefaultGame cardGame, String playerName,
+                                                            Filterable... filters) {
+        return filterActive(cardGame, your(playerName), and(filters));
+    }
+
+
     public static Collection<PhysicalCard> filterYourActive(DefaultGame cardGame, Player player,
                                                             Filterable... filters) {
-        return filterActive(cardGame, your(player), and(filters));
+        return filterActive(cardGame, your(player.getPlayerId()), and(filters));
     }
 
     public static Collection<PhysicalCard> filteredCardsYouOwnInPlay(DefaultGame cardGame, Player player,
                                                             Filterable... filters) {
-        return filterActive(cardGame, your(player), and(filters));
+        return filterActive(cardGame, your(player.getPlayerId()), and(filters));
     }
 
-
     public static Collection<PhysicalCard> filterYourCardsPresentWith(DefaultGame cardGame,
-                                                                      Player player, PhysicalCard card,
+                                                                      String playerName, PhysicalCard card,
                                                                       Filterable... filters) {
-        return filterYourActive(cardGame, player, presentWith(card), and(filters));
+        return filterYourActive(cardGame, playerName, presentWith(card), and(filters));
     }
 
     public static List<FacilityCard> yourFacilitiesInPlay(DefaultGame cardGame, Player player) {
@@ -312,7 +317,7 @@ public class Filters {
     }
 
     public static CardFilter yourOtherCards(PhysicalCard contextCard, Filterable... filterables) {
-        return and(your(contextCard.getController()), and(filterables));
+        return and(your(contextCard.getControllerName()), and(filterables));
     }
 
 
@@ -360,9 +365,10 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.isCopyOf(copiedCard);
     }
 
-    public static CardFilter youHaveNoCopiesInPlay(final Player player) {
-        return (game, physicalCard) -> filterYourActive(game, player, copyOfCard(physicalCard)).isEmpty();
+    public static CardFilter youHaveNoCopiesInPlay(String playerName) {
+        return (game, physicalCard) -> filterYourActive(game, playerName, copyOfCard(physicalCard)).isEmpty();
     }
+
 
     public static CardFilter hasAttributeMatchingPersonnel(final PersonnelCard cardToMatch) {
         return (game, matchingCard) -> matchingCard instanceof PersonnelCard matchingPersonnel && (
@@ -581,17 +587,8 @@ public class Filters {
         return and(your(player), presentWith(card));
     }
 
-    public static Filterable yourCardsPresentWith(PhysicalCard contextCard, PhysicalCard presenceCard) {
-        Player you = contextCard.getController();
-        return and(your(you), presentWith(presenceCard));
-    }
-
     public static Filterable yourCardsPresentWithThisCard(PhysicalCard thisCard) {
-        return and(your(thisCard.getController()), presentWith(thisCard));
-    }
-
-    public static Filterable yourCardsPresentWith(YouPlayerResolver you, PhysicalCard card) {
-        return yourCardsPresentWith(you.getPlayer(), card);
+        return and(your(thisCard.getControllerName()), presentWith(thisCard));
     }
 
     public static CardFilter costAtLeast(int num) {

@@ -26,9 +26,14 @@ public class StopCardsAction extends ActionyAction {
         _cardTarget = new FixedCardsResolver(cardsToStop);
     }
 
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
+                           Collection<? extends ST1EPhysicalCard> cardsToStop) {
+        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
+        _cardTarget = new FixedCardsResolver(cardsToStop);
+    }
 
-    public StopCardsAction(DefaultGame cardGame, Player performingPlayer, SelectCardsAction selectionAction) {
-        super(cardGame, performingPlayer, "Stop cards", ActionType.STOP_CARDS);
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName, SelectCardsAction selectionAction) {
+        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
         _cardTarget = new SelectCardsResolver(selectionAction);
     }
 

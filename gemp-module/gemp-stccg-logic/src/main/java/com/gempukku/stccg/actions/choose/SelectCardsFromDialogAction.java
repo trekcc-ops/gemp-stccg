@@ -34,6 +34,16 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
         _maximum = 1;
     }
 
+    public SelectCardsFromDialogAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
+                                       CardFilter cardFilter) {
+        super(cardGame, selectingPlayerName, choiceText, ActionType.SELECT_CARDS);
+        _decisionText = choiceText;
+        _selectableCardsTarget = new CardFilterResolver(cardFilter);
+        _minimum = 1;
+        _maximum = 1;
+    }
+
+
 
     public boolean requirementsAreMet(DefaultGame game) {
         try {

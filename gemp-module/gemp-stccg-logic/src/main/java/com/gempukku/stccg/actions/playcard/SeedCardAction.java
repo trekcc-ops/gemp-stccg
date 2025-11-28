@@ -15,7 +15,7 @@ public class SeedCardAction extends PlayCardAction {
     }
 
     public SeedCardAction(PhysicalCard cardToSeed, Zone zone) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwner(), zone, ActionType.SEED_CARD);
+        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
     }
 
     @Override

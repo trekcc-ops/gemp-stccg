@@ -74,7 +74,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                 Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeedCards) {
                     RemoveCardFromPlayAction removeAction =
-                            new RemoveCardFromPlayAction(cardGame, card.getOwner(), card);
+                            new RemoveCardFromPlayAction(cardGame, card.getOwnerName(), card);
                     removeAction.processEffect(cardGame);
                     cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
                     cardGame.sendActionResultToClient();

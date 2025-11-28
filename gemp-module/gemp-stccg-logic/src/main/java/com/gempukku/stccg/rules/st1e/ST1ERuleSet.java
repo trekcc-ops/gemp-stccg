@@ -16,6 +16,7 @@ import com.gempukku.stccg.modifiers.attributes.WeaponsDisabledModifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.rules.UndefinedRuleException;
 import com.gempukku.stccg.rules.generic.RuleSet;
 import org.apache.logging.log4j.core.net.Facility;
@@ -48,17 +49,19 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
     public boolean isLocationValidPlayCardDestinationPerRules(ST1EGame game, FacilityCard facility,
                                                               GameLocation location,
                                                               Class<? extends PlayCardAction> actionClass,
-                                                              Player performingPlayer,
+                                                              String performingPlayerName,
                                                               Collection<Affiliation> affiliationOptions) {
         try {
+            Player performingPlayer = game.getPlayer(performingPlayerName);
             return PlayCardDestinationRules.isLocationValidPlayCardDestinationForFacilityPerRules(
                     game, location, facility, actionClass, performingPlayer, affiliationOptions);
-        } catch(UndefinedRuleException exp) {
+        } catch(UndefinedRuleException | PlayerNotFoundException exp) {
             game.sendErrorMessage(exp);
             game.cancelGame();
             return false;
         }
     }
+
 
 
 

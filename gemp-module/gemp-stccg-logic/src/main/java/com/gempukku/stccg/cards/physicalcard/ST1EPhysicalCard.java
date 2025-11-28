@@ -20,6 +20,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
@@ -36,7 +37,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-        STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.CORE, getOwner(), forFree);
+        STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.CORE, _ownerName, forFree);
         _game.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
         return action;
     }
@@ -58,7 +59,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
                 } else {
                     int olderCardId = revealAction.getRevealedCardId();
                     PhysicalCard olderCard = cardGame.getCardFromCardId(olderCardId);
-                    if (this.isCopyOf(olderCard) && this != olderCard && _owner == olderCard.getOwner())
+                    if (this.isCopyOf(olderCard) && this != olderCard && Objects.equals(_ownerName, olderCard.getOwnerName()))
                         return true;
                 }
             }

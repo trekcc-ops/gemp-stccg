@@ -95,7 +95,7 @@ public class CardInfoSerializer {
                 List<AwayTeam> awayTeamsOnPlanet = missionLocation.getAwayTeamsOnSurface(stGame).toList();
                 for (AwayTeam team : awayTeamsOnPlanet) {
                     Map<Object, Object> awayTeamInfo = new HashMap<>();
-                    awayTeamInfo.put("playerId", team.getPlayerId());
+                    awayTeamInfo.put("playerId", team.getControllerName());
                     List<Map<Object, Object>> awayTeamMembers = new ArrayList<>();
                     for (PhysicalCard member : team.getCards()) {
                         awayTeamMembers.add(getCardProperties(member));

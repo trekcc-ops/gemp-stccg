@@ -42,11 +42,11 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
         SelectCardsAction selectAction;
         if (_randomSelection) {
             selectAction = new SelectRandomCardAction(
-                    context.getGame(), context.getPerformingPlayer(), "Select a card",
+                    context.getGame(), context.getPerformingPlayerId(), "Select a card",
                     selectableCards);
         } else {
             selectAction = new SelectCardsFromDialogAction(
-                    context.getGame(), context.getPerformingPlayer(), "Select a card",
+                    context.getGame(), context.getPerformingPlayerId(), "Select a card",
                     Filters.in(selectableCards));
         }
         return new SelectCardsResolver(selectAction);

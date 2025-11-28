@@ -28,28 +28,28 @@ public class FailDilemmaAction extends ActionyAction {
 
     public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma,
                              EncounterSeedCardAction encounterAction) {
-        this(dilemma.getGame(), attemptingUnit.getPlayer(), attemptingUnit, dilemma, encounterAction, false);
+        this(dilemma.getGame(), attemptingUnit.getControllerName(), attemptingUnit, dilemma, encounterAction, false);
     }
 
-
-    public FailDilemmaAction(DefaultGame cardGame, Player performingPlayer, AttemptingUnit attemptingUnit,
+    public FailDilemmaAction(DefaultGame cardGame, String performingPlayerName, AttemptingUnit attemptingUnit,
                              PhysicalCard dilemma, EncounterSeedCardAction encounterAction, boolean discardDilemma) {
-        super(cardGame, performingPlayer, ActionType.FAIL_DILEMMA);
+        super(cardGame, performingPlayerName, ActionType.FAIL_DILEMMA);
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
         _encounterAction = encounterAction;
         _discardDilemma = discardDilemma;
     }
 
+
     public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
                              Action additionalEffect, EncounterSeedCardAction encounterAction) {
-        this(cardGame, attemptingUnit.getPlayer(), attemptingUnit, dilemma, encounterAction, false);
+        this(cardGame, attemptingUnit.getControllerName(), attemptingUnit, dilemma, encounterAction, false);
         appendEffect(additionalEffect);
     }
 
     public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
                              Action additionalEffect, EncounterSeedCardAction encounterAction, boolean discardDilemma) {
-        this(cardGame, attemptingUnit.getPlayer(), attemptingUnit, dilemma, encounterAction, discardDilemma);
+        this(cardGame, attemptingUnit.getControllerName(), attemptingUnit, dilemma, encounterAction, discardDilemma);
         appendEffect(additionalEffect);
     }
 
@@ -75,12 +75,12 @@ public class FailDilemmaAction extends ActionyAction {
                 cardsToStop.add(ship);
             }
             _cardsStopped = true;
-            return new StopCardsAction(cardGame, cardGame.getPlayer(_performingPlayerId), cardsToStop);
+            return new StopCardsAction(cardGame, _performingPlayerId, cardsToStop);
         }
 
         if (_discardDilemma && !_dilemmaDiscarded) {
             _dilemmaDiscarded = true;
-            return new RemoveDilemmaFromGameAction(cardGame.getPlayer(_performingPlayerId), _dilemma);
+            return new RemoveDilemmaFromGameAction(_performingPlayerId, _dilemma);
         }
 
         setAsFailed();

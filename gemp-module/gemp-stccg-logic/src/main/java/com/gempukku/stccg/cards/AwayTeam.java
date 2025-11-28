@@ -53,9 +53,8 @@ public class AwayTeam implements AttemptingUnit {
         return _location == location;
     }
 
-    @JsonIgnore
-    public Player getPlayer() { return _player; }
-    public String getPlayerId() { return _player.getPlayerId(); }
+    public String getControllerName() { return _player.getPlayerId(); }
+
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
 
     public boolean canAttemptMission(DefaultGame cardGame, MissionLocation mission) {

@@ -43,16 +43,16 @@ public class Blueprint103_014 extends CardBlueprint {
         MissionRequirement condition = new RegularSkillMissionRequirement(SkillName.GREED);
 
         if ((totalCunning + totalStrength <= 68) && !condition.canBeMetBy(attemptingUnit)) {
-            String opponentId = game.getOpponent(attemptingUnit.getPlayer().getPlayerId());
+            String opponentId = game.getOpponent(attemptingUnit.getControllerName());
             SelectCardsAction selectAction =
                     new SelectCardsFromDialogAction(game, game.getPlayer(opponentId),
                             "Select a personnel to kill",
                             Filters.personnelInAttemptingUnit(attemptingUnit));
             result.add(selectAction);
-            result.add(new KillSinglePersonnelAction(thisCard.getOwner(), thisCard, selectAction));
+            result.add(new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard, selectAction));
         }
 
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
         return result;
     }
 

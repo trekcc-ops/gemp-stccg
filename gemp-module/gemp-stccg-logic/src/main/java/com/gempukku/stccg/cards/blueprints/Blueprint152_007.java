@@ -32,9 +32,9 @@ public class Blueprint152_007 extends CardBlueprint {
             List<PersonnelCard> cardsToRemove =
                     TextUtils.getRandomItemsFromList(attemptingUnit.getAttemptingPersonnel(), removeCount);
             for (PersonnelCard personnel : cardsToRemove)
-                result.add(new RemoveCardFromPlayAction(game, thisCard.getOwner(), personnel));
+                result.add(new RemoveCardFromPlayAction(game, thisCard.getOwnerName(), personnel));
         }
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
         return result;
     }
 

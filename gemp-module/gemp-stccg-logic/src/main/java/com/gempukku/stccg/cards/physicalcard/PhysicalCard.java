@@ -41,7 +41,7 @@ public interface PhysicalCard extends Filterable {
     @JsonProperty("imageUrl")
     String getImageUrl();
     int getCardId();
-    Player getOwner();
+
     @JsonProperty("owner")
     String getOwnerName();
 
@@ -125,7 +125,7 @@ public interface PhysicalCard extends Filterable {
 
     boolean isAtPlanetLocation();
 
-    Player getController();
+    String getControllerName();
 
     int getCost();
 
@@ -181,4 +181,6 @@ public interface PhysicalCard extends Filterable {
     default List<TopLevelSelectableAction> getPlayActionsFromGameText(Player player, DefaultGame cardGame) {
         return getBlueprint().getPlayActionsFromGameText(this, player, cardGame);
     }
+
+    boolean isOwnedBy(String playerName);
 }

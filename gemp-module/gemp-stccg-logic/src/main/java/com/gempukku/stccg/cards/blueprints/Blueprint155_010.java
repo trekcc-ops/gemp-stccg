@@ -41,8 +41,8 @@ public class Blueprint155_010 extends CardBlueprint {
         // TODO - No need to add the Q card condition yet, since Q cards are not in the current card pool
         else {
             Collection<PersonnelCard> personnelToStop = TextUtils.getRandomItemsFromList(attemptingPersonnel, 2);
-            result.add(new StopCardsAction(game, thisCard.getOwner(), personnelToStop));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
+            result.add(new StopCardsAction(game, thisCard.getOwnerName(), personnelToStop));
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
         }
         return result;
     }

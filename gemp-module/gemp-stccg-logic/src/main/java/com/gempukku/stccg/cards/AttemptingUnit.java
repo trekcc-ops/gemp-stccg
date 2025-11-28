@@ -11,7 +11,8 @@ import java.util.LinkedList;
 
 public interface AttemptingUnit {
     Collection<PersonnelCard> getAllPersonnel();
-    Player getPlayer();
+
+    String getControllerName();
     default Collection<PersonnelCard> getAttemptingPersonnel() {
         // TODO - Does not include a check for infiltrators
         Collection<PersonnelCard> personnelAttempting = new LinkedList<>();

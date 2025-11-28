@@ -36,7 +36,7 @@ public class Blueprint155_021 extends CardBlueprint {
         if (currentPhase == Phase.CARD_PLAY && thisCard.isControlledBy(player)) {
 
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
-                    Filters.youHaveNoCopiesInPlay(thisCard.getOwner()),
+                    Filters.youHaveNoCopiesInPlay(thisCard.getOwnerName()),
                     Filters.notAny(Filters.android, Filters.hologram, CardIcon.AU_ICON),
                     Filters.inYourHand(player), Filters.youControlAMatchingOutpost(player));
 
@@ -49,7 +49,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 MatchingFilterBlueprint destinationFilterBlueprint =
                         new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
                 SelectAndReportForFreeCardAction action1 =
-                        new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwner(), cardTarget, thisCard,
+                        new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwnerName(), cardTarget, thisCard,
                                 destinationFilterBlueprint);
                 action1.setCardActionPrefix("1");
                 action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));

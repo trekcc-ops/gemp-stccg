@@ -30,6 +30,19 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
         _effects = Objects.requireNonNullElse(effects, new LinkedList<>());
     }
 
+    public EncounterSeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard,
+                                                AttemptingUnit attemptingUnit, MissionLocation missionLocation,
+                                                AttemptMissionAction missionAttemptAction)
+            throws InvalidGameLogicException {
+        ActionContext actionContext = new DefaultActionContext(cardGame, thisCard, performingPlayerName);
+        EncounterSeedCardAction encounterAction =
+                new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
+                        missionLocation);
+        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, encounterAction, actionContext));
+        return encounterAction;
+    }
+
+
     public EncounterSeedCardAction createAction(DefaultGame cardGame, Player performingPlayer, PhysicalCard thisCard,
                                                  AttemptingUnit attemptingUnit, MissionLocation missionLocation,
                                                  AttemptMissionAction missionAttemptAction)

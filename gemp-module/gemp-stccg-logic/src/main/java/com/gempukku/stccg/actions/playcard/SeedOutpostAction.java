@@ -31,7 +31,7 @@ public class SeedOutpostAction extends PlayCardAction {
     private enum Progress { cardWasSeeded, placementChosen, affiliationSelected }
 
     public SeedOutpostAction(FacilityCard cardToSeed) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwner(), Zone.AT_LOCATION,
+        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
                 ActionType.SEED_CARD, Progress.values());
         if (!cardToSeed.isMultiAffiliation()) {
             setProgress(Progress.affiliationSelected);
@@ -112,7 +112,8 @@ public class SeedOutpostAction extends PlayCardAction {
         }
     }
 
-    public void processEffect(ST1EGame stGame, Player performingPlayer) throws InvalidGameLogicException {
+    public void processEffect(ST1EGame stGame, Player performingPlayer) throws InvalidGameLogicException,
+            PlayerNotFoundException {
         Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
         FacilityCard facility = (FacilityCard) _cardEnteringPlay;
         facility.changeAffiliation(selectedAffiliation);

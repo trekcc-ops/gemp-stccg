@@ -50,7 +50,7 @@ public class Blueprint155_056 extends CardBlueprint {
                 skillOptions.add(SkillName.PHYSICS);
                 skillOptions.add(SkillName.NAVIGATION);
                     // TODO - This won't actually do anything at present other than the selection
-                action.appendTargeting(new SelectSkillAction(thisCard.getGame(), thisCard.getOwner(), skillOptions));
+                action.appendTargeting(new SelectSkillAction(thisCard.getGame(), thisCard.getOwnerName(), skillOptions));
                 return action;
             }
         };

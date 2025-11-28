@@ -27,14 +27,10 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
     @Override
     List<MissionLocation> getAvailableMissions(ST1EGame stGame, String playerId) {
         List<MissionLocation> result = new ArrayList<>();
-        try {
-            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                MissionCard mission = location.getMissionCards().getFirst();
-                if (location.getMissionCards().size() == 1 && mission.getOwner() == stGame.getPlayer(playerId))
-                    result.add(location);
-            }
-        } catch(PlayerNotFoundException exp) {
-            stGame.sendErrorMessage(exp);
+        for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+            MissionCard mission = location.getMissionCards().getFirst();
+            if (location.getMissionCards().size() == 1 && mission.isOwnedBy(playerId))
+                result.add(location);
         }
         return result;
     }

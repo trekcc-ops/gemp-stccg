@@ -13,6 +13,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
@@ -22,8 +23,8 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     @JsonProperty("cardTarget")
     private final FixedCardResolver _cardTarget;
 
-    public PlaceCardOnTopOfDrawDeckAction(Player performingPlayer, PhysicalCard cardBeingPlaced) {
-        super(cardBeingPlaced.getGame(), performingPlayer, ActionType.PLACE_CARD_ON_TOP_OF_DRAW_DECK);
+    public PlaceCardOnTopOfDrawDeckAction(String performingPlayerName, PhysicalCard cardBeingPlaced) {
+        super(cardBeingPlaced.getGame(), performingPlayerName, ActionType.PLACE_CARD_ON_TOP_OF_DRAW_DECK);
         _cardTarget = new FixedCardResolver(cardBeingPlaced);
     }
 
@@ -33,12 +34,13 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         PhysicalCard cardBeingPlaced = _cardTarget.getCard();
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(cardBeingPlaced));
 
-        CardPile drawDeck = cardBeingPlaced.getOwner().getDrawDeck();
+        Player cardOwner = cardGame.getPlayer(cardBeingPlaced.getOwnerName());
+        CardPile drawDeck = cardOwner.getDrawDeck();
         drawDeck.addCardToTop(cardBeingPlaced);
 
         setAsSuccessful();

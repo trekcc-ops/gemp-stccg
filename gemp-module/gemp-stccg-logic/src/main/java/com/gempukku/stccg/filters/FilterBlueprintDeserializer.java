@@ -71,7 +71,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put("yoursevenifnotinplay", (actionContext) ->
                 Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
         simpleFilters.put("you have no copies in play", (actionContext) ->
-                Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer()));
+                Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yourcardspresentwiththiscard", (actionContext) -> Filters.yourCardsPresentWithThisCard(actionContext.getSource()));
     }
 

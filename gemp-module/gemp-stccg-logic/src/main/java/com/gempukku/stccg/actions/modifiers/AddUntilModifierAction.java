@@ -13,8 +13,9 @@ public class AddUntilModifierAction extends ActionyAction {
     private final Modifier _modifier;
     private final TimeResolver.Time until;
 
-    public AddUntilModifierAction(PhysicalCard performingCard, Modifier modifier, TimeResolver.Time until) {
-        super(performingCard.getGame(), performingCard.getController(), ActionType.ADD_MODIFIER);
+    public AddUntilModifierAction(PhysicalCard performingCard, String playerName, Modifier modifier,
+                                  TimeResolver.Time until) {
+        super(performingCard.getGame(), playerName, ActionType.ADD_MODIFIER);
         _modifier = modifier;
         this.until = until;
     }

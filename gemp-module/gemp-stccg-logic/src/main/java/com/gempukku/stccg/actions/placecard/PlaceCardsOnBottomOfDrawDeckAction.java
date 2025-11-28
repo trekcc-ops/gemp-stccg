@@ -15,6 +15,7 @@ import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +46,7 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!getProgress(Progress.cardsSelected)) {
             if (_selectionAction != null && !_selectionAction.wasCarriedOut()) {
                 return _selectionAction;
@@ -61,7 +62,8 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, _cardsToPlace);
 
         for (PhysicalCard card : _cardsToPlace) {
-            CardPile drawDeck = card.getOwner().getDrawDeck();
+            Player cardOwner = cardGame.getPlayer(card.getOwnerName());
+            CardPile drawDeck = cardOwner.getDrawDeck();
             drawDeck.addCardToBottom(card);
             card.setZone(Zone.DRAW_DECK);
             setAsSuccessful();

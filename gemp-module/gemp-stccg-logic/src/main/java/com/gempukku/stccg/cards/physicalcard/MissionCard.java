@@ -13,6 +13,7 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class MissionCard extends ST1EPhysicalCard {
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
@@ -25,7 +26,9 @@ public class MissionCard extends ST1EPhysicalCard {
     @Override
     public boolean canBeSeeded(DefaultGame game) { return true; }
 
-    public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
+    public boolean wasSeededBy(Player player) {
+        return Objects.equals(_ownerName, player.getPlayerId());
+    } // TODO - Does not address shared missions
 
     public String getMissionRequirements() {
         return _blueprint.getMissionRequirementsText();

@@ -17,8 +17,9 @@ import java.util.Map;
 public class SelectSkillAction extends ActionyAction {
     private final Map<String, SkillName> _skillOptions = new HashMap<>();
     private SkillName _selectedSkill;
-    public SelectSkillAction(DefaultGame cardGame, Player player, List<SkillName> skillOptions) {
-        super(cardGame, player, ActionType.SELECT_SKILL);
+
+    public SelectSkillAction(DefaultGame cardGame, String performingPlayerName, List<SkillName> skillOptions) {
+        super(cardGame, performingPlayerName, ActionType.SELECT_SKILL);
         for (SkillName skill : skillOptions)
             _skillOptions.put(skill.get_humanReadable(), skill);
     }

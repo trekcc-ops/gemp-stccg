@@ -45,6 +45,10 @@ public abstract class ActionyAction implements Action {
         _actionStatus = ActionStatus.virtual;
     }
 
+    protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType) {
+        this(cardGame.getActionsEnvironment(), actionType, playerName);
+    }
+
     protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType) {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
     }
@@ -54,9 +58,21 @@ public abstract class ActionyAction implements Action {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
     }
 
+    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, String text, ActionType actionType) {
+        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
+    }
+
+
 
     protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType, Enum<?>[] progressValues) {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
+        for (Enum<?> progressType : progressValues) {
+            _progressIndicators.put(progressType.name(), false);
+        }
+    }
+
+    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType, Enum<?>[] progressValues) {
+        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
         for (Enum<?> progressType : progressValues) {
             _progressIndicators.put(progressType.name(), false);
         }
@@ -69,6 +85,15 @@ public abstract class ActionyAction implements Action {
             _progressIndicators.put(progressType.name(), false);
         }
     }
+
+    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, String text, ActionType actionType,
+                            Enum<?>[] progressTypes) {
+        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
+        for (Enum<?> progressType : progressTypes) {
+            _progressIndicators.put(progressType.name(), false);
+        }
+    }
+
 
     // This constructor is only used for system queue actions
     protected ActionyAction(DefaultGame game, ActionType type) {

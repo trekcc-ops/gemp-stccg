@@ -37,6 +37,22 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
         }
     }
 
+    public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
+                                   AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
+                                   MissionLocation location)
+            throws InvalidGameLogicException {
+        super(cardGame, encounteringPlayerName, "Encounter seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        try {
+            _parentAction = Objects.requireNonNull(attemptAction);
+            _cardTarget = new FixedCardResolver(encounteredCard);
+            _attemptingUnit = Objects.requireNonNull(attemptingUnit);
+            _missionLocation = Objects.requireNonNull(location);
+        } catch(NullPointerException npe) {
+            throw new InvalidGameLogicException(npe.getMessage());
+        }
+    }
+
+
 
 
     @Override

@@ -32,19 +32,18 @@ import java.util.Objects;
 public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     protected final CardBlueprint _blueprint;
-    protected final Player _owner;
+    protected final String _ownerName;
     protected final int _cardId;
     protected Zone _zone;
     private Integer _attachedToCardId;
     private Integer _stackedOnCardId;
-    protected MissionLocation _currentLocation;
     protected GameLocation _currentGameLocation;
     private boolean _placedOnMission = false;
     private boolean _revealedSeedCard = false;
 
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
-        _owner = owner;
+        _ownerName = owner.getPlayerId();
         _blueprint = blueprint;
         _currentGameLocation = new NullLocation();
     }
@@ -81,14 +80,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public int getCardId() { return _cardId; }
-    public Player getOwner() { return _owner; }
 
     public String getOwnerName() {
-        if (_owner != null) {
-            return _owner.getPlayerId();
-        } else {
-            return null;
-        }
+        return _ownerName;
     }
 
     public void startAffectingGame(DefaultGame game) {
@@ -159,7 +153,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     protected boolean cannotEnterPlayPerUniqueness() {
-        return isUnique() && (_owner.hasACopyOfCardInPlay(getGame(), this));
+        for (PhysicalCard cardInPlay : getGame().getGameState().getAllCardsInPlay()) {
+            if (cardInPlay.isCopyOf(this) && cardInPlay.isOwnedBy(_ownerName))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isOwnedBy(String playerName) {
+        return Objects.equals(_ownerName, playerName);
     }
 
     public boolean canBeSeeded(DefaultGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }
@@ -172,7 +174,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         // PhysicalFacilityCard has an override for headquarters. Updates to this method should be made there as well.
         if (!_zone.isInPlay())
             return false;
-        return playerId.equals(_owner.getPlayerId());
+        return playerId.equals(_ownerName);
     }
     public boolean isControlledBy(Player player) { return isControlledBy(player.getPlayerId()); }
 
@@ -390,9 +392,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _currentGameLocation.isSpace();
     }
 
-    public Player getController() {
-        return _owner;
+    public String getControllerName() {
+        return _ownerName;
     }
+
 
     public int getCost() { return _blueprint.getCost(); }
 
@@ -403,7 +406,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isPlacedOnMission() { return _placedOnMission; }
 
     public boolean isKnownToPlayer(String playerName) {
-        return _zone.isPublic() || _owner.getPlayerId().equals(playerName) ||
+        return _zone.isPublic() || _ownerName.equals(playerName) ||
                 isControlledBy(playerName) || _revealedSeedCard;
     }
 
@@ -412,11 +415,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             return true;
         if (_zone == Zone.DISCARD && getGame().isDiscardPilePublic())
             return true;
-        return _zone.isVisibleByOwner() && Objects.equals(_owner.getPlayerId(), playerName);
+        return _zone.isVisibleByOwner() && Objects.equals(_ownerName, playerName);
     }
 
     public void removeFromCardGroup() {
-        PhysicalCardGroup group = _owner.getCardGroup(_zone);
+        PhysicalCardGroup group = getGame().getGameState().getCardGroup(_ownerName, _zone);
         if (group != null)
             group.remove(this);
     }

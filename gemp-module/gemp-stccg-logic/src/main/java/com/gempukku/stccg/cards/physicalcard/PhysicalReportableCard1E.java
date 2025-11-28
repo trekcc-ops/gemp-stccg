@@ -17,6 +17,7 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.security.InvalidParameterException;
 import java.util.Collections;
@@ -27,7 +28,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         super(game, cardId, owner, blueprint);
     }
     public boolean canReportToFacility(FacilityCard facility) {
-        if (_blueprint.getCardType() == CardType.EQUIPMENT && facility.isUsableBy(_owner.getPlayerId()))
+        if (_blueprint.getCardType() == CardType.EQUIPMENT && facility.isUsableBy(_ownerName))
             return true;
         for (Affiliation affiliation : getAffiliationOptions())
             if (canReportToFacilityAsAffiliation(facility, affiliation))
@@ -39,7 +40,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
                 in their native quadrant. */
         // TODO - Does not perform any compatibility checks other than affiliation
         if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
-                facility.isUsableBy(_owner.getPlayerId()) && facility.isInQuadrant(this.getNativeQuadrant()))
+                facility.isUsableBy(_ownerName) && facility.isInQuadrant(this.getNativeQuadrant()))
             return isCompatibleWithCardAndItsCrewAsAffiliation(facility, affiliation);
         else return false;
     }
@@ -95,16 +96,16 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         _awayTeam.add(this);
     }
 
-    public void joinEligibleAwayTeam(MissionLocation mission) {
+    public void joinEligibleAwayTeam(MissionLocation mission) throws PlayerNotFoundException {
         // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
         // TODO - When there are multiple eligible away teams, there should be a player decision
-        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_game, _owner).toList()) {
+        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_game, _ownerName).toList()) {
             if (awayTeam.isCompatibleWith(this) && _awayTeam == null) {
                 addToAwayTeam(awayTeam);
             }
         }
         if (_awayTeam == null) {
-            AwayTeam awayTeam = _game.getGameState().createNewAwayTeam(_owner, mission);
+            AwayTeam awayTeam = _game.getGameState().createNewAwayTeam(_game.getPlayer(_ownerName), mission);
             addToAwayTeam(awayTeam);
         }
     }

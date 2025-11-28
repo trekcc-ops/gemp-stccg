@@ -35,6 +35,6 @@ public class PresentWithYourCardCondition implements Condition {
 
     @Override
     public boolean isFulfilled(DefaultGame cardGame) {
-        return Filters.filterYourCardsPresentWith(cardGame, _card.getOwner(), _card, _filters).size() >= _count;
+        return Filters.filterYourCardsPresentWith(cardGame, _card.getOwnerName(), _card, _filters).size() >= _count;
     }
 }

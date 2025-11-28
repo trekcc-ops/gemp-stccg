@@ -12,7 +12,4 @@ public class YouCanPlayAUIconCardsModifier extends AbstractModifier {
     }
 
 
-    public Player getAffectedPlayer() {
-        return _performingCard.getController();
-    }
 }

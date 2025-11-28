@@ -65,7 +65,7 @@ public class Blueprint155_026 extends CardBlueprint {
             actionMessageMap.put(choice3, "Shuffle cards from discard pile into draw deck");
 
             Action chooseAction =
-                    new SelectAndInsertAction(game, getItDoneAction, player, selectableActions, actionMessageMap);
+                    new SelectAndInsertAction(game, getItDoneAction, player.getPlayerId(), selectableActions, actionMessageMap);
             getItDoneAction.appendEffect(chooseAction);
 
             // after any use, discard incident OR discard a [TNG] card from hand
@@ -82,7 +82,7 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     private TopLevelSelectableAction choice1(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
-        SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard.getGame(), player,
+        SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard.getGame(), player.getPlayerId(),
                 "Select a personnel",
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
                         CardType.PERSONNEL));

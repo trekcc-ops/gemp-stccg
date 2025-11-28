@@ -13,7 +13,4 @@ public class YouCanSeedAUIconCardsModifier extends AbstractModifier {
     }
 
 
-    public Player getAffectedPlayer() {
-        return _modifierSourceCard.getController();
-    }
 }

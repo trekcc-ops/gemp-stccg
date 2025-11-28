@@ -35,14 +35,14 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         // Checks if the mission is a legal reporting destination for seeding this facility
         // Assumes no affiliation has been selected for a multi-affiliation card
         return _game.getRules().isLocationValidPlayCardDestinationPerRules(
-                _game, this, mission, SeedCardAction.class, _owner, getAffiliationOptions());
+                _game, this, mission, SeedCardAction.class, _ownerName, getAffiliationOptions());
     }
 
     public boolean canSeedAtMissionAsAffiliation(GameLocation location, Affiliation affiliation) {
         // Checks if the mission is a legal reporting destination for seeding this facility
         // Assumes an affiliation has already been selected
         return _game.getRules().isLocationValidPlayCardDestinationPerRules(
-                _game, this, location, SeedCardAction.class, _owner, List.of(affiliation));
+                _game, this, location, SeedCardAction.class, _ownerName, List.of(affiliation));
     }
 
     public Quadrant getNativeQuadrant() {
@@ -65,7 +65,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
             // TODO - Need to set modifiers for when cards get temporary control
             if (!_zone.isInPlay())
                 return false;
-            if (playerId.equals(_owner.getPlayerId()))
+            if (playerId.equals(_ownerName))
                 return true;
             return getFacilityType() == FacilityType.HEADQUARTERS &&
                     _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getCurrentAffiliation());

@@ -23,6 +23,14 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
     private PhysicalCard _selectedCard;
     private final String _decisionText;
 
+    public SelectVisibleCardAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
+                                   Collection<? extends PhysicalCard> cards) {
+        super(cardGame, selectingPlayerName, choiceText, ActionType.SELECT_CARDS);
+        _selectableCards = new FixedCardsResolver(cards);
+        _decisionText = choiceText;
+    }
+
+
     public SelectVisibleCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
                                    Collection<? extends PhysicalCard> cards) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);

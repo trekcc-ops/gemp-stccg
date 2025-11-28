@@ -31,7 +31,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
     public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree) {
                     // TODO - Zone is null because these will be attached and the implementation is weird
-        super(cardToPlay, null, cardToPlay.getOwner(), forFree, Progress.values());
+        super(cardToPlay, null, cardToPlay.getOwnerName(), forFree, Progress.values());
         if (cardToPlay.getAffiliationOptions().size() == 1) {
             setProgress(Progress.affiliationSelected);
             _affiliationTarget = new AffiliationResolver(cardToPlay.getCurrentAffiliation());
@@ -45,7 +45,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         this(cardToPlay, forFree);
         setProgress(Progress.destinationOptionsIdentified);
         SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardToPlay.getGame(),
-                cardToPlay.getOwner(),
+                cardToPlay.getOwnerName(),
                 "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                 Filters.inCards(destinationOptions), 1, 1);
         _destinationTarget = new SelectCardsResolver(selectDestinationAction);

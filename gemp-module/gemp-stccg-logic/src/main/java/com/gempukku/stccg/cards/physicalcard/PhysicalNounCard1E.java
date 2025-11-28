@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.Set;
@@ -29,7 +30,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
     }
-    public void changeAffiliation(Affiliation affiliation) {
+    public void changeAffiliation(Affiliation affiliation) throws PlayerNotFoundException {
         setCurrentAffiliation(affiliation);
         if (getAffiliationOptions().size() > 1) {
             if (this instanceof PhysicalReportableCard1E reportable &&

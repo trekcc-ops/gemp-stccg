@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
@@ -13,7 +12,10 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class SelectAndInsertAction extends ActionyAction {
     @JsonProperty("selectableActions")
@@ -31,9 +33,9 @@ public class SelectAndInsertAction extends ActionyAction {
 
     private final Map<Action, String> _actionMessageMap;
 
-    public SelectAndInsertAction(DefaultGame cardGame, ActionyAction parentAction, Player selectingPlayer,
+    public SelectAndInsertAction(DefaultGame cardGame, ActionyAction parentAction, String selectingPlayerName,
                                  List<Action> selectableActions, Map<Action, String> actionMessageMap) {
-        super(cardGame, selectingPlayer, "Choose an action", ActionType.SELECT_ACTION);
+        super(cardGame, selectingPlayerName, "Choose an action", ActionType.SELECT_ACTION);
         _selectableActions.addAll(selectableActions);
         _parentAction = parentAction;
         _actionMessageMap = actionMessageMap;
