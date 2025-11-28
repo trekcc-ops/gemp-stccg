@@ -12,6 +12,8 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="awayTeamId")
 @JsonPropertyOrder({ "awayTeamId", "locationId", "playerId", "awayTeamCardIds" })
@@ -23,16 +25,15 @@ public class AwayTeam implements AttemptingUnit {
     @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
     @JsonProperty("locationId")
-    @JsonIdentityReference(alwaysAsId=true)
-    private final MissionLocation _location;
+    private final int _locationId;
     @JsonProperty("awayTeamId")
     private final int _awayTeamId;
 
     public AwayTeam(String playerName, MissionLocation location, int attemptingUnitId) {
         _cardsInAwayTeam = new LinkedList<>();
-        _location = location;
         _awayTeamId = attemptingUnitId;
         _controllerName = playerName;
+        _locationId = location.getLocationId();
     }
 
 
@@ -49,8 +50,13 @@ public class AwayTeam implements AttemptingUnit {
         return affiliations.stream().anyMatch(this::hasAffiliation);
     }
     public boolean isOnSurface(MissionLocation location) {
-        return _location == location;
+        return _locationId == location.getLocationId();
     }
+
+    public boolean isOnSurface(int locationId) {
+        return _locationId == locationId;
+    }
+
 
     public String getControllerName() { return _controllerName; }
 
@@ -113,7 +119,11 @@ public class AwayTeam implements AttemptingUnit {
     public boolean canBeDisbanded(ST1EGame game) {
         /* TODO - Away Teams may also be eligible to be disbanded if they're not on a mission,
             this should check presence instead. Check not sufficient in complex situations */
-        List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _controllerName).toList();
+        Stream<AwayTeam> teamsOnSurface =
+                game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(_locationId));
+        List<AwayTeam> awayTeamsOnSurface =
+                teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), _controllerName)).toList();
+
         for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {
             boolean canJoinAnother = false;
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
@@ -129,7 +139,12 @@ public class AwayTeam implements AttemptingUnit {
     public void disband(ST1EGame game) {
         for (PhysicalReportableCard1E card : _cardsInAwayTeam) {
             card.leaveAwayTeam(game);
-            List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _controllerName).toList();
+
+            Stream<AwayTeam> teamsOnSurface =
+                    game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(_locationId));
+            List<AwayTeam> awayTeamsOnSurface =
+                    teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), _controllerName)).toList();
+
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
                 if (awayTeam != this && card.getAwayTeam() == null && awayTeam.isCompatibleWith(card))
                     card.addToAwayTeam(awayTeam);
