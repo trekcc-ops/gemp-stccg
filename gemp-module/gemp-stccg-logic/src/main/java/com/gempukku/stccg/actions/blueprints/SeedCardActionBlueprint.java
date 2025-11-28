@@ -7,6 +7,7 @@ import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.requirement.SeedQuantityLimitRequirement;
 
 public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     private final Zone _seedToZone;
@@ -36,13 +37,7 @@ public class SeedCardActionBlueprint extends DefaultActionBlueprint {
 
     @JsonProperty("limit")
     private void setLimit(int limit) {
-        Requirement requirement = actionContext -> {
-            PhysicalCard cardSeeding = actionContext.getSource();
-            Player seedingPlayer = actionContext.getPerformingPlayer();
-            int copiesSeeded = cardSeeding.getNumberOfCopiesSeededByPlayer(seedingPlayer, actionContext.getGame());
-            return copiesSeeded < limit;
-        };
-        addRequirement(requirement);
+        addRequirement(new SeedQuantityLimitRequirement(limit));
     }
 
 }

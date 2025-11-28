@@ -8,7 +8,9 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.requirement.TurnLimitRequirement;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -33,7 +35,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
         if (costs != null && !costs.isEmpty()) {
             for (SubActionBlueprint costBlueprint : costs) {
-                addRequirement(costBlueprint::isPlayableInFull);
+                addRequirement(new CostCanBePaidRequirement(costBlueprint));
                 addCost(costBlueprint);
             }
         }
@@ -41,7 +43,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         if (effects != null && !effects.isEmpty()) {
             for (SubActionBlueprint blueprint : effects) {
                 if (blueprint.isPlayabilityCheckedForEffect())
-                    addRequirement(blueprint::isPlayableInFull);
+                    addRequirement(new CostCanBePaidRequirement(blueprint));
                 addEffect(blueprint);
             }
         }
@@ -73,8 +75,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 
     public void setTurnLimit(int limitPerTurn) {
-        addRequirement((actionContext) ->
-                actionContext.getSource().checkTurnLimit(actionContext.getGame(), limitPerTurn));
+        addRequirement(new TurnLimitRequirement(limitPerTurn));
         addCost(
                 (action, actionContext) -> {
                     Action usageLimitAction = new UseOncePerTurnAction(

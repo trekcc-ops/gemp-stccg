@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.requirement.CardIsInHandRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
@@ -24,11 +25,7 @@ public class Blueprint101_108 extends CardBlueprint {
     // Amanda Rogers
 
     Blueprint101_108() {
-        Requirement playRequirement = context -> {
-            DefaultGame cardGame = context.getGame();
-            return context.getSource().isInHand(cardGame);
-        };
-        appendPlayRequirement(playRequirement);
+        appendPlayRequirement(new CardIsInHandRequirement());
     }
     @Override
     public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
