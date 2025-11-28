@@ -3,6 +3,7 @@ package com.gempukku.stccg.requirement;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class ComparatorRequirement implements Requirement {
 
@@ -26,7 +27,7 @@ public class ComparatorRequirement implements Requirement {
         _secondNumber = secondNumber;
     }
 
-    public boolean accepts(ActionContext actionContext) {
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         final float firstQuantity = _firstNumber.evaluateExpression(actionContext);
         final float secondQuantity = _secondNumber.evaluateExpression(actionContext);
         return switch(_comparatorType) {

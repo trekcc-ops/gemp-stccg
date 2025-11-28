@@ -3,6 +3,7 @@ package com.gempukku.stccg.requirement;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({@JsonSubTypes.Type(value = MiscRequirement.class, names = {"cardsindeckcount", "cardsinhandmorethan",
@@ -15,6 +16,6 @@ import com.gempukku.stccg.cards.ActionContext;
 })
 public interface Requirement {
 
-    boolean accepts(ActionContext actionContext);
+    boolean accepts(ActionContext actionContext, DefaultGame cardGame);
 
 }

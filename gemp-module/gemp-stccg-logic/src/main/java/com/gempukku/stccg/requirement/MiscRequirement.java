@@ -9,6 +9,7 @@ import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameState;
@@ -45,23 +46,21 @@ public class MiscRequirement implements Requirement {
         _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, actionContext -> Filters.any);
     }
 
-    public boolean accepts(ActionContext actionContext) {
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
 
         try {
             final String playerId = _playerSource.getPlayerId(actionContext);
-            Player player = actionContext.getGame().getPlayer(playerId);
+            Player player = cardGame.getPlayer(playerId);
             final int count = (int) _valueSource.evaluateExpression(actionContext);
-            final GameState gameState = actionContext.getGameState();
             final Filterable filterable = _filterBlueprint.getFilterable(actionContext);
             return switch (_requirementType) {
                 case CARDSINDECKCOUNT -> player.getCardsInDrawDeck().size() == count;
                 case CARDSINHANDMORETHAN -> player.getCardsInHand().size() > count;
                 case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE ->
-                        gameState.getPlayer(playerId).hasCardInZone(
-                                actionContext.getGame(), _requirementType.zone, count, filterable);
+                        player.hasCardInZone(cardGame, _requirementType.zone, count, filterable);
             };
         } catch(PlayerNotFoundException exp) {
-            actionContext.getGame().sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
             return false;
         }
     }

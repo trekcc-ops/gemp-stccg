@@ -161,13 +161,13 @@ public class DefaultActionContext implements ActionContext {
             return true;
         boolean result = true;
         for (Requirement requirement : requirements) {
-            if (!requirement.accepts(this)) result = false;
+            if (!requirement.accepts(this, this.getGame())) result = false;
         }
         return result;
     }
 
     public boolean acceptsAnyRequirements(Requirement[] requirementArray) {
-        return Arrays.stream(requirementArray).anyMatch(requirement -> requirement.accepts(this));
+        return Arrays.stream(requirementArray).anyMatch(requirement -> requirement.accepts(this, this.getGame()));
     }
 
     public String substituteText(String text) {

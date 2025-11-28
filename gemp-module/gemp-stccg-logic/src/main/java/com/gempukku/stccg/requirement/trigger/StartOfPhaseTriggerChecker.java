@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class StartOfPhaseTriggerChecker implements TriggerChecker {
 
@@ -16,9 +17,9 @@ public class StartOfPhaseTriggerChecker implements TriggerChecker {
     }
 
     @Override
-    public boolean accepts(ActionContext actionContext) {
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         return actionContext.hasActionResultType(ActionResult.Type.START_OF_PHASE) &&
-                actionContext.getGameState().getCurrentPhase() == _phase;
+                cardGame.getGameState().getCurrentPhase() == _phase;
     }
 
 }

@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.Collection;
@@ -21,13 +22,13 @@ public class ThisCardPresentWithYourCardRequirement implements Requirement {
     }
 
     @Override
-    public boolean accepts(ActionContext actionContext) {
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         PhysicalCard thisCard = actionContext.getSource();
         CardFilter cardFilter = Filters.and(
                 Filters.yourCardsPresentWithThisCard(thisCard),
                 _otherCardFilter.getFilterable(actionContext)
         );
-        Collection<PhysicalCard> filteredCards = Filters.filter(actionContext.getGame(), cardFilter);
+        Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, cardFilter);
         return !filteredCards.isEmpty();
     }
 }

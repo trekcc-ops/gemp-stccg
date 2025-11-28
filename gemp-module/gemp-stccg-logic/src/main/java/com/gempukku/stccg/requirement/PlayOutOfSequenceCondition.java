@@ -3,6 +3,9 @@ package com.gempukku.stccg.requirement;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.gamestate.TribblesGameState;
 
 public class PlayOutOfSequenceCondition implements Requirement {
 
@@ -23,12 +26,16 @@ public class PlayOutOfSequenceCondition implements Requirement {
         }
     }
 
-    public boolean accepts(ActionContext actionContext) {
-        TribblesActionContext context = (TribblesActionContext) actionContext;
-        return switch(_valueCheck) {
-            case lastTribblePlayed -> context.getGameState().getLastTribblePlayed() == _value;
-            case nextTribbleInSequence -> context.getGameState().getNextTribbleInSequence() == _value;
-            case tribbleSequenceBroken -> context.getGameState().isChainBroken();
-        };
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+        if (cardGame instanceof TribblesGame tribblesGame) {
+            TribblesGameState gameState = tribblesGame.getGameState();
+            return switch (_valueCheck) {
+                case lastTribblePlayed -> gameState.getLastTribblePlayed() == _value;
+                case nextTribbleInSequence -> gameState.getNextTribbleInSequence() == _value;
+                case tribbleSequenceBroken -> gameState.isChainBroken();
+            };
+        } else {
+            return false;
+        }
     }
 }

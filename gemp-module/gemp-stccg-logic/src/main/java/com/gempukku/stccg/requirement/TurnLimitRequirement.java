@@ -1,6 +1,7 @@
 package com.gempukku.stccg.requirement;
 
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class TurnLimitRequirement implements Requirement {
 
@@ -10,7 +11,7 @@ public class TurnLimitRequirement implements Requirement {
         _limitPerTurn = limitPerTurn;
     }
     @Override
-    public boolean accepts(ActionContext actionContext) {
-        return actionContext.getSource().checkTurnLimit(actionContext.getGame(), _limitPerTurn);
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+        return actionContext.getSource().checkTurnLimit(cardGame, _limitPerTurn);
     }
 }

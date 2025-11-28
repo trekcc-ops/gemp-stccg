@@ -40,7 +40,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
         _saveToMemoryId = Objects.requireNonNullElse(memorize, "_temp");
     }
     @Override
-    public boolean accepts(ActionContext actionContext) {
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         try {
             final Filterable filterable = _filter.getFilterable(actionContext);
             final String playingPlayerId = _playingPlayer.getPlayerId(actionContext);
@@ -49,10 +49,9 @@ public class PlayedTriggerChecker implements TriggerChecker {
 
             if (_onFilter != null) {
                 final Filterable onFilterable = _onFilter.getFilterable(actionContext);
-                played = playedOn(actionContext.getGame(), actionResult, onFilterable, filterable);
+                played = playedOn(cardGame, actionResult, onFilterable, filterable);
             } else {
-                played = played(actionContext.getGame(),
-                        actionContext.getGame().getPlayer(playingPlayerId), actionResult, filterable);
+                played = played(cardGame, cardGame.getPlayer(playingPlayerId), actionResult, filterable);
             }
 
             if (played && _saveToMemoryId != null)

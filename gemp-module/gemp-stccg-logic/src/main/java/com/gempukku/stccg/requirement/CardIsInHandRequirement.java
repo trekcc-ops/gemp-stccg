@@ -7,8 +7,7 @@ import com.gempukku.stccg.game.DefaultGame;
 public class CardIsInHandRequirement implements Requirement {
 
     @Override
-    public boolean accepts(ActionContext actionContext) {
-        DefaultGame cardGame = actionContext.getGame();
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         return actionContext.getSource().isInHand(cardGame);
     }
 }
