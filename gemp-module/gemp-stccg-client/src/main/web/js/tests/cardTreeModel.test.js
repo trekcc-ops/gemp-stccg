@@ -21,7 +21,6 @@ describe('cardFlatMapToTreeMap', () => {
                 "isInPlay": true
             },
         }
-        expect(() => CardTreeModel.cardFlatMapToTreeMap(card_map, not_array)).toThrow(TypeError);
 
         not_array = null;
         expect(() => CardTreeModel.cardFlatMapToTreeMap(card_map, not_array)).toThrow(TypeError);
@@ -54,8 +53,69 @@ describe('cardFlatMapToTreeMap', () => {
         expect(() => CardTreeModel.cardFlatMapToTreeMap(not_map, card_id_array)).toThrow(TypeError);
     });
 
-    test('can build a flat tree', () => {
-        let card_id_array = [16, 2, 23];
+    test('can build a flat tree with no filter', () => {
+        let full_card_data_no_nesting = {
+            "16": {
+                "cardId": 16,
+                "title": "Varel",
+                "blueprintId": "101_330",
+                "owner": "andrew2",
+                "locationId": 8,
+                "affiliation": "ROMULAN",
+                //"attachedToCardId": 1,
+                "isStopped": false,
+                "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+                "cardType": "PERSONNEL",
+                "uniqueness": "UNIVERSAL",
+                "hasUniversalIcon": true,
+                "isInPlay": true
+            },
+            "2": {
+                "cardId": 2,
+                "title": "Baran",
+                "blueprintId": "101_290",
+                "owner": "andrew2",
+                "locationId": 8,
+                "affiliation": "NON_ALIGNED",
+                //"attachedToCardId": 1,
+                "isStopped": false,
+                "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR290.jpg",
+                "cardType": "PERSONNEL",
+                "uniqueness": "UNIQUE",
+                "hasUniversalIcon": false,
+                "isInPlay": true
+            },
+            "23": {
+                "cardId": 23,
+                "title": "Mirok",
+                "blueprintId": "101_310",
+                "owner": "andrew2",
+                "locationId": 8,
+                "affiliation": "ROMULAN",
+                //"attachedToCardId": 1,
+                "isStopped": false,
+                "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR310.jpg",
+                "cardType": "PERSONNEL",
+                "uniqueness": "UNIQUE",
+                "hasUniversalIcon": false,
+                "isInPlay": true
+            }
+        };
+        //expect(typeof full_card_data_no_nesting).toBe('object');
+        //expect(typeof full_card_data_no_nesting["16"]).toBe('object');
+        //expect(Object.entries(full_card_data_no_nesting).length).toBe(3);//  Object.hasOwnProp (full_card_data_no_nesting, 'entries')).toBe(true);
+        //expect(typeof full_card_data_no_nesting.entries).toBe('function');
+
+        let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting);
+
+        // no change because it's already flat
+        let expected = full_card_data_no_nesting;
+
+        expect(actual).toMatchObject(expected);
+    });
+
+    test('can build a flat tree with a filter', () => {
+        let card_id_array = [16, 2];
         let full_card_data_no_nesting = {
             "16": {
                 "cardId": 16,
@@ -110,8 +170,39 @@ describe('cardFlatMapToTreeMap', () => {
         
         let actual = CardTreeModel.cardFlatMapToTreeMap(full_card_data_no_nesting, card_id_array);
 
-        // no change because it's already flat
-        let expected = full_card_data_no_nesting;
+        // Filter out #23
+        let expected = {
+            "16": {
+                "cardId": 16,
+                "title": "Varel",
+                "blueprintId": "101_330",
+                "owner": "andrew2",
+                "locationId": 8,
+                "affiliation": "ROMULAN",
+                //"attachedToCardId": 1,
+                "isStopped": false,
+                "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+                "cardType": "PERSONNEL",
+                "uniqueness": "UNIVERSAL",
+                "hasUniversalIcon": true,
+                "isInPlay": true
+            },
+            "2": {
+                "cardId": 2,
+                "title": "Baran",
+                "blueprintId": "101_290",
+                "owner": "andrew2",
+                "locationId": 8,
+                "affiliation": "NON_ALIGNED",
+                //"attachedToCardId": 1,
+                "isStopped": false,
+                "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR290.jpg",
+                "cardType": "PERSONNEL",
+                "uniqueness": "UNIQUE",
+                "hasUniversalIcon": false,
+                "isInPlay": true
+            }
+        };
 
         expect(actual).toMatchObject(expected);
     });

@@ -21,9 +21,18 @@ export default class CardTreeModel {
         if (typeof filter_by_ids === 'undefined') {
             // No filter given to us, just iterate over the whole map
             let new_tree = {};
-            for (const [card_id, card] of card_data) {
-                CardTreeModel.addCardToTreeMap(card_id, card, new_tree);
+            if ((typeof card_data instanceof Map) || (typeof card_data instanceof Set)) {
+                console.log("undefined, Map/Set");
+                for (const card_id of card_data.keys()) {
+                    CardTreeModel.addCardToTreeMap(card_id, card_data, new_tree);
+                }
             }
+            else {
+                for (const card_id of Object.keys(card_data)) {
+                    CardTreeModel.addCardToTreeMap(card_id, card_data, new_tree);
+                }
+            }
+            
             return new_tree;
         }
         else {
