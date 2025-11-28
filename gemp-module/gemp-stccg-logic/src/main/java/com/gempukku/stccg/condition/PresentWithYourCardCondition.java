@@ -1,5 +1,6 @@
 package com.gempukku.stccg.condition;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.CardFilter;
@@ -9,7 +10,7 @@ import com.gempukku.stccg.game.DefaultGame;
 public class PresentWithYourCardCondition implements Condition {
     private final int _count;
     private final CardFilter _filters;
-    private final PhysicalCard _card;
+    private final int _cardId;
 
     /**
      * Creates a condition that is fulfilled when the specified card is "present with" your card accepted by the specified filter.
@@ -28,13 +29,19 @@ public class PresentWithYourCardCondition implements Condition {
      * @param filters the filter
      */
     public PresentWithYourCardCondition(PhysicalCard card, int count, Filterable filters) {
-        _card = card;
+        _cardId = card.getCardId();
         _count = count;
         _filters = Filters.and(filters);
     }
 
     @Override
     public boolean isFulfilled(DefaultGame cardGame) {
-        return Filters.filterYourCardsPresentWith(cardGame, _card.getOwnerName(), _card, _filters).size() >= _count;
+        try {
+            PhysicalCard sourceCard = cardGame.getCardFromCardId(_cardId);
+            return Filters.filterYourCardsPresentWith(cardGame, sourceCard.getOwnerName(), sourceCard, _filters).size() >= _count;
+        } catch(CardNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+        }
+        return false;
     }
 }

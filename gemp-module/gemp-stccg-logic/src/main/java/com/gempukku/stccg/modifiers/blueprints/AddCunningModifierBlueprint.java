@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.condition.RequirementCondition;
-import com.gempukku.stccg.condition.TrueCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.CunningModifier;
@@ -14,7 +13,6 @@ import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AddCunningModifierBlueprint implements ModifierBlueprint {
 
