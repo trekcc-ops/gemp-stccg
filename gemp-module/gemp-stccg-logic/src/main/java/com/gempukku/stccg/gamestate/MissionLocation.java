@@ -198,6 +198,10 @@ public class MissionLocation implements GameLocation {
         }
     }
 
+    public Set<Affiliation> getAffiliationIconsForPlayer(String playerName) {
+        return getAffiliationIcons(playerName);
+    }
+
     public Set<Affiliation> getAffiliationIconsForPlayer(Player player) {
         return getAffiliationIcons(player.getPlayerId());
     }

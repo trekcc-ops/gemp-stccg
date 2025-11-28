@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -17,9 +16,9 @@ import java.util.List;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="awayTeamId")
 @JsonPropertyOrder({ "awayTeamId", "locationId", "playerId", "awayTeamCardIds" })
 public class AwayTeam implements AttemptingUnit {
+
     @JsonProperty("playerId")
-    @JsonIdentityReference(alwaysAsId=true)
-    private final Player _player;
+    private final String _controllerName;
     @JsonProperty("awayTeamCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
@@ -29,11 +28,11 @@ public class AwayTeam implements AttemptingUnit {
     @JsonProperty("awayTeamId")
     private final int _awayTeamId;
 
-    public AwayTeam(Player player, MissionLocation location, int attemptingUnitId) {
-        _player = player;
+    public AwayTeam(String playerName, MissionLocation location, int attemptingUnitId) {
         _cardsInAwayTeam = new LinkedList<>();
         _location = location;
         _awayTeamId = attemptingUnitId;
+        _controllerName = playerName;
     }
 
 
@@ -53,7 +52,7 @@ public class AwayTeam implements AttemptingUnit {
         return _location == location;
     }
 
-    public String getControllerName() { return _player.getPlayerId(); }
+    public String getControllerName() { return _controllerName; }
 
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
 
@@ -63,12 +62,12 @@ public class AwayTeam implements AttemptingUnit {
         if (getAttemptingPersonnel().isEmpty())
             return false;
         try {
-            MissionCard missionCard = mission.getMissionForPlayer(_player.getPlayerId());
+            MissionCard missionCard = mission.getMissionForPlayer(_controllerName);
             if (missionCard.getBlueprint().canAnyAttempt())
                 return true;
             if (missionCard.getBlueprint().canAnyExceptBorgAttempt() && !hasAffiliation(Affiliation.BORG))
                 return true;
-            return hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_player));
+            return hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_controllerName));
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
@@ -114,7 +113,7 @@ public class AwayTeam implements AttemptingUnit {
     public boolean canBeDisbanded(ST1EGame game) {
         /* TODO - Away Teams may also be eligible to be disbanded if they're not on a mission,
             this should check presence instead. Check not sufficient in complex situations */
-        List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _player).toList();
+        List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _controllerName).toList();
         for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {
             boolean canJoinAnother = false;
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
@@ -130,7 +129,7 @@ public class AwayTeam implements AttemptingUnit {
     public void disband(ST1EGame game) {
         for (PhysicalReportableCard1E card : _cardsInAwayTeam) {
             card.leaveAwayTeam(game);
-            List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _player).toList();
+            List<AwayTeam> awayTeamsOnSurface = _location.getYourAwayTeamsOnSurface(game, _controllerName).toList();
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
                 if (awayTeam != this && card.getAwayTeam() == null && awayTeam.isCompatibleWith(card))
                     card.addToAwayTeam(awayTeam);

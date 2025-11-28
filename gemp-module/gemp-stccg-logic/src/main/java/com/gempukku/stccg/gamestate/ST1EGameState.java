@@ -104,7 +104,7 @@ public class ST1EGameState extends GameState {
     }
 
     public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
-        AwayTeam result = new AwayTeam(player, location, _nextAttemptingUnitId);
+        AwayTeam result = new AwayTeam(player.getPlayerId(), location, _nextAttemptingUnitId);
         _awayTeams.add(result);
         _nextAttemptingUnitId++;
         return result;
