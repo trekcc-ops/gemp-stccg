@@ -12,8 +12,8 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public abstract class MakeDecisionAction extends ActionyAction {
     protected final String _choiceText;
 
-    public MakeDecisionAction(DefaultGame cardGame, Player performingPlayer, String choiceText) {
-        super(cardGame, performingPlayer, choiceText, ActionType.MAKE_DECISION);
+    public MakeDecisionAction(DefaultGame cardGame, String performingPlayerName, String choiceText) {
+        super(cardGame, performingPlayerName, choiceText, ActionType.MAKE_DECISION);
         _choiceText = choiceText;
     }
 

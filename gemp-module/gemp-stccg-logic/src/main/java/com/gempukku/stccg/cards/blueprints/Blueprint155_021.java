@@ -52,7 +52,7 @@ public class Blueprint155_021 extends CardBlueprint {
                         new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwnerName(), cardTarget, thisCard,
                                 destinationFilterBlueprint);
                 action1.setCardActionPrefix("1");
-                action1.appendUsage(new UseOncePerTurnAction(action1, thisCard, player));
+                action1.appendUsage(new UseOncePerTurnAction(cardGame, action1, thisCard, player.getPlayerId()));
                 if (action1.canBeInitiated(cardGame))
                     actions.add(action1);
 

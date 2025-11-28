@@ -19,7 +19,7 @@ public class SelectNumberAction extends MakeDecisionAction {
 
     public SelectNumberAction(DefaultGame cardGame, ActionContext context, String choiceText, ValueSource valueSource,
                               String memoryId) {
-        super(cardGame, context.getPerformingPlayer(), choiceText);
+        super(cardGame, context.getPerformingPlayerId(), choiceText);
         _minimum = (int) valueSource.getMinimum(cardGame, context);
         _maximum = (int) valueSource.getMaximum(cardGame, context);
         _actionContext = context;

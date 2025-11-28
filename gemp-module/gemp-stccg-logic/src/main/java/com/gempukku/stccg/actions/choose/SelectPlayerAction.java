@@ -16,7 +16,7 @@ public class SelectPlayerAction extends MakeDecisionAction {
 
     public SelectPlayerAction(DefaultGame cardGame, ActionContext actionContext, String memoryId,
                               List<String> playerIds) {
-        super(cardGame, actionContext.getPerformingPlayer(), "Choose a player");
+        super(cardGame, actionContext.getPerformingPlayerId(), "Choose a player");
         _actionContext = actionContext;
         _selectablePlayerIds = playerIds;
         _memoryId = memoryId;
@@ -25,7 +25,7 @@ public class SelectPlayerAction extends MakeDecisionAction {
 
     @Override
     protected AwaitingDecision getDecision(DefaultGame cardGame) {
-        return new MultipleChoiceAwaitingDecision(_actionContext.getPerformingPlayer(), "Choose a player",
+        return new MultipleChoiceAwaitingDecision(_actionContext.getPerformingPlayerId(), "Choose a player",
                 _selectablePlayerIds, cardGame) {
 
             @Override

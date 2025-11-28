@@ -33,12 +33,13 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
         _performingCard = performingCard;
     }
 
-    public DownloadCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
+    public DownloadCardAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardTarget,
                               PhysicalCard performingCard) {
-        super(cardGame, player, "Download card", ActionType.DOWNLOAD_CARD);
+        super(cardGame, performingPlayerName, "Download card", ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
     }
+
 
 
     protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {

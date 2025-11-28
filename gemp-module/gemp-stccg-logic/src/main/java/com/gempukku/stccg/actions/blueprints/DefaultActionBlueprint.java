@@ -84,8 +84,8 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
                 new SubActionBlueprint() {
                     @Override
                     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext) {
-                        Action usageLimitAction = new UseOncePerTurnAction(
-                                action, action.getPerformingCard(), actionContext.getPerformingPlayer());
+                        Action usageLimitAction = new UseOncePerTurnAction(cardGame,
+                                action, action.getPerformingCard(), actionContext.getPerformingPlayerId());
                         return Collections.singletonList(usageLimitAction);
                     }
                 });

@@ -34,7 +34,7 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
     public ActionCardResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
         List<Filterable> selectableCardFilter = new ArrayList<>();
         for (FilterBlueprint filterBlueprint : _filterBlueprints) {
-            selectableCardFilter.add(filterBlueprint.getFilterable(context));
+            selectableCardFilter.add(filterBlueprint.getFilterable(cardGame, context));
         }
         Collection<PhysicalCard> selectableCards = Filters.filter(cardGame, selectableCardFilter);
         SelectCardsAction selectAction;

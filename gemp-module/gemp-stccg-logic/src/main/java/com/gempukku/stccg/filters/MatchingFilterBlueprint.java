@@ -37,7 +37,7 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
     }
 
     @Override
-    public Filterable getFilterable(ActionContext actionContext) {
-        return getFilterable(actionContext.getGame());
+    public Filterable getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+        return getFilterable(cardGame);
     }
 }

@@ -16,7 +16,6 @@ import java.util.Map;
 public interface ActionContext {
     Map<String, String> getValueMemory();
     Multimap<String, PhysicalCard> getCardMemory();
-    DefaultGame getGame();
 
     void setValueToMemory(String memory, String value);
     String getValueFromMemory(String memory);
@@ -24,7 +23,7 @@ public interface ActionContext {
     void setCardMemory(String memory, Collection<? extends PhysicalCard> cards);
     Collection<PhysicalCard> getCardsFromMemory(String memory);
     PhysicalCard getCardFromMemory(String memory);
-    Player getPerformingPlayer();
+
     String getPerformingPlayerId();
     PhysicalCard getSource();
     ActionResult getEffectResult();
@@ -33,8 +32,6 @@ public interface ActionContext {
     ActionContext createDelegateContext(DefaultGame cardGame, ActionResult actionResult);
     ActionContext createDelegateContext(DefaultGame cardGame, String playerId);
     String substituteText(String text);
-
-    List<PhysicalCard> getZoneCards(Player player, Zone zone);
 
     boolean hasActionResultType(ActionResult.Type type);
 

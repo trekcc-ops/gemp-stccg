@@ -45,7 +45,7 @@ public class CountDiscardEvaluator implements ValueSource {
             public float evaluateExpression(DefaultGame game) {
                 try {
                     Player player = game.getPlayer(playerId);
-                    final Filterable filterable = _filterBlueprint.getFilterable(actionContext);
+                    final Filterable filterable = _filterBlueprint.getFilterable(game, actionContext);
                     int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), game, filterable).size();
                     return Math.min(_limit, count);
                 } catch(PlayerNotFoundException exp) {

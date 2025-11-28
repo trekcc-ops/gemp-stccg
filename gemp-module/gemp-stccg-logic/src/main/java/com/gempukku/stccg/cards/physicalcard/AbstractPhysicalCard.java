@@ -146,7 +146,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     private boolean canEnterPlay(DefaultGame game, List<Requirement> requirements) {
         if (cannotEnterPlayPerUniqueness())
             return false;
-        if (requirements != null && !createActionContext(game).acceptsAllRequirements(game, requirements))
+        if (requirements != null && !createActionContext().acceptsAllRequirements(game, requirements))
             return false;
         return !game.getGameState().getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
     }
@@ -250,7 +250,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
         List<ExtraPlayCost> result = new LinkedList<>();
         _blueprint.getExtraPlayCosts().forEach(
-                extraPlayCost -> result.add(extraPlayCost.getExtraPlayCost(createActionContext(game))));
+                extraPlayCost -> result.add(extraPlayCost.getExtraPlayCost(createActionContext())));
         return result;
     }
 
@@ -311,8 +311,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
     }
 
-    ActionContext createActionContext(DefaultGame game) {
-        return new DefaultActionContext(getOwnerName(), game, this, null);
+    ActionContext createActionContext() {
+        return new DefaultActionContext(getOwnerName(), this, null);
     }
 
 
@@ -332,6 +332,20 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
         return total;
     }
+
+    public Integer getNumberOfCopiesSeededByPlayer(String playerName, DefaultGame cardGame) {
+        int total = 0;
+        Collection<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
+        for (Action action : performedActions) {
+            if (action instanceof SeedCardAction seedCardAction) {
+                if (Objects.equals(seedCardAction.getPerformingPlayerId(), playerName) &&
+                        seedCardAction.getCardEnteringPlay().isCopyOf(this))
+                    total += 1;
+            }
+        }
+        return total;
+    }
+
 
 
     public boolean isCopyOf(PhysicalCard card) {

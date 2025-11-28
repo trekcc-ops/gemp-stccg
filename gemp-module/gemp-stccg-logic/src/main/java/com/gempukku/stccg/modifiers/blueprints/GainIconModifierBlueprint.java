@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.condition.RequirementCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.requirement.Requirement;
@@ -28,9 +29,10 @@ public class GainIconModifierBlueprint implements ModifierBlueprint {
         _requirements = requirements;
     }
 
-    public Modifier getModifier(ActionContext actionContext) {
+    public Modifier getModifier(DefaultGame cardGame, ActionContext actionContext) {
         RequirementCondition requirement = new RequirementCondition(_requirements, actionContext);
-        return new GainIconModifier(actionContext, _filterBlueprint.getFilterable(actionContext), requirement, _icon);
+        return new GainIconModifier(actionContext,
+                _filterBlueprint.getFilterable(cardGame, actionContext), requirement, _icon);
     }
 
 }

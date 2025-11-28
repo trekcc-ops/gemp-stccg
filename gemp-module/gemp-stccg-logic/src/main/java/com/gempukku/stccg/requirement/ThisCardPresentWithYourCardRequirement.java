@@ -26,7 +26,7 @@ public class ThisCardPresentWithYourCardRequirement implements Requirement {
         PhysicalCard thisCard = actionContext.getSource();
         CardFilter cardFilter = Filters.and(
                 Filters.yourCardsPresentWithThisCard(thisCard),
-                _otherCardFilter.getFilterable(actionContext)
+                _otherCardFilter.getFilterable(cardGame, actionContext)
         );
         Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, cardFilter);
         return !filteredCards.isEmpty();

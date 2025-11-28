@@ -42,13 +42,13 @@ public class PlayedTriggerChecker implements TriggerChecker {
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         try {
-            final Filterable filterable = _filter.getFilterable(actionContext);
+            final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
             final String playingPlayerId = _playingPlayer.getPlayerId(actionContext);
             final ActionResult actionResult = actionContext.getEffectResult();
             final boolean played;
 
             if (_onFilter != null) {
-                final Filterable onFilterable = _onFilter.getFilterable(actionContext);
+                final Filterable onFilterable = _onFilter.getFilterable(cardGame, actionContext);
                 played = playedOn(cardGame, actionResult, onFilterable, filterable);
             } else {
                 played = played(cardGame, cardGame.getPlayer(playingPlayerId), actionResult, filterable);

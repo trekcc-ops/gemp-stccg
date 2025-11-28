@@ -33,9 +33,9 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
         _selectionAction = selectionAction;
     }
 
-    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
                                               Collection<PhysicalCard> cardsToPlace) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
+        super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
         _cardsToPlace = cardsToPlace;
     }
 

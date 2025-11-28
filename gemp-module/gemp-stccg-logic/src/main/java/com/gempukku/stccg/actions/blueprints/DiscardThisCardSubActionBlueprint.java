@@ -17,7 +17,7 @@ public class DiscardThisCardSubActionBlueprint implements SubActionBlueprint {
     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         return List.of(
-                new DiscardSingleCardAction(cardGame, actionContext.getSource(), actionContext.getPerformingPlayer(),
+                new DiscardSingleCardAction(cardGame, actionContext.getSource(), actionContext.getPerformingPlayerId(),
                         actionContext.getSource()));
     }
 }

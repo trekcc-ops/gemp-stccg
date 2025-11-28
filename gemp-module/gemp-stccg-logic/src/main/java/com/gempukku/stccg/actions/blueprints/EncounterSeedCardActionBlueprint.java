@@ -11,7 +11,6 @@ import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.LinkedList;
@@ -34,7 +33,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                                                 AttemptingUnit attemptingUnit, MissionLocation missionLocation,
                                                 AttemptMissionAction missionAttemptAction)
             throws InvalidGameLogicException {
-        ActionContext actionContext = new DefaultActionContext(cardGame, thisCard, performingPlayerName);
+        ActionContext actionContext = new DefaultActionContext(thisCard, performingPlayerName);
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation);
@@ -50,8 +49,8 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
             for (Action action : actionStack) {
                 if (action instanceof AttemptMissionAction attemptAction &&
                         attemptAction.getLocation() == card.getGameLocation()) {
-                    Player performingPlayer = context.getPerformingPlayer();
-                    EncounterSeedCardAction encounterAction = new EncounterSeedCardAction(cardGame, performingPlayer,
+                    String performingPlayerName = context.getPerformingPlayerId();
+                    EncounterSeedCardAction encounterAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
                             card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocation());
                     appendActionToContext(cardGame, encounterAction, context);
                     return encounterAction;

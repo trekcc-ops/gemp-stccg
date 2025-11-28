@@ -41,7 +41,7 @@ public class Blueprint155_026 extends CardBlueprint {
             UseGameTextAction getItDoneAction =
                     new UseGameTextAction(thisCard, player, "Discard 2 cards to choose effect");
 
-            getItDoneAction.appendCost(new UseOncePerTurnAction(getItDoneAction, thisCard, player));
+            getItDoneAction.appendCost(new UseOncePerTurnAction(game, getItDoneAction, thisCard, player.getPlayerId()));
             getItDoneAction.setCardActionPrefix("1");
 
             CardFilter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);

@@ -430,29 +430,6 @@ public class CardBlueprint {
     }
 
 
-    public Filterable getValidTargetFilter() {
-        if (targetFilters == null)
-            return null;
-
-        Filterable[] result = new Filterable[targetFilters.size()];
-        for (int i = 0; i < result.length; i++) {
-            final FilterBlueprint filterBlueprint = targetFilters.get(i);
-            result[i] = filterBlueprint.getFilterable(null);
-        }
-
-        return Filters.and(result);
-    }
-
-
-    // Helper methods
-
-
-
-    public void throwException(String message) throws InvalidCardDefinitionException {
-        throw new InvalidCardDefinitionException(message);
-    }
-
-
     public String getFullName() {
         if (getSubtitle() != null)
             return getTitle() + ", " + getSubtitle();
@@ -482,8 +459,8 @@ public class CardBlueprint {
         // Add in-play modifiers created through JSON definitions
         for (ModifierBlueprint modifierSource : inPlayModifiers) {
             ActionContext context =
-                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null);
-            result.add(modifierSource.getModifier(context));
+                    new DefaultActionContext(card.getOwnerName(), card, null);
+            result.add(modifierSource.getModifier(card.getGame(), context));
         }
 
         // Add in-play modifiers created through Java definitions

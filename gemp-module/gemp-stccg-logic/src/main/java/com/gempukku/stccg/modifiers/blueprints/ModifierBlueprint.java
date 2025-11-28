@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -16,5 +17,6 @@ import com.gempukku.stccg.modifiers.Modifier;
         @JsonSubTypes.Type(value = GainSkillModifierBlueprint.class, name = "gainSkill")
 })
 public interface ModifierBlueprint {
-    Modifier getModifier(ActionContext actionContext);
+    Modifier getModifier(DefaultGame cardGame, ActionContext actionContext);
+
 }

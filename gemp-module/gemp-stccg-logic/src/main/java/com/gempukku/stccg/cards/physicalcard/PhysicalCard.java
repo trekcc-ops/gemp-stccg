@@ -98,6 +98,7 @@ public interface PhysicalCard extends Filterable {
     boolean isUnique();
 
     Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame);
+    Integer getNumberOfCopiesSeededByPlayer(String playerName, DefaultGame cardGame);
 
     boolean isCopyOf(PhysicalCard card);
 

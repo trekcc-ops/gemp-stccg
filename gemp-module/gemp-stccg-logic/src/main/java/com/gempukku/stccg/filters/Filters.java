@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
@@ -630,7 +631,31 @@ public class Filters {
     }
 
     public static CardFilter inYourDrawDeck(Player performingPlayer) {
-        return (game, physicalCard) -> performingPlayer.getCardsInDrawDeck().contains(physicalCard);
+        return new CardFilter() {
+            @Override
+            public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
+                return performingPlayer.getCardsInDrawDeck().contains(physicalCard);
+            }
+        };
+    }
+
+    public static CardFilter inYourDrawDeck(String playerName) {
+        return new CardFilter() {
+            @Override
+            public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
+                try {
+                    Player performingPlayer = game.getPlayer(playerName);
+                    return performingPlayer.getCardsInDrawDeck().contains(physicalCard);
+                } catch(PlayerNotFoundException exp) {
+                    game.sendErrorMessage(exp);
+                    return false;
+                }
+            }
+        };
+    }
+
+    public static CardFilter cardsYouCanDownload(String performingPlayerName) {
+        return inYourDrawDeck(performingPlayerName);
     }
 
     public static CardFilter cardsYouCanDownload(Player performingPlayer) {

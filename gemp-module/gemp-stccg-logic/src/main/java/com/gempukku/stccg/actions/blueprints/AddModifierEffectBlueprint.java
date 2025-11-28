@@ -32,7 +32,7 @@ public class AddModifierEffectBlueprint implements SubActionBlueprint {
     @Override
     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction parentAction, ActionContext context) {
         List<Action> result = new ArrayList<>();
-        final Modifier modifier = _modifierSource.getModifier(context);
+        final Modifier modifier = _modifierSource.getModifier(cardGame, context);
         PhysicalCard cardSource = context.getSource();
         for (String playerName : cardGame.getAllPlayerIds()) {
             if (cardSource.isControlledBy(playerName)) {

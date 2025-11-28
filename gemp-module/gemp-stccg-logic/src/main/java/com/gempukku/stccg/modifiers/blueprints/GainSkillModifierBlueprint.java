@@ -38,9 +38,9 @@ public class GainSkillModifierBlueprint implements ModifierBlueprint {
         _condition = Objects.requireNonNullElse(condition, new TrueCondition());
     }
 
-    public Modifier getModifier(ActionContext actionContext) {
+    public Modifier getModifier(DefaultGame cardGame, ActionContext actionContext) {
         PhysicalCard thisCard = actionContext.getSource();
-        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(actionContext);
+        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         return new GainSkillModifier(thisCard, affectFilter, _condition, _skillsGained);
     }
 }

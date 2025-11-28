@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.condition.RequirementCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.CunningModifier;
 import com.gempukku.stccg.requirement.Requirement;
@@ -33,9 +34,9 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
         }
     }
 
-    public Modifier getModifier(ActionContext actionContext) {
+    public Modifier getModifier(DefaultGame cardGame, ActionContext actionContext) {
         PhysicalCard thisCard = actionContext.getSource();
-        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(actionContext);
+        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         Condition ifCondition = new RequirementCondition(_requirements, actionContext);
         return new CunningModifier(thisCard, affectFilter, ifCondition, _amount);
     }

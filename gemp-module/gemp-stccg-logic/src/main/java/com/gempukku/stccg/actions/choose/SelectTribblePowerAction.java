@@ -14,14 +14,14 @@ public class SelectTribblePowerAction extends MakeDecisionAction {
     private final ActionContext _actionContext;
     private final String _memoryId;
     public SelectTribblePowerAction(DefaultGame cardGame, ActionContext actionContext, String memoryId) {
-        super(cardGame, actionContext.getPerformingPlayer(), "Choose a Tribble power");
+        super(cardGame, actionContext.getPerformingPlayerId(), "Choose a Tribble power");
         _actionContext = actionContext;
         _memoryId = memoryId;
     }
 
     @Override
     protected AwaitingDecision getDecision(DefaultGame cardGame) {
-        return new MultipleChoiceAwaitingDecision(_actionContext.getPerformingPlayer(),
+        return new MultipleChoiceAwaitingDecision(_actionContext.getPerformingPlayerId(),
                 "Choose a Tribble power", Arrays.asList(TribblePower.names()), cardGame) {
             @Override
             protected void validDecisionMade(int index, String result) {

@@ -15,12 +15,13 @@ public class UseOncePerTurnAction extends ActionyAction {
     private final static int LIMIT_PER_TURN = 1;
     private final String _prefix;
 
-    public UseOncePerTurnAction(CardPerformedAction limitedAction, PhysicalCard performingCard,
-                                Player performingPlayer) {
-        super(performingCard.getGame(), performingPlayer, ActionType.USAGE_LIMIT);
+    public UseOncePerTurnAction(DefaultGame cardGame, CardPerformedAction limitedAction, PhysicalCard performingCard,
+                                String performingPlayerName) {
+        super(cardGame, performingPlayerName, ActionType.USAGE_LIMIT);
         _card = performingCard;
         _prefix = limitedAction.getCardActionPrefix();
     }
+
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {

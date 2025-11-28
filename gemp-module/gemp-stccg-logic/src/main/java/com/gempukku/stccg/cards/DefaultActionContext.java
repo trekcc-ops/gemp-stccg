@@ -2,70 +2,50 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import java.util.*;
 
 public class DefaultActionContext implements ActionContext {
-    private final DefaultGame _game;
     protected final ActionContext _relevantContext;
-    protected final String performingPlayer;
+    protected final String _performingPlayerName;
     protected final PhysicalCard source;
     protected final ActionResult actionResult;
     protected final Multimap<String, PhysicalCard> _cardMemory = HashMultimap.create();
     protected final Map<String, String> _valueMemory = new HashMap<>();
 
-    public DefaultActionContext(DefaultGame game, PhysicalCard thisCard, String performingPlayerId) {
-        this(null, performingPlayerId, game, thisCard, null);
-    }
-
-
-    public DefaultActionContext(String performingPlayer, DefaultGame game, PhysicalCard source,
-                                ActionResult actionResult) {
-        this(null, performingPlayer, game, source, actionResult);
-    }
-
-    public DefaultActionContext(String performingPlayer, PhysicalCard source, ActionResult actionResult) {
-        this(null, performingPlayer, source.getGame(), source, actionResult);
-    }
-
-
-
-    public DefaultActionContext(ActionContext delegate, String performingPlayer, DefaultGame game,
+    public DefaultActionContext(ActionContext delegate, String performingPlayer,
                                 PhysicalCard source, ActionResult actionResult) {
-        this.performingPlayer = performingPlayer;
+        this._performingPlayerName = performingPlayer;
         this.source = source;
         this.actionResult = actionResult;
-        _game = game;
         _relevantContext = Objects.requireNonNullElse(delegate, this);
     }
 
+    public DefaultActionContext(PhysicalCard thisCard, String performingPlayerId) {
+        this(null, performingPlayerId, thisCard, null);
+    }
+
+    public DefaultActionContext(String performingPlayer, PhysicalCard source, ActionResult actionResult) {
+        this(null, performingPlayer, source, actionResult);
+    }
+
     public ActionContext createDelegateContext(DefaultGame cardGame, ActionResult actionResult) {
-        return new DefaultActionContext(this, getPerformingPlayerId(), cardGame, getSource(), actionResult);
+        return new DefaultActionContext(this, getPerformingPlayerId(), getSource(), actionResult);
     }
 
     public ActionContext createDelegateContext(DefaultGame cardGame, String playerId) {
-        return new DefaultActionContext(this, playerId, cardGame, getSource(), getEffectResult());
+        return new DefaultActionContext(this, playerId, getSource(), getEffectResult());
     }
     public Map<String, String> getValueMemory() { return _valueMemory; }
     public Multimap<String, PhysicalCard> getCardMemory() { return _cardMemory; }
-    public Player getPerformingPlayer() {
-        try {
-            return _game.getGameState().getPlayer(performingPlayer);
-        } catch(PlayerNotFoundException exp) {
-            _game.sendErrorMessage(exp);
-            _game.cancelGame();
-            return null;
-        }
-    }
-    public String getPerformingPlayerId() { return performingPlayer; }
+
+    public String getPerformingPlayerId() { return _performingPlayerName; }
     public PhysicalCard getSource() {
         return source;
     }
@@ -133,12 +113,6 @@ public class DefaultActionContext implements ActionContext {
     protected Multimap<String, PhysicalCard> getRelevantCardMemory() { return getRelevantContext().getCardMemory(); }
 
 
-    @Override
-    public DefaultGame getGame() {
-        return _game;
-    }
-
-
     public ActionResult getEffectResult() {
         return actionResult;
     }
@@ -174,10 +148,6 @@ public class DefaultActionContext implements ActionContext {
             result = result.replace("{" + memory + "}", cardNames);
         }
         return result;
-    }
-
-    public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
-        return _game.getGameState().getZoneCards(player, zone);
     }
 
 

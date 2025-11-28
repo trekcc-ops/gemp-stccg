@@ -31,7 +31,7 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
     @Override
     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        Action downloadAction = new DownloadCardAction(cardGame, actionContext.getPerformingPlayer(),
+        Action downloadAction = new DownloadCardAction(cardGame, actionContext.getPerformingPlayerId(),
                 _cardTarget.getTargetResolver(cardGame, actionContext), actionContext.getSource());
         return List.of(downloadAction);
     }

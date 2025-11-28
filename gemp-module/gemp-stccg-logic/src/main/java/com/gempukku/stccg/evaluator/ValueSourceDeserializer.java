@@ -119,7 +119,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         try {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
-                            return actionContext.getZoneCards(playerObj, Zone.PLAY_PILE).size();
+                            return game.getGameState().getZoneCards(playerObj, Zone.PLAY_PILE).size();
                         } catch(PlayerNotFoundException exp) {
                             game.sendErrorMessage(exp);
                             return 0;
@@ -163,15 +163,6 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 ValueSource limitSource = resolveEvaluator(ctxt, object.get("limit"), 1);
                 ValueSource valueSource = resolveEvaluator(ctxt, object.get("value"), 0);
                 return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
-            } else if (type.equalsIgnoreCase("countStacked")) {
-                validateAllowedFields(object, "on", "filter");
-                final FilterBlueprint filterBlueprint = object.has("filter") ?
-                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
-                        (actionContext -> Filters.any);
-                final FilterBlueprint onFilter = ctxt.readTreeAsValue(object.get("on"), FilterBlueprint.class);
-                return (actionContext) ->
-                        new CountStackedEvaluator(onFilter.getFilterable(actionContext),
-                                filterBlueprint.getFilterable(actionContext));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
                 return ctxt.readTreeAsValue(object, CountDiscardEvaluator.class);
             } else if (type.equalsIgnoreCase("forEachInHand")) {
@@ -180,7 +171,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         PlayerResolver.resolvePlayer(getString(object, "hand", "you"));
                 final FilterBlueprint filterBlueprint = object.has("filter") ?
                         ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
-                        (actionContext -> Filters.any);
+                        (cardGame, actionContext) -> Filters.any;
                 return actionContext -> (Evaluator) new Evaluator() {
                     @Override
                     public float evaluateExpression(DefaultGame game) {
@@ -188,7 +179,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                             String playerId = player.getPlayerId(actionContext);
                             Player playerObj = game.getPlayer(playerId);
                             return Filters.filter(playerObj.getCardsInHand(),
-                                    game, filterBlueprint.getFilterable(actionContext)).size();
+                                    game, filterBlueprint.getFilterable(game, actionContext)).size();
                         } catch(PlayerNotFoundException exp) {
                             game.sendErrorMessage(exp);
                             return 0;
@@ -201,7 +192,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
                 final FilterBlueprint filterBlueprint = object.has("filter") ?
                         ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
-                        (actionContext -> Filters.any);
+                        (cardGame, actionContext) -> Filters.any;
                 return actionContext -> new Evaluator() {
                     @Override
                     public float evaluateExpression(DefaultGame game) {
@@ -210,7 +201,7 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                             Player player = game.getPlayer(playerId);
                             Collection<PhysicalCard> cards = Filters.filter(
                                     player.getCardsInGroup(Zone.PLAY_PILE), game,
-                                    filterBlueprint.getFilterable(actionContext)
+                                    filterBlueprint.getFilterable(game, actionContext)
                             );
                             return cards.size();
                         } catch(PlayerNotFoundException exp) {
@@ -243,20 +234,6 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                         for (PhysicalCard physicalCard :
                                 actionContext.getCardsFromMemory(object.get("memory").textValue())) {
                             result += physicalCard.getBlueprint().getStrength();
-                        }
-                        return result;
-                    }
-                };
-            } else if (type.equalsIgnoreCase("strengthFromMemory")) {
-                validateAllowedFields(object, "memory");
-                final String memory = object.get("memory").textValue();
-
-                return actionContext -> (Evaluator) new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        int result = 0;
-                        for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
-                            result += game.getGameState().getModifiersQuerying().getStrength(physicalCard);
                         }
                         return result;
                     }

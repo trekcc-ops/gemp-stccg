@@ -38,7 +38,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     public boolean canPlayOutOfSequence(TribblesGame cardGame) {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;
         return _blueprint.getPlayOutOfSequenceConditions().stream().anyMatch(
-                requirement -> requirement.accepts(createActionContext(cardGame), cardGame));
+                requirement -> requirement.accepts(createActionContext(), cardGame));
     }
 
     public boolean isNextInSequence(TribblesGame cardGame) {
