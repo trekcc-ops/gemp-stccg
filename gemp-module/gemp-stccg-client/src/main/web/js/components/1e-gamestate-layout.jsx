@@ -20,7 +20,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import CardTree from './card-tree.jsx';
+import CardTreeView from './card-tree-view.jsx';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import ChatIcon from '@mui/icons-material/Chat';
 import HistoryIcon from '@mui/icons-material/History';
@@ -252,7 +252,7 @@ export default function MiniDrawer() {
                             <ListItemText sx={[
                                         open ? {opacity: 1,} : {opacity: 0,},
                                     ]} >
-                                    <CardTree gamestate={loadedGameState} ></CardTree>
+                                    <CardTreeView gamestate={loadedGameState} ></CardTreeView>
                             </ListItemText>
                         </ListItemButton>
                     </ListItem>

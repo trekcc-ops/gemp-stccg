@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from '../../gemp-022/common.js';
 import { ThemeProvider } from "@emotion/react";
-import CardTree from "../card-tree.jsx";
+import CardTreeView from "../card-tree-view.jsx";
 
 const root = createRoot(document.getElementById("root"));
 
@@ -22,7 +22,7 @@ root.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <CardTree gamestate={gamestate} />
+      <CardTreeView gamestate={gamestate} />
     </ThemeProvider>
   </StrictMode>
 );

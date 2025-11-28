@@ -1,8 +1,8 @@
 import {describe, beforeEach, expect, test} from '@jest/globals';
 //import React from 'react';
 //import {render, fireEvent, screen} from '@testing-library/react';
-import {card_to_treeitem, cardFlatMapToTreeMap} from '../card-tree.jsx';
-//import CardTree from '../card-tree.jsx';
+import {card_to_treeitem, cardFlatMapToTreeMap} from '../card-tree-view.jsx';
+//import CardTreeView from '../card-tree-view.jsx';
 
 
 describe('internal funcs', () => {

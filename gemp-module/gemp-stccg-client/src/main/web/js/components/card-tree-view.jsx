@@ -268,7 +268,7 @@ export function addCardToTreeMap(card_id, card_data, tree) {
     }
 }
 
-export default function CardTree ( {gamestate, visible} ) {
+export default function CardTreeView ( {gamestate, visible} ) {
     return(
         <Box>
             <RichTreeView items={cards_to_treeitems(gamestate)} />
