@@ -29,6 +29,7 @@ export default class CardTreeModel {
             }
             else {
                 for (const card_id of Object.keys(card_data)) {
+                    //console.log(`Processing card_id ${card_id}`);
                     CardTreeModel.addCardToTreeMap(card_id, card_data, new_tree);
                 }
             }
