@@ -51,37 +51,47 @@ export default class CardTreeModel {
         }
     }
 
-    static addCardToTreeMap(card_id, card_data, tree) {
+    static addCardToTreeMap(card_id, flat_map, tree) {
         // do we even have the requested data?
-        if (!card_data[card_id]) {
+        if (!flat_map[card_id]) {
             return;
         }
+        console.log(`current card_id: ${card_id}`);
 
         // already in the tree? skip
         // NOTE: Use == not === here for consistent matching
         //   $..*  means "all objects in the tree"
         //   [?(@.cardId)]  means "if they have a card id attribute"
         //   == '${cardid}'  means "matching passed in card_id"
-        let search_all_cardIds_for_this_id_jsonpath = `$..*[?(@.cardId == '${card_id}')]`;
+        const search_all_cardIds_for_this_id_jsonpath = `$..*[?(@.cardId === '${card_id}')]`;
         const result = JSONPath({path: search_all_cardIds_for_this_id_jsonpath, json: tree});
         if (Object.keys(result).length !== 0) {
+            console.log(`card_id found in tree, skipping`);
             return;
         }
+        console.log(`card_id not found in tree, need to add`);
 
-        if (Object.hasOwn(card_data[card_id], "attachedToCardId")) {
+        if (Object.hasOwn(flat_map[card_id], "attachedToCardId")) {
             // need to attach to something
             // is it in the tree already?
-            let parent_card_id = card_data[card_id].attachedToCardId;
+            let parent_card_id = flat_map[card_id].attachedToCardId;
+
+            // bail out if we don't have that
+            if (!flat_map[parent_card_id]) {
+                console.log(`Requested parent_card_id ${parent_card_id} not found in source data.`);
+                return;
+            }
             
             // NOTE: Use == not === here for consistent matching
             //   $..*  means "all objects in the tree"
             //   [?(@.cardId)]  means "if they have a card id attribute"
             //   == '${parent_card_id}'  means "matching passed in parent_card_id"
-            let search_all_cardIds_for_parent_id_jsonpath = `$..*[?(@.cardId == '${parent_card_id}')]`;
+            const search_all_cardIds_for_parent_id_jsonpath = `$..*[?(@.cardId == '${parent_card_id}')]`;
             const parent_result = JSONPath({path: search_all_cardIds_for_parent_id_jsonpath, json: tree});
-            //console.log(`tree: ${JSON.stringify(tree)}`);
-            //console.log(`parent_result: ${JSON.stringify(parent_result)}`);
-
+            console.log(`parent_card_id: ${parent_card_id}`)
+            console.log(`tree: ${JSON.stringify(tree)}`);
+            console.log(`parent_result: ${JSON.stringify(parent_result)}`);
+            
             let parent_card;
             if (parent_result.length > 0) {
                 parent_card = parent_result[0]; // HACK: we should only ever get 1 since cardId is unique, but I am not bothering to check
@@ -91,19 +101,24 @@ export default class CardTreeModel {
             }
 
             if (parent_card) {
+                console.log(`parent_card ${parent_card_id} found in tree`);
                 if (!parent_card.children) {
                     parent_card.children = {};
                 }
-                parent_card.children[card_id] = card_data[card_id];
+                parent_card.children[card_id] = flat_map[card_id];
             }
             else {
+                console.log(`parent_card ${parent_card_id} not found in tree`);
                 // recurse!
-                this.addCardToTreeMap(parent_card_id, card_data, tree);
+                this.addCardToTreeMap(parent_card_id, flat_map, tree);
+                // Retry
+                this.addCardToTreeMap(card_id, flat_map, tree);
             }
         }
         else {
+            console.log("basic add to root case");
             // no relationship, put directly in root of tree
-            tree[card_id] = card_data[card_id];
+            tree[card_id] = flat_map[card_id];
         }
     }
 }

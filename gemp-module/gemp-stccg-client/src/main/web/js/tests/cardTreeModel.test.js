@@ -1233,8 +1233,8 @@ describe('cardFlatMapToTreeMap', () => {
         expect(actual).toMatchObject(expected);
     });
 
-    // idk why this fails
-    test.skip('can build a four level nested tree when cards are in parent-child order, no filter', () => {
+    // Well now idk why this succeeds, lmao
+    test('can build a four level nested tree when cards are in parent-child order, no filter', () => {
         // 1 exists, then 16 which is attached to 1
         let full_card_data_no_nesting = {
             "1": {
