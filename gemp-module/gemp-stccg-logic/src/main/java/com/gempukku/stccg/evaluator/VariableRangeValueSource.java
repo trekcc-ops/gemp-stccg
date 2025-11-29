@@ -3,7 +3,7 @@ package com.gempukku.stccg.evaluator;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class VariableRangeValueSource implements ValueSource {
+public class VariableRangeValueSource extends ValueSource {
 
     private final ValueSource _fromValue;
     private final ValueSource _toValue;
@@ -13,8 +13,7 @@ public class VariableRangeValueSource implements ValueSource {
         _toValue = toValue;
     }
 
-    @Override
-    public Evaluator getEvaluator(ActionContext actionContext) {
+    protected Evaluator getEvaluator(ActionContext actionContext) {
         throw new RuntimeException("Evaluator has resolved to range");
     }
 

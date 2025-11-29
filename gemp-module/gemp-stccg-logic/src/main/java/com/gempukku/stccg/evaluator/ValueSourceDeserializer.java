@@ -4,17 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.io.IOException;
@@ -109,23 +99,6 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 ValueSource fromValue = resolveEvaluator(ctxt, object.get("from"));
                 ValueSource toValue = resolveEvaluator(ctxt, object.get("to"));
                 return new VariableRangeValueSource(fromValue, toValue);
-            } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
-                validateAllowedFields(object, "owner");
-                final PlayerSource player =
-                        PlayerResolver.resolvePlayer(getString(object, "owner", "you"));
-                return actionContext -> (Evaluator) new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        try {
-                            String playerId = player.getPlayerId(actionContext);
-                            Player playerObj = game.getPlayer(playerId);
-                            return game.getGameState().getZoneCards(playerObj, Zone.PLAY_PILE).size();
-                        } catch(PlayerNotFoundException exp) {
-                            game.sendErrorMessage(exp);
-                            return 0;
-                        }
-                    }
-                };
             } else if (type.equalsIgnoreCase("requires")) {
                 validateAllowedFields(object, "requires", "true", "false");
                 JsonNode requiresArray = object.get("requires");
@@ -139,153 +112,20 @@ public class ValueSourceDeserializer extends StdDeserializer<ValueSource> {
                 }
                 ValueSource trueValue = resolveEvaluator(ctxt, object.get("true"));
                 ValueSource falseValue = resolveEvaluator(ctxt, object.get("false"));
-                return actionContext -> (Evaluator) new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        if (actionContext.acceptsAllRequirements(game, conditions)) {
-                            return trueValue.evaluateExpression(game, actionContext);
-                        } else {
-                            return falseValue.evaluateExpression(game, actionContext);
-                        }
-                    }
-                };
-
+                return new ConditionalValueSource(trueValue, falseValue, conditions);
             } else if (type.equalsIgnoreCase("forEachInMemory")) {
                 validateAllowedFields(object, "memory", "limit");
                 final String memory = object.get("memory").textValue();
                 final int limit = ctxt.readTreeAsValue(object.get("limit"), Integer.class); // Set to MAX_VALUE if fails
-                return (actionContext) -> {
-                    final int count = actionContext.getCardsFromMemory(memory).size();
-                    return new ConstantEvaluator(Math.min(limit, count));
-                };
+                return new ForEachInMemoryValueSource(memory, limit);
             } else if (type.equalsIgnoreCase("limit")) {
-                validateAllowedFields(object, "limit", "value");
-                ValueSource limitSource = resolveEvaluator(ctxt, object.get("limit"), 1);
-                ValueSource valueSource = resolveEvaluator(ctxt, object.get("value"), 0);
-                return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
+                return ctxt.readTreeAsValue(object, LimitValueSource.class);
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
-                return ctxt.readTreeAsValue(object, CountDiscardEvaluator.class);
-            } else if (type.equalsIgnoreCase("forEachInHand")) {
-                validateAllowedFields(object, "filter", "hand");
-                final PlayerSource player =
-                        PlayerResolver.resolvePlayer(getString(object, "hand", "you"));
-                final FilterBlueprint filterBlueprint = object.has("filter") ?
-                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
-                        (cardGame, actionContext) -> Filters.any;
-                return actionContext -> (Evaluator) new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        try {
-                            String playerId = player.getPlayerId(actionContext);
-                            Player playerObj = game.getPlayer(playerId);
-                            return Filters.filter(playerObj.getCardsInHand(),
-                                    game, filterBlueprint.getFilterable(game, actionContext)).size();
-                        } catch(PlayerNotFoundException exp) {
-                            game.sendErrorMessage(exp);
-                            return 0;
-                        }
-                    }
-                };
-            } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
-                validateAllowedFields(object, "filter", "owner");
-                final String owner = getString(object, "owner", "you");
-                final PlayerSource playerSource = PlayerResolver.resolvePlayer(owner);
-                final FilterBlueprint filterBlueprint = object.has("filter") ?
-                        ctxt.readTreeAsValue(object.get("filter"), FilterBlueprint.class) :
-                        (cardGame, actionContext) -> Filters.any;
-                return actionContext -> new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        try {
-                            String playerId = playerSource.getPlayerId(actionContext);
-                            Player player = game.getPlayer(playerId);
-                            Collection<PhysicalCard> cards = Filters.filter(
-                                    player.getCardsInGroup(Zone.PLAY_PILE), game,
-                                    filterBlueprint.getFilterable(game, actionContext)
-                            );
-                            return cards.size();
-                        } catch(PlayerNotFoundException exp) {
-                            game.sendErrorMessage(exp);
-                            return 0;
-                        }
-                    }
-                };
-            } else if (type.equalsIgnoreCase("fromMemory")) {
-                validateAllowedFields(object, "memory", "multiplier", "limit");
-                String memory = object.get("memory").textValue();
-                final int multiplier = getInteger(object, "multiplier", 1);
-                final int limit = getInteger(object, "limit", Integer.MAX_VALUE);
-                return (actionContext) -> {
-                    int value1 = Integer.parseInt(actionContext.getValueFromMemory(memory));
-                    return new ConstantEvaluator(Math.min(limit, multiplier * value1));
-                };
-            } else if (type.equalsIgnoreCase("multiply")) {
-                validateAllowedFields(object, "multiplier", "source");
-                final ValueSource multiplier = resolveEvaluator(ctxt, object.get("multiplier"));
-                final ValueSource valueSource = resolveEvaluator(ctxt, object.get("source"), 0);
-                return (actionContext) -> new MultiplyEvaluator(multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
-            } else if (type.equalsIgnoreCase("printedStrengthFromMemory")) {
-                validateAllowedFields(object, "memory");
-
-                return actionContext -> (Evaluator) new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        int result = 0;
-                        for (PhysicalCard physicalCard :
-                                actionContext.getCardsFromMemory(object.get("memory").textValue())) {
-                            result += physicalCard.getBlueprint().getStrength();
-                        }
-                        return result;
-                    }
-                };
-            } else if (type.equalsIgnoreCase("tribbleValueFromMemory")) {
-                validateAllowedFields(object, "memory");
-                final String memory = object.get("memory").textValue();
-
-                return actionContext -> (Evaluator) new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        int result = 0;
-                        for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
-                            result += physicalCard.getBlueprint().getTribbleValue();
-                        }
-                        return result;
-                    }
-                };
-            }
-            else if (type.equalsIgnoreCase("subtract")) {
-                validateAllowedFields(object, "firstNumber", "secondNumber");
-                final ValueSource firstNumber =
-                        resolveEvaluator(ctxt, object.get("firstNumber"), 0);
-                final ValueSource secondNumber =
-                        resolveEvaluator(ctxt, object.get("secondNumber"), 0);
-                return actionContext -> (Evaluator) new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        final float first = firstNumber.evaluateExpression(game, actionContext);
-                        final float second = secondNumber.evaluateExpression(game, actionContext);
-                        return first - second;
-                    }
-                };
+                return ctxt.readTreeAsValue(object, CountDiscardValueSource.class);
             } else if (type.equalsIgnoreCase("max")) {
-                validateAllowedFields(object, "first", "second");
-                ValueSource first = resolveEvaluator(ctxt, object.get("first"));
-                ValueSource second = resolveEvaluator(ctxt, object.get("second"));
-                return new MaximumValueSource(first, second);
+                return ctxt.readTreeAsValue(object, MaximumValueSource.class);
             } else if (type.equalsIgnoreCase("min")) {
-                validateAllowedFields(object, "first", "second");
-                ValueSource first = resolveEvaluator(ctxt, object.get("first"));
-                ValueSource second = resolveEvaluator(ctxt, object.get("second"));
-
-                return actionContext -> new Evaluator() {
-                    @Override
-                    public float evaluateExpression(DefaultGame game) {
-                        return Math.min(
-                                first.evaluateExpression(game, actionContext),
-                                second.evaluateExpression(game, actionContext)
-                        );
-                    }
-                };
+                return ctxt.readTreeAsValue(object, MinimumValueSource.class);
             }
             throw new InvalidCardDefinitionException("Unrecognized type of an evaluator " + type);
         }

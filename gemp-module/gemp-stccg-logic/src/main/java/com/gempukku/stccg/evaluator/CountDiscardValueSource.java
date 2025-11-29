@@ -16,20 +16,20 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Objects;
 
-public class CountDiscardEvaluator implements ValueSource {
+public class CountDiscardValueSource extends ValueSource {
 
     private final int _multiplier;
     private final int _limit;
     private final PlayerSource _playerSource;
     private final FilterBlueprint _filterBlueprint;
 
-    public CountDiscardEvaluator(@JsonProperty("filter")
+    public CountDiscardValueSource(@JsonProperty("filter")
                                  FilterBlueprint filterBlueprint,
-                                 @JsonProperty("player")
+                                   @JsonProperty("player")
                                  String playerText,
-                                 @JsonProperty("limit")
+                                   @JsonProperty("limit")
                                  Integer limit,
-                                 @JsonProperty("multiplier")
+                                   @JsonProperty("multiplier")
                                  Integer multiplier) throws InvalidCardDefinitionException {
         _multiplier = Objects.requireNonNullElse(multiplier, 1);
         _limit = Objects.requireNonNullElse(limit, Integer.MAX_VALUE);
@@ -38,8 +38,7 @@ public class CountDiscardEvaluator implements ValueSource {
         _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, new AnyCardFilterBlueprint());
     }
 
-    @Override
-    public Evaluator getEvaluator(ActionContext actionContext) {
+    protected Evaluator getEvaluator(ActionContext actionContext) {
         return new MultiplyEvaluator(_multiplier, new Evaluator() {
             final String playerId = _playerSource.getPlayerId(actionContext);
             @Override

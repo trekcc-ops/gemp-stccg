@@ -1,0 +1,34 @@
+package com.gempukku.stccg.evaluator;
+
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.requirement.Requirement;
+
+import java.util.List;
+
+public class ConditionalValueSource extends ValueSource {
+
+    private final ValueSource _trueValue;
+    private final ValueSource _falseValue;
+    private final List<Requirement> _conditions;
+
+    public ConditionalValueSource(ValueSource trueValue, ValueSource falseValue, List<Requirement> conditions) {
+        _trueValue = trueValue;
+        _falseValue = falseValue;
+        _conditions = conditions;
+    }
+
+    protected Evaluator getEvaluator(ActionContext actionContext) {
+        return new Evaluator() {
+
+            @Override
+            public float evaluateExpression(DefaultGame cardGame) {
+                if (actionContext.acceptsAllRequirements(cardGame, _conditions)) {
+                    return _trueValue.evaluateExpression(cardGame, actionContext);
+                } else {
+                    return _falseValue.evaluateExpression(cardGame, actionContext);
+                }
+            }
+        };
+    }
+}

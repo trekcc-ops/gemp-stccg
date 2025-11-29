@@ -6,18 +6,18 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 @JsonDeserialize(using = ValueSourceDeserializer.class)
-public interface ValueSource {
-    Evaluator getEvaluator(ActionContext actionContext);
+public abstract class ValueSource {
+    protected abstract Evaluator getEvaluator(ActionContext actionContext);
 
-    default float getMinimum(DefaultGame cardGame, ActionContext actionContext) {
+    public float getMinimum(DefaultGame cardGame, ActionContext actionContext) {
         return getEvaluator(actionContext).evaluateExpression(cardGame);
     }
 
-    default float getMaximum(DefaultGame cardGame, ActionContext actionContext) {
+    public float getMaximum(DefaultGame cardGame, ActionContext actionContext) {
         return getEvaluator(actionContext).evaluateExpression(cardGame);
     }
 
-    default float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         return getEvaluator(actionContext).evaluateExpression(cardGame);
     }
 

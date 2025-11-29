@@ -10,9 +10,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.evaluator.Evaluator;
-import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
-import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.io.IOException;

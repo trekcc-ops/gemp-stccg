@@ -3,7 +3,7 @@ package com.gempukku.stccg.evaluator;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class NumberRangeValueSource implements ValueSource {
+public class NumberRangeValueSource extends ValueSource {
 
     private final int _min;
     private final int _max;
