@@ -1,5 +1,6 @@
 package com.gempukku.stccg.evaluator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
@@ -12,7 +13,14 @@ public class ConditionalValueSource extends ValueSource {
     private final ValueSource _falseValue;
     private final List<Requirement> _conditions;
 
-    public ConditionalValueSource(ValueSource trueValue, ValueSource falseValue, List<Requirement> conditions) {
+    public ConditionalValueSource(
+            @JsonProperty(value = "requires", required = true)
+        List<Requirement> conditions,
+        @JsonProperty(value = "true", required = true)
+        ValueSource trueValue,
+        @JsonProperty(value = "false", required = true)
+        ValueSource falseValue
+    ) {
         _trueValue = trueValue;
         _falseValue = falseValue;
         _conditions = conditions;

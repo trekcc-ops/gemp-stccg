@@ -1,5 +1,6 @@
 package com.gempukku.stccg.evaluator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -8,7 +9,11 @@ public class VariableRangeValueSource extends ValueSource {
     private final ValueSource _fromValue;
     private final ValueSource _toValue;
 
-    public VariableRangeValueSource(ValueSource fromValue, ValueSource toValue) {
+    public VariableRangeValueSource(
+            @JsonProperty(value = "from", required = true)
+            ValueSource fromValue,
+            @JsonProperty(value = "to", required = true)
+            ValueSource toValue) {
         _fromValue = fromValue;
         _toValue = toValue;
     }

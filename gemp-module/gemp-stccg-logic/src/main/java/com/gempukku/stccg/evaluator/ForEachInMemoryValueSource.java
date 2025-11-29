@@ -1,5 +1,6 @@
 package com.gempukku.stccg.evaluator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 
 public class ForEachInMemoryValueSource extends ValueSource {
@@ -7,7 +8,11 @@ public class ForEachInMemoryValueSource extends ValueSource {
     private final String _memory;
     private final int _limit;
 
-    public ForEachInMemoryValueSource(String memory, int limit) {
+    public ForEachInMemoryValueSource(
+            @JsonProperty(value = "memory", required = true)
+            String memory,
+            @JsonProperty(value = "limit", required = true)
+            int limit) {
         _memory = memory;
         _limit = limit;
     }
