@@ -24,7 +24,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);
     private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new EnumMap<>(Phase.class);
     private final Map<String, List<Modifier>> _untilEndOfPlayersNextTurnThisRoundModifiers = new HashMap<>();
-    private final Map<Integer, List<ModifierHook>> _modifierHooksNew = new HashMap<>();
+    private final Map<Integer, List<Modifier>> _modifierHooks = new HashMap<>();
     private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
     private final Collection<Modifier> _skipSet = new HashSet<>();
     private final Map<String, LimitCounter> _gameLimitCounters = new HashMap<>();
@@ -72,9 +72,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public ModifierHook addAlwaysOnModifier(Modifier modifier) {
+    public void addAlwaysOnModifier(Modifier modifier) {
         addModifier(modifier);
-        return new ModifierHookImpl(modifier);
     }
 
     private void addModifier(Modifier modifier) {
@@ -470,19 +469,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 .anyMatch(modifier -> modifier.hasFlagActive(modifierFlag));
     }
 
-    final class ModifierHookImpl implements ModifierHook {
-        private final Modifier _modifier;
-
-        private ModifierHookImpl(Modifier modifier) {
-            _modifier = modifier;
-        }
-
-        @Override
-        public void stop() {
-            removeModifier(_modifier);
-        }
-    }
-
     private static boolean foundNoCumulativeConflict(Iterable<Modifier> modifierList, Modifier modifier) {
         // If modifier is not cumulative, then check if modifiers from another copy
         // card of same title is already in the list
@@ -520,37 +506,34 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public void removeModifierHooks(PhysicalCard card) {
-        if (_modifierHooksNew.get(card.getCardId()) != null) {
-            for (ModifierHook modifierHook : _modifierHooksNew.get(card.getCardId()))
-                modifierHook.stop();
-            _modifierHooksNew.remove(card.getCardId());
+        int cardId = card.getCardId();
+        if (_modifierHooks.get(cardId) != null) {
+            for (Modifier modifier : _modifierHooks.get(cardId)) {
+                removeModifier(modifier);
+            }
+            _modifierHooks.remove(cardId);
         }
-    }
-
-    @Override
-    public void addModifierHooks(PhysicalCard card) {
-        CardBlueprint blueprint = card.getBlueprint();
-        _modifierHooksNew.computeIfAbsent(card.getCardId(), cardModifiers -> new LinkedList<>());
-        Iterable<Modifier> modifiers =
-                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
-        for (Modifier modifier : modifiers)
-            _modifierHooksNew.get(card.getCardId()).add(addAlwaysOnModifier(modifier));
     }
 
     @Override
     public void addModifierHooks(DefaultGame cardGame, PhysicalCard card) {
         int cardId = card.getCardId();
         CardBlueprint blueprint = card.getBlueprint();
-        _modifierHooksNew.computeIfAbsent(cardId, cardModifiers -> new LinkedList<>());
+
+        _modifierHooks.computeIfAbsent(cardId, cardModifiers -> new LinkedList<>());
         Iterable<Modifier> modifiers =
                 new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
-        for (Modifier modifier : modifiers)
-            _modifierHooksNew.get(cardId).add(addAlwaysOnModifier(modifier));
+        for (Modifier modifier : modifiers) {
+            addModifier(modifier);
+            _modifierHooks.get(cardId).add(modifier);
+        }
         RuleSet<? extends DefaultGame> ruleSet = cardGame.getRules();
         List<Modifier> modifiersPerRules = ruleSet.getModifiersWhileCardIsInPlay(card);
         for (Modifier modifier : modifiersPerRules) {
-            _modifierHooksNew.get(cardId).add(addAlwaysOnModifier(modifier));
+            addModifier(modifier);
+            _modifierHooks.get(cardId).add(modifier);
         }
+
     }
 
 
