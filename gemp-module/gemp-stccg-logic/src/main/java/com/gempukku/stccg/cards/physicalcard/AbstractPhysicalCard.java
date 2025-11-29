@@ -157,7 +157,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     protected boolean cannotEnterPlayPerUniqueness() {
         for (PhysicalCard cardInPlay : getGame().getGameState().getAllCardsInPlay()) {
-            if (cardInPlay.isCopyOf(this) && cardInPlay.isOwnedBy(_ownerName))
+            if (cardInPlay.isCopyOf(this) && cardInPlay.isOwnedBy(_ownerName) && !cardInPlay.isUniversal())
                 return true;
         }
         return false;
