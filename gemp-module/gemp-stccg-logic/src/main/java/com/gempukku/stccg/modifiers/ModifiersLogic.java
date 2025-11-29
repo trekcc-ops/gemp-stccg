@@ -24,8 +24,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);
     private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new EnumMap<>(Phase.class);
     private final Map<String, List<Modifier>> _untilEndOfPlayersNextTurnThisRoundModifiers = new HashMap<>();
-    private final Map<PhysicalCard, List<ModifierHook>> _modifierHooks = new HashMap<>();
-
+    private final Map<Integer, List<ModifierHook>> _modifierHooksNew = new HashMap<>();
     private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
     private final Collection<Modifier> _skipSet = new HashSet<>();
     private final Map<String, LimitCounter> _gameLimitCounters = new HashMap<>();
@@ -521,35 +520,36 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public void removeModifierHooks(PhysicalCard card) {
-        if (_modifierHooks.get(card) != null) {
-            for (ModifierHook modifierHook : _modifierHooks.get(card))
+        if (_modifierHooksNew.get(card.getCardId()) != null) {
+            for (ModifierHook modifierHook : _modifierHooksNew.get(card.getCardId()))
                 modifierHook.stop();
-            _modifierHooks.remove(card);
+            _modifierHooksNew.remove(card.getCardId());
         }
     }
 
     @Override
     public void addModifierHooks(PhysicalCard card) {
         CardBlueprint blueprint = card.getBlueprint();
-        _modifierHooks.computeIfAbsent(card, cardModifiers -> new LinkedList<>());
+        _modifierHooksNew.computeIfAbsent(card.getCardId(), cardModifiers -> new LinkedList<>());
         Iterable<Modifier> modifiers =
                 new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
         for (Modifier modifier : modifiers)
-            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+            _modifierHooksNew.get(card.getCardId()).add(addAlwaysOnModifier(modifier));
     }
 
     @Override
     public void addModifierHooks(DefaultGame cardGame, PhysicalCard card) {
+        int cardId = card.getCardId();
         CardBlueprint blueprint = card.getBlueprint();
-        _modifierHooks.computeIfAbsent(card, cardModifiers -> new LinkedList<>());
+        _modifierHooksNew.computeIfAbsent(cardId, cardModifiers -> new LinkedList<>());
         Iterable<Modifier> modifiers =
                 new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
         for (Modifier modifier : modifiers)
-            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
-        RuleSet ruleSet = cardGame.getRules();
+            _modifierHooksNew.get(cardId).add(addAlwaysOnModifier(modifier));
+        RuleSet<? extends DefaultGame> ruleSet = cardGame.getRules();
         List<Modifier> modifiersPerRules = ruleSet.getModifiersWhileCardIsInPlay(card);
         for (Modifier modifier : modifiersPerRules) {
-            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+            _modifierHooksNew.get(cardId).add(addAlwaysOnModifier(modifier));
         }
     }
 
