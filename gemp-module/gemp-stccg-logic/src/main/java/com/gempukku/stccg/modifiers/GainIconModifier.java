@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class GainIconModifier extends AbstractModifier implements IconAffectingModifier {

@@ -4,21 +4,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.condition.RequirementCondition;
-import com.gempukku.stccg.condition.TrueCondition;
+import com.gempukku.stccg.requirement.Condition;
+import com.gempukku.stccg.requirement.TrueCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.*;
-import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 public class GainSkillModifierBlueprint implements ModifierBlueprint {
 

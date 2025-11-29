@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.condition.PresentWithYourCardCondition;
+import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;

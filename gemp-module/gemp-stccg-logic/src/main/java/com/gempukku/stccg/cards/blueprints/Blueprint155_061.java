@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.condition.FacingDilemmaCondition;
+import com.gempukku.stccg.requirement.FacingDilemmaCondition;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.CunningModifier;

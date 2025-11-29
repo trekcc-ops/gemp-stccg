@@ -5,7 +5,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Species;
-import com.gempukku.stccg.condition.PresentWithYourCardCondition;
+import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;

@@ -3,7 +3,7 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class AbstractExtraPlayCostModifier extends AbstractModifier implements ExtraPlayCost {

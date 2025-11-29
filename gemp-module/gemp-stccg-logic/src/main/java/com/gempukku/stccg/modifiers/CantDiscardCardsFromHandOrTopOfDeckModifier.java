@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.requirement.Condition;
 
 public class CantDiscardCardsFromHandOrTopOfDeckModifier extends AbstractModifier {
     private final String _playerId;

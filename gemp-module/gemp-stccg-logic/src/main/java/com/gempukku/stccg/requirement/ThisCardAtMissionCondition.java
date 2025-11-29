@@ -1,4 +1,4 @@
-package com.gempukku.stccg.condition;
+package com.gempukku.stccg.requirement;
 
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;

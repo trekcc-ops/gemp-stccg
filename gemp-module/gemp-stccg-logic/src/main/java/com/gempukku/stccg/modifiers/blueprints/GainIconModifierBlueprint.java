@@ -3,7 +3,7 @@ package com.gempukku.stccg.modifiers.blueprints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.condition.RequirementCondition;
+import com.gempukku.stccg.requirement.RequirementCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.GainIconModifier;
