@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -161,7 +162,13 @@ public interface PhysicalCard extends Filterable {
 
     boolean isVisibleToPlayer(String requestingPlayerId);
 
-    void removeFromCardGroup();
+    default void removeFromCardGroup() {
+        PhysicalCardGroup<? extends PhysicalCard> group = getGame().getGameState().getCardGroup(getOwnerName(), getZone());
+        if (group != null)
+            group.remove(this);
+    }
+
+
 
     @JsonProperty("hasUniversalIcon")
     default boolean hasUniversalIcon() {

@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 
-public class DiscardPile extends CardPile {
+public class DiscardPile extends CardPile<PhysicalCard> {
 
     @JsonProperty("cardCount")
     public int size() {
-        return _cards.size();
+        return super.size();
     }
 
     public void remove(PhysicalCard card) {

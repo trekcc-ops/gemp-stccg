@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DrawDeck extends CardPile {
+public class DrawDeck extends CardPile<PhysicalCard> {
 
     @JsonProperty("cardCount")
     public int size() {

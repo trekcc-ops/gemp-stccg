@@ -29,20 +29,20 @@ public class Player {
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     @JsonProperty("cardGroups")
-    Map<Zone, PhysicalCardGroup> _cardGroups = new HashMap<>();
+    Map<Zone, PhysicalCardGroup<PhysicalCard>> _cardGroups = new HashMap<>();
     @JsonProperty("score")
     private int _currentScore;
     private int _lastSyncedScore;
     @JsonProperty("drawDeck")
-    CardPile _drawDeck;
+    DrawDeck _drawDeck;
     @JsonProperty("discardPile")
-    CardPile _discardPile;
+    DiscardPile _discardPile;
 
     @JsonProperty("missionsPile")
-    CardPile _missionsPile;
+    CardPile<PhysicalCard> _missionsPile;
 
     @JsonProperty("seedDeck")
-    PhysicalCardGroup _seedDeck;
+    PhysicalCardGroup<PhysicalCard> _seedDeck;
 
     public Player(String playerId) {
         _playerId = playerId;
@@ -115,12 +115,12 @@ public class Player {
     }
 
     public void addCardGroup(Zone zone) throws InvalidGameLogicException {
-        PhysicalCardGroup group = switch(zone) {
+        PhysicalCardGroup<PhysicalCard> group = switch(zone) {
             case SEED_DECK -> {
-                _seedDeck = new PhysicalCardGroup();
+                _seedDeck = new PhysicalCardGroup<>();
                 yield _seedDeck;
             }
-            case CORE, HAND -> new PhysicalCardGroup();
+            case CORE, HAND -> new PhysicalCardGroup<>();
             case DRAW_DECK -> {
                 _drawDeck = new DrawDeck();
                 yield _drawDeck;
@@ -130,31 +130,31 @@ public class Player {
                 yield _discardPile;
             }
             case MISSIONS_PILE -> {
-                _missionsPile = new CardPile();
+                _missionsPile = new CardPile<>();
                 yield _missionsPile;
             }
-            case PLAY_PILE, REMOVED -> new CardPile();
+            case PLAY_PILE, REMOVED -> new CardPile<>();
             default -> throw new InvalidGameLogicException("Unable to create a card group for zone " + zone);
         };
         _cardGroups.put(zone, group);
     }
 
-    public CardPile getMissionsPile() {
+    public CardPile<PhysicalCard> getMissionsPile() {
         return _missionsPile;
     }
 
     public List<PhysicalCard> getCardGroupCards(Zone zone) {
-        PhysicalCardGroup cardGroup = getCardGroup(zone);
+        PhysicalCardGroup<PhysicalCard> cardGroup = getCardGroup(zone);
         return (cardGroup == null) ? new ArrayList<>() : cardGroup.getCards();
     }
 
-    public PhysicalCardGroup getCardGroup(Zone zone) {
+    public PhysicalCardGroup<PhysicalCard> getCardGroup(Zone zone) {
         return _cardGroups.get(zone);
     }
 
 
     public void addCardToGroup(Zone zone, PhysicalCard card) throws InvalidGameLogicException {
-        PhysicalCardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup<PhysicalCard> group = _cardGroups.get(zone);
         if (group != null) {
             group.addCard(card);
         } else {
@@ -163,7 +163,7 @@ public class Player {
     }
 
     public List<PhysicalCard> getCardsInGroup(Zone zone) {
-        PhysicalCardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup<PhysicalCard> group = _cardGroups.get(zone);
         if (group == null) {
             return new LinkedList<>();
         } else {
@@ -177,7 +177,7 @@ public class Player {
     }
 
     public void setCardGroup(Zone zone, List<PhysicalCard> subDeck) throws InvalidGameLogicException {
-        PhysicalCardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup<PhysicalCard> group = _cardGroups.get(zone);
         if (group != null) {
             group.setCards(subDeck);
         } else {
@@ -189,7 +189,7 @@ public class Player {
         return _cardGroups.keySet();
     }
 
-    public CardPile getDrawDeck() {
+    public DrawDeck getDrawDeck() {
         return _drawDeck;
     }
 

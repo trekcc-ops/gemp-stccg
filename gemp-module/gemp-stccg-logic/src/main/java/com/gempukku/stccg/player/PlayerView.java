@@ -38,7 +38,7 @@ public class PlayerView {
     private Map<Zone, CardGroupView> getCardGroups() {
         Map<Zone, CardGroupView> result = new HashMap<>();
         for (Zone zone : _playerRequested.getCardGroupZones()) {
-            PhysicalCardGroup cardGroup = _playerRequested.getCardGroup(zone);
+            PhysicalCardGroup<? extends PhysicalCard> cardGroup = _playerRequested.getCardGroup(zone);
             if (zone.isPublic() ||
                     (_playerRequested.getPlayerId().equals(_requestingPlayerId) && zone.isVisibleByOwner())) {
                 result.put(zone, new PublicCardGroupView(cardGroup));
@@ -64,7 +64,7 @@ public class PlayerView {
         @JsonProperty("cardIds")
         final Collection<Integer> _cardIds;
 
-        PrivateCardGroupView(PhysicalCardGroup group) {
+        PrivateCardGroupView(PhysicalCardGroup<? extends PhysicalCard> group) {
             _cardCount = group.size();
             _cardIds = Collections.nCopies(_cardCount, ANONYMOUS_CARD_ID);
         }
@@ -75,9 +75,9 @@ public class PlayerView {
         int _cardCount;
         @JsonProperty("cardIds")
         @JsonIdentityReference(alwaysAsId=true)
-        List<PhysicalCard> _cards;
+        List<? extends PhysicalCard> _cards;
 
-        PublicCardGroupView(PhysicalCardGroup group) {
+        PublicCardGroupView(PhysicalCardGroup<? extends PhysicalCard> group) {
             _cardCount = group.size();
             _cards = group.getCards();
         }

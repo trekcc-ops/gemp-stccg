@@ -9,20 +9,20 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "cardCount", "cardIds" })
 @JsonPropertyOrder({ "cardCount", "cardIds" })
-public class PhysicalCardGroup {
-    protected final List<PhysicalCard> _cards = new LinkedList<>();
+public class PhysicalCardGroup<T extends PhysicalCard> {
+    protected final List<T> _cards = new LinkedList<>();
 
     public PhysicalCardGroup() {
     }
 
-    public void addCard(PhysicalCard card) { _cards.add(card); }
+    public void addCard(T card) { _cards.add(card); }
 
     @JsonProperty("cardIds")
     @JsonIdentityReference(alwaysAsId=true)
-    public final List<PhysicalCard> getCards() {
+    public final List<T> getCards() {
         return _cards;
     }
-    public void setCards(List<PhysicalCard> subDeck) {
+    public void setCards(List<T> subDeck) {
         _cards.clear();
         _cards.addAll(subDeck);
     }

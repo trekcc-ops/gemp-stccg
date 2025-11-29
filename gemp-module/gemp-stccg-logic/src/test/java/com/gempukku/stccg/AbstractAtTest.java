@@ -924,7 +924,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         for (PhysicalCard card : cards) {
             _game.getGameState().removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(card));
             _game.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.VOID);
-            topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(topCard.getLocationDeprecatedOnlyUseForTests(), card);
+            topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(card);
         }
     }
 

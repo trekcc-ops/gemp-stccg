@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
+import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
@@ -14,8 +15,9 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
-import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.gameevent.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
@@ -146,7 +148,7 @@ public abstract class GameState {
         }
     }
 
-    public PhysicalCardGroup getCardGroup(String playerId, Zone zone) {
+    public PhysicalCardGroup<? extends PhysicalCard> getCardGroup(String playerId, Zone zone) {
         try {
             Player player = getPlayer(playerId);
             return player.getCardGroup(zone);
@@ -261,7 +263,7 @@ public abstract class GameState {
     }
 
     public void playerDrawsCard(Player player) {
-        CardPile drawDeck = player.getDrawDeck();
+        DrawDeck drawDeck = player.getDrawDeck();
         if (!drawDeck.isEmpty()) {
             PhysicalCard card = drawDeck.getTopCard();
             drawDeck.remove(card);

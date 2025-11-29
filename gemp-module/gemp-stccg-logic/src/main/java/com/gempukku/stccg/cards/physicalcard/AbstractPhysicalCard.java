@@ -3,26 +3,29 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -430,12 +433,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         if (_zone == Zone.DISCARD && getGame().isDiscardPilePublic())
             return true;
         return _zone.isVisibleByOwner() && Objects.equals(_ownerName, playerName);
-    }
-
-    public void removeFromCardGroup() {
-        PhysicalCardGroup group = getGame().getGameState().getCardGroup(_ownerName, _zone);
-        if (group != null)
-            group.remove(this);
     }
 
     public void reveal() {
