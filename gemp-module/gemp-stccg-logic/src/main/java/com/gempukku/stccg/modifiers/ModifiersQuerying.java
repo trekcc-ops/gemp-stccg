@@ -64,7 +64,8 @@ public interface ModifiersQuerying {
     LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint);
 
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
-    int getNormalCardPlaysAvailable(Player player);
+
+    int getNormalCardPlaysAvailable(String playerName);
 
     Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName);
 }

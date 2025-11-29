@@ -32,12 +32,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
     private final Map<ActionBlueprint, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
     private final DefaultGame _game;
-    private final Map<Player, Integer> _normalCardPlaysAvailable = new HashMap<>();
-    private final int _normalCardPlaysPerTurn;
+    private final Map<String, Integer> _normalCardPlaysAvailableNew = new HashMap<>();
+    private final int _normalCardPlaysPerTurn = 1;
 
     public ModifiersLogic(DefaultGame game) {
         _game = game;
-        _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
     }
 
 
@@ -225,7 +224,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 _untilEndOfTurnModifiers.add(modifier);
             }
         }
-        _normalCardPlaysAvailable.put(_game.getGameState().getPlayer(playerId), _normalCardPlaysPerTurn);
+        _normalCardPlaysAvailableNew.put(playerId, _normalCardPlaysPerTurn);
 
         // Unstop all "stopped" cards
         // TODO - Does not account for cards that can be stopped for multiple turns
@@ -245,7 +244,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 _untilEndOfTurnModifiers.add(modifier);
             }
         }
-        _normalCardPlaysAvailable.put(player, _normalCardPlaysPerTurn);
+        _normalCardPlaysAvailableNew.put(playerId, _normalCardPlaysPerTurn);
 
         // Unstop all "stopped" cards
         // TODO - Does not account for cards that can be stopped for multiple turns
@@ -511,10 +510,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 && liveModifier.isForPlayer(forPlayer);
     }
 
-    public int getNormalCardPlaysAvailable(Player player) { return _normalCardPlaysAvailable.get(player); }
+    public int getNormalCardPlaysAvailable(String playerName) {
+        return _normalCardPlaysAvailableNew.get(playerName);
+    }
+
     public void useNormalCardPlay(Player player) {
-        int currentPlaysAvailable = _normalCardPlaysAvailable.get(player);
-        _normalCardPlaysAvailable.put(player, currentPlaysAvailable - 1);
+        int currentPlaysAvailable = _normalCardPlaysAvailableNew.get(player.getPlayerId());
+        _normalCardPlaysAvailableNew.put(player.getPlayerId(), currentPlaysAvailable - 1);
     }
 
     @Override
