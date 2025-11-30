@@ -81,6 +81,7 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
         return getNextAction();
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private PhysicalCard cardsDiscarded() {

@@ -67,6 +67,7 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
         return getNextAction();
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("targetCardIds")
     private Collection<PhysicalCard> getTargetCards() {
         return _cardsToPlace;

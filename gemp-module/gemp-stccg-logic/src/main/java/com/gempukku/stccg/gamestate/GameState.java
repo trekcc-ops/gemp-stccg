@@ -344,11 +344,13 @@ public abstract class GameState {
                 new GameStateView(playerId, this));
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("actions")
     private Map<Integer, Action> getAllActions() {
         return _actionsEnvironment.getAllActions();
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("performedActions")
     @JsonIdentityReference(alwaysAsId=true)
     private List<Action> getPerformedActions() {
@@ -368,6 +370,7 @@ public abstract class GameState {
         return _playerClocks;
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("playerClocks")
     private Collection<PlayerClock> playerClockList() {
         return _playerClocks.values();

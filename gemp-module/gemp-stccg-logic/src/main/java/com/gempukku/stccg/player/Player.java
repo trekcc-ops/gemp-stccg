@@ -32,7 +32,6 @@ public class Player {
     Map<Zone, PhysicalCardGroup<PhysicalCard>> _cardGroups = new HashMap<>();
     @JsonProperty("score")
     private int _currentScore;
-    private int _lastSyncedScore;
     @JsonProperty("drawDeck")
     DrawDeck _drawDeck;
     @JsonProperty("discardPile")
@@ -100,14 +99,6 @@ public class Player {
 
     public Collection<PhysicalCard> getRemovedPile() {
         return getCardsInGroup(Zone.REMOVED);
-    }
-
-    public int getLastSyncedScore() {
-        return _lastSyncedScore;
-    }
-
-    public void syncScore() {
-        _lastSyncedScore = _currentScore;
     }
 
     public void setScore(int score) {

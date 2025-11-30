@@ -4,10 +4,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
@@ -16,9 +14,7 @@ import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameLocation;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -393,13 +389,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.hasCharacteristic(characteristic);
     }
 
-
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
-                                            EncounterSeedCardAction action, MissionLocation missionLocation)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        throw new InvalidGameLogicException(
-                "Tried to call getEncounterActions for a card that does not have an encounter action");
-    }
 
     public boolean isAtPlanetLocation() {
         return _currentGameLocation.isPlanet();

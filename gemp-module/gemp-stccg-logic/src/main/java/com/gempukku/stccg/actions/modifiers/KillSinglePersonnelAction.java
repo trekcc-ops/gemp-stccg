@@ -77,6 +77,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
         return getNextAction();
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private PhysicalCard victimCard() {

@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -81,13 +80,10 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     public void setTurnLimit(int limitPerTurn) {
         addRequirement(new TurnLimitRequirement(limitPerTurn));
         addCost(
-                new SubActionBlueprint() {
-                    @Override
-                    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext) {
-                        Action usageLimitAction = new UseOncePerTurnAction(cardGame,
-                                action, action.getPerformingCard(), actionContext.getPerformingPlayerId());
-                        return Collections.singletonList(usageLimitAction);
-                    }
+                (cardGame, action, actionContext) -> {
+                    Action usageLimitAction = new UseOncePerTurnAction(cardGame,
+                            action, action.getPerformingCard(), actionContext.getPerformingPlayerId());
+                    return Collections.singletonList(usageLimitAction);
                 });
     }
 

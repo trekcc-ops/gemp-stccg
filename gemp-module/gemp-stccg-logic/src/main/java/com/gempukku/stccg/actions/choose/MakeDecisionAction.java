@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public abstract class MakeDecisionAction extends ActionyAction {
