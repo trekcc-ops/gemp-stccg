@@ -41,7 +41,6 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();
             if (selectionAction != null && !selectionAction.wasCarriedOut()) {
