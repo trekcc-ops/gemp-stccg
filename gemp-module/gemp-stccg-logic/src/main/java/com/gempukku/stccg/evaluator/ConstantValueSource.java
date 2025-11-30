@@ -2,9 +2,6 @@ package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.evaluator.ValueSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class ConstantValueSource extends ValueSource {

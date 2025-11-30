@@ -2,9 +2,6 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.TribblesGame;
-
-import java.util.Objects;
 
 public class TribblesActionContext extends DefaultActionContext {
 

@@ -2,14 +2,12 @@ package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class MatchingFilterBlueprint implements FilterBlueprint {

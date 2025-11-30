@@ -1,6 +1,5 @@
 package com.gempukku.stccg.requirement;
 
-import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 

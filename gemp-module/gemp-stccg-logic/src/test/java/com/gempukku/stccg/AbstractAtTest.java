@@ -26,13 +26,9 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
-import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SuppressWarnings("MethodWithMultipleReturnPoints")
 public abstract class AbstractAtTest extends AbstractLogicTest {

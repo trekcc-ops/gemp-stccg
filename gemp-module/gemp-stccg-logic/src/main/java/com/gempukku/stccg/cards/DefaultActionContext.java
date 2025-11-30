@@ -2,14 +2,16 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.requirement.Requirement;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class DefaultActionContext implements ActionContext {
     protected final ActionContext _relevantContext;

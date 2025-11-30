@@ -46,6 +46,7 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
         return getNextAction();
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("targetCardId")
     private PhysicalCard getTargetCard() {
         return _cardTarget.getCard();
