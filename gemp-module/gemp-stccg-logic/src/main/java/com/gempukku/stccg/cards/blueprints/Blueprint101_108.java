@@ -6,15 +6,12 @@ import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.discard.NullifyCardBeingPlayedAction;
 import com.gempukku.stccg.actions.playcard.PlayCardInitiationResult;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.requirement.CardIsInHandRequirement;
-import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
 import java.util.List;

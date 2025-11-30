@@ -44,8 +44,6 @@ public interface ModifiersQuerying {
 
     boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId);
 
-    List<TopLevelSelectableAction> getExtraPhaseActions(DefaultGame game, PhysicalCard target);
-
     void appendExtraCosts(Action action, PhysicalCard target);
 
     // Others

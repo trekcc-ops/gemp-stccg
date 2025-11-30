@@ -37,13 +37,6 @@ public class DefaultActionContext implements ActionContext {
         this(null, performingPlayer, source, actionResult);
     }
 
-    public ActionContext createDelegateContext(DefaultGame cardGame, ActionResult actionResult) {
-        return new DefaultActionContext(this, getPerformingPlayerId(), getSource(), actionResult);
-    }
-
-    public ActionContext createDelegateContext(DefaultGame cardGame, String playerId) {
-        return new DefaultActionContext(this, playerId, getSource(), getEffectResult());
-    }
     public Map<String, String> getValueMemory() { return _valueMemory; }
     public Multimap<String, PhysicalCard> getCardMemory() { return _cardMemory; }
 
@@ -108,11 +101,8 @@ public class DefaultActionContext implements ActionContext {
     }
 
 
-
-
-    protected ActionContext getRelevantContext() { return _relevantContext; }
-    protected Map<String, String> getRelevantValueMemory() { return getRelevantContext().getValueMemory(); }
-    protected Multimap<String, PhysicalCard> getRelevantCardMemory() { return getRelevantContext().getCardMemory(); }
+    protected Map<String, String> getRelevantValueMemory() { return _relevantContext.getValueMemory(); }
+    protected Multimap<String, PhysicalCard> getRelevantCardMemory() { return _relevantContext.getCardMemory(); }
 
 
     public ActionResult getEffectResult() {
@@ -152,9 +142,5 @@ public class DefaultActionContext implements ActionContext {
         return result;
     }
 
-
-    public ActionContext getParentContext() {
-        return _relevantContext;
-    }
 
 }

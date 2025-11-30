@@ -2,7 +2,6 @@ package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 @JsonDeserialize(using = ValueSourceDeserializer.class)

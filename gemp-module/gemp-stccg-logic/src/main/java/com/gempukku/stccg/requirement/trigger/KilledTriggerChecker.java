@@ -2,14 +2,12 @@ package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.modifiers.KillCardResult;
-import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class KilledTriggerChecker implements TriggerChecker {
 
