@@ -1,7 +1,7 @@
 // Represents a column of cards anchored at a mission card.
 
 import { Stack } from "@mui/material";
-import Card from "./card.jsx";
+import CardStack from "./card-stack.jsx";
 
 function get_spaceline_location_data(gamestate, locationid) {
     for (const spacelineLocation of gamestate["spacelineLocations"]) {
@@ -19,7 +19,7 @@ function get_mission_cards(gamestate, locationData) {
     for (const cardId of locationData["missionCardIds"]) {
         let cardData = gamestate["visibleCardsInGame"][cardId.toString()];
         if (cardData != null) {
-            retarr.push(<Card card={cardData} />); 
+            retarr.push(<CardStack gamestate={gamestate} anchor_id={cardId} />); 
         }
     }
     return retarr;
