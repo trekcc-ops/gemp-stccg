@@ -20,7 +20,7 @@ export default class CardTreeModel {
 
         if (typeof filter_by_ids === 'undefined') {
             // No filter given to us, just iterate over the whole map
-            let new_tree = {};
+            let new_tree = new CardTreeModel;
             if ((typeof card_data instanceof Map) || (typeof card_data instanceof Set)) {
                 console.log("undefined, Map/Set");
                 for (const card_id of card_data.keys()) {
@@ -51,7 +51,7 @@ export default class CardTreeModel {
         }
     }
 
-    static addCardToTreeMap(card_id, flat_map, tree) {
+    static addCardToTreeMap(card_id, flat_map, cardTreeModel) {
         // do we even have the requested data?
         if (!flat_map[card_id]) {
             return;
@@ -64,7 +64,7 @@ export default class CardTreeModel {
         //   [?(@.cardId)]  means "if they have a card id attribute"
         //   == '${cardid}'  means "matching passed in card_id"
         const search_all_cardIds_for_this_id_jsonpath = `$..[?(@.cardId == '${card_id}')]`;
-        const result = JSONPath({path: search_all_cardIds_for_this_id_jsonpath, json: tree});
+        const result = JSONPath({path: search_all_cardIds_for_this_id_jsonpath, json: cardTreeModel});
         if (Object.keys(result).length !== 0) {
             //console.log(`card_id found in tree, skipping`);
             return;
@@ -87,7 +87,7 @@ export default class CardTreeModel {
             //   [?(@.cardId)]  means "if they have a card id attribute"
             //   == '${parent_card_id}'  means "matching passed in parent_card_id"
             const search_all_cardIds_for_parent_id_jsonpath = `$..[?(@.cardId == '${parent_card_id}')]`;
-            const parent_result = JSONPath({path: search_all_cardIds_for_parent_id_jsonpath, json: tree});
+            const parent_result = JSONPath({path: search_all_cardIds_for_parent_id_jsonpath, json: cardTreeModel});
             //console.log(`parent_card_id: ${parent_card_id}`)
             //console.log(`tree: ${JSON.stringify(tree)}`);
             //console.log(`parent_result: ${JSON.stringify(parent_result)}`);
@@ -107,15 +107,15 @@ export default class CardTreeModel {
             else {
                 // console.log(`parent_card ${parent_card_id} not found in tree`);
                 // recurse!
-                this.addCardToTreeMap(parent_card_id, flat_map, tree);
+                this.addCardToTreeMap(parent_card_id, flat_map, cardTreeModel);
                 // Retry
-                this.addCardToTreeMap(card_id, flat_map, tree);
+                this.addCardToTreeMap(card_id, flat_map, cardTreeModel);
             }
         }
         else {
             // console.log("basic add to root case");
             // no relationship, put directly in root of tree
-            tree[card_id] = flat_map[card_id];
+            cardTreeModel[card_id] = flat_map[card_id];
         }
     }
 }
