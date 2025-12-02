@@ -79,7 +79,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
 
     private List<PhysicalCard> getBeamableCards(DefaultGame cardGame, PhysicalCard origin) {
         Collection<PhysicalCard> movableCards =
-                Filters.filter(origin.getAttachedCards(cardGame),
+                Filters.filter(origin.getAttachedCards(cardGame), cardGame,
                         Filters.your(_performingPlayerId), Filters.or(Filters.personnel, Filters.equipment));
         return new ArrayList<>(movableCards);
     }
@@ -109,7 +109,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
             // Destination options filtered to remove cards with none of your personnel or equipment aboard
         List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {
-            if (!Filters.filter(destinationCard.getAttachedCards(game),
+            if (!Filters.filter(destinationCard.getAttachedCards(game), game,
                     Filters.your(_performingPlayerId), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
                 // TODO - Doesn't do a compatibility or beamable check, does it need to?
                 cards.add(destinationCard);

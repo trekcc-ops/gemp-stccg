@@ -118,7 +118,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
             if (_selectCardsToMoveAction == null) {
                 // TODO - No checks here yet to make sure cards can be moved (compatibility, etc.)
                 Collection<PhysicalCard> movableCards =
-                        Filters.filter(_origin.getAttachedCards(_origin.getGame()),
+                        Filters.filter(_origin.getAttachedCards(cardGame), cardGame,
                                 Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
                 _selectCardsToMoveAction = new SelectVisibleCardsAction(cardGame, _performingPlayer,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),

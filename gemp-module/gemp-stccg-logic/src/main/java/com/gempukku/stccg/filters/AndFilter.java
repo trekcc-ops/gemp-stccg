@@ -21,10 +21,6 @@ public class AndFilter implements CardFilter {
         _filters = filters;
     }
 
-    public AndFilter(Filterable... filterables) {
-        _filters = List.of(Filters.convertToFilters(filterables));
-    }
-
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {

@@ -86,7 +86,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {
                 actions.add(new BeamCardsAction(cardGame, player, this));
             }
-            if (!Filters.filter(getAttachedCards(_game), Filters.your(player), Filters.personnel).isEmpty()) {
+            if (!Filters.filter(getAttachedCards(_game), _game, Filters.your(player), Filters.personnel).isEmpty()) {
                 actions.add(new WalkCardsAction(cardGame, player, this));
             }
         }
@@ -101,11 +101,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
 
 
     public Collection<PhysicalCard> getDockedShips() {
-        return Filters.filter(getAttachedCards(_game), Filters.ship);
+        return Filters.filter(getAttachedCards(_game), _game, Filters.ship);
     }
 
     public Collection<PhysicalCard> getCrew() {
-        return Filters.filter(getAttachedCards(_game), Filters.or(Filters.personnel, Filters.equipment));
+        return Filters.filter(getAttachedCards(_game), _game, Filters.or(Filters.personnel, Filters.equipment));
     }
 
     public boolean isOutpost() {

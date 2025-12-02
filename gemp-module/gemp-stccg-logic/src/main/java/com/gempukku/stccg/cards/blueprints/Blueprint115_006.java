@@ -30,7 +30,7 @@ public class Blueprint115_006 extends CardBlueprint {
 
         List<Action> result = new LinkedList<>();
         PersonnelCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel());
-        Collection<PhysicalCard> matchingCards = Filters.filter(attemptingUnit.getAttemptingPersonnel(),
+        Collection<PhysicalCard> matchingCards = Filters.filter(attemptingUnit.getAttemptingPersonnel(), game,
                 Filters.hasAttributeMatchingPersonnel(randomCard));
 
         Collection<PersonnelCard> cardsToStop = new LinkedList<>();

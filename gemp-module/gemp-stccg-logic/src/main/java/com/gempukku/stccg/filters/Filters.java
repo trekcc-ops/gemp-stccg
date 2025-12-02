@@ -156,18 +156,6 @@ public class Filters {
         return result;
     }
 
-    public static Collection<PhysicalCard> filter(Iterable<? extends PhysicalCard> cards, Filterable... filters) {
-        CardFilter filter = Filters.and(filters);
-        List<PhysicalCard> result = new LinkedList<>();
-        for (PhysicalCard card : cards) {
-            if (filter.accepts(card.getGame(), card))
-                result.add(card);
-        }
-        return result;
-    }
-
-
-
 
     public static CardFilter presentWith(final PhysicalCard card) {
         return new PresentWithCardFilter(card);
@@ -274,7 +262,7 @@ public class Filters {
         return new OrCardFilter(filtersInt);
     }
 
-    public static CardFilter[] convertToFilters(Filterable... filters) {
+    private static CardFilter[] convertToFilters(Filterable... filters) {
         CardFilter[] filtersInt = new CardFilter[filters.length];
         for (int i = 0; i < filtersInt.length; i++)
             filtersInt[i] = changeToFilter(filters[i]);
