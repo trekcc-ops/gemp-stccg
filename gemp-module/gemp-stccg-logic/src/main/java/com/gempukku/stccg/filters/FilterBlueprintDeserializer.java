@@ -52,7 +52,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         for (SkillName value : SkillName.values())
             appendFilter(value);
 
-        simpleFilters.put("another", (cardGame, actionContext) -> Filters.not(actionContext.getSource()));
+        simpleFilters.put("another", (cardGame, actionContext) -> Filters.not(Filters.card(actionContext.getSource())));
         simpleFilters.put("any", (cardGame, actionContext) -> Filters.any);
         simpleFilters.put("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
@@ -61,7 +61,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put("inplay", (cardGame, actionContext) -> Filters.inPlay);
         simpleFilters.put("inyourdrawdeck", (cardGame, actionContext) ->
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("self", (cardGame, actionContext) -> actionContext.getSource());
+        simpleFilters.put("self", (cardGame, actionContext) -> Filters.card(actionContext.getSource()));
         simpleFilters.put("unique", (cardGame, actionContext) -> Filters.unique);
         simpleFilters.put("your", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yours", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
@@ -80,16 +80,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                     FilterBlueprint[] filterables = new FilterBlueprint[filters.length];
                     for (int i = 0; i < filters.length; i++)
                         filterables[i] = generateFilter(filters[i]);
-                    return new FilterBlueprint() {
-                        @Override
-                        public Filterable getFilterable(DefaultGame cardGame, ActionContext actionContext) {
-                            Filterable[] filters1 = new Filterable[filterables.length];
-                            for (int i = 0; i < filterables.length; i++)
-                                filters1[i] = filterables[i].getFilterable(cardGame, actionContext);
-
-                            return Filters.and(filters1);
-                        }
-                    };
+                    return new AndFilterBlueprint(filterables);
                 });
         parameterFilters.put("affiliation", (parameter) -> {
             final Affiliation affiliation = Affiliation.findAffiliation(parameter);

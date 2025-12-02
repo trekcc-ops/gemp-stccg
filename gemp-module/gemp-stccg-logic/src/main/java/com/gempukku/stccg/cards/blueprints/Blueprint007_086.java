@@ -1,13 +1,14 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.requirement.Condition;
-import com.gempukku.stccg.requirement.MoreCardsInHandThanAllOtherPlayersCondition;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.GainSkillModifier;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
+import com.gempukku.stccg.player.YouPlayerResolver;
+import com.gempukku.stccg.requirement.Condition;
+import com.gempukku.stccg.requirement.MoreCardsInHandThanAllOtherPlayersCondition;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,8 +25,8 @@ public class Blueprint007_086 extends CardBlueprint {
     protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
         Condition condition = new MoreCardsInHandThanAllOtherPlayersCondition(new YouPlayerResolver(thisCard));
-        modifiers.add(new AllAttributeModifier(thisCard, thisCard, condition, 1));
-        modifiers.add(new GainSkillModifier(thisCard, thisCard, condition, SkillName.TRANSPORTERS));
+        modifiers.add(new AllAttributeModifier(thisCard, Filters.card(thisCard), condition, 1));
+        modifiers.add(new GainSkillModifier(thisCard, Filters.card(thisCard), condition, SkillName.TRANSPORTERS));
         return modifiers;
     }
 

@@ -47,7 +47,7 @@ public class Blueprint155_079 extends CardBlueprint {
             @Override
             public Modifier getModifier(PhysicalCard thisCard) {
                 Filterable usageFilter = new CharacteristicFilter(Characteristic.K_EHLEYR);
-                Filterable affectFilter = Filters.or(thisCard,
+                Filterable affectFilter = Filters.or(Filters.card(thisCard),
                         Filters.and(Filters.presentWith(thisCard), Characteristic.K_EHLEYR));
                 return new AllAttributeModifier(thisCard, affectFilter,
                         new PresentWithYourCardCondition(thisCard, usageFilter), 2);

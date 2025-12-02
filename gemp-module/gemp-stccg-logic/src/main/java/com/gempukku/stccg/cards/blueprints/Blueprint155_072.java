@@ -45,7 +45,7 @@ public class Blueprint155_072 extends CardBlueprint {
             @Override
             public Modifier getModifier(PhysicalCard thisCard) {
                 Filterable usageFilter = Filters.or(Filters.name("Goss"), Filters.name("Dr. Arridor"));
-                return new AllAttributeModifier(thisCard, thisCard,
+                return new AllAttributeModifier(thisCard, Filters.card(thisCard),
                         new PresentWithYourCardCondition(thisCard, usageFilter), 2);
             }
         };

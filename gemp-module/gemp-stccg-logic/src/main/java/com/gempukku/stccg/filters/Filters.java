@@ -341,4 +341,7 @@ public class Filters {
     }
 
 
+    public static Filterable card(PhysicalCard thisCard) {
+        return new SameCardFilter(thisCard);
+    }
 }

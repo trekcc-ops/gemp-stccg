@@ -6,13 +6,13 @@ import com.gempukku.stccg.gamestate.GameLocation;
 
 public class AtLocationFilter implements CardFilter {
 
-    private final GameLocation _location;
+    private final int _locationId;
 
     public AtLocationFilter(GameLocation location) {
-        _location = location;
+        _locationId = location.getLocationId();
     }
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        return physicalCard.getGameLocation() == _location;
+        return _locationId >= 0 && physicalCard.getGameLocation().getLocationId() == _locationId;
     }
 }

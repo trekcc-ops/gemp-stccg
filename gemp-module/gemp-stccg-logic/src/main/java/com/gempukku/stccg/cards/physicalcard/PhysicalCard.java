@@ -29,7 +29,7 @@ import java.util.List;
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
         "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission" })
-public interface PhysicalCard extends Filterable {
+public interface PhysicalCard {
 
     @JsonIgnore
     DefaultGame getGame();

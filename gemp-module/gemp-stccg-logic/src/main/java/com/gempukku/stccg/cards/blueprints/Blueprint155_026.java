@@ -70,7 +70,7 @@ public class Blueprint155_026 extends CardBlueprint {
 
             // after any use, discard incident OR discard a [TNG] card from hand
             CardFilter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
-            CardFilter discardCardFilter = Filters.or(thisCard, tngCardsInHandFilter);
+            CardFilter discardCardFilter = Filters.or(Filters.card(thisCard), tngCardsInHandFilter);
             SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(game, player,
                     "Select a card to discard", discardCardFilter);
             Action discardAction = new DiscardSingleCardAction(game, thisCard, player, selectCardToDiscardAction);

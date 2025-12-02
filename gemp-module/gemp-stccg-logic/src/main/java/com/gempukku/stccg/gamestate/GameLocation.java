@@ -24,4 +24,7 @@ public interface GameLocation {
     boolean isHomeworld();
 
     boolean hasCardSeededUnderneath(PhysicalCard card);
+
+    int getLocationId();
+
 }
