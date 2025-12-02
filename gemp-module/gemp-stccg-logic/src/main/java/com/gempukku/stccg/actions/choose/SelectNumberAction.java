@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -18,7 +19,7 @@ public class SelectNumberAction extends MakeDecisionAction {
     private final String _memoryId;
 
     public SelectNumberAction(DefaultGame cardGame, ActionContext context, String choiceText, ValueSource valueSource,
-                              String memoryId) {
+                              String memoryId) throws InvalidGameLogicException {
         super(cardGame, context.getPerformingPlayerId(), choiceText);
         _minimum = (int) valueSource.getMinimum(cardGame, context);
         _maximum = (int) valueSource.getMaximum(cardGame, context);

@@ -2,16 +2,17 @@ package com.gempukku.stccg.modifiers.attributes;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.filters.CardFilter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.AbstractModifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
+import com.gempukku.stccg.requirement.Condition;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -29,6 +30,14 @@ public class AttributeModifier extends AbstractModifier {
         _attributes.add(attribute);
     }
 
+    public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCards, Condition condition,
+                             Evaluator evaluator, CardAttribute attribute,
+                             ModifierEffect effectType) {
+        super(performingCard, affectedCards, condition, effectType);
+        _evaluator = evaluator;
+        _attributes.add(attribute);
+    }
+
     public AttributeModifier(PhysicalCard performingCard, ActionCardResolver affectedCards, Condition condition,
                              Evaluator evaluator, CardAttribute attribute,
                              ModifierEffect effectType) {
@@ -40,7 +49,7 @@ public class AttributeModifier extends AbstractModifier {
     public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,
                              Condition condition, int modifierValue, ModifierEffect effectType,
                              CardAttribute... attributes) {
-        super(performingCard, new FixedCardResolver(affectedCard), condition, effectType);
+        super(performingCard, Filters.card(affectedCard), condition, effectType);
         _evaluator = new ConstantEvaluator(modifierValue);
         _attributes.addAll(Arrays.asList(attributes));
     }

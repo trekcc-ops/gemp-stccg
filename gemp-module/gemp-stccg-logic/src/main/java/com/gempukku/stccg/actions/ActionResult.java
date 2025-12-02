@@ -15,7 +15,6 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.*;
 
 public class ActionResult {
-    private final Set<Action> _optionalTriggersUsed = new HashSet<>();
 
     public enum Type {
         ACTIVATE,
@@ -39,8 +38,9 @@ public class ActionResult {
     }
 
     private final Type _type;
-    private Map<Player, List<TopLevelSelectableAction>> _optionalAfterTriggerActions = new HashMap<>();
-        // TODO - In general this isn't doing a great job of assessing who actually performed the action
+    private final Set<Integer> _triggerActionIdsUsed = new HashSet<>();
+    private Map<String, List<TopLevelSelectableAction>> _optionalAfterTriggerActions = new HashMap<>();
+    // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
     private boolean _initialized;
     private ActionOrder _optionalResponsePlayerOrder;
@@ -64,18 +64,19 @@ public class ActionResult {
         return _type;
     }
     public void optionalTriggerUsed(Action action) {
-        _optionalTriggersUsed.add(action);
+        _triggerActionIdsUsed.add(action.getActionId());
     }
     public boolean wasOptionalTriggerUsed(Action action) {
-        return _optionalTriggersUsed.contains(action);
+        return _triggerActionIdsUsed.contains(action.getActionId());
     }
 
     public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame, Player player) {
-        if (_optionalAfterTriggerActions.get(player) == null)
+        String playerName = player.getPlayerId();
+        if (_optionalAfterTriggerActions.get(playerName) == null)
             return new LinkedList<>();
         else {
             List<TopLevelSelectableAction> result = new LinkedList<>();
-            for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(player)) {
+            for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(playerName)) {
                 if (action.canBeInitiated(cardGame)) {
                     result.add(action);
                 }
@@ -85,7 +86,7 @@ public class ActionResult {
     }
 
     public void createOptionalAfterTriggerActions(DefaultGame game) throws PlayerNotFoundException {
-        Map<Player, List<TopLevelSelectableAction>> allActions = new HashMap<>();
+        Map<String, List<TopLevelSelectableAction>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
             List<TopLevelSelectableAction> playerActions = new LinkedList<>();
             for (PhysicalCard card : Filters.filterCardsInPlay(game)) {
@@ -101,7 +102,7 @@ public class ActionResult {
                 if (actions != null)
                     playerActions.addAll(actions);
             }
-            allActions.put(player, playerActions);
+            allActions.put(player.getPlayerId(), playerActions);
         }
         _optionalAfterTriggerActions = allActions;
     }
@@ -142,11 +143,12 @@ public class ActionResult {
         return possibleActions;
     }
 
-    private void markActionAsUsed(Action action, DefaultGame cardGame, Player activePlayer) {
+    private void markActionAsUsed(TopLevelSelectableAction action, DefaultGame cardGame, Player activePlayer) {
         Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
                 getOptionalAfterTriggers(cardGame, activePlayer);
-        if (optionalAfterTriggers.containsKey(action))
+        if (optionalAfterTriggers.containsKey(action)) {
             optionalAfterTriggers.get(action).optionalTriggerUsed(action);
+        }
     }
 
     private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame, List<TopLevelSelectableAction> possibleActions, Player activePlayer) {
@@ -155,7 +157,7 @@ public class ActionResult {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 try {
-                    Action action = getSelectedAction(result);
+                    TopLevelSelectableAction action = getSelectedAction(result);
                     if (action != null) {
                         cardGame.getActionsEnvironment().addActionToStack(action);
                         markActionAsUsed(action, cardGame, activePlayer);

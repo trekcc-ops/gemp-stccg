@@ -24,8 +24,8 @@ public class KillActionBlueprint implements SubActionBlueprint {
     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         return List.of(
-                new KillSinglePersonnelAction(cardGame, context.getPerformingPlayerId(), context.getSource(),
-                        _targetResolver.getTargetResolver(cardGame, context)));
+                new KillSinglePersonnelAction(cardGame, context.getPerformingPlayerId(),
+                        context.getPerformingCard(cardGame), _targetResolver.getTargetResolver(cardGame, context)));
     }
 
 }

@@ -99,7 +99,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                     Condition condition = modifier.getCondition();
                     if (condition == null || condition.isFulfilled(_game))
                         if (shouldAdd(modifierEffect, modifier)) {
-                            if ((card == null || modifier.affectsCard(card.getGame(), card)) &&
+                            if ((card == null || modifier.affectsCard(_game, card)) &&
                                     (foundNoCumulativeConflict(liveModifiers, modifier)))
                                 liveModifiers.add(modifier);
                         }

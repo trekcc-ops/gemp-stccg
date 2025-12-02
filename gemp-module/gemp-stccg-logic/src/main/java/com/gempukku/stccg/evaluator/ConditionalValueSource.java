@@ -3,6 +3,7 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.List;
@@ -26,17 +27,12 @@ public class ConditionalValueSource extends ValueSource {
         _conditions = conditions;
     }
 
-    protected Evaluator getEvaluator(ActionContext actionContext) {
-        return new Evaluator() {
-
-            @Override
-            public float evaluateExpression(DefaultGame cardGame) {
-                if (actionContext.acceptsAllRequirements(cardGame, _conditions)) {
-                    return _trueValue.evaluateExpression(cardGame, actionContext);
-                } else {
-                    return _falseValue.evaluateExpression(cardGame, actionContext);
-                }
-            }
-        };
+    @Override
+    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+        if (actionContext.acceptsAllRequirements(cardGame, _conditions)) {
+            return _trueValue.evaluateExpression(cardGame, actionContext);
+        } else {
+            return _falseValue.evaluateExpression(cardGame, actionContext);
+        }
     }
 }

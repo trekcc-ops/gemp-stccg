@@ -17,6 +17,11 @@ public class EncounteringCardFilter implements CardFilter {
     public EncounteringCardFilter(PhysicalCard encounteredCard) {
         _encounteredCardId = encounteredCard.getCardId();
     }
+
+    public EncounteringCardFilter(int encounteredCardId) {
+        _encounteredCardId = encounteredCardId;
+    }
+
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         Stack<Action> actionStack = game.getActionsEnvironment().getActionStack();

@@ -2,6 +2,7 @@ package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class ForEachInMemoryValueSource extends ValueSource {
 
@@ -16,9 +17,10 @@ public class ForEachInMemoryValueSource extends ValueSource {
         _memory = memory;
         _limit = limit;
     }
+
     @Override
-    protected Evaluator getEvaluator(ActionContext actionContext) {
-        final int count = actionContext.getCardsFromMemory(_memory).size();
-        return new ConstantEvaluator(Math.min(_limit, count));
+    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+        final int count = actionContext.getCardIdsFromMemory(_memory).size();
+        return Math.min(_limit, count);
     }
 }

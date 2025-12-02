@@ -294,6 +294,11 @@ public class Filters {
         return and(your(thisCard.getControllerName()), presentWith(thisCard));
     }
 
+    public static Filterable yourCardsPresentWithThisCard(String playerName, int thisCardId) {
+        return and(your(playerName), new PresentWithCardFilter(thisCardId));
+    }
+
+
     public static CardFilter cardsYouCanDownload(String performingPlayerName) {
         return new InYourDrawDeckFilter(performingPlayerName);
     }
@@ -305,5 +310,9 @@ public class Filters {
 
     public static Filterable card(PhysicalCard thisCard) {
         return new SameCardFilter(thisCard);
+    }
+
+    public static Filterable cardId(int cardId) {
+        return new SameCardFilter(cardId);
     }
 }

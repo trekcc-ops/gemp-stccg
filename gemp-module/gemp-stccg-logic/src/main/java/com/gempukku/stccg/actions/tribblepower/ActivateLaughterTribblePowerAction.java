@@ -6,9 +6,9 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -28,8 +28,9 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     private final static int BONUS_POINTS = 25000;
     private String _discardingPlayerId;
 
-    public ActivateLaughterTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
-        super(cardGame, actionContext, TribblePower.LAUGHTER);
+    public ActivateLaughterTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                              ActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, performingCard);
     }
 
     @Override

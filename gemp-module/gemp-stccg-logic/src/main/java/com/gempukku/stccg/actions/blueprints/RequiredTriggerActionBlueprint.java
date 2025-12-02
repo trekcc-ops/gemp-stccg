@@ -5,12 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
     @Override
     public RequiredTriggerAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
         return createActionAndAppendToContext(card.getGame(), card,
-                new DefaultActionContext(card.getOwnerName(), card, actionResult));
+                new ActionContext(card.getOwnerName(), card, actionResult));
     }
 
 }

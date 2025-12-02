@@ -19,6 +19,10 @@ public class InCardListFilter implements CardFilter {
         }
     }
 
+    public InCardListFilter(List<Integer> cardIdList) {
+        _cardIdList.addAll(cardIdList);
+    }
+
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         return _cardIdList.contains(physicalCard.getCardId());

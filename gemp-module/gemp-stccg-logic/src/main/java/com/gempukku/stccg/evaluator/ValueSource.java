@@ -3,21 +3,20 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 @JsonDeserialize(using = ValueSourceDeserializer.class)
 public abstract class ValueSource {
-    protected abstract Evaluator getEvaluator(ActionContext actionContext);
 
-    public float getMinimum(DefaultGame cardGame, ActionContext actionContext) {
-        return getEvaluator(actionContext).evaluateExpression(cardGame);
+    public float getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+        return evaluateExpression(cardGame, actionContext);
     }
 
-    public float getMaximum(DefaultGame cardGame, ActionContext actionContext) {
-        return getEvaluator(actionContext).evaluateExpression(cardGame);
+    public float getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+        return evaluateExpression(cardGame, actionContext);
     }
 
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
-        return getEvaluator(actionContext).evaluateExpression(cardGame);
-    }
+    public abstract float evaluateExpression(DefaultGame cardGame, ActionContext actionContext)
+            throws InvalidGameLogicException;
 
 }

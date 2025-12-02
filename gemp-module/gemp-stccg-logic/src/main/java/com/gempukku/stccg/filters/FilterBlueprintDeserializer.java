@@ -53,16 +53,16 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         for (SkillName value : SkillName.values())
             appendFilter(value);
 
-        simpleFilters.put("another", (cardGame, actionContext) -> Filters.not(Filters.card(actionContext.getSource())));
+        simpleFilters.put("another", (cardGame, actionContext) -> Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
         simpleFilters.put("any", (cardGame, actionContext) -> Filters.any);
         simpleFilters.put("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
         simpleFilters.put("encounteringthiscard", (cardGame, actionContext) ->
-                new EncounteringCardFilter(actionContext.getSource()));
+                new EncounteringCardFilter(actionContext.getPerformingCardId()));
         simpleFilters.put("inplay", (cardGame, actionContext) -> Filters.inPlay);
         simpleFilters.put("inyourdrawdeck", (cardGame, actionContext) ->
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("self", (cardGame, actionContext) -> Filters.card(actionContext.getSource()));
+        simpleFilters.put("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         simpleFilters.put("unique", (cardGame, actionContext) -> Filters.unique);
         simpleFilters.put("your", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yours", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
@@ -71,7 +71,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put("you have no copies in play", (cardGame, actionContext) ->
                 Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yourcardspresentwiththiscard", (cardGame, actionContext) ->
-                Filters.yourCardsPresentWithThisCard(actionContext.getSource()));
+                Filters.yourCardsPresentWithThisCard(actionContext.getPerformingPlayerId(), actionContext.getPerformingCardId()));
     }
 
     private void loadParameterFilters() {
@@ -90,8 +90,14 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             return (cardGame, actionContext) -> affiliation;
         });
         parameterFilters.put("memory",
-                (parameter) -> (cardGame, actionContext) ->
-                        new InCardListFilter(actionContext.getCardsFromMemory(parameter)));
+                (parameter) -> new FilterBlueprint() {
+                    @Override
+                    public Filterable getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+                        Collection<Integer> cardIds = actionContext.getCardIdsFromMemory(parameter);
+                        List<Integer> cardIdList = cardIds.stream().toList();
+                        return new InCardListFilter(cardIdList);
+                    }
+                });
         parameterFilters.put("name",
                 (parameter) -> {
                     String name = Sanitize(parameter);

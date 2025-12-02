@@ -3,9 +3,9 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -21,9 +21,9 @@ import java.util.Objects;
 public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAction {
     private final static int BONUS_POINTS = 25000;
 
-    public ActivateGenerosityTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
-            throws PlayerNotFoundException {
-        super(cardGame, actionContext, TribblePower.GENEROSITY);
+    public ActivateGenerosityTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                                ActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, performingCard);
     }
 
     @Override

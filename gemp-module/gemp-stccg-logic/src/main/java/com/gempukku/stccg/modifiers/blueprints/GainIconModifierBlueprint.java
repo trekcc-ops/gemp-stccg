@@ -2,13 +2,14 @@ package com.gempukku.stccg.modifiers.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.requirement.RequirementCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.requirement.RequirementCondition;
 
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class GainIconModifierBlueprint implements ModifierBlueprint {
         _requirements = requirements;
     }
 
-    public Modifier getModifier(DefaultGame cardGame, ActionContext actionContext) {
+    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
         RequirementCondition requirement = new RequirementCondition(_requirements, actionContext);
-        return new GainIconModifier(actionContext,
+        return new GainIconModifier(thisCard,
                 _filterBlueprint.getFilterable(cardGame, actionContext), requirement, _icon);
     }
 

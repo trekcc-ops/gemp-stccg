@@ -3,8 +3,8 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectPlayerAction;
 import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.TopOfPlayPileFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -20,11 +20,11 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
     private enum Progress { playerSelected, wasCarriedOut }
     private Player _targetPlayer;
     private SelectPlayerAction _selectPlayerAction;
-    private final TribblesActionContext _actionContext;
+    private final ActionContext _actionContext;
 
-    public ActivateKillTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
+    public ActivateKillTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, ActionContext actionContext)
             throws InvalidGameLogicException, PlayerNotFoundException {
-        super(cardGame, actionContext, TribblePower.KILL, Progress.values());
+        super(cardGame, actionContext, performingCard, Progress.values());
         _actionContext = actionContext;
     }
 

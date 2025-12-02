@@ -13,6 +13,9 @@ public class PresentWithCardFilter implements CardFilter {
     public PresentWithCardFilter(PhysicalCard card) {
         _cardId = card.getCardId();
     }
+    public PresentWithCardFilter(int cardId) {
+        _cardId = cardId;
+    }
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {

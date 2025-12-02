@@ -2,6 +2,7 @@ package com.gempukku.stccg.evaluator;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class NumberRangeValueSource extends ValueSource {
 
@@ -14,11 +15,6 @@ public class NumberRangeValueSource extends ValueSource {
     }
 
     @Override
-    public Evaluator getEvaluator(ActionContext actionContext) {
-        throw new RuntimeException("Evaluator has resolved to range");
-    }
-
-    @Override
     public float getMinimum(DefaultGame cardGame, ActionContext actionContext) {
         return _min;
     }
@@ -26,6 +22,11 @@ public class NumberRangeValueSource extends ValueSource {
     @Override
     public float getMaximum(DefaultGame cardGame, ActionContext actionContext) {
         return _max;
+    }
+
+    @Override
+    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+        throw new InvalidGameLogicException("Tried to evaluate a range ValueSource object as a single number");
     }
 
 }

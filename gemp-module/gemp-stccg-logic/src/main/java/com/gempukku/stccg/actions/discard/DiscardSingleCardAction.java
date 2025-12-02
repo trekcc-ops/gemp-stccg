@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameState;
@@ -69,7 +68,7 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
             if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();
             }
-            gameState.addCardToZoneWithoutSendingToClient(cardToDiscard, Zone.DISCARD);
+            gameState.addCardToTopOfDiscardPile(cardToDiscard);
             saveResult(new DiscardCardFromPlayResult(cardToDiscard, this));
         }
         setAsSuccessful();

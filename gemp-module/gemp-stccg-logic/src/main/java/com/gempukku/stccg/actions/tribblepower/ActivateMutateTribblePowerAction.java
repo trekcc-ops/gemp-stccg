@@ -3,9 +3,8 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileAction;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
@@ -20,9 +19,9 @@ import java.util.LinkedList;
 
 
 public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMutateTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext)
+    public ActivateMutateTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, ActionContext actionContext)
             throws PlayerNotFoundException {
-        super(cardGame, actionContext, TribblePower.MUTATE);
+        super(cardGame, actionContext, performingCard);
     }
 
     @Override

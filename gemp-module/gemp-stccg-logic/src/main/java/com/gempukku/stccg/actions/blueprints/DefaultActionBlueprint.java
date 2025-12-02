@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -89,17 +88,22 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     public TopLevelSelectableAction createActionWithNewContext(DefaultGame cardGame, PhysicalCard card) {
         return createActionAndAppendToContext(cardGame, card,
-                new DefaultActionContext(card.getOwnerName(), card, null));
+                new ActionContext(card, card.getOwnerName()));
     }
 
 
     public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
         return createActionAndAppendToContext(card.getGame(), card,
-                new DefaultActionContext(card.getOwnerName(), card, actionResult));
+                new ActionContext(card.getOwnerName(), card, actionResult));
+    }
+
+    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId) {
+        return createActionAndAppendToContext(card.getGame(), card, new ActionContext(card, playerId));
     }
 
 
+
     public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult) {
-        return createActionAndAppendToContext(card.getGame(), card, new DefaultActionContext(playerId, card, actionResult));
+        return createActionAndAppendToContext(card.getGame(), card, new ActionContext(playerId, card, actionResult));
     }
 }

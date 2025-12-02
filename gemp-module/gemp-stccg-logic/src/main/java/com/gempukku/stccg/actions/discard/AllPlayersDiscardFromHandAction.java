@@ -5,13 +5,12 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -74,7 +73,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, discardedCards);
             for (PhysicalCard card : discardedCards) {
-                gameState.addCardToZoneWithoutSendingToClient(card, Zone.DISCARD);
+                gameState.addCardToTopOfDiscardPile(card);
                 saveResult(new DiscardCardFromHandResult(card, this));
             }
         }

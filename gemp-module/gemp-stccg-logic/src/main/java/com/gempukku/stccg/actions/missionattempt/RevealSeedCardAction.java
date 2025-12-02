@@ -10,11 +10,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.PlayerCannotSolveMissionModifier;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class RevealSeedCardAction extends ActionyAction {
 
@@ -24,14 +23,15 @@ public class RevealSeedCardAction extends ActionyAction {
     private enum Progress { misSeedResolved }
     private final MissionLocation _missionLocation;
 
-    public RevealSeedCardAction(Player revealingPlayer, PhysicalCard revealedCard, AttemptMissionAction attemptAction,
-                                MissionLocation mission) {
-        super(revealedCard.getGame(), revealingPlayer, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
+    public RevealSeedCardAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard revealedCard,
+                                AttemptMissionAction attemptAction, MissionLocation mission) {
+        super(cardGame, performingPlayerName, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCardId = revealedCard.getCardId();
         _missionAttemptActionId = attemptAction.getActionId();
         _missionLocation = mission;
         revealedCard.reveal();
     }
+
 
 
     @Override

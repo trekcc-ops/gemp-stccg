@@ -4,18 +4,19 @@ import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMasakaTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
-        super(cardGame, actionContext, TribblePower.MASAKA);
+    public ActivateMasakaTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                            ActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, performingCard);
         for (Player player : cardGame.getPlayers()) {
             int handSize = player.getCardsInHand().size();
             SelectCardsAction selectAction = new SelectVisibleCardsAction(cardGame,

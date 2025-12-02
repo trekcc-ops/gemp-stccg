@@ -2,6 +2,7 @@ package com.gempukku.stccg.requirement;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class TurnLimitRequirement implements Requirement {
 
@@ -12,6 +13,11 @@ public class TurnLimitRequirement implements Requirement {
     }
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        return actionContext.getSource().checkTurnLimit(cardGame, _limitPerTurn);
+        try {
+            return actionContext.getPerformingCard(cardGame).checkTurnLimit(cardGame, _limitPerTurn);
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            return false;
+        }
     }
 }

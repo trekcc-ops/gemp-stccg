@@ -3,6 +3,7 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class MinimumValueSource extends ValueSource {
 
@@ -18,16 +19,11 @@ public class MinimumValueSource extends ValueSource {
         _second = second;
     }
 
-    protected Evaluator getEvaluator(ActionContext actionContext) {
-        return new Evaluator() {
-            @Override
-            public float evaluateExpression(DefaultGame game) {
-                return Math.min(
-                        _first.evaluateExpression(game, actionContext),
-                        _second.evaluateExpression(game, actionContext)
-                );
-            }
-        };
+    @Override
+    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+        return Math.min(
+                _first.evaluateExpression(cardGame, actionContext),
+                _second.evaluateExpression(cardGame, actionContext)
+        );
     }
-
 }

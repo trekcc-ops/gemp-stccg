@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -59,7 +60,7 @@ public class SelectSubActionBlueprint implements SubActionBlueprint {
 
     @Override
     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction parentAction, ActionContext context)
-            throws PlayerNotFoundException {
+            throws PlayerNotFoundException, InvalidGameLogicException {
         Action action = switch (_effectType) {
             case CHOOSEANUMBER -> new SelectNumberAction(cardGame, context, _choiceText, _valueSource, _saveToMemoryId);
             case CHOOSEOPPONENT -> {

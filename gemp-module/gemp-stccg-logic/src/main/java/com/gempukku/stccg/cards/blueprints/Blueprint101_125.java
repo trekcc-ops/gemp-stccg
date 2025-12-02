@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -40,9 +39,8 @@ public class Blueprint101_125 extends CardBlueprint {
     public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new ArrayList<>();
         if (thisCard instanceof ST1EPhysicalCard stCard) {
-            Requirement playRequirement = new KilledTriggerChecker(_killedPersonnelFilterBlueprint);
-            List<Requirement> playRequirements = List.of(playRequirement);
-            ActionContext context = new DefaultActionContext(player.getPlayerId(), thisCard, actionResult);
+            List<Requirement> playRequirements = List.of(new KilledTriggerChecker(_killedPersonnelFilterBlueprint));
+            ActionContext context = new ActionContext(player.getPlayerId(), thisCard, actionResult);
             if (context.acceptsAllRequirements(thisCard.getGame(), playRequirements)) {
                 try {
                     TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);

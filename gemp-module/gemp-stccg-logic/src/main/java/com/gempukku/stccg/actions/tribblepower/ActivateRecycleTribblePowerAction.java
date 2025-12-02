@@ -2,8 +2,8 @@ package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.filters.InYourDiscardFilter;
@@ -18,8 +18,9 @@ import java.util.List;
 
 public class ActivateRecycleTribblePowerAction extends ActivateTribblePowerAction {
 
-    public ActivateRecycleTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
-        super(cardGame, actionContext, TribblePower.RECYCLE);
+    public ActivateRecycleTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                             ActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, performingCard);
     }
 
     @Override

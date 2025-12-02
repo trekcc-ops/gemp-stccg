@@ -20,11 +20,29 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         this(performingCard.getGame(), performingCard, performingPlayer, false, 1);
     }
 
+    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
+                           boolean optional, int count) {
+        super(cardGame, performingPlayerName, "Draw a card", ActionType.DRAW_CARD);
+        _performingCard = performingCard;
+        _cardDrawCountEvaluator = new ConstantEvaluator(count);
+    }
+
+    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
+                           SkillDotCountEvaluator drawCountEvaluator) {
+        super(cardGame, performingPlayerName, "Draw a card", ActionType.DRAW_CARD);
+        _cardDrawCountEvaluator = drawCountEvaluator;
+        _performingCard = performingCard;
+    }
+
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
                            SkillDotCountEvaluator drawCountEvaluator) {
         super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
         _cardDrawCountEvaluator = drawCountEvaluator;
         _performingCard = performingCard;
+    }
+
+    public DrawCardsAction(PhysicalCard performingCard, String performingPlayerName, int count, DefaultGame cardGame) {
+        this(cardGame, performingCard, performingPlayerName, false, count);
     }
 
     public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, int count, DefaultGame cardGame) {
@@ -33,9 +51,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
 
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
                            boolean optional, int count) {
-        super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
-        _performingCard = performingCard;
-        _cardDrawCountEvaluator = new ConstantEvaluator(count);
+        this(cardGame, performingCard, performingPlayer.getPlayerId(), optional, count);
     }
 
     @Override

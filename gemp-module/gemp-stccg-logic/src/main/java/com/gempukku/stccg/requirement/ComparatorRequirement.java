@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class ComparatorRequirement implements Requirement {
 
@@ -28,9 +29,10 @@ public class ComparatorRequirement implements Requirement {
     }
 
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        final float firstQuantity = _firstNumber.evaluateExpression(cardGame, actionContext);
-        final float secondQuantity = _secondNumber.evaluateExpression(cardGame, actionContext);
-        return switch(_comparatorType) {
+        try {
+            final float firstQuantity = _firstNumber.evaluateExpression(cardGame, actionContext);
+            final float secondQuantity = _secondNumber.evaluateExpression(cardGame, actionContext);
+            return switch (_comparatorType) {
                 case ISEQUAL -> firstQuantity == secondQuantity;
                 case ISGREATERTHAN -> firstQuantity > secondQuantity;
                 case ISGREATERTHANOREQUAL -> firstQuantity >= secondQuantity;
@@ -38,5 +40,9 @@ public class ComparatorRequirement implements Requirement {
                 case ISLESSTHANOREQUAL -> firstQuantity <= secondQuantity;
                 case ISNOTEQUAL -> firstQuantity != secondQuantity;
             };
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            return false;
+        }
     }
 }

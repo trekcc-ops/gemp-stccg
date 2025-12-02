@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
@@ -272,7 +271,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType) {
         ActionBlueprint actionBlueprint = _blueprint.getDiscardedFromPlayTrigger(requiredType);
         return (actionBlueprint == null) ?
-                null : actionBlueprint.createActionWithNewContext(this, null);
+                null : actionBlueprint.createActionWithNewContext(getGame(), this);
     }
 
 
@@ -306,12 +305,13 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         };
     }
 
-    public List<TopLevelSelectableAction> getRequiredResponseActions(ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult) {
         return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
     }
 
+
     ActionContext createActionContext() {
-        return new DefaultActionContext(getOwnerName(), this, null);
+        return new ActionContext(this, _ownerName);
     }
 
 

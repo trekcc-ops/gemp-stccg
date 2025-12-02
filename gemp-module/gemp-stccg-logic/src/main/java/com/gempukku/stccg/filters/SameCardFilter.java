@@ -12,6 +12,10 @@ public class SameCardFilter implements CardFilter {
     public SameCardFilter(PhysicalCard card) {
         _cardId = card.getCardId();
     }
+    public SameCardFilter(int cardId) {
+        _cardId = cardId;
+    }
+
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {

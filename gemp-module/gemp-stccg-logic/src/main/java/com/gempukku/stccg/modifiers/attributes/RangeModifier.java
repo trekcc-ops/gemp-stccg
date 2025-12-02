@@ -1,13 +1,13 @@
 package com.gempukku.stccg.modifiers.attributes;
 
 import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.evaluator.ConstantEvaluator;
+import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.requirement.TrueCondition;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
-import com.gempukku.stccg.modifiers.ModifierEffect;
 
 public class RangeModifier extends AttributeModifier {
 
@@ -18,7 +18,7 @@ public class RangeModifier extends AttributeModifier {
 
     public RangeModifier(PhysicalCard performingCard, PhysicalCard affectedCard, Condition condition,
                          int modifierValue) {
-        super(performingCard, new FixedCardResolver(affectedCard), condition,
+        super(performingCard, Filters.card(affectedCard), condition,
                 new ConstantEvaluator(modifierValue), CardAttribute.RANGE,
                 ModifierEffect.SHIP_ATTRIBUTE_MODIFIER);
     }

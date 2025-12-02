@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -33,7 +32,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                                                 AttemptingUnit attemptingUnit, MissionLocation missionLocation,
                                                 AttemptMissionAction missionAttemptAction)
             throws InvalidGameLogicException {
-        ActionContext actionContext = new DefaultActionContext(thisCard, performingPlayerName);
+        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation);

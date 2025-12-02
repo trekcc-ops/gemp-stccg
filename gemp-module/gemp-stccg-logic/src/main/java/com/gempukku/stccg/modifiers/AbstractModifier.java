@@ -23,12 +23,33 @@ public abstract class AbstractModifier implements Modifier {
     protected final Condition _condition;
     private final ModifierEffect _effect;
 
-    protected AbstractModifier(ModifierEffect effect) {
-        _cardSource = null;
+    protected AbstractModifier(PhysicalCard source, ActionCardResolver affectedCards, Condition condition,
+                               ModifierEffect effect) {
+        _cardSource = source;
         _text = null;
-        _cardResolver = new CardFilterResolver(Filters.any);
-        _condition = null;
+        _cardResolver = affectedCards;
+        _condition = condition;
         _effect = effect;
+    }
+
+    protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter,
+                               Condition condition, ModifierEffect effect) {
+        _cardSource = source;
+        _text = text;
+        CardFilter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
+        _cardResolver = new CardFilterResolver(affectedFilter);
+        _condition = condition;
+        _effect = effect;
+    }
+
+    protected AbstractModifier(PhysicalCard source, CardFilter affectedCards, Condition condition,
+                               ModifierEffect effect) {
+        this(source, null, affectedCards, condition, effect);
+    }
+
+
+    protected AbstractModifier(ModifierEffect effect) {
+        this(null, null, Filters.any, null, effect);
     }
 
     protected AbstractModifier(String text, Filterable affectFilter, ModifierEffect effect) {
@@ -43,26 +64,6 @@ public abstract class AbstractModifier implements Modifier {
     protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition,
                                ModifierEffect effect) {
         this(source, null, affectFilter, condition, effect);
-    }
-
-    protected AbstractModifier(PhysicalCard source, ActionCardResolver affectedCards, Condition condition,
-                               ModifierEffect effect) {
-        _cardSource = source;
-        _text = null;
-        _cardResolver = affectedCards;
-        _condition = condition;
-        _effect = effect;
-    }
-
-
-    protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter,
-                               Condition condition, ModifierEffect effect) {
-        _cardSource = source;
-        _text = text;
-        CardFilter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
-        _cardResolver = new CardFilterResolver(affectedFilter);
-        _condition = condition;
-        _effect = effect;
     }
 
     @Override

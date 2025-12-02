@@ -121,7 +121,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             }
 
             List<PhysicalCard> seedCards = _missionLocation.getSeedCards();
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
             if (!getProgress(Progress.endedMissionAttempt)) {
 
@@ -129,8 +128,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                     PhysicalCard firstSeedCard = seedCards.getFirst();
                     if (_lastCardRevealed != firstSeedCard) {
                         _lastCardRevealed = firstSeedCard;
-                        return new RevealSeedCardAction(
-                                performingPlayer, firstSeedCard, this, _missionLocation);
+                        return new RevealSeedCardAction(cardGame, _performingPlayerId, firstSeedCard, this,
+                                _missionLocation);
                     } else if (_lastCardEncountered != firstSeedCard) {
                         _lastCardEncountered = firstSeedCard;
                         List<Action> encounterActions = firstSeedCard.getEncounterActions(

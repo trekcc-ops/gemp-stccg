@@ -9,11 +9,9 @@ public class ConstantValueSource extends ValueSource {
 
     @JsonCreator
     public ConstantValueSource(int value) { _value = value; }
-    public Evaluator getEvaluator(ActionContext actionContext) {
-        return new ConstantEvaluator(_value);
+
+    @Override
+    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+        return _value;
     }
-
-    public float getMinimum(DefaultGame cardGame, ActionContext actionContext) { return _value; }
-
-    public float getMaximum(DefaultGame cardGame, ActionContext actionContext) { return _value; }
 }

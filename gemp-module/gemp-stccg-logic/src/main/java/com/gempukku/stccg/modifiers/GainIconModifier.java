@@ -1,17 +1,17 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.requirement.Condition;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.requirement.Condition;
 
 public class GainIconModifier extends AbstractModifier implements IconAffectingModifier {
     private final CardIcon _icon;
 
-    public GainIconModifier(ActionContext context, Filterable affectFilter, Condition condition, CardIcon icon) {
-        super(context.getSource(), null, affectFilter, condition, ModifierEffect.GAIN_ICON_MODIFIER);
+    public GainIconModifier(PhysicalCard performingCard, Filterable affectFilter, Condition condition, CardIcon icon) {
+        super(performingCard, null, Filters.and(affectFilter), condition, ModifierEffect.GAIN_ICON_MODIFIER);
         _icon = icon;
     }
 

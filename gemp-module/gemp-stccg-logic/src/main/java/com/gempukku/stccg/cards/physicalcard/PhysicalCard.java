@@ -93,7 +93,7 @@ public interface PhysicalCard {
     TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
     List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) throws PlayerNotFoundException;
 
-    List<TopLevelSelectableAction> getRequiredResponseActions(ActionResult actionResult);
+    List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult);
 
     boolean isUnique();
 

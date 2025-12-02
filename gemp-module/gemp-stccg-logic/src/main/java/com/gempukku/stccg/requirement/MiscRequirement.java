@@ -9,11 +9,10 @@ import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.filters.AnyCardFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Objects;
 
@@ -60,7 +59,7 @@ public class MiscRequirement implements Requirement {
                 case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE ->
                         player.hasCardInZone(cardGame, _requirementType.zone, count, filterable);
             };
-        } catch(PlayerNotFoundException exp) {
+        } catch(PlayerNotFoundException | InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
         }

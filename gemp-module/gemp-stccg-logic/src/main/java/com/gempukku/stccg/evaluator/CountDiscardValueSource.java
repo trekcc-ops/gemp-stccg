@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.filters.AnyCardFilterBlueprint;
-import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.AnyCardFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerResolver;
 
 import java.util.Objects;
 
@@ -38,21 +38,17 @@ public class CountDiscardValueSource extends ValueSource {
         _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, new AnyCardFilterBlueprint());
     }
 
-    protected Evaluator getEvaluator(ActionContext actionContext) {
-        return new MultiplyEvaluator(_multiplier, new Evaluator() {
-            final String playerId = _playerSource.getPlayerId(actionContext);
-            @Override
-            public float evaluateExpression(DefaultGame game) {
-                try {
-                    Player player = game.getPlayer(playerId);
-                    final Filterable filterable = _filterBlueprint.getFilterable(game, actionContext);
-                    int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), game, filterable).size();
-                    return Math.min(_limit, count);
-                } catch(PlayerNotFoundException exp) {
-                    game.sendErrorMessage(exp);
-                    return 0;
-                }
-            }
-        });
+    @Override
+    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+        try {
+            String playerId = _playerSource.getPlayerId(actionContext);
+            Player player = cardGame.getPlayer(playerId);
+            final Filterable filterable = _filterBlueprint.getFilterable(cardGame, actionContext);
+            int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), cardGame, filterable).size();
+            return Math.min(_limit, count);
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            return 0;
+        }
     }
 }

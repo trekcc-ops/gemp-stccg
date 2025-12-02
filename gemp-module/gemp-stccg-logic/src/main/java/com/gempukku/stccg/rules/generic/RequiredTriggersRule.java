@@ -16,7 +16,7 @@ public class RequiredTriggersRule extends GenericRule {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(cardGame)) {
             if (!card.hasTextRemoved(cardGame)) {
-                result.addAll(card.getRequiredResponseActions(actionResult));
+                result.addAll(card.getRequiredResponseActions(cardGame, actionResult));
             }
         }
         return result;

@@ -378,12 +378,6 @@ public class CardBlueprint {
         _playRequirements.add(requirement);
     }
 
-    public void appendSeedRequirement(Requirement requirement) {
-        if (_seedRequirements == null)
-            _seedRequirements = new LinkedList<>();
-        _seedRequirements.add(requirement);
-    }
-
     public void appendTargetFilter(FilterBlueprint targetFilter) {
         if (targetFilters == null)
             targetFilters = new LinkedList<>();
@@ -461,9 +455,8 @@ public class CardBlueprint {
 
         // Add in-play modifiers created through JSON definitions
         for (ModifierBlueprint modifierSource : inPlayModifiers) {
-            ActionContext context =
-                    new DefaultActionContext(card.getOwnerName(), card, null);
-            result.add(modifierSource.getModifier(cardGame, context));
+            ActionContext context = new ActionContext(card, card.getOwnerName());
+            result.add(modifierSource.createModifier(cardGame, card, context));
         }
 
         // Add in-play modifiers created through Java definitions
@@ -478,10 +471,6 @@ public class CardBlueprint {
 
     public boolean hasCharacteristic(Characteristic characteristic) {
         return _characteristics.contains(characteristic);
-    }
-
-    public void addCharacteristic(Characteristic characteristic) {
-        _characteristics.add(characteristic);
     }
 
     public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
@@ -560,27 +549,18 @@ public class CardBlueprint {
         _specialEquipment.addAll(specialEquipment);
     }
 
-    public List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
-                                                                      ActionResult actionResult, List<ActionBlueprint> actionBlueprints) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
-        actionBlueprints.forEach(actionSource -> {
-            if (actionSource != null) {
-                TopLevelSelectableAction action = actionSource.createActionWithNewContext(card, playerId, actionResult);
-                if (action != null) result.add(action);
-            }
-        });
-        return result;
-    }
-
 
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame cardGame) {
-        List<ActionBlueprint> resultSources = new ArrayList<>();
+        List<TopLevelSelectableAction> result = new ArrayList<>();
+        String performingPlayerName = player.getPlayerId();
         for (ActionBlueprint actionBlueprint : _actionBlueprints) {
-            if (actionBlueprint instanceof ActivateCardActionBlueprint)
-                resultSources.add(actionBlueprint);
+            if (actionBlueprint instanceof ActivateCardActionBlueprint) {
+                TopLevelSelectableAction action = actionBlueprint.createActionWithNewContext(thisCard, performingPlayerName);
+                if (action != null) result.add(action);
+            }
         }
-        return getActionsFromActionSources(player.getPlayerId(), thisCard, null, resultSources);
+        return result;
     }
 
 

@@ -26,6 +26,7 @@ public interface ActionBlueprint {
     TopLevelSelectableAction createActionWithNewContext(DefaultGame cardGame, PhysicalCard card);
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult);
     TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult);
+    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId);
 
     void addCost(SubActionBlueprint subActionBlueprint);
     void addEffect(SubActionBlueprint subActionBlueprint);

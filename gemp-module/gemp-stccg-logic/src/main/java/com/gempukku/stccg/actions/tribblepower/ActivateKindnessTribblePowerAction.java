@@ -6,19 +6,20 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardOnBottomOfPlayPileAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerAction {
 
-    public ActivateKindnessTribblePowerAction(TribblesGame cardGame, TribblesActionContext actionContext) throws PlayerNotFoundException {
-        super(cardGame, actionContext, TribblePower.KINDNESS);
+    public ActivateKindnessTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                              ActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, performingCard);
         appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (Player player : cardGame.getPlayers()) {

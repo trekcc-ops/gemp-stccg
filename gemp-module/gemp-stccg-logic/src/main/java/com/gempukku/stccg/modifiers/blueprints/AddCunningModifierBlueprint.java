@@ -34,11 +34,11 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
         }
     }
 
-    public Modifier getModifier(DefaultGame cardGame, ActionContext actionContext) {
-        PhysicalCard thisCard = actionContext.getSource();
+    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
         Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         Condition ifCondition = new RequirementCondition(_requirements, actionContext);
         return new CunningModifier(thisCard, affectFilter, ifCondition, _amount);
     }
+
 
 }

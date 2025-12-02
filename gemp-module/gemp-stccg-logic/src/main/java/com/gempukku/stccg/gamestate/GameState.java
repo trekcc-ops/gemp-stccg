@@ -180,21 +180,22 @@ public abstract class GameState {
 
 
     public void addCardToZoneWithoutSendingToClient(PhysicalCard card, Zone zone) {
-        if (zone == Zone.DISCARD &&
-                getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
-            zone = Zone.REMOVED;
+        if (zone == Zone.DISCARD) {
+            addCardToTopOfDiscardPile(card);
+        } else {
+            if (zone.isInPlay()) {
+                _inPlay.add(card);
+                card.startAffectingGame(card.getGame());
+            }
 
-        if (zone.isInPlay()) {
-            _inPlay.add(card);
-            card.startAffectingGame(card.getGame());
+            if (zone.hasList()) {
+                List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
+                zoneCardList.add(card);
+            }
+
+            card.setZone(zone);
+
         }
-
-        if (zone.hasList()) {
-            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
-            zoneCardList.add(card);
-        }
-
-        card.setZone(zone);
     }
 
     public void addCardToTopOfDiscardPile(PhysicalCard card) {
