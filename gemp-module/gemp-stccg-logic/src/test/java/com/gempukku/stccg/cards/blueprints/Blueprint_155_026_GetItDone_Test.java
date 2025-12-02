@@ -178,7 +178,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         if (decision instanceof ActionSelectionDecision actionSelection) {
             for (TopLevelSelectableAction action : actionSelection.getActions()) {
                 PhysicalCard cardSource = action.getPerformingCard();
-                if (Objects.equals(cardSource.getTitle(), "Get It Done")) {
+                if (cardSource != null && Objects.equals(cardSource.getTitle(), "Get It Done")) {
                     result = true;
                 }
             }

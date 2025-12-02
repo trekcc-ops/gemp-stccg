@@ -17,7 +17,7 @@ public class ST1EChangeAffiliationRule extends ST1ERule {
     public List<TopLevelSelectableAction> getPhaseActions(ST1EGame cardGame, Player player) {
         LinkedList<TopLevelSelectableAction> result = new LinkedList<>();
         if (player.getPlayerId().equals(cardGame.getCurrentPlayerId())) {
-            for (PhysicalCard card : Filters.filterYourActive(cardGame, player)) {
+            for (PhysicalCard card : Filters.filterYourCardsInPlay(cardGame, player)) {
                 if (card instanceof AffiliatedCard affiliatedCard && affiliatedCard.getAffiliationOptions().size() > 1) {
                     ChangeAffiliationAction action = new ChangeAffiliationAction(cardGame, player, affiliatedCard);
                     if (action.canBeInitiated(cardGame))

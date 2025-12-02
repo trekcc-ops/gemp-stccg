@@ -58,7 +58,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 Collection<PhysicalCard> availableFacilities = new HashSet<>();
                 for (MissionLocation location : gameState.getSpacelineLocations()) {
                     Collection<PhysicalCard> facilities =
-                            Filters.filterActive(game, FacilityType.OUTPOST, Filters.atLocation(location));
+                            Filters.filterCardsInPlay(game, FacilityType.OUTPOST, Filters.atLocation(location));
                     for (PhysicalCard card : facilities) {
                         if (card instanceof FacilityCard facility && reportable.canReportToFacility(facility))
                             availableFacilities.add(facility);

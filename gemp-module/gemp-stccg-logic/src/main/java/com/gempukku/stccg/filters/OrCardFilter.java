@@ -1,6 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Arrays;
@@ -13,6 +14,11 @@ public class OrCardFilter implements CardFilter {
 
     public OrCardFilter(CardFilter... filters) {
         _filters.addAll(Arrays.asList(filters));
+    }
+
+    public OrCardFilter(Filterable... filterables) {
+        CardFilter[] filters = Filters.convertToFilters(filterables);
+        _filters.addAll(List.of(filters));
     }
 
     @Override

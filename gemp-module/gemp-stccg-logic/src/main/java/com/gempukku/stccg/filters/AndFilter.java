@@ -4,20 +4,23 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
 
 public class AndFilter implements CardFilter {
 
-    private final List<CardFilter> _filters;
+    private final Iterable<CardFilter> _filters;
 
     public AndFilter(CardFilter... filters) {
-        _filters = Arrays.asList(filters);
+        _filters = List.of(filters);
     }
 
-    public AndFilter(List<CardFilter> filters) {
+    public AndFilter(Collection<CardFilter> filters) {
         _filters = filters;
+    }
+
+    public AndFilter(Filterable... filterables) {
+        _filters = List.of(Filters.convertToFilters(filterables));
     }
 
 

@@ -88,6 +88,12 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
+    public boolean isActive() {
+        // TODO - account for other inactive states
+        return !_isStopped;
+    }
+
+    @Override
     public boolean isPresentWith(PhysicalCard card) {
         return card.getGameLocation() == this.getGameLocation() &&
                 card.getAttachedTo() == this.getAttachedTo() &&

@@ -12,13 +12,12 @@ import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -191,4 +190,6 @@ public interface PhysicalCard extends Filterable {
     }
 
     boolean isOwnedBy(String playerName);
+
+    boolean isActive();
 }

@@ -26,6 +26,14 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> _targetCards;
 
+    public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, String performingPlayerName,
+                                          CardFilter cardFilter) {
+        super(performingCard.getGame(), performingPlayerName, "Shuffle cards into draw deck",
+                ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
+        _cardTarget = new CardFilterResolver(cardFilter);
+        _performingCard = performingCard;
+    }
+
     public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, Player performingPlayer,
                                           CardFilter cardFilter) {
         super(performingCard.getGame(), performingPlayer, "Shuffle cards into draw deck",

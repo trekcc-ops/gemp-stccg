@@ -7,11 +7,12 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
+import com.gempukku.stccg.filters.CharacteristicFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
+import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -45,7 +46,7 @@ public class Blueprint155_079 extends CardBlueprint {
         return new ModifierSkill("If with any K'Ehleyr, both are attributes all +2.") {
             @Override
             public Modifier getModifier(PhysicalCard thisCard) {
-                Filterable usageFilter = Filters.any(Characteristic.K_EHLEYR);
+                Filterable usageFilter = new CharacteristicFilter(Characteristic.K_EHLEYR);
                 Filterable affectFilter = Filters.or(thisCard,
                         Filters.and(Filters.presentWith(thisCard), Characteristic.K_EHLEYR));
                 return new AllAttributeModifier(thisCard, affectFilter,

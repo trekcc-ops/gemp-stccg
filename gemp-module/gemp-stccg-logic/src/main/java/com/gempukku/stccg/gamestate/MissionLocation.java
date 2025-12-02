@@ -175,7 +175,7 @@ public class MissionLocation implements GameLocation {
                 return getYourAwayTeamsOnSurface(cardGame, player).anyMatch(
                         awayTeam -> awayTeam.canAttemptMission(cardGame, this));
             if (missionType == MissionType.SPACE)
-                return Filters.filterYourActive(cardGame, player, Filters.ship, Filters.atLocation(this))
+                return Filters.filterYourCardsInPlay(cardGame, player, Filters.ship, Filters.atLocation(this))
                         .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(this));
         }
         return false;

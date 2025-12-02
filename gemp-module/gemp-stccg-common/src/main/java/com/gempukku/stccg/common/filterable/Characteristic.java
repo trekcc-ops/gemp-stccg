@@ -8,6 +8,7 @@ public enum Characteristic implements Filterable {
 
     @SuppressWarnings("SpellCheckingInspection") K_EHLEYR("K'Ehleyr"),
     MAJE("Maje"),
+    NOR("Nor"),
     SCOTTY("Scotty");
 
     private String _humanReadable;

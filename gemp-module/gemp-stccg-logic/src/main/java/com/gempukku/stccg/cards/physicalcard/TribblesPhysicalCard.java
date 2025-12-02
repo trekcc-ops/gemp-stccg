@@ -33,6 +33,11 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
+    public boolean isActive() {
+        return true;
+    }
+
+    @Override
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
 
     public boolean canPlayOutOfSequence(TribblesGame cardGame) {

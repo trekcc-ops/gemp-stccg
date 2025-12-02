@@ -23,7 +23,7 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
 
     public Filterable getFilterable(DefaultGame cardGame) {
         try {
-            CardFilter matchingFilter = Filters.matchingAffiliation(_cardTarget.getCards(cardGame));
+            CardFilter matchingFilter = new MatchingAffiliationFilter(_cardTarget.getCards(cardGame));
             List<Filterable> finalFilterables = new ArrayList<>();
             finalFilterables.add(matchingFilter);
             finalFilterables.addAll(_additionalFilters);

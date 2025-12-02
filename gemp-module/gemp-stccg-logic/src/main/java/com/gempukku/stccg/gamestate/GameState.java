@@ -7,7 +7,6 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -211,19 +210,6 @@ public abstract class GameState {
             card.startAffectingGame(card.getGame());
     }
 
-
-    public void iterateActiveCards(PhysicalCardVisitor physicalCardVisitor) {
-        for (PhysicalCard physicalCard : _inPlay) {
-            if (isCardInPlayActive(physicalCard))
-                if (physicalCardVisitor.visitPhysicalCard(physicalCard))
-                    return;
-        }
-
-    }
-
-    public PhysicalCard findCardById(int cardId) {
-        return _allCards.get(cardId);
-    }
 
     @JsonProperty("cardsInGame")
     private Map<Integer, PhysicalCard> getAllCardsForSerialization() {

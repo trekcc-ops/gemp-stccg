@@ -3,11 +3,10 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.InYourDiscardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
@@ -32,28 +31,22 @@ public class ActivateRecycleTribblePowerAction extends ActivateTribblePowerActio
                 playersWithCards.add(player.getPlayerId());
         }
         if (playersWithCards.size() == 1)
-            playerChosen(playersWithCards.getFirst(), cardGame);
+            playerChosen(playersWithCards.getFirst());
         else
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a player",
                             playersWithCards, cardGame) {
                         @Override
-                        protected void validDecisionMade(int index, String result)
-                                throws DecisionResultInvalidException {
-                            try {
-                                playerChosen(result, cardGame);
-                            } catch(PlayerNotFoundException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
-                            }
+                        protected void validDecisionMade(int index, String result) {
+                            playerChosen(result);
                         }
                     });
         return getNextAction();
     }
 
-    private void playerChosen(String chosenPlayer, DefaultGame game) throws PlayerNotFoundException {
-        Player chosenPlayerObj = game.getPlayer(chosenPlayer);
+    private void playerChosen(String chosenPlayer) {
         Action shuffleAction = new ShuffleCardsIntoDrawDeckAction(
-                _performingCard, game.getPlayer(chosenPlayer), Filters.yourDiscard(chosenPlayerObj));
+                _performingCard, chosenPlayer, new InYourDiscardFilter(chosenPlayer));
         appendEffect(shuffleAction);
     }
 

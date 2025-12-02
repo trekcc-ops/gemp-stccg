@@ -29,7 +29,7 @@ public class BeamCardsAction extends BeamOrWalkAction {
                         Filters.planetLocation,
                         Filters.and(
                                 Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
-                                Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
+                                Filters.or(Filters.your(_performingPlayerId)) // TODO - Add unshielded
                         )
                 )
         );

@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
@@ -45,7 +46,7 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
         } else {
             selectAction = new SelectCardsFromDialogAction(
                     cardGame, context.getPerformingPlayerId(), "Select a card",
-                    Filters.in(selectableCards));
+                    new InCardListFilter(selectableCards));
         }
         return new SelectCardsResolver(selectAction);
     }

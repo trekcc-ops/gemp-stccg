@@ -1,11 +1,8 @@
 package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -60,7 +57,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
                         Filters.planetLocation,
                         Filters.and(
                                 Filters.or(Filters.ship, Filters.facility),
-                                Filters.or(Filters.your(_performingPlayer))
+                                Filters.or(Filters.your(_performingPlayerId))
                         )
                 )
         );
@@ -83,7 +80,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
     private List<PhysicalCard> getBeamableCards(DefaultGame cardGame, PhysicalCard origin) {
         Collection<PhysicalCard> movableCards =
                 Filters.filter(origin.getAttachedCards(cardGame),
-                        Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
+                        Filters.your(_performingPlayerId), Filters.or(Filters.personnel, Filters.equipment));
         return new ArrayList<>(movableCards);
     }
 
@@ -94,14 +91,14 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
     @Override
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
         // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
-        return Filters.filterActive(
+        return Filters.filterCardsInPlay(
                 game,
                 Filters.atLocation(_cardSource.getGameLocation()),
                 Filters.or(
                         Filters.planetLocation,
                         Filters.and(
                                 Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
-                                Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
+                                Filters.or(Filters.your(_performingPlayerId)) // TODO - Add unshielded
                         )
                 )
         );
@@ -113,7 +110,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
         List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {
             if (!Filters.filter(destinationCard.getAttachedCards(game),
-                    Filters.your(_performingPlayer), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
+                    Filters.your(_performingPlayerId), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
                 // TODO - Doesn't do a compatibility or beamable check, does it need to?
                 cards.add(destinationCard);
         }

@@ -3,11 +3,11 @@ package com.gempukku.stccg.filters;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class SkillDotsLessThanCardFilter implements CardFilter {
+public class SkillDotsLessThanOrEqualToCardFilter implements CardFilter {
 
     private final int _count;
 
-    public SkillDotsLessThanCardFilter(int count) {
+    public SkillDotsLessThanOrEqualToCardFilter(int count) {
         _count = count;
     }
 

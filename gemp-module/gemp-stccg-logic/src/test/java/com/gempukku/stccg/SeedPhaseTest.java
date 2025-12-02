@@ -5,11 +5,10 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.GameSnapshot;
 import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -44,7 +43,7 @@ public class SeedPhaseTest extends AbstractAtTest {
         autoSeedFacility();
 
         // Verify that both facilities were seeded
-        assertEquals(2, Filters.filterActive(_game, CardType.FACILITY).size());
+        assertEquals(2, Filters.filterCardsInPlay(_game, CardType.FACILITY).size());
 
         // Verify that the seed phase is over and both players have drawn starting hands
         assertEquals(Phase.CARD_PLAY, _game.getGameState().getCurrentPhase());

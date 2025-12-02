@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
@@ -43,7 +43,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
 
             // Each player then shuffles their play pile into their decks.
             ShuffleCardsIntoDrawDeckAction action = new ShuffleCardsIntoDrawDeckAction(null, player,
-                    Filters.in(player.getCardGroupCards(Zone.PLAY_PILE)));
+                    new InCardListFilter(player.getCardGroupCards(Zone.PLAY_PILE)));
             action.processEffect(cardGame);
             cardGame.getActionsEnvironment().logCompletedActionNotInStack(action);
             cardGame.sendActionResultToClient();

@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -57,7 +57,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 if (_destinationTarget == null) {
                     _destinationTarget = new SelectCardsResolver(new SelectVisibleCardsAction(cardGame, performingPlayer,
                             "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
-                            Filters.in(availableMissions), 1, 1));
+                            new InCardListFilter(availableMissions),1, 1));
                 }
 
                 if (!_destinationTarget.getSelectionAction().wasCarriedOut()) {
