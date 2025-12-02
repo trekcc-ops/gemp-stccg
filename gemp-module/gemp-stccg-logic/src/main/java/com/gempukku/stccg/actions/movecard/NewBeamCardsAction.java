@@ -51,7 +51,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
     private List<PhysicalCard> getValidOrigins(DefaultGame cardGame, PhysicalCard transportersCard) {
         List<PhysicalCard> result = new ArrayList<>();
         result.add(transportersCard);
-        Collection<PhysicalCard> otherCards = Filters.filterActive(cardGame,
+        Collection<PhysicalCard> otherCards = Filters.filterCardsInPlay(cardGame,
                 Filters.atLocation(transportersCard.getGameLocation()),
                 Filters.or(
                         Filters.planetLocation,

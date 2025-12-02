@@ -69,6 +69,8 @@ public abstract class DefaultGame {
 
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
 
+    public Collection<PhysicalCard> getAllCardsInPlay() { return getGameState().getAllCardsInPlay(); }
+
     public void addGameResultListener(GameResultListener listener) {
         _gameResultListeners.add(listener);
     }

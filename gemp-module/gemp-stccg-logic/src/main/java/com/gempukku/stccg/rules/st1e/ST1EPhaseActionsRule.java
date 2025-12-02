@@ -22,7 +22,7 @@ public class ST1EPhaseActionsRule extends ST1ERule {
         final GameState gameState = cardGame.getGameState();
         final Phase currentPhase = gameState.getCurrentPhase();
         if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
-            Filters.filterActive(cardGame, CardType.MISSION).forEach(
+            Filters.filterCardsInPlay(cardGame, CardType.MISSION).forEach(
                     card -> result.addAll(card.getRulesActionsWhileInPlay(player, cardGame)));
             Filters.filterYourCardsInPlay(cardGame, player, Filters.not(CardType.MISSION)).forEach(
                     card -> result.addAll(card.getRulesActionsWhileInPlay(player, cardGame)));
@@ -36,7 +36,7 @@ public class ST1EPhaseActionsRule extends ST1ERule {
             }
         }
 
-        Filters.filterActive(cardGame).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
+        Filters.filterCardsInPlay(cardGame).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
         return result;
     }
 

@@ -88,7 +88,7 @@ public class ActionResult {
         Map<Player, List<TopLevelSelectableAction>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
             List<TopLevelSelectableAction> playerActions = new LinkedList<>();
-            for (PhysicalCard card : Filters.filterActive(game)) { // cards in play
+            for (PhysicalCard card : Filters.filterCardsInPlay(game)) {
                 if (!card.hasTextRemoved(game)) {
                     final List<TopLevelSelectableAction> actions =
                             card.getOptionalAfterTriggerActions(player, this);

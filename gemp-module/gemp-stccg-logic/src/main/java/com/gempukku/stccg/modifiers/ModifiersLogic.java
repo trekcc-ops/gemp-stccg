@@ -514,7 +514,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
         _modifierHooks.computeIfAbsent(cardId, cardModifiers -> new LinkedList<>());
         Iterable<Modifier> modifiers =
-                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(card));
+                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(cardGame, card));
         for (Modifier modifier : modifiers) {
             addModifier(modifier);
             _modifierHooks.get(cardId).add(modifier);

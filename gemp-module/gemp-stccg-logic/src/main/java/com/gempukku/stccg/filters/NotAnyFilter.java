@@ -1,20 +1,21 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class NotAnyFilter implements CardFilter {
 
-    private final Filterable[] _filterables;
+    @JsonProperty("filters")
+    private final CardFilter[] _filters;
 
-    public NotAnyFilter(Filterable... filterables) {
-        _filterables = filterables;
+    public NotAnyFilter(CardFilter... filters) {
+        _filters = filters;
     }
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        CardFilter orFilter = new OrCardFilter(_filterables);
+        CardFilter orFilter = new OrCardFilter(_filters);
         return !orFilter.accepts(game, physicalCard);
     }
 }

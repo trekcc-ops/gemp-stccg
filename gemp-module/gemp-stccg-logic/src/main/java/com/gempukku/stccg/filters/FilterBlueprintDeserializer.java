@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -169,12 +170,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         if (value.startsWith("skill-dots<=")) {
             String[] stringSplit = value.split("<=");
             int skillDotCount = Integer.parseInt(stringSplit[1]);
-            return (cardGame, actionContext) -> new SkillDotsLessThanOrEqualToCardFilter(skillDotCount);
+            return (cardGame, actionContext) ->
+                    new SkillDotFilter(skillDotCount, ComparatorType.LESS_THAN_OR_EQUAL_TO);
         }
         if (value.startsWith("sd-icons=")) {
             String[] stringSplit = value.split("=");
             int iconCount = Integer.parseInt(stringSplit[1]);
-            return (cardGame, actionContext) -> new SpecialDownloadIconsEqualTo(iconCount);
+            return (cardGame, actionContext) -> new SpecialDownloadIconCountFilter(iconCount, ComparatorType.EQUAL_TO);
         }
         FilterBlueprint result = simpleFilters.get(Sanitize(value));
         if (result == null)

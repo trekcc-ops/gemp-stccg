@@ -22,7 +22,7 @@ public class BeamCardsAction extends BeamOrWalkAction {
     @Override
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
         // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
-        return Filters.filterActive(
+        return Filters.filterCardsInPlay(
                 game,
                 Filters.atLocation(_cardSource.getGameLocation()),
                 Filters.or(

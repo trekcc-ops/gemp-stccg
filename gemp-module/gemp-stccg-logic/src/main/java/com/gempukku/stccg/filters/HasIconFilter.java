@@ -1,11 +1,13 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class HasIconFilter implements CardFilter {
 
+    @JsonProperty("icon")
     private final CardIcon _icon;
 
     public HasIconFilter(CardIcon icon) {

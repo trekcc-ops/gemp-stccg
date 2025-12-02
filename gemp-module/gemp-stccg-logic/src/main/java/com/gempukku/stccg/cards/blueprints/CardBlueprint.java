@@ -1,6 +1,8 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -9,19 +11,20 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.requirement.PlayOutOfSequenceCondition;
-import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
-import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.PlayOutOfSequenceCondition;
+import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.*;
 
@@ -453,21 +456,21 @@ public class CardBlueprint {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getGameTextWhileActiveInPlayModifiers(PhysicalCard card) {
+    public List<Modifier> getGameTextWhileActiveInPlayModifiers(DefaultGame cardGame, PhysicalCard card) {
         List<Modifier> result = new LinkedList<>();
 
         // Add in-play modifiers created through JSON definitions
         for (ModifierBlueprint modifierSource : inPlayModifiers) {
             ActionContext context =
                     new DefaultActionContext(card.getOwnerName(), card, null);
-            result.add(modifierSource.getModifier(card.getGame(), context));
+            result.add(modifierSource.getModifier(cardGame, context));
         }
 
         // Add in-play modifiers created through Java definitions
         try {
             result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(card));
         } catch(InvalidGameLogicException exp) {
-            card.getGame().sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
         }
 
         return result;

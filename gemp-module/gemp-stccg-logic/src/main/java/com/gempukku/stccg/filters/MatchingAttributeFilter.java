@@ -1,5 +1,7 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -9,16 +11,27 @@ import java.util.Objects;
 
 public class MatchingAttributeFilter implements CardFilter {
 
-    private final PersonnelCard _cardToMatch;
+    @JsonProperty("cardId")
+    private final int _cardId;
     public MatchingAttributeFilter(PersonnelCard cardToMatch) {
-        _cardToMatch = cardToMatch;
+        _cardId = cardToMatch.getCardId();
     }
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        return physicalCard instanceof PersonnelCard matchingPersonnel && (
-                Objects.equals(matchingPersonnel.getAttribute(CardAttribute.INTEGRITY), _cardToMatch.getAttribute(CardAttribute.INTEGRITY)) ||
-                        Objects.equals(matchingPersonnel.getAttribute(CardAttribute.CUNNING), _cardToMatch.getAttribute(CardAttribute.CUNNING)) ||
-                        Objects.equals(matchingPersonnel.getAttribute(CardAttribute.STRENGTH), _cardToMatch.getAttribute(CardAttribute.STRENGTH)));
+        try {
+            PhysicalCard cardToMatch = game.getCardFromCardId(_cardId);
+            if (cardToMatch instanceof PersonnelCard personnelToMatch) {
+                return physicalCard instanceof PersonnelCard matchingPersonnel && (
+                        Objects.equals(matchingPersonnel.getAttribute(CardAttribute.INTEGRITY), personnelToMatch.getAttribute(CardAttribute.INTEGRITY)) ||
+                                Objects.equals(matchingPersonnel.getAttribute(CardAttribute.CUNNING), personnelToMatch.getAttribute(CardAttribute.CUNNING)) ||
+                                Objects.equals(matchingPersonnel.getAttribute(CardAttribute.STRENGTH), personnelToMatch.getAttribute(CardAttribute.STRENGTH)));
+            } else {
+                return false;
+            }
+        } catch(CardNotFoundException exp) {
+            game.sendErrorMessage(exp);
+            return false;
+        }
     }
 }

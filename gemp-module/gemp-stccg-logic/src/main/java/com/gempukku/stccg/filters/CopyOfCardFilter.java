@@ -1,18 +1,22 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.Objects;
+
 public class CopyOfCardFilter implements CardFilter {
 
-    private final PhysicalCard _originalCard;
+    @JsonProperty("blueprintId")
+    private final String _blueprintId;
 
-    public CopyOfCardFilter(PhysicalCard originalCard) {
-        _originalCard = originalCard;
+    public CopyOfCardFilter(String blueprintId) {
+        _blueprintId = blueprintId;
     }
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        return physicalCard.isCopyOf(_originalCard);
+        return Objects.equals(physicalCard.getBlueprintId(), _blueprintId);
     }
 }

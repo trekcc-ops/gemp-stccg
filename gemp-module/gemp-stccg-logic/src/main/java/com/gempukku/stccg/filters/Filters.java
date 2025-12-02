@@ -1,6 +1,5 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -115,20 +114,9 @@ public class Filters {
         return highestCards;
     }
 
-    public static Collection<PhysicalCard> filterActive(DefaultGame game, Filterable... filters) {
-        Collection<PhysicalCard> result = new ArrayList<>();
-        CardFilter filter = Filters.and(filters);
-        for (PhysicalCard physicalCard : game.getGameState().getAllCardsInPlay()) {
-            if (filter.accepts(game, physicalCard)) {
-                result.add(physicalCard);
-            }
-        }
-        return result;
-    }
-
     public static Collection<PhysicalCard> filterCardsInPlay(DefaultGame game, Filterable... filters) {
         CardFilter filter = Filters.and(filters);
-        List<PhysicalCard> cards = game.getGameState().getAllCardsInPlay();
+        Collection<PhysicalCard> cards = game.getAllCardsInPlay();
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard card : cards) {
             if (filter.accepts(game, card))
@@ -186,19 +174,13 @@ public class Filters {
     }
 
     public static CardFilter atLocation(final GameLocation location) {
-        return new AtLocationFilter(location);
+        return new AtLocationFilter(location.getLocationId());
     }
 
 
     public static CardFilter yourHand(Player player) {
         return new InYourHandFilter(player.getPlayerId());
     }
-
-    public static CardFilter bottomCardsOfDiscard(Player player, int cardCount, Filterable... filterables) {
-        return new BottomCardsOfDiscardFilter(player, cardCount, filterables);
-    }
-
-
 
 
     public static CardFilter yourOtherCards(PhysicalCard contextCard, Filterable... filterables) {
@@ -230,7 +212,7 @@ public class Filters {
     }
 
     public static CardFilter copyOfCard(PhysicalCard copiedCard) {
-        return new CopyOfCardFilter(copiedCard);
+        return new CopyOfCardFilter(copiedCard.getBlueprintId());
     }
 
     public static CardFilter inCards(Collection<PhysicalCard> cards) {
@@ -238,7 +220,7 @@ public class Filters {
     }
 
     public static CardFilter youHaveNoCopiesInPlay(String playerName) {
-        return new YouHaveNoCopiesInPlayFilter(playerName);
+        return new YouOwnNoCopiesInPlayFilter(playerName);
     }
 
 
@@ -246,16 +228,16 @@ public class Filters {
         return new MatchingAttributeFilter(cardToMatch);
     }
 
-    public static CardFilter notAll(final Filterable... filters) {
+    public static CardFilter notAll(final CardFilter... filters) {
         return new NotAllFilter(filters);
     }
 
     public static CardFilter notAny(final Filterable... filters) {
-        return new NotAnyFilter(filters);
+        return new NotAnyFilter(convertToFilters(filters));
     }
 
     public static CardFilter not(final Filterable filter) {
-        return new NotAllFilter(filter);
+        return new NotAllFilter(changeToFilter(filter));
     }
 
     public static CardFilter other(final PhysicalCard card) {
@@ -322,14 +304,6 @@ public class Filters {
 
     public static Filterable yourCardsPresentWithThisCard(PhysicalCard thisCard) {
         return and(your(thisCard.getControllerName()), presentWith(thisCard));
-    }
-
-    public static CardFilter missionPointValueAtLeast(int pointValue) {
-        return new MissionPointValueAtLeast(pointValue);
-    }
-
-    public static CardFilter personnelInAttemptingUnit(AttemptingUnit attemptingUnit) {
-        return new PersonnelInAttemptingUnitFilter(attemptingUnit);
     }
 
     public static CardFilter cardsYouCanDownload(String performingPlayerName) {

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -9,6 +10,7 @@ import com.gempukku.stccg.player.Player;
 
 public class YouControlAMatchingOutpostFilter implements CardFilter {
 
+    @JsonProperty("playerName")
     private final String _playerName;
     public YouControlAMatchingOutpostFilter(Player player) {
         _playerName = player.getPlayerId();

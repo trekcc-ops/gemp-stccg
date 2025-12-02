@@ -1,11 +1,13 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class MissionTypeFilter implements CardFilter {
 
+    @JsonProperty("missionType")
     private final MissionType _missionType;
 
     public MissionTypeFilter(MissionType missionType) {

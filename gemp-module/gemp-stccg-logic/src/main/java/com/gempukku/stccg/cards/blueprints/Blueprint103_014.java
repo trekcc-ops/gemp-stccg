@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
+import com.gempukku.stccg.filters.EncounteringCardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -47,7 +48,7 @@ public class Blueprint103_014 extends CardBlueprint {
             SelectCardsAction selectAction =
                     new SelectCardsFromDialogAction(game, game.getPlayer(opponentId),
                             "Select a personnel to kill",
-                            Filters.personnelInAttemptingUnit(attemptingUnit));
+                            new EncounteringCardFilter(thisCard));
             result.add(selectAction);
             result.add(new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard, selectAction));
         }

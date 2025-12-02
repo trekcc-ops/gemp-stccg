@@ -2,9 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
-import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -12,7 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.missionrequirements.*;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.EncounteringCardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -36,7 +34,8 @@ public class Blueprint152_002 extends CardBlueprint {
         );
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2);
         KillSinglePersonnelAction killAction = new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard,
-                new SelectRandomCardAction(game, thisCard.getOwnerName(), "Choose a personnel", Filters.personnelInAttemptingUnit(attemptingUnit)));
+                new SelectRandomCardAction(game, thisCard.getOwnerName(), "Choose a personnel",
+                        new EncounteringCardFilter(thisCard)));
 
         OvercomeDilemmaConditionAction overcomeAction =
                 new OvercomeDilemmaConditionAction(thisCard, action, fullCondition, attemptingUnit, killAction);

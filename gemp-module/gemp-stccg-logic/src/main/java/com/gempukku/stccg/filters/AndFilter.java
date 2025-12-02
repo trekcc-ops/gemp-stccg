@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class AndFilter implements CardFilter {
 
+    @JsonProperty("filters")
     private final Iterable<CardFilter> _filters;
 
     public AndFilter(CardFilter... filters) {

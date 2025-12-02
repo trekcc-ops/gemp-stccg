@@ -15,6 +15,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.filters.BottomCardsOfDiscardFilter;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -112,8 +113,8 @@ public class Blueprint155_026 extends CardBlueprint {
 
     private TopLevelSelectableAction choice3(PhysicalCard thisCard, Player player) {
         // shuffle the bottom three personnel and/or ships from your discard pile into your draw deck
-        CardFilter shuffleCardsFilter = Filters.bottomCardsOfDiscard(player, 3, CardIcon.TNG_ICON,
-                Filters.or(CardType.PERSONNEL, CardType.SHIP));
+        CardFilter shuffleCardsFilter = new BottomCardsOfDiscardFilter(player.getPlayerId(), 3, Filters.and(CardIcon.TNG_ICON,
+                Filters.or(CardType.PERSONNEL, CardType.SHIP)));
         return new ShuffleCardsIntoDrawDeckAction(thisCard, player, shuffleCardsFilter);
     }
 }
