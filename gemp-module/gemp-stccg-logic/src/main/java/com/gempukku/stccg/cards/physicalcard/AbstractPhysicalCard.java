@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
@@ -15,7 +14,6 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.NullLocation;
-import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.player.Player;
@@ -141,12 +139,22 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
 
-    private boolean canEnterPlay(DefaultGame game, List<Requirement> requirements) {
+    private boolean canEnterPlay(DefaultGame game, List<Requirement> enterPlayRequirements) {
         if (cannotEnterPlayPerUniqueness())
             return false;
-        if (requirements != null && !createActionContext().acceptsAllRequirements(game, requirements))
+        if (enterPlayRequirements != null && !allRequirementsAreTrue(game, enterPlayRequirements))
             return false;
         return !game.getGameState().getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
+    }
+
+    public boolean allRequirementsAreTrue(DefaultGame cardGame, Iterable<Requirement> requirements) {
+        if (requirements == null)
+            return true;
+        boolean result = true;
+        for (Requirement requirement : requirements) {
+            if (!requirement.isTrue(this, cardGame)) result = false;
+        }
+        return result;
     }
 
 
@@ -242,16 +250,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-    public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game) {
-        if (_blueprint.getExtraPlayCosts() == null)
-            return null;
-
-        List<ExtraPlayCost> result = new LinkedList<>();
-        _blueprint.getExtraPlayCosts().forEach(
-                extraPlayCost -> result.add(extraPlayCost.getExtraPlayCost(createActionContext())));
-        return result;
-    }
-
     public List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         List<ActionBlueprint> triggers = _blueprint.getActivatedTriggers();
@@ -307,11 +305,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult) {
         return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
-    }
-
-
-    ActionContext createActionContext() {
-        return new ActionContext(this, _ownerName);
     }
 
 

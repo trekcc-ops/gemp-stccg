@@ -15,5 +15,4 @@ import com.gempukku.stccg.requirement.Requirement;
         @JsonSubTypes.Type(value = StartOfTurnTriggerChecker.class, name = "startOfTurn")
 })
 public interface TriggerChecker extends Requirement {
-    default boolean isBefore() { return false; }
 }

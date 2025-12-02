@@ -6,10 +6,10 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +28,8 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public List<Action> getEncounterActions(DefaultGame game, AttemptMissionAction attemptAction, AttemptingUnit attemptingUnit, MissionLocation missionLocation) throws InvalidGameLogicException, PlayerNotFoundException {
+    public List<Action> getEncounterActions(DefaultGame game, AttemptMissionAction attemptAction,
+                                            AttemptingUnit attemptingUnit, MissionLocation missionLocation) {
         return new LinkedList<>();
     }
 
@@ -43,7 +44,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     public boolean canPlayOutOfSequence(TribblesGame cardGame) {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;
         return _blueprint.getPlayOutOfSequenceConditions().stream().anyMatch(
-                requirement -> requirement.accepts(createActionContext(), cardGame));
+                requirement -> requirement.isTrue(this, cardGame));
     }
 
     public boolean isNextInSequence(TribblesGame cardGame) {

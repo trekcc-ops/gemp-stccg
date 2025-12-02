@@ -11,22 +11,21 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class KilledTriggerChecker implements TriggerChecker {
 
-        private final FilterBlueprint _killedPersonnelFilterBlueprint;
+    private final FilterBlueprint _killedPersonnelFilterBlueprint;
 
-        public KilledTriggerChecker(FilterBlueprint killedPersonnelFilterBlueprint) {
-                _killedPersonnelFilterBlueprint = killedPersonnelFilterBlueprint;
+    public KilledTriggerChecker(FilterBlueprint killedPersonnelFilterBlueprint) {
+        _killedPersonnelFilterBlueprint = killedPersonnelFilterBlueprint;
+    }
+
+    @Override
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+        ActionResult actionResult = actionContext.getEffectResult();
+        if (actionResult instanceof KillCardResult killCardResult) {
+            Filterable killedPersonnelFilter = _killedPersonnelFilterBlueprint.getFilterable(cardGame, actionContext);
+            PhysicalCard killedCard = killCardResult.getKilledCard();
+            return Filters.and(killedPersonnelFilter).accepts(cardGame, killedCard);
+        } else {
+                return false;
         }
-
-        @Override
-        public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-            ActionResult actionResult = actionContext.getEffectResult();
-            if (actionResult instanceof KillCardResult killCardResult) {
-                    Filterable killedPersonnelFilter = _killedPersonnelFilterBlueprint.getFilterable(cardGame, actionContext);
-                    PhysicalCard killedCard = killCardResult.getKilledCard();
-                    return Filters.and(killedPersonnelFilter).accepts(cardGame, killedCard);
-            } else {
-                    return false;
-            }
-        }
-
+    }
 }

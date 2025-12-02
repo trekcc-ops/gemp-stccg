@@ -87,8 +87,6 @@ public interface PhysicalCard {
 
     Collection<PhysicalCard> getAttachedCards(DefaultGame game);
 
-    List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game);
-
     List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(ActionResult actionResult);
     TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
     List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) throws PlayerNotFoundException;

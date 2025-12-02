@@ -21,7 +21,7 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
 
     }
 
-    public Filterable getFilterable(DefaultGame cardGame) {
+    public CardFilter getFilterable(DefaultGame cardGame) {
         try {
             CardFilter matchingFilter = new MatchingAffiliationFilter(_cardTarget.getCards(cardGame));
             List<Filterable> finalFilterables = new ArrayList<>();
@@ -30,12 +30,12 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
             return Filters.and(finalFilterables);
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
-            return null;
+            return Filters.not(Filters.any);
         }
     }
 
     @Override
-    public Filterable getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
         return getFilterable(cardGame);
     }
 }

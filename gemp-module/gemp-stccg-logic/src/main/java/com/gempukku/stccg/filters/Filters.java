@@ -269,7 +269,7 @@ public class Filters {
         return filtersInt;
     }
 
-    private static CardFilter changeToFilter(Filterable filter) {
+    public static CardFilter changeToFilter(Filterable filter) {
         return switch (filter) {
             case CardFilter filter1 -> filter1;
             case PhysicalCard card -> new SameCardFilter(card);
@@ -294,7 +294,7 @@ public class Filters {
         return and(your(thisCard.getControllerName()), presentWith(thisCard));
     }
 
-    public static Filterable yourCardsPresentWithThisCard(String playerName, int thisCardId) {
+    public static CardFilter yourCardsPresentWithThisCard(String playerName, int thisCardId) {
         return and(your(playerName), new PresentWithCardFilter(thisCardId));
     }
 
@@ -312,7 +312,7 @@ public class Filters {
         return new SameCardFilter(thisCard);
     }
 
-    public static Filterable cardId(int cardId) {
+    public static CardFilter cardId(int cardId) {
         return new SameCardFilter(cardId);
     }
 }

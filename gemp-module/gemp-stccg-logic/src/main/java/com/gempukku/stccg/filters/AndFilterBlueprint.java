@@ -15,7 +15,7 @@ public class AndFilterBlueprint implements FilterBlueprint {
         _filterBlueprints = filterBlueprints;
     }
 
-    public Filterable getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
         List<Filterable> filterables = new ArrayList<>();
         for (FilterBlueprint blueprint : _filterBlueprints) {
             filterables.add(blueprint.getFilterable(cardGame, actionContext));

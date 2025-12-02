@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
@@ -25,7 +25,7 @@ public class PlayOutOfSequenceCondition implements Requirement {
         }
     }
 
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean isTrue(PhysicalCard thisCard, DefaultGame cardGame) {
         if (cardGame instanceof TribblesGame tribblesGame) {
             TribblesGameState gameState = tribblesGame.getGameState();
             return switch (_valueCheck) {
@@ -37,4 +37,5 @@ public class PlayOutOfSequenceCondition implements Requirement {
             return false;
         }
     }
+
 }

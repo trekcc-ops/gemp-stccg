@@ -22,4 +22,5 @@ public class ConditionTriggerChecker implements TriggerChecker {
         return actionContext.acceptsAllRequirements(cardGame, _requirements);
     }
 
+
 }
