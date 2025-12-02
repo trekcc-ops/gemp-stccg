@@ -33,7 +33,7 @@ public class Blueprint101_108 extends CardBlueprint {
                 if (cardToPlay.getCardType() == CardType.INTERRUPT && cardToPlay != thisCard) {
                     TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);
                     playAction.appendEffect(new NullifyCardBeingPlayedAction(thisCard, player, cardToPlay, playCardResult.getAction()));
-                    playAction.appendEffect(new DiscardSingleCardAction(thisCard, player, thisCard));
+                    playAction.appendEffect(new DiscardSingleCardAction(thisCard.getGame(), thisCard, player.getPlayerId(), thisCard));
                     result.add(playAction);
                 }
             }

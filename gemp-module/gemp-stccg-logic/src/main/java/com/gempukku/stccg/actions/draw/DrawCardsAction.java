@@ -17,7 +17,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     private final Evaluator _cardDrawCountEvaluator;
 
     public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer) {
-        this(performingCard, performingPlayer, false, 1);
+        this(performingCard.getGame(), performingCard, performingPlayer, false, 1);
     }
 
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
@@ -27,20 +27,16 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         _performingCard = performingCard;
     }
 
-    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, int count) {
-        this(performingCard, performingPlayer, false, count);
-    }
-
     public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, int count, DefaultGame cardGame) {
-        this(performingCard, performingPlayer, false, count);
+        this(cardGame, performingCard, performingPlayer, false, count);
     }
 
-    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, boolean optional, int count) {
-        super(performingCard.getGame(), performingPlayer, "Draw a card", ActionType.DRAW_CARD);
+    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
+                           boolean optional, int count) {
+        super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
         _performingCard = performingCard;
         _cardDrawCountEvaluator = new ConstantEvaluator(count);
     }
-
 
     @Override
     public PhysicalCard getPerformingCard() {

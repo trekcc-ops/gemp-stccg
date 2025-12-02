@@ -42,7 +42,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         List<Action> result = new LinkedList<>();
         int numberOfEffects = 1;
         for (int i = 0; i < numberOfEffects; i++) {
-            result.add(new DrawCardsAction(context.getSource(), targetPlayer, count));
+            result.add(new DrawCardsAction(context.getSource(), targetPlayer, count, cardGame));
         }
         return result;
     }

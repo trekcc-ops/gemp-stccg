@@ -83,7 +83,7 @@ public class Blueprint109_063 extends CardBlueprint {
         if (actionResult.getType() == ActionResult.Type.START_OF_TURN &&
                 Objects.equals(player.getPlayerId(), thisCard.getOwnerName()) &&
                 player == cardGame.getCurrentPlayer()) {
-            actions.add(new DiscardSingleCardAction(thisCard, player, thisCard));
+            actions.add(new DiscardSingleCardAction(cardGame, thisCard, player.getPlayerId(), thisCard));
         }
 
         return actions;

@@ -31,13 +31,8 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
     }
 
 
-    public DiscardSingleCardAction(PhysicalCard performingCard, Player performingPlayer, PhysicalCard cardToDiscard) {
-        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
-        _cardTarget = new FixedCardResolver(cardToDiscard);
-        _performingCard = performingCard;
-    }
-
-    public DiscardSingleCardAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName, PhysicalCard cardToDiscard) {
+    public DiscardSingleCardAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
+                                   PhysicalCard cardToDiscard) {
         super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
         _cardTarget = new FixedCardResolver(cardToDiscard);
         _performingCard = performingCard;

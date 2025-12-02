@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 public class KillSinglePersonnelAction extends ActionyAction implements TopLevelSelectableAction {
@@ -50,7 +49,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_cardTarget.isResolved()) {
             Action selectionAction = _cardTarget.getSelectionAction();
             if (selectionAction != null && !selectionAction.wasCarriedOut()) {
@@ -69,7 +68,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
                 if (_victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
                     reportable.leaveAwayTeam((ST1EGame) cardGame);
                 _wasCarriedOut = true;
-                return new DiscardSingleCardAction(_performingCard, cardGame.getPlayer(_performingPlayerId), _victim);
+                return new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId, _victim);
             }
         }
         setAsSuccessful();

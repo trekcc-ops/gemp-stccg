@@ -35,7 +35,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
-        List<MissionLocation> allLocations = _flyingCard.getGame().getGameState().getSpacelineLocations();
+        List<MissionLocation> allLocations = cardGame.getGameState().getSpacelineLocations();
         GameLocation currentLocation = _flyingCard.getGameLocation();
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
         for (MissionLocation location : allLocations) {

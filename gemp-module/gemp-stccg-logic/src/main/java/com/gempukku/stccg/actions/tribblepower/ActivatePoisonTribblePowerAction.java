@@ -73,7 +73,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
         Player chosenPlayer = game.getPlayer(chosenPlayerId);
         Player performingPlayer = game.getPlayer(_performingPlayerId);
         PhysicalCard discardingCard = chosenPlayer.getCardsInDrawDeck().getLast();
-        DiscardSingleCardAction discardAction = new DiscardSingleCardAction(_performingCard, chosenPlayer, discardingCard);
+        DiscardSingleCardAction discardAction = new DiscardSingleCardAction(game, _performingCard, chosenPlayerId, discardingCard);
         appendEffect(discardAction);
         appendEffect(new ScorePointsAction(game, _performingCard, performingPlayer,
                 discardingCard.getBlueprint().getTribbleValue()));

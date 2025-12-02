@@ -47,7 +47,7 @@ public class Blueprint101_125 extends CardBlueprint {
                 try {
                     TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);
                     playAction.appendEffect(new ScorePointsAction(thisCard.getGame(), thisCard, player, 5));
-                    playAction.appendEffect(new DiscardSingleCardAction(thisCard, player, thisCard));
+                    playAction.appendEffect(new DiscardSingleCardAction(thisCard.getGame(), thisCard, player.getPlayerId(), thisCard));
                     result.add(playAction);
                 } catch(InvalidGameLogicException exp) {
 

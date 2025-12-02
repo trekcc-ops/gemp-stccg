@@ -56,7 +56,7 @@ public abstract class DefaultGame {
     }
 
     public abstract GameState getGameState();
-    public abstract RuleSet getRules();
+    public abstract RuleSet<? extends DefaultGame> getRules();
     public boolean shouldAutoPass(Phase phase) {
         return false;
     }

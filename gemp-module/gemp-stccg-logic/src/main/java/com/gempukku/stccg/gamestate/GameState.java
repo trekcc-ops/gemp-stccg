@@ -158,7 +158,7 @@ public abstract class GameState {
 
     public void removeCardsFromZoneWithoutSendingToClient(DefaultGame cardGame, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
-            if (card.isInPlay()) card.stopAffectingGame(card.getGame());
+            if (card.isInPlay()) card.stopAffectingGame(cardGame);
             card.removeFromCardGroup();
 
             if (card instanceof PhysicalReportableCard1E reportable) {
@@ -186,6 +186,7 @@ public abstract class GameState {
 
         if (zone.isInPlay()) {
             _inPlay.add(card);
+            card.startAffectingGame(card.getGame());
         }
 
         if (zone.hasList()) {
@@ -194,20 +195,21 @@ public abstract class GameState {
         }
 
         card.setZone(zone);
-        if (zone.isInPlay())
-            card.startAffectingGame(card.getGame());
     }
-    public void addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(PhysicalCard card, Zone zone) {
-        if (zone == Zone.DISCARD &&
-                getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
-            zone = Zone.REMOVED;
 
-        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
+    public void addCardToTopOfDiscardPile(PhysicalCard card) {
+        String cardOwnerName = card.getOwnerName();
+        Zone zone = (getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD)) ?
+                Zone.REMOVED : Zone.DISCARD;
+        List<PhysicalCard> zoneCardList = getZoneCards(cardOwnerName, zone);
         zoneCardList.addFirst(card);
-
         card.setZone(zone);
-        if (zone.isInPlay())
-            card.startAffectingGame(card.getGame());
+    }
+
+    public void addCardToTopOfDrawDeck(PhysicalCard card) {
+        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), Zone.DRAW_DECK);
+        zoneCardList.addFirst(card);
+        card.setZone(Zone.DRAW_DECK);
     }
 
 
@@ -362,10 +364,10 @@ public abstract class GameState {
         return _playerClocks.values();
     }
 
-    public void addCardToInPlay(PhysicalCard card) {
+    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card) {
         if (!_inPlay.contains(card)) {
             _inPlay.add(card);
-            card.startAffectingGame(card.getGame());
+            card.startAffectingGame(cardGame);
         }
     }
 

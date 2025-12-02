@@ -2,12 +2,14 @@ package com.gempukku.stccg.actions.discard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLevelSelectableAction {
 
@@ -41,12 +43,11 @@ public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLe
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_wasCardDiscarded) {
             _actionToCancel.cancel();
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             _wasCardDiscarded = true;
-            return new DiscardSingleCardAction(_performingCard, performingPlayer, _cardToNullify);
+            return new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId, _cardToNullify);
         }
         setAsSuccessful();
         return getNextAction();

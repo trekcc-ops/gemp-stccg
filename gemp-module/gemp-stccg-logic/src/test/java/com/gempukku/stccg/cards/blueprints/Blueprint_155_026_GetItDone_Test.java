@@ -120,15 +120,15 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         }
         assertEquals(3, wallaces.size());
 
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(wallaces.get(0), Zone.DISCARD); // Darian Wallace
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("156_010", P1), Zone.DISCARD); // Surprise Party
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(wallaces.get(1), Zone.DISCARD); // Darian Wallace
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(wallaces.get(2), Zone.DISCARD); // Darian Wallace
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("156_010", P1), Zone.DISCARD); // Surprise Party
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("156_010", P1), Zone.DISCARD); // Surprise Party
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("101_236", P1), Zone.DISCARD); // Simon Tarses
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("101_236", P1), Zone.DISCARD); // Simon Tarses
-        gameState.addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(newCardForGame("101_236", P1), Zone.DISCARD); // Simon Tarses
+        gameState.addCardToTopOfDiscardPile(wallaces.get(0)); // Darian Wallace
+        gameState.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
+        gameState.addCardToTopOfDiscardPile(wallaces.get(1)); // Darian Wallace
+        gameState.addCardToTopOfDiscardPile(wallaces.get(2)); // Darian Wallace
+        gameState.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
+        gameState.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
+        gameState.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
+        gameState.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
+        gameState.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
 
         assertEquals(9, player1.getCardGroupCards(Zone.DISCARD).size());
 

@@ -342,7 +342,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
         for (String blueprintId : blueprintIds) {
             PhysicalCard card = _game.addCardToGame(blueprintId, _cardLibrary, P1);
-            _game.getGameState().addCardToTopOfDiscardOrDrawDeckWithoutSendingToClient(card, Zone.DRAW_DECK);
+            _game.getGameState().addCardToTopOfDrawDeck(card);
         }
 
         autoSeedMissions();
