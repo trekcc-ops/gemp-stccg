@@ -1,10 +1,10 @@
 package com.gempukku.stccg.actions.draw;
 
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
-import com.gempukku.stccg.evaluator.Evaluator;
-import com.gempukku.stccg.evaluator.SkillDotCountEvaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -14,20 +14,14 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
 
     private final PhysicalCard _performingCard;
     private int _cardsAlreadyDrawnCount;
-    private final Evaluator _cardDrawCountEvaluator;
+    private final int _totalCardsToDraw;
 
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName, int count) {
         super(cardGame, performingPlayerName, "Draw a card", ActionType.DRAW_CARD);
         _performingCard = performingCard;
-        _cardDrawCountEvaluator = new ConstantEvaluator(count);
+        _totalCardsToDraw = count;
     }
 
-    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
-                           SkillDotCountEvaluator drawCountEvaluator) {
-        super(cardGame, performingPlayerName, "Draw a card", ActionType.DRAW_CARD);
-        _cardDrawCountEvaluator = drawCountEvaluator;
-        _performingCard = performingCard;
-    }
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName) {
         this(cardGame, performingCard, performingPlayerName, 1);
     }
@@ -45,7 +39,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            return performingPlayer.getCardsInDrawDeck().size() >= (int) _cardDrawCountEvaluator.evaluateExpression(cardGame);
+            return performingPlayer.getCardsInDrawDeck().size() >= _totalCardsToDraw;
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
@@ -54,11 +48,10 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        int totalDrawCount = (int) _cardDrawCountEvaluator.evaluateExpression(cardGame);
         if (isBeingInitiated()) {
             setAsInitiated();
         }
-        if (_cardsAlreadyDrawnCount < totalDrawCount) {
+        if (_cardsAlreadyDrawnCount < _totalCardsToDraw) {
             _cardsAlreadyDrawnCount++;
             return new DrawSingleCardAction(cardGame, cardGame.getPlayer(_performingPlayerId));
         } else {
