@@ -9,6 +9,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = ReadCardMemoryBlueprint.class, name = "memory"),
         @JsonSubTypes.Type(value = SelectCardTargetBlueprint.class, name = "select")
 })
 public interface CardTargetBlueprint {

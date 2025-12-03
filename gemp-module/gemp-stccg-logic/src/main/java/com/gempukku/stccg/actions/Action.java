@@ -7,6 +7,8 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.Collection;
+
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
 @JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "status", "targetCardId", "targetCardIds",
         "performingCardId", "pointsScored", "originCardId", "destinationCardId", "locationId" })
@@ -16,6 +18,8 @@ public interface Action {
 
     int getActionId();
     void insertCost(Action costAction);
+    void insertCosts(Collection<Action> actions);
+
     void appendCost(Action costAction);
     void appendEffect(Action actionEffect);
 
@@ -32,6 +36,7 @@ public interface Action {
     boolean wasCarriedOut();
 
     void insertEffect(Action actionEffect);
+    void insertActions(Collection<Action> actions);
 
     void insertAction(Action action);
 

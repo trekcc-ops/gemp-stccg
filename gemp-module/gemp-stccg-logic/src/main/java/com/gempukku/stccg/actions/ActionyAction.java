@@ -123,8 +123,16 @@ public abstract class ActionyAction implements Action {
         _costs.addAll(0, Collections.singletonList(cost));
     }
 
+    public final void insertCosts(Collection<Action> costs) {
+        _costs.addAll(0, costs);
+    }
+
+
     public final void insertAction(Action action) {
         _actionEffects.addAll(0, Collections.singletonList(action));
+    }
+    public final void insertActions(Collection<Action> actions) {
+        _actionEffects.addAll(0, actions);
     }
 
     protected boolean isCostFailed() {
