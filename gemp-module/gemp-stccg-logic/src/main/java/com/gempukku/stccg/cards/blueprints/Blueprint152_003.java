@@ -46,7 +46,7 @@ public class Blueprint152_003 extends CardBlueprint {
                         uniquePersonnel);
         Action stopAction = new StopCardsAction(game, thisCard.getOwnerName(), randomSelection);
         TopLevelSelectableAction action1 =
-                new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard, randomSelection);
+                new KillSinglePersonnelAction(game, thisCard.getOwnerName(), thisCard, randomSelection);
 
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection);
         TopLevelSelectableAction action2 =

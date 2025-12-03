@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.GainSkillModifier;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
@@ -19,7 +20,8 @@ public class Blueprint007_082 extends CardBlueprint {
     // Letek (2E)
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame,
+                                                                           PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
         Condition condition = new HigherScoreThanAllOtherPlayersCondition(new YouPlayerResolver(thisCard));
         modifiers.add(new AllAttributeModifier(thisCard, Filters.card(thisCard), condition, 1));

@@ -45,7 +45,7 @@ public class RevealSeedCardAction extends ActionyAction {
         if (!getProgress(Progress.misSeedResolved)) {
             PhysicalCard revealedCard = cardGame.getCardFromCardId(_revealedCardId);
             Action attemptAction = cardGame.getActionById(_missionAttemptActionId);
-            if (attemptAction instanceof AttemptMissionAction missionAction) {
+            if (attemptAction instanceof AttemptMissionAction) {
                 setProgress(Progress.misSeedResolved);
                 if (revealedCard.isMisSeed(cardGame, _missionLocation)) {
                     if (_performingPlayerId.equals(revealedCard.getOwnerName())) {
@@ -55,8 +55,7 @@ public class RevealSeedCardAction extends ActionyAction {
                         cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
                     }
                     if (revealedCard instanceof ST1EPhysicalCard stCard) {
-                        return new RemoveDilemmaFromGameAction(
-                                cardGame.getPlayer(_performingPlayerId), stCard);
+                        return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, stCard);
                     } else {
                         throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
                     }

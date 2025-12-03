@@ -51,7 +51,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                     actions.add(new WalkCardsAction(cardGame, player, this));
                 if (isStaffed()) {
                     if (isDocked())
-                        actions.add(new UndockAction(player, this));
+                        actions.add(new UndockAction(cardGame, player.getPlayerId(), this));
                     if (!isDocked())
                         actions.add(new DockAction(player, this, _game));
                     try {

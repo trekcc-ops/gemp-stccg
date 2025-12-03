@@ -67,7 +67,7 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
         appendEffect(new ScorePointsAction(cardGame, _performingCard, chosenPlayerObj, BONUS_POINTS));
 
         // Draw a card.
-        appendEffect(new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId)));
+        appendEffect(new DrawCardsAction(cardGame, _performingCard, _performingPlayerId));
     }
 
 

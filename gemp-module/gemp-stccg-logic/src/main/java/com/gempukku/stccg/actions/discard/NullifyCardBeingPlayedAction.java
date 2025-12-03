@@ -9,7 +9,6 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 
 public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLevelSelectableAction {
 
@@ -24,13 +23,14 @@ public class NullifyCardBeingPlayedAction extends ActionyAction implements TopLe
     private final ActionyAction _actionToCancel;
     private boolean _wasCardDiscarded;
 
-    public NullifyCardBeingPlayedAction(PhysicalCard performingCard, Player performingPlayer,
+    public NullifyCardBeingPlayedAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
                                         PhysicalCard cardBeingPlayed, ActionyAction playCardAction) {
-        super(performingCard.getGame(), performingPlayer, "Nullify", ActionType.NULLIFY);
+        super(cardGame, performingPlayerName, "Nullify", ActionType.NULLIFY);
         _performingCard = performingCard;
         _cardToNullify = cardBeingPlayed;
         _actionToCancel = playCardAction;
     }
+
 
     @Override
     public PhysicalCard getPerformingCard() {

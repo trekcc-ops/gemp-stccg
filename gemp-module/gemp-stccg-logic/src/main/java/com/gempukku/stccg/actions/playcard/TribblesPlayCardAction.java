@@ -12,8 +12,8 @@ import java.util.Collections;
 
 public class TribblesPlayCardAction extends PlayCardAction {
 
-    public TribblesPlayCardAction(TribblesPhysicalCard card) {
-        super(card, card, card.getOwnerName(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
+    public TribblesPlayCardAction(DefaultGame cardGame, TribblesPhysicalCard card) {
+        super(cardGame, card, card, card.getOwnerName(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         TribblesGameState gameState = (TribblesGameState) cardGame.getGameState();
 
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(_cardEnteringPlay));
-        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, Zone.PLAY_PILE);
+        gameState.addCardToZone(cardGame, _cardEnteringPlay, Zone.PLAY_PILE);
 
         int tribbleValue = _cardEnteringPlay.getBlueprint().getTribbleValue();
         gameState.setLastTribblePlayed(tribbleValue);

@@ -38,9 +38,9 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
         Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
 
-        _playCardAction = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
+        _playCardAction = new ReportCardAction(cardGame, (PhysicalReportableCard1E) selectedCard,
                 true, eligibleDestinations);
-        selectedCard.getGame().getActionsEnvironment().addActionToStack(_playCardAction);
+        cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
     }
 
     @Override

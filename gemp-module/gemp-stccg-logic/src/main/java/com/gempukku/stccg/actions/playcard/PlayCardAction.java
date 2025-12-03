@@ -20,35 +20,24 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     protected final PhysicalCard _cardEnteringPlay;
     final Zone _destinationZone;
     private boolean _initiated;
-    private boolean _cancelled;
     private boolean _cardPlayed;
     private final List<Action> _immediateGameTextActions = new ArrayList<>();
 
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerName,
-                          Zone toZone, ActionType actionType) {
-        super(actionSource.getGame(), performingPlayerName, actionType);
+    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+                          String performingPlayerName, Zone toZone, ActionType actionType) {
+        super(cardGame, performingPlayerName, actionType);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
     }
 
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerName,
-                          Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
-        super(actionSource.getGame(), performingPlayerName, actionType, progressValues);
+    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+                          String performingPlayerName, Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
+        super(cardGame, performingPlayerName, actionType, progressValues);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
     }
-
-
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
-                          Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
-        super(actionSource.getGame(), performingPlayer, actionType, progressValues);
-        _performingCard = actionSource;
-        _cardEnteringPlay = cardEnteringPlay;
-        _destinationZone = toZone;
-    }
-
 
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -71,7 +60,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
 
         if (!_initiated) {
             _initiated = true;
-            _cardEnteringPlay.removeFromCardGroup();
+            _cardEnteringPlay.removeFromCardGroup(cardGame);
             ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
             saveResult(playCardInitiationResult);
             return null;
@@ -101,7 +90,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         }
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
-        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
+        gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
         _wasCarriedOut = true;
     }

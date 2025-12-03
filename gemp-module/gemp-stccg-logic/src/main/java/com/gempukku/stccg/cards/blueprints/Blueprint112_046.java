@@ -5,10 +5,11 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Species;
-import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
+import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +22,8 @@ public class Blueprint112_046 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame,
+                                                                           PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
         Filterable usageFilter = Filters.and(CardType.PERSONNEL,
                         Filters.or(Affiliation.NON_ALIGNED, Affiliation.BAJORAN, Species.BAJORAN));

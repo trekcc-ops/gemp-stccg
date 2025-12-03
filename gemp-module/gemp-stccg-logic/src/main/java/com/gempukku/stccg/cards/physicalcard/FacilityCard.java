@@ -95,7 +95,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     }
 
     public List<TopLevelSelectableAction> createSeedCardActions() {
-        return List.of(new SeedOutpostAction(this));
+        return List.of(new SeedOutpostAction(_game, this));
         // TODO - Add actions for non-outposts
     }
 

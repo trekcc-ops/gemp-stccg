@@ -338,7 +338,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.startGame();
 
         _klingonOutpost = (FacilityCard) _game.addCardToGame("101_105", _cardLibrary, P1);
-        _game.getGameState().addCardToZoneWithoutSendingToClient(_klingonOutpost, Zone.SEED_DECK);
+        _game.getGameState().addCardToZone(_game, _klingonOutpost, Zone.SEED_DECK);
 
         for (String blueprintId : blueprintIds) {
             PhysicalCard card = _game.addCardToGame(blueprintId, _cardLibrary, P1);
@@ -919,7 +919,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
             _game.getGameState().removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(card));
-            _game.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.VOID);
+            _game.getGameState().addCardToZone(_game, card, Zone.VOID);
             topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(card);
         }
     }

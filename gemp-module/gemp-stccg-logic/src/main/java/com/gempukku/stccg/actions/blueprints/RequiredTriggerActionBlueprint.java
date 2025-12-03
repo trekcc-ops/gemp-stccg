@@ -37,7 +37,7 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
                                                  PhysicalCard thisCard, ActionResult result) {
         ActionContext context = new ActionContext(performingPlayerName, thisCard, result.getAction());
         if (isValid(cardGame, context)) {
-            RequiredTriggerAction action = new RequiredTriggerAction(thisCard);
+            RequiredTriggerAction action = new RequiredTriggerAction(cardGame, thisCard);
             appendActionToContext(cardGame, action, context);
             return action;
         }

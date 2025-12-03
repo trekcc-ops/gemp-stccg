@@ -359,15 +359,17 @@ public class CardBlueprint {
         playInOtherPhaseConditions.add(requirement);
     }
 
-    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player,
+    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame,
+                                                                                PhysicalCard thisCard, Player player,
                                                                                 ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         for (TriggerActionBlueprint trigger : _optionalInHandTriggers) {
-            TopLevelSelectableAction action = trigger.createAction(thisCard.getGame(), player.getPlayerId(), thisCard, actionResult);
+            TopLevelSelectableAction action = trigger.createAction(cardGame, player.getPlayerId(), thisCard, actionResult);
             if (action != null) result.add(action);
         }
         return result;
     }
+
 
     public void appendPlayRequirement(Requirement requirement) {
         if (_playRequirements == null)
@@ -444,10 +446,11 @@ public class CardBlueprint {
                 (hasUniversalIcon() ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
     }
 
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame, PhysicalCard thisCard)
             throws InvalidGameLogicException {
         return new LinkedList<>();
     }
+
 
     public List<Modifier> getGameTextWhileActiveInPlayModifiers(DefaultGame cardGame, PhysicalCard card) {
         List<Modifier> result = new LinkedList<>();
@@ -460,7 +463,7 @@ public class CardBlueprint {
 
         // Add in-play modifiers created through Java definitions
         try {
-            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(card));
+            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(cardGame, card));
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
         }
@@ -472,16 +475,19 @@ public class CardBlueprint {
         return _characteristics.contains(characteristic);
     }
 
-    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
+    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(DefaultGame cardGame,
+                                                                         ActionResult actionResult, PhysicalCard card) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         getTriggers(RequiredType.REQUIRED).forEach(actionSource -> {
             if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
-                RequiredTriggerAction action = triggerSource.createAction(card.getGame(), card.getControllerName(), card, actionResult);
+                RequiredTriggerAction action =
+                        triggerSource.createAction(cardGame, card.getControllerName(), card, actionResult);
                 if (action != null) result.add(action);
             }
         });
         return result;
     }
+
 
     public List<Skill> getSkills(DefaultGame game, PhysicalCard thisCard) {
         return _skillBox.getSkillList();

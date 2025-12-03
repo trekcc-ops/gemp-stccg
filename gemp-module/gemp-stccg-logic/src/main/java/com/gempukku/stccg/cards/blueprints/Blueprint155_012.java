@@ -37,7 +37,7 @@ public class Blueprint155_012 extends CardBlueprint {
             if (personnel.getSkillLevel(SkillName.DIPLOMACY) >= 3 ||
                     personnel.getSkillLevel(SkillName.LEADERSHIP) >= 3) {
                 nullified = true;
-                result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
+                result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
             }
         }
 
@@ -49,7 +49,7 @@ public class Blueprint155_012 extends CardBlueprint {
                 }
             }
             if (eligiblePersonnelToStop.isEmpty()) {
-                result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+                result.add(new FailDilemmaAction(game, attemptingUnit, thisCard, action));
             } else {
                 SelectCardsAction selectAction = new SelectCardsFromDialogAction(game, thisCard.getOwnerName(),
                         "Select personnel to stop",

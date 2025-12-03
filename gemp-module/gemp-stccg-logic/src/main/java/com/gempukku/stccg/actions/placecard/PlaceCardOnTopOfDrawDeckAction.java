@@ -22,8 +22,8 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     @JsonProperty("cardTarget")
     private final FixedCardResolver _cardTarget;
 
-    public PlaceCardOnTopOfDrawDeckAction(String performingPlayerName, PhysicalCard cardBeingPlaced) {
-        super(cardBeingPlaced.getGame(), performingPlayerName, ActionType.PLACE_CARD_ON_TOP_OF_DRAW_DECK);
+    public PlaceCardOnTopOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardBeingPlaced) {
+        super(cardGame, performingPlayerName, ActionType.PLACE_CARD_ON_TOP_OF_DRAW_DECK);
         _cardTarget = new FixedCardResolver(cardBeingPlaced);
     }
 

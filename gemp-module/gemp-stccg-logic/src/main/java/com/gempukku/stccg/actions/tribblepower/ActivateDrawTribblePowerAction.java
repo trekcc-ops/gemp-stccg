@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -31,13 +30,8 @@ public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
                         new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                                 "Choose a player", players, cardGame) {
                             @Override
-                            protected void validDecisionMade(int index, String result)
-                                    throws DecisionResultInvalidException {
-                                try {
-                                    playerChosen(result, cardGame);
-                                } catch(PlayerNotFoundException exp) {
-                                    throw new DecisionResultInvalidException(exp.getMessage());
-                                }
+                            protected void validDecisionMade(int index, String result) {
+                                playerChosen(result, cardGame);
                             }
                         });
             setProgress(Progress.playerSelected);
@@ -45,8 +39,8 @@ public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
         return getNextAction();
     }
 
-    private void playerChosen(String playerId, DefaultGame game) throws PlayerNotFoundException {
-        appendEffect(new DrawCardsAction(_performingCard, game.getPlayer(playerId)));
+    private void playerChosen(String playerId, DefaultGame game) {
+        appendEffect(new DrawCardsAction(game, _performingCard, playerId));
     }
 
 }

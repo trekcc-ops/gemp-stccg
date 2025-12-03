@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.AndFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.requirement.Requirement;
@@ -36,16 +37,19 @@ public class Blueprint101_125 extends CardBlueprint {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame,
+                                                                                PhysicalCard thisCard, Player player,
+                                                                                ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new ArrayList<>();
         if (thisCard instanceof ST1EPhysicalCard stCard) {
             List<Requirement> playRequirements = List.of(new KilledTriggerChecker(_killedPersonnelFilterBlueprint));
             ActionContext context = new ActionContext(player.getPlayerId(), thisCard, actionResult.getAction());
-            if (context.acceptsAllRequirements(thisCard.getGame(), playRequirements)) {
+            if (context.acceptsAllRequirements(cardGame, playRequirements)) {
                 try {
-                    TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);
-                    playAction.appendEffect(new ScorePointsAction(thisCard.getGame(), thisCard, player, 5));
-                    playAction.appendEffect(new DiscardSingleCardAction(thisCard.getGame(), thisCard, player.getPlayerId(), thisCard));
+                    TopLevelSelectableAction playAction =
+                            new STCCGPlayCardAction(cardGame, stCard, Zone.CORE, player, true);
+                    playAction.appendEffect(new ScorePointsAction(cardGame, thisCard, player, 5));
+                    playAction.appendEffect(new DiscardSingleCardAction(cardGame, thisCard, player.getPlayerId(), thisCard));
                     result.add(playAction);
                 } catch(InvalidGameLogicException exp) {
 

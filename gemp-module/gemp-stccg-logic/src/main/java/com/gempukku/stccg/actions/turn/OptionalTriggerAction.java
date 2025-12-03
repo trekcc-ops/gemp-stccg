@@ -12,19 +12,16 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public class OptionalTriggerAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
     private enum Progress {}
-    private ActionBlueprint _actionBlueprint;
+    private final ActionBlueprint _actionBlueprint;
 
-    public OptionalTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getGame(), physicalCard.getOwnerName(), "Optional trigger from " + physicalCard.getCardLink(),
+    public OptionalTriggerAction(DefaultGame cardGame, PhysicalCard physicalCard, ActionBlueprint actionBlueprint) {
+        super(cardGame, physicalCard.getOwnerName(), "Optional trigger from " + physicalCard.getCardLink(),
                 ActionType.USE_GAME_TEXT,
                 Progress.values());
         _performingCard = physicalCard;
-    }
-
-    public OptionalTriggerAction(PhysicalCard physicalCard, ActionBlueprint actionBlueprint) {
-        this(physicalCard);
         _actionBlueprint = actionBlueprint;
     }
+
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 

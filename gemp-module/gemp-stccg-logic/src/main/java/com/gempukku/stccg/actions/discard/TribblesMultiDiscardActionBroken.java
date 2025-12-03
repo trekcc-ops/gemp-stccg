@@ -31,16 +31,16 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
         _cardTarget = new SelectCardsResolver(selectAction);
     }
 
-
-    public TribblesMultiDiscardActionBroken(PhysicalCard performingCard, Player performingPlayer,
-                                            Collection<PhysicalCard> cardsToDiscard) {
-        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
+    public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard,
+                                            String performingPlayerName, Collection<PhysicalCard> cardsToDiscard) {
+        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
         _cardTarget = new FixedCardsResolver(cardsToDiscard);
         _performingCard = performingCard;
     }
 
-    public TribblesMultiDiscardActionBroken(PhysicalCard performingCard, Player performingPlayer, CardFilter cardFilter) {
-        super(performingCard.getGame(), performingPlayer, "Discard", ActionType.DISCARD);
+    public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard,
+                                            String performingPlayerName, CardFilter cardFilter) {
+        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
     }

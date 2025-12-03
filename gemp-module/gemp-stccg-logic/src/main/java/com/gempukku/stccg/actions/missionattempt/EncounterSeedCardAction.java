@@ -8,9 +8,8 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Objects;
 
@@ -56,7 +55,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
         if (nextAction == null && isInProgress()) {
             PhysicalCard card = _cardTarget.getCard();
             if (card.getGameLocation() == _missionLocation && !card.isPlacedOnMission()) {
-                return new RemoveDilemmaFromGameAction(cardGame.getPlayer(_performingPlayerId), _cardTarget.getCard());
+                return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard());
             }
             setAsSuccessful();
         }

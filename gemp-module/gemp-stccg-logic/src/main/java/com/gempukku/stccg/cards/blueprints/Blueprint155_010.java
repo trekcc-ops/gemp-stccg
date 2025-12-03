@@ -32,7 +32,7 @@ public class Blueprint155_010 extends CardBlueprint {
             Replace dilemma under mission to be encountered again.
          */
         if (attemptingPersonnel.size() < 2) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(game, attemptingUnit, thisCard, action));
         }
 
         /* Randomly select two personnel to be stopped. If any [Q] card in play when dilemma is encountered,
@@ -42,7 +42,7 @@ public class Blueprint155_010 extends CardBlueprint {
         else {
             Collection<PersonnelCard> personnelToStop = TextUtils.getRandomItemsFromList(attemptingPersonnel, 2);
             result.add(new StopCardsAction(game, thisCard.getOwnerName(), personnelToStop));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
+            result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         }
         return result;
     }

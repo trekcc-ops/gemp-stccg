@@ -48,7 +48,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         } else if (phase == Phase.SEED_MISSION && !player.getMissionsPile().isEmpty() && isCurrentPlayer) {
             CardPile<PhysicalCard> missionsPile = player.getMissionsPile();
             if (missionsPile.getTopCard() instanceof MissionCard missionCard) {
-                result.add(new SeedMissionCardAction(missionCard));
+                result.add(new SeedMissionCardAction(cardGame, missionCard));
             }
         } else if (phase == Phase.SEED_FACILITY) {
             for (PhysicalCard card : player.getCardsInGroup(Zone.SEED_DECK)) {

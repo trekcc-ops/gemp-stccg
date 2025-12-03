@@ -29,9 +29,9 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
     private enum Progress { destinationOptionsIdentified, destinationSelected, affiliationSelected, cardPlayed }
 
-    public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree) {
-                    // TODO - Zone is null because these will be attached and the implementation is weird
-        super(cardToPlay, null, cardToPlay.getOwnerName(), forFree, Progress.values());
+    public ReportCardAction(DefaultGame cardGame, PhysicalReportableCard1E cardToPlay, boolean forFree) {
+        // TODO - Zone is null because these will be attached and the implementation is weird
+        super(cardGame, cardToPlay, null, cardToPlay.getOwnerName(), forFree, Progress.values());
         if (cardToPlay.getAffiliationOptions().size() == 1) {
             setProgress(Progress.affiliationSelected);
             _affiliationTarget = new AffiliationResolver(cardToPlay.getCurrentAffiliation());
@@ -40,11 +40,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
         }
     }
 
-    public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree,
+    public ReportCardAction(DefaultGame cardGame, PhysicalReportableCard1E cardToPlay, boolean forFree,
                             Collection<PhysicalCard> destinationOptions) {
-        this(cardToPlay, forFree);
+        this(cardGame, cardToPlay, forFree);
         setProgress(Progress.destinationOptionsIdentified);
-        SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardToPlay.getGame(),
+        SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardGame,
                 cardToPlay.getOwnerName(),
                 "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                 Filters.inCards(destinationOptions), 1, 1);

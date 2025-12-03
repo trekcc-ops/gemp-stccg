@@ -42,8 +42,9 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
             }
 
             // Each player then shuffles their play pile into their decks.
-            ShuffleCardsIntoDrawDeckAction action = new ShuffleCardsIntoDrawDeckAction(null, player,
-                    new InCardListFilter(player.getCardGroupCards(Zone.PLAY_PILE)));
+            ShuffleCardsIntoDrawDeckAction action =
+                    new ShuffleCardsIntoDrawDeckAction(_game, null, playerId,
+                            new InCardListFilter(player.getCardGroupCards(Zone.PLAY_PILE)));
             action.processEffect(cardGame);
             cardGame.getActionsEnvironment().logCompletedActionNotInStack(action);
             cardGame.sendActionResultToClient();

@@ -20,7 +20,8 @@ public class Blueprint101_131 extends CardBlueprint {
     public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player, DefaultGame cardGame) {
         List<TopLevelSelectableAction> result = new ArrayList<>();
         if (thisCard instanceof ST1EPhysicalCard stCard && !cardGame.getCurrentPhase().isSeedPhase()) {
-            TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);
+            TopLevelSelectableAction playAction =
+                    new STCCGPlayCardAction(cardGame, stCard, Zone.CORE, player, true);
             result.add(playAction);
         }
         return result;

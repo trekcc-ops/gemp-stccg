@@ -24,7 +24,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
 
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
-        Player currentPlayer = _game.getCurrentPlayer();
+        Player currentPlayer = cardGame.getCurrentPlayer();
         if (currentPlayer.getCardsInDrawDeck().isEmpty()) {
             _game.getGameState().setPlayerDecked(currentPlayer, true);
         } else {
@@ -36,8 +36,8 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             List<? extends PhysicalCard> playerHand = currentPlayer.getCardsInHand();
             PhysicalCard cardDrawn = playerHand.getLast();
             final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
-            if (cardDrawn.canBePlayed(_game)) {
-                TribblesPlayCardAction action = new TribblesPlayCardAction((TribblesPhysicalCard) cardDrawn);
+            if (cardDrawn.canBePlayed(cardGame)) {
+                TribblesPlayCardAction action = new TribblesPlayCardAction(cardGame, (TribblesPhysicalCard) cardDrawn);
                 playableActions.add(action);
             }
 

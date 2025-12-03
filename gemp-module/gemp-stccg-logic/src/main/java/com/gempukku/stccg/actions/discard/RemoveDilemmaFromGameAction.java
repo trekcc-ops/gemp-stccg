@@ -7,10 +7,8 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.NullLocation;
@@ -22,14 +20,8 @@ import java.util.Collections;
 public class RemoveDilemmaFromGameAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
 
-    public RemoveDilemmaFromGameAction(String performingPlayerName, PhysicalCard cardToRemove) {
-        super(cardToRemove.getGame(), performingPlayerName, ActionType.REMOVE_CARD_FROM_GAME);
-        _cardTarget = new FixedCardResolver(cardToRemove);
-    }
-
-
-    public RemoveDilemmaFromGameAction(Player performingPlayer, PhysicalCard cardToRemove) {
-        super(cardToRemove.getGame(), performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
+    public RemoveDilemmaFromGameAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardToRemove) {
+        super(cardGame, performingPlayerName, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);
     }
 
@@ -52,7 +44,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
             }
 
             gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(cardToRemove));
-            gameState.addCardToZoneWithoutSendingToClient(cardToRemove, Zone.REMOVED);
+            gameState.addCardToRemovedPile(cardToRemove);
             cardToRemove.setLocation(new NullLocation());
 
             setAsSuccessful();
@@ -64,6 +56,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
     }
 
     @JsonProperty("targetCardId")
+    @SuppressWarnings("unused")
     @JsonIdentityReference(alwaysAsId=true)
     private PhysicalCard getTargetCard() {
         return _cardTarget.getCard();

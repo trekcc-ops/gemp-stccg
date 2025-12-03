@@ -10,15 +10,15 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
 
 public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
     private final PhysicalShipCard _performingCard;
 
-    public UndockAction(Player player, PhysicalShipCard cardUndocking) {
-        super(cardUndocking.getGame(), player, "Undock", ActionType.UNDOCK_SHIP);
+    public UndockAction(DefaultGame cardGame, String performingPlayerName, PhysicalShipCard cardUndocking) {
+        super(cardGame, performingPlayerName, "Undock", ActionType.UNDOCK_SHIP);
         _performingCard = cardUndocking;
     }
+
 
     @Override
     public PhysicalCard getPerformingCard() { return _performingCard; }

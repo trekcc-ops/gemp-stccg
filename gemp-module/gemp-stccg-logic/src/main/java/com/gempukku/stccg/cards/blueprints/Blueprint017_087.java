@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.filters.*;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
@@ -26,7 +27,8 @@ public class Blueprint017_087 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard) {
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame,
+                                                                           PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
 
         // While you command another ship that has a cost of 6 or more, this ship is Range +2.

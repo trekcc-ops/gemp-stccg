@@ -41,13 +41,13 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         FacilityCard outpost2 = (FacilityCard) newCardForGame("101_105", P2); // Klingon Outpost
         List<FacilityCard> outpostsToSeed = List.of(outpost1, outpost2);
 
-        SeedMissionCardAction seedAction = new SeedMissionCardAction(mission);
+        SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission);
         seedAction.setLocationZoneIndex(0);
         seedAction.seedCard(_game);
 
         for (FacilityCard facility : outpostsToSeed) {
             Player facilityOwner = _game.getPlayer(facility.getOwnerName());
-            SeedOutpostAction seedOutpostAction = new SeedOutpostAction(facility);
+            SeedOutpostAction seedOutpostAction = new SeedOutpostAction(_game, facility);
             seedOutpostAction.setDestination(mission.getLocationDeprecatedOnlyUseForTests());
             seedOutpostAction.processEffect(_game, facilityOwner);
         }

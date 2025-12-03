@@ -38,8 +38,8 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
         for (Action pendingAction : actionStack) {
             if (pendingAction instanceof EncounterSeedCardAction encounterAction &&
                     encounterAction.getEncounteredCard() == context.getPerformingCard(cardGame)) {
-                result.add(new OvercomeDilemmaConditionAction(context.getPerformingCard(cardGame), encounterAction, _conditions,
-                        encounterAction.getAttemptingUnit()));
+                result.add(new OvercomeDilemmaConditionAction(cardGame, context.getPerformingCard(cardGame),
+                        encounterAction, _conditions, encounterAction.getAttemptingUnit()));
             }
         }
         return result;

@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -13,9 +12,9 @@ public class AddUntilModifierAction extends ActionyAction {
     private final Modifier _modifier;
     private final TimeResolver.Time until;
 
-    public AddUntilModifierAction(PhysicalCard performingCard, String playerName, Modifier modifier,
+    public AddUntilModifierAction(DefaultGame cardGame, String playerName, Modifier modifier,
                                   TimeResolver.Time until) {
-        super(performingCard.getGame(), playerName, ActionType.ADD_MODIFIER);
+        super(cardGame, playerName, ActionType.ADD_MODIFIER);
         _modifier = modifier;
         this.until = until;
     }

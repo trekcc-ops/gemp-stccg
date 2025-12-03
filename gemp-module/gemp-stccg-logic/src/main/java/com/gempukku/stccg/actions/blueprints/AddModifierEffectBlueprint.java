@@ -38,7 +38,7 @@ public class AddModifierEffectBlueprint implements SubActionBlueprint {
         final Modifier modifier = _modifierSource.createModifier(cardGame, performingCard, context);
         for (String playerName : cardGame.getAllPlayerIds()) {
             if (performingCard.isControlledBy(playerName)) {
-                result.add(new AddUntilModifierAction(performingCard, playerName, modifier, _until));
+                result.add(new AddUntilModifierAction(cardGame, playerName, modifier, _until));
             }
         }
         return result;

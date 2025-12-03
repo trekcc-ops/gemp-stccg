@@ -42,7 +42,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
         while ((drawn < _count) && (!performingPlayer.getCardsInDrawDeck().isEmpty())) {
             PhysicalCard card = performingPlayer.getCardsInDrawDeck().getFirst();
             cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
-            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.PLAY_PILE);
+            cardGame.getGameState().addCardToZone(cardGame, card, Zone.PLAY_PILE);
             drawn++;
         }
 

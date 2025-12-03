@@ -10,7 +10,6 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
@@ -40,10 +39,10 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
         Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
 
-        Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
+        Action action = new ReportCardAction(cardGame, (PhysicalReportableCard1E) selectedCard,
                 true, eligibleDestinations);
         setPlayCardAction(action);
-        selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
+        cardGame.getActionsEnvironment().addActionToStack(getPlayCardAction());
     }
 
     @Override

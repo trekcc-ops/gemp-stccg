@@ -39,9 +39,9 @@ public class Blueprint101_014 extends CardBlueprint {
                 new SelectVisibleCardAction(game, game.getOpponent(attemptingUnit.getControllerName()),
                         "Select a personnel to kill", highestPersonnel);
         result.add(selectAction);
-        Action killAction = new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard, selectAction);
+        Action killAction = new KillSinglePersonnelAction(game, thisCard.getOwnerName(), thisCard, selectAction);
         Action overcomeAction =
-                new OvercomeDilemmaConditionAction(thisCard, action, conditions, attemptingUnit, killAction);
+                new OvercomeDilemmaConditionAction(game, thisCard, action, conditions, attemptingUnit, killAction);
         result.add(overcomeAction);
         return result;
     }

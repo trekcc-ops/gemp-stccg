@@ -40,7 +40,7 @@ public class Blueprint155_026 extends CardBlueprint {
 
         if (currentPhase == Phase.EXECUTE_ORDERS && thisCard.isControlledBy(player)) {
             UseGameTextAction getItDoneAction =
-                    new UseGameTextAction(thisCard, player, "Discard 2 cards to choose effect");
+                    new UseGameTextAction(game, thisCard, player, "Discard 2 cards to choose effect");
 
             getItDoneAction.appendCost(new UseOncePerTurnAction(game, getItDoneAction, thisCard, player.getPlayerId()));
             getItDoneAction.setCardActionPrefix("1");
@@ -53,7 +53,7 @@ public class Blueprint155_026 extends CardBlueprint {
 
             TopLevelSelectableAction choice1 = choice1(game, thisCard, player);
             TopLevelSelectableAction choice2 = choice2(game, thisCard, player);
-            TopLevelSelectableAction choice3 = choice3(thisCard, player);
+            TopLevelSelectableAction choice3 = choice3(game, thisCard, player);
 
             List<Action> selectableActions = new ArrayList<>();
             selectableActions.add(choice1);
@@ -83,7 +83,7 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     private TopLevelSelectableAction choice1(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
-        SelectCardsAction targetAction = new SelectCardsFromDialogAction(thisCard.getGame(), player.getPlayerId(),
+        SelectCardsAction targetAction = new SelectCardsFromDialogAction(cardGame, player.getPlayerId(),
                 "Select a personnel",
                 Filters.and(Filters.your(player), Filters.inPlay, Filters.unique, CardIcon.TNG_ICON,
                         CardType.PERSONNEL));
@@ -98,7 +98,7 @@ public class Blueprint155_026 extends CardBlueprint {
     }
 
     private TopLevelSelectableAction choice2(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
-        SelectVisibleCardAction targetAction = new SelectVisibleCardAction(thisCard.getGame(), player, "Select a ship",
+        SelectVisibleCardAction targetAction = new SelectVisibleCardAction(cardGame, player, "Select a ship",
                 Filters.and(Filters.your(player), Filters.inPlay, CardIcon.TNG_ICON,
                         CardType.SHIP));
 
@@ -111,10 +111,11 @@ public class Blueprint155_026 extends CardBlueprint {
         return addModifierAction;
     }
 
-    private TopLevelSelectableAction choice3(PhysicalCard thisCard, Player player) {
+    private TopLevelSelectableAction choice3(DefaultGame cardGame, PhysicalCard thisCard, Player player) {
+        String playerName = player.getPlayerId();
         // shuffle the bottom three personnel and/or ships from your discard pile into your draw deck
-        CardFilter shuffleCardsFilter = new BottomCardsOfDiscardFilter(player.getPlayerId(), 3, Filters.and(CardIcon.TNG_ICON,
+        CardFilter shuffleCardsFilter = new BottomCardsOfDiscardFilter(playerName, 3, Filters.and(CardIcon.TNG_ICON,
                 Filters.or(CardType.PERSONNEL, CardType.SHIP)));
-        return new ShuffleCardsIntoDrawDeckAction(thisCard, player, shuffleCardsFilter);
+        return new ShuffleCardsIntoDrawDeckAction(cardGame, thisCard, playerName, shuffleCardsFilter);
     }
 }

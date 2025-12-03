@@ -11,7 +11,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
@@ -26,33 +25,25 @@ public class FailDilemmaAction extends ActionyAction {
     private final boolean _discardDilemma;
     private boolean _dilemmaDiscarded;
 
-    public FailDilemmaAction(AttemptingUnit attemptingUnit, PhysicalCard dilemma,
-                             EncounterSeedCardAction encounterAction) {
-        this(dilemma.getGame(), attemptingUnit.getControllerName(), attemptingUnit, dilemma, encounterAction, false);
-    }
-
-    public FailDilemmaAction(DefaultGame cardGame, String performingPlayerName, AttemptingUnit attemptingUnit,
+    public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit,
                              PhysicalCard dilemma, EncounterSeedCardAction encounterAction, boolean discardDilemma) {
-        super(cardGame, performingPlayerName, ActionType.FAIL_DILEMMA);
+        super(cardGame, attemptingUnit.getControllerName(), ActionType.FAIL_DILEMMA);
         _attemptingUnit = attemptingUnit;
         _dilemma = dilemma;
         _encounterAction = encounterAction;
         _discardDilemma = discardDilemma;
     }
 
+    public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
+                             EncounterSeedCardAction encounterAction) {
+        this(cardGame, attemptingUnit, dilemma, encounterAction, false);
+    }
 
     public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
                              Action additionalEffect, EncounterSeedCardAction encounterAction) {
-        this(cardGame, attemptingUnit.getControllerName(), attemptingUnit, dilemma, encounterAction, false);
+        this(cardGame, attemptingUnit, dilemma, encounterAction, false);
         appendEffect(additionalEffect);
     }
-
-    public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
-                             Action additionalEffect, EncounterSeedCardAction encounterAction, boolean discardDilemma) {
-        this(cardGame, attemptingUnit.getControllerName(), attemptingUnit, dilemma, encounterAction, discardDilemma);
-        appendEffect(additionalEffect);
-    }
-
 
 
     @Override
@@ -80,7 +71,7 @@ public class FailDilemmaAction extends ActionyAction {
 
         if (_discardDilemma && !_dilemmaDiscarded) {
             _dilemmaDiscarded = true;
-            return new RemoveDilemmaFromGameAction(_performingPlayerId, _dilemma);
+            return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma);
         }
 
         setAsFailed();

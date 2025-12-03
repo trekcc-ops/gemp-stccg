@@ -41,7 +41,7 @@ public class Blueprint115_006 extends CardBlueprint {
         }
 
         result.add(new StopCardsAction(game, thisCard.getOwnerName(), cardsToStop));
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
+        result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         return result;
     }
 

@@ -56,7 +56,8 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
         if (!getProgress(Progress.wasCarriedOut)) {
             setProgress(Progress.wasCarriedOut);
-            return new TribblesMultiDiscardActionBroken(_performingCard, _targetPlayer, new TopOfPlayPileFilter(_targetPlayer));
+            return new TribblesMultiDiscardActionBroken(cardGame, _performingCard, _targetPlayer.getPlayerId(),
+                    new TopOfPlayPileFilter(_targetPlayer));
         }
         return getNextAction();
     }

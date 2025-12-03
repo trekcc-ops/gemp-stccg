@@ -32,21 +32,21 @@ public class ActivateRecycleTribblePowerAction extends ActivateTribblePowerActio
                 playersWithCards.add(player.getPlayerId());
         }
         if (playersWithCards.size() == 1)
-            playerChosen(playersWithCards.getFirst());
+            playerChosen(cardGame, playersWithCards.getFirst());
         else
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a player",
                             playersWithCards, cardGame) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result);
+                            playerChosen(cardGame, result);
                         }
                     });
         return getNextAction();
     }
 
-    private void playerChosen(String chosenPlayer) {
-        Action shuffleAction = new ShuffleCardsIntoDrawDeckAction(
+    private void playerChosen(DefaultGame cardGame, String chosenPlayer) {
+        Action shuffleAction = new ShuffleCardsIntoDrawDeckAction(cardGame,
                 _performingCard, chosenPlayer, new InYourDiscardFilter(chosenPlayer));
         appendEffect(shuffleAction);
     }

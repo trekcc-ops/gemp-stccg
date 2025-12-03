@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -26,17 +25,9 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> _targetCards;
 
-    public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, String performingPlayerName,
-                                          CardFilter cardFilter) {
-        super(performingCard.getGame(), performingPlayerName, "Shuffle cards into draw deck",
-                ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
-        _cardTarget = new CardFilterResolver(cardFilter);
-        _performingCard = performingCard;
-    }
-
-    public ShuffleCardsIntoDrawDeckAction(PhysicalCard performingCard, Player performingPlayer,
-                                          CardFilter cardFilter) {
-        super(performingCard.getGame(), performingPlayer, "Shuffle cards into draw deck",
+    public ShuffleCardsIntoDrawDeckAction(DefaultGame cardGame, PhysicalCard performingCard,
+                                          String performingPlayerName, CardFilter cardFilter) {
+        super(cardGame, performingPlayerName, "Shuffle cards into draw deck",
                 ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
         _cardTarget = new CardFilterResolver(cardFilter);
         _performingCard = performingCard;
@@ -77,7 +68,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
         cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, _targetCards);
         for (PhysicalCard card : _targetCards) {
-            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.DRAW_DECK);
+            cardGame.getGameState().addCardToTopOfDrawDeck(card);
         }
         CardPile drawDeck = performingPlayer.getDrawDeck();
         drawDeck.shuffle();

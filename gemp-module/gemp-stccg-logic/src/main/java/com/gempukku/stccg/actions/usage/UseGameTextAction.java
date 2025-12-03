@@ -16,11 +16,12 @@ public class UseGameTextAction extends ActionyAction implements TopLevelSelectab
     @JsonProperty("actionText")
     private final String _actionText;
 
-    public UseGameTextAction(PhysicalCard physicalCard, Player performingPlayer, String text) {
-        super(physicalCard.getGame(), performingPlayer, text, ActionType.USE_GAME_TEXT);
+    public UseGameTextAction(DefaultGame cardGame, PhysicalCard physicalCard, Player performingPlayer, String text) {
+        super(cardGame, performingPlayer, text, ActionType.USE_GAME_TEXT);
         _performingCard = physicalCard;
         _actionText = text;
     }
+
 
 
     @Override

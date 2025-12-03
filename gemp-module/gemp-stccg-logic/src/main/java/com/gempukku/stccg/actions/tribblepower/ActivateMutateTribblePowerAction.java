@@ -37,7 +37,7 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
 
                 // Shuffle your play pile into your draw deck
                 Collection<PhysicalCard> playPileCards = performingPlayer.getCardGroupCards(Zone.PLAY_PILE);
-                appendEffect(new ShuffleCardsIntoDrawDeckAction(_performingCard, performingPlayer,
+                appendEffect(new ShuffleCardsIntoDrawDeckAction(cardGame, _performingCard, _performingPlayerId,
                         new InCardListFilter(playPileCards)));
 
                 // Then put that many cards from the top of your draw deck in your play pile

@@ -1,14 +1,14 @@
 package com.gempukku.stccg.actions.discard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
@@ -59,7 +59,7 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
         cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, toRemoveFromZone);
         for (PhysicalCard removedCard : removedCards) {
-            cardGame.getGameState().addCardToZoneWithoutSendingToClient(removedCard, Zone.REMOVED);
+            cardGame.getGameState().addCardToRemovedPile(removedCard);
             if (removedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();
             }

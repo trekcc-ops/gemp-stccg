@@ -40,12 +40,11 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
         _performingCard = performingCard;
     }
 
-
-
-    protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
+    protected void playCard(DefaultGame cardGame, final PhysicalCard selectedCard) throws InvalidGameLogicException {
         _playCardAction = selectedCard.getPlayCardAction(true);
-        selectedCard.getGame().getActionsEnvironment().addActionToStack(_playCardAction);
+        cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
     }
+
 
     @Override
     public boolean wasCarriedOut() {
@@ -76,7 +75,7 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
         }
 
         // The playCard method determines valid destinations
-        playCard(Iterables.getOnlyElement(_cardToDownloadTarget.getCards(cardGame)));
+        playCard(cardGame, Iterables.getOnlyElement(_cardToDownloadTarget.getCards(cardGame)));
         setAsSuccessful();
         return null;
     }

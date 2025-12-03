@@ -32,7 +32,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected final String _ownerName;
     protected final int _cardId;
     protected Zone _zone;
-    private Integer _attachedToCardId;
+    protected Integer _attachedToCardId;
     private Integer _stackedOnCardId;
     protected GameLocation _currentGameLocation;
     private boolean _placedOnMission = false;
@@ -103,37 +103,41 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _attachedToCardId = null;
     }
 
-    public PhysicalCard getAttachedTo() {
+    public Integer getAttachedToCardId() {
+        return _attachedToCardId;
+    }
+
+    public PhysicalCard getAttachedTo(DefaultGame cardGame) {
         if (_attachedToCardId == null) {
             return null;
         } else {
             try {
-                return getGame().getCardFromCardId(_attachedToCardId);
+                return cardGame.getCardFromCardId(_attachedToCardId);
             } catch(CardNotFoundException exp) {
-                getGame().sendErrorMessage(exp);
+                cardGame.sendErrorMessage(exp);
                 return null;
             }
         }
     }
+
 
     public void stackOn(PhysicalCard physicalCard) {
         _stackedOnCardId = physicalCard.getCardId();
     }
 
 
-    public PhysicalCard getStackedOn() {
+    public PhysicalCard getStackedOn(DefaultGame cardGame) {
         if (_stackedOnCardId == null) {
             return null;
         } else {
             try {
-                return getGame().getCardFromCardId(_stackedOnCardId);
+                return cardGame.getCardFromCardId(_stackedOnCardId);
             } catch(CardNotFoundException exp) {
-                getGame().sendErrorMessage(exp);
+                cardGame.sendErrorMessage(exp);
                 return null;
             }
         }
     }
-
 
     public String getTitle() { return _blueprint.getTitle(); }
 
@@ -141,7 +145,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     private boolean canEnterPlay(DefaultGame game, List<Requirement> enterPlayRequirements) {
-        if (cannotEnterPlayPerUniqueness())
+        if (cannotEnterPlayPerUniqueness(game))
             return false;
         if (enterPlayRequirements != null && !allRequirementsAreTrue(game, enterPlayRequirements))
             return false;
@@ -158,14 +162,14 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return result;
     }
 
-
-    protected boolean cannotEnterPlayPerUniqueness() {
-        for (PhysicalCard cardInPlay : getGame().getGameState().getAllCardsInPlay()) {
+    protected boolean cannotEnterPlayPerUniqueness(DefaultGame cardGame) {
+        for (PhysicalCard cardInPlay : cardGame.getGameState().getAllCardsInPlay()) {
             if (cardInPlay.isCopyOf(this) && cardInPlay.isOwnedBy(_ownerName) && !cardInPlay.isUniversal())
                 return true;
         }
         return false;
     }
+
 
     public boolean isOwnedBy(String playerName) {
         return Objects.equals(_ownerName, playerName);
@@ -236,7 +240,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public List<PhysicalCard> getStackedCards(DefaultGame game) {
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard card : game.getGameState().getAllCardsInGame()) {
-            if (card.getStackedOn() == this)
+            if (card.getStackedOn(game) == this)
                 result.add(card);
         }
         return result;
@@ -245,7 +249,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public Collection<PhysicalCard> getAttachedCards(DefaultGame game) {
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard physicalCard : game.getGameState().getAllCardsInPlay()) {
-            if (physicalCard.getAttachedTo() == this)
+            if (physicalCard.getAttachedToCardId() == _cardId)
                 result.add(physicalCard);
         }
         return result;
@@ -307,7 +311,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult) {
-        return _blueprint.getRequiredAfterTriggerActions(actionResult, this);
+        return _blueprint.getRequiredAfterTriggerActions(cardGame, actionResult, this);
     }
 
 
@@ -363,7 +367,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isPresentWith(PhysicalCard card) {
         return card.getGameLocation() == this.getGameLocation() &&
-                card.getAttachedTo() == this.getAttachedTo();
+                _attachedToCardId != null &&
+                card.getAttachedToCardId() == _attachedToCardId;
     }
 
     public boolean hasSkill(SkillName skillName) { return false; }

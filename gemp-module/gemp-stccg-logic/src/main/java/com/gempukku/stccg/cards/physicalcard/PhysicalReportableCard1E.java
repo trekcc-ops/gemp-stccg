@@ -11,15 +11,12 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gameevent.GameStateListener;
-import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.security.InvalidParameterException;
 import java.util.Collections;
 
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
@@ -82,7 +79,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return createReportCardAction(false);
     }
     public TopLevelSelectableAction createReportCardAction(boolean forFree) {
-        return new ReportCardAction(this, forFree);
+        return new ReportCardAction(_game, this, forFree);
     }
 
     public void leaveAwayTeam(ST1EGame cardGame) {

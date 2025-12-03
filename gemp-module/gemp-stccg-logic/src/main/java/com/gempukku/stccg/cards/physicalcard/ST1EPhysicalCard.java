@@ -37,7 +37,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-        STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.CORE, _ownerName, forFree);
+        STCCGPlayCardAction action = new STCCGPlayCardAction(_game, this, Zone.CORE, _ownerName, forFree);
         _game.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
         return action;
     }
@@ -96,8 +96,10 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     @Override
     public boolean isPresentWith(PhysicalCard card) {
         return card.getGameLocation() == this.getGameLocation() &&
-                card.getAttachedTo() == this.getAttachedTo() &&
-                _game.getGameState().getSpacelineLocations().contains(card.getGameLocation());
+                card.getGameLocation() instanceof MissionLocation missionLocation &&
+                _attachedToCardId != null &&
+                _attachedToCardId == card.getAttachedToCardId() &&
+                _game.getGameState().getSpacelineLocations().contains(missionLocation);
     }
 
 

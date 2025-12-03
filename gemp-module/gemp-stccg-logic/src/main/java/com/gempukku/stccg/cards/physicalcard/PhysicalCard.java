@@ -51,13 +51,16 @@ public interface PhysicalCard {
     CardBlueprint getBlueprint();
     void attachTo(PhysicalCard physicalCard);
     void detach();
-    @JsonIdentityReference(alwaysAsId=true)
+
+    @JsonIgnore
+    PhysicalCard getAttachedTo(DefaultGame cardGame);
     @JsonProperty("attachedToCardId")
-    PhysicalCard getAttachedTo();
+    Integer getAttachedToCardId();
+
     void stackOn(PhysicalCard physicalCard);
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("stackedOnCardId")
-    PhysicalCard getStackedOn();
+    PhysicalCard getStackedOn(DefaultGame cardGame);
 
     String getTitle();
     boolean canInsertIntoSpaceline();
@@ -159,6 +162,12 @@ public interface PhysicalCard {
 
     boolean isVisibleToPlayer(String requestingPlayerId);
 
+    default void removeFromCardGroup(DefaultGame cardGame) {
+        PhysicalCardGroup<? extends PhysicalCard> group = cardGame.getGameState().getCardGroup(getOwnerName(), getZone());
+        if (group != null)
+            group.remove(this);
+    }
+
     default void removeFromCardGroup() {
         PhysicalCardGroup<? extends PhysicalCard> group = getGame().getGameState().getCardGroup(getOwnerName(), getZone());
         if (group != null)
@@ -179,9 +188,11 @@ public interface PhysicalCard {
 
     void reveal();
 
-    default List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(Player player, ActionResult actionResult) {
-        return getBlueprint().getOptionalResponseActionsWhileInHand(this, player, actionResult);
+    default List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame, Player player,
+                                                                                 ActionResult actionResult) {
+        return getBlueprint().getOptionalResponseActionsWhileInHand(cardGame, this, player, actionResult);
     }
+
 
     default List<TopLevelSelectableAction> getPlayActionsFromGameText(Player player, DefaultGame cardGame) {
         return getBlueprint().getPlayActionsFromGameText(this, player, cardGame);

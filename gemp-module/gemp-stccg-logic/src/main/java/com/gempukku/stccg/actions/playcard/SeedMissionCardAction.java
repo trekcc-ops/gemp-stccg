@@ -31,11 +31,11 @@ public class SeedMissionCardAction extends PlayCardAction {
     private final String _missionLocation;
     private boolean _actionCarriedOut;
 
-    public SeedMissionCardAction(MissionCard cardToPlay) {
-        super(cardToPlay, cardToPlay, cardToPlay.getOwnerName(), Zone.SPACELINE, ActionType.SEED_CARD);
+    public SeedMissionCardAction(ST1EGame cardGame, MissionCard cardToPlay) {
+        super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), Zone.SPACELINE, ActionType.SEED_CARD);
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         _missionLocation = _cardEnteringPlay.getBlueprint().getLocation();
-        ST1EGameState gameState = cardToPlay.getGame().getGameState();
+        ST1EGameState gameState = cardGame.getGameState();
         _sharedMission = gameState.indexOfLocation(_missionLocation, quadrant) != null &&
                 !_cardEnteringPlay.getBlueprint().isUniversal();
     }

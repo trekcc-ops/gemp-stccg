@@ -102,7 +102,8 @@ public class ActionResult {
                 }
             }
             for (PhysicalCard card : player.getCardsInHand()) {
-                final List<TopLevelSelectableAction> actions = card.getOptionalResponseActionsWhileInHand(player, this);
+                final List<TopLevelSelectableAction> actions =
+                        card.getOptionalResponseActionsWhileInHand(game, player, this);
                 if (actions != null)
                     playerActions.addAll(actions);
             }

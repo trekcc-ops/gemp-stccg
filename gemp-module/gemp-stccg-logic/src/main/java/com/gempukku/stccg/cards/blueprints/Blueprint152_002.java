@@ -33,12 +33,12 @@ public class Blueprint152_002 extends CardBlueprint {
                 new AttributeMissionRequirement(CardAttribute.CUNNING, 20)
         );
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2);
-        KillSinglePersonnelAction killAction = new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard,
+        KillSinglePersonnelAction killAction = new KillSinglePersonnelAction(game, thisCard.getOwnerName(), thisCard,
                 new SelectRandomCardAction(game, thisCard.getOwnerName(), "Choose a personnel",
                         new EncounteringCardFilter(thisCard)));
 
         OvercomeDilemmaConditionAction overcomeAction =
-                new OvercomeDilemmaConditionAction(thisCard, action, fullCondition, attemptingUnit, killAction);
+                new OvercomeDilemmaConditionAction(game, thisCard, action, fullCondition, attemptingUnit, killAction);
         result.add(overcomeAction);
         return result;
     }

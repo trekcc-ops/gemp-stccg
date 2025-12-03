@@ -44,7 +44,7 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
         if (!_wasCarriedOut) {
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
                 cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
-                cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.PLAY_PILE);
+                cardGame.getGameState().addCardToZone(cardGame, card, Zone.PLAY_PILE);
                 _wasCarriedOut = true;
                 setAsSuccessful();
             }

@@ -16,9 +16,10 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     private int _cardsAlreadyDrawnCount;
     private final Evaluator _cardDrawCountEvaluator;
 
-    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer) {
-        this(performingCard.getGame(), performingCard, performingPlayer, false, 1);
+    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName) {
+        this(cardGame, performingCard, performingPlayerName, false, 1);
     }
+
 
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
                            boolean optional, int count) {

@@ -29,8 +29,8 @@ public class SeedOutpostAction extends PlayCardAction {
 
     private enum Progress { cardWasSeeded, placementChosen, affiliationSelected }
 
-    public SeedOutpostAction(FacilityCard cardToSeed) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
+    public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed) {
+        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
                 ActionType.SEED_CARD, Progress.values());
         if (!cardToSeed.isMultiAffiliation()) {
             setProgress(Progress.affiliationSelected);
@@ -38,11 +38,12 @@ public class SeedOutpostAction extends PlayCardAction {
         }
     }
 
+
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (_cardEnteringPlay instanceof FacilityCard facility) {
+        if (_cardEnteringPlay instanceof FacilityCard facility && cardGame instanceof ST1EGame stGame) {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            ST1EGameState gameState = facility.getGame().getGameState();
+            ST1EGameState gameState = stGame.getGameState();
 
             Set<PhysicalCard> availableMissions = new HashSet<>();
             for (MissionLocation location : gameState.getSpacelineLocations()) {
@@ -102,7 +103,7 @@ public class SeedOutpostAction extends PlayCardAction {
             }
 
             if (!getProgress(Progress.cardWasSeeded)) {
-                processEffect(facility.getGame(), performingPlayer);
+                processEffect(stGame, performingPlayer);
                 return getNextAction();
             }
             return null;

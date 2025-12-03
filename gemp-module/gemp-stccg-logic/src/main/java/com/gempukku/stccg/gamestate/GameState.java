@@ -159,7 +159,7 @@ public abstract class GameState {
     public void removeCardsFromZoneWithoutSendingToClient(DefaultGame cardGame, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
             if (card.isInPlay()) card.stopAffectingGame(cardGame);
-            card.removeFromCardGroup();
+            card.removeFromCardGroup(cardGame);
 
             if (card instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam() != null) {
@@ -169,7 +169,7 @@ public abstract class GameState {
 
             if (card.isInPlay())
                 _inPlay.remove(card);
-            if (card.getAttachedTo() != null)
+            if (card.getAttachedToCardId() != null)
                 card.detach();
         }
 
@@ -178,14 +178,23 @@ public abstract class GameState {
         }
     }
 
+    public void addCardToRemovedPile(PhysicalCard card) {
+        Zone zone = Zone.REMOVED;
+        if (zone.hasList()) {
+            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
+            zoneCardList.add(card);
+        }
 
-    public void addCardToZoneWithoutSendingToClient(PhysicalCard card, Zone zone) {
+        card.setZone(zone);
+    }
+
+    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone) {
         if (zone == Zone.DISCARD) {
             addCardToTopOfDiscardPile(card);
         } else {
             if (zone.isInPlay()) {
                 _inPlay.add(card);
-                card.startAffectingGame(card.getGame());
+                card.startAffectingGame(cardGame);
             }
 
             if (zone.hasList()) {
@@ -240,11 +249,6 @@ public abstract class GameState {
         _currentTurnNumber++;
     }
 
-
-    public boolean isCardInPlayActive(PhysicalCard card) {
-        if (card.getAttachedTo() != null) return isCardInPlayActive(card.getAttachedTo());
-        else return true;
-    }
 
     public Phase getCurrentPhase() {
         return _currentPhase;
@@ -303,7 +307,7 @@ public abstract class GameState {
         removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(cardBeingPlaced));
         cardBeingPlaced.setPlacedOnMission(true);
         cardBeingPlaced.setLocation(mission);
-        addCardToZoneWithoutSendingToClient(cardBeingPlaced, Zone.AT_LOCATION);
+        addCardToZone(cardGame, cardBeingPlaced, Zone.AT_LOCATION);
         cardBeingPlaced.setLocation(mission);
     }
 

@@ -13,7 +13,6 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -31,9 +30,9 @@ public class ActionSerializerTest extends AbstractAtTest {
     public void killAttemptSerializerTest() throws CardNotFoundException, DecisionResultInvalidException,
             JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
-        KillSinglePersonnelAction action = new KillSinglePersonnelAction(P1, _game.getCardFromCardId(1),
+        KillSinglePersonnelAction action = new KillSinglePersonnelAction(_game, P1, _game.getCardFromCardId(1),
                 new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
-        KillSinglePersonnelAction action2 = new KillSinglePersonnelAction(P1, _game.getCardFromCardId(1),
+        KillSinglePersonnelAction action2 = new KillSinglePersonnelAction(_game, P1, _game.getCardFromCardId(1),
                 new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
         PhysicalShipCard runabout =

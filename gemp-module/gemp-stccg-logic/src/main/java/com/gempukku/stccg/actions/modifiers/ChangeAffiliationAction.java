@@ -31,21 +31,21 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !getAffiliationOptions().isEmpty();
+        return !getAffiliationOptions(cardGame).isEmpty();
     }
 
 
     @Override
     public PhysicalCard getPerformingCard() { return _performingCard; }
 
-    private List<Affiliation> getAffiliationOptions() {
+    private List<Affiliation> getAffiliationOptions(DefaultGame cardGame) {
         List<Affiliation> _affiliationOptions = new LinkedList<>();
         _performingCard.getAffiliationOptions().forEach(affiliation -> {
             if (affiliation != _performingCard.getCurrentAffiliation())
                 _affiliationOptions.add(affiliation);
         });
         if (_performingCard instanceof PersonnelCard personnel) {
-            if (personnel.getAttachedTo() != null && personnel.getAttachedTo() instanceof CardWithCrew cardWithCrew) {
+            if (personnel.getAttachedTo(cardGame) != null && personnel.getAttachedTo(cardGame) instanceof CardWithCrew cardWithCrew) {
                 _affiliationOptions.removeIf(affiliation ->
                         !personnel.isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, affiliation));
             }
@@ -60,11 +60,12 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
         return _affiliationOptions;
     }
 
+
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (_selectAffiliationAction == null) {
-            _selectAffiliationAction =
-                    new SelectAffiliationAction(cardGame, cardGame.getPlayer(_performingPlayerId), getAffiliationOptions());
+            _selectAffiliationAction = new SelectAffiliationAction(
+                    cardGame, cardGame.getPlayer(_performingPlayerId), getAffiliationOptions(cardGame));
         }
 
 

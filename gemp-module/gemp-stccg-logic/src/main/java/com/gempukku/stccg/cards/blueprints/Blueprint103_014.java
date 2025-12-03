@@ -3,9 +3,9 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
-import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -14,10 +14,9 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
 import com.gempukku.stccg.filters.EncounteringCardFilter;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -50,10 +49,10 @@ public class Blueprint103_014 extends CardBlueprint {
                             "Select a personnel to kill",
                             new EncounteringCardFilter(thisCard));
             result.add(selectAction);
-            result.add(new KillSinglePersonnelAction(thisCard.getOwnerName(), thisCard, selectAction));
+            result.add(new KillSinglePersonnelAction(game, thisCard.getOwnerName(), thisCard, selectAction));
         }
 
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
+        result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         return result;
     }
 

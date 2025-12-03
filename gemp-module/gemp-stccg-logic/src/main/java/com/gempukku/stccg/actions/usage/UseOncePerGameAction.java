@@ -15,9 +15,9 @@ public class UseOncePerGameAction extends ActionyAction {
     private final static int LIMIT_PER_GAME = 1;
     private final String _prefix;
 
-    public UseOncePerGameAction(CardPerformedAction limitedAction, PhysicalCard performingCard,
+    public UseOncePerGameAction(DefaultGame cardGame, CardPerformedAction limitedAction, PhysicalCard performingCard,
                                 Player performingPlayer) {
-        super(performingCard.getGame(), performingPlayer, ActionType.USAGE_LIMIT);
+        super(cardGame, performingPlayer, ActionType.USAGE_LIMIT);
         _card = performingCard;
         _prefix = limitedAction.getCardActionPrefix();
     }

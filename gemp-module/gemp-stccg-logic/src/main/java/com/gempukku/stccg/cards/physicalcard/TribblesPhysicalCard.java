@@ -39,7 +39,9 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
+    public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
+        return new TribblesPlayCardAction(_game, this);
+    }
 
     public boolean canPlayOutOfSequence(TribblesGame cardGame) {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;

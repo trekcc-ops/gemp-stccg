@@ -10,19 +10,19 @@ import java.util.List;
 
 public class SeedCardAction extends PlayCardAction {
 
-    public SeedCardAction(PhysicalCard cardToSeed) {
-        this(cardToSeed, null);
+    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone) {
+        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
+    }
+    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed) {
+        this(cardGame, cardToSeed, null);
     }
 
-    public SeedCardAction(PhysicalCard cardToSeed, Zone zone) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
-    }
 
     @Override
     protected void putCardIntoPlay(DefaultGame game) {
         GameState gameState = game.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
-        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
+        gameState.addCardToZone(game, _cardEnteringPlay, _destinationZone);
         setAsSuccessful();
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
     }

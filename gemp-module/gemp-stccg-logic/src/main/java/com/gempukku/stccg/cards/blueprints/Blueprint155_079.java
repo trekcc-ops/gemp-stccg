@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.filters.CharacteristicFilter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
@@ -32,11 +33,11 @@ public class Blueprint155_079 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame, PhysicalCard thisCard)
             throws InvalidGameLogicException {
             // TODO - Need some additional work here to be check skill for usability
         List<Modifier> modifiers = new LinkedList<>();
-        for (Skill skill : getSkills(thisCard.getGame(), thisCard))
+        for (Skill skill : getSkills(cardGame, thisCard))
             if (skill instanceof ModifierSkill modifierSkill)
                 modifiers.add(modifierSkill.getModifier(thisCard));
         return modifiers;

@@ -45,9 +45,9 @@ public class Blueprint139_013 extends CardBlueprint {
                 allSuchPersonnel.remove(personnelToContinue);
             }
             result.add(new StopCardsAction(game, thisCard.getOwnerName(), allSuchPersonnel));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getControllerName(), thisCard));
+            result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         } else {
-            result.add(new FailDilemmaAction(game, attemptingUnit.getControllerName(), attemptingUnit, thisCard, action, false));
+            result.add(new FailDilemmaAction(game, attemptingUnit, thisCard, action, false));
         }
 
         return result;
