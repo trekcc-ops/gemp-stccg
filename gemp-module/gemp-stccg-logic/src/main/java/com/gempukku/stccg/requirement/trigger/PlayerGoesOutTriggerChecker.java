@@ -13,7 +13,7 @@ public class PlayerGoesOutTriggerChecker implements TriggerChecker {
 
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        return playerGoesOut(actionContext.getEffectResult(),
+        return playerGoesOut(actionContext.getEffectResult(cardGame),
                 _playerSource.getPlayerId(actionContext));
     }
 

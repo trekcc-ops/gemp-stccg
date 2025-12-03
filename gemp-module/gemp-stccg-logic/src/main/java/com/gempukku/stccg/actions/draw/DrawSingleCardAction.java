@@ -38,6 +38,7 @@ public class DrawSingleCardAction extends ActionyAction {
     public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
         cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
         setAsSuccessful();
+        saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId, this));
     }
 
 }

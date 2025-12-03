@@ -34,4 +34,12 @@ public class ThisCardPresentWithYourCardRequirement implements Requirement {
             return false;
         }
     }
+
+    public Condition getCondition(ActionContext actionContext, PhysicalCard thisCard, DefaultGame cardGame) {
+        CardFilter cardFilter = Filters.and(
+                Filters.yourCardsPresentWithThisCard(thisCard),
+                _otherCardFilter.getFilterable(cardGame, actionContext)
+        );
+        return new CardInPlayCondition(cardFilter);
+    }
 }

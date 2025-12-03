@@ -46,16 +46,20 @@ public class ActionResult {
     private ActionOrder _optionalResponsePlayerOrder;
     private final List<TopLevelSelectableAction> _requiredResponses = new ArrayList<>();
     private int _passCount;
+    private final Action _action;
 
 
-    public ActionResult(Type type, String performingPlayerId) {
+    public ActionResult(Type type, String performingPlayerId, Action action) {
         _type = type;
         _performingPlayerId = performingPlayerId;
+        _action = action;
     }
+
 
 
     public ActionResult(Type type, Action action) {
         _type = type;
+        _action = action;
         _performingPlayerId = action.getPerformingPlayerId();
     }
 
@@ -225,6 +229,10 @@ public class ActionResult {
         } else {
             parentAction.clearResult();
         }
+    }
+
+    public Action getAction() {
+        return _action;
     }
 
 }

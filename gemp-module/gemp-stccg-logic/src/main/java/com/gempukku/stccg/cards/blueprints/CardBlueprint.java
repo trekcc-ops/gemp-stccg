@@ -23,7 +23,7 @@ import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.requirement.PlayOutOfSequenceCondition;
+import com.gempukku.stccg.requirement.PlayOutOfSequenceRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.*;
@@ -149,8 +149,8 @@ public class CardBlueprint {
     private final Map<RequiredType, List<ActionBlueprint>> _beforeTriggers = new HashMap<>();
     private final Map<RequiredType, List<ActionBlueprint>> _afterTriggers = new HashMap<>();
     private final Map<RequiredType, ActionBlueprint> _discardedFromPlayTriggers = new HashMap<>();
-    private final List<ActionBlueprint> _optionalInHandTriggers = new ArrayList<>();
-    private final List<ActionBlueprint> _activatedTriggers = new ArrayList<>();
+    private final List<TriggerActionBlueprint> _optionalInHandTriggers = new ArrayList<>();
+    private final List<TriggerActionBlueprint> _activatedTriggers = new ArrayList<>();
 
     private List<ActionBlueprint> inDiscardPhaseActions;
 
@@ -162,7 +162,7 @@ public class CardBlueprint {
 
     @JsonProperty("playOutOfSequenceCondition")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    private List<PlayOutOfSequenceCondition> playOutOfSequenceConditions;
+    private List<PlayOutOfSequenceRequirement> playOutOfSequenceConditions;
 
     @JsonProperty("actions")
     private List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
@@ -359,14 +359,11 @@ public class CardBlueprint {
         playInOtherPhaseConditions.add(requirement);
     }
 
-    public void appendOptionalInHandTrigger(ActionBlueprint actionBlueprint) {
-        _optionalInHandTriggers.add(actionBlueprint);
-    }
-
-    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player,
+                                                                                ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        for (ActionBlueprint trigger : _optionalInHandTriggers) {
-            TopLevelSelectableAction action = trigger.createActionWithNewContext(thisCard, actionResult);
+        for (TriggerActionBlueprint trigger : _optionalInHandTriggers) {
+            TopLevelSelectableAction action = trigger.createAction(thisCard.getGame(), player.getPlayerId(), thisCard, actionResult);
             if (action != null) result.add(action);
         }
         return result;
@@ -402,7 +399,7 @@ public class CardBlueprint {
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
 
     public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
-    public List<ActionBlueprint> getActivatedTriggers() {
+    public List<TriggerActionBlueprint> getActivatedTriggers() {
         return _activatedTriggers;
     }
     public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player,
@@ -412,15 +409,17 @@ public class CardBlueprint {
     public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
-    public List<ActionBlueprint> getTriggers(RequiredType requiredType) {
-        List<ActionBlueprint> sourceResult = new ArrayList<>();
+    public List<TriggerActionBlueprint> getTriggers(RequiredType requiredType) {
+        List<TriggerActionBlueprint> sourceResult = new ArrayList<>();
         for (ActionBlueprint source : _actionBlueprints) {
-            if (requiredType == RequiredType.REQUIRED) {
-                if (source instanceof RequiredTriggerActionBlueprint)
-                    sourceResult.add(source);
-            } else {
-                if (source instanceof OptionalTriggerActionBlueprint)
-                    sourceResult.add(source);
+            if (source instanceof TriggerActionBlueprint triggerBlueprint) {
+                if (requiredType == RequiredType.REQUIRED) {
+                    if (source instanceof RequiredTriggerActionBlueprint)
+                        sourceResult.add(triggerBlueprint);
+                } else {
+                    if (source instanceof OptionalTriggerActionBlueprint)
+                        sourceResult.add(triggerBlueprint);
+                }
             }
         }
         return sourceResult;
@@ -477,7 +476,7 @@ public class CardBlueprint {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         getTriggers(RequiredType.REQUIRED).forEach(actionSource -> {
             if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
-                RequiredTriggerAction action = triggerSource.createActionWithNewContext(card, actionResult);
+                RequiredTriggerAction action = triggerSource.createAction(card.getGame(), card.getControllerName(), card, actionResult);
                 if (action != null) result.add(action);
             }
         });
@@ -553,10 +552,9 @@ public class CardBlueprint {
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame cardGame) {
         List<TopLevelSelectableAction> result = new ArrayList<>();
-        String performingPlayerName = player.getPlayerId();
         for (ActionBlueprint actionBlueprint : _actionBlueprints) {
             if (actionBlueprint instanceof ActivateCardActionBlueprint) {
-                TopLevelSelectableAction action = actionBlueprint.createActionWithNewContext(thisCard, performingPlayerName);
+                TopLevelSelectableAction action = actionBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
                 if (action != null) result.add(action);
             }
         }

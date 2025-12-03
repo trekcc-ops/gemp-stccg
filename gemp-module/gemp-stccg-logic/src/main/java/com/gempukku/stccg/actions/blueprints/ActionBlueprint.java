@@ -22,11 +22,7 @@ public interface ActionBlueprint {
     void addRequirement(Requirement requirement);
 
     void appendActionToContext(DefaultGame cardGame, TopLevelSelectableAction action, ActionContext actionContext);
-
-    TopLevelSelectableAction createActionWithNewContext(DefaultGame cardGame, PhysicalCard card);
-    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult);
-    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult);
-    TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId);
+    TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard);
 
     void addCost(SubActionBlueprint subActionBlueprint);
     void addEffect(SubActionBlueprint subActionBlueprint);

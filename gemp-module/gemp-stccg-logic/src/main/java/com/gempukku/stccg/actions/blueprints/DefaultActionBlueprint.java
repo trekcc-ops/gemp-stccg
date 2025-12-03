@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -73,8 +72,8 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
     }
 
-    protected abstract TopLevelSelectableAction createActionAndAppendToContext(
-            DefaultGame cardGame, PhysicalCard card, ActionContext context);
+    public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
+                                                          PhysicalCard thisCard);
 
     public void setTurnLimit(int limitPerTurn) {
         addRequirement(new TurnLimitRequirement(limitPerTurn));
@@ -86,24 +85,5 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
                 });
     }
 
-    public TopLevelSelectableAction createActionWithNewContext(DefaultGame cardGame, PhysicalCard card) {
-        return createActionAndAppendToContext(cardGame, card,
-                new ActionContext(card, card.getOwnerName()));
-    }
 
-
-    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
-        return createActionAndAppendToContext(card.getGame(), card,
-                new ActionContext(card.getOwnerName(), card, actionResult));
-    }
-
-    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId) {
-        return createActionAndAppendToContext(card.getGame(), card, new ActionContext(card, playerId));
-    }
-
-
-
-    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult) {
-        return createActionAndAppendToContext(card.getGame(), card, new ActionContext(playerId, card, actionResult));
-    }
 }

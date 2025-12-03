@@ -18,7 +18,7 @@ public class StartOfPhaseTriggerChecker implements TriggerChecker {
 
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        return actionContext.hasActionResultType(ActionResult.Type.START_OF_PHASE) &&
+        return actionContext.hasActionResultType(cardGame, ActionResult.Type.START_OF_PHASE) &&
                 cardGame.getGameState().getCurrentPhase() == _phase;
     }
 

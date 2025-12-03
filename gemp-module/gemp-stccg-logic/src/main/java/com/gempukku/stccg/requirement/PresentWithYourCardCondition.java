@@ -1,5 +1,6 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -8,8 +9,14 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PresentWithYourCardCondition implements Condition {
+
+    @JsonProperty("count")
     private final int _count;
+
+    @JsonProperty("filters")
     private final CardFilter _filters;
+
+    @JsonProperty("cardId")
     private final int _cardId;
 
     /**

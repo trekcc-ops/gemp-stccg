@@ -30,17 +30,15 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
             }
     }
 
-    public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card.getGame(), card); }
-
-    @Override
-    protected ActivateCardAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
-                                                                ActionContext actionContext) {
-        if (isValid(cardGame, actionContext)) {
-            ActivateCardAction action = createAction(card);
-            appendActionToContext(cardGame, action, actionContext);
+    public ActivateCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard card) {
+        ActionContext context = new ActionContext(card, card.getOwnerName());
+        if (isValid(cardGame, context)) {
+            ActivateCardAction action = new ActivateCardAction(cardGame, card);
+            appendActionToContext(cardGame, action, context);
             return action;
         }
         return null;
     }
+
 
 }

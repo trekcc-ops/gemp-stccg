@@ -18,22 +18,18 @@ public class SeedCardActionBlueprint extends DefaultActionBlueprint {
         _seedToZone = seedToZone;
     }
 
-    public SeedCardAction createAction(PhysicalCard card) {
-        if (_seedToZone == null)
-            return new SeedCardAction(card);
-        else return new SeedCardAction(card, _seedToZone);
-    }
-
     @Override
-    protected SeedCardAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
-                                                            ActionContext actionContext) {
+    public SeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
+        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext)) {
-            SeedCardAction action = createAction(card);
+            SeedCardAction action = (_seedToZone == null) ? new SeedCardAction(thisCard) :
+                    new SeedCardAction(thisCard, _seedToZone);
             appendActionToContext(cardGame, action, actionContext);
             return action;
         }
         return null;
     }
+
 
     @JsonProperty("limit")
     private void setLimit(int limit) {

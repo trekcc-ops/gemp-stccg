@@ -2,6 +2,8 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -32,14 +34,14 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
     }
 
     @Override
-    protected OptionalTriggerAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
-                                                                   ActionContext actionContext) {
+    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
+                                                 PhysicalCard thisCard, ActionResult result) {
+        ActionContext actionContext = new ActionContext(performingPlayerName, thisCard, result.getAction());
         if (isValid(cardGame, actionContext)) {
-                OptionalTriggerAction action = new OptionalTriggerAction(card, this);
-                appendActionToContext(cardGame, action, actionContext);
-                return action;
+            OptionalTriggerAction action = new OptionalTriggerAction(thisCard, this);
+            appendActionToContext(cardGame, action, actionContext);
+            return action;
         }
         return null;
     }
-
 }

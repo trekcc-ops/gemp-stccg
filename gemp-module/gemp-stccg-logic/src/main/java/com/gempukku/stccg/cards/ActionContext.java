@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,22 +17,21 @@ import java.util.Map;
 public class ActionContext {
     private final String _performingPlayerName;
     private final int _sourceCardId;
-    private final ActionResult actionResult;
+    private final int _actionId;
     private final Multimap<String, Integer> _cardMemoryNew = HashMultimap.create();
     private final Map<String, String> _valueMemory = new HashMap<>();
-
-    public ActionContext(String performingPlayer, PhysicalCard source, ActionResult actionResult) {
-        this._performingPlayerName = performingPlayer;
-        _sourceCardId = source.getCardId();
-        this.actionResult = actionResult;
-    }
 
     public ActionContext(PhysicalCard thisCard, String performingPlayerId) {
         this._performingPlayerName = performingPlayerId;
         _sourceCardId = thisCard.getCardId();
-        this.actionResult = null;
+        _actionId = -999;
     }
 
+    public ActionContext(String performingPlayerName, PhysicalCard thisCard, Action action) {
+        this._performingPlayerName = performingPlayerName;
+        _sourceCardId = thisCard.getCardId();
+        _actionId = action.getActionId();
+    }
 
     public String getPerformingPlayerId() { return _performingPlayerName; }
 
@@ -96,12 +96,18 @@ public class ActionContext {
     }
 
 
-    public ActionResult getEffectResult() {
-        return actionResult;
+    public ActionResult getEffectResult(DefaultGame cardGame) {
+        Action action = cardGame.getActionById(_actionId);
+        if (action == null) {
+            return null;
+        } else {
+            return action.getResult();
+        }
     }
 
-    public boolean hasActionResultType(ActionResult.Type type) {
-        return actionResult != null && actionResult.getType() == type;
+    public boolean hasActionResultType(DefaultGame cardGame, ActionResult.Type type) {
+        Action action = cardGame.getActionById(_actionId);
+        return action != null && action.getResult() != null && action.getResult().getType() == type;
     }
 
     public boolean acceptsAllRequirements(DefaultGame cardGame, Iterable<Requirement> requirements) {

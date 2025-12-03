@@ -14,7 +14,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
     "tribblesequencebroken"}),
         @JsonSubTypes.Type(value = ComparatorRequirement.class, names = {"isequal", "isgreaterthan", "isgreaterthanorequal",
         "islessthan", "islessthanorequal", "isnotequal"}),
-        @JsonSubTypes.Type(value = PlayOutOfSequenceCondition.class, name = "playOutOfSequenceCondition"),
+        @JsonSubTypes.Type(value = PlayOutOfSequenceRequirement.class, name = "playOutOfSequenceCondition"),
         @JsonSubTypes.Type(value = ThisCardPresentWithYourCardRequirement.class, names = "thisCardPresentWithYourCard")
 })
 public interface Requirement {
@@ -31,6 +31,11 @@ public interface Requirement {
     @JsonIgnore
     default boolean isTrue(PhysicalCard thisCard, DefaultGame cardGame) {
         return false;
+    }
+
+    @JsonIgnore
+    default Condition getCondition(ActionContext context, PhysicalCard thisCard, DefaultGame cardGame) {
+        return null;
     }
 
 }

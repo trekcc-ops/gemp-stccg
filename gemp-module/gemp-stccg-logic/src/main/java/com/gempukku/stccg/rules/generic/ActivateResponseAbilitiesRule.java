@@ -16,7 +16,7 @@ public class ActivateResponseAbilitiesRule extends GenericRule {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(cardGame, Filters.and(Filters.owner(playerId), Filters.inPlay))) {
             if (!card.hasTextRemoved(cardGame))
-                result.addAll(card.getOptionalResponseWhileInPlayActions(actionResult));
+                result.addAll(card.getOptionalResponseWhileInPlayActions(cardGame, playerId, actionResult));
         }
         return result;
     }

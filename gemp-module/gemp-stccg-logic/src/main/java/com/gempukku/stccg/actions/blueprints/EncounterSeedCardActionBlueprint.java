@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -32,27 +33,27 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                                                 AttemptingUnit attemptingUnit, MissionLocation missionLocation,
                                                 AttemptMissionAction missionAttemptAction)
             throws InvalidGameLogicException {
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation);
+        ActionContext actionContext = new ActionContext(performingPlayerName, thisCard, encounterAction);
         _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
         return encounterAction;
     }
 
     @Override
-    protected EncounterSeedCardAction createActionAndAppendToContext(DefaultGame cardGame, PhysicalCard card,
-                                                                     ActionContext context) {
+    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
+                                                 PhysicalCard card) {
         try {
-            Stack<Action> actionStack = card.getGame().getActionsEnvironment().getActionStack();
+            ActionContext context = new ActionContext(card, performingPlayerName);
+            Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
             for (Action action : actionStack) {
                 if (action instanceof AttemptMissionAction attemptAction &&
                         attemptAction.getLocation() == card.getGameLocation()) {
-                    String performingPlayerName = context.getPerformingPlayerId();
-                    EncounterSeedCardAction encounterAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
+                    TopLevelSelectableAction newAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
                             card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocation());
-                    appendActionToContext(cardGame, encounterAction, context);
-                    return encounterAction;
+                    appendActionToContext(cardGame, newAction, context);
+                    return newAction;
                 }
             }
             throw new InvalidGameLogicException("Could not identify an active mission attempt for this encounter");

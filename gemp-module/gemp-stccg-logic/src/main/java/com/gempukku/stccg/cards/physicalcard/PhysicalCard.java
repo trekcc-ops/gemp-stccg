@@ -14,7 +14,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -87,7 +86,8 @@ public interface PhysicalCard {
 
     Collection<PhysicalCard> getAttachedCards(DefaultGame game);
 
-    List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(ActionResult actionResult);
+    List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(DefaultGame cardGame, String playerName, ActionResult actionResult);
+
     TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
     List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) throws PlayerNotFoundException;
 

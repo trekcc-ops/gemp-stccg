@@ -1,19 +1,21 @@
 package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 
-public class PlayOutOfSequenceCondition implements Requirement {
+public class PlayOutOfSequenceRequirement implements Requirement {
 
     private enum ValueCheck { nextTribbleInSequence, lastTribblePlayed, tribbleSequenceBroken }
 
     private final ValueCheck _valueCheck;
+
     private final int _value;
 
-    public PlayOutOfSequenceCondition(@JsonProperty(value = "condition", required = true)
+    public PlayOutOfSequenceRequirement(@JsonProperty(value = "condition", required = true)
                                       String condition) {
         if (condition.equals("tribbleSequenceBroken")) {
             _valueCheck = ValueCheck.tribbleSequenceBroken;
@@ -36,6 +38,15 @@ public class PlayOutOfSequenceCondition implements Requirement {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public Condition getCondition(ActionContext context, PhysicalCard thisCard, DefaultGame cardGame) {
+        return switch (_valueCheck) {
+            case lastTribblePlayed -> new LastTribblePlayedCondition(_value);
+            case nextTribbleInSequence -> new NextTribbleInSequenceCondition(_value);
+            case tribbleSequenceBroken -> new TribbleSequenceBrokenCondition();
+        };
     }
 
 }

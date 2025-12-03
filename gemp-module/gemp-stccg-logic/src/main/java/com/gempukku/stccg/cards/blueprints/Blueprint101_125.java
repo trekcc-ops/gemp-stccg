@@ -40,7 +40,7 @@ public class Blueprint101_125 extends CardBlueprint {
         List<TopLevelSelectableAction> result = new ArrayList<>();
         if (thisCard instanceof ST1EPhysicalCard stCard) {
             List<Requirement> playRequirements = List.of(new KilledTriggerChecker(_killedPersonnelFilterBlueprint));
-            ActionContext context = new ActionContext(player.getPlayerId(), thisCard, actionResult);
+            ActionContext context = new ActionContext(player.getPlayerId(), thisCard, actionResult.getAction());
             if (context.acceptsAllRequirements(thisCard.getGame(), playRequirements)) {
                 try {
                     TopLevelSelectableAction playAction = new STCCGPlayCardAction(stCard, Zone.CORE, player, true);

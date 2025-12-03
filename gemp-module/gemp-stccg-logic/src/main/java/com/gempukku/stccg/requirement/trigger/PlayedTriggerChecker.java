@@ -44,7 +44,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
         try {
             final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
             final String playingPlayerId = _playingPlayer.getPlayerId(actionContext);
-            final ActionResult actionResult = actionContext.getEffectResult();
+            final ActionResult actionResult = actionContext.getEffectResult(cardGame);
             final boolean played;
 
             if (_onFilter != null) {
