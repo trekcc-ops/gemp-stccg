@@ -15,8 +15,8 @@ public class KillActionBlueprint implements SubActionBlueprint {
 
     private final CardTargetBlueprint _targetResolver;
 
-    KillActionBlueprint(@JsonProperty(value = "target")
-                        CardTargetBlueprint target) {
+    public KillActionBlueprint(@JsonProperty(value = "target")
+                               CardTargetBlueprint target) {
         _targetResolver = target;
     }
 

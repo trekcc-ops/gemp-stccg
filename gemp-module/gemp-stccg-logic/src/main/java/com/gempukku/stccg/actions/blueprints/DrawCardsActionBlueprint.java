@@ -24,10 +24,10 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     private final ValueSource _countSource;
     private final PlayerSource _drawingPlayerSource;
 
-    DrawCardsActionBlueprint(@JsonProperty(value = "count")
-                             ValueSource count,
-                             @JsonProperty(value = "player")
-                             String playerText) throws InvalidCardDefinitionException {
+    public DrawCardsActionBlueprint(@JsonProperty(value = "count")
+                                    ValueSource count,
+                                    @JsonProperty(value = "player")
+                                    String playerText) throws InvalidCardDefinitionException {
         _drawingPlayerSource = (playerText == null) ?
                 ActionContext::getPerformingPlayerId : PlayerResolver.resolvePlayer(playerText);
         _countSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));

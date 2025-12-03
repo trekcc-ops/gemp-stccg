@@ -11,7 +11,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 public class SkillDotCountEvaluator extends Evaluator {
 
     @JsonProperty("selectActionId")
-    private final int _selectActionId;
+    private int _selectActionId;
 
     public SkillDotCountEvaluator(SelectCardAction selectAction) {
         _selectActionId = selectAction.getActionId();

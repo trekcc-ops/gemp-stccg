@@ -165,7 +165,7 @@ public class CardBlueprint {
     private List<PlayOutOfSequenceRequirement> playOutOfSequenceConditions;
 
     @JsonProperty("actions")
-    private List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
+    protected List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
 
     public CardBlueprint() {
         for (RequiredType requiredType : RequiredType.values()) {

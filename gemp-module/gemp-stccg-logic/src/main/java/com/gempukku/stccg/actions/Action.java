@@ -33,6 +33,8 @@ public interface Action {
 
     void insertEffect(Action actionEffect);
 
+    void insertAction(Action action);
+
     void startPerforming() throws InvalidGameLogicException;
 
     boolean isInProgress();

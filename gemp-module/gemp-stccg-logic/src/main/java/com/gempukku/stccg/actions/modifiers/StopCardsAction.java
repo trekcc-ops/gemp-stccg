@@ -4,27 +4,23 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
 public class StopCardsAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
+    private ActionContext _actionContext;
+    private String _saveToMemoryId;
 
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> _stoppedCards;
-
-    public StopCardsAction(DefaultGame cardGame, Player performingPlayer,
-                           Collection<? extends ST1EPhysicalCard> cardsToStop) {
-        super(cardGame, performingPlayer, "Stop cards", ActionType.STOP_CARDS);
-        _cardTarget = new FixedCardsResolver(cardsToStop);
-    }
 
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
                            Collection<? extends ST1EPhysicalCard> cardsToStop) {
@@ -35,6 +31,14 @@ public class StopCardsAction extends ActionyAction {
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName, SelectCardsAction selectionAction) {
         super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
         _cardTarget = new SelectCardsResolver(selectionAction);
+    }
+
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
+                           ActionCardResolver cardTarget, ActionContext context, String saveToMemoryId) {
+        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
+        _cardTarget = cardTarget;
+        _actionContext = context;
+        _saveToMemoryId = saveToMemoryId;
     }
 
 
@@ -72,6 +76,9 @@ public class StopCardsAction extends ActionyAction {
             }
             for (ST1EPhysicalCard card : cardsToStop) {
                 card.stop();
+            }
+            if (_actionContext != null && _saveToMemoryId != null) {
+                _actionContext.setCardMemory(_saveToMemoryId, _stoppedCards);
             }
             setAsSuccessful();
         }

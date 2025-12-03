@@ -5,14 +5,16 @@ import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public class SelectCardTargetBlueprint implements CardTargetBlueprint {
 
@@ -20,7 +22,7 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
     private final int _count;
     private final boolean _randomSelection;
 
-    SelectCardTargetBlueprint(@JsonProperty(value = "filter", required = true)
+    public SelectCardTargetBlueprint(@JsonProperty(value = "filter", required = true)
                               FilterBlueprint filterBlueprint,
                               @JsonProperty("count")
                               int count,
@@ -37,16 +39,16 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
         for (FilterBlueprint filterBlueprint : _filterBlueprints) {
             selectableCardFilter.add(filterBlueprint.getFilterable(cardGame, context));
         }
-        Collection<PhysicalCard> selectableCards = Filters.filter(cardGame, selectableCardFilter);
+        CardFilter finalFilter = Filters.and(selectableCardFilter);
         SelectCardsAction selectAction;
         if (_randomSelection) {
             selectAction = new SelectRandomCardAction(
                     cardGame, context.getPerformingPlayerId(), "Select a card",
-                    selectableCards);
+                    finalFilter);
         } else {
             selectAction = new SelectCardsFromDialogAction(
                     cardGame, context.getPerformingPlayerId(), "Select a card",
-                    new InCardListFilter(selectableCards));
+                    finalFilter);
         }
         return new SelectCardsResolver(selectAction);
     }

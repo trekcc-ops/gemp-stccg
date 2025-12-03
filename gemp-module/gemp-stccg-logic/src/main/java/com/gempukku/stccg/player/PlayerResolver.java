@@ -10,6 +10,9 @@ public class PlayerResolver {
 
         if (type.equalsIgnoreCase("you"))
             return ActionContext::getPerformingPlayerId;
+        else if (type.equalsIgnoreCase("opponent")) {
+            return ActionContext::getPerformingPlayerId;
+        }
         else {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
             if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {

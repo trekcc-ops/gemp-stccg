@@ -23,7 +23,7 @@ public class SelectAndInsertAction extends ActionyAction {
     private final List<Action> _selectableActions = new LinkedList<>();
     @JsonProperty("parentAction")
     @JsonIdentityReference(alwaysAsId=true)
-    private final ActionyAction _parentAction;
+    private final Action _parentAction;
     @JsonProperty("selectedAction")
     @JsonIdentityReference(alwaysAsId=true)
     private Action _selectedAction;
@@ -33,7 +33,7 @@ public class SelectAndInsertAction extends ActionyAction {
 
     private final Map<Action, String> _actionMessageMap;
 
-    public SelectAndInsertAction(DefaultGame cardGame, ActionyAction parentAction, String selectingPlayerName,
+    public SelectAndInsertAction(DefaultGame cardGame, Action parentAction, String selectingPlayerName,
                                  List<Action> selectableActions, Map<Action, String> actionMessageMap) {
         super(cardGame, selectingPlayerName, "Choose an action", ActionType.SELECT_ACTION);
         _selectableActions.addAll(selectableActions);
