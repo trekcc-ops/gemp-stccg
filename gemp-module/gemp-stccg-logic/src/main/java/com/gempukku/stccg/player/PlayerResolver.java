@@ -1,24 +1,20 @@
 package com.gempukku.stccg.player;
 
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
 
 public class PlayerResolver {
 
     public static PlayerSource resolvePlayer(String type) throws InvalidCardDefinitionException {
 
-        if (type.equalsIgnoreCase("you"))
-            return ActionContext::getPerformingPlayerId;
-        else if (type.equalsIgnoreCase("opponent")) {
-            return ActionContext::getPerformingPlayerId;
-        }
-        else {
+        if (type.equalsIgnoreCase("you")) {
+            return new YouPlayerSource();
+        } else if (type.equalsIgnoreCase("opponent")) {
+            return new OpponentPlayerSource();
+        } else if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
-            if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
-                return (actionContext) -> actionContext.getValueFromMemory(memory);
-            }
+            return new PlayerSourceFromMemory(memory);
+        } else {
+            throw new InvalidCardDefinitionException("Unable to resolve player resolver of type: " + type);
         }
-        throw new InvalidCardDefinitionException("Unable to resolve player resolver of type: " + type);
     }
 }

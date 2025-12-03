@@ -9,7 +9,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -72,7 +72,7 @@ public class SelectSubActionBlueprint implements SubActionBlueprint {
                     new SelectPlayerAction(cardGame, context, _saveToMemoryId, Arrays.asList(cardGame.getAllPlayerIds()));
             case CHOOSEPLAYEREXCEPT -> {
                 List<String> playerIds = Arrays.asList(cardGame.getAllPlayerIds());
-                playerIds.remove(_excludePlayerSource.getPlayerId(context));
+                playerIds.remove(_excludePlayerSource.getPlayerId(cardGame, context));
                 yield new SelectPlayerAction(cardGame, context, _saveToMemoryId, playerIds);
             }
             case CHOOSETRIBBLEPOWER -> new SelectTribblePowerAction(cardGame, context, _saveToMemoryId);

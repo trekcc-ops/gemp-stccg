@@ -3,16 +3,13 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.player.*;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.AnyCardFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.player.PlayerResolver;
 
 import java.util.Objects;
 
@@ -34,14 +31,14 @@ public class CountDiscardValueSource extends ValueSource {
         _multiplier = Objects.requireNonNullElse(multiplier, 1);
         _limit = Objects.requireNonNullElse(limit, Integer.MAX_VALUE);
         _playerSource = (playerText == null) ?
-                ActionContext::getPerformingPlayerId : PlayerResolver.resolvePlayer(playerText);
+                new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText);
         _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, new AnyCardFilterBlueprint());
     }
 
     @Override
     public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         try {
-            String playerId = _playerSource.getPlayerId(actionContext);
+            String playerId = _playerSource.getPlayerId(cardGame, actionContext);
             Player player = cardGame.getPlayer(playerId);
             final Filterable filterable = _filterBlueprint.getFilterable(cardGame, actionContext);
             int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), cardGame, filterable).size();

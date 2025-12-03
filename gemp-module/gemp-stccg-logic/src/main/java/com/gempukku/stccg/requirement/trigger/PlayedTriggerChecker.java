@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -43,7 +43,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         try {
             final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
-            final String playingPlayerId = _playingPlayer.getPlayerId(actionContext);
+            final String playingPlayerId = _playingPlayer.getPlayerId(cardGame, actionContext);
             final ActionResult actionResult = actionContext.getEffectResult(cardGame);
             final boolean played;
 
