@@ -47,7 +47,8 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                                 try {
                                     List<PhysicalCard> cards = getSelectedCardsByResponse(result);
                                     for (PhysicalCard card : cards) {
-                                        List<TopLevelSelectableAction> seedActions = card.createSeedCardActions();
+                                        List<TopLevelSelectableAction> seedActions =
+                                                card.createSeedCardActions(cardGame);
                                         if (seedActions.size() != 1) {
                                             throw new InvalidGameLogicException("Could not create a seed action");
                                         } else {

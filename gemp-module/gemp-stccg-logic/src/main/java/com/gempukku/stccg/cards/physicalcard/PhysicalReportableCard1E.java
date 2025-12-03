@@ -58,7 +58,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         ST1EGameState gameState = _game.getGameState();
 
         gameState.removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(this));
-        setLocation(facility.getGameLocation());
+        setLocation(_game, facility.getGameLocation());
 
         attachTo(facility);
         gameState.addCardToInPlay(_game, this);

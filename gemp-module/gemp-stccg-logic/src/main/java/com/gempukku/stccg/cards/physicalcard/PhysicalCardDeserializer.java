@@ -3,8 +3,6 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
@@ -20,7 +18,7 @@ public class PhysicalCardDeserializer {
         if (node.has("locationZoneIndex")) {
             int locationZoneIndex = node.get("locationZoneIndex").intValue();
             MissionLocation location = game.getGameState().getSpacelineLocations().get(locationZoneIndex);
-            card.setLocation(location);
+            card.setLocation(game, location);
         }
 
         if (card instanceof PhysicalShipCard shipCard)

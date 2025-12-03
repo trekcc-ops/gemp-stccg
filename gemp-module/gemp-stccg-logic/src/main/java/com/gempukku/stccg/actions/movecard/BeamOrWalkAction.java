@@ -141,7 +141,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
             for (PhysicalCard card : _cardsToMove) {
                 card.setZone(Zone.ATTACHED);
                 card.attachTo(_destination);
-                card.setLocation(destinationLocation);
+                card.setLocation(cardGame, destinationLocation);
                 if (_origin instanceof MissionCard)
                     ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
                 if (_destination instanceof MissionCard && destinationLocation instanceof MissionLocation mission)

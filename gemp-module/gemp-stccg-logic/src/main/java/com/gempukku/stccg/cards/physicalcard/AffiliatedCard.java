@@ -2,13 +2,11 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Set;
 
 public interface AffiliatedCard extends PhysicalCard {
-    ST1EGame getGame();
 
     boolean isAffiliation(Affiliation affiliation);
     boolean isMultiAffiliation();

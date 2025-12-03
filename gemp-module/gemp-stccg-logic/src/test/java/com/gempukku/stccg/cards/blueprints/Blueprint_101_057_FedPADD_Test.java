@@ -4,7 +4,6 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
@@ -56,9 +55,10 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         assertFalse(outpost.isInPlay());
         assertEquals("Jean-Luc Picard", picard.getTitle());
         assertEquals("Federation PADD", padd.getTitle());
+        assertNotNull(mission);
 
-        _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocationDeprecatedOnlyUseForTests());
+        gameState.addMissionLocationToSpaceline(_game, mission, 0);
+        _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 

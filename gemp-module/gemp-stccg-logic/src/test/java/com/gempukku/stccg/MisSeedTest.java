@@ -51,7 +51,7 @@ public class MisSeedTest extends AbstractAtTest {
         assertNotNull(excavation);
         assertNotNull(picard);
         assertNotNull(tarses);
-        picard.removeFromCardGroup();
+        picard.removeFromCardGroup(_game);
         _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
 
         ST1EPhysicalCard maglock =

@@ -179,19 +179,17 @@ public abstract class GameState {
     }
 
     public void addCardToRemovedPile(PhysicalCard card) {
-        Zone zone = Zone.REMOVED;
-        if (zone.hasList()) {
-            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
-            zoneCardList.add(card);
-        }
-
-        card.setZone(zone);
+        List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), Zone.REMOVED);
+        zoneCardList.add(card);
+        card.setZone(Zone.REMOVED);
     }
 
     public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone) {
         if (zone == Zone.DISCARD) {
             addCardToTopOfDiscardPile(card);
-        } else {
+        } else if (zone == Zone.REMOVED) {
+            addCardToRemovedPile(card);
+        }else {
             if (zone.isInPlay()) {
                 _inPlay.add(card);
                 card.startAffectingGame(cardGame);
@@ -306,9 +304,8 @@ public abstract class GameState {
     public void placeCardOnMission(DefaultGame cardGame, PhysicalCard cardBeingPlaced, MissionLocation mission) {
         removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(cardBeingPlaced));
         cardBeingPlaced.setPlacedOnMission(true);
-        cardBeingPlaced.setLocation(mission);
+        cardBeingPlaced.setLocation(cardGame, mission);
         addCardToZone(cardGame, cardBeingPlaced, Zone.AT_LOCATION);
-        cardBeingPlaced.setLocation(mission);
     }
 
 

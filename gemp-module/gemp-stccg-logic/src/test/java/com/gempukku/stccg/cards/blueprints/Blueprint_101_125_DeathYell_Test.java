@@ -54,8 +54,8 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
         assertNotNull(outpost);
         assertNotNull(excavation);
         assertNotNull(worf);
-        worf.removeFromCardGroup();
-        deathYell.removeFromCardGroup();
+        worf.removeFromCardGroup(_game);
+        deathYell.removeFromCardGroup(_game);
         _game.getPlayer(P1).getDrawDeck().addCardToTop(worf);
         _game.getPlayer(P1).getDrawDeck().addCardToTop(deathYell);
 

@@ -46,7 +46,7 @@ public class AttemptMissionTest extends AbstractAtTest {
         assertNotNull(outpost);
         assertNotNull(excavation);
         assertNotNull(picard);
-        picard.removeFromCardGroup();
+        picard.removeFromCardGroup(_game);
         _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
 
         // Seed Federation Outpost at Excavation
@@ -101,7 +101,7 @@ public class AttemptMissionTest extends AbstractAtTest {
         assertNotNull(outpost);
         assertNotNull(excavation);
         assertNotNull(picard);
-        picard.removeFromCardGroup();
+        picard.removeFromCardGroup(_game);
         _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
 
         // Seed Federation Outpost at Excavation

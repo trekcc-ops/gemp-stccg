@@ -20,8 +20,6 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
         super(cardId, owner, blueprint);
         _game = game;
     }
-    @Override
-    public TribblesGame getGame() { return _game; }
 
     public boolean isMisSeed(DefaultGame game, MissionLocation mission) {
         return false;

@@ -31,8 +31,6 @@ import java.util.List;
 public interface PhysicalCard {
 
     @JsonIgnore
-    DefaultGame getGame();
-    @JsonIgnore
     Zone getZone();
     boolean isInHand(DefaultGame cardGame);
     void setZone(Zone zone);
@@ -73,7 +71,8 @@ public interface PhysicalCard {
     boolean isControlledBy(Player player);
     String getCardLink();
     GameLocation getGameLocation();
-    void setLocation(GameLocation location);
+    void setLocation(DefaultGame cardGame, GameLocation location);
+
     String getFullName();
     TopLevelSelectableAction getPlayCardAction();
     Action getPlayCardAction(boolean forFree);
@@ -83,16 +82,12 @@ public interface PhysicalCard {
     @JsonProperty("cardType")
     CardType getCardType();
     List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame);
-    List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player);
 
     List<PhysicalCard> getStackedCards(DefaultGame game);
 
     Collection<PhysicalCard> getAttachedCards(DefaultGame game);
 
     List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(DefaultGame cardGame, String playerName, ActionResult actionResult);
-
-    TopLevelSelectableAction getDiscardedFromPlayTriggerAction(RequiredType requiredType);
-    List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player, ActionResult actionResult) throws PlayerNotFoundException;
 
     List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult);
 
@@ -102,8 +97,7 @@ public interface PhysicalCard {
     Integer getNumberOfCopiesSeededByPlayer(String playerName, DefaultGame cardGame);
 
     boolean isCopyOf(PhysicalCard card);
-
-    List<TopLevelSelectableAction> createSeedCardActions();
+    List<TopLevelSelectableAction> createSeedCardActions(DefaultGame cardGame);
 
 
     boolean hasIcon(DefaultGame game, CardIcon icon);
@@ -160,20 +154,12 @@ public interface PhysicalCard {
 
     boolean isKnownToPlayer(String requestingPlayerId);
 
-    boolean isVisibleToPlayer(String requestingPlayerId);
-
     default void removeFromCardGroup(DefaultGame cardGame) {
-        PhysicalCardGroup<? extends PhysicalCard> group = cardGame.getGameState().getCardGroup(getOwnerName(), getZone());
+        PhysicalCardGroup<? extends PhysicalCard> group =
+                cardGame.getGameState().getCardGroup(getOwnerName(), getZone());
         if (group != null)
             group.remove(this);
     }
-
-    default void removeFromCardGroup() {
-        PhysicalCardGroup<? extends PhysicalCard> group = getGame().getGameState().getCardGroup(getOwnerName(), getZone());
-        if (group != null)
-            group.remove(this);
-    }
-
 
 
     @JsonProperty("hasUniversalIcon")

@@ -38,7 +38,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         if (phase == Phase.SEED_DOORWAY) {
             for (PhysicalCard card : cardsInHand) {
                 ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
-                for (TopLevelSelectableAction action : stCard.createSeedCardActions()) {
+                for (TopLevelSelectableAction action : stCard.createSeedCardActions(cardGame)) {
                     if (action != null && action.canBeInitiated(cardGame)) {
                         result.add(action);
                     }
@@ -55,7 +55,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                 if (isCurrentPlayer) {
                     if (card.canBeSeeded(cardGame)) {
                         ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
-                        for (TopLevelSelectableAction action : stCard.createSeedCardActions()) {
+                        for (TopLevelSelectableAction action : stCard.createSeedCardActions(cardGame)) {
                             if (action != null && action.canBeInitiated(cardGame)) {
                                 result.add(action);
                             }

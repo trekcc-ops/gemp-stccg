@@ -81,7 +81,7 @@ public class ST1EGameStateDeserializer {
             MissionLocation location = entry.getKey();
             for (int cardId : entry.getValue()) {
                 PhysicalCard card = game.getCardFromCardId(cardId);
-                location.seedCardUnderMission(card);
+                location.seedCardUnderMission(game, card);
             }
         }
 

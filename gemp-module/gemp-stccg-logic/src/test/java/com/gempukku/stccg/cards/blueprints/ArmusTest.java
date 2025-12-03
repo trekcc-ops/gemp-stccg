@@ -54,7 +54,7 @@ public class ArmusTest extends AbstractAtTest {
         assertNotNull(excavation);
         assertNotNull(picard);
         assertNotNull(tarses);
-        picard.removeFromCardGroup();
+        picard.removeFromCardGroup(_game);
         _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
 
         PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);

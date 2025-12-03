@@ -41,11 +41,11 @@ public class MissionLocation implements GameLocation {
     private final CardPile<MissionCard> _missionCards = new CardPile<>();
     private final Map<String, CardPile<PhysicalCard>> _preSeedCards = new HashMap<>();
     private final CardPile<PhysicalCard> _seedCards;
-    public MissionLocation(MissionCard mission, int locationId) {
+    public MissionLocation(DefaultGame cardGame, MissionCard mission, int locationId) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
                 mission.getBlueprint().getLocation(), locationId);
         _missionCards.addCardToTop(mission);
-        mission.setLocation(this);
+        mission.setLocation(cardGame, this);
     }
 
     public MissionLocation(Quadrant quadrant, Region region, String locationName, int locationId) {
@@ -268,24 +268,24 @@ public class MissionLocation implements GameLocation {
             } else {
                 PhysicalCard card = currentPreSeedPile.getBottomCard();
                 currentPreSeedPile.removeCard(card);
-                seedCardOnTopOfMissionSeedCards(card);
+                seedCardOnTopOfMissionSeedCards(stGame, card);
             }
         }
     }
 
-    public void seedPreSeedsForYourMissions() {
+    public void seedPreSeedsForYourMissions(DefaultGame cardGame) {
         Set<String> playersWithSeeds = _preSeedCards.keySet();
         for (String player : playersWithSeeds) {
-            seedCardPileOnTopOfSeedCards(_preSeedCards.get(player));
+            seedCardPileOnTopOfSeedCards(cardGame, _preSeedCards.get(player));
         }
     }
 
 
 
-    public void seedPreSeedsForOpponentsMissions() {
+    public void seedPreSeedsForOpponentsMissions(DefaultGame cardGame) {
         Set<String> playersWithSeeds = _preSeedCards.keySet();
         for (String player : playersWithSeeds) {
-            seedCardPileOnBottomOfSeedCards(_preSeedCards.get(player));
+            seedCardPileOnBottomOfSeedCards(cardGame, _preSeedCards.get(player));
         }
     }
 
@@ -328,10 +328,10 @@ public class MissionLocation implements GameLocation {
 
     public MissionCard getTopMissionCard() { return getMissionCards().getLast(); }
 
-    public void addMission(MissionCard newMission) {
+    public void addMission(DefaultGame cardGame, MissionCard newMission) {
         newMission.stackOn(_missionCards.getCards().getFirst());
         _missionCards.addCardToTop(newMission);
-        newMission.setLocation(this);
+        newMission.setLocation(cardGame, this);
     }
 
     public boolean hasMatchingAffiliationIcon(Player contextPlayer, Collection<Affiliation> affiliationOptions) {
@@ -342,33 +342,33 @@ public class MissionLocation implements GameLocation {
         return false;
     }
 
-    public void seedCardUnderMission(PhysicalCard card) {
+    public void seedCardUnderMission(DefaultGame cardGame, PhysicalCard card) {
         _seedCards.addCardToBottom(card);
-        card.setLocation(this);
+        card.setLocation(cardGame, this);
     }
 
-    public void seedCardOnTopOfMissionSeedCards(PhysicalCard card) {
+    public void seedCardOnTopOfMissionSeedCards(DefaultGame cardGame, PhysicalCard card) {
         _seedCards.addCardToTop(card);
-        card.setLocation(this);
+        card.setLocation(cardGame, this);
     }
 
     public void removeSeedCardFromMission(PhysicalCard card) {
         _seedCards.removeCard(card);
     }
 
-    public void seedCardPileOnBottomOfSeedCards(CardPile<PhysicalCard> cardPile) {
+    public void seedCardPileOnBottomOfSeedCards(DefaultGame cardGame, CardPile<PhysicalCard> cardPile) {
         while (!cardPile.isEmpty()) {
             PhysicalCard card = cardPile.getTopCard();
             cardPile.removeCard(card);
-            seedCardUnderMission(card);
+            seedCardUnderMission(cardGame, card);
         }
     }
 
-    public void seedCardPileOnTopOfSeedCards(CardPile<PhysicalCard> cardPile) {
+    public void seedCardPileOnTopOfSeedCards(DefaultGame cardGame, CardPile<PhysicalCard> cardPile) {
         while (!cardPile.isEmpty()) {
             PhysicalCard card = cardPile.getBottomCard();
             cardPile.removeCard(card);
-            seedCardOnTopOfMissionSeedCards(card);
+            seedCardOnTopOfMissionSeedCards(cardGame, card);
         }
     }
 

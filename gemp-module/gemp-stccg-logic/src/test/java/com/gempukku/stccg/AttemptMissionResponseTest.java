@@ -1,7 +1,5 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -15,7 +13,6 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,7 +54,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         assertNotNull(picard);
         assertNotNull(risk);
         assertNotNull(tarses);
-        picard.removeFromCardGroup();
+        picard.removeFromCardGroup(_game);
         player1.getDrawDeck().addCardToTop(picard);
         player1.getDrawDeck().addCardToBottom(tarses);
         tarses.setZone(Zone.DRAW_DECK);

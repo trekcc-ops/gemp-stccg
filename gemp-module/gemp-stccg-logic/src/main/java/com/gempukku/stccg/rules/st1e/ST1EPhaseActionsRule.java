@@ -36,7 +36,9 @@ public class ST1EPhaseActionsRule extends ST1ERule {
             }
         }
 
-        Filters.filterCardsInPlay(cardGame).forEach(card -> result.addAll(card.getGameTextActionsWhileInPlay(player)));
+        Filters.filterCardsInPlay(cardGame).forEach(card -> result.addAll(
+                card.getBlueprint().getGameTextActionsWhileInPlay(player, card, cardGame)
+                ));
         return result;
     }
 

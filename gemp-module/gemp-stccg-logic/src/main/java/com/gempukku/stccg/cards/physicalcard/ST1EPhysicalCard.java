@@ -30,9 +30,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         _game = game;
     }
 
-    @Override
-    public ST1EGame getGame() { return _game; }
-
     public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
 
     public TopLevelSelectableAction getPlayCardAction(boolean forFree) {

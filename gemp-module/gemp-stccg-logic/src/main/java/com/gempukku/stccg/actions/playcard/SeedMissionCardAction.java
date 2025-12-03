@@ -106,9 +106,9 @@ public class SeedMissionCardAction extends PlayCardAction {
 
             try {
                 if (_sharedMission)
-                    gameState.addMissionCardToSharedMission(mission, _locationZoneIndex);
+                    gameState.addMissionCardToSharedMission(game, mission, _locationZoneIndex);
                 else
-                    gameState.addMissionLocationToSpaceline(mission, _locationZoneIndex);
+                    gameState.addMissionLocationToSpaceline(game, mission, _locationZoneIndex);
                 saveResult(new PlayCardResult(this, _cardEnteringPlay));
                 _actionCarriedOut = true;
                 _cardPlayed = true;

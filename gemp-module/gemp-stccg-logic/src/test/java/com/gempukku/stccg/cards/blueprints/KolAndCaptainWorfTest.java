@@ -27,9 +27,10 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertFalse(outpost.isInPlay());
         assertEquals("Kol", kol.getTitle());
         assertEquals("Dr. Arridor", arridor.getTitle());
+        assertNotNull(mission);
 
-        _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocationDeprecatedOnlyUseForTests());
+        _game.getGameState().addMissionLocationToSpaceline(_game, mission, 0);
+        _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 
@@ -71,9 +72,10 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals("Captain Worf", worf.getTitle()); // 8-6-10
         assertEquals("Commander K'Ehleyr", kehleyr1.getTitle()); // 7-8-7
         assertEquals("K'Ehleyr", kehleyr2.getTitle()); // 8-7-7
+        assertNotNull(mission);
 
-        _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost1, mission.getLocationDeprecatedOnlyUseForTests());
+        _game.getGameState().addMissionLocationToSpaceline(_game, mission, 0);
+        _game.getGameState().seedFacilityAtLocation(_game, outpost1, mission.getGameLocation());
 
         assertTrue(outpost1.isInPlay());
 

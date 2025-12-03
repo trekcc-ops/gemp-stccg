@@ -62,9 +62,10 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         assertEquals("Klag", klag.getTitle());
         assertEquals("Jean-Luc Picard", picard.getTitle());
         assertEquals("Klingon Disruptor", disruptor.getTitle());
+        assertNotNull(mission);
 
-        _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocationDeprecatedOnlyUseForTests());
+        gameState.addMissionLocationToSpaceline(_game, mission, 0);
+        _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 

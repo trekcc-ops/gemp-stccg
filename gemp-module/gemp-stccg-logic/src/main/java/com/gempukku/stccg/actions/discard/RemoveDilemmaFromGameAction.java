@@ -45,7 +45,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(cardToRemove));
             gameState.addCardToRemovedPile(cardToRemove);
-            cardToRemove.setLocation(new NullLocation());
+            cardToRemove.setLocation(cardGame, new NullLocation());
 
             setAsSuccessful();
             return getNextAction();

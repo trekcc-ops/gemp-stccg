@@ -1,9 +1,16 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
+import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
+import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.decisions.*;
+import com.gempukku.stccg.common.filterable.RequiredType;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
@@ -96,7 +103,7 @@ public class ActionResult {
             for (PhysicalCard card : Filters.filterCardsInPlay(game)) {
                 if (!card.hasTextRemoved(game)) {
                     final List<TopLevelSelectableAction> actions =
-                            card.getOptionalAfterTriggerActions(player, this);
+                            getOptionalAfterTriggerActions(game, card, player);
                     if (actions != null)
                         playerActions.addAll(actions);
                 }
@@ -111,6 +118,34 @@ public class ActionResult {
         }
         _optionalAfterTriggerActions = allActions;
     }
+
+    private List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame,
+                                                                          PhysicalCard card, Player player)
+            throws PlayerNotFoundException {
+        CardBlueprint blueprint = card.getBlueprint();
+        return switch (blueprint) {
+            case Blueprint212_019 riskBlueprint ->
+                    riskBlueprint.getValidResponses(card, player, this, cardGame);
+            case Blueprint156_010 surpriseBlueprint ->
+                    surpriseBlueprint.getValidResponses(card, player, this, cardGame);
+            case Blueprint109_063 missionSpecBlueprint ->
+                    missionSpecBlueprint.getValidResponses(card, player, this, cardGame);
+            case null, default -> {
+                // Pull trigger actions defined in JSON files
+                assert blueprint != null;
+                List<TopLevelSelectableAction> result = new LinkedList<>();
+                blueprint.getTriggers(RequiredType.OPTIONAL).forEach(actionSource -> {
+                    if (actionSource != null) {
+                        TopLevelSelectableAction action =
+                                actionSource.createAction(cardGame, player.getPlayerId(), card, this);
+                        if (action != null) result.add(action);
+                    }
+                });
+                yield result;
+            }
+        };
+    }
+
 
 
     public String getPerformingPlayerId() { return _performingPlayerId; }

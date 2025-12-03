@@ -90,7 +90,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             _cardMoved = true;
             setAsSuccessful();
             _flyingCard.useRange(rangeNeeded);
-            _flyingCard.setLocation(destinationLocation);
+            _flyingCard.setLocation(cardGame, destinationLocation);
         }
 
         return getNextAction();

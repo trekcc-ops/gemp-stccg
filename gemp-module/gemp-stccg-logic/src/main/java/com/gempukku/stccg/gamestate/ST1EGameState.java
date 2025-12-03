@@ -118,13 +118,13 @@ public class ST1EGameState extends GameState {
         return false;
     }
 
-    public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
-        _spacelineLocations.add(indexNumber, new MissionLocation(newMission, _nextLocationId));
+    public void addMissionLocationToSpaceline(DefaultGame cardGame, MissionCard newMission, int indexNumber) {
+        _spacelineLocations.add(indexNumber, new MissionLocation(cardGame, newMission, _nextLocationId));
         _nextLocationId++;
-        addCardToZone(newMission.getGame(), newMission, Zone.SPACELINE);
+        addCardToZone(cardGame, newMission, Zone.SPACELINE);
     }
 
-    public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
+    public void addMissionCardToSharedMission(DefaultGame cardGame, MissionCard newMission, int indexNumber)
             throws InvalidGameLogicException {
         MissionLocation location = _spacelineLocations.get(indexNumber);
         List<MissionCard> missionsAtLocation = location.getMissionCards();
@@ -133,13 +133,13 @@ public class ST1EGameState extends GameState {
             throw new InvalidGameLogicException("Cannot seed " + newMission.getTitle() + " because " +
                     newMission.getOwnerName() + " already has a mission at " +
                     newMission.getBlueprint().getLocation());
-        location.addMission(newMission);
-        addCardToZone(newMission.getGame(), newMission, Zone.SPACELINE);
+        location.addMission(cardGame, newMission);
+        addCardToZone(cardGame, newMission, Zone.SPACELINE);
     }
 
-    public void seedFacilityAtLocation(FacilityCard card, GameLocation location) {
-        card.setLocation(location);
-        addCardToZone(card.getGame(), card, Zone.AT_LOCATION);
+    public void seedFacilityAtLocation(DefaultGame cardGame, FacilityCard card, GameLocation location) {
+        card.setLocation(cardGame, location);
+        addCardToZone(cardGame, card, Zone.AT_LOCATION);
     }
 
 
