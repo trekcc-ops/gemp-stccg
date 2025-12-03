@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -70,16 +71,24 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     }
 
     @Override
-    public TopLevelSelectableAction getPlayCardAction() { return createReportCardAction(); }
+    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame) {
+        return createReportCardAction(cardGame, false);
+    }
 
     @Override
-    public TopLevelSelectableAction getPlayCardAction(boolean forFree) { return createReportCardAction(forFree); }
+    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
+        return createReportCardAction(cardGame, forFree);
+    }
 
     public TopLevelSelectableAction createReportCardAction() {
         return createReportCardAction(false);
     }
     public TopLevelSelectableAction createReportCardAction(boolean forFree) {
         return new ReportCardAction(_game, this, forFree);
+    }
+
+    public TopLevelSelectableAction createReportCardAction(DefaultGame cardGame, boolean forFree) {
+        return new ReportCardAction(cardGame, this, forFree);
     }
 
     public void leaveAwayTeam(ST1EGame cardGame) {

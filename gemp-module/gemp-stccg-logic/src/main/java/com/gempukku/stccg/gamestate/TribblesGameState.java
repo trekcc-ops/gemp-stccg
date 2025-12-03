@@ -66,7 +66,7 @@ public final class TribblesGameState extends GameState {
                     for (String blueprintId : entry.getValue()) {
                         try {
                             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
-                            PhysicalCard card = new TribblesPhysicalCard(game, _nextCardId, player, blueprint);
+                            PhysicalCard card = new TribblesPhysicalCard(_nextCardId, player, blueprint);
                             subDeck.add(card);
                             _nextCardId++;
                         } catch (CardNotFoundException e) {

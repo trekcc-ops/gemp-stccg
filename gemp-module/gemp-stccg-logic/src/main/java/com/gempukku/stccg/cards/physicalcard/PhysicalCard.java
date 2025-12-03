@@ -74,8 +74,9 @@ public interface PhysicalCard {
     void setLocation(DefaultGame cardGame, GameLocation location);
 
     String getFullName();
-    TopLevelSelectableAction getPlayCardAction();
-    Action getPlayCardAction(boolean forFree);
+
+    TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame);
+    Action getPlayCardAction(DefaultGame cardGame, boolean forFree);
 
     boolean hasTextRemoved(DefaultGame game);
 

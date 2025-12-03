@@ -32,9 +32,9 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
 
-    public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
+    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-        STCCGPlayCardAction action = new STCCGPlayCardAction(_game, this, Zone.CORE, _ownerName, forFree);
+        STCCGPlayCardAction action = new STCCGPlayCardAction(cardGame, this, Zone.CORE, _ownerName, forFree);
         _game.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
         return action;
     }

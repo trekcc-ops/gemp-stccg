@@ -41,7 +41,7 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
     }
 
     protected void playCard(DefaultGame cardGame, final PhysicalCard selectedCard) throws InvalidGameLogicException {
-        _playCardAction = selectedCard.getPlayCardAction(true);
+        _playCardAction = selectedCard.getPlayCardAction(cardGame, true);
         cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
     }
 

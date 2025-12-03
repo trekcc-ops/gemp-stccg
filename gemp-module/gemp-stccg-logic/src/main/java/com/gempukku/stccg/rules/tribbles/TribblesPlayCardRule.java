@@ -15,7 +15,7 @@ public class TribblesPlayCardRule extends TribblesRule {
             List<TopLevelSelectableAction> result = new LinkedList<>();
             for (PhysicalCard card : player.getCardsInHand()) {
                 if (card.canBePlayed(cardGame)) {
-                    TopLevelSelectableAction action = card.getPlayCardAction();
+                    TopLevelSelectableAction action = card.getPlayCardAction(cardGame);
                     if (action.canBeInitiated(cardGame))
                         result.add(action);
                 }

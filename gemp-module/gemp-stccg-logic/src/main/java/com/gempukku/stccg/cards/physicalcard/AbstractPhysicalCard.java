@@ -203,10 +203,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public String getFullName() { return _blueprint.getFullName(); }
 
-    public TopLevelSelectableAction getPlayCardAction() {
-        return getPlayCardAction(false);
+    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame) {
+        return getPlayCardAction(cardGame, false);
     }
-    public abstract TopLevelSelectableAction getPlayCardAction(boolean forFree);
+
+    public abstract TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree);
 
 
     public boolean hasTextRemoved(DefaultGame game) {

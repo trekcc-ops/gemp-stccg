@@ -135,7 +135,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
         if (!_wasCarriedOut) {
             for (PhysicalCard card : _cardsToDownload) {
-                Action playCardAction = card.getPlayCardAction(true);
+                Action playCardAction = card.getPlayCardAction(cardGame, true);
                 if (playCardAction instanceof ReportCardAction reportAction) {
                     reportAction.setDestination(_destination);
                     cardGame.getActionsEnvironment().addActionToStack(playCardAction);

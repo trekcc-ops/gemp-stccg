@@ -15,10 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TribblesPhysicalCard extends AbstractPhysicalCard {
-    private final TribblesGame _game;
-    public TribblesPhysicalCard(TribblesGame game, int cardId, Player owner, CardBlueprint blueprint) {
+    public TribblesPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
-        _game = game;
     }
 
     public boolean isMisSeed(DefaultGame game, MissionLocation mission) {
@@ -37,8 +35,8 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
-        return new TribblesPlayCardAction(_game, this);
+    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
+        return new TribblesPlayCardAction(cardGame, this);
     }
 
     public boolean canPlayOutOfSequence(TribblesGame cardGame) {
