@@ -25,7 +25,7 @@ public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction
                     handSize, handSize);
             appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, player, selectAction));
             appendEffect(
-                    new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId), 3, cardGame));
+                    new DrawCardsAction(_performingCard, _performingPlayerId, 3, cardGame));
         }
     }
 

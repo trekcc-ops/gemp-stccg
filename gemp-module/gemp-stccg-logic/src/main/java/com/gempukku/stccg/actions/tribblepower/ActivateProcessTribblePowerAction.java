@@ -7,20 +7,16 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 
 public class ActivateProcessTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateProcessTribblePowerAction(TribblesGame game, PhysicalCard performingCard, ActionContext actionContext)
-            throws PlayerNotFoundException {
+    public ActivateProcessTribblePowerAction(TribblesGame game, PhysicalCard performingCard, ActionContext actionContext) {
         super(game, actionContext, performingCard);
-        Player performingPlayer = game.getPlayer(_performingPlayerId);
-        appendEffect(new DrawCardsAction(_performingCard, performingPlayer, 3, game));
-        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, performingPlayer,
-                "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
+        appendEffect(new DrawCardsAction(_performingCard, _performingPlayerId, 3, game));
+        SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, _performingPlayerId,
+                "Choose a card to put beneath draw deck", Filters.yourHand(_performingPlayerId),
                 2, 2);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(game, performingPlayer, selectAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(game, _performingPlayerId, selectAction));
     }
 
 }

@@ -50,7 +50,7 @@ public class Blueprint152_003 extends CardBlueprint {
 
         SkillDotCountEvaluator skillDotEvaluator = new SkillDotCountEvaluator(randomSelection);
         TopLevelSelectableAction action2 =
-                new DrawCardsAction(game, thisCard, game.getPlayer(opponentId), skillDotEvaluator);
+                new DrawCardsAction(game, thisCard, opponentId, skillDotEvaluator);
 
         List<Action> selectableActions = new ArrayList<>();
         selectableActions.add(action1);

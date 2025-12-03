@@ -23,10 +23,11 @@ public class Blueprint156_010 extends CardBlueprint {
 
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
                                                             ActionResult actionResult, DefaultGame cardGame) {
+        String playerName = player.getPlayerId();
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
-                Objects.equals(cardGame.getOpponent(thisCard.getOwnerName()), player.getPlayerId())) {
-            actions.add(new DrawCardsAction(thisCard, player, 2, cardGame));
+                Objects.equals(cardGame.getOpponent(thisCard.getOwnerName()), playerName)) {
+            actions.add(new DrawCardsAction(thisCard, playerName, 2, cardGame));
         }
         return actions;
     }

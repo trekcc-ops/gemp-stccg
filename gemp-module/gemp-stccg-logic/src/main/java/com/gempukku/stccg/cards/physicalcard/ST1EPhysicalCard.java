@@ -95,7 +95,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         return card.getGameLocation() == this.getGameLocation() &&
                 card.getGameLocation() instanceof MissionLocation missionLocation &&
                 _attachedToCardId != null &&
-                _attachedToCardId == card.getAttachedToCardId() &&
+                _attachedToCardId.equals(card.getAttachedToCardId()) &&
                 _game.getGameState().getSpacelineLocations().contains(missionLocation);
     }
 

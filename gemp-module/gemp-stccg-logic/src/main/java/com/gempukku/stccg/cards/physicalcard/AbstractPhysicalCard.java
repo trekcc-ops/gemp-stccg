@@ -242,8 +242,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public Collection<PhysicalCard> getAttachedCards(DefaultGame game) {
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard physicalCard : game.getGameState().getAllCardsInPlay()) {
-            if (physicalCard.getAttachedToCardId() == _cardId)
+            if (Objects.equals(physicalCard.getAttachedToCardId(), _cardId)) {
                 result.add(physicalCard);
+            }
         }
         return result;
     }
@@ -323,7 +324,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isPresentWith(PhysicalCard card) {
         return card.getGameLocation() == this.getGameLocation() &&
                 _attachedToCardId != null &&
-                card.getAttachedToCardId() == _attachedToCardId;
+                Objects.equals(card.getAttachedToCardId(), _attachedToCardId);
     }
 
     public boolean hasSkill(SkillName skillName) { return false; }

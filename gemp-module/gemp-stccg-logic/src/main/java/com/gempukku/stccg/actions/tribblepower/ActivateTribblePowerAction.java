@@ -14,8 +14,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public abstract class ActivateTribblePowerAction extends ActionyAction {
     protected final PhysicalCard _performingCard;
 
-    public ActivateTribblePowerAction(TribblesGame cardGame, ActionContext actionContext, PhysicalCard performingCard)
-            throws PlayerNotFoundException {
+    public ActivateTribblePowerAction(TribblesGame cardGame, ActionContext actionContext, PhysicalCard performingCard) {
         super(cardGame, actionContext.getPerformingPlayerId(), ActionType.ACTIVATE_TRIBBLE_POWER);
         _performingCard = performingCard;
     }

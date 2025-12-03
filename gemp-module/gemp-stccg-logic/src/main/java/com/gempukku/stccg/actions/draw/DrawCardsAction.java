@@ -16,13 +16,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     private int _cardsAlreadyDrawnCount;
     private final Evaluator _cardDrawCountEvaluator;
 
-    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName) {
-        this(cardGame, performingCard, performingPlayerName, false, 1);
-    }
-
-
-    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
-                           boolean optional, int count) {
+    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName, int count) {
         super(cardGame, performingPlayerName, "Draw a card", ActionType.DRAW_CARD);
         _performingCard = performingCard;
         _cardDrawCountEvaluator = new ConstantEvaluator(count);
@@ -34,25 +28,12 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         _cardDrawCountEvaluator = drawCountEvaluator;
         _performingCard = performingCard;
     }
-
-    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
-                           SkillDotCountEvaluator drawCountEvaluator) {
-        super(cardGame, performingPlayer, "Draw a card", ActionType.DRAW_CARD);
-        _cardDrawCountEvaluator = drawCountEvaluator;
-        _performingCard = performingCard;
+    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName) {
+        this(cardGame, performingCard, performingPlayerName, 1);
     }
 
     public DrawCardsAction(PhysicalCard performingCard, String performingPlayerName, int count, DefaultGame cardGame) {
-        this(cardGame, performingCard, performingPlayerName, false, count);
-    }
-
-    public DrawCardsAction(PhysicalCard performingCard, Player performingPlayer, int count, DefaultGame cardGame) {
-        this(cardGame, performingCard, performingPlayer, false, count);
-    }
-
-    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
-                           boolean optional, int count) {
-        this(cardGame, performingCard, performingPlayer.getPlayerId(), optional, count);
+        this(cardGame, performingCard, performingPlayerName, count);
     }
 
     @Override

@@ -165,6 +165,9 @@ public class Filters {
         return new AtLocationFilter(location.getLocationId());
     }
 
+    public static CardFilter yourHand(String playerName) {
+        return new InYourHandFilter(playerName);
+    }
 
     public static CardFilter yourHand(Player player) {
         return new InYourHandFilter(player.getPlayerId());

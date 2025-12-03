@@ -22,6 +22,12 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
     private Collection<PhysicalCard> _cardsToPlace;
     private enum Progress { cardsSelected }
 
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
+                                              SelectCardsAction selectionAction) {
+        super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK, Progress.values());
+        _selectionAction = selectionAction;
+    }
+
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
                                               SelectCardsAction selectionAction) {
