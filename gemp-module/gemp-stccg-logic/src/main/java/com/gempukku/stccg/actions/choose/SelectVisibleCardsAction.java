@@ -26,9 +26,9 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     private String _memory;
     private final String _decisionText;
 
-    public SelectVisibleCardsAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
+    public SelectVisibleCardsAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
                                     Collection<? extends PhysicalCard> cards, int minimum) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
+        super(cardGame, selectingPlayerName, choiceText, ActionType.SELECT_CARDS);
         _selectableCardsResolver = new FixedCardsResolver(cards);
         _minimum = minimum;
         _decisionText = choiceText;

@@ -11,6 +11,10 @@ public class TopOfPlayPileFilter implements CardFilter {
     @JsonProperty("playerName")
     private final String _playerName;
 
+    public TopOfPlayPileFilter(String playerName) {
+        _playerName = playerName;
+    }
+
     public TopOfPlayPileFilter(Player player) {
         _playerName = player.getPlayerId();
     }

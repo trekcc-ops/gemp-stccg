@@ -9,7 +9,6 @@ import com.gempukku.stccg.filters.TopOfPlayPileFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Arrays;
@@ -18,7 +17,8 @@ import java.util.Arrays;
 public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
     private enum Progress { playerSelected, wasCarriedOut }
-    private Player _targetPlayer;
+
+    private String _targetPlayerName;
     private SelectPlayerAction _selectPlayerAction;
     private final ActionContext _actionContext;
 
@@ -38,7 +38,7 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
             // Choose a player...
             String[] players = cardGame.getAllPlayerIds();
             if (players.length == 1) {
-                _targetPlayer = cardGame.getPlayer(players[0]);
+                _targetPlayerName = players[0];
                 setProgress(Progress.playerSelected);
             }
             else {
@@ -47,8 +47,7 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
                             new SelectPlayerAction(cardGame, _actionContext, "selectedPlayer", Arrays.asList(players));
                     return _selectPlayerAction;
                 } else {
-                    String targetPlayerId = _actionContext.getValueFromMemory("selectedPlayer");
-                    _targetPlayer = cardGame.getPlayer(targetPlayerId);
+                    _targetPlayerName = _actionContext.getValueFromMemory("selectedPlayer");
                     setProgress(Progress.playerSelected);
                 }
             }
@@ -56,8 +55,8 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
         if (!getProgress(Progress.wasCarriedOut)) {
             setProgress(Progress.wasCarriedOut);
-            return new TribblesMultiDiscardActionBroken(cardGame, _performingCard, _targetPlayer.getPlayerId(),
-                    new TopOfPlayPileFilter(_targetPlayer));
+            return new TribblesMultiDiscardActionBroken(cardGame, _performingCard, _targetPlayerName,
+                    new TopOfPlayPileFilter(_targetPlayerName));
         }
         return getNextAction();
     }

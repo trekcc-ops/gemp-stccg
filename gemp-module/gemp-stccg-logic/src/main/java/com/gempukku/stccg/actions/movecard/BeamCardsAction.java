@@ -41,7 +41,7 @@ public class BeamCardsAction extends BeamOrWalkAction {
         List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {
             if (!Filters.filter(destinationCard.getAttachedCards(game), game,
-                    Filters.your(_performingPlayer), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
+                    Filters.your(_performingPlayerId), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
                 // TODO - Doesn't do a compatibility or beamable check, does it need to?
                 cards.add(destinationCard);
         }

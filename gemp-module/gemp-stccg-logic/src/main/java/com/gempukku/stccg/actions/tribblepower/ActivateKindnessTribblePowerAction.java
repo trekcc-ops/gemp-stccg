@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.placecard.PlaceCardOnBottomOfPlayPileAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
@@ -40,7 +41,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return (_performingPlayer.getCardsInHand().size() >= 4);
+        return cardGame.getGameState().getCardGroup(_performingPlayerId, Zone.HAND).size() >= 4;
     }
 
 }

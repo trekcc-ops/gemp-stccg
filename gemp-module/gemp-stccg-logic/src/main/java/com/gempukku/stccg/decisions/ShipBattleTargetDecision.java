@@ -19,6 +19,13 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
 
     private final Map<PhysicalCard, Map<String, List<PhysicalCard>>> _targetMap;
 
+    public ShipBattleTargetDecision(String playerName, DecisionContext context,
+                                    Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap,
+                                    DefaultGame cardGame) {
+        super(playerName, context, cardGame);
+        _targetMap = targetMap;
+    }
+
     public ShipBattleTargetDecision(Player player, DecisionContext context,
                                     Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap,
                                     DefaultGame cardGame) {

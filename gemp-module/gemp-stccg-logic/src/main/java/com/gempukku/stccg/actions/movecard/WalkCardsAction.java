@@ -28,7 +28,7 @@ public class WalkCardsAction extends BeamOrWalkAction {
             result.add(ship.getDockedAtCard(game));
         else if (_cardSource instanceof FacilityCard)
             result.addAll(Filters.filter(
-                    _cardSource.getAttachedCards(game), game, Filters.ship, Filters.your(_performingPlayer)));
+                    _cardSource.getAttachedCards(game), game, Filters.ship, Filters.your(_performingPlayerId)));
         return result;
     }
 
