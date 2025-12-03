@@ -16,7 +16,6 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerResolver;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,12 +39,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         final String targetPlayerId = _drawingPlayerSource.getPlayerId(context);
         PhysicalCard performingCard = context.getPerformingCard(cardGame);
         final int count = (int) _countSource.evaluateExpression(cardGame, context);
-        List<Action> result = new LinkedList<>();
-        int numberOfEffects = 1;
-        for (int i = 0; i < numberOfEffects; i++) {
-            result.add(new DrawCardsAction(performingCard, targetPlayerId, count, cardGame));
-        }
-        return result;
+        return List.of(new DrawCardsAction(performingCard, targetPlayerId, count, cardGame));
     }
 
     @Override
