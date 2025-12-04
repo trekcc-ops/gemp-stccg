@@ -71,6 +71,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         skipExecuteOrders();
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
+        assertEquals(7, runabout.getFullRange()); // confirm that runabout's range is back to normal
         assertTrue(canUseCardAgain());
         String gameStateString = _game.getGameState().serializeComplete();
     }

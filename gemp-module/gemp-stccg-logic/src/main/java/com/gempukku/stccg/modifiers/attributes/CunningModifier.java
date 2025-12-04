@@ -17,7 +17,7 @@ public class CunningModifier extends AttributeModifier {
     public CunningModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, int modifier,
                            boolean cumulative) {
         super(modifierSource, affectFilter, condition, new ConstantEvaluator(modifier),
-                CardAttribute.CUNNING, ModifierEffect.CUNNING_MODIFIER);
+                CardAttribute.CUNNING, ModifierEffect.ATTRIBUTE_MODIFIER);
     }
 
     public CunningModifier(PhysicalCard modifierSource, Filterable affectFilter, int modifier) {

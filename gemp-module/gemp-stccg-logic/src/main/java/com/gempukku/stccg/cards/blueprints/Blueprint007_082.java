@@ -6,7 +6,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.GainSkillModifier;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
+import com.gempukku.stccg.modifiers.attributes.AllPersonnelAttributeModifier;
 import com.gempukku.stccg.player.YouPlayerResolver;
 import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.requirement.HigherScoreThanAllOtherPlayersCondition;
@@ -24,7 +24,7 @@ public class Blueprint007_082 extends CardBlueprint {
                                                                            PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
         Condition condition = new HigherScoreThanAllOtherPlayersCondition(new YouPlayerResolver(thisCard));
-        modifiers.add(new AllAttributeModifier(thisCard, Filters.card(thisCard), condition, 1));
+        modifiers.add(new AllPersonnelAttributeModifier(thisCard, Filters.card(thisCard), condition, 1));
         modifiers.add(new GainSkillModifier(thisCard, Filters.card(thisCard), condition, SkillName.MEDICAL, SkillName.TREACHERY));
         return modifiers;
     }

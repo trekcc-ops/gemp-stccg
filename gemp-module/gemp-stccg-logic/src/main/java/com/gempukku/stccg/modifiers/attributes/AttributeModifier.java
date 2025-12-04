@@ -13,8 +13,10 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.AbstractModifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.requirement.Condition;
+import com.gempukku.stccg.requirement.TrueCondition;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,6 +48,13 @@ public class AttributeModifier extends AbstractModifier {
         _attributes.add(attribute);
     }
 
+    public AttributeModifier(PhysicalCard performingCard, ActionCardResolver affectedCards, int modifierValue,
+                             Collection<CardAttribute> attributes) {
+        super(performingCard, affectedCards, new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER);
+        _evaluator = new ConstantEvaluator(modifierValue);
+        _attributes.addAll(attributes);
+    }
+
     public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,
                              Condition condition, int modifierValue, ModifierEffect effectType,
                              CardAttribute... attributes) {
@@ -55,34 +64,23 @@ public class AttributeModifier extends AbstractModifier {
     }
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
-                             Evaluator evaluator, ModifierEffect effectType) {
+                             Evaluator evaluator, ModifierEffect effectType, Collection<CardAttribute> attributes) {
         super(modifierSource, affectFilter, condition, effectType);
         _evaluator = evaluator;
-        _attributes.add(CardAttribute.STRENGTH);
-        _attributes.add(CardAttribute.CUNNING);
-        _attributes.add(CardAttribute.INTEGRITY);
+        _attributes.addAll(attributes);
     }
 
     public AttributeModifier(PhysicalCard modifierSource, ActionCardResolver resolver, Condition condition,
-                             Evaluator evaluator, ModifierEffect effectType) {
+                             Evaluator evaluator, ModifierEffect effectType, Collection<CardAttribute> attributes) {
         super(modifierSource, resolver, condition, effectType);
         _evaluator = evaluator;
-        _attributes.add(CardAttribute.STRENGTH);
-        _attributes.add(CardAttribute.CUNNING);
-        _attributes.add(CardAttribute.INTEGRITY);
+        _attributes.addAll(attributes);
     }
 
 
     @Override
     public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
-        String attributeString;
-        if (getModifierEffect() == ModifierEffect.ALL_ATTRIBUTE_MODIFIER) {
-            attributeString = "All attributes";
-        } else {
-            attributeString = _attributes.getFirst().toString();
-        }
-
-        return attributeString +  " " + TextUtils.signed(_evaluator.evaluateExpression(cardGame)) +
+        return _attributes +  " " + TextUtils.signed(_evaluator.evaluateExpression(cardGame)) +
                 " from " + _cardSource.getCardLink();
     }
 

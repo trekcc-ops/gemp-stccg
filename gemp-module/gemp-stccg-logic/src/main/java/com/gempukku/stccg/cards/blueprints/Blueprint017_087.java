@@ -43,7 +43,7 @@ public class Blueprint017_087 extends CardBlueprint {
                 new MissionPointValueFilter(40, ComparatorType.GREATER_THAN_OR_EQUAL_TO));
         Condition locationCondition = new ThisCardAtMissionCondition(thisCard, locationFilter);
         modifiers.add(new AttributeModifier(thisCard, thisCard, locationCondition, 4,
-                ModifierEffect.SHIP_ATTRIBUTE_MODIFIER, CardAttribute.WEAPONS, CardAttribute.SHIELDS));
+                ModifierEffect.ATTRIBUTE_MODIFIER, CardAttribute.WEAPONS, CardAttribute.SHIELDS));
         return modifiers;
     }
 

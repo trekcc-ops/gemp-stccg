@@ -33,6 +33,15 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         _performingCard = performingCard;
     }
 
+    public ShuffleCardsIntoDrawDeckAction(DefaultGame cardGame, PhysicalCard performingCard,
+                                          String performingPlayerName, ActionCardResolver cardTarget) {
+        super(cardGame, performingPlayerName, "Shuffle cards into draw deck",
+                ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
+        _cardTarget = cardTarget;
+        _performingCard = performingCard;
+    }
+
+
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return !_cardTarget.willProbablyBeEmpty(cardGame);
@@ -70,7 +79,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         for (PhysicalCard card : _targetCards) {
             cardGame.getGameState().addCardToTopOfDrawDeck(card);
         }
-        CardPile drawDeck = performingPlayer.getDrawDeck();
+        CardPile<PhysicalCard> drawDeck = performingPlayer.getDrawDeck();
         drawDeck.shuffle();
 
         setAsSuccessful();

@@ -11,7 +11,7 @@ public class ShieldsModifier extends AttributeModifier {
 
     public ShieldsModifier(PhysicalCard performingCard, CardFilter affectedCards, Evaluator modifierAmount) {
         super(performingCard, affectedCards, new TrueCondition(), modifierAmount,
-                CardAttribute.SHIELDS, ModifierEffect.SHIP_ATTRIBUTE_MODIFIER);
+                CardAttribute.SHIELDS, ModifierEffect.ATTRIBUTE_MODIFIER);
     }
 
 }

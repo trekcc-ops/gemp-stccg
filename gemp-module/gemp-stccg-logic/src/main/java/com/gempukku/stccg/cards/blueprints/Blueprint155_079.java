@@ -12,7 +12,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
+import com.gempukku.stccg.modifiers.attributes.AllPersonnelAttributeModifier;
 import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class Blueprint155_079 extends CardBlueprint {
                 Filterable usageFilter = new CharacteristicFilter(Characteristic.K_EHLEYR);
                 Filterable affectFilter = Filters.or(Filters.card(thisCard),
                         Filters.and(Filters.presentWith(thisCard), Characteristic.K_EHLEYR));
-                return new AllAttributeModifier(thisCard, affectFilter,
+                return new AllPersonnelAttributeModifier(thisCard, affectFilter,
                         new PresentWithYourCardCondition(thisCard, usageFilter), 2);
             }
         };

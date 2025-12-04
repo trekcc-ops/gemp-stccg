@@ -328,23 +328,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             case SHIELDS -> card.getBlueprint().getShields();
         };
 
-        if (attribute == CardAttribute.WEAPONS && !getModifiersAffectingCard(ModifierEffect.WEAPONS_DISABLED_MODIFIER, card).isEmpty()) {
+        if (attribute == CardAttribute.WEAPONS &&
+                !getModifiersAffectingCard(ModifierEffect.WEAPONS_DISABLED_MODIFIER, card).isEmpty()) {
             return 0;
         }
 
-        ModifierEffect effectType;
-        if (attribute == CardAttribute.STRENGTH)
-            effectType = ModifierEffect.STRENGTH_MODIFIER;
-        else if (attribute == CardAttribute.CUNNING)
-            effectType = ModifierEffect.CUNNING_MODIFIER;
-        else if (attribute == CardAttribute.INTEGRITY)
-            effectType = ModifierEffect.INTEGRITY_MODIFIER;
-        else
-            effectType = ModifierEffect.SHIP_ATTRIBUTE_MODIFIER;
-        Collection<Modifier> attributeModifiers = new LinkedList<>();
-        attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
-        // TODO - Need to separate ships vs. personnel here
-        attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
+        Collection<Modifier> attributeModifiers = getModifiersAffectingCard(ModifierEffect.ATTRIBUTE_MODIFIER, card);
         for (Modifier modifier : attributeModifiers) {
             if (modifier instanceof AttributeModifier attributeModifier &&
                     attributeModifier.getAttributesModified().contains(attribute)) {

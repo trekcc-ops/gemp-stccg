@@ -21,6 +21,6 @@ public class StrengthModifier extends AttributeModifier {
 
     public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, Evaluator evaluator) {
         super(modifierSource, affectFilter, condition, evaluator, CardAttribute.STRENGTH,
-                ModifierEffect.STRENGTH_MODIFIER);
+                ModifierEffect.ATTRIBUTE_MODIFIER);
     }
 }

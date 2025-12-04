@@ -11,6 +11,7 @@ import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -21,7 +22,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
+import com.gempukku.stccg.modifiers.attributes.AllPersonnelAttributeModifier;
 import com.gempukku.stccg.modifiers.attributes.RangeModifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.requirement.PhaseRequirement;
@@ -33,9 +34,12 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Blueprint155_026 extends CardBlueprint {
+
+
     // Get It Done
 
     private final ActionBlueprint _actionBlueprint;
+    private static final boolean _useOldDefinition = true;
 
     Blueprint155_026() throws InvalidCardDefinitionException {
         super("155_026");
@@ -64,40 +68,6 @@ public class Blueprint155_026 extends CardBlueprint {
                         "you"
                 );
 
-/*        List<String> descriptions = List.of(
-                "Modify personnel attributes",
-                "Modify ship attributes",
-                "Shuffle cards from discard pile into draw deck"
-        ); */
-
-/*        SelectAndPerformSubActionBlueprint actionBlueprint = new SelectAndPerformSubActionBlueprint(
-                descriptions,
-                List<SubActionBlueprint> subActions
-        ); */
-
-        SubActionBlueprint actionBlueprint = new SubActionBlueprint() {
-            @Override
-            public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action,
-                                              ActionContext actionContext) throws InvalidGameLogicException {
-                PhysicalCard thisCard = actionContext.getPerformingCard(cardGame);
-                String playerName = actionContext.getPerformingPlayerId();
-
-                Action choice1 = choice1(cardGame, thisCard, playerName);
-                Action choice2 = choice2(cardGame, thisCard, playerName);
-                Action choice3 = choice3(cardGame, thisCard, playerName);
-                List<Action> selectableActions = List.of(choice1, choice2, choice3);
-
-                Map<Action, String> actionMessageMap = new HashMap<>();
-                actionMessageMap.put(choice1, "Modify personnel attributes");
-                actionMessageMap.put(choice2, "Modify ship attributes");
-                actionMessageMap.put(choice3, "Shuffle cards from discard pile into draw deck");
-
-                Action chooseAction =
-                        new SelectAndInsertAction(cardGame, action, playerName, selectableActions, actionMessageMap);
-                return List.of(chooseAction);
-            }
-        };
-
 
         FilterBlueprint discardFilter = new FilterBlueprint() {
             @Override
@@ -117,12 +87,95 @@ public class Blueprint155_026 extends CardBlueprint {
                 new SelectCardTargetBlueprint(discardFilter, 1, false);
         DiscardSubActionBlueprint discardBlueprint = new DiscardSubActionBlueprint(discardTarget);
 
+        SubActionBlueprint actionBlueprint;
+        if (_useOldDefinition) {
+            actionBlueprint = getSelectActionOld();
+        } else {
+            actionBlueprint = getSelectActionNew();
+        }
+
         return new ActivateCardActionBlueprint(
                 1,
                 List.of(new PhaseRequirement(Phase.EXECUTE_ORDERS)),
                 List.of(placeCardsBlueprint),
                 List.of(actionBlueprint, discardBlueprint)
         );
+    }
+
+    private SubActionBlueprint getSelectActionNew() throws InvalidCardDefinitionException {
+        List<String> descriptions = List.of(
+                "Modify personnel attributes",
+                "Modify ship attributes",
+                "Shuffle cards from discard pile into draw deck"
+        );
+
+        // choice1
+        FilterBlueprint personnelFilter = new FilterBlueprint() {
+            @Override
+            public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+                return Filters.and(Filters.your(actionContext.getPerformingPlayerId()), Filters.inPlay, Filters.unique,
+                        CardIcon.TNG_ICON, CardType.PERSONNEL);
+            }
+        };
+
+        SelectCardTargetBlueprint selectPersonnel =
+                new SelectCardTargetBlueprint(personnelFilter, 1, false);
+        SubActionBlueprint choice1 = new IncreaseAttributesSubActionBlueprint(
+                List.of(CardAttribute.INTEGRITY, CardAttribute.CUNNING, CardAttribute.STRENGTH),
+                "endOfThisTurn", selectPersonnel, 2);
+
+        // choice2
+
+        FilterBlueprint shipFilter = new FilterBlueprint() {
+            @Override
+            public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+                return Filters.and(Filters.your(actionContext.getPerformingPlayerId()), Filters.inPlay, CardIcon.TNG_ICON,
+                        CardType.SHIP);
+            }
+        };
+
+        SelectCardTargetBlueprint selectShip = new SelectCardTargetBlueprint(shipFilter, 1, false);
+        SubActionBlueprint choice2 =
+                new IncreaseAttributesSubActionBlueprint(List.of(CardAttribute.RANGE), "endOfThisTurn", selectShip, 2);
+
+        // choice3
+
+        FilterBlueprint shuffleCardsFilter = new FilterBlueprint() {
+            @Override
+            public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+                return new BottomCardsOfDiscardFilter(actionContext.getPerformingPlayerId(), 3,
+                        Filters.and(CardIcon.TNG_ICON, Filters.or(CardType.PERSONNEL, CardType.SHIP)));
+            }
+        };
+
+        CardTargetBlueprint shuffleCardsTarget =
+                new SelectCardTargetBlueprint(shuffleCardsFilter, 3, false);
+        SubActionBlueprint choice3 =
+                new ShuffleCardsIntoDrawDeckSubActionBlueprint(shuffleCardsTarget, "you");
+
+        return new SelectAndPerformSubActionBlueprint(descriptions, List.of(choice1, choice2, choice3));
+    }
+
+
+    private SubActionBlueprint getSelectActionOld() {
+        return (cardGame, action, actionContext) -> {
+            PhysicalCard thisCard = actionContext.getPerformingCard(cardGame);
+            String playerName = actionContext.getPerformingPlayerId();
+
+            Action choice1 = choice1(cardGame, thisCard, playerName);
+            Action choice2 = choice2(cardGame, thisCard, playerName);
+            Action choice3 = choice3(cardGame, thisCard, playerName);
+            List<Action> selectableActions = List.of(choice1, choice2, choice3);
+
+            Map<Action, String> actionMessageMap = new HashMap<>();
+            actionMessageMap.put(choice1, "Modify personnel attributes");
+            actionMessageMap.put(choice2, "Modify ship attributes");
+            actionMessageMap.put(choice3, "Shuffle cards from discard pile into draw deck");
+
+            Action chooseAction =
+                    new SelectAndInsertAction(cardGame, action, playerName, selectableActions, actionMessageMap);
+            return List.of(chooseAction);
+        };
     }
 
     @Override
@@ -146,7 +199,7 @@ public class Blueprint155_026 extends CardBlueprint {
                         CardType.PERSONNEL));
 
         ActionCardResolver resolver = new SelectCardsResolver(targetAction);
-        Modifier modifier = new AllAttributeModifier(thisCard, resolver, 2);
+        Modifier modifier = new AllPersonnelAttributeModifier(thisCard, resolver, 2);
 
         TopLevelSelectableAction addModifierAction =
                 new AddUntilEndOfTurnModifierAction(cardGame, playerName, thisCard, modifier);
