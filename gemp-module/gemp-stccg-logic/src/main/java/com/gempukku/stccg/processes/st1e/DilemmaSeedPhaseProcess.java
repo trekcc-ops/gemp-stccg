@@ -73,11 +73,15 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {
-                                if (action instanceof AddCardsToSeedCardStackAction seedCardsAction)
-                                    selectCardsToSeed(player, cardGame, seedCardsAction);
-                                else if (action instanceof RemoveCardsFromSeedCardStackAction seedCardsAction)
+                                if (action instanceof AddCardsToSeedCardStackAction seedCardsAction) {
+                                    try {
+                                        selectCardsToSeed(player, cardGame, seedCardsAction);
+                                    } catch(InvalidGameLogicException exp) {
+                                        throw new DecisionResultInvalidException(exp.getMessage());
+                                    }
+                                } else if (action instanceof RemoveCardsFromSeedCardStackAction seedCardsAction) {
                                     selectCardsToRemove(player, cardGame, seedCardsAction);
-                                else {
+                                } else {
                                     throw new DecisionResultInvalidException("Game error - invalid action selected");
                                 }
                             }
@@ -86,10 +90,11 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
         }
     }
 
-    private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToSeedCardStackAction seedCardsAction) {
+    private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToSeedCardStackAction seedCardsAction)
+            throws InvalidGameLogicException {
         Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK);
         cardGame.getUserFeedback().sendAwaitingDecision(
-                new CardsSelectionDecision(player, "Select cards to seed under " + seedCardsAction.getLocationName(),
+                new CardsSelectionDecision(player, "Select cards to seed under " + seedCardsAction.getLocationName(cardGame),
                         availableCards, cardGame) {
                     @Override
                     public void decisionMade (String result) throws DecisionResultInvalidException {

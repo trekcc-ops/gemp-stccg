@@ -553,7 +553,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             String actionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
                 if (actionDecision.getActions().get(i) instanceof AddCardsToSeedCardStackAction seedAction &&
-                    seedAction.getLocation() == mission) {
+                    seedAction.getLocationId() == mission.getLocationId()) {
                     actionId = String.valueOf(seedAction.getActionId());
                 }
             }
@@ -801,7 +801,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getLocation() == mission.getGameLocation())
+                        attemptAction.getLocationId() == mission.getGameLocation().getLocationId())
                     choice = attemptAction;
             }
             choice.setAttemptingUnit(attemptingUnit);
@@ -820,7 +820,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getLocation() == mission)
+                        attemptAction.getLocationId() == mission.getLocationId())
                     choice = attemptAction;
             }
             actionDecision.decisionMade(choice);

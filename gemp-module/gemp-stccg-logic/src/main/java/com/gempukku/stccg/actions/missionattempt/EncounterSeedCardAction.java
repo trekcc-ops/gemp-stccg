@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Objects;
@@ -19,24 +18,23 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
 
     private enum Progress { effectsAdded }
     private final AttemptingUnit _attemptingUnit;
-    private final MissionLocation _missionLocation;
+
+    private final int _locationId;
 
     public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
-                                   MissionLocation location)
+                                   int locationId)
             throws InvalidGameLogicException {
         super(cardGame, encounteringPlayerName, "Encounter seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);
             _attemptingUnit = Objects.requireNonNull(attemptingUnit);
-            _missionLocation = Objects.requireNonNull(location);
+            _locationId = locationId;
         } catch(NullPointerException npe) {
             throw new InvalidGameLogicException(npe.getMessage());
         }
     }
-
-
 
 
     @Override
@@ -54,7 +52,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
         Action nextAction = getNextAction();
         if (nextAction == null && isInProgress()) {
             PhysicalCard card = _cardTarget.getCard();
-            if (card.getGameLocation() == _missionLocation && !card.isPlacedOnMission()) {
+            if (card.getGameLocation().getLocationId() == _locationId && !card.isPlacedOnMission()) {
                 return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard());
             }
             setAsSuccessful();

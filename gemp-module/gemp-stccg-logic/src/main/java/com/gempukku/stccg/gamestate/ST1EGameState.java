@@ -24,6 +24,7 @@ public class ST1EGameState extends GameState {
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId = 1;
     private int _nextLocationId = 1;
+    private final Map<Integer, GameLocation> _locationIds = new HashMap<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game, Map<String, PlayerClock> clocks) {
         super(game, playerIds, clocks);
@@ -119,8 +120,11 @@ public class ST1EGameState extends GameState {
     }
 
     public void addMissionLocationToSpaceline(DefaultGame cardGame, MissionCard newMission, int indexNumber) {
-        _spacelineLocations.add(indexNumber, new MissionLocation(cardGame, newMission, _nextLocationId));
+        int newLocationId = _nextLocationId;
         _nextLocationId++;
+        MissionLocation location = new MissionLocation(cardGame, newMission, newLocationId);
+        _spacelineLocations.add(indexNumber, location);
+        _locationIds.put(newLocationId, location);
         addCardToZone(cardGame, newMission, Zone.SPACELINE);
     }
 
@@ -229,6 +233,10 @@ public class ST1EGameState extends GameState {
 
     public void addCardToListOfAllCards(PhysicalCard card) {
         _allCards.put(card.getCardId(), card);
+    }
+
+    public GameLocation getLocationById(int locationId) {
+        return _locationIds.get(locationId);
     }
 
 }

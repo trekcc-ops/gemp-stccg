@@ -376,4 +376,5 @@ public abstract class GameState {
     public void continueCurrentProcess(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
         _currentGameProcess.continueProcess(cardGame);
     }
+
 }

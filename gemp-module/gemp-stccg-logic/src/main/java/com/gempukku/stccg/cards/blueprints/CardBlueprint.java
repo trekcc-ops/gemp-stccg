@@ -528,7 +528,7 @@ public class CardBlueprint {
         }
         if (result.isEmpty()) {
             EncounterSeedCardAction action = new EncounterSeedCardAction(game, attemptingUnit.getControllerName(), thisCard,
-                    attemptingUnit, attemptAction, missionLocation);
+                    attemptingUnit, attemptAction, missionLocation.getLocationId());
             List<Action> javaActions =
                     getEncounterActionsFromJava(thisCard, game, attemptingUnit, action, missionLocation);
             if (!javaActions.isEmpty()) {

@@ -28,8 +28,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     private final MissionCard _performingCard;
     private PhysicalCard _lastCardRevealed;
     private PhysicalCard _lastCardEncountered;
-    private MissionLocation _missionLocation;
-
+    private final int _locationId;
 
     private enum Progress {
         choseAttemptingUnit, startedMissionAttempt, solvedMission, failedMissionAttempt, endedMissionAttempt
@@ -39,7 +38,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             throws InvalidGameLogicException {
         super(cardGame, player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
         _performingCard = cardForAction;
-        _missionLocation = mission;
+        _locationId = mission.getLocationId();
     }
 
 
@@ -50,11 +49,13 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     public boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             if (cardGame instanceof ST1EGame stGame) {
-                GameLocation missionLocation = _missionLocation;
-                Player player = cardGame.getPlayer(_performingPlayerId);
-                return missionLocation.mayBeAttemptedByPlayer(player, stGame);
+                GameLocation location = stGame.getGameState().getLocationById(_locationId);
+                if (location instanceof MissionLocation missionLocation) {
+                    Player player = cardGame.getPlayer(_performingPlayerId);
+                    return missionLocation.mayBeAttemptedByPlayer(player, stGame);
+                }
             }
-            else throw new InvalidGameLogicException("Could not check mission attempt requirements for non-1E game");
+            throw new InvalidGameLogicException("Could not check mission attempt requirements for non-mission location");
         } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
@@ -63,6 +64,22 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        MissionLocation missionLocation;
+        if (cardGame instanceof ST1EGame stGame) {
+            GameLocation gameLocation = stGame.getGameState().getLocationById(_locationId);
+            if (gameLocation instanceof MissionLocation mission) {
+                missionLocation = mission;
+            } else {
+                missionLocation = null;
+            }
+        } else {
+            missionLocation = null;
+        }
+
+        if (missionLocation == null) {
+            throw new InvalidGameLogicException("Unable to locate mission with location id " + _locationId);
+        }
+
         Player player = cardGame.getPlayer(_performingPlayerId);
 
         Action cost = getNextCost();
@@ -73,19 +90,19 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             if (_attemptingUnitTarget == null) {
 
                 List<AttemptingUnit> eligibleUnits = new ArrayList<>();
-                _missionLocation.getYourAwayTeamsOnSurface((ST1EGame) cardGame, player)
-                        .filter(awayTeam -> awayTeam.canAttemptMission(cardGame, _missionLocation))
+                missionLocation.getYourAwayTeamsOnSurface((ST1EGame) cardGame, player)
+                        .filter(awayTeam -> awayTeam.canAttemptMission(cardGame, missionLocation))
                         .forEach(eligibleUnits::add);
 
                 // Get ships that can attempt mission
                 for (PhysicalCard card : Filters.filterYourCardsInPlay(cardGame, player,
-                        Filters.ship, Filters.atLocation(_missionLocation))) {
+                        Filters.ship, Filters.atLocation(missionLocation))) {
                     if (card instanceof PhysicalShipCard ship)
-                        if (ship.canAttemptMission(_missionLocation))
+                        if (ship.canAttemptMission(missionLocation))
                             eligibleUnits.add(ship);
                 }
                 if (eligibleUnits.size() > 1) {
-                    String selectionText = (_missionLocation.isPlanet()) ? "Choose an Away Team" : "Choose a ship";
+                    String selectionText = (missionLocation.isPlanet()) ? "Choose an Away Team" : "Choose a ship";
                     _attemptingUnitTarget = new AttemptingUnitResolver(
                             new SelectAttemptingUnitAction(cardGame, player, eligibleUnits, selectionText));
                     return _attemptingUnitTarget.getSelectionAction();
@@ -120,7 +137,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                 failMission(cardGame);
             }
 
-            List<PhysicalCard> seedCards = _missionLocation.getSeedCards();
+            List<PhysicalCard> seedCards = missionLocation.getSeedCards();
 
             if (!getProgress(Progress.endedMissionAttempt)) {
 
@@ -129,11 +146,11 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                     if (_lastCardRevealed != firstSeedCard) {
                         _lastCardRevealed = firstSeedCard;
                         return new RevealSeedCardAction(cardGame, _performingPlayerId, firstSeedCard, this,
-                                _missionLocation);
+                                missionLocation);
                     } else if (_lastCardEncountered != firstSeedCard) {
                         _lastCardEncountered = firstSeedCard;
                         List<Action> encounterActions = firstSeedCard.getEncounterActions(
-                                cardGame, this, attemptingUnit, _missionLocation);
+                                cardGame, this, attemptingUnit, missionLocation);
                         if (encounterActions.size() != 1) {
                             throw new InvalidGameLogicException("Unable to identify seed card actions");
                         } else {
@@ -144,10 +161,10 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                                 " was already encountered, but not removed from under the mission");
                     }
                 } else  {
-                    if (cardGame.getGameState().getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionLocation)) {
-                        MissionRequirement requirement = _missionLocation.getRequirements(_performingPlayerId);
+                    if (cardGame.getGameState().getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, missionLocation)) {
+                        MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
                         if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel())) {
-                            solveMission(_missionLocation, cardGame);
+                            solveMission(missionLocation, cardGame);
                         } else {
                             failMission(cardGame);
                         }
@@ -168,8 +185,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         mission.complete(_performingPlayerId, cardGame);
     }
 
-    public MissionLocation getLocation() { return _missionLocation; }
-
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
         _attemptingUnitTarget = new AttemptingUnitResolver(attemptingUnit);
         setProgress(Progress.choseAttemptingUnit);
@@ -184,6 +199,8 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException {
         return _attemptingUnitTarget.getAttemptingUnit();
     }
+
+    public int getLocationId() { return _locationId; }
 
 
 
