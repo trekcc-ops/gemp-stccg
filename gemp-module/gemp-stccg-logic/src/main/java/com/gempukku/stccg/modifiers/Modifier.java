@@ -1,15 +1,13 @@
 package com.gempukku.stccg.modifiers;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.requirement.Condition;
 
-@JsonSerialize(using = ModifierSerializer.class)
 public interface Modifier {
     PhysicalCard getSource();
 

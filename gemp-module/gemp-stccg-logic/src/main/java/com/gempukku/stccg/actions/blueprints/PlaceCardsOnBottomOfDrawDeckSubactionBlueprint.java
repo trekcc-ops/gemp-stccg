@@ -1,0 +1,47 @@
+package com.gempukku.stccg.actions.blueprints;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.CardTargetBlueprint;
+import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerResolver;
+import com.gempukku.stccg.player.PlayerSource;
+import com.gempukku.stccg.player.YouPlayerSource;
+
+import java.util.List;
+
+public class PlaceCardsOnBottomOfDrawDeckSubactionBlueprint implements SubActionBlueprint {
+
+    private final PlayerSource _performingPlayerSource;
+    private final CardTargetBlueprint _cardTarget;
+
+    public PlaceCardsOnBottomOfDrawDeckSubactionBlueprint(
+            @JsonProperty(value = "cards")
+            CardTargetBlueprint cardTarget,
+                                                          @JsonProperty(value = "player")
+                                    String playerText) throws InvalidCardDefinitionException {
+        _cardTarget = cardTarget;
+        _performingPlayerSource = (playerText == null) ?
+                new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText);
+    }
+
+    @Override
+    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
+            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+        final String performingPlayerId = _performingPlayerSource.getPlayerId(cardGame, context);
+        ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
+        return List.of(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayerId, cardTarget));
+    }
+
+    @Override
+    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext context) {
+        return true;
+    }
+}

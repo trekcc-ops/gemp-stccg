@@ -1,9 +1,7 @@
 package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -18,27 +16,33 @@ import java.util.Collection;
 
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
-    private SelectCardsAction _selectionAction;
+    private final ActionCardResolver _resolver;
     private Collection<PhysicalCard> _cardsToPlace;
     private enum Progress { cardsSelected }
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
                                               SelectCardsAction selectionAction) {
         super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK, Progress.values());
-        _selectionAction = selectionAction;
+        _resolver = new SelectCardsResolver(selectionAction);
+    }
+
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
+                                              ActionCardResolver resolver) {
+        super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK, Progress.values());
+        _resolver = resolver;
     }
 
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
                                               SelectCardsAction selectionAction) {
         super(cardGame, performingPlayer, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK, Progress.values());
-        _selectionAction = selectionAction;
+        _resolver = new SelectCardsResolver(selectionAction);
     }
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
                                               Collection<PhysicalCard> cardsToPlace) {
         super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
-        _cardsToPlace = cardsToPlace;
+        _resolver = new FixedCardsResolver(cardsToPlace);
     }
 
 
@@ -50,16 +54,22 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (!getProgress(Progress.cardsSelected)) {
-            if (_selectionAction != null && !_selectionAction.wasCarriedOut()) {
-                return _selectionAction;
-            } else if (_selectionAction != null) {
-                _cardsToPlace = _selectionAction.getSelectedCards();
-                setProgress(Progress.cardsSelected);
-            } else {
-                throw new InvalidGameLogicException("Unable to identify cards to place on bottom of deck");
+            if (!_resolver.isResolved()) {
+                if (_resolver instanceof SelectCardsResolver selectTarget) {
+                    if (selectTarget.getSelectionAction().wasCompleted()) {
+                        _resolver.resolve(cardGame);
+                        setProgress(Progress.cardsSelected);
+                    } else {
+                        return selectTarget.getSelectionAction();
+                    }
+                } else {
+                    _resolver.resolve(cardGame);
+                    setProgress(Progress.cardsSelected);
+                }
             }
         }
 
+        _cardsToPlace = _resolver.getCards(cardGame);
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, _cardsToPlace);
 

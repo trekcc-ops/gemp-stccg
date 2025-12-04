@@ -1,12 +1,15 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.TurnLimitRequirement;
@@ -78,10 +81,13 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     public void setTurnLimit(int limitPerTurn) {
         addRequirement(new TurnLimitRequirement(limitPerTurn));
         addCost(
-                (cardGame, action, actionContext) -> {
-                    Action usageLimitAction = new UseOncePerTurnAction(cardGame,
-                            action, action.getPerformingCard(), actionContext.getPerformingPlayerId());
-                    return Collections.singletonList(usageLimitAction);
+                new SubActionBlueprint() {
+                    @Override
+                    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext) throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+                        Action usageLimitAction = new UseOncePerTurnAction(cardGame,
+                                action, action.getPerformingCard(), actionContext.getPerformingPlayerId());
+                        return Collections.singletonList(usageLimitAction);
+                    }
                 });
     }
 

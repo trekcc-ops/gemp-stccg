@@ -38,6 +38,13 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         _decisionText = choiceText;
     }
 
+    public SelectVisibleCardAction(DefaultGame cardGame, String playerName, String choiceText, CardFilter cardFilter) {
+        super(cardGame, playerName, choiceText, ActionType.SELECT_CARDS);
+        _selectableCards = new CardFilterResolver(cardFilter);
+        _decisionText = choiceText;
+    }
+
+
     public SelectVisibleCardAction(DefaultGame cardGame, Player selectingPlayer, String choiceText, CardFilter cardFilter) {
         super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
         _selectableCards = new CardFilterResolver(cardFilter);
