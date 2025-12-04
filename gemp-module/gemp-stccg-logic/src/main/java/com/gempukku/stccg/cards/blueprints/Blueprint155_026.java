@@ -2,13 +2,12 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.blueprints.*;
-import com.gempukku.stccg.actions.choose.*;
-import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
+import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
+import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
+import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.modifiers.AddUntilEndOfTurnModifierAction;
-import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
-import com.gempukku.stccg.actions.usage.UseGameTextAction;
-import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -27,14 +26,16 @@ import com.gempukku.stccg.modifiers.attributes.RangeModifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.requirement.PhaseRequirement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Blueprint155_026 extends CardBlueprint {
     // Get It Done
 
     private final ActionBlueprint _actionBlueprint;
-    private final boolean _oldDef = true;
 
     Blueprint155_026() throws InvalidCardDefinitionException {
         super("155_026");
@@ -128,65 +129,13 @@ public class Blueprint155_026 extends CardBlueprint {
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame game) {
 
-        if (_oldDef) {
-            return getGameTextActionsOld(player, thisCard, game);
-        } else {
-            List<TopLevelSelectableAction> result = new ArrayList<>();
-            TopLevelSelectableAction action = _actionBlueprint.createAction(game, player.getPlayerId(), thisCard);
-            if (action != null) {
-                result.add(action);
-            }
-            return result;
+        boolean _oldDef = false;
+        List<TopLevelSelectableAction> result = new ArrayList<>();
+        TopLevelSelectableAction action = _actionBlueprint.createAction(game, player.getPlayerId(), thisCard);
+        if (action != null) {
+            result.add(action);
         }
-    }
-
-
-    public List<TopLevelSelectableAction> getGameTextActionsOld(Player player, PhysicalCard thisCard,
-                                                                        DefaultGame game) {
-        Phase currentPhase = game.getCurrentPhase();
-        List<TopLevelSelectableAction> actions = new LinkedList<>();
-
-        if (currentPhase == Phase.EXECUTE_ORDERS && thisCard.isControlledBy(player)) {
-            UseGameTextAction getItDoneAction =
-                    new UseGameTextAction(game, thisCard, player, "Discard 2 cards to choose effect");
-
-            getItDoneAction.appendCost(new UseOncePerTurnAction(game, _actionBlueprint, player.getPlayerId()));
-
-            CardFilter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
-            SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(game, player,
-                    "Select cards to place beneath draw deck", selectableFilter, 2, 2);
-            Action costAction = new PlaceCardsOnBottomOfDrawDeckAction(game, player, selectCardsToPlaceAction);
-            getItDoneAction.appendCost(costAction);
-
-            TopLevelSelectableAction choice1 = choice1(game, thisCard, player.getPlayerId());
-            TopLevelSelectableAction choice2 = choice2(game, thisCard, player.getPlayerId());
-            TopLevelSelectableAction choice3 = choice3(game, thisCard, player.getPlayerId());
-
-            List<Action> selectableActions = new ArrayList<>();
-            selectableActions.add(choice1);
-            selectableActions.add(choice2);
-            selectableActions.add(choice3);
-
-            Map<Action, String> actionMessageMap = new HashMap<>();
-            actionMessageMap.put(choice1, "Modify personnel attributes");
-            actionMessageMap.put(choice2, "Modify ship attributes");
-            actionMessageMap.put(choice3, "Shuffle cards from discard pile into draw deck");
-
-            Action chooseAction =
-                    new SelectAndInsertAction(game, getItDoneAction, player.getPlayerId(), selectableActions, actionMessageMap);
-            getItDoneAction.appendEffect(chooseAction);
-
-            // after any use, discard incident OR discard a [TNG] card from hand
-            CardFilter tngCardsInHandFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
-            CardFilter discardCardFilter = Filters.or(Filters.card(thisCard), tngCardsInHandFilter);
-            SelectVisibleCardAction selectCardToDiscardAction = new SelectVisibleCardAction(game, player,
-                    "Select a card to discard", discardCardFilter);
-            Action discardAction = new DiscardSingleCardAction(game, thisCard, player.getPlayerId(), selectCardToDiscardAction);
-            getItDoneAction.appendEffect(discardAction);
-
-            actions.add(getItDoneAction);
-        }
-        return actions;
+        return result;
     }
 
 
