@@ -1,8 +1,8 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
@@ -11,10 +11,10 @@ import java.util.List;
 public class AndFilter implements CardFilter {
 
     @JsonProperty("filters")
-    private final Iterable<CardFilter> _filters;
+    private final Collection<CardFilter> _filters;
 
     public AndFilter(CardFilter... filters) {
-        _filters = List.of(filters);
+        this(List.of(filters));
     }
 
     public AndFilter(Collection<CardFilter> filters) {
@@ -31,6 +31,22 @@ public class AndFilter implements CardFilter {
             }
         }
         return result;
+    }
+
+    @JsonIgnore
+    public Collection<CardFilter> getFilters() { return _filters; }
+
+    @JsonIgnore
+    public void appendCardFilter(CardFilter... filters) {
+        for (CardFilter filter : filters) {
+            if (filter != Filters.any && !_filters.contains(filter)) {
+                if (filter instanceof AndFilter andFilter) {
+                    appendCardFilter(andFilter.getFilters().toArray(new CardFilter[0]));
+                } else {
+                    _filters.add(filter);
+                }
+            }
+        }
     }
 
 }

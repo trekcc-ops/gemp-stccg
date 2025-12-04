@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectSubActionBlueprint implements SubActionBlueprint {
+public class ChooseStuffSubActionBlueprint implements SubActionBlueprint {
 
     private final EffectType _effectType;
     private final String _saveToMemoryId;
@@ -30,7 +30,7 @@ public class SelectSubActionBlueprint implements SubActionBlueprint {
         CHOOSEANUMBER, CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT, CHOOSETRIBBLEPOWER
     }
 
-    SelectSubActionBlueprint(
+    ChooseStuffSubActionBlueprint(
             @JsonProperty(value = "type", required = true)
             EffectType effectType,
             @JsonProperty(value = "memorize", required = true)

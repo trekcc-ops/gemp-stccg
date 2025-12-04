@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.cards.NullSkill;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -8,7 +7,7 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings("unused")
 public class Blueprint127_023 extends CardBlueprint {
 
     // Robert DeSoto

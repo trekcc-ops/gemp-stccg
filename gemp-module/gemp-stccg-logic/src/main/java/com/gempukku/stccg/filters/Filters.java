@@ -318,4 +318,5 @@ public class Filters {
     public static CardFilter cardId(int cardId) {
         return new SameCardFilter(cardId);
     }
+
 }

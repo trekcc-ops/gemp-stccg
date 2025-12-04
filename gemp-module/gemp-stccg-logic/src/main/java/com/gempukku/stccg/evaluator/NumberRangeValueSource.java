@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-public class NumberRangeValueSource extends ValueSource {
+public class NumberRangeValueSource extends BasicValueSource {
 
     private final int _min;
     private final int _max;
