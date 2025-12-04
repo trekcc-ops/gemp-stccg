@@ -1,10 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.blueprints.ActivateCardActionBlueprint;
-import com.gempukku.stccg.actions.blueprints.DiscardSubActionBlueprint;
-import com.gempukku.stccg.actions.blueprints.PlaceCardsOnBottomOfDrawDeckSubactionBlueprint;
-import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.choose.*;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.modifiers.AddUntilEndOfTurnModifierAction;
@@ -122,10 +119,29 @@ public class Blueprint155_026 extends CardBlueprint {
         );
     }
 
-
-
     @Override
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+                                                                        DefaultGame game) {
+
+        boolean oldDef = true;
+
+        if (oldDef) {
+            return getGameTextActionsOld(player, thisCard, game);
+        } else {
+            List<TopLevelSelectableAction> result = new ArrayList<>();
+            try {
+                ActionBlueprint blueprint = getActionBlueprint(player);
+                TopLevelSelectableAction action = blueprint.createAction(game, player.getPlayerId(), thisCard);
+                result.add(action);
+            } catch(InvalidCardDefinitionException exp) {
+                game.sendErrorMessage(exp);
+            }
+            return result;
+        }
+    }
+
+
+    public List<TopLevelSelectableAction> getGameTextActionsOld(Player player, PhysicalCard thisCard,
                                                                         DefaultGame game) {
         Phase currentPhase = game.getCurrentPhase();
         List<TopLevelSelectableAction> actions = new LinkedList<>();
