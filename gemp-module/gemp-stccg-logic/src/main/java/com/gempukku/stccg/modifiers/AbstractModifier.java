@@ -23,6 +23,7 @@ public abstract class AbstractModifier implements Modifier {
     protected final Condition _condition;
     private final ModifierEffect _effect;
 
+    // This one's for Get It Done
     protected AbstractModifier(PhysicalCard source, ActionCardResolver affectedCards, Condition condition,
                                ModifierEffect effect) {
         _cardSource = source;
@@ -36,7 +37,7 @@ public abstract class AbstractModifier implements Modifier {
                                Condition condition, ModifierEffect effect) {
         _cardSource = source;
         _text = text;
-        CardFilter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
+        CardFilter affectedFilter = (affectFilter == null) ? Filters.any : Filters.changeToFilter(affectFilter);
         _cardResolver = new CardFilterResolver(affectedFilter);
         _condition = condition;
         _effect = effect;

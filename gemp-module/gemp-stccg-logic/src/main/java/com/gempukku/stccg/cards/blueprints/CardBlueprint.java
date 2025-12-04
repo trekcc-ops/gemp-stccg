@@ -456,10 +456,8 @@ public class CardBlueprint {
         List<Modifier> result = new LinkedList<>();
 
         // Add in-play modifiers created through JSON definitions
-        for (ModifierBlueprint modifierSource : inPlayModifiers) {
-            ActionContext context = new ActionContext(card, card.getOwnerName());
-            result.add(modifierSource.createModifier(cardGame, card, context));
-        }
+        inPlayModifiers.forEach(modifierSource ->
+                result.add(modifierSource.createModifierWithNewContext(cardGame, card)));
 
         // Add in-play modifiers created through Java definitions
         try {
