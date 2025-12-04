@@ -9,10 +9,11 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.modifiers.LimitCounter;
+import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.TurnLimitRequirement;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -79,14 +80,26 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
                                                           PhysicalCard thisCard);
 
     public void setTurnLimit(int limitPerTurn) {
-        addRequirement(new TurnLimitRequirement(limitPerTurn));
+        ActionBlueprint thisBlueprint = this;
         addCost(
                 new SubActionBlueprint() {
                     @Override
                     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext) throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
                         Action usageLimitAction = new UseOncePerTurnAction(cardGame,
-                                action, action.getPerformingCard(), actionContext.getPerformingPlayerId());
+                                thisBlueprint, actionContext.getPerformingPlayerId());
                         return Collections.singletonList(usageLimitAction);
+                    }
+
+                    @Override
+                    public boolean isPlayabilityCheckedForEffect() {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+                        ModifiersQuerying modifiers = cardGame.getGameState().getModifiersQuerying();
+                        LimitCounter counter = modifiers.getUntilEndOfTurnLimitCounter(thisBlueprint);
+                        return counter.getUsedLimit() < limitPerTurn;
                     }
                 });
     }

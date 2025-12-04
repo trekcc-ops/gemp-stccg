@@ -105,8 +105,6 @@ public interface PhysicalCard {
     boolean isPresentWith(PhysicalCard card);
     boolean hasSkill(SkillName skillName);
 
-    boolean checkTurnLimit(DefaultGame game, int max);
-
     @JsonProperty("isInPlay")
     boolean isInPlay();
     boolean hasCharacteristic(Characteristic characteristic);

@@ -15,10 +15,10 @@ import java.util.List;
 
 public interface ModifiersQuerying {
 
-    LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card);
     LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix);
 
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix);
+    LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint);
 
     boolean hasIcon(PhysicalCard physicalCard, CardIcon icon);
 
@@ -57,7 +57,6 @@ public interface ModifiersQuerying {
 
     boolean hasFlagActive(ModifierFlag modifierFlag);
 
-    LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint);
 
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
 

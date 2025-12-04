@@ -327,13 +327,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
                 Objects.equals(card.getAttachedToCardId(), _attachedToCardId);
     }
 
-    public boolean hasSkill(SkillName skillName) { return false; }
     // TODO May need to implement something here for weird non-personnel cards that have skills
-
-    public boolean checkTurnLimit(DefaultGame game, int max) {
-        // TODO This isn't right since it checks against the card instead of the action
-        return game.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
-    }
+    public boolean hasSkill(SkillName skillName) { return false; }
 
 
     public boolean isInPlay() {

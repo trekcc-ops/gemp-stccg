@@ -3,6 +3,8 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.ActivateCardActionBlueprint;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadReportableAction;
@@ -10,6 +12,7 @@ import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
@@ -18,12 +21,21 @@ import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class Blueprint155_021 extends CardBlueprint {
+
+    private final ActionBlueprint _dummyBlueprint = new ActivateCardActionBlueprint(
+            1, new ArrayList<>(), new ArrayList<>(),
+            List.of((cardGame, action, actionContext) -> new ArrayList<>())
+    );
+
+    public Blueprint155_021() throws InvalidCardDefinitionException {
+    }
 
     // Attention All Hands
 
@@ -51,8 +63,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 SelectAndReportForFreeCardAction action1 =
                         new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwnerName(), cardTarget, thisCard,
                                 destinationFilterBlueprint);
-                action1.setCardActionPrefix("1");
-                action1.appendUsage(new UseOncePerTurnAction(cardGame, action1, thisCard, player.getPlayerId()));
+                action1.appendUsage(new UseOncePerTurnAction(cardGame, _dummyBlueprint, player.getPlayerId()));
                 if (action1.canBeInitiated(cardGame))
                     actions.add(action1);
 

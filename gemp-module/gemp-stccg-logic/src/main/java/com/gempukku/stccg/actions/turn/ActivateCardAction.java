@@ -41,8 +41,18 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
                 saveResult(new ActionResult(ActionResult.Type.ACTIVATE, this));
             }
 
-            if (!getProgress(Progress.prevented))
-                return getNextAction();
+            if (!getProgress(Progress.prevented)) {
+                Action nextAction = getNextAction();
+                if (nextAction != null) {
+                    return nextAction;
+                } else {
+                    setAsSuccessful();
+                }
+            } else {
+                setAsFailed();
+            }
+        } else {
+            setAsFailed();
         }
         return null;
     }

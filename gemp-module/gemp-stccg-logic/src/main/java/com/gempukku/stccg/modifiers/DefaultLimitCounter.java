@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 public class DefaultLimitCounter implements LimitCounter {
-    private int _count;
+    private int _count = 0;
 
     @Override
     public int incrementToLimit(int limit, int incrementBy) {

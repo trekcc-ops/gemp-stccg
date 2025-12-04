@@ -42,11 +42,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
 
     @Override
-    public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card) {
-        return getUntilEndOfTurnLimitCounter(card, "");
-    }
-
-    @Override
     public LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix) {
         return _gameLimitCounters.computeIfAbsent(prefix + "_" + card.getCardId(), entry -> new DefaultLimitCounter());
     }

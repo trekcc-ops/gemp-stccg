@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -25,13 +26,18 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
     public SelectCardTargetBlueprint(@JsonProperty(value = "filter", required = true)
                               FilterBlueprint filterBlueprint,
                               @JsonProperty("count")
-                              int count,
+                              Integer count,
                               @JsonProperty("random")
-                              Boolean randomSelection) {
+                              Boolean randomSelection) throws InvalidCardDefinitionException {
         _filterBlueprints = new LinkedList<>();
         _filterBlueprints.add(filterBlueprint);
-        _count = count;
+        _count = Objects.requireNonNullElse(count, 1);
         _randomSelection = Objects.requireNonNullElse(randomSelection,false);
+
+        if (_count > 1 && _randomSelection) {
+            throw new InvalidCardDefinitionException("Have not implemented SelectCardTargetBlueprint for random " +
+                    "selection of multiple cards");
+        }
     }
 
     public ActionCardResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
@@ -48,7 +54,7 @@ public class SelectCardTargetBlueprint implements CardTargetBlueprint {
         } else {
             selectAction = new SelectCardsFromDialogAction(
                     cardGame, context.getPerformingPlayerId(), "Select a card",
-                    finalFilter);
+                    finalFilter, _count);
         }
         return new SelectCardsResolver(selectAction);
     }

@@ -3,22 +3,18 @@ package com.gempukku.stccg.actions.usage;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.LimitCounter;
 
 public class UseOncePerTurnAction extends ActionyAction {
-    private final PhysicalCard _card;
     private final static int LIMIT_PER_TURN = 1;
-    private final String _prefix;
+    private final ActionBlueprint _blueprint;
 
-    public UseOncePerTurnAction(DefaultGame cardGame, CardPerformedAction limitedAction, PhysicalCard performingCard,
-                                String performingPlayerName) {
+    public UseOncePerTurnAction(DefaultGame cardGame, ActionBlueprint blueprint, String performingPlayerName) {
         super(cardGame, performingPlayerName, ActionType.USAGE_LIMIT);
-        _card = performingCard;
-        _prefix = limitedAction.getCardActionPrefix();
+        _blueprint = blueprint;
     }
 
 
@@ -36,6 +32,6 @@ public class UseOncePerTurnAction extends ActionyAction {
     }
 
     private LimitCounter getLimitCounter(DefaultGame cardGame) {
-        return cardGame.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix);
+        return cardGame.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(_blueprint);
     }
 }

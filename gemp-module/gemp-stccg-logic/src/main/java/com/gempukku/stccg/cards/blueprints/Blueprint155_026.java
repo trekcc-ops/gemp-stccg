@@ -32,17 +32,22 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class Blueprint155_026 extends CardBlueprint {
     // Get It Done
-    Blueprint155_026() {
+
+    private final ActionBlueprint _actionBlueprint;
+    private final boolean _oldDef = true;
+
+    Blueprint155_026() throws InvalidCardDefinitionException {
         super("155_026");
+        _actionBlueprint = getActionBlueprint();
     }
 
-    public ActivateCardActionBlueprint getActionBlueprint(Player performingPlayer) throws InvalidCardDefinitionException {
+    public ActivateCardActionBlueprint getActionBlueprint() throws InvalidCardDefinitionException {
 
         FilterBlueprint inYourHandFilter = new FilterBlueprint() {
 
             @Override
             public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
-                return Filters.and(Filters.yourHand(performingPlayer), CardIcon.TNG_ICON);
+                return Filters.and(Filters.yourHand(actionContext.getPerformingPlayerId()), CardIcon.TNG_ICON);
             }
         };
 
@@ -88,7 +93,7 @@ public class Blueprint155_026 extends CardBlueprint {
 
                 Action chooseAction =
                         new SelectAndInsertAction(cardGame, action, playerName, selectableActions, actionMessageMap);
-                return null;
+                return List.of(chooseAction);
             }
         };
 
@@ -123,18 +128,13 @@ public class Blueprint155_026 extends CardBlueprint {
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame game) {
 
-        boolean oldDef = true;
-
-        if (oldDef) {
+        if (_oldDef) {
             return getGameTextActionsOld(player, thisCard, game);
         } else {
             List<TopLevelSelectableAction> result = new ArrayList<>();
-            try {
-                ActionBlueprint blueprint = getActionBlueprint(player);
-                TopLevelSelectableAction action = blueprint.createAction(game, player.getPlayerId(), thisCard);
+            TopLevelSelectableAction action = _actionBlueprint.createAction(game, player.getPlayerId(), thisCard);
+            if (action != null) {
                 result.add(action);
-            } catch(InvalidCardDefinitionException exp) {
-                game.sendErrorMessage(exp);
             }
             return result;
         }
@@ -150,8 +150,7 @@ public class Blueprint155_026 extends CardBlueprint {
             UseGameTextAction getItDoneAction =
                     new UseGameTextAction(game, thisCard, player, "Discard 2 cards to choose effect");
 
-            getItDoneAction.appendCost(new UseOncePerTurnAction(game, getItDoneAction, thisCard, player.getPlayerId()));
-            getItDoneAction.setCardActionPrefix("1");
+            getItDoneAction.appendCost(new UseOncePerTurnAction(game, _actionBlueprint, player.getPlayerId()));
 
             CardFilter selectableFilter = Filters.and(Filters.yourHand(player), CardIcon.TNG_ICON);
             SelectVisibleCardsAction selectCardsToPlaceAction = new SelectVisibleCardsAction(game, player,

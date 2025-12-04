@@ -878,6 +878,15 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
+    protected List<Action> getSelectableActions(String playerName) {
+        List<Action> result = new ArrayList<>();
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerName);
+        if (decision instanceof ActionSelectionDecision actionDecision) {
+            result.addAll(actionDecision.getActions());
+        }
+        return result;
+    }
+
     protected void useGameText(PhysicalCard card, String playerId) throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);

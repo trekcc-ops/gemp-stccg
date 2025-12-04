@@ -15,7 +15,7 @@ import java.util.Collection;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
     String getCardActionPrefix();
-
+    void setCardActionPrefix(String prefix);
     int getActionId();
     void insertCost(Action costAction);
     void insertCosts(Collection<Action> actions);
