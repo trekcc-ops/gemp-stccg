@@ -1,44 +1,30 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.CardFilterResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.requirement.Condition;
-import com.gempukku.stccg.requirement.TrueCondition;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.requirement.Condition;
+import com.gempukku.stccg.requirement.TrueCondition;
 
 public abstract class AbstractModifier implements Modifier {
     protected final PhysicalCard _cardSource;
     private final String _text;
     protected String _playerId;
-    protected final ActionCardResolver _cardResolver;
+    private final CardFilter _affectedCardsFilter;
     protected final Condition _condition;
     private final ModifierEffect _effect;
-
-    // This one's for Get It Done
-    protected AbstractModifier(PhysicalCard source, ActionCardResolver affectedCards, Condition condition,
-                               ModifierEffect effect) {
-        _cardSource = source;
-        _text = null;
-        _cardResolver = affectedCards;
-        _condition = condition;
-        _effect = effect;
-    }
 
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter,
                                Condition condition, ModifierEffect effect) {
         _cardSource = source;
         _text = text;
-        CardFilter affectedFilter = (affectFilter == null) ? Filters.any : Filters.changeToFilter(affectFilter);
-        _cardResolver = new CardFilterResolver(affectedFilter);
+        _affectedCardsFilter = (affectFilter == null) ? Filters.any : Filters.changeToFilter(affectFilter);
         _condition = condition;
         _effect = effect;
     }
@@ -94,12 +80,7 @@ public abstract class AbstractModifier implements Modifier {
 
     @Override
     public boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard) {
-        try {
-            return _cardResolver.getCards(cardGame).contains(physicalCard);
-        } catch(InvalidGameLogicException exp) {
-            cardGame.sendErrorMessage(exp);
-            return false;
-        }
+        return _affectedCardsFilter.accepts(cardGame, physicalCard);
     }
 
 

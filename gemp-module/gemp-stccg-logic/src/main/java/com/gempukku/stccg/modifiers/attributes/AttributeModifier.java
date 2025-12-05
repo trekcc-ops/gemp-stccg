@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers.attributes;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -40,20 +39,13 @@ public class AttributeModifier extends AbstractModifier {
         _attributes.add(attribute);
     }
 
-    public AttributeModifier(PhysicalCard performingCard, ActionCardResolver affectedCards, Condition condition,
-                             Evaluator evaluator, CardAttribute attribute,
-                             ModifierEffect effectType) {
-        super(performingCard, affectedCards, condition, effectType);
-        _evaluator = evaluator;
-        _attributes.add(attribute);
-    }
-
-    public AttributeModifier(PhysicalCard performingCard, ActionCardResolver affectedCards, int modifierValue,
+    public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCardFilter, int modifierValue,
                              Collection<CardAttribute> attributes) {
-        super(performingCard, affectedCards, new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER);
+        super(performingCard, affectedCardFilter, new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER);
         _evaluator = new ConstantEvaluator(modifierValue);
         _attributes.addAll(attributes);
     }
+
 
     public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,
                              Condition condition, int modifierValue, ModifierEffect effectType,
@@ -66,13 +58,6 @@ public class AttributeModifier extends AbstractModifier {
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
                              Evaluator evaluator, ModifierEffect effectType, Collection<CardAttribute> attributes) {
         super(modifierSource, affectFilter, condition, effectType);
-        _evaluator = evaluator;
-        _attributes.addAll(attributes);
-    }
-
-    public AttributeModifier(PhysicalCard modifierSource, ActionCardResolver resolver, Condition condition,
-                             Evaluator evaluator, ModifierEffect effectType, Collection<CardAttribute> attributes) {
-        super(modifierSource, resolver, condition, effectType);
         _evaluator = evaluator;
         _attributes.addAll(attributes);
     }

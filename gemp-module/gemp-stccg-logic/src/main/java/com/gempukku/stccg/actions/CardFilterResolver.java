@@ -47,6 +47,8 @@ public class CardFilterResolver implements ActionCardResolver {
         return getCards(cardGame).isEmpty();
     }
 
+    public CardFilter getFilter() { return _cardFilter; }
+
     @JsonProperty("serialized")
     public String serialize() {
         return "filtered";

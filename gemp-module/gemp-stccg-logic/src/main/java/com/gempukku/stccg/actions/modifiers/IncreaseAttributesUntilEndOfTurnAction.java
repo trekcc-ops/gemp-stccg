@@ -1,11 +1,10 @@
 package com.gempukku.stccg.actions.modifiers;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.filters.CardFilter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -36,16 +35,26 @@ public class IncreaseAttributesUntilEndOfTurnAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_cardTarget.isResolved()) {
-            Action selectionAction = _cardTarget.getSelectionAction();
-            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
-                return selectionAction;
-            } else {
-                _cardTarget.resolve(cardGame);
+        if (_cardTarget instanceof SelectCardsResolver selectTarget) {
+            if (!_cardTarget.isResolved()) {
+                Action selectionAction = selectTarget.getSelectionAction();
+                if (selectionAction != null && !selectionAction.wasCarriedOut()) {
+                    return selectionAction;
+                } else {
+                    _cardTarget.resolve(cardGame);
+                }
             }
         }
 
-        Modifier modifier = new AttributeModifier(_performingCard, _cardTarget, _amount, _attributes);
+        CardFilter affectedCardsFilter = switch(_cardTarget) {
+            case SelectCardsResolver selectTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
+            case FixedCardsResolver fixedCardsTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
+            case FixedCardResolver fixedCardTarget -> Filters.card(fixedCardTarget.getCard());
+            case CardFilterResolver filterTarget -> filterTarget.getFilter();
+            default -> throw new InvalidGameLogicException("Unexpected value: " + _cardTarget);
+        };
+
+        Modifier modifier = new AttributeModifier(_performingCard, affectedCardsFilter, _amount, _attributes);
         cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(modifier);
         setAsSuccessful();
         return getNextAction();

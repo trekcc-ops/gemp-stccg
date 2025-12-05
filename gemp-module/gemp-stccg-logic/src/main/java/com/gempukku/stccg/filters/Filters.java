@@ -311,7 +311,7 @@ public class Filters {
     }
 
 
-    public static Filterable card(PhysicalCard thisCard) {
+    public static CardFilter card(PhysicalCard thisCard) {
         return new SameCardFilter(thisCard);
     }
 

@@ -11,11 +11,6 @@ import com.gempukku.stccg.requirement.TrueCondition;
 
 public class RangeModifier extends AttributeModifier {
 
-    public RangeModifier(PhysicalCard performingCard, ActionCardResolver affectedCards, int modifierValue) {
-        super(performingCard, affectedCards, new TrueCondition(), new ConstantEvaluator(modifierValue),
-                CardAttribute.RANGE, ModifierEffect.ATTRIBUTE_MODIFIER);
-    }
-
     public RangeModifier(PhysicalCard performingCard, PhysicalCard affectedCard, Condition condition,
                          int modifierValue) {
         super(performingCard, Filters.card(affectedCard), condition,
