@@ -275,7 +275,8 @@ public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint>
         String blueprintId = node.get("blueprintId").textValue();
         if (blueprintId == null)
             throw new InvalidCardDefinitionException("Null value for blueprintId");
-        if (node.has("java-blueprint")) {
+        if (node.has("java-blueprint") && node.get("java-blueprint").isBoolean() &&
+                node.get("java-blueprint").booleanValue()) {
             try {
                 Class<?> result = Class.forName("com.gempukku.stccg.cards.blueprints.Blueprint" + blueprintId);
                 return (Class<? extends CardBlueprint>) result;
