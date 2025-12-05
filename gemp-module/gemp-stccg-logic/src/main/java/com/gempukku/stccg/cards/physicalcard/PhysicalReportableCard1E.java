@@ -62,8 +62,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         setLocation(_game, facility.getGameLocation());
 
         attachTo(facility);
-        gameState.addCardToInPlay(_game, this);
-        _zone = Zone.ATTACHED;
+        gameState.addCardToZone(_game, this, Zone.ATTACHED);
 
         if (this instanceof PhysicalShipCard ship) {
             ship.dockAtFacility(facility);

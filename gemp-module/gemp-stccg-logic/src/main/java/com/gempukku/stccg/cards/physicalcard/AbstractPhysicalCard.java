@@ -78,10 +78,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _ownerName;
     }
 
-    public void startAffectingGame(DefaultGame game) {
-        game.getModifiersEnvironment().addModifierHooks(game, this);
-    }
-
     public void stopAffectingGame(DefaultGame game) {
         game.getModifiersEnvironment().removeModifierHooks(this);
     }

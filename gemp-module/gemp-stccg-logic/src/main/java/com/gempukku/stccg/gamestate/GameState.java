@@ -191,8 +191,7 @@ public abstract class GameState {
             addCardToRemovedPile(card);
         }else {
             if (zone.isInPlay()) {
-                _inPlay.add(card);
-                card.startAffectingGame(cardGame);
+                addCardToInPlay(cardGame, card);
             }
 
             if (zone.hasList()) {
@@ -369,7 +368,7 @@ public abstract class GameState {
     public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card) {
         if (!_inPlay.contains(card)) {
             _inPlay.add(card);
-            card.startAffectingGame(cardGame);
+            _modifiersLogic.addModifierHooks(cardGame, card);
         }
     }
 

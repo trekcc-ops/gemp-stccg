@@ -42,8 +42,6 @@ public interface PhysicalCard {
     @JsonProperty("owner")
     String getOwnerName();
 
-    void startAffectingGame(DefaultGame game);
-
     void stopAffectingGame(DefaultGame game);
 
     CardBlueprint getBlueprint();
