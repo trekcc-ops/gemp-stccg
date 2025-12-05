@@ -65,8 +65,7 @@ public class AttributeModifier extends AbstractModifier {
 
     @Override
     public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
-        return _attributes +  " " + TextUtils.signed(_evaluator.evaluateExpression(cardGame)) +
-                " from " + _cardSource.getCardLink();
+        return _attributes +  " " + TextUtils.signed(_evaluator.evaluateExpression(cardGame));
     }
 
     @Override

@@ -22,7 +22,11 @@ public class GainIconModifier extends AbstractModifier implements IconAffectingM
 
     @Override
     public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
-        return "Gains " + _icon.toHTML() + " from " + _cardSource.getCardLink();
+        String message = "Gains " + _icon.toHTML();
+        if (_cardSource != null) {
+            message = message + " from " + _cardSource.getCardLink();
+        }
+        return message;
     }
 
     @Override

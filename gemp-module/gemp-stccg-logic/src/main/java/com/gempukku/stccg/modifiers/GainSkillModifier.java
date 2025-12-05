@@ -27,7 +27,11 @@ public class GainSkillModifier extends AbstractModifier implements SkillAffectin
         StringJoiner sj = new StringJoiner(", ");
         for (SkillName skill : _skills)
             sj.add(skill.get_humanReadable());
-        return "Gains " + sj + " from " + _cardSource.getCardLink();
+        String message = "Gains " + sj;
+        if (_cardSource != null) {
+            message = message + " from " + _cardSource.getCardLink();
+        }
+        return message;
     }
 
     public List<SkillName> getSkills() {

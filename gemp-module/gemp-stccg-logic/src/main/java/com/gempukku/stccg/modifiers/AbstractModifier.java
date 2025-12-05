@@ -34,6 +34,10 @@ public abstract class AbstractModifier implements Modifier {
         this(source, null, affectedCards, condition, effect);
     }
 
+    protected AbstractModifier(PhysicalCard performingCard, ModifierEffect effect) {
+        this(performingCard, null, Filters.any, null, effect);
+    }
+
 
     protected AbstractModifier(ModifierEffect effect) {
         this(null, null, Filters.any, null, effect);
