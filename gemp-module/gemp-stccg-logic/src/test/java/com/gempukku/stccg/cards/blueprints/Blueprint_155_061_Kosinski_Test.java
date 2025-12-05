@@ -41,7 +41,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         seedCardsUnder(Collections.singleton(climb), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, _outpost, _mission);
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 

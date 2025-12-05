@@ -70,7 +70,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         seedCardsUnder(Collections.singleton(armus), excavation);
 
         // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, outpost, excavation);
         assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
         assertTrue(deathYell.isInHand(_game));
@@ -151,7 +151,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         seedCardsUnder(Collections.singleton(armus), excavation);
 
         // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, outpost, excavation);
         assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
         assertTrue(deathYell.isInHand(_game));
@@ -240,7 +240,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         seedCardsUnder(Collections.singleton(armus), excavation);
 
         // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, outpost, excavation);
         assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
         assertTrue(deathYell.isInHand(_game));

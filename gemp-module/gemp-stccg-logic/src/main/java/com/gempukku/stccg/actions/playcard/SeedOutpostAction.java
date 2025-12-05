@@ -128,10 +128,11 @@ public class SeedOutpostAction extends PlayCardAction {
         setAsSuccessful();
     }
 
-    public void setDestination(MissionLocation location) {
-        _destinationTarget = new FixedCardResolver(location.getTopMissionCard());
+    public void setDestination(MissionCard mission) {
+        _destinationTarget = new FixedCardResolver(mission);
         setProgress(Progress.placementChosen);
     }
+
 
     @Override
     public boolean wasCarriedOut() { return getProgress(Progress.cardWasSeeded);}

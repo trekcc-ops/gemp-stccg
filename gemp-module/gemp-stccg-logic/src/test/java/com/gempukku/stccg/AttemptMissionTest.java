@@ -51,7 +51,7 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Seed Federation Outpost at Excavation
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, outpost, excavation);
         assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
@@ -106,7 +106,7 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Seed Federation Outpost at Excavation
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, outpost, excavation);
         assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 

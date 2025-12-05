@@ -48,7 +48,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         for (FacilityCard facility : outpostsToSeed) {
             Player facilityOwner = _game.getPlayer(facility.getOwnerName());
             SeedOutpostAction seedOutpostAction = new SeedOutpostAction(_game, facility);
-            seedOutpostAction.setDestination(mission.getLocationDeprecatedOnlyUseForTests());
+            seedOutpostAction.setDestination(mission);
             seedOutpostAction.processEffect(_game, facilityOwner);
         }
 

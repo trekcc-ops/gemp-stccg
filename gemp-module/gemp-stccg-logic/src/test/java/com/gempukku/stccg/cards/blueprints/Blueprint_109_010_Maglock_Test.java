@@ -40,7 +40,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, _outpost, _mission);
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
@@ -105,7 +105,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, _outpost, _mission);
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 

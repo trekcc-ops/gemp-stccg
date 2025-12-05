@@ -24,7 +24,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, _outpost, _mission);
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
@@ -59,7 +59,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, _outpost, _mission);
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 

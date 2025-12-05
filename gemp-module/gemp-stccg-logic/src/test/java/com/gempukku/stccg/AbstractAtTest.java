@@ -634,7 +634,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
-    protected void seedFacility(String playerId, PhysicalCard cardToSeed, MissionLocation destination)
+    protected void seedFacility(String playerId, PhysicalCard cardToSeed, MissionCard destination)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         SeedOutpostAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);

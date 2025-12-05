@@ -64,7 +64,7 @@ public class MisSeedTest extends AbstractAtTest {
         seedCardsUnder(Collections.singleton(maglock), excavation);
 
         // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, outpost, excavation);
         assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 

@@ -65,7 +65,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         assertTrue(risk.isInPlay());
 
         // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
+        seedFacility(P1, outpost, excavation);
         assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
