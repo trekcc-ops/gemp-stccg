@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.PlayerCannotSolveMissionModifier;
@@ -19,16 +20,16 @@ public class RevealSeedCardAction extends ActionyAction {
 
     @JsonProperty("targetCardId")
     private final int _revealedCardId;
-    private final int _missionAttemptActionId;
+
     private enum Progress { misSeedResolved }
-    private final MissionLocation _missionLocation;
+
+    private final int _locationId;
 
     public RevealSeedCardAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard revealedCard,
-                                AttemptMissionAction attemptAction, MissionLocation mission) {
+                                MissionLocation mission) {
         super(cardGame, performingPlayerName, "Reveal seed card", ActionType.REVEAL_SEED_CARD, Progress.values());
         _revealedCardId = revealedCard.getCardId();
-        _missionAttemptActionId = attemptAction.getActionId();
-        _missionLocation = mission;
+        _locationId = mission.getLocationId();
         revealedCard.reveal();
     }
 
@@ -43,25 +44,24 @@ public class RevealSeedCardAction extends ActionyAction {
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException,
             PlayerNotFoundException {
         if (!getProgress(Progress.misSeedResolved)) {
-            PhysicalCard revealedCard = cardGame.getCardFromCardId(_revealedCardId);
-            Action attemptAction = cardGame.getActionById(_missionAttemptActionId);
-            if (attemptAction instanceof AttemptMissionAction) {
+            if (cardGame.getCardFromCardId(_revealedCardId) instanceof ST1EPhysicalCard revealedCard &&
+                    cardGame instanceof ST1EGame stGame) {
                 setProgress(Progress.misSeedResolved);
-                if (revealedCard.isMisSeed(cardGame, _missionLocation)) {
-                    if (_performingPlayerId.equals(revealedCard.getOwnerName())) {
-                        // TODO - Player also cannot solve objectives targeting the mission
-                        Modifier modifier =
-                                new PlayerCannotSolveMissionModifier(_missionLocation, _performingPlayerId);
-                        cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
+                if (stGame.getGameState().getLocationById(_locationId) instanceof MissionLocation missionLocation) {
+                    if (revealedCard.isMisSeed(cardGame, missionLocation)) {
+                        if (_performingPlayerId.equals(revealedCard.getOwnerName())) {
+                            // TODO - Player also cannot solve objectives targeting the mission
+                            Modifier modifier =
+                                    new PlayerCannotSolveMissionModifier(_locationId, _performingPlayerId);
+                            cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
+                        }
+                        return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, revealedCard);
                     }
-                    if (revealedCard instanceof ST1EPhysicalCard stCard) {
-                        return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, stCard);
-                    } else {
-                        throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
-                    }
+                } else {
+                    throw new InvalidGameLogicException("Unable to reveal seed card from location id " + _locationId);
                 }
             } else {
-                throw new InvalidGameLogicException("No valid action found for mission attempt");
+                throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
             }
         }
         setAsSuccessful();

@@ -145,7 +145,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                     PhysicalCard firstSeedCard = seedCards.getFirst();
                     if (_lastCardRevealed != firstSeedCard) {
                         _lastCardRevealed = firstSeedCard;
-                        return new RevealSeedCardAction(cardGame, _performingPlayerId, firstSeedCard, this,
+                        return new RevealSeedCardAction(cardGame, _performingPlayerId, firstSeedCard,
                                 missionLocation);
                     } else if (_lastCardEncountered != firstSeedCard) {
                         _lastCardEncountered = firstSeedCard;
