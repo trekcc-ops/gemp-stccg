@@ -26,11 +26,6 @@ import java.util.List;
 public interface ModifierBlueprint {
     Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext);
 
-    default Modifier createModifierWithNewContext(DefaultGame cardGame, PhysicalCard thisCard) {
-        ActionContext newContext = new ActionContext(thisCard, thisCard.getControllerName());
-        return createModifier(cardGame, thisCard, newContext);
-    }
-
     default Condition convertRequirementListToCondition(List<Requirement> requirements, ActionContext actionContext,
                                                         PhysicalCard thisCard, DefaultGame cardGame) {
         if (requirements == null || requirements.isEmpty()) {

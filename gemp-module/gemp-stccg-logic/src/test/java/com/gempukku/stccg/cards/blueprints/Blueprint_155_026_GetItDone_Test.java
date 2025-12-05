@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -114,7 +115,9 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
 
         final PhysicalCard getItDone = newCardForGame("155_026", P1);
-        gameState.addCardToZone(_game, getItDone, Zone.CORE);
+        SeedCardAction seedCardAction = new SeedCardAction(_game, getItDone, Zone.CORE);
+        seedCardAction.processEffect(_game);
+
         assertTrue(getItDone.isInPlay());
 
         autoSeedFacility();
@@ -166,7 +169,8 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         selectCards(P1, cardsToPlace);
 
         for (int i = 0; i < 5; i++) {
-            gameState.addCardToZone(_game, newCardForGame("101_236", P1), Zone.HAND); // Simon Tarses
+            PhysicalCard tarses = newCardForGame("101_236", P1);
+            player1.getCardGroup(Zone.HAND).addCard(tarses);
         }
 
         assertNotNull(_userFeedback.getAwaitingDecision(P1));

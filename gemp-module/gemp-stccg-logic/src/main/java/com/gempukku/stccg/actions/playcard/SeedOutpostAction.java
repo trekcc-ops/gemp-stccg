@@ -38,11 +38,22 @@ public class SeedOutpostAction extends PlayCardAction {
         }
     }
 
+    public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed, MissionLocation location) {
+        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
+                ActionType.SEED_CARD, Progress.values());
+        if (!cardToSeed.isMultiAffiliation()) {
+            setProgress(Progress.affiliationSelected);
+            _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(cardToSeed.getAffiliationOptions()));
+        }
+        setProgress(Progress.placementChosen);
+        _destinationTarget = new FixedCardResolver(location.getTopMissionCard());
+    }
+
+
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (_cardEnteringPlay instanceof FacilityCard facility && cardGame instanceof ST1EGame stGame) {
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             ST1EGameState gameState = stGame.getGameState();
 
             Set<PhysicalCard> availableMissions = new HashSet<>();
@@ -56,7 +67,8 @@ public class SeedOutpostAction extends PlayCardAction {
             if (!getProgress(Progress.placementChosen)) {
 
                 if (_destinationTarget == null) {
-                    _destinationTarget = new SelectCardsResolver(new SelectVisibleCardsAction(cardGame, performingPlayer,
+                    _destinationTarget = new SelectCardsResolver(new SelectVisibleCardsAction(cardGame,
+                            _performingPlayerId,
                             "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
                             new InCardListFilter(availableMissions),1, 1));
                 }
@@ -86,7 +98,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 if (affiliationOptions.size() > 1) {
                     if (_affiliationTarget == null) {
                         _affiliationTarget = new AffiliationResolver(
-                                new SelectAffiliationAction(cardGame, performingPlayer, affiliationOptions));
+                                new SelectAffiliationAction(cardGame, _performingPlayerId, affiliationOptions));
                     }
 
                     if (!_affiliationTarget.getSelectionAction().wasCarriedOut()) {
@@ -103,7 +115,7 @@ public class SeedOutpostAction extends PlayCardAction {
             }
 
             if (!getProgress(Progress.cardWasSeeded)) {
-                processEffect(stGame, performingPlayer);
+                processEffect(stGame);
                 return getNextAction();
             }
             return null;
@@ -112,8 +124,10 @@ public class SeedOutpostAction extends PlayCardAction {
         }
     }
 
-    public void processEffect(ST1EGame stGame, Player performingPlayer) throws InvalidGameLogicException,
+    public void processEffect(ST1EGame stGame) throws InvalidGameLogicException,
             PlayerNotFoundException {
+        Player performingPlayer = stGame.getPlayer(_performingPlayerId);
+
         Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
         FacilityCard facility = (FacilityCard) _cardEnteringPlay;
         facility.changeAffiliation(selectedAffiliation);
@@ -122,7 +136,8 @@ public class SeedOutpostAction extends PlayCardAction {
         performingPlayer.addPlayedAffiliation(facility.getCurrentAffiliation());
         PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(stGame));
         GameLocation destinationLocation = destinationCard.getGameLocation();
-        stGame.getGameState().seedFacilityAtLocation(stGame, facility, destinationLocation);
+        facility.setLocation(stGame, destinationLocation);
+        stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
         setProgress(Progress.cardWasSeeded);
         setAsSuccessful();

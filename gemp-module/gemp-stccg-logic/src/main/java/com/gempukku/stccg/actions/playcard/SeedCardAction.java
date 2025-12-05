@@ -27,4 +27,8 @@ public class SeedCardAction extends PlayCardAction {
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
     }
 
+    public void processEffect(DefaultGame cardGame) {
+        putCardIntoPlay(cardGame);
+    }
+
 }

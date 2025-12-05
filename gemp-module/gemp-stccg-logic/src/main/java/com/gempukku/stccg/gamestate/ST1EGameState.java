@@ -2,6 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
+import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -134,22 +135,15 @@ public class ST1EGameState extends GameState {
         seedAction.seedCard(cardGame);
     }
 
-    public void addMissionCardToSharedMission(DefaultGame cardGame, MissionCard newMission, int indexNumber)
-            throws InvalidGameLogicException {
-        MissionLocation location = _spacelineLocations.get(indexNumber);
-        List<MissionCard> missionsAtLocation = location.getMissionCards();
-        if (missionsAtLocation.size() != 1 ||
-                Objects.equals(missionsAtLocation.getFirst().getOwnerName(), newMission.getOwnerName()))
-            throw new InvalidGameLogicException("Cannot seed " + newMission.getTitle() + " because " +
-                    newMission.getOwnerName() + " already has a mission at " +
-                    newMission.getBlueprint().getLocation());
-        location.addMission(cardGame, newMission);
-        addCardToZone(cardGame, newMission, Zone.SPACELINE);
-    }
-
-    public void seedFacilityAtLocation(DefaultGame cardGame, FacilityCard card, GameLocation location) {
-        card.setLocation(cardGame, location);
-        addCardToZone(cardGame, card, Zone.AT_LOCATION);
+    public void seedFacilityAtLocationForTestingOnly(ST1EGame cardGame, FacilityCard card, GameLocation location)
+            throws InvalidGameLogicException, PlayerNotFoundException {
+        // Do not use in non-testing classes
+        if (location instanceof MissionLocation missionLocation) {
+            SeedOutpostAction seedAction = new SeedOutpostAction(cardGame, card, missionLocation);
+            seedAction.processEffect(cardGame);
+        } else {
+            throw new InvalidGameLogicException("Unable to seed facility at non-mission location");
+        }
     }
 
 
@@ -196,14 +190,6 @@ public class ST1EGameState extends GameState {
         return null;
     }
 
-    public int getSpacelineLocationsSize() { return _spacelineLocations.size(); }
-    public int getQuadrantLocationsSize(Quadrant quadrant) {
-        int x = 0;
-        for (MissionLocation location : _spacelineLocations) {
-            if (location.getQuadrant() == quadrant) x++;
-        }
-        return x;
-    }
     public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
 
 

@@ -202,26 +202,6 @@ public abstract class GameState {
         }
     }
 
-    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone) {
-        if (zone == Zone.DISCARD) {
-            addCardToTopOfDiscardPile(card);
-        } else if (zone == Zone.REMOVED) {
-            addCardToRemovedPile(card);
-        }else {
-            if (zone.isInPlay()) {
-                addCardToInPlay(cardGame, card);
-            }
-
-            if (zone.hasList()) {
-                List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
-                zoneCardList.add(card);
-            }
-
-            card.setZone(zone);
-
-        }
-    }
-
     public void addCardToTopOfDiscardPile(PhysicalCard card) {
         String cardOwnerName = card.getOwnerName();
         Zone zone = (getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD)) ?
@@ -372,14 +352,7 @@ public abstract class GameState {
     public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card, ActionContext context) {
         if (!_inPlay.contains(card)) {
             _inPlay.add(card);
-            _modifiersLogic.addModifierHooks(cardGame, card);
-        }
-    }
-
-    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card) {
-        if (!_inPlay.contains(card)) {
-            _inPlay.add(card);
-            _modifiersLogic.addModifierHooks(cardGame, card);
+            _modifiersLogic.addModifierHooks(cardGame, card, context);
         }
     }
 

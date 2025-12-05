@@ -18,6 +18,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
@@ -110,10 +111,20 @@ public class SeedMissionCardAction extends PlayCardAction {
         if (game.getGameState() instanceof ST1EGameState gameState && _cardEnteringPlay instanceof MissionCard mission) {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
+            List<MissionLocation> spaceline = gameState.getSpacelineLocations();
 
             try {
-                if (_sharedMission)
-                    gameState.addMissionCardToSharedMission(game, mission, _locationZoneIndex);
+                if (_sharedMission) {
+                    MissionLocation location = spaceline.get(_locationZoneIndex);
+                    List<MissionCard> missionsAtLocation = location.getMissionCards();
+                    if (missionsAtLocation.size() != 1 ||
+                            Objects.equals(missionsAtLocation.getFirst().getOwnerName(), mission.getOwnerName()))
+                        throw new InvalidGameLogicException("Cannot seed " + mission.getTitle() + " because " +
+                                mission.getOwnerName() + " already has a mission at " +
+                                mission.getBlueprint().getLocation());
+                    location.addMission(game, mission);
+                    gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
+                }
                 else {
                     int newLocationId = gameState.getAndIncrementNextLocationId();
                     MissionLocation location = new MissionLocation(game, mission, newLocationId);

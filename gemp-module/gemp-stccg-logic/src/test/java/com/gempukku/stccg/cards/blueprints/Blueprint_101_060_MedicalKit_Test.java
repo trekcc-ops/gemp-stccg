@@ -61,7 +61,7 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         assertNotNull(mission);
 
         gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
-        _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
+        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 

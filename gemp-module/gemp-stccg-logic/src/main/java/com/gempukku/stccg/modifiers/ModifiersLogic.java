@@ -2,6 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -483,14 +484,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         }
     }
 
-    @Override
-    public void addModifierHooks(DefaultGame cardGame, PhysicalCard card) {
+    public void addModifierHooks(DefaultGame cardGame, PhysicalCard card, ActionContext context) {
         int cardId = card.getCardId();
         CardBlueprint blueprint = card.getBlueprint();
 
         _modifierHooks.computeIfAbsent(cardId, cardModifiers -> new LinkedList<>());
         Iterable<Modifier> modifiers =
-                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(cardGame, card));
+                new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(cardGame, card, context));
         for (Modifier modifier : modifiers) {
             addModifier(modifier);
             _modifierHooks.get(cardId).add(modifier);

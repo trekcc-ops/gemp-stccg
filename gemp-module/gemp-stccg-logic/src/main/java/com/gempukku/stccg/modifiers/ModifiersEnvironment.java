@@ -17,6 +17,4 @@ public interface ModifiersEnvironment {
     void useNormalCardPlay(Player player);
     void removeModifierHooks(PhysicalCard card);
 
-    void addModifierHooks(DefaultGame cardGame, PhysicalCard card);
-
 }

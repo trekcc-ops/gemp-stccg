@@ -13,7 +13,6 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.st1e.ST1EFacilitySeedPhaseProcess;
@@ -45,10 +44,9 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         seedAction.seedCard(_game);
 
         for (FacilityCard facility : outpostsToSeed) {
-            Player facilityOwner = _game.getPlayer(facility.getOwnerName());
             SeedOutpostAction seedOutpostAction = new SeedOutpostAction(_game, facility);
             seedOutpostAction.setDestination(mission);
-            seedOutpostAction.processEffect(_game, facilityOwner);
+            seedOutpostAction.processEffect(_game);
         }
 
         this.attackingShip.reportToFacilityForTestingOnly(outpost1);

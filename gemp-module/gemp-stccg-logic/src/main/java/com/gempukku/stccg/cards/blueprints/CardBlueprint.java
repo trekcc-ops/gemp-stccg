@@ -452,16 +452,17 @@ public class CardBlueprint {
     }
 
 
-    public List<Modifier> getGameTextWhileActiveInPlayModifiers(DefaultGame cardGame, PhysicalCard card) {
+    public List<Modifier> getGameTextWhileActiveInPlayModifiers(DefaultGame cardGame, PhysicalCard thisCard,
+                                                                ActionContext actionContext) {
         List<Modifier> result = new LinkedList<>();
 
         // Add in-play modifiers created through JSON definitions
         inPlayModifiers.forEach(modifierSource ->
-                result.add(modifierSource.createModifierWithNewContext(cardGame, card)));
+                result.add(modifierSource.createModifier(cardGame, thisCard, actionContext)));
 
         // Add in-play modifiers created through Java definitions
         try {
-            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(cardGame, card));
+            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(cardGame, thisCard));
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
         }

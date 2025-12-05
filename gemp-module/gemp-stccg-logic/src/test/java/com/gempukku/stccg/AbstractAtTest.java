@@ -41,7 +41,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected static final String P2 = "player2";
     private FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
     protected FacilityCard _outpost;
-    protected FacilityCard _klingonOutpost;
     protected MissionCard _mission;
     protected MissionCard _rogueComet;
 
@@ -291,60 +290,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void initializeQuickMissionAttempt(String missionTitle) throws DecisionResultInvalidException, InvalidGameOperationException {
         initializeGameToTestMissionAttempt();
-
-        autoSeedMissions();
-        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
-            skipDilemma();
-        }
-
-        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
-            if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
-                _outpost = facility;
-            if (Objects.equals(card.getTitle(), missionTitle) && card instanceof MissionCard mission)
-                _mission = mission;
-            if (Objects.equals(card.getTitle(), "Investigate Rogue Comet") && card instanceof MissionCard mission) {
-                _rogueComet = mission;
-            }
-        }
-    }
-
-    protected void initializeMissionAttemptWithDrawCards(String missionTitle, String... blueprintIds)
-            throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
-        Map<String, CardDeck> decks = new HashMap<>();
-
-        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.get("debug1e");
-
-        CardDeck fedDeck = new CardDeck("Federation", format);
-        fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
-        fedDeck.addCard(SubDeck.MISSIONS, "101_171"); // Investigate Rogue Comet
-        fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
-        fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
-        for (int i = 0; i < 35; i++)
-            fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
-        for (int i = 0; i < 35; i++)
-            fedDeck.addCard(SubDeck.DRAW_DECK, "101_203"); // Darian Wallace
-        decks.put(P1, fedDeck);
-
-        CardDeck klingonDeck = new CardDeck("Klingon", format);
-        klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
-        for (int i = 0; i < 35; i++)
-            klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
-        decks.put(P2, klingonDeck);
-
-
-
-        _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
-        _userFeedback = _game.getUserFeedback();
-        _game.startGame();
-
-        _klingonOutpost = (FacilityCard) _game.addCardToGame("101_105", _cardLibrary, P1);
-        _game.getGameState().addCardToZone(_game, _klingonOutpost, Zone.SEED_DECK);
-
-        for (String blueprintId : blueprintIds) {
-            PhysicalCard card = _game.addCardToGame(blueprintId, _cardLibrary, P1);
-            _game.getGameState().addCardToTopOfDrawDeck(card);
-        }
 
         autoSeedMissions();
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
@@ -929,7 +874,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
             _game.getGameState().removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(card));
-            _game.getGameState().addCardToZone(_game, card, Zone.VOID);
+            card.setZone(Zone.VOID);
             topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(_game, card);
         }
     }
