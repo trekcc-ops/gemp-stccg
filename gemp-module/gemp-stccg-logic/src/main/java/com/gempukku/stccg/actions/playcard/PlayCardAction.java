@@ -90,7 +90,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         }
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
-        gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone);
+        gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
         _wasCarriedOut = true;
     }

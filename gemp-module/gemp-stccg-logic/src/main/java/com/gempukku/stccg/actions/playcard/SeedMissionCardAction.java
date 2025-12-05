@@ -40,6 +40,13 @@ public class SeedMissionCardAction extends PlayCardAction {
                 !_cardEnteringPlay.getBlueprint().isUniversal();
     }
 
+    public SeedMissionCardAction(ST1EGame cardGame, MissionCard cardToPlay, int locationZoneIndex) {
+        this(cardGame, cardToPlay);
+        _placementChosen = true;
+        _locationZoneIndex = locationZoneIndex;
+    }
+
+
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
@@ -107,8 +114,12 @@ public class SeedMissionCardAction extends PlayCardAction {
             try {
                 if (_sharedMission)
                     gameState.addMissionCardToSharedMission(game, mission, _locationZoneIndex);
-                else
-                    gameState.addMissionLocationToSpaceline(game, mission, _locationZoneIndex);
+                else {
+                    int newLocationId = gameState.getAndIncrementNextLocationId();
+                    MissionLocation location = new MissionLocation(game, mission, newLocationId);
+                    gameState.addSpacelineLocation(_locationZoneIndex, location);
+                    gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
+                }
                 saveResult(new PlayCardResult(this, _cardEnteringPlay));
                 _actionCarriedOut = true;
                 _cardPlayed = true;

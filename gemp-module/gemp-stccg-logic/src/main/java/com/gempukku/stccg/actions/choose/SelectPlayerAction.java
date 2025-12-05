@@ -10,14 +10,12 @@ import java.util.List;
 
 public class SelectPlayerAction extends MakeDecisionAction {
 
-    private final ActionContext _actionContext;
     private final List<String> _selectablePlayerIds;
     private final String _memoryId;
 
     public SelectPlayerAction(DefaultGame cardGame, ActionContext actionContext, String memoryId,
                               List<String> playerIds) {
-        super(cardGame, actionContext.getPerformingPlayerId(), "Choose a player");
-        _actionContext = actionContext;
+        super(cardGame, actionContext.getPerformingPlayerId(), "Choose a player", actionContext);
         _selectablePlayerIds = playerIds;
         _memoryId = memoryId;
     }

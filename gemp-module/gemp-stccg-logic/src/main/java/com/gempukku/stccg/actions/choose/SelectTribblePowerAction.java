@@ -11,11 +11,9 @@ import java.util.Arrays;
 
 public class SelectTribblePowerAction extends MakeDecisionAction {
 
-    private final ActionContext _actionContext;
     private final String _memoryId;
     public SelectTribblePowerAction(DefaultGame cardGame, ActionContext actionContext, String memoryId) {
-        super(cardGame, actionContext.getPerformingPlayerId(), "Choose a Tribble power");
-        _actionContext = actionContext;
+        super(cardGame, actionContext.getPerformingPlayerId(), "Choose a Tribble power", actionContext);
         _memoryId = memoryId;
     }
 

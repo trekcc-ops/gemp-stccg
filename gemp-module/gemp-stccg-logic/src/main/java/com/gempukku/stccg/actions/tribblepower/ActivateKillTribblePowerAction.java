@@ -20,12 +20,10 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
     private String _targetPlayerName;
     private SelectPlayerAction _selectPlayerAction;
-    private final ActionContext _actionContext;
 
     public ActivateKillTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, ActionContext actionContext)
             throws InvalidGameLogicException, PlayerNotFoundException {
         super(cardGame, actionContext, performingCard, Progress.values());
-        _actionContext = actionContext;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class SeedCardAction extends PlayCardAction {
     protected void putCardIntoPlay(DefaultGame game) {
         GameState gameState = game.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
-        gameState.addCardToZone(game, _cardEnteringPlay, _destinationZone);
+        gameState.addCardToZone(game, _cardEnteringPlay, _destinationZone, _actionContext);
         setAsSuccessful();
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
     }

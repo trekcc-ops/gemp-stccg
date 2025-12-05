@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -35,7 +36,6 @@ public interface Action {
 
     boolean wasCarriedOut();
 
-    void insertEffect(Action actionEffect);
     void insertActions(Collection<Action> actions);
 
     void insertAction(Action action);
@@ -51,5 +51,6 @@ public interface Action {
 
     void clearResult();
     ActionResult getResult();
+    ActionContext getContext();
 
 }

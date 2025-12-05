@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.ActionOrderOfOperationException;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -31,7 +33,7 @@ public abstract class ActionyAction implements Action {
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
     private ActionResult _currentResult;
-    protected final Map<String, ActionCardResolver> _cards = new HashMap<>();
+    protected final ActionContext _actionContext;
 
     @JsonProperty("status")
     private ActionStatus _actionStatus;
@@ -43,6 +45,22 @@ public abstract class ActionyAction implements Action {
         _actionType = actionType;
         _performingPlayerId = performingPlayerId;
         _actionStatus = ActionStatus.virtual;
+        _actionContext = null;
+    }
+
+    protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId,
+                            ActionContext actionContext) {
+        _actionContext = actionContext;
+        _actionId = environment.getNextActionId();
+        environment.logAction(this);
+        environment.incrementActionId();
+        _actionType = actionType;
+        _performingPlayerId = performingPlayerId;
+        _actionStatus = ActionStatus.virtual;
+    }
+
+    protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType, ActionContext actionContext) {
+        this(cardGame.getActionsEnvironment(), actionType, playerName, actionContext);
     }
 
     protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType) {
@@ -86,6 +104,15 @@ public abstract class ActionyAction implements Action {
         }
     }
 
+    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType,
+                            Enum<?>[] progressTypes, ActionContext actionContext) {
+        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName, actionContext);
+        for (Enum<?> progressType : progressTypes) {
+            _progressIndicators.put(progressType.name(), false);
+        }
+    }
+
+
     protected ActionyAction(DefaultGame cardGame, String performingPlayerName, String text, ActionType actionType,
                             Enum<?>[] progressTypes) {
         this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
@@ -99,6 +126,12 @@ public abstract class ActionyAction implements Action {
     protected ActionyAction(DefaultGame game, ActionType type) {
         this(game.getActionsEnvironment(), type, null);
     }
+
+    // This constructor is only used for system queue actions
+    protected ActionyAction(DefaultGame game, ActionType type, ActionContext actionContext) {
+        this(game.getActionsEnvironment(), type, null, actionContext);
+    }
+
 
 
     @Override
@@ -230,24 +263,6 @@ public abstract class ActionyAction implements Action {
         return _progressIndicators.get(progressType.name());
     }
 
-    public void insertEffect(Action actionEffect) { insertAction(actionEffect); }
-
-    protected void assignCardLabel(Enum<?> cardLabelType, ActionCardResolver cardTarget) {
-        _cards.put(cardLabelType.name(), cardTarget);
-    }
-
-    protected void assignCardLabel(Enum<?> cardLabelType, PhysicalCard card) {
-        _cards.put(cardLabelType.name(), new FixedCardResolver(card));
-    }
-
-    protected void assignCardLabel(Enum<?> cardLabelType, SelectCardsAction selectAction) {
-        _cards.put(cardLabelType.name(), new SelectCardsResolver(selectAction));
-    }
-
-    protected ActionCardResolver getCardTarget(Enum<?> cardLabelType) {
-        return _cards.get(cardLabelType.name());
-    }
-
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
     @JsonIdentityReference(alwaysAsId=true)
     public List<Action> getCosts() { return _costs; }
@@ -315,5 +330,7 @@ public abstract class ActionyAction implements Action {
     }
 
     public ActionResult getResult() { return _currentResult; }
+
+    public ActionContext getContext() { return _actionContext; }
 
 }

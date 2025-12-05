@@ -16,6 +16,7 @@ import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequi
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
     @Test
-    public void kosinskiTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException {
+    public void kosinskiTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException, PlayerNotFoundException {
         /* Try to resolve Dangerous Climb with Taitt x2 + Kosinski. Kosinski's cunning should be reduced
         during the dilemma encounter, causing the encounter to fail. */
         initializeQuickMissionAttempt("Excavation");
@@ -49,9 +50,9 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         PersonnelCard taitt2 = (PersonnelCard) newCardForGame("101_242", P1);
         PersonnelCard kosinski = (PersonnelCard) newCardForGame("155_061", P1);
 
-        taitt1.reportToFacility(_outpost);
-        taitt2.reportToFacility(_outpost);
-        kosinski.reportToFacility(_outpost);
+        taitt1.reportToFacilityForTestingOnly(_outpost);
+        taitt2.reportToFacilityForTestingOnly(_outpost);
+        kosinski.reportToFacilityForTestingOnly(_outpost);
 
 
         assertTrue(_outpost.getCrew().contains(taitt1));

@@ -57,15 +57,15 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         assertEquals("Federation PADD", padd.getTitle());
         assertNotNull(mission);
 
-        gameState.addMissionLocationToSpaceline(_game, mission, 0);
+        gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
         _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 
-        picard.reportToFacility(outpost);
+        picard.reportToFacilityForTestingOnly(outpost);
         assertEquals(8, picard.getAttribute(CardAttribute.CUNNING));
 
-        padd.reportToFacility(outpost);
+        padd.reportToFacilityForTestingOnly(outpost);
         assertTrue(padd.isPresentWith(picard));
 
         assertEquals(10, picard.getAttribute(CardAttribute.CUNNING));

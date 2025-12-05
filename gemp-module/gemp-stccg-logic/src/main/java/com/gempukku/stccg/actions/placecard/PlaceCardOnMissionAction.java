@@ -6,12 +6,15 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+
+import java.util.List;
 
 public class PlaceCardOnMissionAction extends ActionyAction {
 
@@ -45,7 +48,10 @@ public class PlaceCardOnMissionAction extends ActionyAction {
         ST1EGameState gameState = stGame.getGameState();
         GameLocation location = gameState.getLocationById(_locationId);
         if (location instanceof MissionLocation mission) {
-            gameState.placeCardOnMission(cardGame, _cardBeingPlaced, mission);
+            gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
+            _cardBeingPlaced.setPlacedOnMission(true);
+            _cardBeingPlaced.setLocation(cardGame, mission);
+            gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
 
             for (MissionLocation spacelineLocation : gameState.getSpacelineLocations()) {
                 if (spacelineLocation.getSeedCards().contains(_cardBeingPlaced)) {

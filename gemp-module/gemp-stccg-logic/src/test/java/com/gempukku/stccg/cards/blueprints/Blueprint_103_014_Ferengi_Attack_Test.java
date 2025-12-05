@@ -12,6 +12,7 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
 
     @Test
     public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException {
+            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
         initializeQuickMissionAttempt("Excavation");
 
         ST1EPhysicalCard ferengiAttack =
@@ -50,11 +51,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        troi.reportToFacility(_outpost);
-        hobson.reportToFacility(_outpost);
-        picard.reportToFacility(_outpost);
-        data.reportToFacility(_outpost);
-        runabout.reportToFacility(_outpost);
+        reportCardsToFacility(List.of(troi, hobson, picard, data, runabout), _outpost);
 
         assertTrue(_outpost.getCrew().contains(troi));
         assertTrue(_outpost.getCrew().contains(hobson));

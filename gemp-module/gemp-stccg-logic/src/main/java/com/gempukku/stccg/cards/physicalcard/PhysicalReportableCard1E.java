@@ -9,16 +9,12 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-
-import java.util.Collections;
 
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     private AwayTeam _awayTeam;
@@ -55,18 +51,11 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return true;
     }
 
-    public void reportToFacility(FacilityCard facility) throws InvalidGameLogicException {
-        ST1EGameState gameState = _game.getGameState();
-
-        gameState.removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(this));
-        setLocation(_game, facility.getGameLocation());
-
-        attachTo(facility);
-        gameState.addCardToZone(_game, this, Zone.ATTACHED);
-
-        if (this instanceof PhysicalShipCard ship) {
-            ship.dockAtFacility(facility);
-        }
+    public void reportToFacilityForTestingOnly(FacilityCard facility) throws InvalidGameLogicException,
+            PlayerNotFoundException {
+        // Do not use this action in a non-testing class
+        ReportCardAction reportCardAction = new ReportCardAction(_game, this, false, facility);
+        reportCardAction.processEffect(this, _game);
     }
 
     @Override

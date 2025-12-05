@@ -15,15 +15,13 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
 
     private final boolean _isCost;
     private final CardPerformedAction _parentAction;
-    private final ActionContext _actionContext;
     private final SubActionBlueprint _blueprint;
 
     public AddSubactionEffectsAction(DefaultGame cardGame, ActionContext actionContext, boolean isCost,
                                      CardPerformedAction parentAction, SubActionBlueprint blueprint) {
-        super(cardGame);
+        super(cardGame, actionContext);
         _isCost = isCost;
         _parentAction = parentAction;
-        _actionContext = actionContext;
         _blueprint = blueprint;
     }
 

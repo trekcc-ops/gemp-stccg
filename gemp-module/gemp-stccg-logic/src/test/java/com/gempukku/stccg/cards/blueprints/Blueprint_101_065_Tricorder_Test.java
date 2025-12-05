@@ -66,21 +66,21 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         assertEquals("Deanna Troi", deanna.getTitle());
         assertNotNull(mission);
 
-        gameState.addMissionLocationToSpaceline(_game, mission, 0);
+        gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
         _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 
-        geordi.reportToFacility(outpost);
-        tamal.reportToFacility(outpost);
-        deanna.reportToFacility(outpost);
+        geordi.reportToFacilityForTestingOnly(outpost);
+        tamal.reportToFacilityForTestingOnly(outpost);
+        deanna.reportToFacilityForTestingOnly(outpost);
 
         assertFalse(geordi.hasSkill(SkillName.SCIENCE));
         assertFalse(deanna.hasSkill(SkillName.SCIENCE));
         assertEquals(0, geordi.getSkillLevel(SkillName.SCIENCE));
         assertEquals(1, tamal.getSkillLevel(SkillName.SCIENCE));
 
-        tricorder.reportToFacility(outpost);
+        tricorder.reportToFacilityForTestingOnly(outpost);
         assertTrue(tricorder.isPresentWith(geordi));
         assertTrue(tricorder.isPresentWith(tamal));
         assertTrue(tricorder.isPresentWith(deanna));

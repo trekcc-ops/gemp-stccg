@@ -14,14 +14,12 @@ import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 public class AddUntilModifierAction extends ActionyAction {
     private final ModifierBlueprint _modifier;
     private final TimeResolver.Time until;
-    private final ActionContext _context;
 
     public AddUntilModifierAction(DefaultGame cardGame, String playerName, ModifierBlueprint modifier,
                                   TimeResolver.Time until, ActionContext context) {
-        super(cardGame, playerName, ActionType.ADD_MODIFIER);
+        super(cardGame, playerName, ActionType.ADD_MODIFIER, context);
         _modifier = modifier;
         this.until = until;
-        _context = context;
     }
 
     @Override
@@ -35,7 +33,7 @@ public class AddUntilModifierAction extends ActionyAction {
         if (phase == null)
             phase = cardGame.getGameState().getCurrentPhase();
 
-        Modifier modifier = _modifier.createModifier(cardGame, _context.getPerformingCard(cardGame), _context);
+        Modifier modifier = _modifier.createModifier(cardGame, _actionContext.getPerformingCard(cardGame), _actionContext);
 
         if (until.isEndOfTurn())
             cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(modifier);

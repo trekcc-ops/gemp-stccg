@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -20,7 +21,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
     @Test
     public void planetSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException {
+            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
         initializeQuickMissionAttempt("Excavation");
 
         // Seed Federation Outpost
@@ -32,8 +33,8 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        geordi.reportToFacility(_outpost);
-        runabout.reportToFacility(_outpost);
+        geordi.reportToFacilityForTestingOnly(_outpost);
+        runabout.reportToFacilityForTestingOnly(_outpost);
 
         assertTrue(_outpost.getCrew().contains(geordi));
         assertFalse(_outpost.getCrew().contains(runabout));
@@ -55,7 +56,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
     @Test
     public void spaceSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException {
+            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         // Seed Federation Outpost
@@ -67,8 +68,8 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        geordi.reportToFacility(_outpost);
-        runabout.reportToFacility(_outpost);
+        geordi.reportToFacilityForTestingOnly(_outpost);
+        runabout.reportToFacilityForTestingOnly(_outpost);
 
         assertTrue(_outpost.getCrew().contains(geordi));
         assertFalse(_outpost.getCrew().contains(runabout));

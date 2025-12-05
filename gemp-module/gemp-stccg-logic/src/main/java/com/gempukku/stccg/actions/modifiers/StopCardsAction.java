@@ -15,9 +15,7 @@ import java.util.LinkedList;
 
 public class StopCardsAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
-    private ActionContext _actionContext;
     private String _saveToMemoryId;
-
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> _stoppedCards;
@@ -35,9 +33,8 @@ public class StopCardsAction extends ActionyAction {
 
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
                            ActionCardResolver cardTarget, ActionContext context, String saveToMemoryId) {
-        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
+        super(cardGame, performingPlayerName, ActionType.STOP_CARDS, context);
         _cardTarget = cardTarget;
-        _actionContext = context;
         _saveToMemoryId = saveToMemoryId;
     }
 

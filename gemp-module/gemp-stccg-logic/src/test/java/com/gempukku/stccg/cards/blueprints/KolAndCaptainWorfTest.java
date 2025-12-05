@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void kolTest() throws JsonProcessingException, CardNotFoundException, InvalidGameLogicException {
+    public void kolTest() throws JsonProcessingException, CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
         initializeSimple1EGame(30);
 
         final MissionCard mission = (MissionCard) newCardForGame("101_174", P1);
@@ -29,12 +30,12 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals("Dr. Arridor", arridor.getTitle());
         assertNotNull(mission);
 
-        _game.getGameState().addMissionLocationToSpaceline(_game, mission, 0);
+        _game.getGameState().addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
         _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 
-        kol.reportToFacility(outpost);
+        kol.reportToFacilityForTestingOnly(outpost);
         assertEquals(Integer.valueOf(6), kol.getAttribute(CardAttribute.INTEGRITY));
         assertEquals(Integer.valueOf(6), kol.getAttribute(CardAttribute.CUNNING));
         assertEquals(Integer.valueOf(5), kol.getAttribute(CardAttribute.STRENGTH));
@@ -43,7 +44,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals(Integer.valueOf(8), arridor.getAttribute(CardAttribute.CUNNING));
         assertEquals(Integer.valueOf(5), arridor.getAttribute(CardAttribute.STRENGTH));
 
-        arridor.reportToFacility(outpost);
+        arridor.reportToFacilityForTestingOnly(outpost);
         assertTrue(kol.isPresentWith(arridor));
 
         assertEquals(Integer.valueOf(8), kol.getAttribute(CardAttribute.INTEGRITY));
@@ -59,7 +60,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void captainWorfTest() throws CardNotFoundException, InvalidGameLogicException {
+    public void captainWorfTest() throws CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
         initializeSimple1EGame(30);
 
         final MissionCard mission = (MissionCard) newCardForGame("101_174", P1);
@@ -74,12 +75,12 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals("K'Ehleyr", kehleyr2.getTitle()); // 8-7-7
         assertNotNull(mission);
 
-        _game.getGameState().addMissionLocationToSpaceline(_game, mission, 0);
+        _game.getGameState().addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
         _game.getGameState().seedFacilityAtLocation(_game, outpost1, mission.getGameLocation());
 
         assertTrue(outpost1.isInPlay());
 
-        worf.reportToFacility(outpost1);
+        worf.reportToFacilityForTestingOnly(outpost1);
         assertEquals(Integer.valueOf(8), worf.getAttribute(CardAttribute.INTEGRITY));
         assertEquals(Integer.valueOf(6), worf.getAttribute(CardAttribute.CUNNING));
         assertEquals(Integer.valueOf(10), worf.getAttribute(CardAttribute.STRENGTH));
@@ -93,8 +94,8 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertEquals(Integer.valueOf(7), kehleyr2.getAttribute(CardAttribute.STRENGTH));
 
 
-        kehleyr1.reportToFacility(outpost1);
-        kehleyr2.reportToFacility(outpost1);
+        kehleyr1.reportToFacilityForTestingOnly(outpost1);
+        kehleyr2.reportToFacilityForTestingOnly(outpost1);
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr1));
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr2));
 

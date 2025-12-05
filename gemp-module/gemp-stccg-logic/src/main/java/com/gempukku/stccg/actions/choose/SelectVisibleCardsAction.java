@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
@@ -22,8 +21,6 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
     private final ActionCardResolver _selectableCardsResolver;
     private final int _minimum;
     private Integer _maximum;
-    private ActionContext _actionContext;
-    private String _memory;
     private final String _decisionText;
 
     public SelectVisibleCardsAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
@@ -86,9 +83,6 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
                             _selectedCards = getSelectedCardsByResponse(result);
                             _wasCarriedOut = true;
                             setAsSuccessful();
-                            if (_actionContext != null) {
-                                _actionContext.setCardMemory(_memory, _selectedCards);
-                            }
                         }
                     });
             setAsSuccessful();

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -10,7 +11,9 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -119,13 +122,16 @@ public class ST1EGameState extends GameState {
         return false;
     }
 
-    public void addMissionLocationToSpaceline(DefaultGame cardGame, MissionCard newMission, int indexNumber) {
-        int newLocationId = _nextLocationId;
+    public int getAndIncrementNextLocationId() {
+        int result = _nextLocationId;
         _nextLocationId++;
-        MissionLocation location = new MissionLocation(cardGame, newMission, newLocationId);
-        _spacelineLocations.add(indexNumber, location);
-        _locationIds.put(newLocationId, location);
-        addCardToZone(cardGame, newMission, Zone.SPACELINE);
+        return result;
+    }
+
+    public void addMissionLocationToSpacelineForTestingOnly(ST1EGame cardGame, MissionCard newMission, int indexNumber) {
+        // Do not use in non-testing classes
+        SeedMissionCardAction seedAction = new SeedMissionCardAction(cardGame, newMission, indexNumber);
+        seedAction.seedCard(cardGame);
     }
 
     public void addMissionCardToSharedMission(DefaultGame cardGame, MissionCard newMission, int indexNumber)
@@ -237,6 +243,11 @@ public class ST1EGameState extends GameState {
 
     public GameLocation getLocationById(int locationId) {
         return _locationIds.get(locationId);
+    }
+
+    public void addSpacelineLocation(int indexNumber, MissionLocation location) {
+        _spacelineLocations.add(indexNumber, location);
+        _locationIds.put(location.getLocationId(), location);
     }
 
 }

@@ -60,18 +60,18 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         assertEquals("Medical Kit", medicalKit.getTitle());
         assertNotNull(mission);
 
-        gameState.addMissionLocationToSpaceline(_game, mission, 0);
+        gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
         _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 
-        picard.reportToFacility(outpost);
-        taris.reportToFacility(outpost);
+        picard.reportToFacilityForTestingOnly(outpost);
+        taris.reportToFacilityForTestingOnly(outpost);
 
         assertEquals(0, picard.getSkillLevel(SkillName.MEDICAL));
         assertEquals(1, taris.getSkillLevel(SkillName.MEDICAL));
 
-        medicalKit.reportToFacility(outpost);
+        medicalKit.reportToFacilityForTestingOnly(outpost);
         assertTrue(medicalKit.isPresentWith(picard));
         assertTrue(medicalKit.isPresentWith(taris));
 

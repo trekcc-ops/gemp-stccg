@@ -64,16 +64,16 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         assertEquals("Klingon Disruptor", disruptor.getTitle());
         assertNotNull(mission);
 
-        gameState.addMissionLocationToSpaceline(_game, mission, 0);
+        gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
         _game.getGameState().seedFacilityAtLocation(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
 
-        picard.reportToFacility(outpost);
+        reportCardToFacility(picard, outpost);
         assertEquals(6, picard.getAttribute(CardAttribute.STRENGTH));
-        disruptor.reportToFacility(outpost);
+        reportCardToFacility(disruptor, outpost);
         assertEquals(6, picard.getAttribute(CardAttribute.STRENGTH));
-        klag.reportToFacility(outpost);
+        reportCardToFacility(klag, outpost);
         assertEquals(8, picard.getAttribute(CardAttribute.STRENGTH));
     }
 }

@@ -26,6 +26,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
@@ -951,6 +952,19 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             sb.append(" owned by ");
             sb.append("'").append(owner.getPlayerId()).append("'");
             throw new CardNotFoundException(sb.toString());
+        }
+    }
+
+    protected void reportCardToFacility(PhysicalReportableCard1E reportable, FacilityCard facility)
+            throws PlayerNotFoundException, InvalidGameLogicException {
+        ReportCardAction reportCardAction = new ReportCardAction(_game, reportable, false, facility);
+        reportCardAction.processEffect(reportable, _game);
+    }
+
+    protected void reportCardsToFacility(Collection<PhysicalReportableCard1E> reportables, FacilityCard facility)
+            throws PlayerNotFoundException, InvalidGameLogicException {
+        for (PhysicalReportableCard1E reportable : reportables) {
+            reportCardToFacility(reportable, facility);
         }
     }
 

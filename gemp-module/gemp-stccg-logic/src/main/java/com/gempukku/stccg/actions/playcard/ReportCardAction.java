@@ -4,15 +4,14 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
@@ -20,6 +19,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,6 +50,15 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 Filters.inCards(destinationOptions), 1, 1);
         _destinationTarget = new SelectCardsResolver(selectDestinationAction);
     }
+
+    public ReportCardAction(DefaultGame cardGame, PhysicalReportableCard1E cardToPlay, boolean forFree,
+                            FacilityCard facilityCard) {
+        this(cardGame, cardToPlay, forFree);
+        setProgress(Progress.destinationOptionsIdentified);
+        setProgress(Progress.destinationSelected);
+        _destinationTarget = new FixedCardResolver(facilityCard);
+    }
+
 
 
     protected Collection<PhysicalCard> getDestinationOptions(DefaultGame game) throws InvalidGameLogicException {
@@ -97,11 +106,9 @@ public class ReportCardAction extends STCCGPlayCardAction {
             if (isCostFailed())
                 return null;
 
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
             if (!getProgress(Progress.destinationSelected)) {
                 if (_destinationTarget == null) {
-                    SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardGame, performingPlayer,
+                    SelectCardsAction selectDestinationAction = new SelectVisibleCardsAction(cardGame, _performingPlayerId,
                             "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                             Filters.inCards(getDestinationOptions(cardGame)), 1, 1);
                     _destinationTarget = new SelectCardsResolver(selectDestinationAction);
@@ -151,7 +158,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
                 } else if (!affiliationOptions.isEmpty()) {
                     _affiliationTarget = new AffiliationResolver(new SelectAffiliationAction(
-                            cardGame, performingPlayer, affiliationOptions));
+                            cardGame, _performingPlayerId, affiliationOptions));
                 } else {
                     setAsFailed();
                     throw new InvalidGameLogicException("Unable to report card. No valid affiliations to report as.");
@@ -170,28 +177,45 @@ public class ReportCardAction extends STCCGPlayCardAction {
             }
 
             if (!getProgress(Progress.cardPlayed)) {
-                if (reportable instanceof AffiliatedCard) {
-                    reportable.changeAffiliation(_affiliationTarget.getAffiliation());
-                }
-                setProgress(Progress.cardPlayed);
-                setAsSuccessful();
-
-                reportable.reportToFacility(getSelectedDestination(cardGame));
-                if (reportable instanceof AffiliatedCard affiliated) {
-                    Affiliation affiliation = affiliated.getCurrentAffiliation();
-                    if (affiliation == null) {
-                        throw new InvalidGameLogicException("Unable to identify affiliation for card");
-                    } else {
-                        performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
-                    }
-                }
-                saveResult(new PlayCardResult(this, _cardEnteringPlay));
+                processEffect(reportable, cardGame);
             }
 
             return getNextAction();
         } else {
             throw new InvalidGameLogicException("Tried to report an invalid class type of card");
         }
+    }
+
+    public void processEffect(PhysicalReportableCard1E reportable, DefaultGame cardGame)
+            throws InvalidGameLogicException, PlayerNotFoundException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+        if (reportable instanceof AffiliatedCard) {
+            reportable.changeAffiliation(_affiliationTarget.getAffiliation());
+        }
+        setProgress(Progress.cardPlayed);
+        setAsSuccessful();
+
+        FacilityCard facility = getSelectedDestination(cardGame);
+        GameState gameState = cardGame.getGameState();
+
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(reportable));
+        reportable.setLocation(cardGame, facility.getGameLocation());
+        reportable.attachTo(facility);
+        gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
+
+        if (reportable instanceof PhysicalShipCard ship) {
+            ship.dockAtFacility(facility);
+        }
+
+        if (reportable instanceof AffiliatedCard affiliated) {
+            Affiliation affiliation = affiliated.getCurrentAffiliation();
+            if (affiliation == null) {
+                throw new InvalidGameLogicException("Unable to identify affiliation for card");
+            } else {
+                performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
+            }
+        }
+        saveResult(new PlayCardResult(this, _cardEnteringPlay));
     }
 
     public void setDestination(FacilityCard card) {

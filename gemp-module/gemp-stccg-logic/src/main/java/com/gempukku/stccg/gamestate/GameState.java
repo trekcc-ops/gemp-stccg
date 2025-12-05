@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
@@ -103,9 +104,6 @@ public abstract class GameState {
         setCurrentPlayerId(playerOrder.getFirstPlayer());
     }
 
-    public void loadPlayerOrder(PlayerOrder playerOrder) {
-        _playerOrder = playerOrder;
-    }
     public ActionsEnvironment getActionsEnvironment() { return _actionsEnvironment; }
 
     public PlayerOrder getPlayerOrder() {
@@ -182,6 +180,26 @@ public abstract class GameState {
         List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), Zone.REMOVED);
         zoneCardList.add(card);
         card.setZone(Zone.REMOVED);
+    }
+
+    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone, ActionContext context) {
+        if (zone == Zone.DISCARD) {
+            addCardToTopOfDiscardPile(card);
+        } else if (zone == Zone.REMOVED) {
+            addCardToRemovedPile(card);
+        }else {
+            if (zone.isInPlay()) {
+                addCardToInPlay(cardGame, card, context);
+            }
+
+            if (zone.hasList()) {
+                List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
+                zoneCardList.add(card);
+            }
+
+            card.setZone(zone);
+
+        }
     }
 
     public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone) {
@@ -285,26 +303,12 @@ public abstract class GameState {
 
 
     public ModifiersLogic getModifiersLogic() { return _modifiersLogic; }
-    public void setModifiersLogic(ModifiersLogic modifiers) { _modifiersLogic = modifiers; }
-    public void setNextCardId(int nextCardId) { _nextCardId = nextCardId; }
-
-    public void setModifiersLogic(ST1EGame game) { _modifiersLogic = new ModifiersLogic(game); }
-    public void setActionsEnvironment(ActionsEnvironment actionsEnvironment) {
-        _actionsEnvironment = actionsEnvironment;
-    }
 
     public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
         PhysicalCard card = _allCards.get(cardId);
         if (card == null)
             throw new CardNotFoundException("Could not find card from id number " + cardId);
         return card;
-    }
-
-    public void placeCardOnMission(DefaultGame cardGame, PhysicalCard cardBeingPlaced, MissionLocation mission) {
-        removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(cardBeingPlaced));
-        cardBeingPlaced.setPlacedOnMission(true);
-        cardBeingPlaced.setLocation(cardGame, mission);
-        addCardToZone(cardGame, cardBeingPlaced, Zone.AT_LOCATION);
     }
 
 
@@ -363,6 +367,13 @@ public abstract class GameState {
     @JsonProperty("playerClocks")
     private Collection<PlayerClock> playerClockList() {
         return _playerClocks.values();
+    }
+
+    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card, ActionContext context) {
+        if (!_inPlay.contains(card)) {
+            _inPlay.add(card);
+            _modifiersLogic.addModifierHooks(cardGame, card);
+        }
     }
 
     public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card) {

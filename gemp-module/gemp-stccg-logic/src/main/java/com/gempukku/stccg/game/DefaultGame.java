@@ -186,9 +186,6 @@ public abstract class DefaultGame {
     public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
         _autoPassConfiguration.put(playerId, phases);
     }
-    public CardBlueprintLibrary getBlueprintLibrary() {
-        return _library;
-    }
 
     public ActionsEnvironment getActionsEnvironment() {
         return getGameState().getActionsEnvironment();

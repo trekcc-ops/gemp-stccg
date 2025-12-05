@@ -27,7 +27,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
     @Test
     public void dedicationToDutyTest1() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException {
+            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
@@ -49,8 +49,8 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        troi.reportToFacility(_outpost);
-        runabout.reportToFacility(_outpost);
+        troi.reportToFacilityForTestingOnly(_outpost);
+        runabout.reportToFacilityForTestingOnly(_outpost);
 
         assertTrue(_outpost.getCrew().contains(troi));
         assertFalse(_outpost.getCrew().contains(runabout));
@@ -103,8 +103,8 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         PhysicalShipCard runabout =
                 (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        troi.reportToFacility(_outpost);
-        runabout.reportToFacility(_outpost);
+        troi.reportToFacilityForTestingOnly(_outpost);
+        runabout.reportToFacilityForTestingOnly(_outpost);
 
         assertTrue(_outpost.getCrew().contains(troi));
         assertFalse(_outpost.getCrew().contains(runabout));

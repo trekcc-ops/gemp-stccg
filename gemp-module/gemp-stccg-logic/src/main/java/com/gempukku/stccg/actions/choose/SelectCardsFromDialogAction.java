@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
@@ -19,8 +18,6 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     private final int _minimum;
     private final int _maximum;
     private Collection<PhysicalCard> _selectedCards;
-    private ActionContext _actionContext;
-    private String _memory;
     private AwaitingDecision _decision;
     private final ActionCardResolver _selectableCardsTarget;
     private final String _decisionText;
@@ -108,9 +105,6 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     }
 
     private void setCardToMemory() {
-        if (_actionContext != null) {
-            _actionContext.setCardMemory(_memory, _selectedCards);
-        }
     }
 
     public int getMinimum() { return _minimum; }

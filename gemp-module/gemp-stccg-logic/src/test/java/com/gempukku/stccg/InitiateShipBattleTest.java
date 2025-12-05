@@ -41,8 +41,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         FacilityCard outpost2 = (FacilityCard) newCardForGame("101_105", P2); // Klingon Outpost
         List<FacilityCard> outpostsToSeed = List.of(outpost1, outpost2);
 
-        SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission);
-        seedAction.setLocationZoneIndex(0);
+        SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, 0);
         seedAction.seedCard(_game);
 
         for (FacilityCard facility : outpostsToSeed) {
@@ -52,10 +51,10 @@ public class InitiateShipBattleTest extends AbstractAtTest {
             seedOutpostAction.processEffect(_game, facilityOwner);
         }
 
-        this.attackingShip.reportToFacility(outpost1);
-        klag1.reportToFacility(outpost1);
-        defendingTarget.reportToFacility(outpost2);
-        klag2.reportToFacility(outpost2);
+        this.attackingShip.reportToFacilityForTestingOnly(outpost1);
+        klag1.reportToFacilityForTestingOnly(outpost1);
+        defendingTarget.reportToFacilityForTestingOnly(outpost2);
+        klag2.reportToFacilityForTestingOnly(outpost2);
 
         assertTrue(this.attackingShip.isDocked());
         assertTrue(defendingTarget.isDocked());

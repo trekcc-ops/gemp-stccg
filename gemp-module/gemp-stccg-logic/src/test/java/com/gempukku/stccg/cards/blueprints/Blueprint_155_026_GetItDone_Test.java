@@ -145,8 +145,8 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
         picard = (PersonnelCard) newCardForGame("101_215", P1);
         runabout = (PhysicalShipCard) newCardForGame("101_331", P1);
-        picard.reportToFacility(_outpost);
-        runabout.reportToFacility(_outpost);
+        picard.reportToFacilityForTestingOnly(_outpost);
+        runabout.reportToFacilityForTestingOnly(_outpost);
 
         skipCardPlay();
 

@@ -15,7 +15,6 @@ public class SelectNumberAction extends MakeDecisionAction {
 
     private final int _minimum;
     private final int _maximum;
-    private final ActionContext _actionContext;
     private final String _memoryId;
 
     public SelectNumberAction(DefaultGame cardGame, ActionContext context, String choiceText, ValueSource valueSource,
@@ -23,7 +22,6 @@ public class SelectNumberAction extends MakeDecisionAction {
         super(cardGame, context.getPerformingPlayerId(), choiceText);
         _minimum = (int) valueSource.getMinimum(cardGame, context);
         _maximum = (int) valueSource.getMaximum(cardGame, context);
-        _actionContext = context;
         _memoryId = memoryId;
     }
 
