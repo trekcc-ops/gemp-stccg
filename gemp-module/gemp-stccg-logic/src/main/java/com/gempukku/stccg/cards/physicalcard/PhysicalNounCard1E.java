@@ -74,7 +74,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     }
 
     public boolean isAffiliation(Affiliation affiliation) {
-        if (_zone.isInPlay())
+        if (isInPlay())
             return _currentAffiliation == affiliation;
         else return getAffiliationOptions().contains(affiliation);
     }
