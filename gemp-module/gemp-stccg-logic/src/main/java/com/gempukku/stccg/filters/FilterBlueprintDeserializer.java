@@ -61,9 +61,12 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.getPerformingCardId()));
         simpleFilters.put("inplay", (cardGame, actionContext) -> Filters.inPlay);
+        simpleFilters.put("inyourhand", (cardGame, actionContext) ->
+                new InYourHandFilter(actionContext.getPerformingPlayerId()));
         simpleFilters.put("inyourdrawdeck", (cardGame, actionContext) ->
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
         simpleFilters.put("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
+        simpleFilters.put("thiscard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         simpleFilters.put("unique", (cardGame, actionContext) -> Filters.unique);
         simpleFilters.put("your", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yours", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
@@ -89,6 +92,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             if (affiliation == null)
                 throw new InvalidCardDefinitionException("Unable to find affiliation for: " + parameter);
             return (cardGame, actionContext) -> new AffiliationFilter(affiliation);
+        });
+        parameterFilters.put("bottomcardsofyourdiscardpile", (parameter) -> {
+            final String[] filters = splitIntoFilters(parameter);
+            int cardCount = Integer.parseInt(filters[0]);
+            FilterBlueprint additionalFilter = parseSTCCGFilter(filters[1]);
+            return (cardGame, actionContext) -> new BottomCardsOfDiscardFilter(actionContext.getPerformingPlayerId(),
+                    cardCount, additionalFilter.getFilterable(cardGame, actionContext));
         });
         parameterFilters.put("memory",
                 (parameter) -> new FilterBlueprint() {
@@ -149,7 +159,15 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     }
 
     private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
-        // System.out.println(value); // Very useful for debugging
+//        System.out.println(value); // Very useful for debugging
+        if (value.startsWith("bottomCardsOfYourDiscardPile(") && value.endsWith(")")) {
+            String remainingText = value.substring("bottomCardsOfYourDiscardPile(".length(), value.length() - 1);
+            final String[] filters = splitIntoFilters(remainingText);
+            int cardCount = Integer.parseInt(filters[0]);
+            FilterBlueprint additionalFilter = parseSTCCGFilter(filters[1]);
+            return (cardGame, actionContext) -> new BottomCardsOfDiscardFilter(actionContext.getPerformingPlayerId(),
+                    cardCount, additionalFilter.getFilterable(cardGame, actionContext));
+        }
         if (value.split(OR_WITH_NO_PARENTHESES).length > 1)
             return createOrFilter(value);
         if (value.split(AND_WITH_NO_PARENTHESES).length > 1)

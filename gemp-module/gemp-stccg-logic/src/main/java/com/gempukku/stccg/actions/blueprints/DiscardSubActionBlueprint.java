@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.actions.CardPerformedAction;
@@ -19,6 +20,7 @@ public class DiscardSubActionBlueprint implements SubActionBlueprint {
     private final CardTargetBlueprint _cardTarget;
 
     public DiscardSubActionBlueprint(
+            @JsonProperty("cards")
             CardTargetBlueprint cardTargetBlueprint
     ) {
         _cardTarget = cardTargetBlueprint;
