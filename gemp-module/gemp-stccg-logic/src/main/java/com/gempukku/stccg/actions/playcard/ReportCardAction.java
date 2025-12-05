@@ -157,7 +157,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     setProgress(Progress.affiliationSelected);
                     _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
                 } else if (!affiliationOptions.isEmpty()) {
-                    _affiliationTarget = new AffiliationResolver(new SelectAffiliationAction(
+                    _affiliationTarget = new AffiliationResolver(new SelectAffiliationAction(_cardEnteringPlay,
                             cardGame, _performingPlayerId, affiliationOptions));
                 } else {
                     setAsFailed();

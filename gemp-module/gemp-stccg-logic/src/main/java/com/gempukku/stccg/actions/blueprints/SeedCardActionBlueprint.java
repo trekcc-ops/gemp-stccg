@@ -22,8 +22,8 @@ public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     public SeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext)) {
-            SeedCardAction action = (_seedToZone == null) ? new SeedCardAction(cardGame, thisCard) :
-                    new SeedCardAction(cardGame, thisCard, _seedToZone);
+            SeedCardAction action = (_seedToZone == null) ? new SeedCardAction(cardGame, thisCard, actionContext) :
+                    new SeedCardAction(cardGame, thisCard, _seedToZone, actionContext);
             appendActionToContext(cardGame, action, actionContext);
             return action;
         }

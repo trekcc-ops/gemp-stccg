@@ -33,7 +33,7 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
     public ActivateCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard card) {
         ActionContext context = new ActionContext(card, card.getOwnerName());
         if (isValid(cardGame, context)) {
-            ActivateCardAction action = new ActivateCardAction(cardGame, card);
+            ActivateCardAction action = new ActivateCardAction(cardGame, card, context);
             appendActionToContext(cardGame, action, context);
             return action;
         }

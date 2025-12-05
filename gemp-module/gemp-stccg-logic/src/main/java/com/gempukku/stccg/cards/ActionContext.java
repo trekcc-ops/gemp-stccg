@@ -27,10 +27,10 @@ public class ActionContext {
         _actionId = -999;
     }
 
-    public ActionContext(String performingPlayerName, PhysicalCard thisCard, Action action) {
+    public ActionContext(String performingPlayerName, PhysicalCard thisCard, Action actionBeingRespondedTo) {
         this._performingPlayerName = performingPlayerName;
         _sourceCardId = thisCard.getCardId();
-        _actionId = action.getActionId();
+        _actionId = actionBeingRespondedTo.getActionId();
     }
 
     public String getPerformingPlayerId() { return _performingPlayerName; }

@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -14,13 +15,13 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
     private enum Progress {}
     private final ActionBlueprint _actionBlueprint;
 
-    public OptionalTriggerAction(DefaultGame cardGame, PhysicalCard physicalCard, ActionBlueprint actionBlueprint) {
-        super(cardGame, physicalCard.getOwnerName(), "Optional trigger from " + physicalCard.getCardLink(),
-                ActionType.USE_GAME_TEXT,
-                Progress.values());
+    public OptionalTriggerAction(DefaultGame cardGame, PhysicalCard physicalCard, ActionBlueprint actionBlueprint,
+                                 ActionContext actionContext) {
+        super(cardGame, physicalCard.getOwnerName(), ActionType.USE_GAME_TEXT, Progress.values(), actionContext);
         _performingCard = physicalCard;
         _actionBlueprint = actionBlueprint;
     }
+
 
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }

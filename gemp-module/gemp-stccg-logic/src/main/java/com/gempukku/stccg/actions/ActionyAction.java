@@ -89,7 +89,8 @@ public abstract class ActionyAction implements Action {
         }
     }
 
-    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType, Enum<?>[] progressValues) {
+    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType,
+                            Enum<?>[] progressValues) {
         this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
         for (Enum<?> progressType : progressValues) {
             _progressIndicators.put(progressType.name(), false);

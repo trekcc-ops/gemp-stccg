@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectSkillAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.ActionSkill;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
@@ -47,7 +48,8 @@ public class Blueprint155_056 extends CardBlueprint {
         return new ActionSkill("When reported, selects Anthropology, Physics, or Navigation.") {
             @Override
             public TopLevelSelectableAction getAction(DefaultGame cardGame, PhysicalCard thisCard) {
-                final RequiredTriggerAction action = new RequiredTriggerAction(cardGame, thisCard);
+                final RequiredTriggerAction action = new RequiredTriggerAction(cardGame, thisCard,
+                        new ActionContext(thisCard, thisCard.getOwnerName()));
                 List<SkillName> skillOptions = new LinkedList<>();
                 skillOptions.add(SkillName.ANTHROPOLOGY);
                 skillOptions.add(SkillName.PHYSICS);

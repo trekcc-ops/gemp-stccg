@@ -38,7 +38,7 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                                  PhysicalCard thisCard, ActionResult result) {
         ActionContext actionContext = new ActionContext(performingPlayerName, thisCard, result.getAction());
         if (isValid(cardGame, actionContext)) {
-            OptionalTriggerAction action = new OptionalTriggerAction(cardGame, thisCard, this);
+            OptionalTriggerAction action = new OptionalTriggerAction(cardGame, thisCard, this, actionContext);
             appendActionToContext(cardGame, action, actionContext);
             return action;
         }

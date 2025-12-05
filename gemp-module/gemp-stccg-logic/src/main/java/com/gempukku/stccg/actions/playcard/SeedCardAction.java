@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -13,8 +14,12 @@ public class SeedCardAction extends PlayCardAction {
     public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone) {
         super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
     }
-    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed) {
-        this(cardGame, cardToSeed, null);
+
+    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone, ActionContext context) {
+        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD, context);
+    }
+    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, ActionContext context) {
+        this(cardGame, cardToSeed, null, context);
     }
 
 

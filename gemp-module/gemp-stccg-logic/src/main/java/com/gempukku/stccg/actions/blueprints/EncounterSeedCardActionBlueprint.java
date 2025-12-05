@@ -33,10 +33,10 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                                                 AttemptingUnit attemptingUnit, MissionLocation missionLocation,
                                                 AttemptMissionAction missionAttemptAction)
             throws InvalidGameLogicException {
+        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
-                        missionLocation.getLocationId());
-        ActionContext actionContext = new ActionContext(performingPlayerName, thisCard, encounterAction);
+                        missionLocation.getLocationId(), actionContext);
         _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
         return encounterAction;
     }
@@ -51,7 +51,8 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                 if (action instanceof AttemptMissionAction attemptAction &&
                         attemptAction.getLocationId() == card.getGameLocation().getLocationId()) {
                     TopLevelSelectableAction newAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
-                            card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocationId());
+                            card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocationId(),
+                            context);
                     appendActionToContext(cardGame, newAction, context);
                     return newAction;
                 }

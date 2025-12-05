@@ -47,7 +47,7 @@ public class Blueprint101_125 extends CardBlueprint {
             if (context.acceptsAllRequirements(cardGame, playRequirements)) {
                 try {
                     TopLevelSelectableAction playAction =
-                            new STCCGPlayCardAction(cardGame, stCard, Zone.CORE, player, true);
+                            new STCCGPlayCardAction(cardGame, stCard, Zone.CORE, player, true, context);
                     playAction.appendEffect(new ScorePointsAction(cardGame, thisCard, player, 5));
                     playAction.appendEffect(new DiscardSingleCardAction(cardGame, thisCard, player.getPlayerId(), thisCard));
                     result.add(playAction);

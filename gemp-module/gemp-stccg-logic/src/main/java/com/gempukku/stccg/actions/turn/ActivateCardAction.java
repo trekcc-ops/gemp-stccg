@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -10,9 +11,9 @@ public class ActivateCardAction extends ActionyAction implements TopLevelSelecta
     private final PhysicalCard _performingCard;
     private enum Progress {activated, prevented }
 
-    public ActivateCardAction(DefaultGame cardGame, PhysicalCard physicalCard) {
-        super(cardGame, physicalCard.getOwnerName(), "Use " + physicalCard.getFullName(), ActionType.USE_GAME_TEXT,
-                Progress.values());
+    public ActivateCardAction(DefaultGame cardGame, PhysicalCard physicalCard, ActionContext context) {
+        super(cardGame, physicalCard.getOwnerName(), ActionType.USE_GAME_TEXT,
+                Progress.values(), context);
         _performingCard = physicalCard;
     }
 

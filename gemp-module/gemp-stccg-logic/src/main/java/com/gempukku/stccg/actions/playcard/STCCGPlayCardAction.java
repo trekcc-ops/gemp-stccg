@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -23,12 +24,21 @@ public class STCCGPlayCardAction extends PlayCardAction {
             appendCost(new UseNormalCardPlayAction(cardGame, player));
     }
 
+    public STCCGPlayCardAction(DefaultGame cardGame, ST1EPhysicalCard card, Zone zone, Player player, boolean forFree,
+                               ActionContext context) {
+        super(cardGame, card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD, context);
+        if (!forFree)
+            appendCost(new UseNormalCardPlayAction(cardGame, player));
+    }
+
+
     public STCCGPlayCardAction(DefaultGame cardGame, PhysicalCard card, Zone zone, String performingPlayerName,
                                boolean forFree, Enum<?>[] progressValues) {
         super(cardGame, card, card, performingPlayerName, zone, ActionType.PLAY_CARD, progressValues);
         if (!forFree)
             appendCost(new UseNormalCardPlayAction(cardGame, performingPlayerName));
     }
+
 
 
 }

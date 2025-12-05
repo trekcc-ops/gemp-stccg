@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -26,6 +27,21 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
                                    int locationId)
             throws InvalidGameLogicException {
         super(cardGame, encounteringPlayerName, "Encounter seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        try {
+            _parentAction = Objects.requireNonNull(attemptAction);
+            _cardTarget = new FixedCardResolver(encounteredCard);
+            _attemptingUnit = Objects.requireNonNull(attemptingUnit);
+            _locationId = locationId;
+        } catch(NullPointerException npe) {
+            throw new InvalidGameLogicException(npe.getMessage());
+        }
+    }
+
+    public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
+                                   AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
+                                   int locationId, ActionContext actionContext)
+            throws InvalidGameLogicException {
+        super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD, Progress.values(), actionContext);
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);

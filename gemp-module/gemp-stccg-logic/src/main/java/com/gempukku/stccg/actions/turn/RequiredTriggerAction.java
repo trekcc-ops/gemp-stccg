@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -12,9 +13,8 @@ public class RequiredTriggerAction extends ActionyAction implements TopLevelSele
     private final PhysicalCard _performingCard;
     private enum Progress {}
 
-    public RequiredTriggerAction(DefaultGame cardGame, PhysicalCard physicalCard) {
-        super(cardGame, physicalCard.getOwnerName(), "Required trigger from " + physicalCard.getCardLink(),
-                ActionType.USE_GAME_TEXT, Progress.values());
+    public RequiredTriggerAction(DefaultGame cardGame, PhysicalCard physicalCard, ActionContext context) {
+        super(cardGame, physicalCard.getOwnerName(), ActionType.USE_GAME_TEXT, Progress.values(), context);
         _performingCard = physicalCard;
     }
 
