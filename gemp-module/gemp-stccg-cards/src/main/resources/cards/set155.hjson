@@ -114,7 +114,6 @@
         {
             blueprintId: 155_026
             title: Get It Done
-            java-blueprint: false
             type: incident
             property-logo: tng-logo
             image-url: https://www.trekcc.org/1e/cardimages/tng/26V.jpg
