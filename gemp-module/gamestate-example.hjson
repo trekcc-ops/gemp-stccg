@@ -193,11 +193,13 @@
     "playerClocks": [
         {
             "playerId": "player1",
-            "timeRemaining": 3600
+            "timeRemaining": 3600,
+            "maxTimeAllowed": 3600
         },
         {
             "playerId": "player2",
-            "timeRemaining": 3600
+            "timeRemaining": 3600,
+            "maxTimeAllowed": 3600
         }
     ],
     "pendingDecision": {
