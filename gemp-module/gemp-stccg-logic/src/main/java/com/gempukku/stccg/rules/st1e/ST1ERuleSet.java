@@ -1,15 +1,18 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.cards.physicalcard.CardWithCompatibility;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.WeaponsDisabledModifier;
 import com.gempukku.stccg.player.Player;
@@ -55,10 +58,26 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
         }
     }
 
+    public boolean canShipAttemptMission(ShipCard ship, int locationId, ST1EGame cardGame,
+                                         String performingPlayerName) {
+        try {
+            GameLocation location = cardGame.getGameState().getLocationById(locationId);
+            if (location instanceof MissionLocation missionLocation) {
+                return MissionAttemptRules.canShipAttemptMission(ship, missionLocation, cardGame,
+                        performingPlayerName);
+            } else {
+                throw new InvalidGameLogicException("Tried to attempt a non-mission location");
+            }
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            cardGame.cancelGame();
+            return false;
+        }
+    }
 
 
 
-    public boolean areCardsCompatiblePerRules(PhysicalNounCard1E card1, PhysicalNounCard1E card2) {
+    public boolean areCardsCompatiblePerRules(CardWithCompatibility card1, CardWithCompatibility card2) {
         return CompatibilityRule.areCardsCompatible(card1, card2);
     }
 

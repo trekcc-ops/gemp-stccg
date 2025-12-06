@@ -40,12 +40,12 @@ public class Blueprint116_008 extends CardBlueprint {
         );
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2);
 
-        if (fullCondition.canBeMetBy(attemptingUnit)) {
+        if (fullCondition.canBeMetBy(attemptingUnit.getAttemptingPersonnel(game), game)) {
             // overcome
             result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         } else {
             // fail
-            PhysicalCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel());
+            PhysicalCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel(game));
             result.add(new PlaceCardOnTopOfDrawDeckAction(game, attemptingUnit.getControllerName(), randomCard));
             result.add(new FailDilemmaAction(game, attemptingUnit, thisCard, action));
         }

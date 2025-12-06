@@ -6,10 +6,11 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,27 +36,16 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
         assertTrue(outpost.isInPlay());
 
-        kol.reportToFacilityForTestingOnly(outpost);
-        assertEquals(Integer.valueOf(6), kol.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(6), kol.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(5), kol.getAttribute(CardAttribute.STRENGTH));
+        reportCardToFacility(kol, outpost);
+        assertTrue(personnelAttributesAre(kol, List.of(6, 6, 5)));
+        assertTrue(personnelAttributesAre(arridor, List.of(4, 8, 5)));
 
-        assertEquals(Integer.valueOf(4), arridor.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(8), arridor.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(5), arridor.getAttribute(CardAttribute.STRENGTH));
+        reportCardToFacility(arridor, outpost);
+        assertTrue(_game.getGameState().cardsArePresentWithEachOther(arridor, kol));
 
-        arridor.reportToFacilityForTestingOnly(outpost);
-        assertTrue(kol.isPresentWith(arridor));
+        assertTrue(personnelAttributesAre(kol, List.of(8, 8, 7)));
+        assertTrue(personnelAttributesAre(arridor, List.of(4, 8, 5)));
 
-        assertEquals(Integer.valueOf(8), kol.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(8), kol.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(7), kol.getAttribute(CardAttribute.STRENGTH));
-
-        assertEquals(Integer.valueOf(4), arridor.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(8), arridor.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(5), arridor.getAttribute(CardAttribute.STRENGTH));
-
-        String gameStateString = _game.getGameState().serializeComplete();
     }
 
     @Test
@@ -80,38 +70,19 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
 
         assertTrue(outpost1.isInPlay());
 
-        worf.reportToFacilityForTestingOnly(outpost1);
-        assertEquals(Integer.valueOf(8), worf.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(6), worf.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(10), worf.getAttribute(CardAttribute.STRENGTH));
+        reportCardToFacility(worf, outpost1);
+        assertTrue(personnelAttributesAre(worf, List.of(8, 6, 10)));
+        assertTrue(personnelAttributesAre(kehleyr1, List.of(7, 8, 7)));
+        assertTrue(personnelAttributesAre(kehleyr2, List.of(8, 7, 7)));
 
-        assertEquals(Integer.valueOf(7), kehleyr1.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(8), kehleyr1.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(7), kehleyr1.getAttribute(CardAttribute.STRENGTH));
-
-        assertEquals(Integer.valueOf(8), kehleyr2.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(7), kehleyr2.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(7), kehleyr2.getAttribute(CardAttribute.STRENGTH));
-
-
-        kehleyr1.reportToFacilityForTestingOnly(outpost1);
-        kehleyr2.reportToFacilityForTestingOnly(outpost1);
+        reportCardsToFacility(outpost1, kehleyr1, kehleyr2);
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr1));
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr2));
+        assertTrue(_game.getGameState().cardsArePresentWithEachOther(kehleyr1, worf));
 
-        assertTrue(kehleyr1.isPresentWith(worf));
-
-        assertEquals(Integer.valueOf(10), worf.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(8), worf.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(12), worf.getAttribute(CardAttribute.STRENGTH));
-
-        assertEquals(Integer.valueOf(9), kehleyr1.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(10), kehleyr1.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(9), kehleyr1.getAttribute(CardAttribute.STRENGTH));
-
-        assertEquals(Integer.valueOf(10), kehleyr2.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(Integer.valueOf(9), kehleyr2.getAttribute(CardAttribute.CUNNING));
-        assertEquals(Integer.valueOf(9), kehleyr2.getAttribute(CardAttribute.STRENGTH));
+        assertTrue(personnelAttributesAre(worf, List.of(10, 8, 12)));
+        assertTrue(personnelAttributesAre(kehleyr1, List.of(9, 10, 9)));
+        assertTrue(personnelAttributesAre(kehleyr2, List.of(10, 9, 9)));
     }
 
 }

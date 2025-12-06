@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -30,28 +30,27 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
-        PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+        ShipCard runabout =
+                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        geordi.reportToFacilityForTestingOnly(_outpost);
-        runabout.reportToFacilityForTestingOnly(_outpost);
+        reportCardsToFacility(_outpost, geordi, runabout);
 
-        assertTrue(_outpost.getCrew().contains(geordi));
-        assertFalse(_outpost.getCrew().contains(runabout));
+        assertTrue(_outpost.hasCardInCrew(geordi));
+        assertFalse(_outpost.hasCardInCrew(runabout));
         assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
         beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
-        assertFalse(_outpost.getCrew().contains(geordi));
-        assertTrue(runabout.getCrew().contains(geordi));
+        assertFalse(_outpost.hasCardInCrew(geordi));
+        assertTrue(runabout.hasCardInCrew(geordi));
         assertEquals(MissionType.PLANET, geordi.getLocationDeprecatedOnlyUseForTests().getMissionType());
-        assertEquals(0, geordi.getSkillLevel(SkillName.NAVIGATION));
-        assertEquals(0, geordi.getSkillLevel(SkillName.ASTROPHYSICS));
-        assertEquals(0, geordi.getSkillLevel(SkillName.STELLAR_CARTOGRAPHY));
-        assertEquals(1, geordi.getSkillLevel(SkillName.ENGINEER));
-        assertEquals(1, geordi.getSkillLevel(SkillName.PHYSICS));
-        assertEquals(1, geordi.getSkillLevel(SkillName.COMPUTER_SKILL));
+        assertEquals(0, geordi.getSkillLevel(_game, SkillName.NAVIGATION));
+        assertEquals(0, geordi.getSkillLevel(_game, SkillName.ASTROPHYSICS));
+        assertEquals(0, geordi.getSkillLevel(_game, SkillName.STELLAR_CARTOGRAPHY));
+        assertEquals(1, geordi.getSkillLevel(_game, SkillName.ENGINEER));
+        assertEquals(1, geordi.getSkillLevel(_game, SkillName.PHYSICS));
+        assertEquals(1, geordi.getSkillLevel(_game, SkillName.COMPUTER_SKILL));
     }
 
     @Test
@@ -65,28 +64,27 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", _cardLibrary, P1);
-        PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+        ShipCard runabout =
+                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        geordi.reportToFacilityForTestingOnly(_outpost);
-        runabout.reportToFacilityForTestingOnly(_outpost);
+        reportCardsToFacility(_outpost, geordi, runabout);
 
-        assertTrue(_outpost.getCrew().contains(geordi));
-        assertFalse(_outpost.getCrew().contains(runabout));
+        assertTrue(_outpost.hasCardInCrew(geordi));
+        assertFalse(_outpost.hasCardInCrew(runabout));
         assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
         beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
-        assertFalse(_outpost.getCrew().contains(geordi));
-        assertTrue(runabout.getCrew().contains(geordi));
+        assertFalse(_outpost.hasCardInCrew(geordi));
+        assertTrue(runabout.hasCardInCrew(geordi));
         assertEquals(MissionType.SPACE, geordi.getLocationDeprecatedOnlyUseForTests().getMissionType());
-        assertEquals(1, geordi.getSkillLevel(SkillName.NAVIGATION));
-        assertEquals(1, geordi.getSkillLevel(SkillName.ASTROPHYSICS));
-        assertEquals(1, geordi.getSkillLevel(SkillName.STELLAR_CARTOGRAPHY));
-        assertEquals(0, geordi.getSkillLevel(SkillName.ENGINEER));
-        assertEquals(0, geordi.getSkillLevel(SkillName.PHYSICS));
-        assertEquals(0, geordi.getSkillLevel(SkillName.COMPUTER_SKILL));
+        assertEquals(1, geordi.getSkillLevel(_game, SkillName.NAVIGATION));
+        assertEquals(1, geordi.getSkillLevel(_game, SkillName.ASTROPHYSICS));
+        assertEquals(1, geordi.getSkillLevel(_game, SkillName.STELLAR_CARTOGRAPHY));
+        assertEquals(0, geordi.getSkillLevel(_game, SkillName.ENGINEER));
+        assertEquals(0, geordi.getSkillLevel(_game, SkillName.PHYSICS));
+        assertEquals(0, geordi.getSkillLevel(_game, SkillName.COMPUTER_SKILL));
     }
 
 

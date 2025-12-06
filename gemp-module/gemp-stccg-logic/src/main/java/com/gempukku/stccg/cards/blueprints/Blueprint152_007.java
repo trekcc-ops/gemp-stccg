@@ -25,12 +25,12 @@ public class Blueprint152_007 extends CardBlueprint {
                                                     EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> result = new ArrayList<>();
 
-        int personnelCount = attemptingUnit.getAttemptingPersonnel().size();
+        int personnelCount = attemptingUnit.getAttemptingPersonnel(game).size();
 
         if (personnelCount > 9) {
             int removeCount = personnelCount - 9;
             List<PersonnelCard> cardsToRemove =
-                    TextUtils.getRandomItemsFromList(attemptingUnit.getAttemptingPersonnel(), removeCount);
+                    TextUtils.getRandomItemsFromList(attemptingUnit.getAttemptingPersonnel(game), removeCount);
             for (PersonnelCard personnel : cardsToRemove)
                 result.add(new RemoveCardFromPlayAction(game, thisCard.getOwnerName(), personnel));
         }

@@ -77,7 +77,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
         // Report Worf to outpost
         reportCard(P1, worf, outpost);
-        assertTrue(outpost.getCrew().contains(worf));
+        assertTrue(outpost.hasCardInCrew(worf));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
@@ -158,7 +158,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
         // Report Worf to outpost
         reportCard(P1, worf, outpost);
-        assertTrue(outpost.getCrew().contains(worf));
+        assertTrue(outpost.hasCardInCrew(worf));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
@@ -247,7 +247,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
         // Report Worf to outpost
         reportCard(P1, worf, outpost);
-        assertTrue(outpost.getCrew().contains(worf));
+        assertTrue(outpost.hasCardInCrew(worf));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

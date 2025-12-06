@@ -59,7 +59,10 @@ public class SeedOutpostAction extends PlayCardAction {
             Set<PhysicalCard> availableMissions = new HashSet<>();
             for (MissionLocation location : gameState.getSpacelineLocations()) {
                 MissionCard missionCard = location.getMissionForPlayer(_performingPlayerId);
-                if (facility.canSeedAtMission(location)) {
+                boolean canPlayHere = stGame.getRules().isLocationValidPlayCardDestinationPerRules(
+                        stGame, facility, location, SeedCardAction.class, facility.getOwnerName(),
+                        facility.getAffiliationOptions());
+                if (canPlayHere) {
                     availableMissions.add(missionCard);
                 }
             }
@@ -89,8 +92,11 @@ public class SeedOutpostAction extends PlayCardAction {
                         (MissionCard) Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                 if (!getProgress(Progress.affiliationSelected)) {
                     for (Affiliation affiliation : facility.getAffiliationOptions()) {
-                        if (facility.canSeedAtMissionAsAffiliation(selectedMission.getGameLocation(),
-                                affiliation))
+                        boolean canSeedHereAsThisAffiliation = stGame.getRules().
+                                isLocationValidPlayCardDestinationPerRules(stGame, facility,
+                                        selectedMission.getGameLocation(), SeedCardAction.class,
+                                        facility.getOwnerName(), List.of(affiliation));
+                        if (canSeedHereAsThisAffiliation)
                             affiliationOptions.add(affiliation);
                     }
                 }
@@ -130,10 +136,10 @@ public class SeedOutpostAction extends PlayCardAction {
 
         Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
         FacilityCard facility = (FacilityCard) _cardEnteringPlay;
-        facility.changeAffiliation(selectedAffiliation);
+        facility.changeAffiliation(stGame, selectedAffiliation);
 
         stGame.getGameState().removeCardsFromZoneWithoutSendingToClient(stGame, List.of(_cardEnteringPlay));
-        performingPlayer.addPlayedAffiliation(facility.getCurrentAffiliation());
+        performingPlayer.addPlayedAffiliation(selectedAffiliation);
         PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(stGame));
         GameLocation destinationLocation = destinationCard.getGameLocation();
         facility.setLocation(stGame, destinationLocation);

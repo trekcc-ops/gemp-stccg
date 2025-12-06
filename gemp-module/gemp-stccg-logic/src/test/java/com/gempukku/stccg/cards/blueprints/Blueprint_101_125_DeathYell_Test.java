@@ -1,8 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -14,7 +12,6 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -63,7 +60,6 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation
-        MissionLocation kurl = excavation.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(armus), excavation);
 
         // Seed Federation Outpost at Excavation
@@ -74,7 +70,7 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Report Worf to outpost
         reportCard(P1, worf, outpost);
-        assertTrue(outpost.getCrew().contains(worf));
+        assertTrue(outpost.hasCardInCrew(worf));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

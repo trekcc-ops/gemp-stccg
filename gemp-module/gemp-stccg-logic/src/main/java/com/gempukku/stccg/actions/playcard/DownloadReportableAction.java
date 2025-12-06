@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
@@ -38,7 +38,7 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
         Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
 
-        _playCardAction = new ReportCardAction(cardGame, (PhysicalReportableCard1E) selectedCard,
+        _playCardAction = new ReportCardAction(cardGame, (ReportableCard) selectedCard,
                 true, eligibleDestinations);
         cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
     }

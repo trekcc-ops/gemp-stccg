@@ -500,7 +500,7 @@ public class CardBlueprint {
         else return _persona;
     }
 
-    public boolean doesNotWorkWithPerRestrictionBox(PhysicalNounCard1E thisCard, PhysicalNounCard1E otherCard) {
+    public boolean doesNotWorkWithPerRestrictionBox(AffiliatedCard thisCard, AffiliatedCard otherCard) {
         return false;
     }
 
@@ -585,12 +585,12 @@ public class CardBlueprint {
 
     public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
         return switch(_cardType) {
-            case EQUIPMENT -> new PhysicalReportableCard1E(st1egame, cardId, player, this);
+            case EQUIPMENT -> new EquipmentCard(st1egame, cardId, player, this);
             case FACILITY -> new FacilityCard(st1egame, cardId, player, this);
             case MISSION -> new MissionCard(st1egame, cardId, player, this);
             case PERSONNEL -> new PersonnelCard(st1egame, cardId, player, this);
-            case SHIP -> new PhysicalShipCard(st1egame, cardId, player, this);
-            default -> new ST1EPhysicalCard(st1egame, cardId, player, this);
+            case SHIP -> new ShipCard(st1egame, cardId, player, this);
+            default -> new ST1EPhysicalCard(cardId, player, this);
         };
     }
 

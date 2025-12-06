@@ -16,6 +16,7 @@ import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.Collection;
 import java.util.List;
@@ -61,8 +62,6 @@ public interface PhysicalCard {
     String getTitle();
     boolean canInsertIntoSpaceline();
 
-    boolean canBeSeeded(DefaultGame game);
-
     boolean canBePlayed(DefaultGame game);
 
     boolean isControlledBy(String playerId);
@@ -92,7 +91,6 @@ public interface PhysicalCard {
 
     boolean isUnique();
 
-    Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame);
     Integer getNumberOfCopiesSeededByPlayer(String playerName, DefaultGame cardGame);
 
     boolean isCopyOf(PhysicalCard card);
@@ -100,8 +98,8 @@ public interface PhysicalCard {
 
 
     boolean hasIcon(DefaultGame game, CardIcon icon);
-    boolean isPresentWith(PhysicalCard card);
-    boolean hasSkill(SkillName skillName);
+
+    boolean hasSkill(SkillName skillName, DefaultGame cardGame);
 
     @JsonProperty("isInPlay")
     boolean isInPlay();
@@ -164,11 +162,6 @@ public interface PhysicalCard {
         return getBlueprint().hasUniversalIcon();
     }
 
-    @JsonIgnore
-    default Integer getStrength(DefaultGame cardGame) {
-        return (int) cardGame.getGameState().getModifiersQuerying().getStrength(this);
-    }
-
     void reveal();
 
     default List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame, Player player,
@@ -184,4 +177,8 @@ public interface PhysicalCard {
     boolean isOwnedBy(String playerName);
 
     boolean isActive();
+
+    boolean canEnterPlay(DefaultGame cardGame, List<Requirement> enterPlayRequirements);
+
+    boolean isAttachedTo(PhysicalCard card);
 }

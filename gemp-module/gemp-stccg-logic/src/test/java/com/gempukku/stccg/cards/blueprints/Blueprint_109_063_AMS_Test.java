@@ -59,7 +59,7 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
         selectCards(P1, specialists);
         for (PhysicalCard specialist : specialists) {
             assertTrue(specialist.isInPlay());
-            assertTrue(fedOutpost.getCrew().contains(specialist));
+            assertTrue(fedOutpost.hasCardInCrew(specialist));
         }
 
         while (_game.getCurrentPhase() == Phase.SEED_FACILITY) {

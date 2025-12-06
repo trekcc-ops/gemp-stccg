@@ -29,13 +29,13 @@ public class Blueprint155_012 extends CardBlueprint {
     public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                                     EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> result = new LinkedList<>();
-        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel();
+        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel(game);
         boolean nullified = false;
 
         // TODO - Be more explicit that this is a nullify condition
         for (PersonnelCard personnel : attemptingPersonnel) {
-            if (personnel.getSkillLevel(SkillName.DIPLOMACY) >= 3 ||
-                    personnel.getSkillLevel(SkillName.LEADERSHIP) >= 3) {
+            if (personnel.getSkillLevel(game, SkillName.DIPLOMACY) >= 3 ||
+                    personnel.getSkillLevel(game, SkillName.LEADERSHIP) >= 3) {
                 nullified = true;
                 result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
             }
@@ -44,7 +44,7 @@ public class Blueprint155_012 extends CardBlueprint {
         if (!nullified) {
             Collection<PersonnelCard> eligiblePersonnelToStop = new LinkedList<>();
             for (PersonnelCard personnel : attemptingPersonnel) {
-                if (personnel.hasSkill(SkillName.DIPLOMACY) || personnel.hasSkill(SkillName.LEADERSHIP)) {
+                if (personnel.hasSkill(SkillName.DIPLOMACY, game) || personnel.hasSkill(SkillName.LEADERSHIP, game)) {
                     eligiblePersonnelToStop.add(personnel);
                 }
             }

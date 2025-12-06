@@ -11,9 +11,9 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
@@ -29,18 +29,21 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
     private enum Progress { destinationOptionsIdentified, destinationSelected, affiliationSelected, cardPlayed }
 
-    public ReportCardAction(DefaultGame cardGame, PhysicalReportableCard1E cardToPlay, boolean forFree) {
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree) {
         // TODO - Zone is null because these will be attached and the implementation is weird
         super(cardGame, cardToPlay, null, cardToPlay.getOwnerName(), forFree, Progress.values());
-        if (cardToPlay.getAffiliationOptions().size() == 1) {
-            setProgress(Progress.affiliationSelected);
-            _affiliationTarget = new AffiliationResolver(cardToPlay.getCurrentAffiliation());
-        } else if (cardToPlay.getAffiliationOptions().isEmpty() && !(cardToPlay instanceof AffiliatedCard)) {
+        if (cardToPlay instanceof AffiliatedCard affiliatedCard) {
+            Set<Affiliation> affiliationOptions = affiliatedCard.getAffiliationOptions();
+            if (affiliationOptions.size() == 1) {
+                setProgress(Progress.affiliationSelected);
+                _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
+            }
+        } else {
             setProgress(Progress.affiliationSelected);
         }
     }
 
-    public ReportCardAction(DefaultGame cardGame, PhysicalReportableCard1E cardToPlay, boolean forFree,
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
                             Collection<PhysicalCard> destinationOptions) {
         this(cardGame, cardToPlay, forFree);
         setProgress(Progress.destinationOptionsIdentified);
@@ -51,7 +54,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         _destinationTarget = new SelectCardsResolver(selectDestinationAction);
     }
 
-    public ReportCardAction(DefaultGame cardGame, PhysicalReportableCard1E cardToPlay, boolean forFree,
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
                             FacilityCard facilityCard) {
         this(cardGame, cardToPlay, forFree);
         setProgress(Progress.destinationOptionsIdentified);
@@ -62,14 +65,14 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
 
     protected Collection<PhysicalCard> getDestinationOptions(DefaultGame game) throws InvalidGameLogicException {
-        if (_cardEnteringPlay instanceof PhysicalReportableCard1E reportable) {
-            if (game.getGameState() instanceof ST1EGameState gameState) {
+        if (_cardEnteringPlay instanceof ReportableCard reportable) {
+            if (game instanceof ST1EGame stGame) {
                 Collection<PhysicalCard> availableFacilities = new HashSet<>();
-                for (MissionLocation location : gameState.getSpacelineLocations()) {
+                for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
                     Collection<PhysicalCard> facilities =
                             Filters.filterCardsInPlay(game, FacilityType.OUTPOST, Filters.atLocation(location));
                     for (PhysicalCard card : facilities) {
-                        if (card instanceof FacilityCard facility && reportable.canReportToFacility(facility))
+                        if (card instanceof FacilityCard facility && reportable.canReportToFacility(facility, stGame))
                             availableFacilities.add(facility);
                     }
                 }
@@ -101,7 +104,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (_cardEnteringPlay instanceof PhysicalReportableCard1E reportable) {
+        if (_cardEnteringPlay instanceof ReportableCard reportable) {
 
             if (isCostFailed())
                 return null;
@@ -145,12 +148,12 @@ public class ReportCardAction extends STCCGPlayCardAction {
             if (nextCost != null)
                 return nextCost;
 
-            if (_cardEnteringPlay instanceof AffiliatedCard && _affiliationTarget == null) {
+            if (_cardEnteringPlay instanceof AffiliatedCard affiliatedCard && _affiliationTarget == null) {
                 PhysicalCard result = Iterables.getOnlyElement(_destinationTarget.getCards(cardGame));
                 FacilityCard facility = (FacilityCard) result;
                 Set<Affiliation> affiliationOptions = new HashSet<>();
-                for (Affiliation affiliation : reportable.getAffiliationOptions()) {
-                    if (reportable.canReportToFacilityAsAffiliation(facility, affiliation))
+                for (Affiliation affiliation : affiliatedCard.getAffiliationOptions()) {
+                    if (affiliatedCard.canReportToFacilityAsAffiliation(facility, affiliation, (ST1EGame) cardGame))
                         affiliationOptions.add(affiliation);
                 }
                 if (affiliationOptions.size() == 1) {
@@ -186,11 +189,13 @@ public class ReportCardAction extends STCCGPlayCardAction {
         }
     }
 
-    public void processEffect(PhysicalReportableCard1E reportable, DefaultGame cardGame)
+    public void processEffect(ReportableCard reportable, DefaultGame cardGame)
             throws InvalidGameLogicException, PlayerNotFoundException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        if (reportable instanceof AffiliatedCard) {
-            reportable.changeAffiliation(_affiliationTarget.getAffiliation());
+        if (reportable instanceof AffiliatedCard affiliatedCard) {
+            Affiliation chosenAffiliation = _affiliationTarget.getAffiliation();
+            affiliatedCard.changeAffiliation((ST1EGame) cardGame, chosenAffiliation);
+            performingPlayer.addPlayedAffiliation(chosenAffiliation);
         }
         setProgress(Progress.cardPlayed);
         setAsSuccessful();
@@ -203,18 +208,10 @@ public class ReportCardAction extends STCCGPlayCardAction {
         reportable.attachTo(facility);
         gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
 
-        if (reportable instanceof PhysicalShipCard ship) {
+        if (reportable instanceof ShipCard ship) {
             ship.dockAtFacility(facility);
         }
 
-        if (reportable instanceof AffiliatedCard affiliated) {
-            Affiliation affiliation = affiliated.getCurrentAffiliation();
-            if (affiliation == null) {
-                throw new InvalidGameLogicException("Unable to identify affiliation for card");
-            } else {
-                performingPlayer.addPlayedAffiliation(reportable.getCurrentAffiliation());
-            }
-        }
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
     }
 

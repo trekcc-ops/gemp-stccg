@@ -8,9 +8,8 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -34,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     private PersonnelCard picard;
-    private PhysicalShipCard runabout;
+    private ShipCard runabout;
     private PhysicalCard cardToDiscard;
     private final List<PhysicalCard> wallaces = new LinkedList<>();
 
@@ -44,9 +43,9 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         runGameUntilActionSelection();
         playerDecided(P1, "0");
         selectCard(P1, cardToDiscard);
-        assertEquals(11, picard.getAttribute(CardAttribute.INTEGRITY));
-        assertEquals(10, picard.getAttribute(CardAttribute.CUNNING));
-        assertEquals(8, picard.getAttribute(CardAttribute.STRENGTH));
+        assertEquals(11, picard.getIntegrity(_game));
+        assertEquals(10, picard.getCunning(_game));
+        assertEquals(8, picard.getStrength(_game));
         assertFalse(canUseCardAgain());
         skipExecuteOrders();
         assertEquals(P2, _game.getCurrentPlayerId());
@@ -64,7 +63,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         runGameUntilActionSelection();
         playerDecided(P1, "1");
         selectCard(P1, cardToDiscard);
-        assertEquals(9, runabout.getFullRange());
+        assertEquals(9, runabout.getFullRange(_game));
         assertFalse(canUseCardAgain());
         skipExecuteOrders();
         assertEquals(P2, _game.getCurrentPlayerId());
@@ -72,7 +71,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         skipExecuteOrders();
         assertEquals(P1, _game.getCurrentPlayerId());
         skipCardPlay();
-        assertEquals(7, runabout.getFullRange()); // confirm that runabout's range is back to normal
+        assertEquals(7, runabout.getFullRange(_game)); // confirm that runabout's range is back to normal
         assertTrue(canUseCardAgain());
         String gameStateString = _game.getGameState().serializeComplete();
     }
@@ -147,9 +146,8 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertNotNull(_outpost);
 
         picard = (PersonnelCard) newCardForGame("101_215", P1);
-        runabout = (PhysicalShipCard) newCardForGame("101_331", P1);
-        picard.reportToFacilityForTestingOnly(_outpost);
-        runabout.reportToFacilityForTestingOnly(_outpost);
+        runabout = (ShipCard) newCardForGame("101_331", P1);
+        reportCardsToFacility(_outpost, picard, runabout);
 
         skipCardPlay();
 

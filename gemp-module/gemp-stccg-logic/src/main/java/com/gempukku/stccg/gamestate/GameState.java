@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -159,7 +159,7 @@ public abstract class GameState {
             if (card.isInPlay()) card.stopAffectingGame(cardGame);
             card.removeFromCardGroup(cardGame);
 
-            if (card instanceof PhysicalReportableCard1E reportable) {
+            if (card instanceof ReportableCard reportable) {
                 if (reportable.getAwayTeam() != null) {
                     reportable.leaveAwayTeam((ST1EGame) cardGame);
                 }
@@ -359,5 +359,7 @@ public abstract class GameState {
     public void continueCurrentProcess(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
         _currentGameProcess.continueProcess(cardGame);
     }
+
+    public abstract boolean cardsArePresentWithEachOther(PhysicalCard... cards);
 
 }

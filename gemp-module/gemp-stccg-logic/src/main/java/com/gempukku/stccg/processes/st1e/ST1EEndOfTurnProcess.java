@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -32,7 +32,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Player player = cardGame.getCurrentPlayer();
         for (PhysicalCard card : Filters.filterCardsInPlay(cardGame, Filters.ship))
-            ((PhysicalShipCard) card).restoreRange();
+            ((ShipCard) card).restoreRange();
         DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, player);
         drawAction.processEffect(cardGame);
         cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);

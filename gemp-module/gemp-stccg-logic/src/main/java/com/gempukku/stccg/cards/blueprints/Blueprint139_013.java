@@ -31,12 +31,12 @@ public class Blueprint139_013 extends CardBlueprint {
 
         List<Action> result = new LinkedList<>();
         MissionRequirement condition = new OrMissionRequirement(SkillName.GEOLOGY, SkillName.COMPUTER_SKILL);
-        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel();
+        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel(game);
 
-        if (condition.canBeMetBy(attemptingUnit)) {
+        if (condition.canBeMetBy(attemptingUnit.getAttemptingPersonnel(game), game)) {
             Collection<PersonnelCard> allSuchPersonnel = new LinkedList<>();
             for (PersonnelCard card : attemptingPersonnel) {
-                if (card.hasSkill(SkillName.GEOLOGY) || card.hasSkill(SkillName.COMPUTER_SKILL)) {
+                if (card.hasSkill(SkillName.GEOLOGY, game) || card.hasSkill(SkillName.COMPUTER_SKILL, game)) {
                     allSuchPersonnel.add(card);
                 }
             }

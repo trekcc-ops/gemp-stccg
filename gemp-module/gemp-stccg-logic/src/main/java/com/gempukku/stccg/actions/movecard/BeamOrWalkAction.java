@@ -8,19 +8,16 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
@@ -35,7 +32,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    final PhysicalNounCard1E _cardSource;
+    final ST1EPhysicalCard _cardSource;
 
     @JsonProperty("originCardId")
     private PhysicalCard _origin;
@@ -54,7 +51,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param player              the player
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
-    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource, ActionType actionType) {
+    BeamOrWalkAction(DefaultGame cardGame, Player player, ST1EPhysicalCard cardSource, ActionType actionType) {
         super(cardGame, player, actionType);
         _cardSource = cardSource;
         _destinationOptions = getDestinationOptions((ST1EGame) cardGame);
@@ -133,7 +130,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return null;
     }
 
-    private void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
+    private void processEffect(DefaultGame cardGame) {
         if (!_wasCarriedOut) {
             GameLocation destinationLocation = _destination.getGameLocation();
             for (PhysicalCard card : _cardsToMove) {
@@ -141,9 +138,9 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                 card.attachTo(_destination);
                 card.setLocation(cardGame, destinationLocation);
                 if (_origin instanceof MissionCard)
-                    ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
+                    ((ReportableCard) card).leaveAwayTeam((ST1EGame) cardGame);
                 if (_destination instanceof MissionCard && destinationLocation instanceof MissionLocation mission)
-                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission);
+                    ((ReportableCard) card).joinEligibleAwayTeam((ST1EGame) cardGame, mission);
             }
             _wasCarriedOut = true;
             setAsSuccessful();

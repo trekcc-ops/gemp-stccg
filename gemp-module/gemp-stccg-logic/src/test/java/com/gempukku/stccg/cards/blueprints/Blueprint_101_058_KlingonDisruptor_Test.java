@@ -3,7 +3,6 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
@@ -29,7 +28,7 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         _game.addCardToGame("101_270", _cardLibrary, P1);
 
         MissionCard mission = null;
-        PhysicalReportableCard1E disruptor = null;
+        EquipmentCard disruptor = null;
         PersonnelCard picard = null;
         PersonnelCard klag = null;
 
@@ -39,7 +38,7 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
                     mission = (MissionCard) card;
                     break;
                 case "101_058":
-                    disruptor = (PhysicalReportableCard1E) card;
+                    disruptor = (EquipmentCard) card;
                     break;
                 case "101_215":
                     picard = (PersonnelCard) card;
@@ -70,10 +69,10 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         assertTrue(outpost.isInPlay());
 
         reportCardToFacility(picard, outpost);
-        assertEquals(6, picard.getAttribute(CardAttribute.STRENGTH));
+        assertEquals(6, picard.getStrength(_game));
         reportCardToFacility(disruptor, outpost);
-        assertEquals(6, picard.getAttribute(CardAttribute.STRENGTH));
+        assertEquals(6, picard.getStrength(_game));
         reportCardToFacility(klag, outpost);
-        assertEquals(8, picard.getAttribute(CardAttribute.STRENGTH));
+        assertEquals(8, picard.getStrength(_game));
     }
 }

@@ -29,7 +29,7 @@ public class NormalCardPlayTest extends AbstractAtTest {
         PhysicalCard wallace = player1.getCardsInHand().get(1);
         assertEquals("Darian Wallace", wallace.getTitle());
         reportCard(P1, wallace, _outpost);
-        assertTrue(_outpost.getCrew().contains(wallace));
+        assertTrue(_outpost.hasCardInCrew(wallace));
 
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
     }

@@ -17,14 +17,12 @@ import java.util.Objects;
 
 public class MissionCard extends ST1EPhysicalCard {
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(game, cardId, owner, blueprint);
+        super(cardId, owner, blueprint);
     }
 
     public int getPointsShown() { return _blueprint.getPointsShown(); }
 
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
-    @Override
-    public boolean canBeSeeded(DefaultGame game) { return true; }
 
     public boolean wasSeededBy(Player player) {
         return Objects.equals(_ownerName, player.getPlayerId());

@@ -29,7 +29,7 @@ public class EncounteringCardFilter implements CardFilter {
             if (action instanceof EncounterSeedCardAction encounterAction &&
                     encounterAction.getEncounteredCard().getCardId() == _encounteredCardId &&
             physicalCard instanceof PersonnelCard personnel) {
-                return encounterAction.getAttemptingUnit().getAttemptingPersonnel().contains(personnel);
+                return encounterAction.getAttemptingUnit().getAttemptingPersonnel(game).contains(personnel);
             }
         }
         return false;

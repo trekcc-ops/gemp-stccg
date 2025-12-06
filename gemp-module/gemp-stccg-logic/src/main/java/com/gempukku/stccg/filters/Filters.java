@@ -98,21 +98,23 @@ public class Filters {
         return result;
     }
 
-
-
-    public static Collection<PersonnelCard> highestTotalAttributes(Collection<PersonnelCard> personnelCards) {
+    public static Collection<PersonnelCard> highestTotalAttributes(Collection<PersonnelCard> personnelCards,
+                                                                   DefaultGame cardGame) {
         List<PersonnelCard> highestCards = new LinkedList<>();
         int highestTotal = 0;
         for (PersonnelCard personnel : personnelCards) {
-            if (personnel.getTotalAttributes() > highestTotal) {
+            int totalAttributes = personnel.getTotalAttributes(cardGame);
+            if (totalAttributes > highestTotal) {
                 highestCards.clear();
                 highestCards.add(personnel);
-            } else if (personnel.getTotalAttributes() >= highestTotal) {
+                highestTotal = totalAttributes;
+            } else if (totalAttributes == highestTotal) {
                 highestCards.add(personnel);
             }
         }
         return highestCards;
     }
+
 
     public static Collection<PhysicalCard> filterCardsInPlay(DefaultGame game, Filterable... filters) {
         CardFilter filter = Filters.and(filters);

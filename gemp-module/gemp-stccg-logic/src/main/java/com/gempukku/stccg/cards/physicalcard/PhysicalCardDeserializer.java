@@ -21,7 +21,7 @@ public class PhysicalCardDeserializer {
             card.setLocation(game, location);
         }
 
-        if (card instanceof PhysicalShipCard shipCard)
+        if (card instanceof ShipCard shipCard)
             shipCard._rangeAvailable = node.get("rangeAvailable").intValue();
 
         // whileInZoneData

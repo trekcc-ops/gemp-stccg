@@ -16,7 +16,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.rules.generic.RuleSet;
 
@@ -211,25 +210,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return false;
     }
 
-
-    public void signalStartOfTurn(String playerId) throws PlayerNotFoundException {
-        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
-        if (list != null) {
-            for (Modifier modifier : list) {
-                list.remove(modifier);
-                _untilEndOfTurnModifiers.add(modifier);
-            }
-        }
-        _normalCardPlaysAvailableNew.put(playerId, _normalCardPlaysPerTurn);
-
-        // Unstop all "stopped" cards
-        // TODO - Does not account for cards that can be stopped for multiple turns
-        for (PhysicalCard card : _game.getGameState().getAllCardsInPlay()) {
-            if (card instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
-                stCard.unstop();
-            }
-        }
-    }
 
     public void signalStartOfTurn(Player player) {
         String playerId = player.getPlayerId();

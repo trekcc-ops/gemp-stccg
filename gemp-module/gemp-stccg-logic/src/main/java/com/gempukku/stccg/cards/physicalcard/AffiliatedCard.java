@@ -1,26 +1,142 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 
-import java.util.Set;
+import java.util.*;
 
-public interface AffiliatedCard extends PhysicalCard {
+public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWithCompatibility {
 
-    boolean isAffiliation(Affiliation affiliation);
-    boolean isMultiAffiliation();
-    Affiliation getCurrentAffiliation();
-    void setCurrentAffiliation(Affiliation affiliation);
-    void changeAffiliation(Affiliation affiliation) throws InvalidGameLogicException, PlayerNotFoundException;
-    Set<Affiliation> getAffiliationOptions();
-    String getCardLink();
+    protected List<Affiliation> _currentAffiliations = new ArrayList<>();
+    private Affiliation _defaultCardArtAffiliation;
 
-    default boolean matchesAffiliationOf(PhysicalCard otherCard) {
-        if (otherCard instanceof AffiliatedCard affiliatedCard) {
-            return getCurrentAffiliation() == affiliatedCard.getCurrentAffiliation();
+    AffiliatedCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
+        super(cardId, owner, blueprint);
+        _currentAffiliations.addAll(blueprint.getAffiliations());
+        _defaultCardArtAffiliation = _currentAffiliations.getFirst();
+    }
+
+    public Quadrant getNativeQuadrant() {
+        return _blueprint.getQuadrant();
+    }
+
+    public boolean isInQuadrant(Quadrant quadrant) {
+        return _currentGameLocation.isInQuadrant(quadrant);
+    }
+
+    @JsonIgnore
+    public boolean isMultiAffiliation() {
+        return getAffiliationOptions().size() > 1;
+    }
+
+    public Affiliation getAffiliationForCardArt() {
+        return _defaultCardArtAffiliation;
+    }
+
+    @JsonProperty("affiliation")
+    public List<Affiliation> getCurrentAffiliations() {
+        return _currentAffiliations;
+    }
+    
+
+    @JsonIgnore
+    public void setCurrentAffiliation(Affiliation... affiliations) {
+        /* Do not add any additional functionality to this method, because it is used to test compatibility under
+                multiple affiliations */
+        _currentAffiliations.clear();
+        _currentAffiliations.addAll(Arrays.asList(affiliations));
+    }
+
+    public void changeAffiliation(ST1EGame cardGame, Affiliation affiliation) {
+        setCurrentAffiliation(affiliation);
+        if (getAffiliationOptions().contains(affiliation)) {
+            _defaultCardArtAffiliation = affiliation;
+        }
+        if (getAffiliationOptions().size() > 1) {
+            if (this instanceof ReportableCard reportable &&
+                    _currentGameLocation instanceof MissionLocation missionLocation) {
+                if (reportable.getAwayTeam().canBeDisbanded(cardGame)) {
+                    reportable.getAwayTeam().disband(cardGame);
+                } else {
+                    if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(cardGame, reportable))
+                        reportable.leaveAwayTeam(cardGame);
+                    if (reportable.getAwayTeam() == null)
+                        reportable.joinEligibleAwayTeam(cardGame, missionLocation);
+                }
+            }
+        }
+    }
+
+
+    public Set<Affiliation> getAffiliationOptions() {
+        return _blueprint.getAffiliations();
+    }
+
+    boolean doesNotWorkWith(AffiliatedCard otherCard) {
+        return getBlueprint().doesNotWorkWithPerRestrictionBox(this, otherCard);
+    }
+
+    public boolean matchesAffiliationOf(AffiliatedCard otherCard) {
+        for (Affiliation affiliation : _currentAffiliations) {
+            if (otherCard.isAffiliation(affiliation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canReportToFacilityAsAffiliation(FacilityCard facility, Affiliation affiliation, ST1EGame stGame) {
+            /* Normally, Personnel, Ship, and Equipment cards play at a usable, compatible outpost or headquarters
+                in their native quadrant. */
+        if (this instanceof ReportableCard) {
+            // TODO - Does not perform any compatibility checks other than affiliation
+            if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
+                    facility.isUsableBy(getOwnerName()) && facility.isInQuadrant(getNativeQuadrant())) {
+                Collection<CardWithCompatibility> otherCards = new ArrayList<>();
+                otherCards.add(facility);
+                otherCards.addAll(facility.getPersonnelInCrew(stGame));
+                return isCompatibleWithOtherCardsAsAffiliation(affiliation, otherCards, stGame);
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
     }
+
+
+    public boolean isCompatibleWithOtherCardsAsAffiliation(Affiliation affiliation,
+                                                           Collection<? extends CardWithCompatibility> otherCards,
+                                                           ST1EGame stGame) {
+        Affiliation[] currentAffiliations = getCurrentAffiliations().toArray(new Affiliation[0]);
+        setCurrentAffiliation(affiliation);
+        boolean allCompatible = true;
+        for (CardWithCompatibility otherCard : otherCards) {
+            if (!isCompatibleWith(stGame, otherCard)) {
+                allCompatible = false;
+            }
+        }
+            // Set the affiliation back to what it was originally!
+        setCurrentAffiliation(currentAffiliations);
+        return allCompatible;
+    }
+
+
+    public boolean isAffiliation(Affiliation affiliation) {
+        return _currentAffiliations.contains(affiliation);
+    }
+
+    @Override
+    public boolean hasTransporters() {
+        return _blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
+    }
+
 }

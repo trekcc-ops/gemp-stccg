@@ -9,7 +9,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.*;
@@ -21,19 +21,19 @@ import java.util.Collection;
 public class DockAction extends ActionyAction implements TopLevelSelectableAction {
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    private final PhysicalShipCard _cardToDock;
+    private final ShipCard _cardToDock;
     private boolean _targetChosen;
     private boolean _cardDocked;
     private FacilityCard _dockingTarget;
     private final Collection<FacilityCard> _dockingTargetOptions;
     private SelectVisibleCardAction _selectAction;
 
-    public DockAction(Player player, PhysicalShipCard cardToDock, ST1EGame cardGame) {
+    public DockAction(Player player, ShipCard cardToDock, ST1EGame cardGame) {
         super(cardGame, player, "Dock", ActionType.DOCK_SHIP);
         _cardToDock = cardToDock;
 
         _dockingTargetOptions = Filters.yourFacilitiesInPlay(cardGame, player).stream()
-                .filter(card -> card.isCompatibleWith(_cardToDock) &&
+                .filter(card -> card.isCompatibleWith(cardGame, _cardToDock) &&
                         card.getGameLocation() == _cardToDock.getGameLocation())
                 .toList();
     }

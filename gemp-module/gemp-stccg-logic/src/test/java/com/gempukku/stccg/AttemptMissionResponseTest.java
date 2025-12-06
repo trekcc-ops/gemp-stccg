@@ -71,7 +71,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Report Picard to outpost
         reportCard(P1, picard, outpost);
-        assertTrue(outpost.getCrew().contains(picard));
+        assertTrue(outpost.hasCardInCrew(picard));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
@@ -91,7 +91,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
         assertFalse(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
         _game.carryOutPendingActionsUntilDecisionNeeded();
-        assertTrue(outpost.getCrew().contains(tarses));
+        assertTrue(outpost.hasCardInCrew(tarses));
 
         // Confirm that mission was solved and player earned points
         assertTrue(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());

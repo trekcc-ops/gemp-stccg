@@ -108,6 +108,14 @@ public class ST1EGameState extends GameState {
         }
     }
 
+    public AwayTeam createNewAwayTeam(String playerName, MissionLocation location) {
+        AwayTeam result = new AwayTeam(playerName, location, _nextAttemptingUnitId);
+        _awayTeams.add(result);
+        _nextAttemptingUnitId++;
+        return result;
+    }
+
+
     public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
         AwayTeam result = new AwayTeam(player.getPlayerId(), location, _nextAttemptingUnitId);
         _awayTeams.add(result);
@@ -236,4 +244,19 @@ public class ST1EGameState extends GameState {
         _locationIds.put(location.getLocationId(), location);
     }
 
+    public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
+        for (PhysicalCard card1 : cards) {
+            for (PhysicalCard card2 : cards) {
+                boolean presentWithEachOther = card1.getGameLocation() == card2.getGameLocation() &&
+                            card1.getGameLocation() instanceof MissionLocation missionLocation &&
+                            card1.getAttachedToCardId() != null &&
+                            card1.getAttachedToCardId().equals(card2.getAttachedToCardId()) &&
+                            _spacelineLocations.contains(missionLocation);
+                if (!presentWithEachOther) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

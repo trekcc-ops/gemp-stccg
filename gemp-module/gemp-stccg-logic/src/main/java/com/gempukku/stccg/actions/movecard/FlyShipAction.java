@@ -8,7 +8,7 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -22,14 +22,14 @@ import java.util.List;
 public class FlyShipAction extends ActionyAction implements TopLevelSelectableAction {
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    private final PhysicalShipCard _flyingCard;
+    private final ShipCard _flyingCard;
     private boolean _destinationChosen, _cardMoved;
 
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
     private SelectVisibleCardAction _selectAction;
 
-    public FlyShipAction(Player player, PhysicalShipCard flyingCard, ST1EGame cardGame)
+    public FlyShipAction(Player player, ShipCard flyingCard, ST1EGame cardGame)
             throws InvalidGameLogicException {
         super(cardGame, player, "Fly", ActionType.FLY_SHIP);
         _flyingCard = flyingCard;
@@ -41,7 +41,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         for (MissionLocation location : allLocations) {
             if (location.isInSameQuadrantAs(currentLocation) && location != currentLocation) {
                 int rangeNeeded = currentLocation.getDistanceToLocation(cardGame, location, player);
-                if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
+                if (rangeNeeded <= _flyingCard.getRangeAvailable(cardGame)) {
                     PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
                     _destinationOptions.add(destination);
                     _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));

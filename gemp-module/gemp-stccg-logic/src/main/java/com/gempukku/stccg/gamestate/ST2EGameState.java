@@ -1,12 +1,12 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST2EGame;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +30,11 @@ public class ST2EGameState extends GameState {
     @Override
     public List<Phase> getPhasesInOrder() {
         return List.of(getCurrentPhase());
+    }
+
+    @Override
+    public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
+        return false;
     }
 
 }

@@ -3,7 +3,7 @@ package com.gempukku.stccg.game;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.physicalcard.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -58,7 +58,7 @@ public class CardInfoSerializer {
 
         List<Map<Object, Object>> crew = new ArrayList<>();
         if (card instanceof CardWithCrew cardWithCrew) {
-            for (PhysicalCard crewCard : cardWithCrew.getCrew()) {
+            for (PhysicalCard crewCard : cardWithCrew.getCrew(cardGame)) {
                 crew.add(getCardProperties(crewCard));
             }
         }
@@ -66,13 +66,13 @@ public class CardInfoSerializer {
 
         List<Map<Object, Object>> dockedCards = new ArrayList<>();
         if (card instanceof FacilityCard facility) {
-            for (PhysicalCard ship : facility.getDockedShips()) {
+            for (PhysicalCard ship : facility.getDockedShips(cardGame)) {
                 dockedCards.add(getCardProperties(ship));
             }
         }
         itemsToSerialize.put("dockedCards", dockedCards);
 
-        if (card instanceof PhysicalShipCard ship) {
+        if (card instanceof ShipCard ship) {
             List<String> staffingRequirements = new ArrayList<>();
             if (!ship.getStaffingRequirements().isEmpty()) {
                 for (CardIcon icon : ship.getStaffingRequirements()) {
@@ -81,9 +81,9 @@ public class CardInfoSerializer {
             }
             itemsToSerialize.put("staffingRequirements", staffingRequirements);
 
-            itemsToSerialize.put("isStaffed", ship.isStaffed());
+            itemsToSerialize.put("isStaffed", ship.isStaffed(cardGame));
             itemsToSerialize.put("printedRange", ship.getBlueprint().getRange());
-            itemsToSerialize.put("rangeAvailable", ship.getRangeAvailable());
+            itemsToSerialize.put("rangeAvailable", ship.getRangeAvailable(cardGame));
         }
 
         if (card instanceof MissionCard mission) {

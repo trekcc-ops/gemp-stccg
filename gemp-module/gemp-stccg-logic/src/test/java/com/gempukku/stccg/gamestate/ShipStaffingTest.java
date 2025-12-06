@@ -3,7 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -43,16 +43,16 @@ public class ShipStaffingTest extends AbstractAtTest {
         PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", _cardLibrary, P1);
         PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", _cardLibrary, P1);
         PersonnelCard wallace = (PersonnelCard) _game.addCardToGame("101_203", _cardLibrary, P1);
-        PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+        ShipCard runabout =
+                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
         reportCardsToFacility(List.of(troi, hobson, picard, data, wallace, runabout), _outpost);
 
-        assertTrue(_outpost.getCrew().contains(troi));
-        assertTrue(_outpost.getCrew().contains(hobson));
-        assertTrue(_outpost.getCrew().contains(picard));
-        assertTrue(_outpost.getCrew().contains(data));
-        assertFalse(_outpost.getCrew().contains(runabout));
+        assertTrue(_outpost.hasCardInCrew(troi));
+        assertTrue(_outpost.hasCardInCrew(hobson));
+        assertTrue(_outpost.hasCardInCrew(picard));
+        assertTrue(_outpost.hasCardInCrew(data));
+        assertFalse(_outpost.hasCardInCrew(runabout));
         assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
@@ -65,11 +65,11 @@ public class ShipStaffingTest extends AbstractAtTest {
 
         beamCards(P1, _outpost, personnelBeaming, runabout);
         for (PersonnelCard card : personnelBeaming) {
-            assertTrue(runabout.getCrew().contains(card));
-            assertFalse(_outpost.getCrew().contains(card));
+            assertTrue(runabout.hasCardInCrew(card));
+            assertFalse(_outpost.hasCardInCrew(card));
         }
 
-        assertTrue(runabout.isStaffed());
+        assertTrue(runabout.isStaffed(_game));
     }
 
 }

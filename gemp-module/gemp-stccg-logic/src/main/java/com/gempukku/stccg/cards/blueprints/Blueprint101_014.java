@@ -34,7 +34,7 @@ public class Blueprint101_014 extends CardBlueprint {
         MissionRequirement conditions = new AndMissionRequirement(SkillName.MEDICAL, SkillName.SECURITY);
 
         Collection<PersonnelCard> highestPersonnel =
-                Filters.highestTotalAttributes(attemptingUnit.getAttemptingPersonnel());
+                Filters.highestTotalAttributes(attemptingUnit.getAttemptingPersonnel(game), game);
         SelectVisibleCardAction selectAction =
                 new SelectVisibleCardAction(game, game.getOpponent(attemptingUnit.getControllerName()),
                         "Select a personnel to kill", highestPersonnel);

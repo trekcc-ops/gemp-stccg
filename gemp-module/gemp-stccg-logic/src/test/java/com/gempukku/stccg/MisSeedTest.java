@@ -70,7 +70,7 @@ public class MisSeedTest extends AbstractAtTest {
 
         // Report Picard to outpost
         reportCard(P1, picard, outpost);
-        assertTrue(outpost.getCrew().contains(picard));
+        assertTrue(outpost.hasCardInCrew(picard));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 

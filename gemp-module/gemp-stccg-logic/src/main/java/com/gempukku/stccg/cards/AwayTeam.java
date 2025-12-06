@@ -23,7 +23,7 @@ public class AwayTeam implements AttemptingUnit {
     private final String _controllerName;
     @JsonProperty("awayTeamCardIds")
     @JsonIdentityReference(alwaysAsId=true)
-    private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
+    private final Collection<ReportableCard> _cardsInAwayTeam;
     @JsonProperty("locationId")
     private final int _locationId;
     @JsonProperty("awayTeamId")
@@ -40,7 +40,7 @@ public class AwayTeam implements AttemptingUnit {
     private boolean hasAffiliation(Affiliation affiliation) {
         for (PhysicalCard card : _cardsInAwayTeam) {
             if (card instanceof AffiliatedCard affiliatedCard)
-                if (affiliatedCard.getCurrentAffiliation() == affiliation)
+                if (affiliatedCard.isAffiliation(affiliation))
                     return true;
         }
         return false;
@@ -58,14 +58,25 @@ public class AwayTeam implements AttemptingUnit {
     }
 
 
+    @Override
+    public Collection<PersonnelCard> getAllPersonnel(DefaultGame cardGame) {
+        List<PersonnelCard> result = new LinkedList<>();
+        for (PhysicalCard card : getCards()) {
+            if (card instanceof PersonnelCard personnel) {
+                result.add(personnel);
+            }
+        }
+        return result;
+    }
+
     public String getControllerName() { return _controllerName; }
 
-    public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
+    public Collection<ReportableCard> getCards() { return _cardsInAwayTeam; }
 
     public boolean canAttemptMission(DefaultGame cardGame, MissionLocation mission) {
         if (!isOnSurface(mission))
             return false;
-        if (getAttemptingPersonnel().isEmpty())
+        if (getAttemptingPersonnel(cardGame).isEmpty())
             return false;
         try {
             MissionCard missionCard = mission.getMissionForPlayer(_controllerName);
@@ -82,7 +93,7 @@ public class AwayTeam implements AttemptingUnit {
 
 
 
-    public void add(PhysicalReportableCard1E card) {
+    public void add(ReportableCard card) {
         _cardsInAwayTeam.add(card);
     }
 
@@ -90,26 +101,16 @@ public class AwayTeam implements AttemptingUnit {
         return TextUtils.concatenateStrings(_cardsInAwayTeam.stream().map(PhysicalCard::getFullName).toList());
     }
 
-    @JsonIgnore
-    public Collection<PersonnelCard> getAllPersonnel() {
-        List<PersonnelCard> result = new LinkedList<>();
-        for (PhysicalCard card : getCards()) {
-            if (card instanceof PersonnelCard personnel) {
-                result.add(personnel);
-            }
-        }
-        return result;
-    }
-
-    public boolean isCompatibleWith(PhysicalReportableCard1E reportable) {
-        for (PhysicalReportableCard1E awayTeamCard : _cardsInAwayTeam) {
-            if (!awayTeamCard.isCompatibleWith(reportable))
+    public boolean isCompatibleWith(ST1EGame game, ReportableCard reportable) {
+        for (ReportableCard awayTeamCard : _cardsInAwayTeam) {
+            if (!awayTeamCard.isCompatibleWith(game, reportable))
                 return false;
         }
         return true;
     }
 
-    public void remove(ST1EGame cardGame, PhysicalReportableCard1E card) {
+
+    public void remove(ST1EGame cardGame, ReportableCard card) {
         _cardsInAwayTeam.remove(card);
         if (_cardsInAwayTeam.isEmpty())
             cardGame.getGameState().removeAwayTeamFromGame(this);
@@ -124,10 +125,10 @@ public class AwayTeam implements AttemptingUnit {
         List<AwayTeam> awayTeamsOnSurface =
                 teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), _controllerName)).toList();
 
-        for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {
+        for (ReportableCard reportable : _cardsInAwayTeam) {
             boolean canJoinAnother = false;
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
-                if (awayTeam != this && awayTeam.isCompatibleWith(reportable))
+                if (awayTeam != this && awayTeam.isCompatibleWith(game, reportable))
                     canJoinAnother = true;
             }
             if (!canJoinAnother)
@@ -137,7 +138,7 @@ public class AwayTeam implements AttemptingUnit {
     }
 
     public void disband(ST1EGame game) {
-        for (PhysicalReportableCard1E card : _cardsInAwayTeam) {
+        for (ReportableCard card : _cardsInAwayTeam) {
             card.leaveAwayTeam(game);
 
             Stream<AwayTeam> teamsOnSurface =
@@ -146,7 +147,7 @@ public class AwayTeam implements AttemptingUnit {
                     teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), _controllerName)).toList();
 
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
-                if (awayTeam != this && card.getAwayTeam() == null && awayTeam.isCompatibleWith(card))
+                if (awayTeam != this && card.getAwayTeam() == null && awayTeam.isCompatibleWith(game, card))
                     card.addToAwayTeam(awayTeam);
             }
         }

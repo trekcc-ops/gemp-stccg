@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -59,7 +59,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
             } else {
                 _victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
 
-                if (_victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
+                if (_victim instanceof PersonnelCard reportable && reportable.getAwayTeam() != null)
                     reportable.leaveAwayTeam((ST1EGame) cardGame);
                 _wasCarriedOut = true;
                 return new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId, _victim);

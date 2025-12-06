@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.TriggerActionBlueprint;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -61,7 +62,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         // TODO - Replace with a client communication method that pulls image options from the library
         String result;
         if (this instanceof AffiliatedCard affiliatedCard) {
-            String affiliatedImage = _blueprint.getAffiliationImageUrl(affiliatedCard.getCurrentAffiliation());
+            String affiliatedImage = _blueprint.getAffiliationImageUrl(affiliatedCard.getAffiliationForCardArt());
             if (affiliatedImage != null)
                 result = affiliatedImage;
             else
@@ -136,7 +137,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
 
-    private boolean canEnterPlay(DefaultGame game, List<Requirement> enterPlayRequirements) {
+    public boolean canEnterPlay(DefaultGame game, List<Requirement> enterPlayRequirements) {
         if (cannotEnterPlayPerUniqueness(game))
             return false;
         if (enterPlayRequirements != null && !allRequirementsAreTrue(game, enterPlayRequirements))
@@ -166,8 +167,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isOwnedBy(String playerName) {
         return Objects.equals(_ownerName, playerName);
     }
-
-    public boolean canBeSeeded(DefaultGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }
 
     public boolean canBePlayed(DefaultGame game) { return canEnterPlay(game, _blueprint.getPlayRequirements()); }
 
@@ -200,7 +199,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public String getFullName() { return _blueprint.getFullName(); }
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame) {
-        return getPlayCardAction(cardGame, false);
+        if (this instanceof ReportableCard reportable) {
+            return new ReportCardAction(cardGame, reportable, false);
+        } else {
+            return getPlayCardAction(cardGame, false);
+        }
     }
 
     public abstract TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree);
@@ -271,19 +274,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.isUnique();
     }
 
-    public Integer getNumberOfCopiesSeededByPlayer(Player player, DefaultGame cardGame) {
-        int total = 0;
-        Collection<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
-        for (Action action : performedActions) {
-            if (action instanceof SeedCardAction seedCardAction) {
-                if (Objects.equals(seedCardAction.getPerformingPlayerId(), player.getPlayerId()) &&
-                        seedCardAction.getCardEnteringPlay().isCopyOf(this))
-                    total += 1;
-            }
-        }
-        return total;
-    }
-
     public Integer getNumberOfCopiesSeededByPlayer(String playerName, DefaultGame cardGame) {
         int total = 0;
         Collection<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
@@ -317,14 +307,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
 
-    public boolean isPresentWith(PhysicalCard card) {
-        return card.getGameLocation() == this.getGameLocation() &&
-                _attachedToCardId != null &&
-                Objects.equals(card.getAttachedToCardId(), _attachedToCardId);
-    }
-
     // TODO May need to implement something here for weird non-personnel cards that have skills
-    public boolean hasSkill(SkillName skillName) { return false; }
+    public boolean hasSkill(SkillName skillName, DefaultGame cardGame) { return false; }
 
 
     public boolean isInPlay() {
@@ -376,4 +360,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
         return false;
     }
+
+    public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
+
+    public boolean isAttachedTo(PhysicalCard card) {
+        return _attachedToCardId != null && _attachedToCardId == card.getCardId();
+    }
+
 }

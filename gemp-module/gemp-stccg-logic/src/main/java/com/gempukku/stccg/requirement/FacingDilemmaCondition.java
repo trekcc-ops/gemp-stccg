@@ -25,7 +25,7 @@ public class FacingDilemmaCondition implements Condition {
         try {
             PhysicalCard card = cardGame.getCardFromCardId(_cardId);
             if (card instanceof PersonnelCard personnelCard) {
-                return personnelCard.isFacingADilemma();
+                return personnelCard.isFacingADilemma(cardGame);
             }
         } catch(CardNotFoundException exp) {
             cardGame.sendErrorMessage(exp);

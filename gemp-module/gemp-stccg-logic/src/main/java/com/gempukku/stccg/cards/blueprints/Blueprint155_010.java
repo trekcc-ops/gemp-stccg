@@ -26,7 +26,7 @@ public class Blueprint155_010 extends CardBlueprint {
     public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                                     EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> result = new LinkedList<>();
-        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel();
+        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel(game);
 
         /* If Away Team/crew contains one personnel, Away Team/ship and crew is stopped.
             Replace dilemma under mission to be encountered again.

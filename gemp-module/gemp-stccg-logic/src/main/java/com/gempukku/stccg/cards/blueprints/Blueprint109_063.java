@@ -13,6 +13,7 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -28,6 +29,7 @@ public class Blueprint109_063 extends CardBlueprint {
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
                                                             ActionResult actionResult, DefaultGame cardGame)
             throws PlayerNotFoundException {
+        ST1EGame stGame = (ST1EGame) cardGame;
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
                 thisCard.isControlledBy(player)) {
@@ -42,11 +44,11 @@ public class Blueprint109_063 extends CardBlueprint {
             for (PhysicalCard card : player.getCardsInDrawDeck()) {
                 Collection<PhysicalCard> ownedCopiesInPlay = Filters.filterCardsInPlay(cardGame,
                         Filters.copyOfCard(card), Filters.owner(player.getPlayerId()));
-                if (card instanceof PersonnelCard personnel && personnel.getSkills().size() == 1 &&
-                        personnel.getSkills().getFirst() instanceof RegularSkill && ownedCopiesInPlay.isEmpty()) {
+                if (card instanceof PersonnelCard personnel && personnel.getSkills(cardGame).size() == 1 &&
+                        personnel.getSkills(cardGame).getFirst() instanceof RegularSkill && ownedCopiesInPlay.isEmpty()) {
                     boolean compatibleAtLeastOnce = false;
                     for (FacilityCard outpost : yourOutposts) {
-                        if (personnel.isCompatibleWith(outpost)) {
+                        if (personnel.isCompatibleWith((ST1EGame) cardGame, outpost)) {
                             compatibleAtLeastOnce = true;
                         }
                     }
@@ -62,8 +64,8 @@ public class Blueprint109_063 extends CardBlueprint {
                 for (PersonnelCard otherSpecialist : specialistsNotInPlay) {
                     boolean validPairing = false;
                     for (FacilityCard outpost : yourOutposts) {
-                        if (specialist.isCompatibleWith(outpost) && specialist.isCompatibleWith(otherSpecialist) &&
-                                otherSpecialist.isCompatibleWith(outpost) && !specialist.isCopyOf(otherSpecialist)) {
+                        if (specialist.isCompatibleWith(stGame, outpost) && specialist.isCompatibleWith(stGame, otherSpecialist) &&
+                                otherSpecialist.isCompatibleWith(stGame, outpost) && !specialist.isCopyOf(otherSpecialist)) {
                             validPairing = true;
                         }
                     }

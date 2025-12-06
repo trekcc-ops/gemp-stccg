@@ -29,12 +29,12 @@ public class Blueprint115_006 extends CardBlueprint {
                                                     EncounterSeedCardAction action, MissionLocation missionLocation) {
 
         List<Action> result = new LinkedList<>();
-        PersonnelCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel());
-        Collection<PhysicalCard> matchingCards = Filters.filter(attemptingUnit.getAttemptingPersonnel(), game,
+        PersonnelCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel(game));
+        Collection<PhysicalCard> matchingCards = Filters.filter(attemptingUnit.getAttemptingPersonnel(game), game,
                 Filters.hasAttributeMatchingPersonnel(randomCard));
 
         Collection<PersonnelCard> cardsToStop = new LinkedList<>();
-        for (PersonnelCard card : attemptingUnit.getAttemptingPersonnel()) {
+        for (PersonnelCard card : attemptingUnit.getAttemptingPersonnel(game)) {
             if (!matchingCards.contains(card)) {
                 cardsToStop.add(card);
             }

@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -32,7 +32,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
             String decisionText;
             if (unit instanceof AwayTeam team) {
                 decisionText = team.concatenateAwayTeam();
-            } else if (unit instanceof PhysicalShipCard ship) {
+            } else if (unit instanceof ShipCard ship) {
                 decisionText = ship.getTitle();
             } else {
                 throw new InvalidGameLogicException(

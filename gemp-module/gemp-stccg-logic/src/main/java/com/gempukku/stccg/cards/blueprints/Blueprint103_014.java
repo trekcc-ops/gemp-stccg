@@ -9,7 +9,6 @@ import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.condition.missionrequirements.RegularSkillMissionRequirement;
@@ -36,13 +35,13 @@ public class Blueprint103_014 extends CardBlueprint {
         List<Action> result = new LinkedList<>();
         int totalCunning = 0;
         int totalStrength = 0;
-        for (PersonnelCard card : attemptingUnit.getAttemptingPersonnel()) {
-            totalCunning = totalCunning + card.getAttribute(CardAttribute.CUNNING);
-            totalStrength = totalStrength + card.getAttribute(CardAttribute.STRENGTH);
+        for (PersonnelCard card : attemptingUnit.getAttemptingPersonnel(game)) {
+            totalCunning = totalCunning + card.getCunning(game);
+            totalStrength = totalStrength + card.getStrength(game);
         }
         MissionRequirement condition = new RegularSkillMissionRequirement(SkillName.GREED);
 
-        if ((totalCunning + totalStrength <= 68) && !condition.canBeMetBy(attemptingUnit)) {
+        if ((totalCunning + totalStrength <= 68) && !condition.canBeMetBy(attemptingUnit.getAttemptingPersonnel(game), game)) {
             String opponentId = game.getOpponent(attemptingUnit.getControllerName());
             SelectCardsAction selectAction =
                     new SelectCardsFromDialogAction(game, game.getPlayer(opponentId),

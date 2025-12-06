@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectValidCardCombinationFromDialogToDownloadAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
+import com.gempukku.stccg.cards.physicalcard.CardWithCompatibility;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,9 +16,10 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.modifiers.ModifierFlag;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -103,7 +105,11 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
                         facilityCard.getFacilityType() == FacilityType.OUTPOST) {
                     boolean allCompatible = true;
                     for (PhysicalCard selectedCard : _cardsToDownload) {
-                        if (!((PersonnelCard) selectedCard).isCompatibleWith(facilityCard)) {
+                        if (selectedCard instanceof CardWithCompatibility stCard) {
+                            if (!facilityCard.isCompatibleWith((ST1EGame) cardGame, stCard)) {
+                                allCompatible = false;
+                            }
+                        } else {
                             allCompatible = false;
                         }
                     }

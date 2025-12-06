@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -46,14 +46,13 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
-        PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+        ShipCard runabout =
+                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        troi.reportToFacilityForTestingOnly(_outpost);
-        runabout.reportToFacilityForTestingOnly(_outpost);
+        reportCardsToFacility(_outpost, troi, runabout);
 
-        assertTrue(_outpost.getCrew().contains(troi));
-        assertFalse(_outpost.getCrew().contains(runabout));
+        assertTrue(_outpost.hasCardInCrew(troi));
+        assertFalse(_outpost.hasCardInCrew(runabout));
         assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
@@ -63,8 +62,8 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
         beamCards(P1, _outpost, personnelBeaming, runabout);
         for (PersonnelCard card : personnelBeaming) {
-            assertTrue(runabout.getCrew().contains(card));
-            assertFalse(_outpost.getCrew().contains(card));
+            assertTrue(runabout.hasCardInCrew(card));
+            assertFalse(_outpost.hasCardInCrew(card));
         }
 
         undockShip(P1, runabout);
@@ -74,7 +73,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertTrue(troi.isStopped());
 
         playerDecided(P1, "0");
-        assertFalse(runabout.getCrew().contains(troi));
+        assertFalse(runabout.hasCardInCrew(troi));
         assertEquals(Zone.DISCARD, troi.getZone());
         assertFalse(runabout.isStopped());
     }
@@ -100,14 +99,13 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
-        PhysicalShipCard runabout =
-                (PhysicalShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+        ShipCard runabout =
+                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
 
-        troi.reportToFacilityForTestingOnly(_outpost);
-        runabout.reportToFacilityForTestingOnly(_outpost);
+        reportCardsToFacility(_outpost, troi, runabout);
 
-        assertTrue(_outpost.getCrew().contains(troi));
-        assertFalse(_outpost.getCrew().contains(runabout));
+        assertTrue(_outpost.hasCardInCrew(troi));
+        assertFalse(_outpost.hasCardInCrew(runabout));
         assertEquals(_outpost, runabout.getDockedAtCard(_game));
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
@@ -117,8 +115,8 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
         beamCards(P1, _outpost, personnelBeaming, runabout);
         for (PersonnelCard card : personnelBeaming) {
-            assertTrue(runabout.getCrew().contains(card));
-            assertFalse(_outpost.getCrew().contains(card));
+            assertTrue(runabout.hasCardInCrew(card));
+            assertFalse(_outpost.hasCardInCrew(card));
         }
 
         undockShip(P1, runabout);
@@ -131,7 +129,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         playerDecided(P1, "1");
         int handSizeAfter = _game.getPlayer(P2).getCardsInHand().size();
 
-        assertTrue(runabout.getCrew().contains(troi));
+        assertTrue(runabout.hasCardInCrew(troi));
         assertEquals(handSizeBefore, handSizeAfter - 2);
         assertFalse(runabout.isStopped());
     }

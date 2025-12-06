@@ -7,15 +7,16 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
-import com.gempukku.stccg.cards.CardWithCrew;
-import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,18 +42,22 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     private List<Affiliation> getAffiliationOptions(DefaultGame cardGame) {
         List<Affiliation> _affiliationOptions = new LinkedList<>();
         _performingCard.getAffiliationOptions().forEach(affiliation -> {
-            if (affiliation != _performingCard.getCurrentAffiliation())
+            if (!_performingCard.isAffiliation(affiliation))
                 _affiliationOptions.add(affiliation);
         });
         if (_performingCard instanceof PersonnelCard personnel) {
-            if (personnel.getAttachedTo(cardGame) != null && personnel.getAttachedTo(cardGame) instanceof CardWithCrew cardWithCrew) {
+            if (personnel.getAttachedTo(cardGame) != null && personnel.getAttachedTo(cardGame) instanceof CardWithCrew cardWithCrew
+                && cardWithCrew instanceof AffiliatedCard affiliatedCardWithCrew) {
+                Collection<CardWithCompatibility> otherCards = new ArrayList<>();
+                otherCards.add(affiliatedCardWithCrew);
+                otherCards.addAll(cardWithCrew.getPersonnelInCrew(cardGame));
                 _affiliationOptions.removeIf(affiliation ->
-                        !personnel.isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, affiliation));
+                        !personnel.isCompatibleWithOtherCardsAsAffiliation(affiliation, otherCards, (ST1EGame) cardGame));
             }
         } else if (_performingCard instanceof CardWithCrew cardWithCrew) {
-            // TODO - Ignores carried ship interactions
-            _affiliationOptions.removeIf(affiliation -> cardWithCrew.getPersonnelInCrew().stream().anyMatch(
-                    personnel -> !personnel.isCompatibleWith(affiliation)));
+            _affiliationOptions.removeIf(affiliation ->
+                    !_performingCard.isCompatibleWithOtherCardsAsAffiliation(affiliation,
+                            cardWithCrew.getPersonnelInCrew(cardGame), (ST1EGame) cardGame));
         } else {
             // There should be no other types of cards that would get the ChangeAffiliationAction
             _affiliationOptions.clear();
@@ -74,7 +79,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
 
         if (!_wasCarriedOut) {
             Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
-            _performingCard.changeAffiliation(selectedAffiliation);
+            _performingCard.changeAffiliation((ST1EGame) cardGame, selectedAffiliation);
             _wasCarriedOut = true;
             setAsSuccessful();
         }

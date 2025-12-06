@@ -30,7 +30,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         _game.addCardToGame("101_205", _cardLibrary, P1);
 
         MissionCard mission = null;
-        PhysicalReportableCard1E tricorder = null;
+        EquipmentCard tricorder = null;
         PersonnelCard geordi = null;
         PersonnelCard tamal = null;
         PersonnelCard deanna = null;
@@ -41,7 +41,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
                     mission = (MissionCard) card;
                     break;
                 case "101_065":
-                    tricorder = (PhysicalReportableCard1E) card;
+                    tricorder = (EquipmentCard) card;
                     break;
                 case "101_212":
                     geordi = (PersonnelCard) card;
@@ -70,24 +70,19 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission.getGameLocation());
 
         assertTrue(outpost.isInPlay());
+        reportCardsToFacility(outpost, geordi, tamal, deanna);
 
-        geordi.reportToFacilityForTestingOnly(outpost);
-        tamal.reportToFacilityForTestingOnly(outpost);
-        deanna.reportToFacilityForTestingOnly(outpost);
+        assertFalse(geordi.hasSkill(SkillName.SCIENCE, _game));
+        assertFalse(deanna.hasSkill(SkillName.SCIENCE, _game));
+        assertEquals(0, geordi.getSkillLevel(_game, SkillName.SCIENCE));
+        assertEquals(1, tamal.getSkillLevel(_game, SkillName.SCIENCE));
 
-        assertFalse(geordi.hasSkill(SkillName.SCIENCE));
-        assertFalse(deanna.hasSkill(SkillName.SCIENCE));
-        assertEquals(0, geordi.getSkillLevel(SkillName.SCIENCE));
-        assertEquals(1, tamal.getSkillLevel(SkillName.SCIENCE));
+        reportCardToFacility(tricorder, outpost);
+        assertTrue(gameState.cardsArePresentWithEachOther(tricorder, geordi, tamal, deanna));
 
-        tricorder.reportToFacilityForTestingOnly(outpost);
-        assertTrue(tricorder.isPresentWith(geordi));
-        assertTrue(tricorder.isPresentWith(tamal));
-        assertTrue(tricorder.isPresentWith(deanna));
-
-        assertTrue(geordi.hasSkill(SkillName.SCIENCE));
-        assertFalse(deanna.hasSkill(SkillName.SCIENCE));
-        assertEquals(1, geordi.getSkillLevel(SkillName.SCIENCE));
-        assertEquals(2, tamal.getSkillLevel(SkillName.SCIENCE));
+        assertTrue(geordi.hasSkill(SkillName.SCIENCE, _game));
+        assertFalse(deanna.hasSkill(SkillName.SCIENCE, _game));
+        assertEquals(1, geordi.getSkillLevel(_game, SkillName.SCIENCE));
+        assertEquals(2, tamal.getSkillLevel(_game, SkillName.SCIENCE));
     }
 }

@@ -638,7 +638,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle());
     }
 
-    protected void beamCard(String playerId, PhysicalCard cardWithTransporters, PhysicalReportableCard1E cardToBeam,
+    protected void beamCard(String playerId, PhysicalCard cardWithTransporters, ReportableCard cardToBeam,
                             PhysicalCard destination)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         BeamCardsAction choice = null;
@@ -660,7 +660,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throw new DecisionResultInvalidException("No valid action to beam " + cardToBeam.getTitle());
     }
 
-    protected void undockShip(String playerId, PhysicalShipCard ship)
+    protected void undockShip(String playerId, ShipCard ship)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         UndockAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
@@ -680,7 +680,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
     protected void beamCards(String playerId, PhysicalCard cardWithTransporters,
-                             Collection<? extends PhysicalReportableCard1E> cardsToBeam, PhysicalCard destination)
+                             Collection<? extends ReportableCard> cardsToBeam, PhysicalCard destination)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         BeamCardsAction choice = null;
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
@@ -900,17 +900,38 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
-    protected void reportCardToFacility(PhysicalReportableCard1E reportable, FacilityCard facility)
+    protected void reportCardToFacility(ReportableCard reportable, FacilityCard facility)
             throws PlayerNotFoundException, InvalidGameLogicException {
         ReportCardAction reportCardAction = new ReportCardAction(_game, reportable, false, facility);
         reportCardAction.processEffect(reportable, _game);
     }
 
-    protected void reportCardsToFacility(Collection<PhysicalReportableCard1E> reportables, FacilityCard facility)
+    protected void reportCardsToFacility(Collection<ReportableCard> reportables, FacilityCard facility)
             throws PlayerNotFoundException, InvalidGameLogicException {
-        for (PhysicalReportableCard1E reportable : reportables) {
+        for (ReportableCard reportable : reportables) {
             reportCardToFacility(reportable, facility);
         }
     }
+
+    protected void reportCardsToFacility(FacilityCard facility, ReportableCard... reportables)
+            throws PlayerNotFoundException, InvalidGameLogicException {
+        for (ReportableCard reportable : reportables) {
+            reportCardToFacility(reportable, facility);
+        }
+    }
+
+    protected boolean personnelAttributesAre(PersonnelCard personnel, List<Integer> attributeValues) {
+        if (!Objects.equals(personnel.getIntegrity(_game), attributeValues.get(0))) {
+            return false;
+        }
+        if (!Objects.equals(personnel.getCunning(_game), attributeValues.get(1))) {
+            return false;
+        }
+        if (!Objects.equals(personnel.getStrength(_game), attributeValues.get(2))) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

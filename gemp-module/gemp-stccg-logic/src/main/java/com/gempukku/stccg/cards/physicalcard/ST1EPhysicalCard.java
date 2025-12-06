@@ -1,9 +1,11 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -14,29 +16,29 @@ import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
 import java.util.Objects;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
-    protected final ST1EGame _game;
     protected boolean _isStopped;
-    public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
+    public ST1EPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
-        _game = game;
     }
 
-    public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
-        // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-        STCCGPlayCardAction action = new STCCGPlayCardAction(cardGame, this, Zone.CORE, _ownerName, forFree);
-        _game.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
-        return action;
+        if (this instanceof ReportableCard reportable) {
+            return new ReportCardAction(cardGame, reportable, forFree);
+        } else {
+            // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
+            STCCGPlayCardAction action = new STCCGPlayCardAction(cardGame, this, Zone.CORE, _ownerName, forFree);
+            cardGame.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
+            return action;
+        }
     }
 
     @Override
@@ -51,7 +53,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         List<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
         for (Action action : performedActions) {
             if (action instanceof RevealSeedCardAction revealAction) {
-                if (_blueprint.getCardType() == CardType.ARTIFACT) {
+                if (getCardType() == CardType.ARTIFACT) {
                     // TODO - Artifact misseeding is a pain
                 } else {
                     int olderCardId = revealAction.getRevealedCardId();
@@ -72,6 +74,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         _isStopped = false;
     }
 
+    @JsonProperty("isStopped")
     public boolean isStopped() {
         return _isStopped;
     }
@@ -89,15 +92,5 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         // TODO - account for other inactive states
         return !_isStopped;
     }
-
-    @Override
-    public boolean isPresentWith(PhysicalCard card) {
-        return card.getGameLocation() == this.getGameLocation() &&
-                card.getGameLocation() instanceof MissionLocation missionLocation &&
-                _attachedToCardId != null &&
-                _attachedToCardId.equals(card.getAttachedToCardId()) &&
-                _game.getGameState().getSpacelineLocations().contains(missionLocation);
-    }
-
 
 }

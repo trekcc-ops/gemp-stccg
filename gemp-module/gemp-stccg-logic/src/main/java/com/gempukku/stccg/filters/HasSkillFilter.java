@@ -16,6 +16,6 @@ public class HasSkillFilter implements CardFilter {
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        return physicalCard.hasSkill(_skill);
+        return physicalCard.hasSkill(_skill, game);
     }
 }

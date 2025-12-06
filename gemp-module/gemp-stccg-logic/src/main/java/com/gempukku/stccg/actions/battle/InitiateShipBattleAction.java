@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.CardWithHullIntegrity;
+import com.gempukku.stccg.cards.physicalcard.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;

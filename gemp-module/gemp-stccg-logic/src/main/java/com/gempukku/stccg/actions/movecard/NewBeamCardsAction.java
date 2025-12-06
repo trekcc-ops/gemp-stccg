@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -11,6 +11,10 @@ import com.gempukku.stccg.player.Player;
 import java.util.*;
 
 public class NewBeamCardsAction extends BeamOrWalkAction {
+
+    public NewBeamCardsAction(DefaultGame cardGame, Player player, ST1EPhysicalCard cardUsingTransporters) {
+        super(cardGame, player, cardUsingTransporters, ActionType.BEAM_CARDS);
+    }
 
     public List<Map<String, Object>> getActionInitiationMatrix(DefaultGame cardGame) {
         List<Map<String, Object>> result = new ArrayList<>();
@@ -39,7 +43,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
     private List<PhysicalCard> getCardsWithTransporters(DefaultGame cardGame) {
         List<PhysicalCard> result = new ArrayList<>();
         for (PhysicalCard card : cardGame.getGameState().getAllCardsInGame()) {
-            if (card instanceof PhysicalNounCard1E nounCard) {
+            if (card instanceof ST1EPhysicalCard nounCard) {
                 if (nounCard.isControlledBy(_performingPlayerId) && nounCard.hasTransporters()) {
                     result.add(nounCard);
                 }
@@ -82,10 +86,6 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
                 Filters.filter(origin.getAttachedCards(cardGame), cardGame,
                         Filters.your(_performingPlayerId), Filters.or(Filters.personnel, Filters.equipment));
         return new ArrayList<>(movableCards);
-    }
-
-    public NewBeamCardsAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardUsingTransporters) {
-        super(cardGame, player, cardUsingTransporters, ActionType.BEAM_CARDS);
     }
 
     @Override

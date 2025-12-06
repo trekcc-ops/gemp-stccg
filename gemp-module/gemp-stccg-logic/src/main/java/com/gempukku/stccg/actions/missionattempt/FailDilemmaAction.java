@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -61,8 +61,8 @@ public class FailDilemmaAction extends ActionyAction {
 
         if (!_cardsStopped) {
             cardGame.sendMessage(_performingPlayerId + " failed to overcome " + _dilemma.getCardLink());
-            Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>(_attemptingUnit.getAttemptingPersonnel());
-            if (_attemptingUnit instanceof PhysicalShipCard ship) {
+            Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
+            if (_attemptingUnit instanceof ShipCard ship) {
                 cardsToStop.add(ship);
             }
             _cardsStopped = true;

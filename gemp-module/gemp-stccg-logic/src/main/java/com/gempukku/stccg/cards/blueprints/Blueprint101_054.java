@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -29,13 +28,13 @@ public class Blueprint101_054 extends CardBlueprint {
                                                     EncounterSeedCardAction action, MissionLocation missionLocation) {
 
         List<Action> result = new LinkedList<>();
-        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel();
+        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel(game);
 
         boolean meetsConditions = false;
 
         for (PersonnelCard personnel : attemptingPersonnel) {
-            if (personnel.getTitle().equals("Lwaxana Troi") || personnel.hasSkill(SkillName.YOUTH) ||
-                    personnel.hasSkill(SkillName.MUSIC) || personnel.getAttribute(CardAttribute.STRENGTH) > 9) {
+            if (personnel.getTitle().equals("Lwaxana Troi") || personnel.hasSkill(SkillName.YOUTH, game) ||
+                    personnel.hasSkill(SkillName.MUSIC, game) || personnel.getStrength(game) > 9) {
                 meetsConditions = true;
             }
         }

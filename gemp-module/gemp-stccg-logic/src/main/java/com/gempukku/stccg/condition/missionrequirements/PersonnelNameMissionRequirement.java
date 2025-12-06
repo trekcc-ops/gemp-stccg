@@ -2,6 +2,7 @@ package com.gempukku.stccg.condition.missionrequirements;
 
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.PersonnelName;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -14,7 +15,7 @@ public class PersonnelNameMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
         return personnel.stream().anyMatch(card -> Objects.equals(card.getTitle(), _name.getHumanReadable()));
     }
 

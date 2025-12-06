@@ -2,11 +2,11 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class BeamCardsAction extends BeamOrWalkAction {
 
-    public BeamCardsAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardUsingTransporters) {
+    public BeamCardsAction(DefaultGame cardGame, Player player, ST1EPhysicalCard cardUsingTransporters) {
         super(cardGame, player, cardUsingTransporters, ActionType.BEAM_CARDS);
     }
 

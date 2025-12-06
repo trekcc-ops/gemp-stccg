@@ -163,8 +163,9 @@ public class MissionLocation implements GameLocation {
     @Override
     public boolean mayBeAttemptedByPlayer(Player player, ST1EGame cardGame) throws InvalidGameLogicException {
         // Rule 7.2.1, Paragraph 1
+        String playerName = player.getPlayerId();
         // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
-        MissionCard missionCard = getMissionForPlayer(player.getPlayerId());
+        MissionCard missionCard = getMissionForPlayer(playerName);
         MissionType missionType = missionCard.getBlueprint().getMissionType();
         if (missionCard.getBlueprint().hasNoPointBox())
             return false;
@@ -176,7 +177,8 @@ public class MissionLocation implements GameLocation {
                         awayTeam -> awayTeam.canAttemptMission(cardGame, this));
             if (missionType == MissionType.SPACE)
                 return Filters.filterYourCardsInPlay(cardGame, player, Filters.ship, Filters.atLocation(this))
-                        .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(this));
+                        .stream().anyMatch(ship -> (cardGame.getRules().canShipAttemptMission((ShipCard) ship, _locationId,
+                                cardGame, playerName)));
         }
         return false;
     }

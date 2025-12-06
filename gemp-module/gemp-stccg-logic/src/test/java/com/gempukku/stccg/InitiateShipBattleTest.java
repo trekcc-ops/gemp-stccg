@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InitiateShipBattleTest extends AbstractAtTest {
 
-    private PhysicalShipCard attackingShip;
-    private PhysicalShipCard defendingTarget;
+    private ShipCard attackingShip;
+    private ShipCard defendingTarget;
     private PersonnelCard klag1;
     private FacilityCard outpost1;
 
@@ -49,10 +49,8 @@ public class InitiateShipBattleTest extends AbstractAtTest {
             seedOutpostAction.processEffect(_game);
         }
 
-        this.attackingShip.reportToFacilityForTestingOnly(outpost1);
-        klag1.reportToFacilityForTestingOnly(outpost1);
-        defendingTarget.reportToFacilityForTestingOnly(outpost2);
-        klag2.reportToFacilityForTestingOnly(outpost2);
+        reportCardsToFacility(outpost1, attackingShip, klag1);
+        reportCardsToFacility(outpost2, defendingTarget, klag2);
 
         assertTrue(this.attackingShip.isDocked());
         assertTrue(defendingTarget.isDocked());
@@ -66,14 +64,14 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         undockShip(P1, this.attackingShip);
 
         assertFalse(this.attackingShip.isDocked());
-        assertTrue(this.attackingShip.getCrew().contains(klag1));
+        assertTrue(this.attackingShip.hasCardInCrew(klag1));
     }
 
     @Test
     public void initiateBattleTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
         setupSimple1EGame(30);
-        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
-        defendingTarget = (PhysicalShipCard) newCardForGame("103_118", P2); // I.K.S. K'Ratak (6-8-6)
+        attackingShip = (ShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
+        defendingTarget = (ShipCard) newCardForGame("103_118", P2); // I.K.S. K'Ratak (6-8-6)
         setupGameState();
         defendingTarget.undockFromFacility();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
@@ -92,8 +90,8 @@ public class InitiateShipBattleTest extends AbstractAtTest {
     @Test
     public void directHitBattleTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
         setupSimple1EGame(30);
-        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
-        defendingTarget = (PhysicalShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
+        attackingShip = (ShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
+        defendingTarget = (ShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
         setupGameState();
         defendingTarget.undockFromFacility();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
@@ -112,8 +110,8 @@ public class InitiateShipBattleTest extends AbstractAtTest {
     @Test
     public void noWeaponsTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
         setupSimple1EGame(30);
-        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
-        defendingTarget = (PhysicalShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
+        attackingShip = (ShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
+        defendingTarget = (ShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
         setupGameState();
         beamCard(P1, this.attackingShip, klag1, outpost1);
         defendingTarget.undockFromFacility();

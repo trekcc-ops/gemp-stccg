@@ -57,7 +57,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
         if (!getProgress(Progress.conditionsChecked)) {
             Action result;
-            if (_conditions.canBeMetBy(_attemptingUnit)) {
+            if (_conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
                 result = cardGame.getActionById(_succeedActionId);
                 _succeeded = true;
             } else {

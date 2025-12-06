@@ -3,7 +3,6 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
-import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
@@ -28,7 +27,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         _game.addCardToGame("101_215", _cardLibrary, P1);
 
         MissionCard mission = null;
-        PhysicalReportableCard1E padd = null;
+        EquipmentCard padd = null;
         PersonnelCard picard = null;
 
         for (PhysicalCard card : gameState.getAllCardsInGame()) {
@@ -37,7 +36,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
                     mission = (MissionCard) card;
                     break;
                 case "101_057":
-                    padd = (PhysicalReportableCard1E) card;
+                    padd = (EquipmentCard) card;
                     break;
                 case "101_215":
                     picard = (PersonnelCard) card;
@@ -62,12 +61,12 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
 
         assertTrue(outpost.isInPlay());
 
-        picard.reportToFacilityForTestingOnly(outpost);
-        assertEquals(8, picard.getAttribute(CardAttribute.CUNNING));
+        reportCardsToFacility(outpost, picard);
+        assertEquals(8, picard.getCunning(_game));
 
-        padd.reportToFacilityForTestingOnly(outpost);
-        assertTrue(padd.isPresentWith(picard));
+        reportCardsToFacility(outpost, padd);
+        assertTrue(gameState.cardsArePresentWithEachOther(picard, padd));
+        assertEquals(10, picard.getCunning(_game));
 
-        assertEquals(10, picard.getAttribute(CardAttribute.CUNNING));
     }
 }

@@ -7,14 +7,14 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 
 public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
-    private final PhysicalShipCard _performingCard;
+    private final ShipCard _performingCard;
 
-    public UndockAction(DefaultGame cardGame, String performingPlayerName, PhysicalShipCard cardUndocking) {
+    public UndockAction(DefaultGame cardGame, String performingPlayerName, ShipCard cardUndocking) {
         super(cardGame, performingPlayerName, "Undock", ActionType.UNDOCK_SHIP);
         _performingCard = cardUndocking;
     }
@@ -44,6 +44,6 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
 
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    public PhysicalShipCard getCardToMove() { return _performingCard; }
+    public ShipCard getCardToMove() { return _performingCard; }
 
 }
