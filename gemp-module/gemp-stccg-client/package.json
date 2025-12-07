@@ -37,8 +37,8 @@
     "js-cookie": "^3.0.5",
     "jsonpath-plus": "^10.3.0",
     "p-queue": "^8.1.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.0 && >=19.1.2",
+    "react-dom": "^19.1.0 && >=19.1.2",
     "react-error-boundary": "^6.0.0"
   }
 }
