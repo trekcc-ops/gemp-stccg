@@ -1,6 +1,7 @@
-import Box from '@mui/material/Box';
-import { Badge } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Badge, CircularProgress } from '@mui/material';
 import DangerousIcon from '@mui/icons-material/Dangerous';
+import { fetchImage } from '../gemp-022/communication.js';
 
 /*
 example card: {
@@ -26,12 +27,20 @@ export default function Card( {card} ) {
         overlay = {filter: "grayscale(80%)"};
     }
 
-    // TODO: Instead of raw url, use comms.fetchImage() after PR 225 merges.
+    const [imageUrl, setImageUrl] = useState(null);
+
+    useEffect(() => {
+        fetchImage(card.imageUrl)
+        .then((url) => {
+            setImageUrl(url);
+        });
+    },[]);
 
     return(
         <Box data-cardid={card.cardId} sx={{height: 1, width: 1}} >
             <Badge color={badge_color} badgeContent={stopped_badge}>
-                <img width={"100%"} src={card.imageUrl} style={overlay} />
+                {/* If imageurl is null, show a circular progress spinner, otherwise load the graphic. */}
+                {imageUrl ? <img width={"100%"} src={imageUrl} style={overlay} /> : <CircularProgress/>}
             </Badge>
         </Box>
     );
