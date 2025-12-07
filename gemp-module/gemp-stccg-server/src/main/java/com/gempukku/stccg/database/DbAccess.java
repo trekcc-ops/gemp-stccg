@@ -1,10 +1,10 @@
 package com.gempukku.stccg.database;
 
 import com.gempukku.stccg.common.AppConfig;
-import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,85 +12,76 @@ import org.apache.logging.log4j.Logger;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DbAccess {
+public class DbAccess extends PoolingDataSource {
     private static final Logger LOGGER = LogManager.getLogger(DbAccess.class);
-    private final PoolingDataSource _dataSource;
+    private static final String CONNECTION_URL = AppConfig.getProperty("db.connection.url");
+    private static final String CONNECTION_USERNAME = AppConfig.getProperty("db.connection.username");
+    private static final String CONNECTION_PASSWORD = AppConfig.getProperty("db.connection.password");
+    private static final String VALIDATION_QUERY = AppConfig.getProperty("db.connection.validateQuery");
+    private static final boolean REWRITE_BATCHED_STATEMENTS = false;
+    private static final int INNODB_AUTOINC_LOCK_MODE = 2;
+    private static final int MAX_CONNECTION_ATTEMPTS = 200;
+    private static final int SLEEP_TIME_BETWEEN_ATTEMPTS = 500; // in milliseconds
 
-    @SuppressWarnings("FeatureEnvy")
     public DbAccess() {
-        this(AppConfig.getProperty("db.connection.url"), AppConfig.getProperty("db.connection.username"),
-                AppConfig.getProperty("db.connection.password"), false);
-    }
-
-    private DbAccess(String url, String user, String pass, boolean batch) {
-        LOGGER.debug("Creating DbAccess for {}", url);
         try {
             Class.forName(AppConfig.getProperty("db.connection.class"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Couldn't find the DB driver", e);
         }
+        this._pool = createConnectionPool();
 
-        _dataSource = setupDataSource(url, user, pass, batch);
-        LOGGER.debug("DbAccess - _dataSource created for {}", url);
+        if (!isConnectionEstablished()) {
+            throw new RuntimeException("Couldn't establish database connection");
+        }
     }
 
     public final PoolingDataSource getDataSource() {
-        return _dataSource;
+        return this;
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
-    private static PoolingDataSource setupDataSource(String connectURI, String user, String pass, Boolean batch) {
-        //
-        // First, we'll create a ConnectionFactory that the
-        // pool will use to create Connections.
-        // We'll use the DriverManagerConnectionFactory,
-        // using the connect string passed in the command line
-        // arguments.
-        //
+    private static GenericObjectPool createConnectionPool() {
         Properties props = new Properties() {{
-            setProperty("user", user);
-            setProperty("password", pass);
-            setProperty("rewriteBatchedStatements", batch.toString().toLowerCase());
-            setProperty("innodb_autoinc_lock_mode", "2");
+            setProperty("user", CONNECTION_USERNAME);
+            setProperty("password", CONNECTION_PASSWORD);
+            setProperty("rewriteBatchedStatements", String.valueOf(REWRITE_BATCHED_STATEMENTS));
+            setProperty("innodb_autoinc_lock_mode", String.valueOf(INNODB_AUTOINC_LOCK_MODE));
         }};
-        ConnectionFactory connectionFactory =
-                new DriverManagerConnectionFactory(connectURI, props);
 
-        //
-        // Now we'll need a ObjectPool that serves as the
-        // actual pool of connections.
-        //
-        // We'll use a GenericObjectPool instance, although
-        // any ObjectPool implementation will suffice.
-        //
         GenericObjectPool connectionPool = new GenericObjectPool();
         connectionPool.setTestOnBorrow(true);
 
-        //
-        // Next we'll create the PoolableConnectionFactory, which wraps
-        // the "real" Connections created by the ConnectionFactory with
-        // the classes that implement the pooling functionality.
-        //
-        connectionPool.setFactory(
-                new PoolableConnectionFactory(
-                        connectionFactory, connectionPool, null,
-                        AppConfig.getProperty("db.connection.validateQuery"), false, true
-                )
+        PoolableObjectFactory objectFactory = new PoolableConnectionFactory(
+                new DriverManagerConnectionFactory(CONNECTION_URL, props),
+                connectionPool,
+                null,
+                VALIDATION_QUERY,
+                false,
+                true
         );
-
-        //
-        // Finally, we create the PoolingDriver itself,
-        // passing in the object pool we created.
-        //
-
-        PoolingDataSource dataSource = new PoolingDataSource(connectionPool);
-        try {
-            dataSource.getConnection();
-            LOGGER.debug("setupDataSource - connection successfully created");
-        } catch(SQLException exp) {
-            LOGGER.debug("setupDataSource - unable to connect");
-        }
-
-        return dataSource;
+        connectionPool.setFactory(objectFactory);
+        return connectionPool;
     }
+
+    private boolean isConnectionEstablished() {
+        boolean connected = false;
+        int attemptNum = 1;
+        while (!connected && attemptNum <= MAX_CONNECTION_ATTEMPTS) {
+            try {
+                getConnection();
+                connected = true;
+                LOGGER.debug("Database connection successfully established.");
+            } catch (SQLException exp) {
+                LOGGER.debug("Unable to establish database connection. Trying again...");
+                attemptNum++;
+                try {
+                    Thread.sleep(SLEEP_TIME_BETWEEN_ATTEMPTS);
+                } catch(InterruptedException ignored) {
+
+                }
+            }
+        }
+        return connected;
+    }
+
 }
