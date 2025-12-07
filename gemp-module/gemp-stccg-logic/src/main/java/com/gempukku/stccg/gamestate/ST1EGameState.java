@@ -38,7 +38,7 @@ public class ST1EGameState extends GameState {
                          @JsonProperty("currentProcess")
                          GameProcess currentProcess,
                          @JsonProperty("playerClocks")
-                         List<PlayerClock> playerClocks,
+                         PlayerClock[] playerClocks,
                          @JsonProperty("cardsInGame")
                          List<PhysicalCard> cardsInGame,
                          @JsonProperty("playerOrder")

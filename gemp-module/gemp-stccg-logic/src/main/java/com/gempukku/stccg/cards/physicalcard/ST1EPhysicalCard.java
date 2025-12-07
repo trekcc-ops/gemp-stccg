@@ -23,7 +23,11 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.List;
 import java.util.Objects;
 
+@JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
+        allowGetters = true)
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
+
+    @JsonProperty("isStopped")
     protected boolean _isStopped;
 
     @JsonCreator
@@ -35,14 +39,8 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
             @JsonProperty("blueprintId")
             String blueprintId,
             @JacksonInject
-            CardBlueprintLibrary blueprintLibrary,
-            @JsonProperty("isStopped")
-            boolean isStopped,
-            @JsonProperty("locationId")
-            int locationId) throws CardNotFoundException {
+            CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
         super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
-        _isStopped = isStopped;
-        _currentLocationId = locationId;
     }
 
     public ST1EPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
@@ -95,7 +93,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         _isStopped = false;
     }
 
-    @JsonProperty("isStopped")
+    @JsonIgnore
     public boolean isStopped() {
         return _isStopped;
     }
@@ -112,11 +110,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public boolean isActive() {
         // TODO - account for other inactive states
         return !_isStopped;
-    }
-
-    @JsonProperty("cardId")
-    private void setCardId(int cardId) {
-        _cardId = cardId;
     }
 
 }

@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
@@ -21,6 +22,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+@JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
+        allowGetters = true)
 public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWithHullIntegrity {
 
     private final FacilityType _facilityType;
@@ -35,15 +38,9 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
             @JsonProperty("blueprintId")
             String blueprintId,
             @JacksonInject
-            CardBlueprintLibrary blueprintLibrary,
-            @JsonProperty("isStopped")
-            boolean isStopped,
-            @JsonProperty("locationId")
-            int locationId) throws CardNotFoundException {
+            CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
         super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
-        _isStopped = isStopped;
         _facilityType = _blueprint.getFacilityType();
-        _currentLocationId = locationId;
     }
 
 

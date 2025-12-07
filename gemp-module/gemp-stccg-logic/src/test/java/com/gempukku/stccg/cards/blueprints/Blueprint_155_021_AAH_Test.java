@@ -68,7 +68,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         assertNotNull(_outpost);
         assertNotNull(attention);
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-        assertEquals(1, _game.getGameState().getCurrentTurnNumber());
+        assertEquals(1, gameState.getCurrentTurnNumber());
 
         /* TODO - The commented out code below was intended to test the "you do not have this card in play already"
                 filter in AAH's free report. Currently not able to do it because this test does not give an

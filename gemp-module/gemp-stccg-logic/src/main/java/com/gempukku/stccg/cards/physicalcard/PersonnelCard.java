@@ -1,8 +1,10 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -13,7 +15,23 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.List;
 import java.util.Stack;
 
+@JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
+        allowGetters = true)
 public class PersonnelCard extends AffiliatedCard implements CardWithCompatibility, ReportableCard {
+
+    @JsonCreator
+    public PersonnelCard(
+            @JsonProperty("cardId")
+            int cardId,
+            @JsonProperty("owner")
+            String ownerName,
+            @JsonProperty("blueprintId")
+            String blueprintId,
+            @JacksonInject
+            CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
+        super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
+    }
+
     public PersonnelCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
     }

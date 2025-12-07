@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -29,12 +30,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     protected final CardBlueprint _blueprint;
     protected final String _ownerName;
-    protected int _cardId;
+
+    @JsonProperty("cardId")
+    protected final int _cardId;
     protected Zone _zone;
     protected Integer _attachedToCardId;
     private Integer _stackedOnCardId;
+
+    @JsonProperty("locationId")
     protected int _currentLocationId;
-    protected GameLocation _currentGameLocation;
     private boolean _placedOnMission = false;
     private boolean _revealedSeedCard = false;
 

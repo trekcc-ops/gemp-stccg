@@ -44,6 +44,7 @@ public abstract class GameState {
     int _nextCardId = 1;
     private final ActionsEnvironment _actionsEnvironment;
     private GameProcess _currentGameProcess;
+    @JsonProperty("turnNumber")
     private int _currentTurnNumber;
     private final Map<String, PlayerClock> _playerClocks;
 
@@ -98,7 +99,7 @@ public abstract class GameState {
         _playerClocks = clocks;
     }
 
-    protected GameState(List<Player> players, List<PlayerClock> playerClocks) {
+    protected GameState(List<Player> players, PlayerClock[] playerClocks) {
         _playerClocks = new HashMap<>();
 
         for (Player player : players) {

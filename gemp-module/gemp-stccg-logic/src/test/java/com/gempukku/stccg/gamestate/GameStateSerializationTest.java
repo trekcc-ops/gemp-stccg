@@ -56,7 +56,7 @@ public class GameStateSerializationTest extends AbstractAtTest {
 
         ObjectMapper readMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
-        module.addDeserializer(ST1EGameState.class, new ST1EGameStateDeserializer(_game));
+        module.addDeserializer(ST1EGameState.class, new ST1EGameStateDeserializer(_game, _cardLibrary));
         readMapper.registerModule(module);
         readMapper.setInjectableValues(new InjectableValues.Std().addValue(CardBlueprintLibrary.class, _cardLibrary));
 
