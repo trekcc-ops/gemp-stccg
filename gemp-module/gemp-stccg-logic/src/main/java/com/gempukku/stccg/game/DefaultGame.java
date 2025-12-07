@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
@@ -17,14 +18,17 @@ import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.modifiers.ModifiersEnvironment;
+import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.ModifierEffect;
+import com.gempukku.stccg.modifiers.ModifierFlag;
+import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
-public abstract class DefaultGame {
+public abstract class DefaultGame implements ModifiersQuerying {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
 
     // Game parameters
@@ -36,6 +40,7 @@ public abstract class DefaultGame {
 
     // Endgame operations
     protected final Set<String> _requestedCancel = new HashSet<>();
+    private final Collection<Modifier> _modifierSkipSet = new HashSet<>();
     protected boolean _cancelled;
     protected boolean _finished;
     protected String _winnerPlayerId;
@@ -54,6 +59,10 @@ public abstract class DefaultGame {
         _library = library;
         _allPlayerIds = decks.keySet();
         _gameType = gameType;
+    }
+
+    public DefaultGame getGame() {
+        return this;
     }
 
     public abstract GameState getGameState();
@@ -192,7 +201,7 @@ public abstract class DefaultGame {
         return getGameState().getActionsEnvironment();
     }
 
-    public ModifiersEnvironment getModifiersEnvironment() {
+    public ModifiersLogic getModifiersEnvironment() {
         return getGameState().getModifiersLogic();
     }
 
@@ -389,5 +398,33 @@ public abstract class DefaultGame {
             throw new CardNotFoundException("Unable to find card matching blueprint id " + blueprintId);
         }
     }
+
+    public void addCardToTopOfDiscardPile(PhysicalCard card) {
+        String cardOwnerName = card.getOwnerName();
+        Zone zone = hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD) ? Zone.REMOVED : Zone.DISCARD;
+        List<PhysicalCard> zoneCardList = getGameState().getZoneCards(cardOwnerName, zone);
+        zoneCardList.addFirst(card);
+        card.setZone(zone);
+    }
+
+
+    public List<Modifier> getAllModifiersByEffect(ModifierEffect modifierEffect) {
+        return Collections.unmodifiableList(getModifiersEnvironment().getAllModifiersByEffect(modifierEffect));
+    }
+
+    public List<Modifier> getAllModifiers() {
+        return Collections.unmodifiableList(getModifiersEnvironment().getAllModifiers());
+    }
+
+    public void addToSkipSet(Modifier modifier) {
+        _modifierSkipSet.add(modifier);
+    }
+    public void removeFromSkipSet(Modifier modifier) {
+        _modifierSkipSet.remove(modifier);
+    }
+    public boolean modifierIsInSkipSet(Modifier modifier) {
+        return _modifierSkipSet.contains(modifier);
+    }
+
 
 }

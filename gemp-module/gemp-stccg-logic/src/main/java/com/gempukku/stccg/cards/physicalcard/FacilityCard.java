@@ -111,11 +111,11 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
     }
 
     public float getWeapons(DefaultGame cardGame) {
-        return cardGame.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.WEAPONS);
+        return cardGame.getAttribute(this, CardAttribute.WEAPONS);
     }
 
     public float getShields(DefaultGame cardGame) {
-        return cardGame.getGameState().getModifiersQuerying().getAttribute(this, CardAttribute.SHIELDS);
+        return cardGame.getAttribute(this, CardAttribute.SHIELDS);
     }
 
     public Collection<PersonnelCard> getPersonnelAboard(DefaultGame cardGame) {

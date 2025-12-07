@@ -97,8 +97,9 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<T> result = new LinkedList<>();
         if (actions != null) {
             for (T action : actions) {
-                if (player.canPerformAction(cardGame, action))
+                if (cardGame.canPerformAction(player.getPlayerId(), action) && action.canBeInitiated(cardGame)) {
                     result.add(action);
+                }
             }
         }
         return result;

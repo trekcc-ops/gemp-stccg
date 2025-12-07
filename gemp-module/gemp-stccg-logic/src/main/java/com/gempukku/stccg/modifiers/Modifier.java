@@ -20,6 +20,7 @@ public interface Modifier {
 
     Condition getCondition();
     boolean isCumulative();
+    boolean isConditionFulfilled(DefaultGame cardGame);
 
     boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard);
 
@@ -60,4 +61,25 @@ public interface Modifier {
 
     String getForPlayer();
     String getText();
+
+    default boolean foundNoCumulativeConflict(Iterable<Modifier> modifierList) {
+        // If modifier is not cumulative, then check if modifiers from another copy
+        // card of same title is already in the list
+        if (!isCumulative() && getSource() != null) {
+
+            ModifierEffect modifierEffect = getModifierEffect();
+            String cardTitle = getSource().getTitle();
+            String forPlayer = getForPlayer();
+
+            for (Modifier otherModifier : modifierList) {
+                // check for the same effect from a copy of the same card
+                if (otherModifier.getModifierEffect() == modifierEffect && otherModifier.getSource() != null &&
+                        otherModifier.getSource().getTitle().equals(cardTitle) && otherModifier.isForPlayer(forPlayer)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

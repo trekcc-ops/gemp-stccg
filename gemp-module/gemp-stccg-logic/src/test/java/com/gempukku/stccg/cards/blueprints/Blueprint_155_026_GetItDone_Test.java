@@ -126,15 +126,15 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         }
         assertEquals(3, wallaces.size());
 
-        gameState.addCardToTopOfDiscardPile(wallaces.get(0)); // Darian Wallace
-        gameState.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
-        gameState.addCardToTopOfDiscardPile(wallaces.get(1)); // Darian Wallace
-        gameState.addCardToTopOfDiscardPile(wallaces.get(2)); // Darian Wallace
-        gameState.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
-        gameState.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
-        gameState.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
-        gameState.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
-        gameState.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
+        _game.addCardToTopOfDiscardPile(wallaces.get(0)); // Darian Wallace
+        _game.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
+        _game.addCardToTopOfDiscardPile(wallaces.get(1)); // Darian Wallace
+        _game.addCardToTopOfDiscardPile(wallaces.get(2)); // Darian Wallace
+        _game.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
+        _game.addCardToTopOfDiscardPile(newCardForGame("156_010", P1)); // Surprise Party
+        _game.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
+        _game.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
+        _game.addCardToTopOfDiscardPile(newCardForGame("101_236", P1)); // Simon Tarses
 
         assertEquals(9, player1.getCardGroupCards(Zone.DISCARD).size());
 

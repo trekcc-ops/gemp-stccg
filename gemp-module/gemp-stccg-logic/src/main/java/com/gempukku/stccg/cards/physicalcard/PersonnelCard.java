@@ -50,11 +50,11 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
 
 
     public Integer getAttribute(CardAttribute attribute, DefaultGame cardGame) {
-        return (int) cardGame.getGameState().getModifiersQuerying().getAttribute(this, attribute);
+        return (int) cardGame.getAttribute(this, attribute);
     }
 
     public Integer getSkillLevel(DefaultGame cardGame, SkillName skillName) {
-        return cardGame.getGameState().getModifiersQuerying().getSkillLevel(this, skillName, cardGame);
+        return cardGame.getSkillLevel(this, skillName);
     }
 
 

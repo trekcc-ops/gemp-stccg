@@ -26,7 +26,7 @@ public class CardInfoSerializer {
             return mapper.writeValueAsString(itemsToSerialize);
 
         Collection<String> modifiersToAdd = new ArrayList<>();
-        for (Modifier modifier : cardGame.getGameState().getModifiersQuerying().getModifiersAffecting(card)) {
+        for (Modifier modifier : cardGame.getModifiersAffectingCard(card)) {
             if (modifier != null && !Objects.equals(modifier.getCardInfoText(cardGame, card), "null")) {
                 modifiersToAdd.add(modifier.getCardInfoText(cardGame, card));
             }

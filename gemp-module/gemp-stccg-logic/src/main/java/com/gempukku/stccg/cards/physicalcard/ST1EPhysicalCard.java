@@ -55,7 +55,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         } else {
             // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
             STCCGPlayCardAction action = new STCCGPlayCardAction(cardGame, this, Zone.CORE, _ownerName, forFree);
-            cardGame.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
+            action.appendExtraCostsFromModifiers(this, cardGame);
             return action;
         }
     }

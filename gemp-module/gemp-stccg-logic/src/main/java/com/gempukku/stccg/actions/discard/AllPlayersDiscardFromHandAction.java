@@ -63,7 +63,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
     }
 
     private boolean canDiscard(DefaultGame cardGame, String playerId) {
-        return !_forced || cardGame.getGameState().getModifiersQuerying().canDiscardCardsFromHand(playerId, _performingCard);
+        return !_forced || cardGame.canDiscardCardsFromHand(playerId, _performingCard);
     }
 
     private void discardCards(DefaultGame game, Player discardingPlayer, Collection<PhysicalCard> cards) {
@@ -73,7 +73,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, discardedCards);
             for (PhysicalCard card : discardedCards) {
-                gameState.addCardToTopOfDiscardPile(card);
+                game.addCardToTopOfDiscardPile(card);
                 saveResult(new DiscardCardFromHandResult(card, this));
             }
         }

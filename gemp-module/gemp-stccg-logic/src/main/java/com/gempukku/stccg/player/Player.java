@@ -1,7 +1,6 @@
 package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.cardgroup.DiscardPile;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
@@ -184,8 +183,4 @@ public class Player {
         return _drawDeck;
     }
 
-    public boolean canPerformAction(DefaultGame cardGame, Action action) {
-        return cardGame.getGameState().getModifiersQuerying().canPerformAction(_playerId, action) &&
-                action.canBeInitiated(cardGame);
-    }
 }

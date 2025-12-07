@@ -74,7 +74,7 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
             if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();
             }
-            gameState.addCardToTopOfDiscardPile(cardToDiscard);
+            cardGame.addCardToTopOfDiscardPile(cardToDiscard);
             saveResult(new DiscardCardFromPlayResult(cardToDiscard, this));
         }
         setAsSuccessful();

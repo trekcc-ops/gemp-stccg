@@ -6,10 +6,12 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,14 +21,14 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.LimitCounter;
-import com.gempukku.stccg.modifiers.ModifierFlag;
+import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
@@ -73,7 +75,7 @@ public abstract class GameState {
             game.sendErrorMessage(exp);
             game.cancelGame();
         }
-        _modifiersLogic = new ModifiersLogic(game);
+        _modifiersLogic = new ModifiersLogic();
         _actionsEnvironment = new DefaultActionsEnvironment();
     }
 
@@ -97,7 +99,7 @@ public abstract class GameState {
             game.sendErrorMessage(exp);
             game.cancelGame();
         }
-        _modifiersLogic = new ModifiersLogic(game);
+        _modifiersLogic = new ModifiersLogic();
         _actionsEnvironment = new DefaultActionsEnvironment();
         _playerClocks = clocks;
     }
@@ -113,7 +115,7 @@ public abstract class GameState {
             _playerClocks.put(clock.getPlayerId(), clock);
         }
 
-        _modifiersLogic = new ModifiersLogic(null);
+        _modifiersLogic = new ModifiersLogic();
         _actionsEnvironment = new DefaultActionsEnvironment();
     }
 
@@ -176,7 +178,9 @@ public abstract class GameState {
 
     public void removeCardsFromZoneWithoutSendingToClient(DefaultGame cardGame, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
-            if (card.isInPlay()) card.stopAffectingGame(cardGame);
+            if (card.isInPlay()) {
+                _modifiersLogic.removeWhileThisCardInPlayModifiers(card);
+            }
             card.removeFromCardGroup(cardGame);
 
             if (card instanceof ReportableCard reportable && cardGame instanceof ST1EGame stGame) {
@@ -202,7 +206,7 @@ public abstract class GameState {
 
     public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone, ActionContext context) {
         if (zone == Zone.DISCARD) {
-            addCardToTopOfDiscardPile(card);
+            cardGame.addCardToTopOfDiscardPile(card);
         } else if (zone == Zone.REMOVED) {
             addCardToRemovedPile(card);
         }else {
@@ -218,15 +222,6 @@ public abstract class GameState {
             card.setZone(zone);
 
         }
-    }
-
-    public void addCardToTopOfDiscardPile(PhysicalCard card) {
-        String cardOwnerName = card.getOwnerName();
-        Zone zone = (getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD)) ?
-                Zone.REMOVED : Zone.DISCARD;
-        List<PhysicalCard> zoneCardList = getZoneCards(cardOwnerName, zone);
-        zoneCardList.addFirst(card);
-        card.setZone(zone);
     }
 
     public void addCardToTopOfDrawDeck(PhysicalCard card) {
@@ -320,8 +315,6 @@ public abstract class GameState {
 
     public abstract void checkVictoryConditions(DefaultGame cardGame);
 
-    public ModifiersQuerying getModifiersQuerying() { return _modifiersLogic; }
-
     public void setCurrentPhase(Phase phase) {
         _currentPhase = phase;
     }
@@ -370,7 +363,20 @@ public abstract class GameState {
     public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card, ActionContext context) {
         if (!_inPlay.contains(card)) {
             _inPlay.add(card);
-            _modifiersLogic.addModifierHooks(cardGame, card, context);
+
+            // Get "while in play" modifiers
+            CardBlueprint blueprint = card.getBlueprint();
+            List<Modifier> gameTextModifiers =
+                    new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(cardGame, card,
+                            new ActionContext(card, card.getControllerName())));
+            RuleSet<? extends DefaultGame> ruleSet = cardGame.getRules();
+            List<Modifier> modifiersPerRules = ruleSet.getModifiersWhileCardIsInPlay(card);
+
+            Collection<Modifier> whileInPlayModifiers = new ArrayList<>();
+            whileInPlayModifiers.addAll(gameTextModifiers);
+            whileInPlayModifiers.addAll(modifiersPerRules);
+
+            _modifiersLogic.addWhileThisCardInPlayModifiers(whileInPlayModifiers, card);
         }
     }
 
@@ -395,8 +401,15 @@ public abstract class GameState {
     }
 
     public void signalStartOfTurn(DefaultGame cardGame, String currentPlayerName) {
-        _modifiersLogic.signalStartOfTurn(cardGame, currentPlayerName);
+        _modifiersLogic.signalStartOfTurn(currentPlayerName);
         _actionLimitCollection.signalStartOfTurn(currentPlayerName);
+        // Unstop all "stopped" cards
+        // TODO - Does not account for cards that can be stopped for multiple turns
+        for (PhysicalCard card : cardGame.getAllCardsInPlay()) {
+            if (card instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
+                stCard.unstop();
+            }
+        }
     }
 
     public int getNormalCardPlaysAvailable(String playerName) {

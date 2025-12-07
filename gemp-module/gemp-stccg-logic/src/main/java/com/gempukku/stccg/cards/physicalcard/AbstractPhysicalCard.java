@@ -94,10 +94,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _ownerName;
     }
 
-    public void stopAffectingGame(DefaultGame game) {
-        game.getModifiersEnvironment().removeModifierHooks(this);
-    }
-
 
     public CardBlueprint getBlueprint() {
         return _blueprint;
@@ -157,7 +153,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             return false;
         if (enterPlayRequirements != null && !allRequirementsAreTrue(game, enterPlayRequirements))
             return false;
-        return !game.getGameState().getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
+        return !game.canNotPlayCard(getOwnerName(), this);
     }
 
     public boolean allRequirementsAreTrue(DefaultGame cardGame, Iterable<Requirement> requirements) {
@@ -249,7 +245,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean hasTextRemoved(DefaultGame game) {
         for (Modifier modifier :
-                game.getGameState().getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
+                game.getModifiersAffectingCardByEffect(ModifierEffect.TEXT_MODIFIER, this)) {
             if (modifier.hasRemovedText(game, this))
                 return true;
         }
@@ -341,7 +337,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     public boolean hasIcon(DefaultGame game, CardIcon icon) {
-        return game.getGameState().getModifiersQuerying().hasIcon(this, icon);
+        return game.hasIcon(this, icon);
     }
 
 
