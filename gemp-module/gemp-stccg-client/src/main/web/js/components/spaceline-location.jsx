@@ -19,7 +19,7 @@ function get_mission_cards(gamestate, locationData) {
     for (const cardId of locationData["missionCardIds"]) {
         let cardData = gamestate["visibleCardsInGame"][cardId.toString()];
         if (cardData != null) {
-            retarr.push(<CardStack gamestate={gamestate} anchor_id={cardId} />); 
+            retarr.push(<CardStack key={cardId} gamestate={gamestate} anchor_id={cardId} />); 
         }
     }
     return retarr;

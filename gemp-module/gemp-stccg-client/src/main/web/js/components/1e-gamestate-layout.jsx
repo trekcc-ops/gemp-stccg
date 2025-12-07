@@ -171,7 +171,7 @@ export default function MiniDrawer() {
     let spacelineLocations = [];
     loadedGameState["spacelineLocations"].map((item, index) => {
         console.log(`mapping id: ${item["locationId"]}`);
-        spacelineLocations.push(<SpacelineLocation gamestate={loadedGameState} locationid={item["locationId"]}/>);
+        spacelineLocations.push(<SpacelineLocation key={item["locationId"]} gamestate={loadedGameState} locationid={item["locationId"]}/>);
     })
 
 
