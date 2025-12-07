@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.LimitCounter;
 
 public class UseOncePerTurnAction extends ActionyAction {
@@ -32,6 +33,7 @@ public class UseOncePerTurnAction extends ActionyAction {
     }
 
     private LimitCounter getLimitCounter(DefaultGame cardGame) {
-        return cardGame.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(_blueprint);
+        GameState gameState = cardGame.getGameState();
+        return gameState.getUntilEndOfTurnLimitCounter(_blueprint);
     }
 }

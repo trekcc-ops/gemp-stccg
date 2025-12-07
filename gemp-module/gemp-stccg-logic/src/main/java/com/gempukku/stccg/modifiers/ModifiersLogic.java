@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
@@ -15,7 +14,6 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.rules.generic.RuleSet;
 
@@ -29,32 +27,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     private final Map<Integer, List<Modifier>> _modifierHooks = new HashMap<>();
     private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
     private final Collection<Modifier> _skipSet = new HashSet<>();
-    private final Map<String, LimitCounter> _gameLimitCounters = new HashMap<>();
-    private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
-    private final Map<ActionBlueprint, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
     private final DefaultGame _game;
-    private final Map<String, Integer> _normalCardPlaysAvailableNew = new HashMap<>();
-    private final int _normalCardPlaysPerTurn = 1;
 
     public ModifiersLogic(DefaultGame game) {
         _game = game;
     }
 
-
-    @Override
-    public LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix) {
-        return _gameLimitCounters.computeIfAbsent(prefix + "_" + card.getCardId(), entry -> new DefaultLimitCounter());
-    }
-
-    @Override
-    public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix) {
-        return _turnLimitCounters.computeIfAbsent(prefix + card.getCardId(), entry -> new DefaultLimitCounter());
-    }
-
-    @Override
-    public LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint) {
-        return _turnLimitActionSourceCounters.computeIfAbsent(actionBlueprint, entry -> new DefaultLimitCounter());
-    }
 
     private List<Modifier> getEffectModifiers(ModifierEffect modifierEffect) {
         return _modifiers.computeIfAbsent(modifierEffect, entry -> new LinkedList<>());
@@ -200,16 +178,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return level;
     }
 
-    public void signalStartOfTurn(DefaultGame cardGame, Player player) {
-        String playerId = player.getPlayerId();
-        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
+    public void signalStartOfTurn(DefaultGame cardGame, String playerName) {
+        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerName);
         if (list != null) {
             for (Modifier modifier : list) {
                 list.remove(modifier);
                 _untilEndOfTurnModifiers.add(modifier);
             }
         }
-        _normalCardPlaysAvailableNew.put(playerId, _normalCardPlaysPerTurn);
 
         // Unstop all "stopped" cards
         // TODO - Does not account for cards that can be stopped for multiple turns
@@ -228,9 +204,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         for (List<Modifier> modifiers : _untilEndOfPhaseModifiers.values())
             removeModifiers(modifiers);
         _untilEndOfPhaseModifiers.clear();
-
-        _turnLimitCounters.clear();
-        _turnLimitActionSourceCounters.clear();
     }
 
     public boolean canPlayerSolveMission(String playerId, MissionLocation mission) {
@@ -431,15 +404,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 && liveModifier.getSource() != null
                 && liveModifier.getSource().getTitle().equals(cardTitle)
                 && liveModifier.isForPlayer(forPlayer);
-    }
-
-    public int getNormalCardPlaysAvailable(String playerName) {
-        return _normalCardPlaysAvailableNew.get(playerName);
-    }
-
-    public void useNormalCardPlay(Player player) {
-        int currentPlaysAvailable = _normalCardPlaysAvailableNew.get(player.getPlayerId());
-        _normalCardPlaysAvailableNew.put(player.getPlayerId(), currentPlaysAvailable - 1);
     }
 
     @Override

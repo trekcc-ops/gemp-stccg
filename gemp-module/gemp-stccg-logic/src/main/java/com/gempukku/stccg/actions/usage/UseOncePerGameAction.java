@@ -36,6 +36,6 @@ public class UseOncePerGameAction extends ActionyAction {
     }
 
     private LimitCounter getLimitCounter(DefaultGame cardGame) {
-        return cardGame.getGameState().getModifiersQuerying().getUntilEndOfGameLimitCounter(_card, _prefix);
+        return cardGame.getGameState().getUntilEndOfGameLimitCounter(_card, _prefix);
     }
 }

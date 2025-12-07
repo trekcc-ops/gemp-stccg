@@ -15,11 +15,6 @@ import java.util.List;
 
 public interface ModifiersQuerying {
 
-    LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix);
-
-    LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix);
-    LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint);
-
     boolean hasIcon(PhysicalCard physicalCard, CardIcon icon);
 
     boolean canPlayerSolveMission(String playerId, MissionLocation mission);
@@ -58,7 +53,6 @@ public interface ModifiersQuerying {
 
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
 
-    int getNormalCardPlaysAvailable(String playerName);
     Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName, DefaultGame cardGame);
 
 }

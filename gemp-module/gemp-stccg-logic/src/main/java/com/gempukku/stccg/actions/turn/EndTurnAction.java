@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.turn;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 
 public class EndTurnAction extends SystemQueueAction {
@@ -13,8 +14,8 @@ public class EndTurnAction extends SystemQueueAction {
     }
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        cardGame.getModifiersEnvironment().signalEndOfTurn();
-        cardGame.getActionsEnvironment().signalEndOfTurn();
+        GameState gameState = cardGame.getGameState();
+        gameState.signalEndOfTurn();
 
         if (cardGame instanceof TribblesGame tribblesGame) {
             boolean playerWentOut = false;

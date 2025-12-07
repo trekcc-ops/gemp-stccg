@@ -9,8 +9,8 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.LimitCounter;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
@@ -97,8 +97,8 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
                     @Override
                     public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
-                        ModifiersQuerying modifiers = cardGame.getGameState().getModifiersQuerying();
-                        LimitCounter counter = modifiers.getUntilEndOfTurnLimitCounter(thisBlueprint);
+                        GameState gameState = cardGame.getGameState();
+                        LimitCounter counter = gameState.getUntilEndOfTurnLimitCounter(thisBlueprint);
                         return counter.getUsedLimit() < limitPerTurn;
                     }
                 });

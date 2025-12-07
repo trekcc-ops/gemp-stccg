@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class UseNormalCardPlayAction extends ActionyAction {
 
@@ -24,13 +23,12 @@ public class UseNormalCardPlayAction extends ActionyAction {
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return cardGame.getGameState().getModifiersQuerying().getNormalCardPlaysAvailable(_performingPlayerId) >= 1;
+        return cardGame.getGameState().getNormalCardPlaysAvailable(_performingPlayerId) >= 1;
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        cardGame.getModifiersEnvironment().useNormalCardPlay(performingPlayer);
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        cardGame.getGameState().useNormalCardPlay(_performingPlayerId);
         _wasCarriedOut = true;
         setAsSuccessful();
         return getNextAction();

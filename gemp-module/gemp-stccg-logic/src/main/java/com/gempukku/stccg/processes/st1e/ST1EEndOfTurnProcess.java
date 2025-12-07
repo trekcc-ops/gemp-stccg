@@ -14,6 +14,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
@@ -63,12 +64,12 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws PlayerNotFoundException {
-        cardGame.getModifiersEnvironment().signalEndOfTurn(); // Remove "until end of turn" modifiers
-        cardGame.getActionsEnvironment().signalEndOfTurn(); // Remove "until end of turn" permitted actions
+        GameState gameState = cardGame.getGameState();
+        gameState.signalEndOfTurn();
         cardGame.setCurrentPhase(Phase.BETWEEN_TURNS);
         Player currentPlayer = cardGame.getCurrentPlayer();
         ActionOrder actionOrder =
-                cardGame.getGameState().getPlayerOrder().getClockwisePlayOrder(currentPlayer, false);
+                gameState.getPlayerOrder().getClockwisePlayOrder(currentPlayer, false);
         actionOrder.getNextPlayer();
 
         String nextPlayerId = actionOrder.getNextPlayer();

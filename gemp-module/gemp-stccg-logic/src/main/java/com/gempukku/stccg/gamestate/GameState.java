@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
@@ -17,6 +18,7 @@ import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.modifiers.LimitCounter;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
@@ -39,6 +41,7 @@ public abstract class GameState {
     PlayerOrder _playerOrder;
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
     private final ModifiersLogic _modifiersLogic;
+    private final ActionLimitCollection _actionLimitCollection = new ActionLimitCollection();
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
@@ -376,5 +379,32 @@ public abstract class GameState {
     }
 
     public abstract boolean cardsArePresentWithEachOther(PhysicalCard... cards);
+
+    public LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix) {
+        return _actionLimitCollection.getUntilEndOfGameLimitCounter(card, prefix);
+    }
+
+    public LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint) {
+        return _actionLimitCollection.getUntilEndOfTurnLimitCounter(actionBlueprint);
+    }
+
+    public void signalEndOfTurn() {
+        _modifiersLogic.signalEndOfTurn();
+        _actionsEnvironment.signalEndOfTurn();
+        _actionLimitCollection.signalEndOfTurn();
+    }
+
+    public void signalStartOfTurn(DefaultGame cardGame, String currentPlayerName) {
+        _modifiersLogic.signalStartOfTurn(cardGame, currentPlayerName);
+        _actionLimitCollection.signalStartOfTurn(currentPlayerName);
+    }
+
+    public int getNormalCardPlaysAvailable(String playerName) {
+        return _actionLimitCollection.getNormalCardPlaysAvailable(playerName);
+    }
+
+    public void useNormalCardPlay(String playerName) {
+        _actionLimitCollection.useNormalCardPlay(playerName);
+    }
 
 }

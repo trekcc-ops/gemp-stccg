@@ -14,7 +14,6 @@ public interface ModifiersEnvironment {
 
     void signalEndOfTurn();
 
-    void useNormalCardPlay(Player player);
     void removeModifierHooks(PhysicalCard card);
 
 }

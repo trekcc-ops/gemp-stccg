@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class OptionalTriggerAction extends ActionyAction implements TopLevelSelectableAction {
@@ -39,7 +40,8 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
                 return cost;
 
             if (_actionBlueprint != null) {
-                cardGame.getGameState().getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionBlueprint).countUse();
+                GameState gameState = cardGame.getGameState();
+                gameState.getUntilEndOfTurnLimitCounter(_actionBlueprint).countUse();
             }
             Action action = getNextAction();
             if (action == null)
