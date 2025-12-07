@@ -64,7 +64,7 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Seed Federation Outpost at Excavation
         seedFacility(P1, outpost, excavation);
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(_game), excavation.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
         assertTrue(deathYell.isInHand(_game));
 
@@ -76,7 +76,7 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Beam Worf to the planet
         beamCard(P1, outpost, worf, excavation);
-        assertTrue(_game.getGameState().getAwayTeamForCard(worf).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        assertTrue(_game.getGameState().getAwayTeamForCard(worf).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests(_game)));
 
         // Attempt mission
         attemptMission(P1, _game.getGameState().getAwayTeamForCard(worf), excavation);

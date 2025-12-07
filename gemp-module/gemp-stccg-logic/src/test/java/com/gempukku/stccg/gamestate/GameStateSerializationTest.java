@@ -1,9 +1,11 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import org.junit.jupiter.api.Test;
@@ -37,7 +39,7 @@ public class GameStateSerializationTest extends AbstractAtTest {
 
         assertNotNull(archer);
         assertNotNull(homeward);
-        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests(_game);
         assertNotNull(homewardLocation);
         seedDilemma(archer, homewardLocation);
 
@@ -45,8 +47,8 @@ public class GameStateSerializationTest extends AbstractAtTest {
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().size());
-        assertTrue(homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(archer));
+        assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().size());
+        assertTrue(homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(archer));
 
         ObjectWriter gameStateMapper = new GameStateMapper().writer(true);
         String gameStateJson = gameStateMapper.writeValueAsString(_game.getGameState());
@@ -56,6 +58,7 @@ public class GameStateSerializationTest extends AbstractAtTest {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(ST1EGameState.class, new ST1EGameStateDeserializer(_game));
         readMapper.registerModule(module);
+        readMapper.setInjectableValues(new InjectableValues.Std().addValue(CardBlueprintLibrary.class, _cardLibrary));
 
         ST1EGameState gameStateCopy = readMapper.readValue(gameStateJson, ST1EGameState.class);
 

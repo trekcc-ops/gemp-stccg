@@ -170,15 +170,11 @@ public class ST1EGameState extends GameState {
         seedAction.seedCard(cardGame);
     }
 
-    public void seedFacilityAtLocationForTestingOnly(ST1EGame cardGame, FacilityCard card, GameLocation location)
+    public void seedFacilityAtLocationForTestingOnly(ST1EGame cardGame, FacilityCard card, MissionCard destinationCard)
             throws InvalidGameLogicException, PlayerNotFoundException {
         // Do not use in non-testing classes
-        if (location instanceof MissionLocation missionLocation) {
-            SeedOutpostAction seedAction = new SeedOutpostAction(cardGame, card, missionLocation);
-            seedAction.processEffect(cardGame);
-        } else {
-            throw new InvalidGameLogicException("Unable to seed facility at non-mission location");
-        }
+        SeedOutpostAction seedAction = new SeedOutpostAction(cardGame, card, destinationCard);
+        seedAction.processEffect(cardGame);
     }
 
 
@@ -274,8 +270,8 @@ public class ST1EGameState extends GameState {
     public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
         for (PhysicalCard card1 : cards) {
             for (PhysicalCard card2 : cards) {
-                boolean presentWithEachOther = card1.getGameLocation() == card2.getGameLocation() &&
-                            card1.getGameLocation() instanceof MissionLocation missionLocation &&
+                boolean presentWithEachOther = card1.isAtSameLocationAsCard(card2) &&
+                            card1.getGameLocation(this) instanceof MissionLocation missionLocation &&
                             card1.getAttachedToCardId() != null &&
                             card1.getAttachedToCardId().equals(card2.getAttachedToCardId()) &&
                             _spacelineLocations.contains(missionLocation);

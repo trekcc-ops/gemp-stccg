@@ -43,7 +43,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getGameLocation(), _mission.getGameLocation());
+        assertTrue(_outpost.isAtSameLocationAsCard(_mission));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard taitt1 = (PersonnelCard) newCardForGame("101_242", P1);
@@ -76,8 +76,8 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
 
         // Verify that, in practice, the Away Team failed to resolve the dilemma
         attemptMission(P1, team, _mission);
-        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(climb));
-        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests().isCompleted());
+        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(climb));
+        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
     }
 
 }

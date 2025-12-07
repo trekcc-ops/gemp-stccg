@@ -37,12 +37,12 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
-        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests(_game);
         seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
@@ -83,8 +83,8 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
             assertTrue(personnel.isStopped());
         }
         assertTrue(runabout.isStopped());
-        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests().isCompleted());
-        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(maglock));
+        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
+        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(maglock));
         String gameStateString = _game.getGameState().serializeComplete();
     }
 
@@ -98,12 +98,12 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
-        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests(_game);
         seedCardsUnder(Collections.singleton(maglock), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
@@ -144,8 +144,8 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
             assertFalse(personnel.isStopped());
         }
         assertFalse(runabout.isStopped());
-        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests().isCompleted());
-        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(maglock));
+        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
+        assertFalse(_mission.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(maglock));
         assertEquals(Zone.REMOVED, maglock.getZone());
     }
 

@@ -37,12 +37,12 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals("Dedication to Duty", dedication.getTitle());
 
         // Seed Dedication to Duty
-        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests(_game);
         seedCardsUnder(Collections.singleton(dedication), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
@@ -90,12 +90,12 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertEquals("Dedication to Duty", dedication.getTitle());
 
         // Seed Dedication to Duty
-        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests(_game);
         seedCardsUnder(Collections.singleton(dedication), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);

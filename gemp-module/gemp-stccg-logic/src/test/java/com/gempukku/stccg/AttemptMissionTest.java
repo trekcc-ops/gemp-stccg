@@ -52,7 +52,7 @@ public class AttemptMissionTest extends AbstractAtTest {
         // Seed Federation Outpost at Excavation
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         seedFacility(P1, outpost, excavation);
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(_game), excavation.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         // Report Picard to outpost
@@ -63,13 +63,13 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests(_game)));
 
         // Attempt mission
         attemptMission(P1, _game.getGameState().getAwayTeamForCard(picard), excavation);
 
         // Confirm that mission was solved and player earned points
-        assertTrue(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
+        assertTrue(excavation.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
         assertEquals(excavation.getPoints(), _game.getPlayer(P1).getScore());
     }
 
@@ -107,7 +107,7 @@ public class AttemptMissionTest extends AbstractAtTest {
         // Seed Federation Outpost at Excavation
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         seedFacility(P1, outpost, excavation);
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(_game), excavation.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         // Report Picard to outpost
@@ -116,7 +116,7 @@ public class AttemptMissionTest extends AbstractAtTest {
         skipCardPlay();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
 
-        MissionLocation excavationLocation = excavation.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation excavationLocation = excavation.getLocationDeprecatedOnlyUseForTests(_game);
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);

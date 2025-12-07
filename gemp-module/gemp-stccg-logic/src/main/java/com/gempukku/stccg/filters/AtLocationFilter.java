@@ -14,6 +14,6 @@ public class AtLocationFilter implements CardFilter {
     }
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        return _locationId >= 0 && physicalCard.getGameLocation().getLocationId() == _locationId;
+        return _locationId >= 0 && physicalCard.getLocationId() == _locationId;
     }
 }

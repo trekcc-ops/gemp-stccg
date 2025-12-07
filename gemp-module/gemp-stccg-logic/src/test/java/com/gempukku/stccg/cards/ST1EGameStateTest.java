@@ -28,7 +28,7 @@ public class ST1EGameStateTest extends AbstractAtTest {
         ST1EGameState gameState = _game.getGameState();
 
         gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
-        gameState.seedFacilityAtLocationForTestingOnly(_game, outpost1, mission.getLocationDeprecatedOnlyUseForTests());
+        gameState.seedFacilityAtLocationForTestingOnly(_game, outpost1, mission);
 
         assertTrue(outpost1.isInPlay());
 

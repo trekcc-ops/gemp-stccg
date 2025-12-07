@@ -13,7 +13,7 @@ public class MissionAttemptRules {
 
     public static boolean canShipAttemptMission(ShipCard ship, MissionLocation missionLocation, DefaultGame cardGame,
                                          String performingPlayerName) throws InvalidGameLogicException {
-        if (ship.getGameLocation() != missionLocation) {
+        if (ship.getLocationId() != missionLocation.getLocationId()) {
             return false;
         }
         if (ship.isDocked())

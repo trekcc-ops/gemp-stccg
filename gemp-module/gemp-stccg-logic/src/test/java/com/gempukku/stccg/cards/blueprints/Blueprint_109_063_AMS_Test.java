@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -72,8 +71,6 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
         assertEquals(Zone.DISCARD, ams.getZone());
         assertTrue(_game.getPlayer(P1).getDiscardPile().contains(ams));
-        assertInstanceOf(NullLocation.class, ams.getGameLocation());
-
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
     }
 

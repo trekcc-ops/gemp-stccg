@@ -204,7 +204,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         GameState gameState = cardGame.getGameState();
 
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(reportable));
-        reportable.setLocation(cardGame, facility.getGameLocation());
+        reportable.setLocationId(cardGame, facility.getLocationId());
         reportable.attachTo(facility);
         gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
 

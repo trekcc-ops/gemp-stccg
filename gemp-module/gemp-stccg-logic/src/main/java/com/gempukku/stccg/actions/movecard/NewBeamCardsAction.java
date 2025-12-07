@@ -56,7 +56,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
         List<PhysicalCard> result = new ArrayList<>();
         result.add(transportersCard);
         Collection<PhysicalCard> otherCards = Filters.filterCardsInPlay(cardGame,
-                Filters.atLocation(transportersCard.getGameLocation()),
+                Filters.atLocation(transportersCard.getLocationId()),
                 Filters.or(
                         Filters.planetLocation,
                         Filters.and(
@@ -93,7 +93,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
         // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
         return Filters.filterCardsInPlay(
                 game,
-                Filters.atLocation(_cardSource.getGameLocation()),
+                Filters.atLocation(_cardSource.getLocationId()),
                 Filters.or(
                         Filters.planetLocation,
                         Filters.and(

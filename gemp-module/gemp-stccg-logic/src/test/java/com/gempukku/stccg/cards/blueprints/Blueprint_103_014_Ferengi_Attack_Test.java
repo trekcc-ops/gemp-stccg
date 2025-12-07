@@ -36,12 +36,12 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         ferengiAttack.setZone(Zone.VOID);
 
         // Seed Ferengi Attack
-        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests(_game);
         seedCardsUnder(Collections.singleton(ferengiAttack), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
@@ -80,7 +80,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
 
         selectCard(P2, hobson);
         assertEquals(Zone.DISCARD, hobson.getZone());
-        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests().isCompleted());
+        assertTrue(_mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
     }
 
 }

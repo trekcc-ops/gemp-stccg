@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
@@ -28,8 +29,9 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         return _blueprint.getQuadrant();
     }
 
-    public boolean isInQuadrant(Quadrant quadrant) {
-        return _currentGameLocation.isInQuadrant(quadrant);
+    public boolean isInQuadrant(ST1EGame cardGame, Quadrant quadrant) {
+        GameLocation location = cardGame.getGameState().getLocationById(getLocationId());
+        return location instanceof MissionLocation mission && mission.isInQuadrant(quadrant);
     }
 
     @JsonIgnore
@@ -47,7 +49,7 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
     }
     
 
-    @JsonIgnore
+    @JsonProperty("affiliation")
     public void setCurrentAffiliation(Affiliation... affiliations) {
         /* Do not add any additional functionality to this method, because it is used to test compatibility under
                 multiple affiliations */
@@ -62,7 +64,7 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         }
         if (getAffiliationOptions().size() > 1) {
             if (this instanceof ReportableCard reportable &&
-                    _currentGameLocation instanceof MissionLocation missionLocation) {
+                    cardGame.getGameState().getLocationById(getLocationId()) instanceof MissionLocation missionLocation) {
                 AwayTeam awayTeam = cardGame.getGameState().getAwayTeamForCard(reportable);
                 if (awayTeam != null) {
                     if (awayTeam.canBeDisbanded(cardGame)) {
@@ -104,7 +106,7 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         if (this instanceof ReportableCard) {
             // TODO - Does not perform any compatibility checks other than affiliation
             if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
-                    facility.isUsableBy(getOwnerName()) && facility.isInQuadrant(getNativeQuadrant())) {
+                    facility.isUsableBy(getOwnerName()) && facility.isInQuadrant(stGame, getNativeQuadrant())) {
                 Collection<CardWithCompatibility> otherCards = new ArrayList<>();
                 otherCards.add(facility);
                 otherCards.addAll(facility.getPersonnelInCrew(stGame));

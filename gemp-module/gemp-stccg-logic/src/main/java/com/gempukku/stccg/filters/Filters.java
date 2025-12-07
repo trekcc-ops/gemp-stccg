@@ -163,6 +163,11 @@ public class Filters {
         return new PresentWithCardFilter(card);
     }
 
+    public static CardFilter atLocation(int locationId) {
+        return new AtLocationFilter(locationId);
+    }
+
+
     public static CardFilter atLocation(final GameLocation location) {
         return new AtLocationFilter(location.getLocationId());
     }

@@ -12,7 +12,6 @@ import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
@@ -36,6 +35,17 @@ public class SeedOutpostAction extends PlayCardAction {
             setProgress(Progress.affiliationSelected);
             _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(cardToSeed.getAffiliationOptions()));
         }
+    }
+
+    public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed, MissionCard destinationCard) {
+        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
+                ActionType.SEED_CARD, Progress.values());
+        if (!cardToSeed.isMultiAffiliation()) {
+            setProgress(Progress.affiliationSelected);
+            _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(cardToSeed.getAffiliationOptions()));
+        }
+        setProgress(Progress.placementChosen);
+        _destinationTarget = new FixedCardResolver(destinationCard);
     }
 
     public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed, MissionLocation location) {
@@ -94,7 +104,7 @@ public class SeedOutpostAction extends PlayCardAction {
                     for (Affiliation affiliation : facility.getAffiliationOptions()) {
                         boolean canSeedHereAsThisAffiliation = stGame.getRules().
                                 isLocationValidPlayCardDestinationPerRules(stGame, facility,
-                                        selectedMission.getGameLocation(), SeedCardAction.class,
+                                        selectedMission.getGameLocation(stGame), SeedCardAction.class,
                                         facility.getOwnerName(), List.of(affiliation));
                         if (canSeedHereAsThisAffiliation)
                             affiliationOptions.add(affiliation);
@@ -141,8 +151,7 @@ public class SeedOutpostAction extends PlayCardAction {
         stGame.getGameState().removeCardsFromZoneWithoutSendingToClient(stGame, List.of(_cardEnteringPlay));
         performingPlayer.addPlayedAffiliation(selectedAffiliation);
         PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(stGame));
-        GameLocation destinationLocation = destinationCard.getGameLocation();
-        facility.setLocation(stGame, destinationLocation);
+        facility.setLocationId(stGame, destinationCard.getLocationId());
         stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
         setProgress(Progress.cardWasSeeded);

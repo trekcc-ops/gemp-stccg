@@ -90,8 +90,9 @@ public class CardInfoSerializer {
             itemsToSerialize.put("missionRequirements", mission.getMissionRequirements());
 
             List<Map<Object, Object>> serializableAwayTeams = new ArrayList<>();
-            if (mission.getGameLocation() instanceof MissionLocation missionLocation && missionLocation.isPlanet() &&
-                    cardGame instanceof ST1EGame stGame) {
+            if (cardGame instanceof ST1EGame stGame &&
+                    mission.getGameLocation(stGame) instanceof MissionLocation missionLocation &&
+                    missionLocation.isPlanet()) {
                 List<AwayTeam> awayTeamsOnPlanet = missionLocation.getAwayTeamsOnSurface(stGame).toList();
                 for (AwayTeam team : awayTeamsOnPlanet) {
                     Map<Object, Object> awayTeamInfo = new HashMap<>();

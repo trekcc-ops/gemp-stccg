@@ -66,7 +66,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Seed Federation Outpost at Excavation
         seedFacility(P1, outpost, excavation);
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(_game), excavation.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         // Report Picard to outpost
@@ -77,7 +77,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests(_game)));
 
         // Attempt mission
         attemptMission(P1, _game.getGameState().getAwayTeamForCard(picard), excavation);
@@ -89,12 +89,12 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
                 .decisionMade(tarses);
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
-        assertFalse(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
+        assertFalse(excavation.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(outpost.hasCardInCrew(tarses));
 
         // Confirm that mission was solved and player earned points
-        assertTrue(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
+        assertTrue(excavation.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
         assertEquals(excavation.getPoints(), player1.getScore());
 
         // Initiate a beam action from the outpost using all the decisions involved

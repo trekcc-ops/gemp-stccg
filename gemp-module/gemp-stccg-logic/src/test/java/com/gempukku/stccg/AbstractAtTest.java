@@ -24,6 +24,7 @@ import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -747,7 +748,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
                 if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getLocationId() == mission.getGameLocation().getLocationId())
+                        attemptAction.getLocationId() == mission.getLocationId())
                     choice = attemptAction;
             }
             choice.setAttemptingUnit(attemptingUnit);
@@ -875,7 +876,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         for (PhysicalCard card : cards) {
             _game.getGameState().removeCardsFromZoneWithoutSendingToClient(_game, Collections.singleton(card));
             card.setZone(Zone.VOID);
-            topCard.getLocationDeprecatedOnlyUseForTests().seedCardUnderMission(_game, card);
+            topCard.getLocationDeprecatedOnlyUseForTests(_game).seedCardUnderMission(_game, card);
         }
     }
 
@@ -929,6 +930,18 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
         if (!Objects.equals(personnel.getStrength(_game), attributeValues.get(2))) {
             return false;
+        }
+        return true;
+    }
+
+    protected boolean missionHasCardsSeededUnderneath(MissionCard mission, PhysicalCard... seedCards) {
+        GameLocation location = _game.getGameState().getLocationById(mission.getLocationId());
+        if (location instanceof MissionLocation missionLocation) {
+            for (PhysicalCard card : seedCards) {
+                if (!missionLocation.hasCardSeededUnderneath(card)) {
+                    return false;
+                }
+            }
         }
         return true;
     }

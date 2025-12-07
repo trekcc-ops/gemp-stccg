@@ -32,7 +32,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertNotNull(mission);
 
         _game.getGameState().addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
-        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission.getGameLocation());
+        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission);
 
         assertTrue(outpost.isInPlay());
 
@@ -66,7 +66,7 @@ public class KolAndCaptainWorfTest extends AbstractAtTest {
         assertNotNull(mission);
 
         _game.getGameState().addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
-        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost1, mission.getGameLocation());
+        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost1, mission);
 
         assertTrue(outpost1.isInPlay());
 

@@ -12,8 +12,10 @@ import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
@@ -29,6 +31,7 @@ import java.util.List;
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
         "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission" })
+@JsonIgnoreProperties(value = { "title" }, allowGetters = true)
 public interface PhysicalCard {
 
     @JsonIgnore
@@ -39,6 +42,7 @@ public interface PhysicalCard {
     @JsonProperty("imageUrl")
     String getImageUrl();
 
+    @JsonProperty("cardId")
     int getCardId();
 
     @JsonProperty("owner")
@@ -68,7 +72,10 @@ public interface PhysicalCard {
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
     String getCardLink();
-    GameLocation getGameLocation();
+    GameLocation getGameLocation(ST1EGameState gameSate);
+
+    GameLocation getGameLocation(ST1EGame cardGame);
+    void setLocationId(DefaultGame cardGame, int locationId);
     void setLocation(DefaultGame cardGame, GameLocation location);
 
     String getFullName();
@@ -113,9 +120,9 @@ public interface PhysicalCard {
                                      MissionLocation missionLocation)
             throws InvalidGameLogicException, PlayerNotFoundException;
 
-    boolean isAtSpaceLocation();
+    boolean isAtSpaceLocation(ST1EGame cardGame);
 
-    boolean isAtPlanetLocation();
+    boolean isAtPlanetLocation(ST1EGame cardGame);
 
     String getControllerName();
 
@@ -126,19 +133,12 @@ public interface PhysicalCard {
     @JsonProperty("isPlacedOnMission")
     boolean isPlacedOnMission();
 
-    @JsonProperty("locationId")
-    default Integer getLocationIdForSerialization() {
-        GameLocation location = getGameLocation();
-        if (location instanceof MissionLocation mission)
-            return mission.getLocationId();
-        else return null;
-    }
-
-    default MissionLocation getLocationDeprecatedOnlyUseForTests() throws InvalidGameLogicException {
-        if (getGameLocation() instanceof MissionLocation mission)
+    default MissionLocation getLocationDeprecatedOnlyUseForTests(ST1EGame stGame) throws InvalidGameLogicException {
+        if (getGameLocation(stGame) instanceof MissionLocation mission)
             return mission;
         throw new InvalidGameLogicException("Tried to process card's location for a card not at any location");
     }
+
 
     default Uniqueness getUniqueness() {
         return getBlueprint().getUniqueness();
@@ -182,4 +182,9 @@ public interface PhysicalCard {
     boolean canEnterPlay(DefaultGame cardGame, List<Requirement> enterPlayRequirements);
 
     boolean isAttachedTo(PhysicalCard card);
+
+    @JsonProperty("locationId")
+    int getLocationId();
+
+    boolean isAtSameLocationAsCard(PhysicalCard card);
 }

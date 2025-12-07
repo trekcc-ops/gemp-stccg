@@ -79,7 +79,7 @@ public class SeedPhaseTest extends AbstractAtTest {
 
         assertNotNull(archer);
         assertNotNull(homeward);
-        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests(_game);
         assertNotNull(homewardLocation);
         assertNotEquals(homeward.getOwnerName(), archer.getOwnerName());
 

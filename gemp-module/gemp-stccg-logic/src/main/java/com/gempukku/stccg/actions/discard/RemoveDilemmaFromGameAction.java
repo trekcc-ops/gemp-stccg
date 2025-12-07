@@ -11,7 +11,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -45,7 +44,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(cardToRemove));
             gameState.addCardToRemovedPile(cardToRemove);
-            cardToRemove.setLocation(cardGame, new NullLocation());
+            cardToRemove.setLocationId(cardGame, -999);
 
             setAsSuccessful();
             return getNextAction();

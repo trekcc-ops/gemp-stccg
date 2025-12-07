@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Stack;
 
 public class PersonnelCard extends AffiliatedCard implements CardWithCompatibility, ReportableCard {
-
     public PersonnelCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
     }

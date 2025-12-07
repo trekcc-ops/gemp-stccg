@@ -61,12 +61,12 @@ public class ArmusTest extends AbstractAtTest {
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation
-        MissionLocation kurl = excavation.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation kurl = excavation.getLocationDeprecatedOnlyUseForTests(_game);
         seedCardsUnder(Collections.singleton(armus), excavation);
 
         // Seed Federation Outpost at Excavation
         seedFacility(P1, outpost, excavation);
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(_game), excavation.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         // Report Picard to outpost
@@ -77,7 +77,7 @@ public class ArmusTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests(_game)));
 
         // Attempt mission
         attemptMission(P1, _game.getGameState().getAwayTeamForCard(picard), excavation);
@@ -92,7 +92,7 @@ public class ArmusTest extends AbstractAtTest {
         assertEquals(0, _game.getGameState().getAwayTeams().size());
 
         // Confirm that mission was not solved
-        assertFalse(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
+        assertFalse(excavation.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
 
         // Confirm the mission attempt was added to performed actions
         int missionAttempts = 0;

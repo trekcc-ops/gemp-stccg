@@ -26,7 +26,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", P1);
@@ -44,7 +44,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
         assertFalse(_outpost.hasCardInCrew(geordi));
         assertTrue(runabout.hasCardInCrew(geordi));
-        assertEquals(MissionType.PLANET, geordi.getLocationDeprecatedOnlyUseForTests().getMissionType());
+        assertEquals(MissionType.PLANET, geordi.getLocationDeprecatedOnlyUseForTests(_game).getMissionType());
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.NAVIGATION));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.ASTROPHYSICS));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.STELLAR_CARTOGRAPHY));
@@ -60,7 +60,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", P1);
@@ -78,7 +78,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
         assertFalse(_outpost.hasCardInCrew(geordi));
         assertTrue(runabout.hasCardInCrew(geordi));
-        assertEquals(MissionType.SPACE, geordi.getLocationDeprecatedOnlyUseForTests().getMissionType());
+        assertEquals(MissionType.SPACE, geordi.getLocationDeprecatedOnlyUseForTests(_game).getMissionType());
         assertEquals(1, geordi.getSkillLevel(_game, SkillName.NAVIGATION));
         assertEquals(1, geordi.getSkillLevel(_game, SkillName.ASTROPHYSICS));
         assertEquals(1, geordi.getSkillLevel(_game, SkillName.STELLAR_CARTOGRAPHY));

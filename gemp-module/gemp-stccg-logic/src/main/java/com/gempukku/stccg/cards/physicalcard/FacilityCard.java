@@ -1,9 +1,14 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.FacilityType;
@@ -20,6 +25,27 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
 
     private final FacilityType _facilityType;
     private int _hullIntegrity = 100;
+
+    @JsonCreator
+    public FacilityCard(
+            @JsonProperty("cardId")
+            int cardId,
+            @JsonProperty("owner")
+            String ownerName,
+            @JsonProperty("blueprintId")
+            String blueprintId,
+            @JacksonInject
+            CardBlueprintLibrary blueprintLibrary,
+            @JsonProperty("isStopped")
+            boolean isStopped,
+            @JsonProperty("locationId")
+            int locationId) throws CardNotFoundException {
+        super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
+        _isStopped = isStopped;
+        _facilityType = _blueprint.getFacilityType();
+        _currentLocationId = locationId;
+    }
+
 
     public FacilityCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);

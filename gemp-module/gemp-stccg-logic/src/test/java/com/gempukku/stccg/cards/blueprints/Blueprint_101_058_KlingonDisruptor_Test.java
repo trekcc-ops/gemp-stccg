@@ -64,7 +64,7 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         assertNotNull(mission);
 
         gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
-        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission.getGameLocation());
+        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission);
 
         assertTrue(outpost.isInPlay());
 

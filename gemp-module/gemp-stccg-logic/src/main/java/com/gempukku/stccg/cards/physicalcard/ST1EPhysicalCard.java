@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -24,6 +25,25 @@ import java.util.Objects;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected boolean _isStopped;
+
+    @JsonCreator
+    public ST1EPhysicalCard(
+            @JsonProperty("cardId")
+            int cardId,
+            @JsonProperty("owner")
+            String ownerName,
+            @JsonProperty("blueprintId")
+            String blueprintId,
+            @JacksonInject
+            CardBlueprintLibrary blueprintLibrary,
+            @JsonProperty("isStopped")
+            boolean isStopped,
+            @JsonProperty("locationId")
+            int locationId) throws CardNotFoundException {
+        super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
+        _isStopped = isStopped;
+        _currentLocationId = locationId;
+    }
 
     public ST1EPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
@@ -92,6 +112,11 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public boolean isActive() {
         // TODO - account for other inactive states
         return !_isStopped;
+    }
+
+    @JsonProperty("cardId")
+    private void setCardId(int cardId) {
+        _cardId = cardId;
     }
 
 }

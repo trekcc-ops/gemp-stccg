@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 
@@ -38,7 +39,8 @@ public class MissionCard extends ST1EPhysicalCard {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             try {
-                if (_currentGameLocation instanceof MissionLocation mission) {
+                if (cardGame instanceof ST1EGame stGame &&
+                        stGame.getGameState().getLocationById(_currentLocationId) instanceof MissionLocation mission) {
                     actions.add(new AttemptMissionAction(
                             cardGame, player, mission.getCardForActionSelection(player), mission));
                 }

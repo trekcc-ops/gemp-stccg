@@ -45,7 +45,7 @@ public class ShipBattleRules {
         for (CardWithHullIntegrity attackingCard1 : initiatingPlayerCards) {
             List<PhysicalCard> canTargetCards = new ArrayList<>();
             for (CardWithHullIntegrity defendingCard : defendingCards) {
-                if (attackingCard1.getGameLocation() == defendingCard.getGameLocation()) {
+                if (attackingCard1.isAtSameLocationAsCard(defendingCard)) {
                     // TODO - check affiliation attack restrictions
                     canTargetCards.add(defendingCard);
                 }
@@ -57,7 +57,7 @@ public class ShipBattleRules {
                     if (attackingCard1 != attackingCard2 && attackingCard2 instanceof CardWithCompatibility nounCard2 &&
                             attackingCard1 instanceof ShipCard ship &&
                             ship.isCompatibleWith(stGame, nounCard2) &&
-                            attackingCard1.getGameLocation() == attackingCard2.getGameLocation()) {
+                            attackingCard1.isAtSameLocationAsCard(attackingCard2)) {
                         canAttackWithCards.add(attackingCard2);
                     }
                 }

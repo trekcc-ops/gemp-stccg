@@ -11,8 +11,10 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.NullLocation;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.player.Player;
@@ -27,10 +29,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     protected final CardBlueprint _blueprint;
     protected final String _ownerName;
-    protected final int _cardId;
+    protected int _cardId;
     protected Zone _zone;
     protected Integer _attachedToCardId;
     private Integer _stackedOnCardId;
+    protected int _currentLocationId;
     protected GameLocation _currentGameLocation;
     private boolean _placedOnMission = false;
     private boolean _revealedSeedCard = false;
@@ -39,7 +42,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _cardId = cardId;
         _ownerName = ownerName;
         _blueprint = blueprint;
-        _currentGameLocation = new NullLocation();
+        _currentLocationId = -999;
     }
 
 
@@ -47,7 +50,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _cardId = cardId;
         _ownerName = owner.getPlayerId();
         _blueprint = blueprint;
-        _currentGameLocation = new NullLocation();
+        _currentLocationId = -999;
     }
 
     public Zone getZone() {
@@ -189,19 +192,42 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isControlledBy(Player player) { return isControlledBy(player.getPlayerId()); }
 
     public String getCardLink() { return _blueprint.getCardLink(); }
-    public GameLocation getGameLocation() {
-        return _currentGameLocation;
+
+    public GameLocation getGameLocation(ST1EGame cardGame) {
+        return getGameLocation(cardGame.getGameState());
     }
 
+    public GameLocation getGameLocation(ST1EGameState gameState) {
+        GameLocation location = gameState.getLocationById(_currentLocationId);
+        return (location == null) ? new NullLocation() : location;
+    }
+
+
+
+    public int getLocationId() {
+        return _currentLocationId;
+    }
+
+    public boolean isAtSameLocationAsCard(PhysicalCard otherCard) {
+        return _currentLocationId == otherCard.getLocationId() &&
+                _currentLocationId >= 0;
+    }
+
+
     public void setLocation(DefaultGame cardGame, GameLocation location) {
-        _currentGameLocation = location;
+        setLocationId(cardGame, location.getLocationId());
+    }
+
+    public void setLocationId(DefaultGame cardGame, int locationId) {
+        _currentLocationId = locationId;
         for (PhysicalCard attachedCard : getAttachedCards(cardGame)) {
-            attachedCard.setLocation(cardGame, location);
+            attachedCard.setLocationId(cardGame, locationId);
         }
         for (PhysicalCard stackedCard : getStackedCards(cardGame)) {
-            stackedCard.setLocation(cardGame, location);
+            stackedCard.setLocationId(cardGame, locationId);
         }
     }
+
 
 
     public String getFullName() { return _blueprint.getFullName(); }
@@ -329,14 +355,16 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.hasCharacteristic(characteristic);
     }
 
-
-    public boolean isAtPlanetLocation() {
-        return _currentGameLocation.isPlanet();
+    public boolean isAtPlanetLocation(ST1EGame cardGame) {
+        GameLocation location = cardGame.getGameState().getLocationById(_currentLocationId);
+        return location != null && location.isPlanet();
     }
 
-    public boolean isAtSpaceLocation() {
-        return _currentGameLocation.isSpace();
+    public boolean isAtSpaceLocation(ST1EGame cardGame) {
+        GameLocation location = cardGame.getGameState().getLocationById(_currentLocationId);
+        return location != null && location.isSpace();
     }
+
 
     public String getControllerName() {
         return _ownerName;

@@ -68,7 +68,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
         Action nextAction = getNextAction();
         if (nextAction == null && isInProgress()) {
             PhysicalCard card = _cardTarget.getCard();
-            if (card.getGameLocation().getLocationId() == _locationId && !card.isPlacedOnMission()) {
+            if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
                 return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard());
             }
             setAsSuccessful();

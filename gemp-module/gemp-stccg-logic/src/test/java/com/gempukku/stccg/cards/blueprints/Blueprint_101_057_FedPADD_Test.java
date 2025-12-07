@@ -57,7 +57,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         assertNotNull(mission);
 
         gameState.addMissionLocationToSpacelineForTestingOnly(_game, mission, 0);
-        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission.getGameLocation());
+        _game.getGameState().seedFacilityAtLocationForTestingOnly(_game, outpost, mission);
 
         assertTrue(outpost.isInPlay());
 

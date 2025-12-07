@@ -132,11 +132,11 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
     private void processEffect(DefaultGame cardGame) {
         if (!_wasCarriedOut) {
-            GameLocation destinationLocation = _destination.getGameLocation();
+            GameLocation destinationLocation = _destination.getGameLocation((ST1EGame) cardGame);
             for (PhysicalCard card : _cardsToMove) {
                 card.setZone(Zone.ATTACHED);
                 card.attachTo(_destination);
-                card.setLocation(cardGame, destinationLocation);
+                card.setLocationId(cardGame, _destination.getLocationId());
                 if (_origin instanceof MissionCard) {
                     ((ST1EGame) cardGame).getGameState().removeCardFromAwayTeam((ST1EGame) cardGame, (ReportableCard) card);
                 }

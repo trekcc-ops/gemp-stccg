@@ -36,7 +36,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         _destinationOptions = new LinkedList<>();
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
         List<MissionLocation> allLocations = cardGame.getGameState().getSpacelineLocations();
-        GameLocation currentLocation = _flyingCard.getGameLocation();
+        GameLocation currentLocation = _flyingCard.getGameLocation(cardGame);
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
         for (MissionLocation location : allLocations) {
             if (location.isInSameQuadrantAs(currentLocation) && location != currentLocation) {
@@ -82,11 +82,11 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
             }
         }
 
-        GameLocation destinationLocation = _destination.getGameLocation();
+        GameLocation destinationLocation = _destination.getGameLocation((ST1EGame) cardGame);
 
         if (!_cardMoved) {
             int rangeNeeded =
-                    _flyingCard.getGameLocation().getDistanceToLocation(stGame, destinationLocation, performingPlayer);
+                    _flyingCard.getGameLocation((ST1EGame) cardGame).getDistanceToLocation(stGame, destinationLocation, performingPlayer);
             _cardMoved = true;
             setAsSuccessful();
             _flyingCard.useRange(rangeNeeded);

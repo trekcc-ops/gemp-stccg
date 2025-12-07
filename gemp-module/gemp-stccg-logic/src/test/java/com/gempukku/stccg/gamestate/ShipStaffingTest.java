@@ -30,12 +30,12 @@ public class ShipStaffingTest extends AbstractAtTest {
         ST1EPhysicalCard friendly =
                 (ST1EPhysicalCard) _game.addCardToGame("115_010", P1);
 
-        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests(_game);
         seedCardsUnder(Collections.singleton(friendly), _mission);
 
         // Seed Federation Outpost
         seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
+        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
         PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);

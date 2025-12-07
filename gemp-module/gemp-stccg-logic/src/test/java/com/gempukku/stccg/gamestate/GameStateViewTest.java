@@ -42,7 +42,7 @@ public class GameStateViewTest extends AbstractAtTest {
 
         assertNotNull(archer);
         assertNotNull(homeward);
-        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
+        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests(_game);
         assertNotNull(homewardLocation);
         seedDilemma(archer, homewardLocation);
 
@@ -50,8 +50,8 @@ public class GameStateViewTest extends AbstractAtTest {
             skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().size());
-        assertTrue(homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(archer));
+        assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().size());
+        assertTrue(homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(archer));
 
         String serialized4 = _game.getGameState().serializeForPlayer(P1);
         System.out.println(serialized4.replace(",",",\n"));

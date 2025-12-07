@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.PlayerClock;
@@ -43,15 +45,27 @@ public class ST1EGameStateDeserializer extends JsonDeserializer<ST1EGameState> {
         PlayerOrder playerOrder = ctxt.readTreeAsValue(playerOrderNode, PlayerOrder.class);
 
 
-        boolean deserializeDirectly = false;
+        boolean deserializeDirectly = true;
 
         List<PhysicalCard> cardsInGame = new ArrayList<>();
 
+        // skipped locationId
         if (deserializeDirectly) {
             JsonNode cardNode = object.get("cardsInGame");
             for (JsonNode individualCardNode : cardNode) {
-                ST1EPhysicalCard card = ctxt.readTreeAsValue(individualCardNode, ST1EPhysicalCard.class);
-                cardsInGame.add(card);
+                try {
+                    CardType cardType = ctxt.readTreeAsValue(individualCardNode.get("cardType"), CardType.class);
+                    if (cardType == CardType.FACILITY) {
+                        ST1EPhysicalCard card = ctxt.readTreeAsValue(individualCardNode, FacilityCard.class);
+                        cardsInGame.add(card);
+                    } else {
+                        ST1EPhysicalCard card = ctxt.readTreeAsValue(individualCardNode, ST1EPhysicalCard.class);
+                        cardsInGame.add(card);
+                    }
+                } catch(IOException exp) {
+                    System.out.println(individualCardNode);
+                    throw(exp);
+                }
             }
         } else {
             JsonNode cardNode = object.get("cardsInGame");
@@ -81,7 +95,6 @@ public class ST1EGameStateDeserializer extends JsonDeserializer<ST1EGameState> {
     private boolean _revealedSeedCard = false;
     protected List<Affiliation> _currentAffiliations = new ArrayList<>();
     private Affiliation _defaultCardArtAffiliation;
-    private AwayTeam _awayTeam;
     private int _hullIntegrity = 100;
     private boolean _docked = false;
     int _usedRange;

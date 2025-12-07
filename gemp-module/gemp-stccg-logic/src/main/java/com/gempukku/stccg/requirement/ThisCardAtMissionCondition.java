@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 public class ThisCardAtMissionCondition implements Condition {
@@ -26,7 +27,7 @@ public class ThisCardAtMissionCondition implements Condition {
     public boolean isFulfilled(DefaultGame cardGame) {
         try {
             PhysicalCard thisCard = cardGame.getCardFromCardId(_thisCardId);
-            if (thisCard.getGameLocation() instanceof MissionLocation missionLocation) {
+            if (thisCard.getGameLocation((ST1EGame) cardGame) instanceof MissionLocation missionLocation) {
                 MissionCard missionCard = missionLocation.getMissionForPlayer(thisCard.getControllerName());
                 return _missionFilter.accepts(cardGame, missionCard);
             } else {
