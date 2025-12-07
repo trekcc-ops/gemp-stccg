@@ -1,5 +1,8 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -9,16 +12,11 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameStateViewTest extends AbstractAtTest {
+public class GameStateSerializationTest extends AbstractAtTest {
 
     @Test
     public void gameStateSerializerTest() throws Exception {
         initializeIntroductoryTwoPlayerGame();
-
-        // Figure out which player is going first
-        String player1 = _game.getGameState().getPlayerOrder().getFirstPlayer();
-        String player2 = _game.getOpponent(player1);
-
         autoSeedMissions();
 
         // There should now be 12 missions seeded
@@ -30,14 +28,11 @@ public class GameStateViewTest extends AbstractAtTest {
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
         PhysicalCard archer = null;
         PhysicalCard homeward = null;
-        PhysicalCard tarses = null;
         for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
             if (Objects.equals(card.getTitle(), "Archer"))
                 archer = card;
             if (Objects.equals(card.getTitle(), "Homeward"))
                 homeward = card;
-            if (Objects.equals(card.getTitle(), "Simon Tarses"))
-                tarses = card;
         }
 
         assertNotNull(archer);
@@ -53,7 +48,16 @@ public class GameStateViewTest extends AbstractAtTest {
         assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().size());
         assertTrue(homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(archer));
 
-        String serialized4 = _game.getGameState().serializeForPlayer(P1);
-        System.out.println(serialized4.replace(",",",\n"));
+        ObjectWriter gameStateMapper = new GameStateMapper().writer(true);
+        String gameStateJson = gameStateMapper.writeValueAsString(_game.getGameState());
+        System.out.println(gameStateJson);
+
+        ObjectMapper readMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(ST1EGameState.class, new ST1EGameStateDeserializer(_game));
+        readMapper.registerModule(module);
+
+        ST1EGameState gameStateCopy = readMapper.readValue(gameStateJson, ST1EGameState.class);
+
     }
 }

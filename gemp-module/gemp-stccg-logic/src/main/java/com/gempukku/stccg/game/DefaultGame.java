@@ -3,6 +3,7 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -378,6 +379,15 @@ public abstract class DefaultGame {
             }
         }
         return false;
+    }
+
+    public PhysicalCard createPhysicalCard(String blueprintId, int cardId, String playerId) throws CardNotFoundException {
+        CardBlueprint blueprint = _library.get(blueprintId);
+        if (blueprint != null) {
+            return blueprint.createPhysicalCard(cardId, playerId);
+        } else {
+            throw new CardNotFoundException("Unable to find card matching blueprint id " + blueprintId);
+        }
     }
 
 }

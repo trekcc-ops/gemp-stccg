@@ -57,7 +57,7 @@ public class ArmusTest extends AbstractAtTest {
         picard.removeFromCardGroup(_game);
         _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
 
-        PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
+        PhysicalCard armus = _game.addCardToGame("101_015", P2);
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation

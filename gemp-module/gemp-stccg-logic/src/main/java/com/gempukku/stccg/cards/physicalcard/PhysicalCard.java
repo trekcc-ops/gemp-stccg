@@ -38,6 +38,7 @@ public interface PhysicalCard {
     String getBlueprintId();
     @JsonProperty("imageUrl")
     String getImageUrl();
+
     int getCardId();
 
     @JsonProperty("owner")

@@ -9,7 +9,6 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.Player;
 
 import java.util.*;
 
@@ -18,8 +17,8 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
     protected List<Affiliation> _currentAffiliations = new ArrayList<>();
     private Affiliation _defaultCardArtAffiliation;
 
-    AffiliatedCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(cardId, owner, blueprint);
+    AffiliatedCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
         _currentAffiliations.addAll(blueprint.getAffiliations());
         _defaultCardArtAffiliation = _currentAffiliations.getFirst();
     }

@@ -10,7 +10,6 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
@@ -21,10 +20,12 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
 
     private final FacilityType _facilityType;
     private int _hullIntegrity = 100;
-    public FacilityCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(game, cardId, owner, blueprint);
+
+    public FacilityCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
         _facilityType = blueprint.getFacilityType();
     }
+
     public FacilityType getFacilityType() {
         return _facilityType;
     }

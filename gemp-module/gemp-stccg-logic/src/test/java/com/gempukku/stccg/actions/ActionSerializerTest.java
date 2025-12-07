@@ -23,9 +23,9 @@ public class ActionSerializerTest extends AbstractAtTest {
                 new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
         KillSinglePersonnelAction action2 = new KillSinglePersonnelAction(_game, P1, _game.getCardFromCardId(1),
                 new SelectCardsFromDialogAction(_game, _game.getPlayer(P1), "Select a card", Filters.any));
-        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
         ShipCard runabout =
-                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+                (ShipCard) _game.addCardToGame("101_331", P1);
         action.appendCost(action2);
         String jsonString = _game.getGameState().serializeForPlayer(P1);
         System.out.println(jsonString);

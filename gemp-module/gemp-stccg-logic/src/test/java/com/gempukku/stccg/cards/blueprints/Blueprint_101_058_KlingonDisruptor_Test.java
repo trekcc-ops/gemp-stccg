@@ -22,10 +22,10 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();
         
-        _game.addCardToGame("101_174", _cardLibrary, P1);
-        _game.addCardToGame("101_058", _cardLibrary, P1);
-        _game.addCardToGame("101_215", _cardLibrary, P1);
-        _game.addCardToGame("101_270", _cardLibrary, P1);
+        _game.addCardToGame("101_174", P1);
+        _game.addCardToGame("101_058", P1);
+        _game.addCardToGame("101_215", P1);
+        _game.addCardToGame("101_270", P1);
 
         MissionCard mission = null;
         EquipmentCard disruptor = null;
@@ -55,7 +55,7 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         assertNotNull(klag);
 
         // Federation Outpost
-        final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
+        FacilityCard outpost = (FacilityCard) newCardForGame("101_104", P1);
 
         assertFalse(outpost.isInPlay());
         assertEquals("Klag", klag.getTitle());

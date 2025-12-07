@@ -28,7 +28,7 @@ public class ShipStaffingTest extends AbstractAtTest {
         assertNotNull(_mission);
 
         ST1EPhysicalCard friendly =
-                (ST1EPhysicalCard) _game.addCardToGame("115_010", _cardLibrary, P1);
+                (ST1EPhysicalCard) _game.addCardToGame("115_010", P1);
 
         MissionLocation missionLocation = _mission.getLocationDeprecatedOnlyUseForTests();
         seedCardsUnder(Collections.singleton(friendly), _mission);
@@ -38,13 +38,13 @@ public class ShipStaffingTest extends AbstractAtTest {
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
-        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", _cardLibrary, P1);
-        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", _cardLibrary, P1);
-        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", _cardLibrary, P1);
-        PersonnelCard wallace = (PersonnelCard) _game.addCardToGame("101_203", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
+        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", P1);
+        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", P1);
+        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", P1);
+        PersonnelCard wallace = (PersonnelCard) _game.addCardToGame("101_203", P1);
         ShipCard runabout =
-                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+                (ShipCard) _game.addCardToGame("101_331", P1);
 
         reportCardsToFacility(List.of(troi, hobson, picard, data, wallace, runabout), _outpost);
 

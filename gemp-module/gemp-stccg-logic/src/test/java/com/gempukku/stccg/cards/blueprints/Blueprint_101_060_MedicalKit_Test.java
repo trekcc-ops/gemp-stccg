@@ -34,7 +34,7 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         PersonnelCard taris = (PersonnelCard) newCardForGame("105_085", P1);
 
         // Federation Outpost
-        final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
+        FacilityCard outpost = (FacilityCard) newCardForGame("101_104", P1);
 
         assertFalse(outpost.isInPlay());
         assertEquals("Jean-Luc Picard", picard.getTitle());

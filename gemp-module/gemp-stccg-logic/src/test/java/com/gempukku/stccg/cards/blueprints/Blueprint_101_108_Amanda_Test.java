@@ -62,7 +62,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         _game.getPlayer(P1).getDrawDeck().addCardToTop(deathYell);
         _game.getPlayer(P2).getDrawDeck().addCardToTop(amanda);
 
-        PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
+        PhysicalCard armus = _game.addCardToGame("101_015", P2);
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation
@@ -143,7 +143,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         _game.getPlayer(P1).getDrawDeck().addCardToTop(amanda1);
         _game.getPlayer(P2).getDrawDeck().addCardToTop(amanda2);
 
-        PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
+        PhysicalCard armus = _game.addCardToGame("101_015", P2);
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation
@@ -232,7 +232,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         _game.getPlayer(P1).getDrawDeck().addCardToTop(amanda1);
         _game.getPlayer(P2).getDrawDeck().addCardToTop(amanda2);
 
-        PhysicalCard armus = _game.addCardToGame("101_015", _cardLibrary, P2);
+        PhysicalCard armus = _game.addCardToGame("101_015", P2);
         armus.setZone(Zone.VOID);
 
         // Seed Armus under Excavation

@@ -367,7 +367,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected PhysicalCard newCardForGame(String blueprintId, String playerId) throws CardNotFoundException {
-        return _game.addCardToGame(blueprintId, _cardLibrary, playerId);
+        return _game.addCardToGame(blueprintId, playerId);
     }
 
     protected void initializeQuickMissionAttemptWithRisk() {

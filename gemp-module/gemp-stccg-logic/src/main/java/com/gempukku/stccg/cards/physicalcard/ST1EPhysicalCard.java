@@ -17,7 +17,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
@@ -25,9 +24,11 @@ import java.util.Objects;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected boolean _isStopped;
-    public ST1EPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
-        super(cardId, owner, blueprint);
+
+    public ST1EPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
     }
+
 
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {

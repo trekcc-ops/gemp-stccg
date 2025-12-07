@@ -32,8 +32,8 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
     int _usedRange;
     private int _hullIntegrity = 100;
 
-    public ShipCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(game, cardId, owner, blueprint);
+    public ShipCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
     }
 
     @Override

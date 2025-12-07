@@ -35,6 +35,14 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     private boolean _placedOnMission = false;
     private boolean _revealedSeedCard = false;
 
+    public AbstractPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        _cardId = cardId;
+        _ownerName = ownerName;
+        _blueprint = blueprint;
+        _currentGameLocation = new NullLocation();
+    }
+
+
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _ownerName = owner.getPlayerId();

@@ -33,7 +33,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         assertNotNull(_mission);
 
         ST1EPhysicalCard maglock =
-                (ST1EPhysicalCard) _game.addCardToGame("109_010", _cardLibrary, P1);
+                (ST1EPhysicalCard) _game.addCardToGame("109_010", P1);
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
@@ -45,12 +45,12 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
-        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", _cardLibrary, P1);
-        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", _cardLibrary, P1);
-        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
+        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", P1);
+        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", P1);
+        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", P1);
         ShipCard runabout =
-                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+                (ShipCard) _game.addCardToGame("101_331", P1);
 
         reportCardsToFacility(_outpost, troi, hobson, picard, data, runabout);
 
@@ -94,7 +94,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
 
         ST1EPhysicalCard maglock =
-                (ST1EPhysicalCard) _game.addCardToGame("109_010", _cardLibrary, P1);
+                (ST1EPhysicalCard) _game.addCardToGame("109_010", P1);
         maglock.setZone(Zone.VOID);
 
         // Seed Maglock
@@ -106,12 +106,12 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
         assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
 
-        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", _cardLibrary, P1);
-        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", _cardLibrary, P1);
-        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", _cardLibrary, P1);
-        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", _cardLibrary, P1);
+        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
+        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", P1);
+        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", P1);
+        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", P1);
         ShipCard runabout =
-                (ShipCard) _game.addCardToGame("101_331", _cardLibrary, P1);
+                (ShipCard) _game.addCardToGame("101_331", P1);
 
         reportCardsToFacility(_outpost, troi, hobson, picard, data, runabout);
 

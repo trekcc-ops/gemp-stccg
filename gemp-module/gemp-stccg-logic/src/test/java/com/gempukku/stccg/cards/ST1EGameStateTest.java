@@ -19,8 +19,8 @@ public class ST1EGameStateTest extends AbstractAtTest {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
 
-        final MissionCard mission = new MissionCard(_game, 101, player1, _cardLibrary.get("101_174"));
-        final FacilityCard outpost1 = new FacilityCard(_game, 102, player1, _cardLibrary.get("101_105"));
+        final MissionCard mission = new MissionCard(101, P1, _cardLibrary.get("101_174"));
+        final FacilityCard outpost1 = new FacilityCard(102, P1, _cardLibrary.get("101_105"));
 
         assertFalse(outpost1.isInPlay());
         assertFalse(_userFeedback.hasNoPendingDecisions());

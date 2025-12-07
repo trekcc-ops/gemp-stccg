@@ -23,11 +23,11 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();
 
-        _game.addCardToGame("101_174", _cardLibrary, P1);
-        _game.addCardToGame("101_065", _cardLibrary, P1);
-        _game.addCardToGame("101_212", _cardLibrary, P1);
-        _game.addCardToGame("172_031", _cardLibrary, P1);
-        _game.addCardToGame("101_205", _cardLibrary, P1);
+        _game.addCardToGame("101_174", P1);
+        _game.addCardToGame("101_065", P1);
+        _game.addCardToGame("101_212", P1);
+        _game.addCardToGame("172_031", P1);
+        _game.addCardToGame("101_205", P1);
 
         MissionCard mission = null;
         EquipmentCard tricorder = null;
@@ -57,7 +57,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         }
 
         // Federation Outpost
-        final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
+        FacilityCard outpost = (FacilityCard) newCardForGame("101_104", P1);
 
         assertFalse(outpost.isInPlay());
         assertEquals("Geordi La Forge", geordi.getTitle());

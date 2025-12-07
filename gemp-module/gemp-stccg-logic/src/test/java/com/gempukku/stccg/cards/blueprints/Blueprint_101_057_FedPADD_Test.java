@@ -22,9 +22,9 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();
         
-        _game.addCardToGame("101_174", _cardLibrary, P1);
-        _game.addCardToGame("101_057", _cardLibrary, P1);
-        _game.addCardToGame("101_215", _cardLibrary, P1);
+        _game.addCardToGame("101_174", P1);
+        _game.addCardToGame("101_057", P1);
+        _game.addCardToGame("101_215", P1);
 
         MissionCard mission = null;
         EquipmentCard padd = null;
@@ -49,7 +49,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         assertNotNull(padd);
 
         // Federation Outpost
-        final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
+        FacilityCard outpost = (FacilityCard) newCardForGame("101_104", P1);
 
         assertFalse(outpost.isInPlay());
         assertEquals("Jean-Luc Picard", picard.getTitle());

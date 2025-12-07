@@ -180,9 +180,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return false;
     }
 
-    public Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName) {
+    public Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName, DefaultGame cardGame) {
         int level = 0;
-        for (Skill skill : physicalCard.getBlueprint().getSkills(_game, physicalCard)) {
+        for (Skill skill : physicalCard.getBlueprint().getSkills(cardGame, physicalCard)) {
             if (skill instanceof RegularSkill regularSkill) {
                 if (regularSkill.getRegularSkill() == skillName) {
                     level += regularSkill.getLevel();
@@ -200,18 +200,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return level;
     }
 
-
-    @Override
-    public boolean hasTextRemoved(PhysicalCard card) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, card)) {
-            if (modifier.hasRemovedText(_game, card))
-                return true;
-        }
-        return false;
-    }
-
-
-    public void signalStartOfTurn(Player player) {
+    public void signalStartOfTurn(DefaultGame cardGame, Player player) {
         String playerId = player.getPlayerId();
         List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
         if (list != null) {
@@ -224,7 +213,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
         // Unstop all "stopped" cards
         // TODO - Does not account for cards that can be stopped for multiple turns
-        for (PhysicalCard card : _game.getGameState().getAllCardsInPlay()) {
+        for (PhysicalCard card : cardGame.getAllCardsInPlay()) {
             if (card instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
                 stCard.unstop();
             }

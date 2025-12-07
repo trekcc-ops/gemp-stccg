@@ -9,16 +9,15 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardDeserializer;
 import com.gempukku.stccg.common.*;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Uniqueness;
 import com.gempukku.stccg.game.ICallback;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.game.ST1EGame;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hjson.JsonValue;
@@ -71,24 +70,13 @@ public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint>
             throws CardNotFoundException, PlayerNotFoundException {
         CardBlueprint cardBlueprint = getCardBlueprint(blueprintId);
         Player owner = game.getPlayer(playerId);
-        return cardBlueprint.createPhysicalCard(game, cardId, owner);
+        return cardBlueprint.createPhysicalCard(cardId, owner);
     }
 
-    public PhysicalCard createST1EPhysicalCard(ST1EGame game, String blueprintId, int cardId, Player player)
+    public PhysicalCard createST1EPhysicalCard(String blueprintId, int cardId, Player player)
             throws CardNotFoundException, PlayerNotFoundException {
         CardBlueprint cardBlueprint = getCardBlueprint(blueprintId);
-        return cardBlueprint.createPhysicalCard(game, cardId, player);
-    }
-
-
-    public PhysicalCard createST1EPhysicalCard(ST1EGame game, JsonNode node)
-            throws CardNotFoundException, PlayerNotFoundException {
-        String blueprintId = node.get("blueprintId").textValue();
-        int cardId = node.get("cardId").intValue();
-        String playerId = node.get("owner").textValue();
-        PhysicalCard newCard = createST1EPhysicalCard(game, blueprintId, cardId, playerId);
-        PhysicalCardDeserializer.deserialize(game, newCard, node);
-        return newCard;
+        return cardBlueprint.createPhysicalCard(cardId, player);
     }
 
 

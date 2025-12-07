@@ -17,7 +17,6 @@ import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
@@ -583,15 +582,20 @@ public class CardBlueprint {
         return _shipClass;
     }
 
-    public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
+    public PhysicalCard createPhysicalCard(int cardId, String playerName) {
         return switch(_cardType) {
-            case EQUIPMENT -> new EquipmentCard(st1egame, cardId, player, this);
-            case FACILITY -> new FacilityCard(st1egame, cardId, player, this);
-            case MISSION -> new MissionCard(st1egame, cardId, player, this);
-            case PERSONNEL -> new PersonnelCard(st1egame, cardId, player, this);
-            case SHIP -> new ShipCard(st1egame, cardId, player, this);
-            default -> new ST1EPhysicalCard(cardId, player, this);
+            case EQUIPMENT -> new EquipmentCard(cardId, playerName, this);
+            case FACILITY -> new FacilityCard(cardId, playerName, this);
+            case MISSION -> new MissionCard(cardId, playerName, this);
+            case PERSONNEL -> new PersonnelCard(cardId, playerName, this);
+            case SHIP -> new ShipCard(cardId, playerName, this);
+            default -> new ST1EPhysicalCard(cardId, playerName, this);
         };
+    }
+    
+
+    public PhysicalCard createPhysicalCard(int cardId, Player player) {
+        return createPhysicalCard(cardId, player.getPlayerId());
     }
 
 }

@@ -11,7 +11,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.player.Player;
 
 import java.util.List;
 import java.util.Stack;
@@ -20,8 +19,8 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
 
     private AwayTeam _awayTeam;
 
-    public PersonnelCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(game, cardId, owner, blueprint);
+    public PersonnelCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
     }
 
     public Integer getIntegrity(DefaultGame cardGame) {
@@ -42,7 +41,7 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
     }
 
     public Integer getSkillLevel(DefaultGame cardGame, SkillName skillName) {
-        return cardGame.getGameState().getModifiersQuerying().getSkillLevel(this, skillName);
+        return cardGame.getGameState().getModifiersQuerying().getSkillLevel(this, skillName, cardGame);
     }
 
 

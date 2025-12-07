@@ -38,11 +38,11 @@ public abstract class GameState {
     Map<String, Player> _players = new HashMap<>();
     PlayerOrder _playerOrder;
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
-    private ModifiersLogic _modifiersLogic;
+    private final ModifiersLogic _modifiersLogic;
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
-    private ActionsEnvironment _actionsEnvironment;
+    private final ActionsEnvironment _actionsEnvironment;
     private GameProcess _currentGameProcess;
     private int _currentTurnNumber;
     private final Map<String, PlayerClock> _playerClocks;
@@ -97,6 +97,22 @@ public abstract class GameState {
         _actionsEnvironment = new DefaultActionsEnvironment();
         _playerClocks = clocks;
     }
+
+    protected GameState(List<Player> players, List<PlayerClock> playerClocks) {
+        _playerClocks = new HashMap<>();
+
+        for (Player player : players) {
+            _players.put(player.getPlayerId(), player);
+        }
+
+        for (PlayerClock clock : playerClocks) {
+            _playerClocks.put(clock.getPlayerId(), clock);
+        }
+
+        _modifiersLogic = new ModifiersLogic(null);
+        _actionsEnvironment = new DefaultActionsEnvironment();
+    }
+
 
 
     public void initializePlayerOrder(PlayerOrder playerOrder) {

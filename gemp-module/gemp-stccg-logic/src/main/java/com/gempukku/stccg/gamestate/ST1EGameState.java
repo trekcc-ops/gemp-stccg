@@ -18,6 +18,8 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerOrder;
+import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
@@ -29,6 +31,30 @@ public class ST1EGameState extends GameState {
     private int _nextAttemptingUnitId = 1;
     private int _nextLocationId = 1;
     private final Map<Integer, GameLocation> _locationIds = new HashMap<>();
+
+    public ST1EGameState(@JsonProperty("currentPhase")
+                         Phase currentPhase,
+                         @JsonProperty("currentProcess")
+                         GameProcess currentProcess,
+                         @JsonProperty("playerClocks")
+                         List<PlayerClock> playerClocks,
+                         @JsonProperty("cardsInGame")
+                         List<PhysicalCard> cardsInGame,
+                         @JsonProperty("playerOrder")
+                         PlayerOrder playerOrder
+    ) {
+        super(new ArrayList<>(), playerClocks);
+        setCurrentPhase(currentPhase);
+        setCurrentProcess(currentProcess);
+        int nextCardId = 0;
+        for (PhysicalCard card : cardsInGame) {
+            _allCards.put(card.getCardId(), card);
+            if (card.getCardId() >= nextCardId) {
+                nextCardId = card.getCardId() + 1;
+            }
+        }
+        _playerOrder = playerOrder;
+    }
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game, Map<String, PlayerClock> clocks) {
         super(game, playerIds, clocks);
@@ -80,7 +106,7 @@ public class ST1EGameState extends GameState {
                     for (String blueprintId : entry.getValue()) {
                         try {
                             PhysicalCard card =
-                                    library.createST1EPhysicalCard(cardGame, blueprintId, _nextCardId, player);
+                                    library.createST1EPhysicalCard(blueprintId, _nextCardId, player);
                             subDeck.add(card);
                             _allCards.put(_nextCardId, card);
                             _nextCardId++;

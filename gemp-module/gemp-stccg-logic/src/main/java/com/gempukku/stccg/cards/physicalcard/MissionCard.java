@@ -7,7 +7,6 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 
@@ -16,9 +15,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class MissionCard extends ST1EPhysicalCard {
-    public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(cardId, owner, blueprint);
+
+    public MissionCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
     }
+
 
     public int getPointsShown() { return _blueprint.getPointsShown(); }
 

@@ -24,8 +24,6 @@ public interface ModifiersQuerying {
 
     boolean canPlayerSolveMission(String playerId, MissionLocation mission);
 
-    boolean hasTextRemoved(PhysicalCard card);
-
     Collection<Modifier> getModifiersAffecting(PhysicalCard card);
 
     float getAttribute(PhysicalCard card, CardAttribute attribute);
@@ -61,6 +59,6 @@ public interface ModifiersQuerying {
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
 
     int getNormalCardPlaysAvailable(String playerName);
+    Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName, DefaultGame cardGame);
 
-    Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName);
 }
