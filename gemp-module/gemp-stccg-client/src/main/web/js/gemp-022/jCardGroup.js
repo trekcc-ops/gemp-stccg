@@ -808,14 +808,14 @@ export function layoutTokens(cardElem) {
             var tokenInColumnMax = 10;
             var tokenColumns = 0;
 
-            for (var token in tokens)
-                if (tokens.hasOwnProperty(token) && tokens[token] > 0) {
+            for (const token in tokens)
+                if (Object.prototype.hasOwnProperty.call(tokens, token) && tokens[token] > 0) {
                     tokenColumns += (1 + Math.floor((tokens[token] - 1) / tokenInColumnMax));
                 }
 
             var tokenIndex = 1;
-            for (var token in tokens)
-                if (tokens.hasOwnProperty(token)) {
+            for (const token in tokens)
+                if (Object.prototype.hasOwnProperty.call(tokens, token)) {
                     if (token == "count") {
                         if (tokens[token] > 0) {
                             var tokenElem = $("<div class='cardCount token'>" + tokens[token] + "</div>").css({position:"absolute", left:((width - 20) / 2) + "px", top:((height - 18) / 2) + "px"});

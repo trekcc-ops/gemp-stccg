@@ -80,44 +80,43 @@
     flex: 0 1 20px;
 }
 
-.fullCardDivHorizontal, .fullCardDivVertical {
-    border-radius: 3.5%;
-    position: relative;
+
+.fullCardDivHorizontal {
+    width: 357px;
+    height: 497px;
+    transform: rotate(-0.25turn);
 }
 
-.noBorderOverlayHorizontal, .noBorderOverlayVertical, .borderOverlayHorizontal, .borderOverlayVertical, .foilOverlayHorizontal, .foilOverlayVertical, .fullCardWrapper {
-    border-radius: 3.5%;
-    position: absolute;
-}
-
-.noBorderOverlayHorizontal, .noBorderOverlayVertical {
-    border-width: 0px;
-}
-
-.borderOverlayHorizontal, .borderOverlayVertical {
-    border-width: 16px;
-}
-
-.noBorderOverlayHorizontal, .foilOverlayHorizontal, .fullCardDivHorizontal, .fullCardImgHorizontal {
-    width: 497px;
-    height: 357px;
-}
-
-.noBorderOverlayVertical, .foilOverlayVertical, .fullCardDivVertical, .fullCardImgVertical {
+.fullCardDivVertical {
     width: 357px;
     height: 497px;
 }
 
-.borderOverlayHorizontal {
-    width: 465px;
-    height: 325px;
-}
-
-.borderOverlayVertical {
-    width: 325px;
-    height: 465px;
-}
-
 .card-group {
     border-radius: 7px;
+}
+
+.card-load-spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(farthest-side,#766DF4 94%,#0000) top/8px 8px no-repeat,
+    conic-gradient(#0000 30%,#766DF4);
+  mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+  animation:s3 1s infinite linear;
+  /* center it in both directions */
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+@keyframes s3{ 
+  100%{transform: rotate(1turn)}
 }

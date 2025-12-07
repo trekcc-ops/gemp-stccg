@@ -1,4 +1,5 @@
 import { zones_all } from "./common.js";
+import { fetchImage } from "./communication.js";
 import Cookies from "js-cookie";
 import special01Img from "../../images/boosters/special-01.png";
 import rulesImg from "../../images/rules.png";
@@ -31,12 +32,13 @@ export default class Card {
     zone;
     cardId;
     owner;
+    title;
     siteNumber = 1;
     attachedCards;
     errata;
     status_tokens;
 
-    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown, tokens) {
+    constructor(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown, tokens) {
         if (typeof(blueprintId) != 'string') {
             throw new TypeError(`blueprintId '${blueprintId}' must be a string.`);
         }
@@ -51,6 +53,10 @@ export default class Card {
 
         if (typeof(owner) != 'string') {
             throw new TypeError(`owner '${owner}' must be a string.`);
+        }
+
+        if (typeof(title) != 'string') {
+            throw new TypeError(`title '${title}' must be a string.`);
         }
 
         if (typeof(imageUrl) != 'string') {
@@ -81,6 +87,7 @@ export default class Card {
         this.status_tokens = (tokens instanceof Set) ? tokens : new Set();
 
         this.blueprintId = blueprintId;
+        this.title = title;
         this.imageUrl = imageUrl;
         this.upsideDown = upsideDown;
 
@@ -304,7 +311,9 @@ export default class Card {
         let that = this;
         container.html("");
         container.html("<div style='scroll: auto'></div>");
-        container.append(createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack()));
+        let cardDiv = createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack(), that.title);
+        let jqCardDiv = $(cardDiv);
+        container.append(jqCardDiv);
 //        if (that.hasWikiInfo())
 //            container.append("<div><a href='" + that.getWikiLink() + "' target='_blank'>Wiki</a></div>");
 
@@ -387,7 +396,20 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
         imageTag.classList.add("upside-down");
     }
 
-    imageTag.src = image;
+    let loadingSpinner = document.createElement("div");
+    loadingSpinner.classList.add("card-load-spinner");
+    front_face.appendChild(loadingSpinner);
+
+    fetchImage(image).then((url) => {
+        front_face.removeChild(loadingSpinner);
+        if (url == null) {
+            imageTag.src = "";
+        }
+        else {
+            imageTag.src = url;
+        }
+    });
+    
     imageTag.style.width = "100%";
     imageTag.style.height = "100%";
     imageTag.alt = (text) ? text : "";
@@ -486,28 +508,21 @@ export function getFoilPresentation() {
     return "static";
 }
 
-export function createFullCardDiv(image, foil, horizontal, noBorder) {
-    var orientation;
-    if (horizontal) orientation = "Horizontal";
-    else orientation = "Vertical";
-
-    var borderClass;
-    if (noBorder) borderClass = "noBorderOverlay";
-    else borderClass = "borderOverlay";
-
-    var cardDiv = $("<div class='fullCardDiv" + orientation + "'></div>");
-    cardDiv.append($("<div class='fullCardWrapper'>" +
-        "<img class='fullCardImg" + orientation + "' src='" + image + "'></div>"));
-    cardDiv.append($("<div class='" + borderClass + orientation + "'>" +
-        `<img class='actionArea' src='${pixelImg}' width='100%' height='100%'></div>`));
-
-    if (foil && getFoilPresentation() !== 'none') {
-        var foilImage = (getFoilPresentation() === 'animated') ? "foil.gif" : "holo.jpg";
-        cardDiv.append($("<div class='foilOverlay" + orientation + "'>" +
-            "<img src='/gemp-module/images/" + foilImage + "' width='100%' height='100%'></div>"));
+export function createFullCardDiv(image, foil, horizontal, noBorder, text) {
+    let alt = (text) ? text : "";
+    let tokens = false;
+    let errata = false;
+    let upsideDown = false;
+    let cardId;
+    let fullCardDiv = createCardDiv(image, alt, foil, tokens, noBorder, errata, upsideDown, cardId);
+    if (horizontal) {
+        fullCardDiv.classList.add("fullCardDivHorizontal");
+    }
+    else {
+        fullCardDiv.classList.add("fullCardDivVertical");
     }
 
-    return cardDiv;
+    return fullCardDiv;
 }
 
 export function createSimpleCardDiv(image, alt_text="") {
