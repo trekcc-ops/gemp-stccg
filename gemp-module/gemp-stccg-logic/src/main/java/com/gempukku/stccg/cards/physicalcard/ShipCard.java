@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -180,26 +179,6 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
         return getPersonnelInCrew(cardGame);
     }
 
-
-    @Override
-    public void leaveAwayTeam(ST1EGame cardGame) {
-
-    }
-
-    @Override
-    public boolean isInAnAwayTeam() {
-        return false;
-    }
-
-    @Override
-    public void addToAwayTeam(AwayTeam awayTeam) {
-
-    }
-
-    @Override
-    public AwayTeam getAwayTeam() {
-        return null;
-    }
 
     @Override
     public Collection<PersonnelCard> getAllPersonnel(DefaultGame cardGame) {

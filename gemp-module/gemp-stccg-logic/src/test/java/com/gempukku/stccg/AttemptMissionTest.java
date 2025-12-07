@@ -63,10 +63,10 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
 
         // Attempt mission
-        attemptMission(P1, picard.getAwayTeam(), excavation);
+        attemptMission(P1, _game.getGameState().getAwayTeamForCard(picard), excavation);
 
         // Confirm that mission was solved and player earned points
         assertTrue(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
@@ -120,7 +120,7 @@ public class AttemptMissionTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavationLocation));
+        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavationLocation));
 
         // Attempt mission without specifying Away Team
         attemptMission(P1, excavationLocation);

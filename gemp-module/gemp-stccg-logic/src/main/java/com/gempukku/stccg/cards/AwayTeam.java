@@ -139,7 +139,7 @@ public class AwayTeam implements AttemptingUnit {
 
     public void disband(ST1EGame game) {
         for (ReportableCard card : _cardsInAwayTeam) {
-            card.leaveAwayTeam(game);
+            remove(game, card);
 
             Stream<AwayTeam> teamsOnSurface =
                     game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(_locationId));
@@ -147,8 +147,10 @@ public class AwayTeam implements AttemptingUnit {
                     teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), _controllerName)).toList();
 
             for (AwayTeam awayTeam : awayTeamsOnSurface) {
-                if (awayTeam != this && card.getAwayTeam() == null && awayTeam.isCompatibleWith(game, card))
-                    card.addToAwayTeam(awayTeam);
+                if (awayTeam != this && game.getGameState().getAwayTeamForCard(card) == null
+                        && awayTeam.isCompatibleWith(game, card)) {
+                    add(card);
+                }
             }
         }
         assert _cardsInAwayTeam.isEmpty() :

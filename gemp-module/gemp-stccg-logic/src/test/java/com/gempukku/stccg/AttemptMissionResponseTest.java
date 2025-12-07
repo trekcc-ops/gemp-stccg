@@ -77,10 +77,10 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
 
         // Attempt mission
-        attemptMission(P1, picard.getAwayTeam(), excavation);
+        attemptMission(P1, _game.getGameState().getAwayTeamForCard(picard), excavation);
 
         // Respond by downloading Simon Tarses
         assertNotNull(_userFeedback.getAwaitingDecision(P1));
@@ -101,7 +101,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         BeamCardsAction beamAction = selectAction(BeamCardsAction.class, outpost, P1);
         assertEquals(2, beamAction.getValidFromCards(_game).size());
         selectCard(P1, outpost);
-        assertEquals(picard.getAwayTeam(), tarses.getAwayTeam());
+        assertEquals(_game.getGameState().getAwayTeamForCard(picard), _game.getGameState().getAwayTeamForCard(tarses));
     }
 
 }

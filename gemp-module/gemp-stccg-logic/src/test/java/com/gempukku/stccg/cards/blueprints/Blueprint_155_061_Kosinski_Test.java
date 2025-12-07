@@ -65,7 +65,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         awayTeamPersonnel.add(kosinski);
 
         beamCards(P1, _outpost, awayTeamPersonnel, _mission);
-        AwayTeam team = taitt1.getAwayTeam();
+        AwayTeam team = _game.getGameState().getAwayTeamForCard(taitt1);
         MissionRequirement dilemmaRequirement = new AndMissionRequirement(
                 new RegularSkillMissionRequirement(SkillName.GEOLOGY, 2),
                 new AttributeMissionRequirement(CardAttribute.CUNNING, 20)

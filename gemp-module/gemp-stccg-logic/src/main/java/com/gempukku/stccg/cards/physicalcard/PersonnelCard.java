@@ -3,21 +3,17 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.List;
 import java.util.Stack;
 
 public class PersonnelCard extends AffiliatedCard implements CardWithCompatibility, ReportableCard {
-
-    private AwayTeam _awayTeam;
 
     public PersonnelCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
@@ -44,16 +40,6 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
         return cardGame.getGameState().getModifiersQuerying().getSkillLevel(this, skillName, cardGame);
     }
 
-
-    public void leaveAwayTeam(ST1EGame cardGame) {
-        _awayTeam.remove(cardGame, this);
-        _awayTeam = null;
-    }
-
-    @Override
-    public boolean isInAnAwayTeam() {
-        return _awayTeam != null;
-    }
 
     public boolean isDisabled() {
         return false; }
@@ -93,16 +79,5 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
 
     @JsonIgnore
     public SkillName getClassification() { return _blueprint.getClassification(); }
-
-    public void addToAwayTeam(AwayTeam awayTeam) {
-        _awayTeam = awayTeam;
-        _awayTeam.add(this);
-    }
-
-    @JsonIgnore
-    @Override
-    public AwayTeam getAwayTeam() {
-        return _awayTeam;
-    }
 
 }

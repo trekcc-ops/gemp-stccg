@@ -175,10 +175,8 @@ public abstract class GameState {
             if (card.isInPlay()) card.stopAffectingGame(cardGame);
             card.removeFromCardGroup(cardGame);
 
-            if (card instanceof ReportableCard reportable) {
-                if (reportable.getAwayTeam() != null) {
-                    reportable.leaveAwayTeam((ST1EGame) cardGame);
-                }
+            if (card instanceof ReportableCard reportable && cardGame instanceof ST1EGame stGame) {
+                stGame.getGameState().removeCardFromAwayTeam(stGame, reportable);
             }
 
             if (card.isInPlay())

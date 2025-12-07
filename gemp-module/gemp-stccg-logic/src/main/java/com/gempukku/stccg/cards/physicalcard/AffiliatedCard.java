@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -62,13 +63,18 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         if (getAffiliationOptions().size() > 1) {
             if (this instanceof ReportableCard reportable &&
                     _currentGameLocation instanceof MissionLocation missionLocation) {
-                if (reportable.getAwayTeam().canBeDisbanded(cardGame)) {
-                    reportable.getAwayTeam().disband(cardGame);
-                } else {
-                    if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(cardGame, reportable))
-                        reportable.leaveAwayTeam(cardGame);
-                    if (reportable.getAwayTeam() == null)
-                        reportable.joinEligibleAwayTeam(cardGame, missionLocation);
+                AwayTeam awayTeam = cardGame.getGameState().getAwayTeamForCard(reportable);
+                if (awayTeam != null) {
+                    if (awayTeam.canBeDisbanded(cardGame)) {
+                        awayTeam.disband(cardGame);
+                    } else {
+                        if (!awayTeam.isCompatibleWith(cardGame, reportable)) {
+                            cardGame.getGameState().removeCardFromAwayTeam(cardGame, reportable);
+                        }
+                        if (cardGame.getGameState().getAwayTeamForCard(reportable) == null) {
+                            cardGame.getGameState().addCardToEligibleAwayTeam(cardGame, reportable, missionLocation);
+                        }
+                    }
                 }
             }
         }

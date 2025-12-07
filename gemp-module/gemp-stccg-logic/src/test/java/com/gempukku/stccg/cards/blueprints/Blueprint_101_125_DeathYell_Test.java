@@ -76,10 +76,10 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Beam Worf to the planet
         beamCard(P1, outpost, worf, excavation);
-        assertTrue(worf.getAwayTeam().isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        assertTrue(_game.getGameState().getAwayTeamForCard(worf).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
 
         // Attempt mission
-        attemptMission(P1, worf.getAwayTeam(), excavation);
+        attemptMission(P1, _game.getGameState().getAwayTeamForCard(worf), excavation);
 
         // Confirm that Worf was killed
         assertEquals(Zone.DISCARD, worf.getZone());

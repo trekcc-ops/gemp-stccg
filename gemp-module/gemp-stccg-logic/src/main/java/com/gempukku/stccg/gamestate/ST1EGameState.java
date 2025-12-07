@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
@@ -284,5 +285,45 @@ public class ST1EGameState extends GameState {
             }
         }
         return true;
+    }
+
+    public void addCardToEligibleAwayTeam(ST1EGame game, ReportableCard card, MissionLocation mission) {
+        // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
+        // TODO - When there are multiple eligible away teams, there should be a player decision
+        String cardOwnerName = card.getOwnerName();
+        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(game, cardOwnerName).toList()) {
+            if (awayTeam.isCompatibleWith(game, card) && !isCardInAnAwayTeam(card)) {
+                awayTeam.add(card);
+            }
+        }
+        if (!isCardInAnAwayTeam(card)) {
+            AwayTeam awayTeam = createNewAwayTeam(cardOwnerName, mission);
+            awayTeam.add(card);
+        }
+    }
+
+    private boolean isCardInAnAwayTeam(ReportableCard card) {
+        for (AwayTeam awayTeam : _awayTeams) {
+            if (awayTeam.getCards().contains(card)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeCardFromAwayTeam(ST1EGame cardGame, ReportableCard card) {
+        AwayTeam awayTeam = getAwayTeamForCard(card);
+        if (awayTeam != null) {
+            awayTeam.remove(cardGame, card);
+        }
+    }
+
+    public AwayTeam getAwayTeamForCard(ReportableCard card) {
+        for (AwayTeam awayTeam : _awayTeams) {
+            if (awayTeam.getCards().contains(card)) {
+                return awayTeam;
+            }
+        }
+        return null;
     }
 }

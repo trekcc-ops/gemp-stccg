@@ -137,10 +137,12 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                 card.setZone(Zone.ATTACHED);
                 card.attachTo(_destination);
                 card.setLocation(cardGame, destinationLocation);
-                if (_origin instanceof MissionCard)
-                    ((ReportableCard) card).leaveAwayTeam((ST1EGame) cardGame);
-                if (_destination instanceof MissionCard && destinationLocation instanceof MissionLocation mission)
-                    ((ReportableCard) card).joinEligibleAwayTeam((ST1EGame) cardGame, mission);
+                if (_origin instanceof MissionCard) {
+                    ((ST1EGame) cardGame).getGameState().removeCardFromAwayTeam((ST1EGame) cardGame, (ReportableCard) card);
+                }
+                if (_destination instanceof MissionCard && destinationLocation instanceof MissionLocation mission) {
+                    ((ST1EGame) cardGame).getGameState().addCardToEligibleAwayTeam((ST1EGame) cardGame, (ReportableCard) card, mission);
+                }
             }
             _wasCarriedOut = true;
             setAsSuccessful();
