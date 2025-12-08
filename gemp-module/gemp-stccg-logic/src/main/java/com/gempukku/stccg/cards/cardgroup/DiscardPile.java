@@ -1,12 +1,12 @@
 package com.gempukku.stccg.cards.cardgroup;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 
 public class DiscardPile extends CardPile<PhysicalCard> {
 
-    @JsonProperty("cardCount")
+    @JsonIgnore
     public int size() {
         return super.size();
     }

@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -66,7 +65,7 @@ public final class TribblesGameState extends GameState {
                     for (String blueprintId : entry.getValue()) {
                         try {
                             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
-                            PhysicalCard card = new TribblesPhysicalCard(_nextCardId, player, blueprint);
+                            PhysicalCard card = blueprint.createPhysicalCard(_nextCardId, player.getPlayerId());
                             subDeck.add(card);
                             _nextCardId++;
                         } catch (CardNotFoundException e) {

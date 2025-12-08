@@ -127,16 +127,6 @@ public class Filters {
         return result;
     }
 
-    public static Collection<PhysicalCard> filter(DefaultGame cardGame, Iterable<Filterable> filters) {
-        CardFilter filter = Filters.and(filters);
-        List<PhysicalCard> result = new LinkedList<>();
-        for (PhysicalCard card : cardGame.getGameState().getAllCardsInGame()) {
-            if (filter.accepts(cardGame, card))
-                result.add(card);
-        }
-        return result;
-    }
-
     public static Collection<PhysicalCard> filter(DefaultGame game, Filterable... filters) {
         CardFilter filter = Filters.and(filters);
         List<PhysicalCard> result = new LinkedList<>();

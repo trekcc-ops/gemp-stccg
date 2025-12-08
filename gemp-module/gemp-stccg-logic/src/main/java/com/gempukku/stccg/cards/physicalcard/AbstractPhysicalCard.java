@@ -32,7 +32,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected final String _ownerName;
 
     @JsonProperty("cardId")
-    protected final int _cardId;
+    protected int _cardId;
     protected Zone _zone;
     protected Integer _attachedToCardId;
     private Integer _stackedOnCardId;
@@ -265,7 +265,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public List<PhysicalCard> getStackedCards(DefaultGame game) {
         List<PhysicalCard> result = new LinkedList<>();
-        for (PhysicalCard card : game.getGameState().getAllCardsInGame()) {
+        for (PhysicalCard card : game.getGameState().getAllCardsInPlay()) {
             if (card.getStackedOn(game) == this)
                 result.add(card);
         }
@@ -401,6 +401,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isAttachedTo(PhysicalCard card) {
         return _attachedToCardId != null && _attachedToCardId == card.getCardId();
+    }
+
+    @JsonProperty("cardId")
+    public void setCardId(int cardId) {
+        _cardId = cardId;
     }
 
 }

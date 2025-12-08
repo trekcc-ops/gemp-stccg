@@ -41,7 +41,7 @@ public class OptionalTriggerAction extends ActionyAction implements TopLevelSele
 
             if (_actionBlueprint != null) {
                 GameState gameState = cardGame.getGameState();
-                gameState.getUntilEndOfTurnLimitCounter(_actionBlueprint).countUse();
+                gameState.getUntilEndOfTurnLimitCounter(_performingCard, _actionBlueprint).countUse();
             }
             Action action = getNextAction();
             if (action == null)

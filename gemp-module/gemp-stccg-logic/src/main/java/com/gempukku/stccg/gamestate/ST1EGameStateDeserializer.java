@@ -10,13 +10,16 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ST1EGameStateDeserializer extends JsonDeserializer<ST1EGameState> {
 
@@ -37,13 +40,19 @@ public class ST1EGameStateDeserializer extends JsonDeserializer<ST1EGameState> {
         GameProcess currentProcess = readPropertyDirectly(object, ctxt, "currentProcess", GameProcess.class);
         PlayerClock[] playerClocks = readPropertyDirectly(object, ctxt, "playerClocks", PlayerClock[].class);
         PlayerOrder playerOrder = readPropertyDirectly(object, ctxt, "playerOrder", PlayerOrder.class);
+        ActionLimitCollection actionLimitCollection =
+                readPropertyDirectly(object, ctxt, "actionLimits", ActionLimitCollection.class);
+//        Player[] players = readPropertyDirectly(object, ctxt, "players", Player[].class);
+        List<Player> players = new ArrayList<>();
 
         List<PhysicalCard> cardsInGame = getCardsInGame(object, ctxt);
 
     /* still need to process:
-        players
-        awayTeams
+            Right now I'm explicitly ignoring players, awayTeams, actions, spacelineLocations
+
+        players - WIP
         spacelineLocations - broken
+        awayTeams
         actions (equivalent to ActionsEnvironment)
         pendingDecision (this is not included in the non-player-specific version, but do we need it to capture playerDecisions?)
      */
@@ -66,9 +75,16 @@ public class ST1EGameStateDeserializer extends JsonDeserializer<ST1EGameState> {
         timeStamp
      */
 
+        Map<Integer, PhysicalCard> cardsInGameMap = new HashMap<>();
+        for (PhysicalCard card : cardsInGame) {
+            cardsInGameMap.put(card.getCardId(), card);
+        }
 
+/*
             // this constructor also sets the nextCardId
-        return new ST1EGameState(currentPhase, currentProcess, playerClocks, cardsInGame, playerOrder);
+        return new ST1EGameState(currentPhase, currentProcess, playerClocks, playerOrder,
+                cardsInGameMap, actionLimitCollection, players); */
+        return null;
     }
 
     private <T> T readPropertyDirectly(JsonNode object, DeserializationContext context, String propertyName,
@@ -173,7 +189,6 @@ public class ST1EGameStateDeserializer extends JsonDeserializer<ST1EGameState> {
          */
 
         /* properties in MissionLocation:
-            private static final Logger LOGGER = LogManager.getLogger(MissionLocation.class);
     @JsonProperty("quadrant")
     private final Quadrant _quadrant;
     @JsonProperty("region")

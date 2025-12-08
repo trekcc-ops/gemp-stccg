@@ -32,6 +32,7 @@ import java.util.List;
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
         "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission" })
 @JsonIgnoreProperties(value = { "title" }, allowGetters = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public interface PhysicalCard {
 
     @JsonIgnore
@@ -185,4 +186,7 @@ public interface PhysicalCard {
     int getLocationId();
 
     boolean isAtSameLocationAsCard(PhysicalCard card);
+
+    @JsonProperty("cardId")
+    void setCardId(int cardId);
 }

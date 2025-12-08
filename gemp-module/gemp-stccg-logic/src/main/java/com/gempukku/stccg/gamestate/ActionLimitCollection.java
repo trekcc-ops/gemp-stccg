@@ -1,6 +1,8 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.modifiers.DefaultLimitCounter;
 import com.gempukku.stccg.modifiers.LimitCounter;
@@ -10,17 +12,26 @@ import java.util.Map;
 
 public class ActionLimitCollection {
     private final static int NORMAL_CARD_PLAYS_PER_TURN = 1;
-    private final Map<String, LimitCounter> _gameLimitCounters = new HashMap<>();
-    private final Map<ActionBlueprint, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
+    @JsonProperty("perGame")
+    private final Map<String, DefaultLimitCounter> _gameLimitCounters = new HashMap<>();
+
+    @JsonProperty("perTurn")
+    private final Map<String, DefaultLimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
+
+    @JsonProperty("normalCardPlays")
     private final Map<String, Integer> _normalCardPlaysAvailable = new HashMap<>();
 
     public LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix) {
         return _gameLimitCounters.computeIfAbsent(prefix + "_" + card.getCardId(), entry -> new DefaultLimitCounter());
     }
 
-    public LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint) {
-        return _turnLimitActionSourceCounters.computeIfAbsent(actionBlueprint, entry -> new DefaultLimitCounter());
+    public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, ActionBlueprint actionBlueprint) {
+        CardBlueprint cardBlueprint = card.getBlueprint();
+        int actionBlueprintId = cardBlueprint.getIdForActionBlueprint(actionBlueprint);
+        String fullActionBlueprintId = card.getBlueprintId() + "_" + actionBlueprintId;
+        return _turnLimitActionSourceCounters.computeIfAbsent(fullActionBlueprintId, entry -> new DefaultLimitCounter());
     }
+
 
     public void signalEndOfTurn() {
         _turnLimitActionSourceCounters.clear();

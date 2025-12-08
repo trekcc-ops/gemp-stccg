@@ -25,6 +25,8 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.PlayOutOfSequenceRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @JsonIgnoreProperties({"headquarters", "playable", "java-blueprint"})
@@ -582,20 +584,50 @@ public class CardBlueprint {
         return _shipClass;
     }
 
-    public PhysicalCard createPhysicalCard(int cardId, String playerName) {
-        return switch(_cardType) {
-            case EQUIPMENT -> new EquipmentCard(cardId, playerName, this);
-            case FACILITY -> new FacilityCard(cardId, playerName, this);
-            case MISSION -> new MissionCard(cardId, playerName, this);
-            case PERSONNEL -> new PersonnelCard(cardId, playerName, this);
-            case SHIP -> new ShipCard(cardId, playerName, this);
-            default -> new ST1EPhysicalCard(cardId, playerName, this);
+    public Class<? extends PhysicalCard> getPhysicalCardClass() {
+        return switch(_gameType) {
+            case FIRST_EDITION -> switch (_cardType) {
+                case EQUIPMENT -> EquipmentCard.class;
+                case FACILITY -> FacilityCard.class;
+                case MISSION -> MissionCard.class;
+                case PERSONNEL -> PersonnelCard.class;
+                case SHIP -> ShipCard.class;
+                default -> ST1EPhysicalCard.class;
+            };
+            case SECOND_EDITION -> ST1EPhysicalCard.class;
+            case TRIBBLES -> TribblesPhysicalCard.class;
         };
+    }
+
+    public PhysicalCard createPhysicalCard(int cardId, String playerName) {
+        try {
+            Class<? extends PhysicalCard> clazz = getPhysicalCardClass();
+            Constructor<?> parameterizedConstructor = clazz.getConstructor(int.class, String.class, CardBlueprint.class);
+            if (parameterizedConstructor.newInstance(cardId, playerName, this) instanceof PhysicalCard physicalCard) {
+                return physicalCard;
+            } else {
+                return null;
+            }
+        } catch(NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException exp) {
+            return null;
+        }
     }
     
 
     public PhysicalCard createPhysicalCard(int cardId, Player player) {
         return createPhysicalCard(cardId, player.getPlayerId());
+    }
+
+    public Collection<ActionBlueprint> getActionBlueprintsForTestingOnly() {
+        return _actionBlueprints;
+    }
+
+    public ActionBlueprint getActionBlueprintForId(int id) {
+        return _actionBlueprints.get(id);
+    }
+
+    public int getIdForActionBlueprint(ActionBlueprint blueprint) {
+        return _actionBlueprints.indexOf(blueprint);
     }
 
 }

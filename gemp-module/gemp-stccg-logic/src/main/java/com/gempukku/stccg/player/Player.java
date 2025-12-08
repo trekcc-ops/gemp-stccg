@@ -42,6 +42,23 @@ public class Player {
     @JsonProperty("seedDeck")
     PhysicalCardGroup<PhysicalCard> _seedDeck;
 
+    @JsonCreator
+    public Player(
+            @JsonProperty("playerId")
+            String playerId,
+            @JsonProperty("decked")
+            boolean decked,
+            @JsonProperty("score")
+            int score,
+            @JsonProperty("cardGroups")
+            Map<Zone, PhysicalCardGroup<PhysicalCard>> cardGroups) {
+        _playerId = playerId;
+        _decked = decked;
+        _currentScore = score;
+        _cardGroups.putAll(cardGroups);
+    }
+
+
     public Player(String playerId) {
         _playerId = playerId;
         _decked = false;

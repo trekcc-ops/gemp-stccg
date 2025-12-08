@@ -42,7 +42,7 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
 
     private List<PhysicalCard> getCardsWithTransporters(DefaultGame cardGame) {
         List<PhysicalCard> result = new ArrayList<>();
-        for (PhysicalCard card : cardGame.getGameState().getAllCardsInGame()) {
+        for (PhysicalCard card : cardGame.getGameState().getAllCardsInPlay()) {
             if (card instanceof ST1EPhysicalCard nounCard) {
                 if (nounCard.isControlledBy(_performingPlayerId) && nounCard.hasTransporters()) {
                     result.add(nounCard);

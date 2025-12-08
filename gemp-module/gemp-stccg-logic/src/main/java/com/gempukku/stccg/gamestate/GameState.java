@@ -32,35 +32,37 @@ import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks" })
-@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "players", "playerOrder", "cardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks" })
+@JsonIgnoreProperties(value = { "actions", "spacelineLocations", "performedActions",
+    "phasesInOrder", "requestingPlayer", "channelNumber", "timeStamp" },
+        allowGetters = true)
+@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
+        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits" })
+@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
+        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits" })
 public abstract class GameState {
+
     Phase _currentPhase;
-    Map<String, Player> _players = new HashMap<>();
     PlayerOrder _playerOrder;
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
-    private final ModifiersLogic _modifiersLogic;
-    private final ActionLimitCollection _actionLimitCollection = new ActionLimitCollection();
+    private final ModifiersLogic _modifiersLogic = new ModifiersLogic();
+    @JsonProperty("actionLimits")
+    private final ActionLimitCollection _actionLimitCollection;
     final List<PhysicalCard> _inPlay = new LinkedList<>();
     final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
-    private final ActionsEnvironment _actionsEnvironment;
+    private final ActionsEnvironment _actionsEnvironment = new DefaultActionsEnvironment();
     private GameProcess _currentGameProcess;
     @JsonProperty("turnNumber")
     private int _currentTurnNumber;
     private final Map<String, PlayerClock> _playerClocks;
+    @JsonProperty("players")
+    List<Player> _players = new ArrayList<>();
 
     protected GameState(DefaultGame game, Iterable<String> playerIds, GameTimer gameTimer) {
-        Collection<Zone> cardGroupList = new LinkedList<>();
-        cardGroupList.add(Zone.DRAW_DECK);
-        cardGroupList.add(Zone.HAND);
-        cardGroupList.add(Zone.DISCARD);
-        cardGroupList.add(Zone.REMOVED);
-
         _playerClocks = new HashMap<>();
+        Collection<Zone> cardGroupList = List.of(Zone.DRAW_DECK, Zone.HAND, Zone.DISCARD, Zone.REMOVED);
 
         try {
             for (String playerId : playerIds) {
@@ -68,24 +70,19 @@ public abstract class GameState {
                 for (Zone zone : cardGroupList) {
                     player.addCardGroup(zone);
                 }
-                _players.put(playerId, player);
+                _players.add(player);
                 _playerClocks.put(playerId, new PlayerClock(playerId, gameTimer));
             }
         } catch(InvalidGameLogicException exp) {
             game.sendErrorMessage(exp);
             game.cancelGame();
         }
-        _modifiersLogic = new ModifiersLogic();
-        _actionsEnvironment = new DefaultActionsEnvironment();
+        _actionLimitCollection = new ActionLimitCollection();
     }
 
 
     protected GameState(DefaultGame game, Iterable<String> playerIds, Map<String, PlayerClock> clocks) {
-        Collection<Zone> cardGroupList = new LinkedList<>();
-        cardGroupList.add(Zone.DRAW_DECK);
-        cardGroupList.add(Zone.HAND);
-        cardGroupList.add(Zone.DISCARD);
-        cardGroupList.add(Zone.REMOVED);
+        Collection<Zone> cardGroupList = List.of(Zone.DRAW_DECK, Zone.HAND, Zone.DISCARD, Zone.REMOVED);
 
         try {
             for (String playerId : playerIds) {
@@ -93,30 +90,25 @@ public abstract class GameState {
                 for (Zone zone : cardGroupList) {
                     player.addCardGroup(zone);
                 }
-                _players.put(playerId, player);
+                _players.add(player);
             }
         } catch(InvalidGameLogicException exp) {
             game.sendErrorMessage(exp);
             game.cancelGame();
         }
-        _modifiersLogic = new ModifiersLogic();
-        _actionsEnvironment = new DefaultActionsEnvironment();
+        _actionLimitCollection = new ActionLimitCollection();
         _playerClocks = clocks;
     }
 
-    protected GameState(List<Player> players, PlayerClock[] playerClocks) {
+    protected GameState(List<Player> players, PlayerClock[] playerClocks, ActionLimitCollection actionLimitCollection) {
         _playerClocks = new HashMap<>();
-
-        for (Player player : players) {
-            _players.put(player.getPlayerId(), player);
-        }
+        _players.addAll(players);
 
         for (PlayerClock clock : playerClocks) {
             _playerClocks.put(clock.getPlayerId(), clock);
         }
 
-        _modifiersLogic = new ModifiersLogic();
-        _actionsEnvironment = new DefaultActionsEnvironment();
+        _actionLimitCollection = actionLimitCollection;
     }
 
 
@@ -237,8 +229,8 @@ public abstract class GameState {
     }
 
     @JsonIgnore
-    public Iterable<PhysicalCard> getAllCardsInGame() {
-        return Collections.unmodifiableCollection(_allCards.values());
+    public List<PhysicalCard> getAllCardsInGame() {
+        return _allCards.values().stream().toList();
     }
     public List<PhysicalCard> getAllCardsInPlay() {
         return Collections.unmodifiableList(_inPlay);
@@ -275,14 +267,16 @@ public abstract class GameState {
 
 
     public Player getPlayer(String playerId) throws PlayerNotFoundException {
-        Player player = _players.get(playerId);
-        if (player != null) {
-            return player;
-        } else {
-            throw new PlayerNotFoundException("Player " + playerId + " not found");
+        for (Player player : _players) {
+            if (player.getPlayerId().equals(playerId)) {
+                return player;
+            }
         }
+        throw new PlayerNotFoundException("Player " + playerId + " not found");
     }
-    public Collection<Player> getPlayers() { return _players.values(); }
+
+    @JsonIgnore
+    public Collection<Player> getPlayers() { return _players; }
 
     public Player getCurrentPlayer() throws PlayerNotFoundException {
         return getPlayer(getCurrentPlayerId());
@@ -390,9 +384,10 @@ public abstract class GameState {
         return _actionLimitCollection.getUntilEndOfGameLimitCounter(card, prefix);
     }
 
-    public LimitCounter getUntilEndOfTurnLimitCounter(ActionBlueprint actionBlueprint) {
-        return _actionLimitCollection.getUntilEndOfTurnLimitCounter(actionBlueprint);
+    public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, ActionBlueprint actionBlueprint) {
+        return _actionLimitCollection.getUntilEndOfTurnLimitCounter(card, actionBlueprint);
     }
+
 
     public void signalEndOfTurn() {
         _modifiersLogic.signalEndOfTurn();

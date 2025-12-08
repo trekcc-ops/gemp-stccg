@@ -2,10 +2,12 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -19,31 +21,11 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
     @SuppressWarnings("SpellCheckingInspection")
     public void fedPADDTest() throws CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
         initializeSimple1EGame(30);
-        Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();
-        
-        _game.addCardToGame("101_174", P1);
-        _game.addCardToGame("101_057", P1);
-        _game.addCardToGame("101_215", P1);
 
-        MissionCard mission = null;
-        EquipmentCard padd = null;
-        PersonnelCard picard = null;
-
-        for (PhysicalCard card : gameState.getAllCardsInGame()) {
-            switch(card.getBlueprintId()) {
-                case "101_174":
-                    mission = (MissionCard) card;
-                    break;
-                case "101_057":
-                    padd = (EquipmentCard) card;
-                    break;
-                case "101_215":
-                    picard = (PersonnelCard) card;
-                    break;
-                default:
-            }
-        }
+        MissionCard mission = (MissionCard) newCardForGame("101_174", P1);
+        EquipmentCard padd = (EquipmentCard) newCardForGame("101_057", P1);
+        PersonnelCard picard = (PersonnelCard) newCardForGame("101_215", P1);
 
         assertNotNull(picard);
         assertNotNull(padd);

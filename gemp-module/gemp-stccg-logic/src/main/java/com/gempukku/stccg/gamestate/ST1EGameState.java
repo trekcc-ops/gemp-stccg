@@ -1,5 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
@@ -24,6 +26,8 @@ import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
+@JsonIgnoreProperties(value = { "actions", "spacelineLocations",
+        "performedActions", "phasesInOrder", "requestingPlayer", "channelNumber", "timeStamp" }, allowGetters = true)
 public class ST1EGameState extends GameState {
     @JsonProperty("spacelineLocations")
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
@@ -33,35 +37,46 @@ public class ST1EGameState extends GameState {
     private int _nextLocationId = 1;
     private final Map<Integer, GameLocation> _locationIds = new HashMap<>();
 
-    public ST1EGameState(@JsonProperty("currentPhase")
+    @SuppressWarnings("unused")
+    @JsonCreator
+    private ST1EGameState(@JsonProperty("currentPhase")
                          Phase currentPhase,
                          @JsonProperty("currentProcess")
                          GameProcess currentProcess,
                          @JsonProperty("playerClocks")
                          PlayerClock[] playerClocks,
-                         @JsonProperty("cardsInGame")
-                         List<PhysicalCard> cardsInGame,
                          @JsonProperty("playerOrder")
-                         PlayerOrder playerOrder
+                         PlayerOrder playerOrder,
+                         @JsonProperty("cardsInGame")
+                         Map<Integer, PhysicalCard> cardsInGame,
+                         @JsonProperty("actionLimits")
+                         ActionLimitCollection actionLimitCollection,
+                         @JsonProperty("players")
+                         List<Player> players,
+                         @JsonProperty("awayTeams")
+                         List<AwayTeam> awayTeams
     ) {
-        super(new ArrayList<>(), playerClocks);
+        super(players, playerClocks, actionLimitCollection);
         setCurrentPhase(currentPhase);
         setCurrentProcess(currentProcess);
-        int nextCardId = 0;
-        for (PhysicalCard card : cardsInGame) {
-            _allCards.put(card.getCardId(), card);
-            if (card.getCardId() >= nextCardId) {
-                nextCardId = card.getCardId() + 1;
+        _playerOrder = playerOrder;
+        _allCards.putAll(cardsInGame);
+        _nextCardId = Collections.max(_allCards.keySet()) + 1;
+        for (AwayTeam awayTeam : awayTeams) {
+            _awayTeams.add(awayTeam);
+            if (awayTeam.getAwayTeamId() >= _nextAttemptingUnitId) {
+                _nextAttemptingUnitId = awayTeam.getAwayTeamId() + 1;
             }
         }
-        _playerOrder = playerOrder;
     }
+
+
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game, Map<String, PlayerClock> clocks) {
         super(game, playerIds, clocks);
         _currentPhase = Phase.SEED_DOORWAY;
         try {
-            for (Player player : _players.values()) {
+            for (Player player : _players) {
                 player.addCardGroup(Zone.CORE);
                 player.addCardGroup(Zone.MISSIONS_PILE);
                 player.addCardGroup(Zone.SEED_DECK);
@@ -76,7 +91,7 @@ public class ST1EGameState extends GameState {
         super(game, playerIds, gameTimer);
         _currentPhase = Phase.SEED_DOORWAY;
         try {
-            for (Player player : _players.values()) {
+            for (Player player : _players) {
                 player.addCardGroup(Zone.CORE);
                 player.addCardGroup(Zone.MISSIONS_PILE);
                 player.addCardGroup(Zone.SEED_DECK);
@@ -137,14 +152,6 @@ public class ST1EGameState extends GameState {
 
     public AwayTeam createNewAwayTeam(String playerName, MissionLocation location) {
         AwayTeam result = new AwayTeam(playerName, location, _nextAttemptingUnitId);
-        _awayTeams.add(result);
-        _nextAttemptingUnitId++;
-        return result;
-    }
-
-
-    public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
-        AwayTeam result = new AwayTeam(player.getPlayerId(), location, _nextAttemptingUnitId);
         _awayTeams.add(result);
         _nextAttemptingUnitId++;
         return result;

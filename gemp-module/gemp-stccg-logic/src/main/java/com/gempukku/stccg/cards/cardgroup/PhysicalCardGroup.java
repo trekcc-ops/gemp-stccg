@@ -7,12 +7,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "cardCount", "cardIds" })
-@JsonPropertyOrder({ "cardCount", "cardIds" })
+@JsonIncludeProperties({ "cardIds" })
+@JsonPropertyOrder({ "cardIds" })
+@JsonIgnoreProperties(value = { "cardCount" }, allowGetters = true)
 public class PhysicalCardGroup<T extends PhysicalCard> {
     protected final List<T> _cards = new LinkedList<>();
 
     public PhysicalCardGroup() {
+
+    }
+
+    public PhysicalCardGroup(@JsonProperty("cardIds")
+                             @JsonIdentityReference(alwaysAsId=true)
+                             List<T> cards) {
+        _cards.addAll(cards);
     }
 
     public void addCard(T card) { _cards.add(card); }
@@ -27,7 +35,7 @@ public class PhysicalCardGroup<T extends PhysicalCard> {
         _cards.addAll(subDeck);
     }
 
-    @JsonProperty("cardCount")
+    @JsonIgnore
     public int size() {
         return _cards.size();
     }
@@ -37,4 +45,5 @@ public class PhysicalCardGroup<T extends PhysicalCard> {
     public PhysicalCard getFirst() {
         return _cards.getFirst();
     }
+
 }

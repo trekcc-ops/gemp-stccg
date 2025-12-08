@@ -24,6 +24,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
     protected final List<SubActionBlueprint> effects = new LinkedList<>();
+    private int _blueprintId;
 
     public DefaultActionBlueprint(int limitPerTurn) {
         if (limitPerTurn > 0)
@@ -86,7 +87,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
                     @Override
                     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext) throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
                         Action usageLimitAction = new UseOncePerTurnAction(cardGame,
-                                thisBlueprint, actionContext.getPerformingPlayerId());
+                                actionContext.getPerformingCard(cardGame), thisBlueprint, actionContext.getPerformingPlayerId());
                         return Collections.singletonList(usageLimitAction);
                     }
 
@@ -97,9 +98,15 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
                     @Override
                     public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
-                        GameState gameState = cardGame.getGameState();
-                        LimitCounter counter = gameState.getUntilEndOfTurnLimitCounter(thisBlueprint);
-                        return counter.getUsedLimit() < limitPerTurn;
+                        try {
+                            GameState gameState = cardGame.getGameState();
+                            PhysicalCard thisCard = actionContext.getPerformingCard(cardGame);
+                            LimitCounter counter = gameState.getUntilEndOfTurnLimitCounter(thisCard, thisBlueprint);
+                            return counter.getUsedLimit() < limitPerTurn;
+                        } catch(InvalidGameLogicException exp) {
+                            cardGame.sendErrorMessage(exp);
+                            return false;
+                        }
                     }
                 });
     }

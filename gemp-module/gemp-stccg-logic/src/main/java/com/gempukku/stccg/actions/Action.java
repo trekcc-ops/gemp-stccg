@@ -20,6 +20,8 @@ import java.util.Collection;
 public interface Action {
     String getCardActionPrefix();
     void setCardActionPrefix(String prefix);
+
+    @JsonProperty("actionId")
     int getActionId();
     void insertCost(Action costAction);
     void insertCosts(Collection<Action> actions);
@@ -62,5 +64,8 @@ public interface Action {
             modifier.appendExtraCosts(cardGame, this, target);
         }
     }
+
+    @JsonProperty("actionId")
+    void setActionId(int actionId);
 
 }

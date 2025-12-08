@@ -8,8 +8,10 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,13 +56,21 @@ public class GameStateSerializationTest extends AbstractAtTest {
         String gameStateJson = gameStateMapper.writeValueAsString(_game.getGameState());
         System.out.println(gameStateJson);
 
+        boolean deserializeDirectly = true;
         ObjectMapper readMapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(ST1EGameState.class, new ST1EGameStateDeserializer(_game, _cardLibrary));
-        readMapper.registerModule(module);
+
+        if (!deserializeDirectly) {
+            SimpleModule module = new SimpleModule();
+            module.addDeserializer(ST1EGameState.class, new ST1EGameStateDeserializer(_game, _cardLibrary));
+            readMapper.registerModule(module);
+        } else {
+            // some of the Player objects aren't quite correctly created
+        }
+
         readMapper.setInjectableValues(new InjectableValues.Std().addValue(CardBlueprintLibrary.class, _cardLibrary));
-
         ST1EGameState gameStateCopy = readMapper.readValue(gameStateJson, ST1EGameState.class);
-
+        List<PhysicalCard> drawDeck = gameStateCopy.getZoneCards(P1, Zone.DRAW_DECK);
+        System.out.println(drawDeck.size());
+        assertTrue(gameStateCopy.getAllCardsInGame().contains(drawDeck.getFirst()));
     }
 }

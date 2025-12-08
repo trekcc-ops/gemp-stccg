@@ -1,7 +1,12 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DefaultLimitCounter implements LimitCounter {
-    private int _count = 0;
+
+    @JsonProperty("count")
+    private int _count;
 
     @Override
     public int incrementToLimit(int limit, int incrementBy) {
@@ -11,6 +16,7 @@ public class DefaultLimitCounter implements LimitCounter {
         return finalIncrement;
     }
 
+    @JsonIgnore
     @Override
     public int getUsedLimit() {
         return _count;

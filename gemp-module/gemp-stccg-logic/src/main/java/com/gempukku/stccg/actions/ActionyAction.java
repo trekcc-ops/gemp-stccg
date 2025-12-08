@@ -21,7 +21,8 @@ public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
     protected Map<String, Boolean> _progressIndicators = new HashMap<>();
     protected boolean _wasCarriedOut;
-    private final int _actionId;
+    @JsonProperty("actionId")
+    private int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
     private final LinkedList<Action> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Action> _targeting = new LinkedList<>();
@@ -333,5 +334,11 @@ public abstract class ActionyAction implements Action {
     public ActionResult getResult() { return _currentResult; }
 
     public ActionContext getContext() { return _actionContext; }
+
+    @JsonProperty("actionId")
+    public void setActionId(int actionId) {
+        _actionId = actionId;
+    }
+
 
 }

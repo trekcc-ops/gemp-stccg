@@ -156,4 +156,8 @@ public class AwayTeam implements AttemptingUnit {
         assert _cardsInAwayTeam.isEmpty() :
                 "Attempted to disband Away Team, but could not find a new Away Team for all cards";
     }
+
+    public int getAwayTeamId() {
+        return _awayTeamId;
+    }
 }

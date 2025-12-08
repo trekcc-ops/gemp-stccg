@@ -8,25 +8,21 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 
 public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
 
-    private final List<SubActionBlueprint> _effects;
 
     public EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                            List<SubActionBlueprint> effects) {
-        super(0);
-        _effects = Objects.requireNonNullElse(effects, new LinkedList<>());
+                                            List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
+        super(0, new ArrayList<>(), Objects.requireNonNullElse(effects, new LinkedList<>()));
     }
 
     public EncounterSeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard,
@@ -37,7 +33,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation.getLocationId(), actionContext);
-        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
+        effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
         return encounterAction;
     }
 

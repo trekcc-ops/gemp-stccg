@@ -45,6 +45,7 @@
                     /* Cards that are organized in a certain way on the table. Mostly important for piles like
                         discard piles and draw decks. If the cardGroup is a pile, the first element in the list is
                         the bottom card.
+                      The "cardCount" property only shows up in the player-specific view.
                       Some cards or entire card groups may not be public information for every player. In those
                         instances, the cardId values in a player-specific game state are replaced with -99.
                         */
