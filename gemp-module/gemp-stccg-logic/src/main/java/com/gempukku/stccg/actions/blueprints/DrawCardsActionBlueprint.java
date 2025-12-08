@@ -6,12 +6,12 @@ import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.player.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
+import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.player.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
                                     String playerText) throws InvalidCardDefinitionException {
         _drawingPlayerSource = (playerText == null) ?
                 new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText);
-        _countSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));
+        _countSource = Objects.requireNonNullElse(count, new ConstantValueSource(1));
     }
 
     @Override

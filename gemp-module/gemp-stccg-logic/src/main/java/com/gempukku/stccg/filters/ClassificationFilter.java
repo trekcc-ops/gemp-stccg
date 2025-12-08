@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -11,7 +12,8 @@ public class ClassificationFilter implements CardFilter {
     @JsonProperty("classification")
     private final SkillName _classification;
 
-    public ClassificationFilter(SkillName classification) {
+    @JsonCreator
+    public ClassificationFilter(@JsonProperty("classification") SkillName classification) {
         _classification = classification;
     }
 

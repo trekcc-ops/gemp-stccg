@@ -1,5 +1,8 @@
 package com.gempukku.stccg.modifiers.attributes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -14,52 +17,60 @@ import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.requirement.TrueCondition;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public class AttributeModifier extends AbstractModifier {
+
+    @JsonProperty("evaluator")
     protected final Evaluator _evaluator;
+
+    @JsonProperty("attributes")
     private final List<CardAttribute> _attributes = new LinkedList<>();
+
+    @JsonCreator
+    private AttributeModifier(@JsonProperty("evaluator") Evaluator evaluator,
+                      @JsonProperty(value = "attributes", required = true) Collection<CardAttribute> attributes,
+                      @JsonProperty("performingCard") PhysicalCard performingCard,
+                      @JsonProperty("affectedCards") CardFilter affectFilter,
+                      @JsonProperty("condition") Condition condition,
+                      @JsonProperty("effectType") ModifierEffect effectType) {
+        super(performingCard, affectFilter, condition, effectType);
+        _evaluator = evaluator;
+        _attributes.addAll(attributes);
+    }
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
                              Evaluator evaluator, CardAttribute attribute,
                              ModifierEffect effectType) {
-        super(modifierSource, affectFilter, condition, effectType);
-        _evaluator = evaluator;
-        _attributes.add(attribute);
+        this(evaluator, List.of(attribute), modifierSource, Filters.changeToFilter(affectFilter), condition,
+                effectType);
     }
 
     public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCards, Condition condition,
                              Evaluator evaluator, CardAttribute attribute,
                              ModifierEffect effectType) {
-        super(performingCard, affectedCards, condition, effectType);
-        _evaluator = evaluator;
-        _attributes.add(attribute);
+        this(evaluator, List.of(attribute), performingCard, affectedCards, condition, effectType);
     }
 
     public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCardFilter, int modifierValue,
                              Collection<CardAttribute> attributes) {
-        super(performingCard, affectedCardFilter, new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER);
-        _evaluator = new ConstantEvaluator(modifierValue);
-        _attributes.addAll(attributes);
+        this(new ConstantEvaluator(modifierValue), attributes, performingCard, affectedCardFilter,
+                new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER);
     }
 
 
     public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,
                              Condition condition, int modifierValue, ModifierEffect effectType,
                              CardAttribute... attributes) {
-        super(performingCard, Filters.card(affectedCard), condition, effectType);
-        _evaluator = new ConstantEvaluator(modifierValue);
-        _attributes.addAll(Arrays.asList(attributes));
+        this(new ConstantEvaluator(modifierValue), List.of(attributes), performingCard, Filters.card(affectedCard),
+                condition, effectType);
     }
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
                              Evaluator evaluator, ModifierEffect effectType, Collection<CardAttribute> attributes) {
-        super(modifierSource, affectFilter, condition, effectType);
-        _evaluator = evaluator;
-        _attributes.addAll(attributes);
+        this(evaluator, attributes, modifierSource, Filters.changeToFilter(affectFilter), condition, effectType);
     }
 
 
@@ -73,6 +84,7 @@ public class AttributeModifier extends AbstractModifier {
         return _evaluator.evaluateExpression(cardGame);
     }
 
+    @JsonIgnore
     public List<CardAttribute> getAttributesModified() {
         return _attributes;
     }

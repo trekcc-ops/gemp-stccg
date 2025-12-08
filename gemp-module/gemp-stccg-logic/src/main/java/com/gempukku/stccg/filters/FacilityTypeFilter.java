@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.FacilityType;
@@ -10,7 +11,8 @@ public class FacilityTypeFilter implements CardFilter {
     @JsonProperty("facilityType")
     private final FacilityType _facilityType;
 
-    public FacilityTypeFilter(FacilityType facilityType) {
+    @JsonCreator
+    public FacilityTypeFilter(@JsonProperty(value = "facilityType", required = true) FacilityType facilityType) {
         _facilityType = facilityType;
     }
 

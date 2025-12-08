@@ -36,15 +36,15 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = { "actions", "performedActions", "phasesInOrder" }, allowGetters = true)
 @JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits" })
+        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
 @JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits" })
+        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
 public abstract class GameState {
 
     Phase _currentPhase;
     PlayerOrder _playerOrder;
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
-    private final ModifiersLogic _modifiersLogic = new ModifiersLogic();
+    protected final ModifiersLogic _modifiersLogic = new ModifiersLogic();
     @JsonProperty("actionLimits")
     private final ActionLimitCollection _actionLimitCollection;
     final List<PhysicalCard> _inPlay = new LinkedList<>();
@@ -411,6 +411,11 @@ public abstract class GameState {
 
     public void useNormalCardPlay(String playerName) {
         _actionLimitCollection.useNormalCardPlay(playerName);
+    }
+
+    @JsonProperty("modifiers")
+    private List<Modifier> getAllModifiers() {
+        return _modifiersLogic.getAllModifiers();
     }
 
 }

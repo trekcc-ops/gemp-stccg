@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
@@ -14,13 +15,15 @@ public class EncounteringCardFilter implements CardFilter {
     @JsonProperty("encounteredCardId")
     private final int _encounteredCardId;
 
-    public EncounteringCardFilter(PhysicalCard encounteredCard) {
-        _encounteredCardId = encounteredCard.getCardId();
-    }
-
-    public EncounteringCardFilter(int encounteredCardId) {
+    @JsonCreator
+    public EncounteringCardFilter(@JsonProperty(value = "encounteredCardId", required = true) int encounteredCardId) {
         _encounteredCardId = encounteredCardId;
     }
+
+    public EncounteringCardFilter(PhysicalCard encounteredCard) {
+        this(encounteredCard.getCardId());
+    }
+
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {

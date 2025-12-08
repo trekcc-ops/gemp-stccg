@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.modifiers.Modifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -51,6 +52,10 @@ public class GameStateSerializationTest extends AbstractAtTest {
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().size());
         assertTrue(homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(archer));
+
+        autoSeedFacility();
+        List<Modifier> modifiers = _game.getAllModifiers();
+
 
         ObjectWriter gameStateMapper = new GameStateMapper().writer(true);
         String gameStateJson = gameStateMapper.writeValueAsString(_game.getGameState());

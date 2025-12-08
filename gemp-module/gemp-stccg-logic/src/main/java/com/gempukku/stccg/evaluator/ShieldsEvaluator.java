@@ -1,5 +1,6 @@
 package com.gempukku.stccg.evaluator;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.CardWithHullIntegrity;
@@ -11,8 +12,14 @@ public class ShieldsEvaluator extends Evaluator {
     @JsonProperty("cardWithShieldsId")
     private final int _cardWithShieldsId;
 
+    @JsonCreator
+    private ShieldsEvaluator(@JsonProperty(value = "cardWithShieldsId", required = true) int cardWithShieldsId) {
+        _cardWithShieldsId = cardWithShieldsId;
+    }
+
+
     public ShieldsEvaluator(CardWithHullIntegrity cardWithShields) {
-        _cardWithShieldsId = cardWithShields.getCardId();
+        this(cardWithShields.getCardId());
     }
 
     public float evaluateExpression(DefaultGame cardGame) {

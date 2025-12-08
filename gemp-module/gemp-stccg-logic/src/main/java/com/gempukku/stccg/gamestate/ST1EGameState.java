@@ -19,6 +19,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -55,21 +56,18 @@ public class ST1EGameState extends GameState {
                          @JsonProperty("awayTeams")
                          List<AwayTeam> awayTeams,
                           @JsonProperty("spacelineLocations")
-                          List<MissionLocation> spacelineLocations
+                          List<MissionLocation> spacelineLocations,
+                          @JsonProperty("modifiers")
+                          List<Modifier> modifiers
     ) {
         super(players, playerClocks, actionLimitCollection);
         /* Still to add:
-            modifiersLogic
             inPlay
             playerDecisions
             actionsEnvironment
             currentTurnNumber
          */
-
-        // Also flawed - DrawDeck / DiscardPile objects in Player class
-        // Missing - MissionLocation preSeedCards
-
-        setCurrentPhase(currentPhase);
+        _currentPhase = currentPhase;
         setCurrentProcess(currentProcess);
         _playerOrder = playerOrder;
         _allCards.putAll(cardsInGame);
@@ -84,6 +82,9 @@ public class ST1EGameState extends GameState {
             _spacelineLocations.add(location);
             int locationId = location.getLocationId();
             _locationIds.put(locationId, location);
+        }
+        for (Modifier modifier : modifiers) {
+            _modifiersLogic.addAlwaysOnModifier(modifier);
         }
     }
 
@@ -349,4 +350,5 @@ public class ST1EGameState extends GameState {
         }
         return null;
     }
+
 }

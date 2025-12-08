@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -17,7 +18,8 @@ public class AndFilter implements CardFilter {
         this(List.of(filters));
     }
 
-    public AndFilter(Collection<CardFilter> filters) {
+    @JsonCreator
+    public AndFilter(@JsonProperty("filters") Collection<CardFilter> filters) {
         _filters = filters;
     }
 

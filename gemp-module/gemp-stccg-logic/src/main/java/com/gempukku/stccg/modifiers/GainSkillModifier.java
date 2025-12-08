@@ -3,6 +3,7 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -17,7 +18,7 @@ public class GainSkillModifier extends AbstractModifier implements SkillAffectin
                              SkillName... skills) {
                 // TODO - Need to set cumulative = false as the default, and implement what that means
                 // TODO - This method doesn't really do anything right now
-        super(actionSource, null, affectFilter, condition, ModifierEffect.GAIN_SKILL_MODIFIER);
+        super(actionSource, Filters.changeToFilter(affectFilter), condition, ModifierEffect.GAIN_SKILL_MODIFIER);
         for (SkillName skill : skills)
             _skills.add(skill);
     }

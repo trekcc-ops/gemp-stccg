@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -25,7 +26,10 @@ public class BottomCardsOfDiscardFilter implements CardFilter {
     @JsonProperty("cardCount")
     private final int _cardCount;
 
-    public BottomCardsOfDiscardFilter(String playerName, int cardCount, CardFilter additionalFilter) {
+    @JsonCreator
+    public BottomCardsOfDiscardFilter(@JsonProperty("playerName") String playerName,
+                                      @JsonProperty("cardCount") int cardCount,
+                                      @JsonProperty("additionalFilter") CardFilter additionalFilter) {
         _playerName = playerName;
         _additionalFilter = additionalFilter;
         _cardCount = cardCount;

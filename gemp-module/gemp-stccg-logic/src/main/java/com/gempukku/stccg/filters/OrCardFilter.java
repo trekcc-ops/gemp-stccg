@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -13,8 +14,13 @@ public class OrCardFilter implements CardFilter {
     @JsonProperty("filters")
     private final List<CardFilter> _filters = new LinkedList<>();
 
+    @JsonCreator
+    public OrCardFilter(@JsonProperty("filters") List<CardFilter> filters) {
+        _filters.addAll(filters);
+    }
+
     public OrCardFilter(CardFilter... filters) {
-        _filters.addAll(Arrays.asList(filters));
+        this(Arrays.asList(filters));
     }
 
     @Override

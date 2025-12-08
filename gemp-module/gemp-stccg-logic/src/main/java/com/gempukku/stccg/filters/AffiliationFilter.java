@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -11,7 +12,8 @@ public class AffiliationFilter implements CardFilter {
     @JsonProperty("affiliation")
     private final Affiliation _affiliation;
 
-    public AffiliationFilter(Affiliation affiliation) {
+    @JsonCreator
+    public AffiliationFilter(@JsonProperty("affiliation") Affiliation affiliation) {
         _affiliation = affiliation;
     }
 

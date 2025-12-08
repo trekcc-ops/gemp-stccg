@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.ComparatorType;
@@ -13,7 +14,8 @@ public class CostFilter implements CardFilter {
     @JsonProperty("comparator")
     private final ComparatorType _comparator;
 
-    public CostFilter(int cost, ComparatorType comparator) {
+    @JsonCreator
+    public CostFilter(@JsonProperty("cost") int cost, @JsonProperty("comparator") ComparatorType comparator) {
         _cost = cost;
         _comparator = comparator;
     }

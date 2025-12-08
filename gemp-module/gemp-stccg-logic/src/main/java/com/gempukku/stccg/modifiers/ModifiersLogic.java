@@ -46,7 +46,7 @@ public class ModifiersLogic {
     }
 
     private void addModifier(Modifier modifier) {
-        ModifierEffect modifierEffect = modifier.getModifierEffect();
+        ModifierEffect modifierEffect = modifier.getModifierType();
         _modifiers.computeIfAbsent(modifierEffect, k -> new ArrayList<>());
         _modifiers.get(modifierEffect).add(modifier);
     }

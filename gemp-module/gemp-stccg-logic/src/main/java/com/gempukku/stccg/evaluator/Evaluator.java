@@ -1,12 +1,10 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.game.DefaultGame;
 
-public abstract class Evaluator extends ValueSource {
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "type")
+public abstract class Evaluator {
     public abstract float evaluateExpression(DefaultGame cardGame);
 
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
-        return evaluateExpression(cardGame);
-    }
 }

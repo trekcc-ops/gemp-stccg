@@ -1,13 +1,16 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.MultiplyEvaluator;
 import com.gempukku.stccg.evaluator.ShieldsEvaluator;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.DockedAtFilter;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.ShieldsModifier;
+import com.gempukku.stccg.modifiers.ModifierEffect;
+import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
+import com.gempukku.stccg.requirement.TrueCondition;
 
 public class DockingRules {
     private final static float HALF = 0.5f;
@@ -18,7 +21,8 @@ public class DockingRules {
         CardFilter dockedAtCards = new DockedAtFilter(dockedAtFacility);
         Evaluator facilityShieldsEvaluator = new ShieldsEvaluator(dockedAtFacility);
         Evaluator halfOfShieldsEvaluator = new MultiplyEvaluator(HALF, facilityShieldsEvaluator);
-        return new ShieldsModifier(dockedAtFacility, dockedAtCards, halfOfShieldsEvaluator);
+        return new AttributeModifier(dockedAtFacility, dockedAtCards, new TrueCondition(), halfOfShieldsEvaluator,
+                CardAttribute.SHIELDS, ModifierEffect.ATTRIBUTE_MODIFIER);
     }
 
 }

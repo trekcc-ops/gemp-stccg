@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -11,8 +12,13 @@ public class DockedAtFilter implements CardFilter {
     @JsonProperty("facilityCardId")
     private final int _facilityCardId;
 
+    @JsonCreator
+    private DockedAtFilter(@JsonProperty(value = "facilityCardId", required = true) int facilityCardId) {
+        _facilityCardId = facilityCardId;
+    }
+
     public DockedAtFilter(FacilityCard facility) {
-        _facilityCardId = facility.getCardId();
+        this(facility.getCardId());
     }
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {

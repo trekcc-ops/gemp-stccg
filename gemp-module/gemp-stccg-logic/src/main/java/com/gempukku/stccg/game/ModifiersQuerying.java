@@ -3,6 +3,7 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -11,9 +12,11 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.*;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
-import com.gempukku.stccg.requirement.Condition;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 public interface ModifiersQuerying {
 
@@ -44,41 +47,22 @@ public interface ModifiersQuerying {
 
     private List<Modifier> getModifiersInEffect(ModifierEffect modifierEffect) {
         List<Modifier> modifiers = getAllModifiersByEffect(modifierEffect);
-        if (modifiers == null)
-            return Collections.emptyList();
-        else {
-            LinkedList<Modifier> liveModifiers = new LinkedList<>();
-            for (Modifier modifier : modifiers) {
-                if (!modifierIsInSkipSet(modifier)) {
-                    addToSkipSet(modifier);
-                    if (modifier.isConditionFulfilled(getGame()))
-                        if (shouldAdd(modifierEffect, modifier)) {
-                            liveModifiers.add(modifier);
-                        }
-                    removeFromSkipSet(modifier);
-                }
+        List<Modifier> result = new LinkedList<>();
+        for (Modifier modifier : modifiers) {
+            if (modifierIsInEffect(modifier, modifierEffect)) {
+                result.add(modifier);
             }
-            return liveModifiers;
         }
+        return result;
     }
 
     default List<Modifier> getIconModifiersAffectingCard(CardIcon icon, PhysicalCard card) {
         List<Modifier> modifiers = getAllModifiersByEffect(ModifierEffect.GAIN_ICON_MODIFIER);
         LinkedList<Modifier> liveModifiers = new LinkedList<>();
-        if (icon == null || card == null) {
-            return liveModifiers;
-        }
         for (Modifier modifier : modifiers) {
             if (modifier instanceof IconAffectingModifier iconModifier && iconModifier.getIcon() == icon) {
-                if (!modifierIsInSkipSet(modifier)) {
-                    addToSkipSet(modifier);
-                    if (modifier.isConditionFulfilled(getGame()))
-                        if (shouldAdd(ModifierEffect.GAIN_ICON_MODIFIER, modifier)) {
-                            if (modifier.affectsCard(getGame(), card) && modifier.foundNoCumulativeConflict(liveModifiers)) {
-                                liveModifiers.add(modifier);
-                            }
-                        }
-                    removeFromSkipSet(modifier);
+                if (modifierIsAffectingCard(modifier, ModifierEffect.GAIN_ICON_MODIFIER, card, liveModifiers)) {
+                    liveModifiers.add(modifier);
                 }
             }
         }
@@ -88,23 +72,42 @@ public interface ModifiersQuerying {
     private List<Modifier> getSkillModifiersAffectingCard(SkillName skill, PhysicalCard card) {
         List<Modifier> modifiers = getAllModifiersByEffect(ModifierEffect.GAIN_SKILL_MODIFIER);
         LinkedList<Modifier> liveModifiers = new LinkedList<>();
-        if (skill == null || card == null) {
-            return liveModifiers;
-        }
         for (Modifier modifier : modifiers) {
             if (modifier instanceof SkillAffectingModifier skillModifier && skillModifier.getSkills().contains(skill)) {
-                if (!modifierIsInSkipSet(modifier)) {
-                    addToSkipSet(modifier);
-                    if (modifier.isConditionFulfilled(getGame()))
-                        if (shouldAdd(ModifierEffect.GAIN_SKILL_MODIFIER, modifier)) {
-                            if (modifier.affectsCard(getGame(), card) && modifier.foundNoCumulativeConflict(liveModifiers))
-                                liveModifiers.add(modifier);
-                        }
-                    removeFromSkipSet(modifier);
+                if (modifierIsAffectingCard(modifier, ModifierEffect.GAIN_SKILL_MODIFIER, card, liveModifiers)) {
+                    liveModifiers.add(modifier);
                 }
             }
         }
         return liveModifiers;
+    }
+
+
+    private boolean modifierIsAffectingCard(Modifier modifier, ModifierEffect effectType, PhysicalCard card,
+                                            List<Modifier> modifiersThusFar) {
+        if (!modifier.affectsCard(getGame(), card) && !modifier.foundNoCumulativeConflict(modifiersThusFar)) {
+            return false;
+        } else {
+            return modifierIsInEffect(modifier, effectType);
+        }
+    }
+    
+    private boolean modifierIsInEffect(Modifier modifier, ModifierEffect effectType) {
+        boolean result;
+        if (modifierIsInSkipSet(modifier)) {
+            result = false;
+        } else {
+            addToSkipSet(modifier);
+            if (!modifier.isConditionFulfilled(getGame())) {
+                result = false;
+            } else if (effectType == ModifierEffect.TEXT_MODIFIER) {
+                result = true;
+            } else {
+                result = !modifier.isSuspended(getGame());
+            }
+            removeFromSkipSet(modifier);
+        }
+        return result;
     }
 
 
@@ -113,29 +116,22 @@ public interface ModifiersQuerying {
         List<Modifier> modifiers = getAllModifiersByEffect(modifierEffect);
         LinkedList<Modifier> liveModifiers = new LinkedList<>();
         for (Modifier modifier : modifiers) {
-            if (!modifierIsInSkipSet(modifier)) {
-                addToSkipSet(modifier);
-                Condition condition = modifier.getCondition();
-                if (condition == null || condition.isFulfilled(getGame()))
-                    if (shouldAdd(modifierEffect, modifier)) {
-                        if ((card == null || modifier.affectsCard(getGame(), card)) &&
-                                (modifier.foundNoCumulativeConflict(liveModifiers)))
-                            liveModifiers.add(modifier);
-                    }
-                removeFromSkipSet(modifier);
+            if (modifierIsAffectingCard(modifier, modifierEffect, card, liveModifiers)) {
+                liveModifiers.add(modifier);
             }
         }
         return liveModifiers;
     }
 
     default float getAttribute(PhysicalCard card, CardAttribute attribute) {
+        CardBlueprint blueprint = card.getBlueprint();
         float result = switch(attribute) {
-            case INTEGRITY -> card.getBlueprint().getIntegrity();
-            case CUNNING -> card.getBlueprint().getCunning();
-            case STRENGTH -> card.getBlueprint().getStrength();
-            case RANGE -> card.getBlueprint().getRange();
-            case WEAPONS -> card.getBlueprint().getWeapons();
-            case SHIELDS -> card.getBlueprint().getShields();
+            case INTEGRITY -> blueprint.getIntegrity();
+            case CUNNING -> blueprint.getCunning();
+            case STRENGTH -> blueprint.getStrength();
+            case RANGE -> blueprint.getRange();
+            case WEAPONS -> blueprint.getWeapons();
+            case SHIELDS -> blueprint.getShields();
         };
 
         if (attribute == CardAttribute.WEAPONS &&
@@ -175,12 +171,6 @@ public interface ModifiersQuerying {
         } else {
             return false;
         }
-    }
-
-    private boolean shouldAdd(ModifierEffect modifierEffect, Modifier modifier) {
-        return modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
-                modifier.isNonCardTextModifier() ||
-                !modifier.getSource().hasTextRemoved(getGame());
     }
 
     default boolean canDiscardCardsFromHand(String playerId, PhysicalCard source) {

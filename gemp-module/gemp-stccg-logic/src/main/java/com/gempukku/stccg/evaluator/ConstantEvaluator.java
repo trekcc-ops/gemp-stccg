@@ -1,13 +1,16 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class ConstantEvaluator extends Evaluator {
+
+    @JsonProperty("value")
     private final float _value;
 
-    public ConstantEvaluator(float value) {
+    @JsonCreator
+    public ConstantEvaluator(@JsonProperty(value = "value", required = true) float value) {
         super();
         _value = value;
     }

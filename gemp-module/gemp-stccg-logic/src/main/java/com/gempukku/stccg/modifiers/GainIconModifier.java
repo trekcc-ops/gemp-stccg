@@ -1,18 +1,33 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Condition;
 
 public class GainIconModifier extends AbstractModifier implements IconAffectingModifier {
+
+    @JsonProperty("icon")
     private final CardIcon _icon;
 
-    public GainIconModifier(PhysicalCard performingCard, Filterable affectFilter, Condition condition, CardIcon icon) {
-        super(performingCard, null, Filters.and(affectFilter), condition, ModifierEffect.GAIN_ICON_MODIFIER);
+    @JsonCreator
+    private GainIconModifier(@JsonProperty("performingCard") PhysicalCard performingCard,
+                                          @JsonProperty("affectedCards") CardFilter affectFilter,
+                                          @JsonProperty("condition") Condition condition,
+                                          @JsonProperty("effectType") ModifierEffect effectType,
+                             @JsonProperty("icon") CardIcon icon) {
+        super(performingCard, affectFilter, condition, effectType);
         _icon = icon;
+    }
+
+
+    public GainIconModifier(PhysicalCard performingCard, Filterable affectFilter, Condition condition, CardIcon icon) {
+        this(performingCard, Filters.changeToFilter(affectFilter), condition, ModifierEffect.GAIN_ICON_MODIFIER, icon);
     }
 
     @Override
