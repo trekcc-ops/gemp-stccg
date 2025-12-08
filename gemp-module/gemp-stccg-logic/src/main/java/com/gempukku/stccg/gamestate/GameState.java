@@ -34,9 +34,7 @@ import java.util.*;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(value = { "actions", "spacelineLocations", "performedActions",
-    "phasesInOrder", "requestingPlayer", "channelNumber", "timeStamp" },
-        allowGetters = true)
+@JsonIgnoreProperties(value = { "actions", "performedActions", "phasesInOrder" }, allowGetters = true)
 @JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
         "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits" })
 @JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",

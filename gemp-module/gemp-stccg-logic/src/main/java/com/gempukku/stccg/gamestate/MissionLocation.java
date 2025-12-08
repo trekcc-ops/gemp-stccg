@@ -18,7 +18,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 import java.util.stream.Stream;
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId",
+        scope = MissionLocation.class)
+@JsonIgnoreProperties(value = { "isHomeworld", "seedCardCount" }, allowGetters = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted", "isHomeworld",
         "missionCardIds", "seedCardCount", "seedCardIds" })
@@ -41,6 +43,29 @@ public class MissionLocation implements GameLocation {
     private final CardPile<MissionCard> _missionCards = new CardPile<>();
     private final Map<String, CardPile<PhysicalCard>> _preSeedCards = new HashMap<>();
     private final CardPile<PhysicalCard> _seedCards;
+
+    public MissionLocation(@JsonProperty("quadrant") Quadrant quadrant,
+                           @JsonProperty("region") Region region,
+                           @JsonProperty("locationName") String locationName,
+                           @JsonProperty("isCompleted") boolean isCompleted,
+                           @JsonProperty("locationId") Integer locationId,
+                           @JsonProperty("missionCardIds") @JsonIdentityReference(alwaysAsId = true)
+                           List<MissionCard> missionCards,
+                           // preseeds
+                            @JsonProperty("seedCardIds") @JsonIdentityReference(alwaysAsId = true)
+                           List<PhysicalCard> seedCards) {
+        _quadrant = quadrant;
+        _region = region;
+        _locationName = locationName;
+        _isCompleted = isCompleted;
+        _locationId = locationId;
+        _missionCards.setCards(missionCards);
+        _seedCards = new CardPile<>();
+        _seedCards.setCards(seedCards);
+    }
+
+
+
     public MissionLocation(DefaultGame cardGame, MissionCard mission, int locationId) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
                 mission.getBlueprint().getLocation(), locationId);

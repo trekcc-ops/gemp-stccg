@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
@@ -26,15 +27,13 @@ import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
-@JsonIgnoreProperties(value = { "actions", "spacelineLocations",
-        "performedActions", "phasesInOrder", "requestingPlayer", "channelNumber", "timeStamp" }, allowGetters = true)
+@JsonIgnoreProperties(value = { "actions", "performedActions", "phasesInOrder" }, allowGetters = true)
 public class ST1EGameState extends GameState {
     @JsonProperty("spacelineLocations")
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     @JsonProperty("awayTeams")
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId = 1;
-    private int _nextLocationId = 1;
     private final Map<Integer, GameLocation> _locationIds = new HashMap<>();
 
     @SuppressWarnings("unused")
@@ -54,9 +53,22 @@ public class ST1EGameState extends GameState {
                          @JsonProperty("players")
                          List<Player> players,
                          @JsonProperty("awayTeams")
-                         List<AwayTeam> awayTeams
+                         List<AwayTeam> awayTeams,
+                          @JsonProperty("spacelineLocations")
+                          List<MissionLocation> spacelineLocations
     ) {
         super(players, playerClocks, actionLimitCollection);
+        /* Still to add:
+            modifiersLogic
+            inPlay
+            playerDecisions
+            actionsEnvironment
+            currentTurnNumber
+         */
+
+        // Also flawed - DrawDeck / DiscardPile objects in Player class
+        // Missing - MissionLocation preSeedCards
+
         setCurrentPhase(currentPhase);
         setCurrentProcess(currentProcess);
         _playerOrder = playerOrder;
@@ -67,6 +79,11 @@ public class ST1EGameState extends GameState {
             if (awayTeam.getAwayTeamId() >= _nextAttemptingUnitId) {
                 _nextAttemptingUnitId = awayTeam.getAwayTeamId() + 1;
             }
+        }
+        for (MissionLocation location : spacelineLocations) {
+            _spacelineLocations.add(location);
+            int locationId = location.getLocationId();
+            _locationIds.put(locationId, location);
         }
     }
 
@@ -165,10 +182,13 @@ public class ST1EGameState extends GameState {
         return false;
     }
 
-    public int getAndIncrementNextLocationId() {
-        int result = _nextLocationId;
-        _nextLocationId++;
-        return result;
+    @JsonIgnore
+    public int getNextLocationId() {
+        if (_locationIds.isEmpty()) {
+            return 1;
+        } else {
+            return Collections.max(_locationIds.keySet()) + 1;
+        }
     }
 
     public void addMissionLocationToSpacelineForTestingOnly(ST1EGame cardGame, MissionCard newMission, int indexNumber) {

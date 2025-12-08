@@ -126,7 +126,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                     gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
                 }
                 else {
-                    int newLocationId = gameState.getAndIncrementNextLocationId();
+                    int newLocationId = gameState.getNextLocationId();
                     MissionLocation location = new MissionLocation(game, mission, newLocationId);
                     gameState.addSpacelineLocation(_locationZoneIndex, location);
                     gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
