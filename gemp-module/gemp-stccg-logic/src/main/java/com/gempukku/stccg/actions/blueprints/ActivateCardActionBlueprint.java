@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                        @JsonProperty("effect")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-            super(limitPerTurn, costs, effects);
+            super(limitPerTurn, costs, effects, new YouPlayerSource());
             if (requirements != null && !requirements.isEmpty()) {
                 _requirements.addAll(requirements);
             }

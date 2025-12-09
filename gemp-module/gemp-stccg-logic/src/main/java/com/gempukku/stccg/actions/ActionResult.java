@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
-import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -93,20 +92,6 @@ public class ActionResult {
     }
 
 
-
-    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame, Player player) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
-        String playerName = player.getPlayerId();
-        if (_optionalAfterTriggerActions.get(playerName) != null) {
-            for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(playerName)) {
-                if (action.canBeInitiated(cardGame)) {
-                    result.add(action);
-                }
-            }
-        }
-        return result;
-    }
-
     public void createOptionalAfterTriggerActions(DefaultGame game) {
         Map<String, List<TopLevelSelectableAction>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
@@ -136,8 +121,6 @@ public class ActionResult {
         return switch (blueprint) {
             case Blueprint212_019 riskBlueprint ->
                     riskBlueprint.getValidResponses(card, player, this, cardGame);
-            case Blueprint156_010 surpriseBlueprint ->
-                    surpriseBlueprint.getValidResponses(card, player, this, cardGame);
             case Blueprint109_063 missionSpecBlueprint ->
                     missionSpecBlueprint.getValidResponses(card, player, this, cardGame);
             case null, default -> {
@@ -200,20 +183,6 @@ public class ActionResult {
         return gatheredActions;
     }
 
-
-    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame,
-                                                                                Player activePlayer) {
-            final Map<TopLevelSelectableAction, ActionResult> gatheredActions = new HashMap<>();
-            List<TopLevelSelectableAction> actions = getOptionalAfterTriggerActions(cardGame, activePlayer);
-            if (actions != null) {
-                for (TopLevelSelectableAction action : actions) {
-                    if (!wasOptionalTriggerUsed(action)) {
-                        gatheredActions.put(action, this);
-                    }
-                }
-            }
-            return gatheredActions;
-    }
 
     public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerName) {
         Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =

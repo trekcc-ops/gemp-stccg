@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.turn.AddSubactionEffectsAction;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -45,7 +44,7 @@ public interface SubActionBlueprint {
 
     default void addEffectToAction(DefaultGame cardGame, boolean cost, CardPerformedAction action,
                                    ActionContext actionContext) {
-        final SystemQueueAction sysAction =
+        final AddSubactionEffectsAction sysAction =
                 new AddSubactionEffectsAction(cardGame, actionContext, cost, action, this);
         if (cost) {
             action.appendCost(sysAction);

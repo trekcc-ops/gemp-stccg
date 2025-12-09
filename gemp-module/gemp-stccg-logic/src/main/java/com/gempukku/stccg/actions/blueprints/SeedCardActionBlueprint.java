@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.SeedQuantityLimitRequirement;
 
 public class SeedCardActionBlueprint extends DefaultActionBlueprint {
@@ -14,7 +15,7 @@ public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     public SeedCardActionBlueprint(@JsonProperty(value = "where", required = true)
                                 Zone seedToZone
     ) {
-        super(0);
+        super(0, new YouPlayerSource());
         _seedToZone = seedToZone;
     }
 

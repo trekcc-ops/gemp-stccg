@@ -77,8 +77,8 @@ public interface Action {
     default void executeNextSubAction(ActionsEnvironment actionsEnvironment, DefaultGame cardGame)
             throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException,
             CardNotFoundException {
-        ActionResult actionResult = getResult();
 
+        ActionResult actionResult = getResult();
         if (actionResult != null) {
             actionResult.initialize(cardGame); // won't do anything if already initialized
             actionResult.addNextActionToStack(cardGame, this);

@@ -57,4 +57,6 @@ public interface Modifier {
     boolean foundNoCumulativeConflict(Iterable<Modifier> modifierList);
 
     boolean isSuspended(DefaultGame cardGame);
+
+    boolean isEffectType(ModifierEffect effectType);
 }

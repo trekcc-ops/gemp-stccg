@@ -21,11 +21,8 @@ import java.util.List;
 public interface ModifiersQuerying {
 
     default boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
-        // TODO - Not accurate if the card has LOST an icon
-        // TODO - Does not account for modifiers that are inactive
         if (physicalCard.getBlueprint().hasIcon(icon))
             return true;
-
         for (Modifier modifier : getIconModifiersAffectingCard(icon, physicalCard)) {
             if (modifier.hasIcon(physicalCard, icon)) {
                 return true;
@@ -37,8 +34,7 @@ public interface ModifiersQuerying {
     default Collection<Modifier> getModifiersAffectingCard(PhysicalCard card) {
         Collection<Modifier> result = new HashSet<>();
         for (Modifier modifier : getAllModifiers()) {
-            if (modifier.isConditionFulfilled(getGame()) && affectsCardWithSkipSet(card, modifier) &&
-                    !modifier.foundNoCumulativeConflict(result)) {
+            if (modifierIsAffectingCard(modifier, card, result)) {
                 result.add(modifier);
             }
         }
@@ -49,7 +45,7 @@ public interface ModifiersQuerying {
         List<Modifier> modifiers = getAllModifiersByEffect(modifierEffect);
         List<Modifier> result = new LinkedList<>();
         for (Modifier modifier : modifiers) {
-            if (modifierIsInEffect(modifier, modifierEffect)) {
+            if (modifierIsInEffect(modifier)) {
                 result.add(modifier);
             }
         }
@@ -61,7 +57,7 @@ public interface ModifiersQuerying {
         LinkedList<Modifier> liveModifiers = new LinkedList<>();
         for (Modifier modifier : modifiers) {
             if (modifier instanceof IconAffectingModifier iconModifier && iconModifier.getIcon() == icon) {
-                if (modifierIsAffectingCard(modifier, ModifierEffect.GAIN_ICON_MODIFIER, card, liveModifiers)) {
+                if (modifierIsAffectingCard(modifier, card, liveModifiers)) {
                     liveModifiers.add(modifier);
                 }
             }
@@ -74,7 +70,7 @@ public interface ModifiersQuerying {
         LinkedList<Modifier> liveModifiers = new LinkedList<>();
         for (Modifier modifier : modifiers) {
             if (modifier instanceof SkillAffectingModifier skillModifier && skillModifier.getSkills().contains(skill)) {
-                if (modifierIsAffectingCard(modifier, ModifierEffect.GAIN_SKILL_MODIFIER, card, liveModifiers)) {
+                if (modifierIsAffectingCard(modifier, card, liveModifiers)) {
                     liveModifiers.add(modifier);
                 }
             }
@@ -83,16 +79,16 @@ public interface ModifiersQuerying {
     }
 
 
-    private boolean modifierIsAffectingCard(Modifier modifier, ModifierEffect effectType, PhysicalCard card,
-                                            List<Modifier> modifiersThusFar) {
+    private boolean modifierIsAffectingCard(Modifier modifier, PhysicalCard card,
+                                            Collection<Modifier> modifiersThusFar) {
         if (!modifier.affectsCard(getGame(), card) && !modifier.foundNoCumulativeConflict(modifiersThusFar)) {
             return false;
         } else {
-            return modifierIsInEffect(modifier, effectType);
+            return modifierIsInEffect(modifier);
         }
     }
     
-    private boolean modifierIsInEffect(Modifier modifier, ModifierEffect effectType) {
+    private boolean modifierIsInEffect(Modifier modifier) {
         boolean result;
         if (modifierIsInSkipSet(modifier)) {
             result = false;
@@ -100,7 +96,7 @@ public interface ModifiersQuerying {
             addToSkipSet(modifier);
             if (!modifier.isConditionFulfilled(getGame())) {
                 result = false;
-            } else if (effectType == ModifierEffect.TEXT_MODIFIER) {
+            } else if (modifier.isEffectType(ModifierEffect.TEXT_MODIFIER)) {
                 result = true;
             } else {
                 result = !modifier.isSuspended(getGame());
@@ -116,7 +112,7 @@ public interface ModifiersQuerying {
         List<Modifier> modifiers = getAllModifiersByEffect(modifierEffect);
         LinkedList<Modifier> liveModifiers = new LinkedList<>();
         for (Modifier modifier : modifiers) {
-            if (modifierIsAffectingCard(modifier, modifierEffect, card, liveModifiers)) {
+            if (modifierIsAffectingCard(modifier, card, liveModifiers)) {
                 liveModifiers.add(modifier);
             }
         }
@@ -161,17 +157,6 @@ public interface ModifiersQuerying {
         return true;
     }
 
-
-    default boolean affectsCardWithSkipSet(PhysicalCard physicalCard, Modifier modifier) {
-        if (!modifierIsInSkipSet(modifier) && physicalCard != null) {
-            addToSkipSet(modifier);
-            boolean result = modifier.affectsCard(getGame(), physicalCard);
-            removeFromSkipSet(modifier);
-            return result;
-        } else {
-            return false;
-        }
-    }
 
     default boolean canDiscardCardsFromHand(String playerId, PhysicalCard source) {
         for (Modifier modifier : getModifiersAffectingCardByEffect(ModifierEffect.DISCARD_NOT_FROM_PLAY, source))

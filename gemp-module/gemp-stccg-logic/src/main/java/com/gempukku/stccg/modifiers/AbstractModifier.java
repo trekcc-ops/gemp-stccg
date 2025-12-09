@@ -141,5 +141,9 @@ public abstract class AbstractModifier implements Modifier {
         }
     }
 
+    public boolean isEffectType(ModifierEffect effectType) {
+        return _effect == effectType;
+    }
+
 
 }

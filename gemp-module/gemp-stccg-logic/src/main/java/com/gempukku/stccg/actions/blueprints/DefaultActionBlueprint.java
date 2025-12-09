@@ -12,6 +12,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.LimitCounter;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
@@ -24,15 +25,19 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
     protected final List<SubActionBlueprint> effects = new LinkedList<>();
+    private final PlayerSource _performingPlayer;
     private int _blueprintId;
 
-    public DefaultActionBlueprint(int limitPerTurn) {
+    protected DefaultActionBlueprint(int limitPerTurn, PlayerSource performingPlayer) {
         if (limitPerTurn > 0)
             setTurnLimit(limitPerTurn);
+        _performingPlayer = performingPlayer;
     }
+
     public DefaultActionBlueprint(int limitPerTurn, List<SubActionBlueprint> costs,
-                                  List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        this(limitPerTurn);
+                                  List<SubActionBlueprint> effects,
+                                  PlayerSource playerSource) throws InvalidCardDefinitionException {
+        this(limitPerTurn, playerSource);
 
         if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
@@ -67,7 +72,12 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     @Override
     public boolean isValid(DefaultGame cardGame, ActionContext actionContext) {
-        return actionContext.acceptsAllRequirements(cardGame, _requirements);
+        String performingPlayerName = _performingPlayer.getPlayerId(cardGame, actionContext);
+        if (!performingPlayerName.equals(actionContext.getPerformingPlayerId())) {
+            return false;
+        } else {
+            return actionContext.acceptsAllRequirements(cardGame, _requirements);
+        }
     }
 
     @Override

@@ -7,16 +7,18 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.PlayerResolver;
+import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.List;
 
 public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
 
-    public OptionalTriggerActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
+    private OptionalTriggerActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
                                        int limitPerTurn,
                                           @JsonProperty(value="triggerDuringSeed", required = true)
                                       boolean triggerDuringSeed,
@@ -29,8 +31,11 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                        List<SubActionBlueprint> costs,
                                           @JsonProperty("effect")
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                          List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed);
+                                          List<SubActionBlueprint> effects,
+                                           @JsonProperty("player")
+                                           String playerText) throws InvalidCardDefinitionException {
+        super(limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed,
+                (playerText == null) ? new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText));
     }
 
     @Override

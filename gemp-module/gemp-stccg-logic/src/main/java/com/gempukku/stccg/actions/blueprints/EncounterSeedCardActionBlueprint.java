@@ -13,6 +13,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.YouPlayerSource;
 
 import java.util.*;
 
@@ -22,7 +23,8 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
     public EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                             List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(0, new ArrayList<>(), Objects.requireNonNullElse(effects, new LinkedList<>()));
+        super(0, new ArrayList<>(), Objects.requireNonNullElse(effects, new LinkedList<>()),
+                new YouPlayerSource());
     }
 
     public EncounterSeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard,

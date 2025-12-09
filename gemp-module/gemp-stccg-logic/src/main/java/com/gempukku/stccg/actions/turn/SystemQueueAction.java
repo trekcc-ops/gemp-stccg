@@ -9,13 +9,13 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-public class SystemQueueAction extends ActionyAction {
+public abstract class SystemQueueAction extends ActionyAction {
 
-    public SystemQueueAction(DefaultGame game) {
+    protected SystemQueueAction(DefaultGame game) {
         super(game, ActionType.SYSTEM_QUEUE);
     }
 
-    public SystemQueueAction(DefaultGame game, ActionContext actionContext) {
+    protected SystemQueueAction(DefaultGame game, ActionContext actionContext) {
         super(game, ActionType.SYSTEM_QUEUE, actionContext);
     }
 

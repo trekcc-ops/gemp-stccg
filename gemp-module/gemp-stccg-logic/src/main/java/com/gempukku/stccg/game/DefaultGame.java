@@ -40,6 +40,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     // Endgame operations
     protected final Set<String> _requestedCancel = new HashSet<>();
+
     private final Collection<Modifier> _modifierSkipSet = new HashSet<>();
     protected boolean _cancelled;
     protected boolean _finished;
@@ -265,10 +266,6 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     public String getOpponent(String playerId) {
             return getAllPlayerIds()[0].equals(playerId) ?
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
-    }
-
-    public Player getOpponent(Player player) throws PlayerNotFoundException {
-        return getPlayer(getOpponent(player.getPlayerId()));
     }
 
     public void sendMessage(String message) {
