@@ -25,7 +25,9 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
                                 @JsonProperty(value = "amount", required = true)
                              int amount,
                                 @JsonProperty(value = "ifCondition")
-                                Requirement ifRequirement) {
+                                Requirement ifRequirement,
+                                @JsonProperty(value = "cumulative")
+                                boolean isCumulative) {
         _amount = amount;
         _modifiedCardFilterBlueprint = modifiedCardFilterBlueprint;
         if (ifRequirement != null) {

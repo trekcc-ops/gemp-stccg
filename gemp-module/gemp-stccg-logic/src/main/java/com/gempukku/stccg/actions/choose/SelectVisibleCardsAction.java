@@ -72,16 +72,14 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
 
         if (selectableCards.size() == _minimum) {
             _selectedCards.addAll(selectableCards);
-            _wasCarriedOut = true;
             setAsSuccessful();
         } else {
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
                             _minimum, _maximum, cardGame) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             _selectedCards = getSelectedCardsByResponse(result);
-                            _wasCarriedOut = true;
                             setAsSuccessful();
                         }
                     });
@@ -89,11 +87,6 @@ public class SelectVisibleCardsAction extends ActionyAction implements SelectCar
         }
 
         return getNextAction();
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        return _wasCarriedOut;
     }
 
     public Collection<PhysicalCard> getSelectedCards() { return _selectedCards; }

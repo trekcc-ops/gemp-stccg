@@ -26,7 +26,7 @@ public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
             if (players.length == 1)
                 playerChosen(players[0], cardGame);
             else
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                                 "Choose a player", players, cardGame) {
                             @Override

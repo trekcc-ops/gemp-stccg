@@ -41,10 +41,10 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
                 playableActions.add(action);
             }
 
-            if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
+            if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase())) {
                 playerPassed();
             } else {
-                _game.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, _game, false) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {

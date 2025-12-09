@@ -61,10 +61,10 @@ public class ContinuingMissionTest extends AbstractAtTest {
     private void seedCardIfAllowed(PhysicalCard card) throws DecisionResultInvalidException, InvalidGameOperationException {
         String ownerId = card.getOwnerName();
         // Assumes there is only one valid location for the card to seed at
-        assertNotNull(_userFeedback.getAwaitingDecision(ownerId));
-        assertInstanceOf(ActionSelectionDecision.class, _userFeedback.getAwaitingDecision(ownerId));
+        assertNotNull(_game.getAwaitingDecision(ownerId));
+        assertInstanceOf(ActionSelectionDecision.class, _game.getAwaitingDecision(ownerId));
         ActionSelectionDecision decision =
-                (ActionSelectionDecision) _userFeedback.getAwaitingDecision(ownerId);
+                (ActionSelectionDecision) _game.getAwaitingDecision(ownerId);
         List<? extends Action> possibleActions = decision.getActions();
         int decisionIndex = -1;
         SeedCardAction seedAction = null;

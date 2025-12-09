@@ -14,6 +14,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.AbstractModifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
+import com.gempukku.stccg.modifiers.ModifierTimingType;
 import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.requirement.TrueCondition;
 
@@ -41,6 +42,14 @@ public class AttributeModifier extends AbstractModifier {
         _attributes.addAll(attributes);
     }
 
+    public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCards, Condition condition,
+                             Evaluator evaluator, Collection<CardAttribute> attributes,
+                             ModifierTimingType timingType, boolean cumulative) {
+        this(evaluator, attributes, performingCard, affectedCards, condition,
+                ModifierEffect.ATTRIBUTE_MODIFIER);
+    }
+
+
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
                              Evaluator evaluator, CardAttribute attribute,
                              ModifierEffect effectType) {
@@ -59,6 +68,8 @@ public class AttributeModifier extends AbstractModifier {
         this(new ConstantEvaluator(modifierValue), attributes, performingCard, affectedCardFilter,
                 new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER);
     }
+
+
 
 
     public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,

@@ -17,10 +17,6 @@ public class UseNormalCardPlayAction extends ActionyAction {
         super(cardGame, performingPlayerName, ActionType.USAGE_LIMIT);
     }
 
-
-    @Override
-    public boolean wasCarriedOut() { return _wasCarriedOut; }
-
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return cardGame.getGameState().getNormalCardPlaysAvailable(_performingPlayerId) >= 1;
@@ -29,7 +25,6 @@ public class UseNormalCardPlayAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         cardGame.getGameState().useNormalCardPlay(_performingPlayerId);
-        _wasCarriedOut = true;
         setAsSuccessful();
         return getNextAction();
     }

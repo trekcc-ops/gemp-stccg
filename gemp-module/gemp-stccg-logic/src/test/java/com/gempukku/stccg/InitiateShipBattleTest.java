@@ -41,7 +41,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         List<FacilityCard> outpostsToSeed = List.of(outpost1, outpost2);
 
         SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, 0);
-        seedAction.seedCard(_game);
+        seedAction.seedCard(_game, false);
 
         for (FacilityCard facility : outpostsToSeed) {
             SeedOutpostAction seedOutpostAction = new SeedOutpostAction(_game, facility);
@@ -76,9 +76,9 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         defendingTarget.undockFromFacility();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
         InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
-        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
+        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _game.getAwaitingDecision(P1);
         decision.decisionMade(List.of(attackingShip), defendingTarget);
-        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
+        _game.removeDecision(P1);
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
         assertTrue(attackingShip.isStopped());
@@ -96,9 +96,9 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         defendingTarget.undockFromFacility();
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
         InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
-        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
+        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _game.getAwaitingDecision(P1);
         decision.decisionMade(List.of(attackingShip), defendingTarget);
-        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
+        _game.removeDecision(P1);
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
         assertTrue(attackingShip.isStopped());

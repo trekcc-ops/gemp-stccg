@@ -73,21 +73,15 @@ public class SelectAndInsertAction extends ActionyAction {
                         _selectedAction = performableActions.get(index);
                         _parentAction.insertAction(_selectedAction);
                         setAsSuccessful();
-                        _wasCarriedOut = true;
                     } catch(NoSuchElementException exp) {
                         setAsFailed();
                         cardGame.sendErrorMessage(exp);
                     }
                 }
             };
-            cardGame.getUserFeedback().sendAwaitingDecision(_decision);
+            cardGame.sendAwaitingDecision(_decision);
         }
         return getNextAction();
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        return wasCompleted();
     }
 
 }

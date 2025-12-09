@@ -171,7 +171,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
             player1.getCardGroup(Zone.HAND).addCard(tarses);
         }
 
-        assertNotNull(_userFeedback.getAwaitingDecision(P1));
+        assertNotNull(_game.getAwaitingDecision(P1));
         Collection<PhysicalCard> discardable = Filters.filter(_game, Filters.yourHand(player1), CardIcon.TNG_ICON);
         for (PhysicalCard card : discardable) {
             cardToDiscard = card;
@@ -180,7 +180,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     private boolean canUseCardAgain() {
         boolean result = false;
-        AwaitingDecision decision = _userFeedback.getAwaitingDecision(P1);
+        AwaitingDecision decision = _game.getAwaitingDecision(P1);
         if (decision instanceof ActionSelectionDecision actionSelection) {
             for (TopLevelSelectableAction action : actionSelection.getActions()) {
                 PhysicalCard cardSource = action.getPerformingCard();

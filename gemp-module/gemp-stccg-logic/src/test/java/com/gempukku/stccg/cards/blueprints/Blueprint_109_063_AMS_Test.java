@@ -51,7 +51,7 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
         seedCard(P1, fedOutpost);
         seedCard(P1, ams);
         selectFirstAction(P1);
-        assertNotNull(_userFeedback.getAwaitingDecision(P1));
+        assertNotNull(_game.getAwaitingDecision(P1));
 
         List<PhysicalCard> specialists = List.of(tarses, wallace);
 

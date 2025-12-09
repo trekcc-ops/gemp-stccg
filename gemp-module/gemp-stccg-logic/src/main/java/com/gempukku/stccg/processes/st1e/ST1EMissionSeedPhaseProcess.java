@@ -44,7 +44,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         if (playableActions.isEmpty() && cardGame.shouldAutoPass(currentPhase)) {
             _consecutivePasses++;
         } else {
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, true) {
                         @Override

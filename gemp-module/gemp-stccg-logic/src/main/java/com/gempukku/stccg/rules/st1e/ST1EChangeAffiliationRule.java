@@ -5,8 +5,8 @@ import com.gempukku.stccg.actions.modifiers.ChangeAffiliationAction;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 public class ST1EChangeAffiliationRule extends ST1ERule {
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(ST1EGame cardGame, Player player) {
+    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
         LinkedList<TopLevelSelectableAction> result = new LinkedList<>();
         if (player.getPlayerId().equals(cardGame.getCurrentPlayerId())) {
             for (PhysicalCard card : Filters.filterYourCardsInPlay(cardGame, player)) {

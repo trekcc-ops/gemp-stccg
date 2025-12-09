@@ -46,7 +46,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             if (hand.size() == 1) {
                 discardCards(cardGame, player, player.getCardsInHand());
             } else {
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new CardsSelectionDecision(player, "Choose a card to discard", hand,
                                 1, 1, cardGame) {
                             @Override

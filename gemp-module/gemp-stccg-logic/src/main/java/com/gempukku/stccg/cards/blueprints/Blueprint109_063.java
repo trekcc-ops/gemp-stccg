@@ -15,7 +15,6 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -27,8 +26,7 @@ public class Blueprint109_063 extends CardBlueprint {
     }
 
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
-                                                            ActionResult actionResult, DefaultGame cardGame)
-            throws PlayerNotFoundException {
+                                                            ActionResult actionResult, DefaultGame cardGame) {
         ST1EGame stGame = (ST1EGame) cardGame;
         List<TopLevelSelectableAction> actions = new ArrayList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
@@ -84,7 +82,7 @@ public class Blueprint109_063 extends CardBlueprint {
 
         if (actionResult.getType() == ActionResult.Type.START_OF_TURN &&
                 Objects.equals(player.getPlayerId(), thisCard.getOwnerName()) &&
-                player == cardGame.getCurrentPlayer()) {
+                Objects.equals(player.getPlayerId(), cardGame.getGameState().getCurrentPlayerId())) {
             actions.add(new DiscardSingleCardAction(cardGame, thisCard, player.getPlayerId(), thisCard));
         }
 

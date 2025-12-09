@@ -94,8 +94,8 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
         selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
 
-        assertTrue(CardSelectionDecision.class.isAssignableFrom(_userFeedback.getAwaitingDecision(P1).getClass()));
-        CardSelectionDecision cardDecision = (CardSelectionDecision) _userFeedback.getAwaitingDecision(P1);
+        assertTrue(CardSelectionDecision.class.isAssignableFrom(_game.getAwaitingDecision(P1).getClass()));
+        CardSelectionDecision cardDecision = (CardSelectionDecision) _game.getAwaitingDecision(P1);
 
         List<String> selectableCards = List.of(cardDecision.getCardIds());
 

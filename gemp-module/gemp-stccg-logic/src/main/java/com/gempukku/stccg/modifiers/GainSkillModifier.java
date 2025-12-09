@@ -15,6 +15,15 @@ public class GainSkillModifier extends AbstractModifier implements SkillAffectin
     private final List<SkillName> _skills = new LinkedList<>();
 
     public GainSkillModifier(PhysicalCard actionSource, Filterable affectFilter, Condition condition,
+                             SkillName skill, ModifierTimingType timingType) {
+        // TODO - Need to set cumulative = false as the default, and implement what that means
+        // TODO - This method doesn't really do anything right now
+        super(actionSource, Filters.changeToFilter(affectFilter), condition, ModifierEffect.GAIN_SKILL_MODIFIER);
+        _skills.add(skill);
+    }
+
+
+    public GainSkillModifier(PhysicalCard actionSource, Filterable affectFilter, Condition condition,
                              SkillName... skills) {
                 // TODO - Need to set cumulative = false as the default, and implement what that means
                 // TODO - This method doesn't really do anything right now

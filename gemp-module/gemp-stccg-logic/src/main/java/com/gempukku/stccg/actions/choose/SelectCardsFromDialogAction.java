@@ -79,15 +79,10 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
                                 setCardToMemory();
                             }
                         };
-            cardGame.getUserFeedback().sendAwaitingDecision(_decision);
+            cardGame.sendAwaitingDecision(_decision);
         }
 
         return getNextAction();
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        return wasCompleted();
     }
 
     @Override

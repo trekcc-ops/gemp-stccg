@@ -73,8 +73,8 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         }
 
         attemptMission(P1, _game.getGameState().getAwayTeamForCard(troi), _mission);
-        assertNotNull(_userFeedback.getAwaitingDecision(P2));
-        assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P2));
+        assertNotNull(_game.getAwaitingDecision(P2));
+        assertInstanceOf(ArbitraryCardsSelectionDecision.class, _game.getAwaitingDecision(P2));
 
         assertTrue(_game.getGameState().getAwayTeamForCard(troi).getAttemptingPersonnel(_game).contains(hobson));
 

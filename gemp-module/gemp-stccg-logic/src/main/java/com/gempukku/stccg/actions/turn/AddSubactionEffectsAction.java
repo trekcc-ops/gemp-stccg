@@ -48,8 +48,7 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
         }
     }
 
-    @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         if (_blueprint.isPlayabilityCheckedForEffect()) {
             return _blueprint.isPlayableInFull(cardGame, _actionContext);
         } else {

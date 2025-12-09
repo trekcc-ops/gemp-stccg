@@ -41,13 +41,12 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
             }
         }
 
-        if (!_wasCarriedOut) {
+        if (isInProgress()) {
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
                 cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
                 cardGame.getGameState().addCardToZone(cardGame, card, Zone.PLAY_PILE, _actionContext);
-                _wasCarriedOut = true;
-                setAsSuccessful();
             }
+            setAsSuccessful();
         }
 
         return getNextAction();

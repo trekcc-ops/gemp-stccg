@@ -44,15 +44,6 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
     }
 
     @Override
-    public boolean wasCarriedOut() {
-        if (_playCardAction == null)
-            return false;
-        if (_playCardAction instanceof PlayCardAction)
-            return _playCardAction.wasCarriedOut();
-        return true;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return !_cardToDownloadTarget.willProbablyBeEmpty(cardGame);
     }

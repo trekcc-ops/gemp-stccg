@@ -58,18 +58,6 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     }
 
     @Override
-    public boolean wasCarriedOut() {
-        if (_playCardActions.isEmpty())
-            return false;
-        for (Action action : _playCardActions) {
-            if (!action.wasCarriedOut()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         if (getPlayableCards().isEmpty()) {
             return false;
@@ -122,7 +110,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
             if (_destinationOptions.isEmpty()) {
                 setProgress(Progress.destinationSelected);
-                _wasCarriedOut = true;
+                setAsFailed();
                 throw new InvalidGameLogicException("Could find no compatible outpost to download cards to");
             } else if (_destinationOptions.size() == 1) {
                 setProgress(Progress.destinationSelected);
@@ -141,7 +129,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
             }
         }
 
-        if (!_wasCarriedOut) {
+        if (isInProgress()) {
             for (PhysicalCard card : _cardsToDownload) {
                 Action playCardAction = card.getPlayCardAction(cardGame, true);
                 if (playCardAction instanceof ReportCardAction reportAction) {
@@ -150,7 +138,6 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
                     _playCardActions.add(playCardAction);
                 }
             }
-            _wasCarriedOut = true;
             setAsSuccessful();
         }
 

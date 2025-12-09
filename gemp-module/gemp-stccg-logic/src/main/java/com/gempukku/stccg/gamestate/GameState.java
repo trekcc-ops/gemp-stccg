@@ -16,7 +16,6 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -34,7 +33,7 @@ import java.util.*;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(value = { "actions", "performedActions", "phasesInOrder" }, allowGetters = true)
+@JsonIgnoreProperties(value = { "performedActions", "phasesInOrder" }, allowGetters = true)
 @JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
         "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
 @JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
@@ -48,15 +47,17 @@ public abstract class GameState {
     @JsonProperty("actionLimits")
     private final ActionLimitCollection _actionLimitCollection;
     final List<PhysicalCard> _inPlay = new LinkedList<>();
-    final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     int _nextCardId = 1;
-    private final ActionsEnvironment _actionsEnvironment = new DefaultActionsEnvironment();
+    private final ActionsEnvironment _actionsEnvironment = new ActionsEnvironment();
     private GameProcess _currentGameProcess;
     @JsonProperty("turnNumber")
     private int _currentTurnNumber;
     private final Map<String, PlayerClock> _playerClocks;
     @JsonProperty("players")
     List<Player> _players = new ArrayList<>();
+    private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
+    private int nextDecisionId = 1;
+
 
     protected GameState(DefaultGame game, Iterable<String> playerIds, GameTimer gameTimer) {
         _playerClocks = new HashMap<>();
@@ -116,28 +117,21 @@ public abstract class GameState {
         setCurrentPlayerId(playerOrder.getFirstPlayer());
     }
 
-    public ActionsEnvironment getActionsEnvironment() { return _actionsEnvironment; }
+    public ActionsEnvironment getActionsEnvironment() {
+        return _actionsEnvironment;
+    }
 
     public PlayerOrder getPlayerOrder() {
         return _playerOrder;
     }
 
 
-    public void playerDecisionStarted(DefaultGame cardGame, String playerId, AwaitingDecision awaitingDecision)
-            throws PlayerNotFoundException {
-        if (awaitingDecision != null) {
-            _playerDecisions.put(playerId, awaitingDecision);
-            cardGame.sendActionResultToClient();
-        }
-    }
-
     public AwaitingDecision getDecision(String playerId) {
-        return _playerDecisions.get(playerId);
+        return _awaitingDecisionMap.get(playerId);
     }
 
-    public void playerDecisionFinished(String playerId, UserFeedback userFeedback) {
-        userFeedback.removeDecision(playerId);
-        _playerDecisions.remove(playerId);
+    public void addPendingDecision(AwaitingDecision decision) {
+        _awaitingDecisionMap.put(decision.getDecidingPlayerId(), decision);
     }
 
 
@@ -286,6 +280,13 @@ public abstract class GameState {
         return cardId;
     }
 
+    public int getAndIncrementNextDecisionId() {
+        int decisionId = nextDecisionId;
+        nextDecisionId++;
+        return decisionId;
+    }
+
+
 
     public ModifiersLogic getModifiersLogic() { return _modifiersLogic; }
 
@@ -416,6 +417,18 @@ public abstract class GameState {
     @JsonProperty("modifiers")
     private List<Modifier> getAllModifiers() {
         return _modifiersLogic.getAllModifiers();
+    }
+
+    public void removeDecision(String playerName) {
+        _awaitingDecisionMap.remove(playerName);
+    }
+
+    public boolean hasNoPendingDecisions() {
+        return _awaitingDecisionMap.isEmpty();
+    }
+
+    public Set<String> getUsersPendingDecision() {
+        return _awaitingDecisionMap.keySet();
     }
 
 }

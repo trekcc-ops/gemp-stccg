@@ -22,6 +22,15 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
     @JsonProperty("max")
     private static final int MAX_SELECTIONS = 1;
 
+    public ActionSelectionDecision(String playerName, DecisionContext context, List<TopLevelSelectableAction> actions,
+                                   DefaultGame cardGame, boolean required) {
+        super(playerName, context, cardGame);
+        _context = context;
+        _actions = actions;
+        _minActions = required ? 1 : 0;
+    }
+
+
     public ActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
                                    DefaultGame cardGame, boolean required) {
         super(player, context, cardGame);

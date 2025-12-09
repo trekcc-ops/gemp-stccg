@@ -15,8 +15,8 @@ import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.ActionResultGameEvent;
 import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
@@ -28,7 +28,7 @@ import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
-public abstract class DefaultGame implements ModifiersQuerying {
+public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying, UserFeedback {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
 
     // Game parameters
@@ -48,14 +48,12 @@ public abstract class DefaultGame implements ModifiersQuerying {
     // Game code infrastructure
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
-    protected final UserFeedback _userFeedback;
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final GameType _gameType;
 
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
                        GameType gameType) {
         _format = format;
-        _userFeedback = new DefaultUserFeedback(this);
         _library = library;
         _allPlayerIds = decks.keySet();
         _gameType = gameType;
@@ -106,10 +104,6 @@ public abstract class DefaultGame implements ModifiersQuerying {
 
             _finished = true;
         }
-    }
-
-    public UserFeedback getUserFeedback() {
-        return _userFeedback;
     }
 
     public String getWinnerPlayerId() {
@@ -287,16 +281,8 @@ public abstract class DefaultGame implements ModifiersQuerying {
 
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 
-    public AwaitingDecision getAwaitingDecision(String playerName) {
-        return _userFeedback.getAwaitingDecision(playerName);
-    }
-
-    public Set<String> getUsersPendingDecision() {
-        return _userFeedback.getUsersPendingDecision();
-    }
-
-    public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
-        _userFeedback.sendAwaitingDecision(awaitingDecision);
+    public void addPendingDecision(AwaitingDecision decision) {
+        getGameState().addPendingDecision(decision);
     }
 
     public String getStatus() {
@@ -317,7 +303,7 @@ public abstract class DefaultGame implements ModifiersQuerying {
     }
 
     public boolean isCarryingOutEffects() {
-        return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null;
+        return getGameState().hasNoPendingDecisions() && _winnerPlayerId == null;
     }
 
     public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
@@ -371,9 +357,8 @@ public abstract class DefaultGame implements ModifiersQuerying {
 
         if (awaitingDecision != null) {
             if (awaitingDecision.getDecisionId() == decisionId && !isFinished()) {
-                GameState gameState = getGameState();
                 try {
-                    gameState.playerDecisionFinished(playerName, getUserFeedback());
+                    removeDecision(playerName);
                     awaitingDecision.decisionMade(answer);
                     return true;
                 } catch (DecisionResultInvalidException exp) {
@@ -426,5 +411,7 @@ public abstract class DefaultGame implements ModifiersQuerying {
         return _modifierSkipSet.contains(modifier);
     }
 
-
+    public Collection<ActionProxy> getAllActionProxies() {
+        return getActionsEnvironment().getAllActionProxies();
+    }
 }

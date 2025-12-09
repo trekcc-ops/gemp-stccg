@@ -10,28 +10,28 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
 
     public AbstractAwaitingDecision(String playerName, String text,
                                     DefaultGame cardGame) {
-        _decisionId = cardGame.getUserFeedback().getNextDecisionIdAndIncrement();
+        _decisionId = cardGame.getNextDecisionIdAndIncrement();
         _text = text;
         _decidingPlayerId = playerName;
     }
 
     public AbstractAwaitingDecision(Player player, String text,
                                     DefaultGame cardGame) {
-        _decisionId = cardGame.getUserFeedback().getNextDecisionIdAndIncrement();
+        _decisionId = cardGame.getNextDecisionIdAndIncrement();
         _text = text;
         _decidingPlayerId = player.getPlayerId();
     }
 
     public AbstractAwaitingDecision(String playerName, DecisionContext context,
                                     DefaultGame cardGame) {
-        _decisionId = cardGame.getUserFeedback().getNextDecisionIdAndIncrement();
+        _decisionId = cardGame.getNextDecisionIdAndIncrement();
         _text = context.getClientText();
         _decidingPlayerId = playerName;
     }
 
     public AbstractAwaitingDecision(Player player, DecisionContext context,
                                     DefaultGame cardGame) {
-        _decisionId = cardGame.getUserFeedback().getNextDecisionIdAndIncrement();
+        _decisionId = cardGame.getNextDecisionIdAndIncrement();
         _text = context.getClientText();
         _decidingPlayerId = player.getPlayerId();
     }

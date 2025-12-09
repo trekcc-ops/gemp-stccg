@@ -83,12 +83,12 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         attemptMission(P1, _game.getGameState().getAwayTeamForCard(picard), excavation);
 
         // Respond by downloading Simon Tarses
-        assertNotNull(_userFeedback.getAwaitingDecision(P1));
+        assertNotNull(_game.getAwaitingDecision(P1));
         selectFirstAction(P1);
-        assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P1));
-        ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
+        assertInstanceOf(ArbitraryCardsSelectionDecision.class, _game.getAwaitingDecision(P1));
+        ((ArbitraryCardsSelectionDecision) (_game.getAwaitingDecision(P1)))
                 .decisionMade(tarses);
-        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
+        _game.removeDecision(P1);
         assertFalse(excavation.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(outpost.hasCardInCrew(tarses));

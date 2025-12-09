@@ -131,7 +131,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     }
 
     private void processEffect(DefaultGame cardGame) {
-        if (!_wasCarriedOut) {
+        if (isInProgress()) {
             GameLocation destinationLocation = _destination.getGameLocation((ST1EGame) cardGame);
             for (PhysicalCard card : _cardsToMove) {
                 card.setZone(Zone.ATTACHED);
@@ -144,7 +144,6 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                     ((ST1EGame) cardGame).getGameState().addCardToEligibleAwayTeam((ST1EGame) cardGame, (ReportableCard) card, mission);
                 }
             }
-            _wasCarriedOut = true;
             setAsSuccessful();
         }
     }

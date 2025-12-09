@@ -47,7 +47,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
             if (playersWithCardsArr.length == 1)
                 playerChosen(playersWithCardsArr[0], cardGame);
             else
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new MultipleChoiceAwaitingDecision(performingPlayer, DecisionContext.SELECT_PLAYER,
                                 playersWithCardsArr, cardGame) {
                             @Override

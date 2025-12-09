@@ -10,7 +10,8 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.AllPersonnelAttributeModifier;
+import com.gempukku.stccg.modifiers.ModifierTimingType;
+import com.gempukku.stccg.modifiers.attributes.Modifiers;
 import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 
 import java.util.ArrayList;
@@ -46,8 +47,9 @@ public class Blueprint155_072 extends CardBlueprint {
             @Override
             public Modifier getModifier(PhysicalCard thisCard) {
                 Filterable usageFilter = Filters.or(Filters.name("Goss"), Filters.name("Dr. Arridor"));
-                return new AllPersonnelAttributeModifier(thisCard, Filters.card(thisCard),
-                        new PresentWithYourCardCondition(thisCard, usageFilter), 2);
+                return Modifiers.allPersonnelAttributes(thisCard, Filters.card(thisCard),
+                        new PresentWithYourCardCondition(thisCard, usageFilter), 2,
+                        ModifierTimingType.WHILE_IN_PLAY);
             }
         };
     }

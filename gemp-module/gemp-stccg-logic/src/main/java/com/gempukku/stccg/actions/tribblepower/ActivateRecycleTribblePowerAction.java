@@ -34,7 +34,7 @@ public class ActivateRecycleTribblePowerAction extends ActivateTribblePowerActio
         if (playersWithCards.size() == 1)
             playerChosen(cardGame, playersWithCards.getFirst());
         else
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a player",
                             playersWithCards, cardGame) {
                         @Override

@@ -31,7 +31,7 @@ public class SelectSkillAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        cardGame.getUserFeedback().sendAwaitingDecision(
+        cardGame.sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId), "Choose a skill",
                         _skillOptions.keySet(), cardGame) {
                     @Override

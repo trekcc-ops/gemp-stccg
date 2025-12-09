@@ -15,6 +15,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardTarget;
     private PhysicalCard _victim;
+    private boolean _discardActionSent;
 
     public KillSinglePersonnelAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
                                      SelectCardsAction selectVictimAction) {
@@ -51,12 +52,13 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
             }
         }
 
-        if (!_wasCarriedOut) {
+        if (!_discardActionSent) {
             if (_cardTarget.getCards(cardGame).size() != 1) {
+                setAsFailed();
                 throw new InvalidGameLogicException("Too many cards selected for KillSinglePersonnelAction");
             } else {
+                _discardActionSent = true;
                 _victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
-                _wasCarriedOut = true;
                 return new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId, _victim);
             }
         }

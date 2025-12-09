@@ -17,7 +17,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         TribblesGame tribblesGame = (TribblesGame) cardGame;
         if (_cardEnteringPlay instanceof TribblesPhysicalCard tribblesCard) {
             if (!tribblesCard.canBePlayed(tribblesGame))
@@ -43,7 +43,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
 
         gameState.setChainBroken(false);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
-        _wasCarriedOut = true;
         setAsSuccessful();
         return null;
     }

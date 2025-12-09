@@ -64,7 +64,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                 }
             }
 
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(cardGame.getPlayer(playerId),
                             DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame, false) {
                         @Override
@@ -93,7 +93,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToSeedCardStackAction seedCardsAction)
             throws InvalidGameLogicException {
         Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK);
-        cardGame.getUserFeedback().sendAwaitingDecision(
+        cardGame.sendAwaitingDecision(
                 new CardsSelectionDecision(player, "Select cards to seed under " + seedCardsAction.getLocationName(cardGame),
                         availableCards, cardGame) {
                     @Override
@@ -117,7 +117,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
         Collection<PhysicalCard> availableCards;
         MissionLocation mission = removeAction.getLocation();
         availableCards = mission.getPreSeedCardsForPlayer(player);
-        cardGame.getUserFeedback().sendAwaitingDecision(
+        cardGame.sendAwaitingDecision(
                 new ArbitraryCardsSelectionDecision(player, "Select cards to remove from " + mission.getLocationName(),
                         availableCards, cardGame) {
                     @Override

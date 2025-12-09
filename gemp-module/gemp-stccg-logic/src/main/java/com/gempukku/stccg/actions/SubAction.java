@@ -27,11 +27,6 @@ public class SubAction extends ActionyAction implements CardPerformedAction {
 
 
     @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
-        return costsCanBePaid(cardGame);
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;
     }

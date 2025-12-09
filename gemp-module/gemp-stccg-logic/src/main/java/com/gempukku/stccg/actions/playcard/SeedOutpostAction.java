@@ -25,8 +25,7 @@ import java.util.Set;
 public class SeedOutpostAction extends PlayCardAction {
     private ActionCardResolver _destinationTarget;
     private AffiliationResolver _affiliationTarget;
-
-    private enum Progress { cardWasSeeded, placementChosen, affiliationSelected }
+    private enum Progress { placementChosen, affiliationSelected }
 
     public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed) {
         super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
@@ -130,7 +129,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 }
             }
 
-            if (!getProgress(Progress.cardWasSeeded)) {
+            if (isInProgress()) {
                 processEffect(stGame);
                 return getNextAction();
             }
@@ -154,7 +153,6 @@ public class SeedOutpostAction extends PlayCardAction {
         facility.setLocationId(stGame, destinationCard.getLocationId());
         stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
-        setProgress(Progress.cardWasSeeded);
         setAsSuccessful();
     }
 
@@ -163,7 +161,4 @@ public class SeedOutpostAction extends PlayCardAction {
         setProgress(Progress.placementChosen);
     }
 
-
-    @Override
-    public boolean wasCarriedOut() { return getProgress(Progress.cardWasSeeded);}
 }

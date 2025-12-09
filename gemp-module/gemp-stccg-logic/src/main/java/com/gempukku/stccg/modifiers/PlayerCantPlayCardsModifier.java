@@ -10,6 +10,8 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Condition;
 
+import java.util.Objects;
+
 public class PlayerCantPlayCardsModifier extends AbstractModifier {
 
     @JsonProperty("playerName")
@@ -37,6 +39,6 @@ public class PlayerCantPlayCardsModifier extends AbstractModifier {
     @Override
     public boolean canPerformAction(DefaultGame game, String performingPlayer, Action action) {
         return action.getActionType() != ActionType.PLAY_CARD
-                || !performingPlayer.equals(_playerName);
+                || !Objects.equals(_playerName, performingPlayer);
     }
 }

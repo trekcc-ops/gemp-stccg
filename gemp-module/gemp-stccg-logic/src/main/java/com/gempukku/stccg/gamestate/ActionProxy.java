@@ -8,14 +8,14 @@ import com.gempukku.stccg.player.Player;
 import java.util.LinkedList;
 import java.util.List;
 
-public interface ActionProxy<T extends DefaultGame> {
+public interface ActionProxy {
 
-    default List<TopLevelSelectableAction> getPhaseActions(T cardGame, Player player) {
+    default List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
         return new LinkedList<>();
     }
 
-    List<TopLevelSelectableAction> getOptionalAfterActions(T cardGame, String playerId, ActionResult actionResult);
+    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId, ActionResult actionResult);
 
-    List<TopLevelSelectableAction> getRequiredAfterTriggers(T cardGame, ActionResult actionResult);
+    List<TopLevelSelectableAction> getRequiredAfterTriggers(DefaultGame cardGame, ActionResult actionResult);
 
 }

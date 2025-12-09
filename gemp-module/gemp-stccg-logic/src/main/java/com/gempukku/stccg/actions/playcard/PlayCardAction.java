@@ -12,17 +12,16 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
 
-    final PhysicalCard _performingCard;
+    private final PhysicalCard _performingCard;
     protected final PhysicalCard _cardEnteringPlay;
-    final Zone _destinationZone;
+    @JsonProperty("destinationZone")
+    protected Zone _destinationZone;
     private boolean _initiated;
     private boolean _cardPlayed;
-    private final List<Action> _immediateGameTextActions = new ArrayList<>();
 
     public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType, ActionContext context) {
@@ -31,6 +30,15 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
     }
+
+    protected PlayCardAction(int cardId, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+                          String performingPlayerName, Zone toZone, ActionType actionType) {
+        super(cardId, actionType, performingPlayerName);
+        _performingCard = actionSource;
+        _cardEnteringPlay = cardEnteringPlay;
+        _destinationZone = toZone;
+    }
+
 
 
     public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
@@ -102,15 +110,6 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
         gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
-        _wasCarriedOut = true;
-    }
-
-    public boolean wasCarriedOut() {
-        return _wasCarriedOut;
-    }
-
-    public void addImmediateGameTextAction(Action action) {
-        _immediateGameTextActions.add(action);
     }
 
 }

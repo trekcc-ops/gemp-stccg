@@ -84,7 +84,7 @@ public class SelectAffiliationAction extends ActionyAction {
                     }
                 }
             };
-            cardGame.getUserFeedback().sendAwaitingDecision(_decision);
+            cardGame.sendAwaitingDecision(_decision);
         }
 
         return getNextAction();
@@ -94,7 +94,5 @@ public class SelectAffiliationAction extends ActionyAction {
     public Affiliation getSelectedAffiliation() {
         return _selectedAffiliation;
     }
-
-    public boolean wasCarriedOut() { return wasCompleted(); }
 
 }

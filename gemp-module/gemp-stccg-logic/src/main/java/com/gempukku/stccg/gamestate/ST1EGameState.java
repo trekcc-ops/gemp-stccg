@@ -28,7 +28,7 @@ import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
-@JsonIgnoreProperties(value = { "actions", "performedActions", "phasesInOrder" }, allowGetters = true)
+@JsonIgnoreProperties(value = { "performedActions", "phasesInOrder" }, allowGetters = true)
 public class ST1EGameState extends GameState {
     @JsonProperty("spacelineLocations")
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
@@ -61,12 +61,6 @@ public class ST1EGameState extends GameState {
                           List<Modifier> modifiers
     ) {
         super(players, playerClocks, actionLimitCollection);
-        /* Still to add:
-            inPlay
-            playerDecisions
-            actionsEnvironment
-            currentTurnNumber
-         */
         _currentPhase = currentPhase;
         setCurrentProcess(currentProcess);
         _playerOrder = playerOrder;
@@ -195,7 +189,7 @@ public class ST1EGameState extends GameState {
     public void addMissionLocationToSpacelineForTestingOnly(ST1EGame cardGame, MissionCard newMission, int indexNumber) {
         // Do not use in non-testing classes
         SeedMissionCardAction seedAction = new SeedMissionCardAction(cardGame, newMission, indexNumber);
-        seedAction.seedCard(cardGame);
+        seedAction.seedCard(cardGame, false);
     }
 
     public void seedFacilityAtLocationForTestingOnly(ST1EGame cardGame, FacilityCard card, MissionCard destinationCard)

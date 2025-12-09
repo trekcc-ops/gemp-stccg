@@ -18,13 +18,13 @@ public class ActivateReverseTribblePowerAction extends ActivateTribblePowerActio
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_wasCarriedOut) {
+        if (isInProgress()) {
             if (cardGame instanceof TribblesGame game) {
                 game.getGameState().getPlayerOrder().reversePlayerOrder();
             } else {
                 throw new InvalidGameLogicException("Could not use tribble power Mutate in a non-Tribbles game");
             }
-            _wasCarriedOut = true;
+            setAsSuccessful();
         }
         return getNextAction();
     }

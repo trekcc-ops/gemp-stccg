@@ -1,5 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -10,6 +13,19 @@ import com.gempukku.stccg.gamestate.GameState;
 import java.util.List;
 
 public class SeedCardAction extends PlayCardAction {
+
+    @JsonCreator
+    private SeedCardAction(@JsonProperty("actionId") int actionId,
+                           @JsonProperty("targetCardId") @JsonIdentityReference(alwaysAsId=true)
+                           PhysicalCard cardEnteringPlay,
+                           @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
+                               PhysicalCard performingCard,
+                           @JsonProperty("performingPlayerId")
+                           String performingPlayerName,
+                           @JsonProperty("destinationZone")
+                           Zone destinationZone) {
+        super(actionId, performingCard, cardEnteringPlay, performingPlayerName, destinationZone, ActionType.SEED_CARD);
+    }
 
     public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone) {
         super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
@@ -34,6 +50,7 @@ public class SeedCardAction extends PlayCardAction {
 
     public void processEffect(DefaultGame cardGame) {
         putCardIntoPlay(cardGame);
+        setAsSuccessful();
     }
 
 }

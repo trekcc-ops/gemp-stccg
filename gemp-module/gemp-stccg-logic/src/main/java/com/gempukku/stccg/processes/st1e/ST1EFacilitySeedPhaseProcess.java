@@ -41,7 +41,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
         if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, false) {
                         @Override

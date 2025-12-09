@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -53,11 +52,6 @@ public class SelectRandomCardAction extends ActionyAction implements SelectCardA
             }
         }
         return getNextAction();
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        return wasCompleted();
     }
 
     public PhysicalCard getSelectedCard() {

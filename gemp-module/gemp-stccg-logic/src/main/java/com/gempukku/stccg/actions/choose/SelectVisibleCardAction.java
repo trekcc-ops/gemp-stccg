@@ -68,7 +68,6 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         Collection<PhysicalCard> selectableCards = _selectableCards.getCards(cardGame);
         if (selectableCards.size() == 1) {
             _selectedCard = Iterables.getOnlyElement(selectableCards);
-            _wasCarriedOut = true;
             setAsSuccessful();
         } else {
             AwaitingDecision decision = new CardsSelectionDecision(
@@ -77,19 +76,13 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 _selectedCard = getSelectedCardByResponse(result);
-                                _wasCarriedOut = true;
                                 setAsSuccessful();
                             }
                         };
-            cardGame.getUserFeedback().sendAwaitingDecision(decision);
+            cardGame.sendAwaitingDecision(decision);
             setAsSuccessful();
         }
         return getNextAction();
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        return _wasCarriedOut;
     }
 
     public PhysicalCard getSelectedCard() {

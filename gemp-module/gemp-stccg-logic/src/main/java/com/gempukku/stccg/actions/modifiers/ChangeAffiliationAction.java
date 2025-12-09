@@ -26,7 +26,7 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     private final AffiliatedCard _performingCard;
     private SelectAffiliationAction _selectAffiliationAction;
 
-    public ChangeAffiliationAction(ST1EGame cardGame, Player player, AffiliatedCard card) {
+    public ChangeAffiliationAction(DefaultGame cardGame, Player player, AffiliatedCard card) {
         super(cardGame, player, "Change affiliation", ActionType.CHANGE_AFFILIATION);
         _performingCard = card;
     }
@@ -77,10 +77,9 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
         if (!_selectAffiliationAction.wasCarriedOut())
             return _selectAffiliationAction;
 
-        if (!_wasCarriedOut) {
+        if (isInProgress()) {
             Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
             _performingCard.changeAffiliation((ST1EGame) cardGame, selectedAffiliation);
-            _wasCarriedOut = true;
             setAsSuccessful();
         }
 

@@ -9,6 +9,8 @@ import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.gamestate.ActionProxy;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;

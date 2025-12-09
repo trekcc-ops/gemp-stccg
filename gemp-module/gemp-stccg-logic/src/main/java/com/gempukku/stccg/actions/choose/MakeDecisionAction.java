@@ -36,7 +36,7 @@ public abstract class MakeDecisionAction extends ActionyAction {
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         AwaitingDecision decision = getDecision(cardGame);
-        cardGame.getUserFeedback().sendAwaitingDecision(decision);
+        cardGame.sendAwaitingDecision(decision);
         setAsSuccessful();
         return getNextAction();
     }

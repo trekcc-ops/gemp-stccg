@@ -9,6 +9,7 @@ import com.gempukku.stccg.game.DefaultGame;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AndCondition.class, name = "and"),
         @JsonSubTypes.Type(value = CardInPlayCondition.class, name = "cardInPlay"),
+        @JsonSubTypes.Type(value = EndOfThisTurnCondition.class, name = "endOfThisTurn"),
         @JsonSubTypes.Type(value = FacingDilemmaCondition.class, name = "facingDilemma"),
         @JsonSubTypes.Type(value = LastTribblePlayedCondition.class, name = "lastTribblePlayed"),
         @JsonSubTypes.Type(value = NextTribbleInSequenceCondition.class, name = "nextTribbleInSequence"),

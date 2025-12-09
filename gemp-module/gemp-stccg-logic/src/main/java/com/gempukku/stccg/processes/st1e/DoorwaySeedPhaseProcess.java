@@ -39,7 +39,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
             }
             if (!doorwaySeeds.isEmpty()) {
                 String message = "Select cards to seed during doorway phase";
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new ArbitraryCardsSelectionDecision(player, message, doorwaySeeds,
                                 cardGame) {
                             @Override

@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.Blueprint156_010;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
@@ -15,9 +14,9 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -81,22 +80,34 @@ public class ActionResult {
         return _triggerActionIdsUsed.contains(action.getActionId());
     }
 
-    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame, Player player) {
-        String playerName = player.getPlayerId();
-        if (_optionalAfterTriggerActions.get(playerName) == null)
-            return new LinkedList<>();
-        else {
-            List<TopLevelSelectableAction> result = new LinkedList<>();
+    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame, String playerName) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
+        if (_optionalAfterTriggerActions.get(playerName) != null) {
             for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(playerName)) {
                 if (action.canBeInitiated(cardGame)) {
                     result.add(action);
                 }
             }
-            return result;
         }
+        return result;
     }
 
-    public void createOptionalAfterTriggerActions(DefaultGame game) throws PlayerNotFoundException {
+
+
+    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame, Player player) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
+        String playerName = player.getPlayerId();
+        if (_optionalAfterTriggerActions.get(playerName) != null) {
+            for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(playerName)) {
+                if (action.canBeInitiated(cardGame)) {
+                    result.add(action);
+                }
+            }
+        }
+        return result;
+    }
+
+    public void createOptionalAfterTriggerActions(DefaultGame game) {
         Map<String, List<TopLevelSelectableAction>> allActions = new HashMap<>();
         for (Player player : game.getPlayers()) {
             List<TopLevelSelectableAction> playerActions = new LinkedList<>();
@@ -120,8 +131,7 @@ public class ActionResult {
     }
 
     private List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame,
-                                                                          PhysicalCard card, Player player)
-            throws PlayerNotFoundException {
+                                                                          PhysicalCard card, Player player) {
         CardBlueprint blueprint = card.getBlueprint();
         return switch (blueprint) {
             case Blueprint212_019 riskBlueprint ->
@@ -151,10 +161,17 @@ public class ActionResult {
     public String getPerformingPlayerId() { return _performingPlayerId; }
 
     public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame) {
-        return cardGame.getActionsEnvironment().getRequiredAfterTriggers(cardGame, this);
+        List<TopLevelSelectableAction> gatheredActions = new LinkedList<>();
+        for (ActionProxy actionProxy : cardGame.getAllActionProxies()) {
+            List<TopLevelSelectableAction> actions = actionProxy.getRequiredAfterTriggers(cardGame, this);
+            if (actions != null) {
+                gatheredActions.addAll(actions);
+            }
+        }
+        return gatheredActions;
     }
 
-    public void initialize(DefaultGame cardGame) throws PlayerNotFoundException {
+    public void initialize(DefaultGame cardGame) {
         if (!_initialized) {
             _initialized = true;
             createOptionalAfterTriggerActions(cardGame);
@@ -168,31 +185,63 @@ public class ActionResult {
         return !_requiredResponses.isEmpty() || _passCount < _optionalResponsePlayerOrder.getPlayerCount();
     }
 
-    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(
-            DefaultGame cardGame, Player activePlayer) {
-        return cardGame.getActionsEnvironment().getOptionalAfterTriggers(cardGame, activePlayer, List.of(this));
+
+    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame,
+                                                                                String activePlayerName) {
+        final Map<TopLevelSelectableAction, ActionResult> gatheredActions = new HashMap<>();
+        List<TopLevelSelectableAction> actions = getOptionalAfterTriggerActions(cardGame, activePlayerName);
+        if (actions != null) {
+            for (TopLevelSelectableAction action : actions) {
+                if (!wasOptionalTriggerUsed(action)) {
+                    gatheredActions.put(action, this);
+                }
+            }
+        }
+        return gatheredActions;
     }
 
-    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, Player activePlayer) {
-        Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
-                getOptionalAfterTriggers(cardGame, activePlayer);
-        List<TopLevelSelectableAction> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
-        possibleActions.addAll(
-                cardGame.getActionsEnvironment().getOptionalAfterActions(cardGame, activePlayer, List.of(this))
-        );
-        return possibleActions;
+
+    public Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame,
+                                                                                Player activePlayer) {
+            final Map<TopLevelSelectableAction, ActionResult> gatheredActions = new HashMap<>();
+            List<TopLevelSelectableAction> actions = getOptionalAfterTriggerActions(cardGame, activePlayer);
+            if (actions != null) {
+                for (TopLevelSelectableAction action : actions) {
+                    if (!wasOptionalTriggerUsed(action)) {
+                        gatheredActions.put(action, this);
+                    }
+                }
+            }
+            return gatheredActions;
     }
 
-    private void markActionAsUsed(TopLevelSelectableAction action, DefaultGame cardGame, Player activePlayer) {
+    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerName) {
         Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
-                getOptionalAfterTriggers(cardGame, activePlayer);
+                getOptionalAfterTriggers(cardGame, playerName);
+        List<TopLevelSelectableAction> result = new LinkedList<>(optionalAfterTriggers.keySet());
+        for (ActionProxy actionProxy : cardGame.getAllActionProxies()) {
+            for (TopLevelSelectableAction action : actionProxy.getOptionalAfterActions(cardGame, playerName, this)) {
+                if (action.canBeInitiated(cardGame)) {
+                    result.add(action);
+                }
+            }
+        }
+        return result;
+    }
+
+    private void markActionAsUsed(TopLevelSelectableAction action, DefaultGame cardGame, String activePlayerName) {
+        Map<TopLevelSelectableAction, ActionResult> optionalAfterTriggers =
+                getOptionalAfterTriggers(cardGame, activePlayerName);
         if (optionalAfterTriggers.containsKey(action)) {
             optionalAfterTriggers.get(action).optionalTriggerUsed(action);
         }
     }
 
-    private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame, List<TopLevelSelectableAction> possibleActions, Player activePlayer) {
-        return new ActionSelectionDecision(activePlayer, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
+
+    private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame,
+                                                                  List<TopLevelSelectableAction> possibleActions,
+                                                                  String activePlayerName) {
+        return new ActionSelectionDecision(activePlayerName, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
                 possibleActions, cardGame, false) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -200,7 +249,7 @@ public class ActionResult {
                     TopLevelSelectableAction action = getSelectedAction(result);
                     if (action != null) {
                         cardGame.getActionsEnvironment().addActionToStack(action);
-                        markActionAsUsed(action, cardGame, activePlayer);
+                        markActionAsUsed(action, cardGame, activePlayerName);
                         _passCount = 0;
                     } else {
                         _passCount++;
@@ -211,6 +260,7 @@ public class ActionResult {
             }
         };
     }
+
 
     private static boolean areAllActionsTheSame(List<TopLevelSelectableAction> actions) {
         boolean result = true;
@@ -226,8 +276,7 @@ public class ActionResult {
         return result;
     }
 
-    public void addNextActionToStack(DefaultGame cardGame, Action parentAction) throws InvalidGameLogicException, PlayerNotFoundException,
-            CardNotFoundException {
+    public void addNextActionToStack(DefaultGame cardGame, Action parentAction) throws InvalidGameLogicException {
         if (!_requiredResponses.isEmpty()) {
             ActionsEnvironment environment = cardGame.getActionsEnvironment();
             if (_requiredResponses.size() == 1) {
@@ -236,8 +285,8 @@ public class ActionResult {
                 Action anyAction = _requiredResponses.removeFirst();
                 environment.addActionToStack(anyAction);
             } else {
-                cardGame.getUserFeedback().sendAwaitingDecision(
-                        new ActionSelectionDecision(cardGame.getCurrentPlayer(),
+                cardGame.sendAwaitingDecision(
+                        new ActionSelectionDecision(cardGame.getCurrentPlayerId(),
                                 DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _requiredResponses, cardGame, true) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -254,13 +303,12 @@ public class ActionResult {
         } else if (_passCount < _optionalResponsePlayerOrder.getPlayerCount()) {
             _optionalResponsePlayerOrder.advancePlayer();
             final String activePlayerName = _optionalResponsePlayerOrder.getCurrentPlayerName();
-            Player activePlayer = cardGame.getPlayer(activePlayerName);
-            List<TopLevelSelectableAction> possibleActions = getOptionalAfterActions(cardGame, activePlayer);
+            List<TopLevelSelectableAction> possibleActions = getOptionalAfterActions(cardGame, activePlayerName);
             if (possibleActions.isEmpty()) {
                 _passCount++;
             } else {
-                cardGame.getUserFeedback().sendAwaitingDecision(
-                        selectOptionalResponseActionDecision(cardGame, possibleActions, activePlayer));
+                cardGame.sendAwaitingDecision(
+                        selectOptionalResponseActionDecision(cardGame, possibleActions, activePlayerName));
             }
         } else {
             parentAction.clearResult();

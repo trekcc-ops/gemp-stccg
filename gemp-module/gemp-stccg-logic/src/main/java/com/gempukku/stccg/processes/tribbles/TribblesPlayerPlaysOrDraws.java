@@ -28,7 +28,7 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
             _consecutivePasses++;
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            _game.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {

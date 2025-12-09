@@ -220,11 +220,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
         _destinationTarget = new FixedCardResolver(card);
     }
 
-    @Override
-    public boolean wasCarriedOut() {
-        return getProgress(Progress.cardPlayed);
-    }
-
     private FacilityCard getSelectedDestination(DefaultGame cardGame) throws InvalidGameLogicException {
 
         Collection<PhysicalCard> result = _destinationTarget.getCards(cardGame);

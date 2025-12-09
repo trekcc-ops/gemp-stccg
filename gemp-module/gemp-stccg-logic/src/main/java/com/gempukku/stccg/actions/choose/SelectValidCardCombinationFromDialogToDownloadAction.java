@@ -53,20 +53,14 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 _selectedCards = getSelectedCardsByResponse(result);
-                _wasCarriedOut = true;
                 setAsSuccessful();
             }
         };
 
-        cardGame.getUserFeedback().sendAwaitingDecision(decision);
+        cardGame.sendAwaitingDecision(decision);
 
         setAsSuccessful();
         return getNextAction();
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        return _wasCarriedOut;
     }
 
     @Override

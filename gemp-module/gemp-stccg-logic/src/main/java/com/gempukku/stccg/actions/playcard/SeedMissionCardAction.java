@@ -1,5 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.choose.SelectMissionSeedIndexAction;
@@ -21,24 +24,27 @@ import java.util.List;
 import java.util.Objects;
 
 public class SeedMissionCardAction extends PlayCardAction {
-        // TODO - Extend STCCGPlayCardAction
-
     private boolean _cardPlayed;
     private boolean _placementChosen;
     private boolean _placementDecisionSent;
     private SelectMissionSeedIndexAction _placementSelectionAction;
     private int _locationZoneIndex;
-    private final boolean _sharedMission;
-    private final String _missionLocation;
-    private boolean _actionCarriedOut;
 
-    public SeedMissionCardAction(ST1EGame cardGame, MissionCard cardToPlay) {
+    @JsonCreator
+    @SuppressWarnings("unused")
+    private SeedMissionCardAction(@JsonProperty("actionId") int actionId,
+                           @JsonProperty("targetCardId") @JsonIdentityReference(alwaysAsId=true)
+                           MissionCard cardEnteringPlay,
+                          @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
+                          MissionCard performingCard,
+                           @JsonProperty("performingPlayerId") String performingPlayerName,
+                           @JsonProperty("destinationZone") Zone destinationZone) {
+        super(actionId, performingCard, cardEnteringPlay, performingPlayerName, destinationZone, ActionType.SEED_CARD);
+    }
+
+
+    public SeedMissionCardAction(DefaultGame cardGame, MissionCard cardToPlay) {
         super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), Zone.SPACELINE, ActionType.SEED_CARD);
-        Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
-        _missionLocation = _cardEnteringPlay.getBlueprint().getLocation();
-        ST1EGameState gameState = cardGame.getGameState();
-        _sharedMission = gameState.indexOfLocation(_missionLocation, quadrant) != null &&
-                !_cardEnteringPlay.getBlueprint().isUniversal();
     }
 
     public SeedMissionCardAction(ST1EGame cardGame, MissionCard cardToPlay, int locationZoneIndex) {
@@ -55,12 +61,16 @@ public class SeedMissionCardAction extends PlayCardAction {
         Region region = _cardEnteringPlay.getBlueprint().getRegion();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         List<Integer> possibleIndices = new ArrayList<>();
+        String missionLocationName = _cardEnteringPlay.getBlueprint().getLocation();
+        boolean sharedMission = gameState.indexOfLocation(missionLocationName, quadrant) != null &&
+                !_cardEnteringPlay.getBlueprint().isUniversal();
+
 
         if (!_placementChosen) {
             if (!_placementDecisionSent) {
                 List<MissionLocation> spacelineLocations = gameState.getSpacelineLocations();
-                if (_sharedMission) {
-                    possibleIndices.add(gameState.indexOfLocation(_missionLocation, quadrant));
+                if (sharedMission) {
+                    possibleIndices.add(gameState.indexOfLocation(missionLocationName, quadrant));
                 } else if (spacelineLocations.isEmpty()) {
                     possibleIndices.add(0);
                 } else if (!gameState.hasLocationsInQuadrant(quadrant)) {
@@ -102,19 +112,19 @@ public class SeedMissionCardAction extends PlayCardAction {
         }
 
         if (!_cardPlayed) {
-            seedCard(cardGame);
+            seedCard(cardGame, sharedMission);
         }
         return getNextAction();
     }
 
-    public void seedCard(DefaultGame game) {
+    public void seedCard(DefaultGame game, boolean sharedMission) {
         if (game.getGameState() instanceof ST1EGameState gameState && _cardEnteringPlay instanceof MissionCard mission) {
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
             List<MissionLocation> spaceline = gameState.getSpacelineLocations();
 
             try {
-                if (_sharedMission) {
+                if (sharedMission) {
                     MissionLocation location = spaceline.get(_locationZoneIndex);
                     List<MissionCard> missionsAtLocation = location.getMissionCards();
                     if (missionsAtLocation.size() != 1 ||
@@ -132,7 +142,6 @@ public class SeedMissionCardAction extends PlayCardAction {
                     gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
                 }
                 saveResult(new PlayCardResult(this, _cardEnteringPlay));
-                _actionCarriedOut = true;
                 _cardPlayed = true;
                 setAsSuccessful();
             } catch (InvalidGameLogicException exp) {
@@ -140,13 +149,8 @@ public class SeedMissionCardAction extends PlayCardAction {
             }
         } else {
             setAsFailed();
-            _actionCarriedOut = false;
             game.sendErrorMessage("Seed mission action attempted in a non-1E game");
         }
-    }
-
-    public boolean wasCarriedOut() {
-        return _cardPlayed && _actionCarriedOut;
     }
 
     public void setLocationZoneIndex(int indexNum) {

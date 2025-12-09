@@ -58,7 +58,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             }
         }
 
-        cardGame.getUserFeedback().sendAwaitingDecision(
+        cardGame.sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                         "Choose a player to discard a card", players, cardGame) {
                     @Override
@@ -83,7 +83,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         if (newSelectablePlayers.size() == 1)
             secondPlayerChosen(Iterables.getOnlyElement(newSelectablePlayers), game);
         else {
-            game.getUserFeedback().sendAwaitingDecision(
+            game.sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(game.getPlayer(_performingPlayerId),
                             "Choose a player to place a card from hand on the bottom of their deck",
                             newSelectablePlayers, game) {

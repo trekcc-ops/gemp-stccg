@@ -53,7 +53,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
             attemptingUnitChosen(_eligibleUnits.getFirst());
         } else {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(performingPlayer, _decisionText, _presentedOptions, cardGame) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
@@ -65,13 +65,10 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     }
 
     private void attemptingUnitChosen(AttemptingUnit attemptingUnit) {
-        _wasCarriedOut = true;
         setAsSuccessful();
         _selectedResponse = attemptingUnit;
     }
 
     public AttemptingUnit getSelection() { return _selectedResponse; }
-
-    public boolean wasCarriedOut() { return _wasCarriedOut; }
 
 }

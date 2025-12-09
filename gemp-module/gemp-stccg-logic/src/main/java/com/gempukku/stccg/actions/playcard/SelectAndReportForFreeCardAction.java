@@ -46,15 +46,6 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
     }
 
     @Override
-    public boolean wasCarriedOut() {
-        if (_playCardAction == null)
-            return false;
-        if (_playCardAction instanceof PlayCardAction)
-            return _playCardAction.wasCarriedOut();
-        return true;
-    }
-
-    @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return !_cardToPlayTarget.willProbablyBeEmpty(cardGame);
     }

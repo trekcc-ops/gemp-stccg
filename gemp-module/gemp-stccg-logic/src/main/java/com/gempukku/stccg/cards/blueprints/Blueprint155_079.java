@@ -7,12 +7,14 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.CharacteristicFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.AllPersonnelAttributeModifier;
+import com.gempukku.stccg.modifiers.ModifierTimingType;
+import com.gempukku.stccg.modifiers.attributes.Modifiers;
 import com.gempukku.stccg.requirement.PresentWithYourCardCondition;
 
 import java.util.ArrayList;
@@ -48,10 +50,11 @@ public class Blueprint155_079 extends CardBlueprint {
             @Override
             public Modifier getModifier(PhysicalCard thisCard) {
                 Filterable usageFilter = new CharacteristicFilter(Characteristic.K_EHLEYR);
-                Filterable affectFilter = Filters.or(Filters.card(thisCard),
+                CardFilter affectFilter = Filters.or(Filters.card(thisCard),
                         Filters.and(Filters.presentWith(thisCard), Characteristic.K_EHLEYR));
-                return new AllPersonnelAttributeModifier(thisCard, affectFilter,
-                        new PresentWithYourCardCondition(thisCard, usageFilter), 2);
+                return Modifiers.allPersonnelAttributes(thisCard, affectFilter,
+                        new PresentWithYourCardCondition(thisCard, usageFilter), 2,
+                        ModifierTimingType.WHILE_IN_PLAY);
             }
         };
     }

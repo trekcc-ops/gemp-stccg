@@ -32,7 +32,7 @@ public class Blueprint_156_010_Surprise_Party_Test extends AbstractAtTest {
         playCard(P1, party);
         assertEquals(6, hand1.size());
         assertEquals(7, hand2.size());
-        assertNotNull(_userFeedback.getAwaitingDecision(P2));
+        assertNotNull(_game.getAwaitingDecision(P2));
 
         chooseOnlyAction(P2);
         assertEquals(9, hand2.size()); // Verify that P2 drew 2 cards
@@ -41,7 +41,7 @@ public class Blueprint_156_010_Surprise_Party_Test extends AbstractAtTest {
         skipExecuteOrders();
         assertEquals(7, hand1.size()); // Verify that P1 took their normal card draw
 
-        assertNotNull(_userFeedback.getAwaitingDecision(P1)); // Verify that P1 has an optional action
+        assertNotNull(_game.getAwaitingDecision(P1)); // Verify that P1 has an optional action
         chooseOnlyAction(P1);
         assertEquals(8, hand1.size()); // Verify that P1 took another card draw
     }

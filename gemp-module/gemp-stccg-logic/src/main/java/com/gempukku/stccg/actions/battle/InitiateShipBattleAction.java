@@ -148,10 +148,6 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         return null;
     }
 
-    public boolean wasCarriedOut() {
-        return _wasCarriedOut = true;
-    }
-
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return true;

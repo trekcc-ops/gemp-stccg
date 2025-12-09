@@ -20,7 +20,6 @@ import java.util.*;
 public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
     protected Map<String, Boolean> _progressIndicators = new HashMap<>();
-    protected boolean _wasCarriedOut;
     @JsonProperty("actionId")
     private int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
@@ -38,6 +37,15 @@ public abstract class ActionyAction implements Action {
 
     @JsonProperty("status")
     private ActionStatus _actionStatus;
+
+    protected ActionyAction(int actionId, ActionType actionType, String performingPlayerId) {
+        _actionId = actionId;
+        _actionType = actionType;
+        _performingPlayerId = performingPlayerId;
+        _actionStatus = ActionStatus.virtual;
+        _actionContext = null;
+    }
+
 
     protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
         _actionId = environment.getNextActionId();
@@ -63,6 +71,7 @@ public abstract class ActionyAction implements Action {
     protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType, ActionContext actionContext) {
         this(cardGame.getActionsEnvironment(), actionType, playerName, actionContext);
     }
+
 
     protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType) {
         this(cardGame.getActionsEnvironment(), actionType, playerName);
@@ -172,7 +181,7 @@ public abstract class ActionyAction implements Action {
 
     protected boolean isCostFailed() {
         for (Action processedCost : _processedCosts) {
-            if (!processedCost.wasCarriedOut())
+            if (!processedCost.wasSuccessful())
                 return true;
         }
         for (Action usageCost : _processedUsageCosts) {
@@ -208,20 +217,13 @@ public abstract class ActionyAction implements Action {
         return effect;
     }
 
-    public boolean wasCarriedOut() {
-        if (isCostFailed())
-            return false;
-
-        for (Action processedAction : _processedActions) {
-            if (!processedAction.wasCarriedOut())
-                return false;
-        }
-
-        return true;
+    public final boolean wasCarriedOut() {
+        return wasSuccessful();
     }
 
-    public boolean canBeInitiated(DefaultGame cardGame) {
-        return requirementsAreMet(cardGame) && costsCanBePaid(cardGame);
+    public final boolean canBeInitiated(DefaultGame cardGame) {
+        return requirementsAreMet(cardGame) && costsCanBePaid(cardGame) &&
+                cardGame.playerRestrictedFromPerformingActionDueToModifiers(_performingPlayerId, this);
     }
 
     public abstract boolean requirementsAreMet(DefaultGame cardGame);
@@ -320,6 +322,15 @@ public abstract class ActionyAction implements Action {
     }
 
     public boolean wasSuccessful() {
+        if (isCostFailed()) {
+            return false;
+        }
+
+        for (Action processedAction : _processedActions) {
+            if (!processedAction.wasSuccessful())
+                return false;
+        }
+
         return _actionStatus == ActionStatus.completed_success;
     }
 

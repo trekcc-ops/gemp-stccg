@@ -26,7 +26,7 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (!_wasCarriedOut) {
+        if (isInProgress()) {
             if (cardGame instanceof TribblesGame game) {
                 TribblesGameState gameState = game.getGameState();
                 Collection<PhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(_performingPlayerId));
@@ -45,7 +45,7 @@ public class ActivateMutateTribblePowerAction extends ActivateTribblePowerAction
             } else {
                 throw new InvalidGameLogicException("Could not use tribble power Mutate in a non-Tribbles game");
             }
-            _wasCarriedOut = true;
+            setAsSuccessful();
         }
         return getNextAction();
     }
