@@ -19,7 +19,7 @@ public class KilledTriggerChecker implements TriggerChecker {
 
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        ActionResult actionResult = actionContext.getEffectResult(cardGame);
+        ActionResult actionResult = cardGame.getCurrentActionResult();
         if (actionResult instanceof KillCardResult killCardResult) {
             Filterable killedPersonnelFilter = _killedPersonnelFilterBlueprint.getFilterable(cardGame, actionContext);
             PhysicalCard killedCard = killCardResult.getKilledCard();

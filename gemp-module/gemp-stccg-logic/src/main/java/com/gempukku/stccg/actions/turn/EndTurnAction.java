@@ -9,7 +9,7 @@ import com.gempukku.stccg.player.Player;
 public class EndTurnAction extends SystemQueueAction {
 
     public EndTurnAction(DefaultGame cardGame, Player currentPlayer) {
-        super(cardGame);
+        super(cardGame, currentPlayer.getPlayerId());
         saveResult(new ActionResult(ActionResult.Type.END_OF_TURN, currentPlayer.getPlayerId(), this));
     }
     @Override

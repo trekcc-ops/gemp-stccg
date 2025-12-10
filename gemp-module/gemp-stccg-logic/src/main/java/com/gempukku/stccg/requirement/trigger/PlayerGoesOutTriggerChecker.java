@@ -14,8 +14,13 @@ public class PlayerGoesOutTriggerChecker implements TriggerChecker {
 
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        return playerGoesOut(actionContext.getEffectResult(cardGame),
-                _playerSource.getPlayerId(cardGame, actionContext));
+        ActionResult currentActionResult = cardGame.getCurrentActionResult();
+        if (currentActionResult == null) {
+            return false;
+        } else {
+            return playerGoesOut(cardGame.getCurrentActionResult(),
+                    _playerSource.getPlayerId(cardGame, actionContext));
+        }
     }
 
     private static boolean playerGoesOut(ActionResult actionResult, String playerId) {

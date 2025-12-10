@@ -41,7 +41,7 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
     @Override
     public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard, ActionResult result) {
-        ActionContext actionContext = new ActionContext(performingPlayerName, thisCard, result.getAction());
+        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext)) {
             OptionalTriggerAction action = new OptionalTriggerAction(cardGame, thisCard, this, actionContext);
             appendActionToContext(cardGame, action, actionContext);

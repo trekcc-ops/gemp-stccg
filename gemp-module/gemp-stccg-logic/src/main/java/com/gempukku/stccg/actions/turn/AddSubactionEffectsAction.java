@@ -19,7 +19,7 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
 
     public AddSubactionEffectsAction(DefaultGame cardGame, ActionContext actionContext, boolean isCost,
                                      CardPerformedAction parentAction, SubActionBlueprint blueprint) {
-        super(cardGame, actionContext);
+        super(cardGame, actionContext, parentAction.getPerformingPlayerId());
         _isCost = isCost;
         _parentAction = parentAction;
         _blueprint = blueprint;

@@ -133,18 +133,6 @@ public abstract class ActionyAction implements Action {
     }
 
 
-    // This constructor is only used for system queue actions
-    protected ActionyAction(DefaultGame game, ActionType type) {
-        this(game.getActionsEnvironment(), type, null);
-    }
-
-    // This constructor is only used for system queue actions
-    protected ActionyAction(DefaultGame game, ActionType type, ActionContext actionContext) {
-        this(game.getActionsEnvironment(), type, null, actionContext);
-    }
-
-
-
     @Override
     public String getPerformingPlayerId() {
         return _performingPlayerId;

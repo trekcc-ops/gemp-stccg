@@ -44,19 +44,23 @@ public class PlayedTriggerChecker implements TriggerChecker {
         try {
             final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
             final String playingPlayerId = _playingPlayer.getPlayerId(cardGame, actionContext);
-            final ActionResult actionResult = actionContext.getEffectResult(cardGame);
-            final boolean played;
+            final ActionResult actionResult = cardGame.getCurrentActionResult();
+            if (actionResult != null) {
+                final boolean played;
 
-            if (_onFilter != null) {
-                final Filterable onFilterable = _onFilter.getFilterable(cardGame, actionContext);
-                played = playedOn(cardGame, actionResult, onFilterable, filterable);
+                if (_onFilter != null) {
+                    final Filterable onFilterable = _onFilter.getFilterable(cardGame, actionContext);
+                    played = playedOn(cardGame, actionResult, onFilterable, filterable);
+                } else {
+                    played = played(cardGame, cardGame.getPlayer(playingPlayerId), actionResult, filterable);
+                }
+
+                if (played && _saveToMemoryId != null)
+                    actionContext.setCardMemory(_saveToMemoryId, ((PlayCardResult) actionResult).getPlayedCard());
+                return played;
             } else {
-                played = played(cardGame, cardGame.getPlayer(playingPlayerId), actionResult, filterable);
+                return false;
             }
-
-            if (played && _saveToMemoryId != null)
-                actionContext.setCardMemory(_saveToMemoryId, ((PlayCardResult) actionResult).getPlayedCard());
-            return played;
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;

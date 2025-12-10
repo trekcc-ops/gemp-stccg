@@ -8,7 +8,7 @@ public class EndOfTurnTriggerChecker implements TriggerChecker {
 
         @Override
         public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-            return actionContext.hasActionResultType(cardGame, ActionResult.Type.END_OF_TURN);
+            return cardGame.isCurrentActionResultType(ActionResult.Type.END_OF_TURN);
         }
 
 }

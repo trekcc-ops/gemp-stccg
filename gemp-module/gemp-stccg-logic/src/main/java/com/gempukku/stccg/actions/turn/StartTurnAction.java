@@ -9,7 +9,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public class StartTurnAction extends SystemQueueAction {
 
     public StartTurnAction(DefaultGame cardGame, Player currentPlayer) {
-        super(cardGame);
+        super(cardGame, currentPlayer.getPlayerId());
         saveResult(new ActionResult(ActionResult.Type.START_OF_TURN, currentPlayer.getPlayerId(), this));
     }
     @Override

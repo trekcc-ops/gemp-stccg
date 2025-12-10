@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.ActionOrderOfOperationException;
@@ -123,4 +124,5 @@ public class ActionsEnvironment {
     public Collection<ActionProxy> getAllActionProxies() {
         return _actionProxies;
     }
+
 }

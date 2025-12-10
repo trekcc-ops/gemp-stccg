@@ -11,12 +11,13 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public abstract class SystemQueueAction extends ActionyAction {
 
-    protected SystemQueueAction(DefaultGame game) {
-        super(game, ActionType.SYSTEM_QUEUE);
+    protected SystemQueueAction(DefaultGame game, String performingPlayerName) {
+        super(game, performingPlayerName, ActionType.SYSTEM_QUEUE);
     }
 
-    protected SystemQueueAction(DefaultGame game, ActionContext actionContext) {
-        super(game, ActionType.SYSTEM_QUEUE, actionContext);
+
+    protected SystemQueueAction(DefaultGame game, ActionContext actionContext, String performingPlayerName) {
+        super(game, performingPlayerName, ActionType.SYSTEM_QUEUE, actionContext);
     }
 
 

@@ -411,4 +411,8 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     public Collection<ActionProxy> getAllActionProxies() {
         return getActionsEnvironment().getAllActionProxies();
     }
+
+    public Action getCurrentAction() {
+        return getActionsEnvironment().getCurrentAction();
+    }
 }

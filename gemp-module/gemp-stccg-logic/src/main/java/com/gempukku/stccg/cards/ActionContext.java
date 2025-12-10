@@ -1,7 +1,5 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -17,7 +15,6 @@ import java.util.Map;
 public class ActionContext {
     private final String _performingPlayerName;
     private final int _sourceCardId;
-    private final int _actionId;
     private final Multimap<String, Integer> _cardMemoryNew = HashMultimap.create();
     private final Map<String, String> _valueMemory = new HashMap<>();
     private final PhysicalCard _thisCard;
@@ -25,14 +22,6 @@ public class ActionContext {
     public ActionContext(PhysicalCard thisCard, String performingPlayerId) {
         this._performingPlayerName = performingPlayerId;
         _sourceCardId = thisCard.getCardId();
-        _actionId = -999;
-        _thisCard = thisCard;
-    }
-
-    public ActionContext(String performingPlayerName, PhysicalCard thisCard, Action actionBeingRespondedTo) {
-        this._performingPlayerName = performingPlayerName;
-        _sourceCardId = thisCard.getCardId();
-        _actionId = actionBeingRespondedTo.getActionId();
         _thisCard = thisCard;
     }
 
@@ -98,20 +87,6 @@ public class ActionContext {
         return _cardMemoryNew.get(memory);
     }
 
-
-    public ActionResult getEffectResult(DefaultGame cardGame) {
-        Action action = cardGame.getActionById(_actionId);
-        if (action == null) {
-            return null;
-        } else {
-            return action.getResult();
-        }
-    }
-
-    public boolean hasActionResultType(DefaultGame cardGame, ActionResult.Type type) {
-        Action action = cardGame.getActionById(_actionId);
-        return action != null && action.getResult() != null && action.getResult().getType() == type;
-    }
 
     public boolean acceptsAllRequirements(DefaultGame cardGame, Iterable<Requirement> requirements) {
         if (requirements == null)

@@ -9,12 +9,9 @@ public class WhenThisCardPlayedTriggerChecker implements TriggerChecker {
 
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        final ActionResult actionResult = actionContext.getEffectResult(cardGame);
-        if (actionResult.getType() == ActionResult.Type.PLAY_CARD) {
-            return actionResult instanceof PlayCardResult playCardResult &&
-                    playCardResult.getPlayedCard() == actionContext.card();
-        }
-        return false;
+        return cardGame.getCurrentActionResult() instanceof PlayCardResult playCardResult &&
+                playCardResult.getType() == ActionResult.Type.PLAY_CARD &&
+                playCardResult.getPlayedCard() == actionContext.card();
     }
 
 
