@@ -43,8 +43,7 @@ public abstract class SystemQueueAction extends ActionyAction {
         }
     }
 
-    protected void processEffect(DefaultGame cardGame) throws CardNotFoundException, PlayerNotFoundException,
-            InvalidGameLogicException {
+    protected void processEffect(DefaultGame cardGame) {
         setAsSuccessful();
     }
 }

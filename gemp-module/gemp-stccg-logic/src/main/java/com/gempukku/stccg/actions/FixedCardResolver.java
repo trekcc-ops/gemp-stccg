@@ -36,7 +36,8 @@ public class FixedCardResolver implements ActionCardResolver {
         return null;
     }
 
-    public boolean willProbablyBeEmpty(DefaultGame cardGame) {
+    @Override
+    public boolean cannotBeResolved(DefaultGame cardGame) {
         return false;
     }
 

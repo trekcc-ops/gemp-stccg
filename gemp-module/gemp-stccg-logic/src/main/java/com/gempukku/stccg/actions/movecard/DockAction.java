@@ -55,8 +55,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
                         "Choose facility to dock at", _dockingTargetOptions);
             }
             if (!_selectAction.wasCarriedOut()) {
-                appendTargeting(_selectAction);
-                return getNextCost();
+                return(_selectAction);
             } else {
                 _targetChosen = true;
                 _dockingTarget = (FacilityCard) _selectAction.getSelectedCard();

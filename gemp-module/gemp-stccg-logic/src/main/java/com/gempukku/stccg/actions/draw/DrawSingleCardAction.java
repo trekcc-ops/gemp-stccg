@@ -34,10 +34,15 @@ public class DrawSingleCardAction extends ActionyAction {
         return nextAction;
     }
 
-    public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
-        cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
-        setAsSuccessful();
-        saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId, this));
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
+            setAsSuccessful();
+            saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId, this));
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
+        }
     }
 
 }

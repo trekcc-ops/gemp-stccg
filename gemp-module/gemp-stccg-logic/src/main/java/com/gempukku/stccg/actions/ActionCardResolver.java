@@ -20,8 +20,9 @@ public interface ActionCardResolver {
 
     void resolve(DefaultGame cardGame) throws InvalidGameLogicException;
     boolean isResolved();
-    Collection<PhysicalCard> getCards(DefaultGame cardGame) throws InvalidGameLogicException;
+    Collection<PhysicalCard> getCards(DefaultGame cardGame);
     SelectCardsAction getSelectionAction();
-    boolean willProbablyBeEmpty(DefaultGame cardGame);
+
+    boolean cannotBeResolved(DefaultGame cardGame);
 
 }

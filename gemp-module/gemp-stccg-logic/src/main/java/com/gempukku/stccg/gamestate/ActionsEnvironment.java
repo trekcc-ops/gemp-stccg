@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.ActionOrderOfOperationException;
@@ -50,7 +49,7 @@ public class ActionsEnvironment {
     }
 
 
-    public void addActionToStack(Action action) throws InvalidGameLogicException {
+    public void addActionToStack(Action action) {
         if (action != null) {
             action.startPerforming(); // Set action status
             _actionStack.add(action);

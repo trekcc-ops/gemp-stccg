@@ -47,7 +47,7 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardToPlayTarget.willProbablyBeEmpty(cardGame);
+        return !_cardToPlayTarget.cannotBeResolved(cardGame);
     }
 
     @Override

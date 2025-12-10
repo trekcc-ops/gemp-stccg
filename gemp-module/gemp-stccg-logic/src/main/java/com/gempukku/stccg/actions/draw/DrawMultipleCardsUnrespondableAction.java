@@ -40,11 +40,16 @@ public class DrawMultipleCardsUnrespondableAction extends ActionyAction {
         return nextAction;
     }
 
-    public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
-        for (int i = 0; i < _cardsToDraw; i++) {
-            cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            for (int i = 0; i < _cardsToDraw; i++) {
+                cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
+            }
+            setAsSuccessful();
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        setAsSuccessful();
     }
 
 }

@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.ActionCardResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,16 +21,11 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
     }
 
     public CardFilter getFilterable(DefaultGame cardGame) {
-        try {
-            CardFilter matchingFilter = new MatchingAffiliationFilter(_cardTarget.getCards(cardGame));
-            List<Filterable> finalFilterables = new ArrayList<>();
-            finalFilterables.add(matchingFilter);
-            finalFilterables.addAll(_additionalFilters);
-            return Filters.and(finalFilterables);
-        } catch(InvalidGameLogicException exp) {
-            cardGame.sendErrorMessage(exp);
-            return Filters.not(Filters.any);
-        }
+        CardFilter matchingFilter = new MatchingAffiliationFilter(_cardTarget.getCards(cardGame));
+        List<Filterable> finalFilterables = new ArrayList<>();
+        finalFilterables.add(matchingFilter);
+        finalFilterables.addAll(_additionalFilters);
+        return Filters.and(finalFilterables);
     }
 
     @Override

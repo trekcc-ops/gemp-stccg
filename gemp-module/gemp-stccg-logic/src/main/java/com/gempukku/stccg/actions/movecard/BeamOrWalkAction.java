@@ -78,8 +78,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
             if (_selectOriginAction == null) {
                 _selectOriginAction = new SelectVisibleCardAction(cardGame, _performingPlayerId,
                         "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
-                appendTargeting(_selectOriginAction);
-                return getNextCost();
+                return(_selectOriginAction);
             } else {
                 if (_selectOriginAction.wasCarriedOut()) {
                     _origin = _selectOriginAction.getSelectedCard();
@@ -101,8 +100,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
             if (_selectDestinationAction == null) {
                 _selectDestinationAction = new SelectVisibleCardAction(cardGame, _performingPlayerId,
                         "Choose card to " + actionVerb() + " to ", _destinationOptions);
-                appendTargeting(_selectDestinationAction);
-                return getNextCost();
+                return(_selectDestinationAction);
             } else {
                 if (_selectDestinationAction.wasCarriedOut())
                     setDestination(_selectDestinationAction.getSelectedCard());
@@ -118,8 +116,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                 _selectCardsToMoveAction = new SelectVisibleCardsAction(cardGame, _performingPlayerId,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
                         movableCards, 1);
-                appendTargeting(_selectCardsToMoveAction);
-                return getNextCost();
+                return(_selectCardsToMoveAction);
             } else {
                 if (_selectCardsToMoveAction.wasCarriedOut())
                     setCardsToMove(_selectCardsToMoveAction.getSelectedCards());
@@ -130,7 +127,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         return null;
     }
 
-    private void processEffect(DefaultGame cardGame) {
+    protected void processEffect(DefaultGame cardGame) {
         if (isInProgress()) {
             GameLocation destinationLocation = _destination.getGameLocation((ST1EGame) cardGame);
             for (PhysicalCard card : _cardsToMove) {

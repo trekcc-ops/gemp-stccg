@@ -77,8 +77,7 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
                 _destinationChosen = true;
                 _destination = _selectAction.getSelectedCard();
             } else {
-                appendTargeting(_selectAction);
-                return getNextCost();
+                return(_selectAction);
             }
         }
 

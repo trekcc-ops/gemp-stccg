@@ -48,7 +48,7 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardToDownloadTarget.willProbablyBeEmpty(cardGame);
+        return !_cardToDownloadTarget.cannotBeResolved(cardGame);
     }
 
     @Override

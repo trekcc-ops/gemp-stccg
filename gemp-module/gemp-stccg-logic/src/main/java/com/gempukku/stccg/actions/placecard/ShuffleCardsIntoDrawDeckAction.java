@@ -42,7 +42,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardTarget.willProbablyBeEmpty(cardGame);
+        return !_cardTarget.cannotBeResolved(cardGame);
     }
 
     @Override
@@ -67,20 +67,21 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         return _performingCard;
     }
 
-    public void processEffect(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
+    public void processEffect(DefaultGame cardGame) {
         _targetCards = _cardTarget.getCards(cardGame);
-
         cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, _targetCards);
         for (PhysicalCard card : _targetCards) {
             cardGame.getGameState().addCardToTopOfDrawDeck(card);
         }
-        CardPile<PhysicalCard> drawDeck = performingPlayer.getDrawDeck();
-        drawDeck.shuffle();
-
-        setAsSuccessful();
+        try {
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+            CardPile<PhysicalCard> drawDeck = performingPlayer.getDrawDeck();
+            drawDeck.shuffle();
+            setAsSuccessful();
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
+        }
     }
 
 }

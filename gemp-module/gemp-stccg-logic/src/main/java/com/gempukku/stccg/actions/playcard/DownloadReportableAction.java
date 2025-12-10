@@ -34,7 +34,7 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
     }
 
 
-    protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {
+    protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) {
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
         Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
 
@@ -45,7 +45,7 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardToDownloadTarget.willProbablyBeEmpty(cardGame);
+        return !_cardToDownloadTarget.cannotBeResolved(cardGame);
     }
 
     @Override

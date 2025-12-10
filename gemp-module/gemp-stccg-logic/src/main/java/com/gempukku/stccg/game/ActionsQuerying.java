@@ -20,5 +20,9 @@ public interface ActionsQuerying {
     }
 
     Collection<ActionProxy> getAllActionProxies();
+    DefaultGame getGame();
 
+    default void addActionToStack(Action action) {
+        getGame().getActionsEnvironment().addActionToStack(action);
+    }
 }

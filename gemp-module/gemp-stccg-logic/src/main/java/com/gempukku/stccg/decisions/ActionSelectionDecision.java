@@ -46,7 +46,9 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
     public void decisionMade(Action action) throws DecisionResultInvalidException {
         if (action instanceof TopLevelSelectableAction && _actions.contains(action))
             decisionMade(String.valueOf(action.getActionId()));
-        else throw new DecisionResultInvalidException("Action not found in ActionDecision");
+        else {
+            throw new DecisionResultInvalidException("Action not found in ActionDecision");
+        }
     }
 
     protected TopLevelSelectableAction getSelectedAction(String result) throws DecisionResultInvalidException {

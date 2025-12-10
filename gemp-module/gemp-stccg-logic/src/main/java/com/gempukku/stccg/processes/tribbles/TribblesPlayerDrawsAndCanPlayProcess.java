@@ -48,15 +48,11 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
                         new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, _game, false) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
-                                try {
-                                    Action action = getSelectedAction(result);
-                                    if (action != null) {
-                                        thisGame.getActionsEnvironment().addActionToStack(action);
-                                    } else
-                                        playerPassed();
-                                } catch(InvalidGameLogicException exp) {
-                                    throw new DecisionResultInvalidException(exp.getMessage());
-                                }
+                                Action action = getSelectedAction(result);
+                                if (action != null) {
+                                    thisGame.getActionsEnvironment().addActionToStack(action);
+                                } else
+                                    playerPassed();
                             }
                         });
             }

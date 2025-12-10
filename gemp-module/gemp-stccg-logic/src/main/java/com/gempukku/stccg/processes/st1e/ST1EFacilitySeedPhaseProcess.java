@@ -46,16 +46,12 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                             playableActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    _consecutivePasses = 0;
-                                    cardGame.getActionsEnvironment().addActionToStack(action);
-                                } else {
-                                    _consecutivePasses++;
-                                }
-                            } catch(InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
+                            Action action = getSelectedAction(result);
+                            if (action != null) {
+                                _consecutivePasses = 0;
+                                cardGame.getActionsEnvironment().addActionToStack(action);
+                            } else {
+                                _consecutivePasses++;
                             }
                         }
                     });

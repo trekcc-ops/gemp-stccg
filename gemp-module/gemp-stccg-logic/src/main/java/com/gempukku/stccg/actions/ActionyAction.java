@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
+import com.gempukku.stccg.actions.discard.NullifyCardBeingPlayedAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
-import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -24,6 +25,9 @@ public abstract class ActionyAction implements Action {
     private int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
     private final LinkedList<Action> _processedUsageCosts = new LinkedList<>();
+
+    protected final List<ActionCardResolver> _cardTargets = new LinkedList<>();
+    private final List<ActionCardResolver> _resolvedTargets = new LinkedList<>();
     private final LinkedList<Action> _targeting = new LinkedList<>();
     private final LinkedList<Action> _processedCosts = new LinkedList<>();
     private final LinkedList<Action> _actionEffects = new LinkedList<>();
@@ -143,10 +147,6 @@ public abstract class ActionyAction implements Action {
         _costs.add(cost);
     }
 
-    public final void appendTargeting(Action targeting) {
-        _targeting.add(targeting);
-    }
-
     public final void appendEffect(Action action) {
         _actionEffects.add(action);
     }
@@ -180,12 +180,6 @@ public abstract class ActionyAction implements Action {
     }
 
     protected final Action getNextCost() {
-        Action targetingCost = _targeting.poll();
-        if (targetingCost != null) {
-            _processedCosts.add(targetingCost);
-            return targetingCost;
-        }
-
         Action usageCost = _usageCosts.poll();
         if (usageCost != null) {
             _processedUsageCosts.add(usageCost);
@@ -245,7 +239,15 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
-    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException;
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException {
+        Action action = getNextAction();
+        if (action == null) {
+            processEffect(cardGame);
+            return null;
+        } else {
+            return action;
+        }
+    }
 
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType) {
@@ -270,12 +272,8 @@ public abstract class ActionyAction implements Action {
     @JsonIgnore
     public boolean isBeingInitiated() { return _actionStatus == ActionStatus.initiation_started; }
 
-    public void startPerforming() throws ActionOrderOfOperationException {
-        if (_actionStatus == ActionStatus.virtual) {
-            _actionStatus = ActionStatus.initiation_started;
-        } else {
-            throw new ActionOrderOfOperationException("Tried to start performing an action already in progress");
-        }
+    public void startPerforming() {
+        _actionStatus = ActionStatus.initiation_started;
     }
 
     public void setAsFailed() {
@@ -343,6 +341,110 @@ public abstract class ActionyAction implements Action {
     }
 
     public void resolveTargets() {
+    }
+
+    public void executeNextSubAction(ActionsEnvironment actionsEnvironment, DefaultGame cardGame)
+            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException,
+            CardNotFoundException {
+
+        ActionResult actionResult = getResult();
+        if (actionResult != null) {
+            actionResult.initialize(cardGame);
+            actionResult.addNextActionToStack(cardGame, this);
+        } else {
+            if (isInProgress()) {
+                if (this instanceof NullifyCardBeingPlayedAction || this instanceof DiscardSingleCardAction) {
+                    if (!wasInitiated()) {
+                        continueInitiation(cardGame);
+                    } else {
+                        processEffect(cardGame);
+                    }
+                } else {
+                    Action nextAction = nextAction(cardGame);
+                    actionsEnvironment.addActionToStack(nextAction); // won't do anything if nextAction is null
+                }
+            } else if (!isInProgress() && getResult() == null) {
+                actionsEnvironment.removeCompletedActionFromStack(this);
+                cardGame.sendActionResultToClient();
+            } else if (cardGame.isCarryingOutEffects() && getResult() == null) {
+                throw new InvalidGameLogicException("Unable to process action");
+            }
+        }
+    }
+
+    /* Override methods not implemented:
+        InitiateShipBattleAction
+        "choose" package
+        AllPlayersDiscardFromHandAction
+     */
+
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
+        int loopNumber = 1;
+
+        while (thisActionShouldBeContinued(cardGame) && !_cardTargets.isEmpty()) {
+            ActionCardResolver resolver = _cardTargets.getFirst();
+            if (resolver.isResolved()) {
+                _cardTargets.remove(resolver);
+                _resolvedTargets.add(resolver);
+            } else if (resolver.cannotBeResolved(cardGame)) {
+                this.setAsFailed();
+            } else {
+                resolver.resolve(cardGame);
+            }
+            loopNumber++;
+            if (loopNumber > 500) {
+                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
+                        "method. This is likely due to a circular logic error.");
+            }
+        }
+
+        while (thisActionShouldBeContinued(cardGame) && !_targeting.isEmpty()) {
+            Action targetingAction = _targeting.getFirst();
+            if (targetingAction.wasSuccessful()) {
+                _targeting.remove(targetingAction);
+                _processedCosts.add(targetingAction);
+            } else if (targetingAction.wasFailed()) {
+                this.setAsFailed();
+            } else {
+                cardGame.getActionsEnvironment().addActionToStack(targetingAction);
+            }
+            loopNumber++;
+            if (loopNumber > 500) {
+                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
+                        "method. This is likely due to a circular logic error.");
+            }
+        }
+
+        loopNumber = 1;
+
+        while (thisActionShouldBeContinued(cardGame) && !_costs.isEmpty()) {
+            Action targetingAction = _costs.getFirst();
+            if (targetingAction.wasSuccessful()) {
+                _costs.remove(targetingAction);
+                _processedCosts.add(targetingAction);
+            } else if (targetingAction.wasFailed()) {
+                this.setAsFailed();
+            } else {
+                cardGame.getActionsEnvironment().addActionToStack(targetingAction);
+            }
+            loopNumber++;
+            if (loopNumber > 500) {
+                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
+                        "method. This is likely due to a circular logic error.");
+            }
+        }
+
+        if (_targeting.isEmpty() && _costs.isEmpty() && thisActionShouldBeContinued(cardGame)) {
+            _actionStatus = ActionStatus.initiation_complete;
+        }
+    }
+
+    private boolean thisActionShouldBeContinued(DefaultGame cardGame) {
+        return cardGame.getCurrentAction() == this && cardGame.getGameState().hasNoPendingDecisions() &&
+                _actionStatus.isInProgress();
+    }
+
+    protected void processEffect(DefaultGame cardGame) {
 
     }
 

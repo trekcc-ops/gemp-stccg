@@ -52,7 +52,7 @@ public interface Action {
 
     void insertAction(Action action);
 
-    void startPerforming() throws InvalidGameLogicException;
+    void startPerforming();
 
     boolean isInProgress();
 
@@ -77,26 +77,8 @@ public interface Action {
 
     boolean wasSuccessful();
 
-    default void executeNextSubAction(ActionsEnvironment actionsEnvironment, DefaultGame cardGame)
+    void executeNextSubAction(ActionsEnvironment actionsEnvironment, DefaultGame cardGame)
             throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException,
-            CardNotFoundException {
-
-        ActionResult actionResult = getResult();
-        if (actionResult != null) {
-            actionResult.initialize(cardGame);
-            actionResult.addNextActionToStack(cardGame, this);
-        } else {
-            if (isInProgress()) {
-                Action nextAction = nextAction(cardGame);
-                actionsEnvironment.addActionToStack(nextAction); // won't do anything if nextAction is null
-            } else if (!isInProgress() && getResult() == null) {
-                actionsEnvironment.removeCompletedActionFromStack(this);
-                cardGame.sendActionResultToClient();
-            } else if (cardGame.isCarryingOutEffects() && getResult() == null) {
-                throw new InvalidGameLogicException("Unable to process action");
-            }
-        }
-    }
-
+            CardNotFoundException;
 
 }

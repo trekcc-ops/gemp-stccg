@@ -3,46 +3,37 @@ package com.gempukku.stccg.actions.discard;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
-import java.util.Collection;
+import java.util.List;
 
 public class DiscardSingleCardAction extends ActionyAction implements TopLevelSelectableAction {
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardTarget;
-    private Collection<PhysicalCard> _cardsDiscarded; // may not be initialized
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private PhysicalCard _discardedCard;
 
     public DiscardSingleCardAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
                                    ActionCardResolver cardResolver) {
         super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
         _performingCard = performingCard;
         _cardTarget = cardResolver;
-    }
-
-    public DiscardSingleCardAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
-                                   SelectVisibleCardAction selectAction) {
-        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
-        _performingCard = performingCard;
-        _cardTarget = new SelectCardsResolver(selectAction);
+        _cardTargets.add(_cardTarget);
     }
 
 
     public DiscardSingleCardAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
                                    PhysicalCard cardToDiscard) {
-        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
-        _cardTarget = new FixedCardResolver(cardToDiscard);
-        _performingCard = performingCard;
+        this(cardGame, performingCard, performingPlayerName, new FixedCardResolver(cardToDiscard));
     }
-
 
     @Override
     public PhysicalCard getPerformingCard() {
@@ -55,41 +46,28 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (!_cardTarget.isResolved()) {
-            Action selectionAction = _cardTarget.getSelectionAction();
-            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
-                return selectionAction;
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
+        super.continueInitiation(cardGame);
+        if (_cardTarget.isResolved()) {
+            if (_cardTarget.getCards(cardGame).size() == 1) {
+                _discardedCard = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
             } else {
-                _cardTarget.resolve(cardGame);
+                throw new InvalidGameLogicException("Got too many cards for DiscardSingleCardAction");
             }
         }
-
-        _cardsDiscarded = _cardTarget.getCards(cardGame);
-        if (_cardsDiscarded.size() != 1)
-            throw new InvalidGameLogicException("Discarding too many cards for DiscardSingleCardAction");
-        GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, _cardsDiscarded);
-        for (PhysicalCard cardToDiscard : _cardsDiscarded) {
-            if (cardToDiscard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
-                stCard.unstop();
-            }
-            cardGame.addCardToTopOfDiscardPile(cardToDiscard);
-            saveResult(new DiscardCardFromPlayResult(cardToDiscard, this));
-        }
-        setAsSuccessful();
-        return getNextAction();
     }
 
-    @SuppressWarnings("unused")
-    @JsonProperty("targetCardId")
-    @JsonIdentityReference(alwaysAsId=true)
-    private PhysicalCard cardsDiscarded() {
-        if (_cardsDiscarded != null && _cardsDiscarded.size() == 1) {
-            return Iterables.getOnlyElement(_cardsDiscarded);
-        } else {
-            return null;
+
+    @Override
+    protected void processEffect(DefaultGame cardGame) {
+        GameState gameState = cardGame.getGameState();
+        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_discardedCard));
+        if (_discardedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
+            stCard.unstop();
         }
+        cardGame.addCardToTopOfDiscardPile(_discardedCard);
+        saveResult(new DiscardCardFromPlayResult(_discardedCard, this));
+        setAsSuccessful();
     }
 
 }

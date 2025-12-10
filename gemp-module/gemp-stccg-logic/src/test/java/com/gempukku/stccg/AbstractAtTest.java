@@ -777,9 +777,11 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     }
                 }
             }
-            actionDecision.decisionMade(choice);
-            _game.removeDecision(playerId);
-            _game.carryOutPendingActionsUntilDecisionNeeded();
+            if (choice != null) {
+                actionDecision.decisionMade(choice);
+                _game.removeDecision(playerId);
+                _game.carryOutPendingActionsUntilDecisionNeeded();
+            }
         }
         if (choice == null)
             throw new DecisionResultInvalidException("No valid action found");

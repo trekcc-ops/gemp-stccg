@@ -145,17 +145,13 @@ public class ActionResult {
                 possibleActions, cardGame, false) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
-                try {
-                    TopLevelSelectableAction action = getSelectedAction(result);
-                    if (action != null) {
-                        _passCount = 0;
-                        cardGame.getActionsEnvironment().addActionToStack(action);
-                        _triggerActionIdsUsed.add(action.getActionId());
-                    } else {
-                        _passCount++;
-                    }
-                } catch(InvalidGameLogicException exp) {
-                    throw new DecisionResultInvalidException(exp.getMessage());
+                TopLevelSelectableAction action = getSelectedAction(result);
+                if (action != null) {
+                    _passCount = 0;
+                    cardGame.getActionsEnvironment().addActionToStack(action);
+                    _triggerActionIdsUsed.add(action.getActionId());
+                } else {
+                    _passCount++;
                 }
             }
         };
@@ -173,13 +169,9 @@ public class ActionResult {
                                 DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _requiredResponses, cardGame, true) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
-                                try {
-                                    Action action = getSelectedAction(result);
-                                    environment.addActionToStack(action);
-                                    _requiredResponses.remove(action);
-                                } catch(InvalidGameLogicException exp) {
-                                    throw new DecisionResultInvalidException(exp.getMessage());
-                                }
+                                Action action = getSelectedAction(result);
+                                environment.addActionToStack(action);
+                                _requiredResponses.remove(action);
                             }
                         });
             }

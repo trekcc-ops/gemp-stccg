@@ -8,7 +8,6 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 public class FixedCardsResolver implements ActionCardResolver {
 
@@ -37,7 +36,8 @@ public class FixedCardsResolver implements ActionCardResolver {
         return null;
     }
 
-    public boolean willProbablyBeEmpty(DefaultGame cardGame) {
+    @Override
+    public boolean cannotBeResolved(DefaultGame cardGame) {
         return false;
     }
 

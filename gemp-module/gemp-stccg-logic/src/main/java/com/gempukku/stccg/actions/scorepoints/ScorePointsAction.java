@@ -47,9 +47,14 @@ public class ScorePointsAction extends ActionyAction {
         return nextAction;
     }
 
-    public void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        performingPlayer.scorePoints(_points);
-        setAsSuccessful();
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+            performingPlayer.scorePoints(_points);
+            setAsSuccessful();
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
+        }
     }
 }
