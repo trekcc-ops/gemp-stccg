@@ -342,5 +342,8 @@ public abstract class ActionyAction implements Action {
         _actionId = actionId;
     }
 
+    public void resolveTargets() {
+
+    }
 
 }

@@ -9,13 +9,12 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 
-public class CardFilterResolver implements ActionCardResolver {
-
+public class AllCardsMatchingFilterResolver implements ActionCardResolver {
     private final CardFilter _cardFilter;
     private Collection<PhysicalCard> _cards;
     boolean _resolved;
 
-    public CardFilterResolver(CardFilter cardFilter) {
+    public AllCardsMatchingFilterResolver(CardFilter cardFilter) {
         _cardFilter = cardFilter;
     }
 

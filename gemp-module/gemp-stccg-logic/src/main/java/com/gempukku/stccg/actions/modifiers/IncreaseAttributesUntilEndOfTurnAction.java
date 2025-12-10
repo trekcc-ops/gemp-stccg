@@ -50,7 +50,7 @@ public class IncreaseAttributesUntilEndOfTurnAction extends ActionyAction {
             case SelectCardsResolver selectTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
             case FixedCardsResolver fixedCardsTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
             case FixedCardResolver fixedCardTarget -> Filters.card(fixedCardTarget.getCard());
-            case CardFilterResolver filterTarget -> filterTarget.getFilter();
+            case AllCardsMatchingFilterResolver filterTarget -> filterTarget.getFilter();
             default -> throw new InvalidGameLogicException("Unexpected value: " + _cardTarget);
         };
 

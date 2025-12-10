@@ -6,6 +6,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.filters.CardFilter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -19,42 +20,32 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     private final int _maximum;
     private Collection<PhysicalCard> _selectedCards;
     private AwaitingDecision _decision;
-    private final ActionCardResolver _selectableCardsTarget;
+    private final CardFilter _selectableCardFilter;
     private final String _decisionText;
-
-    public SelectCardsFromDialogAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
-                                       CardFilter cardFilter) {
-        super(cardGame, selectingPlayer, choiceText, ActionType.SELECT_CARDS);
-        _decisionText = choiceText;
-        _selectableCardsTarget = new CardFilterResolver(cardFilter);
-        _minimum = 1;
-        _maximum = 1;
-    }
-
-    public SelectCardsFromDialogAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
-                                       CardFilter cardFilter) {
-        super(cardGame, selectingPlayerName, choiceText, ActionType.SELECT_CARDS);
-        _decisionText = choiceText;
-        _selectableCardsTarget = new CardFilterResolver(cardFilter);
-        _minimum = 1;
-        _maximum = 1;
-    }
 
     public SelectCardsFromDialogAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
                                        CardFilter cardFilter, int count) {
         super(cardGame, selectingPlayerName, choiceText, ActionType.SELECT_CARDS);
         _decisionText = choiceText;
-        _selectableCardsTarget = new CardFilterResolver(cardFilter);
+        _selectableCardFilter = cardFilter;
         _minimum = count;
         _maximum = count;
     }
 
 
+    public SelectCardsFromDialogAction(DefaultGame cardGame, Player selectingPlayer, String choiceText,
+                                       CardFilter cardFilter) {
+        this(cardGame, selectingPlayer.getPlayerId(), choiceText, cardFilter, 1);
+    }
 
+    public SelectCardsFromDialogAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
+                                       CardFilter cardFilter) {
+        this(cardGame, selectingPlayerName, choiceText, cardFilter, 1);
+    }
 
     public boolean requirementsAreMet(DefaultGame game) {
         try {
-            return _selectableCardsTarget.getCards(game).size() >= _minimum;
+            return getSelectableCards(game).size() >= _minimum;
         } catch(Exception exp) {
             return true;
         }
@@ -62,8 +53,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        _selectableCardsTarget.resolve(cardGame);
-        Collection<PhysicalCard> selectableCards = _selectableCardsTarget.getCards(cardGame);
+        Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
         if (selectableCards.size() == _minimum) {
             _selectedCards = new LinkedList<>(selectableCards);
             setAsSuccessful();
@@ -92,11 +82,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
 
     @Override
     public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) {
-        try {
-            return _selectableCardsTarget.getCards(cardGame);
-        } catch(InvalidGameLogicException exp) {
-            return new LinkedList<>();
-        }
+        return Filters.filter(cardGame, _selectableCardFilter);
     }
 
     private void setCardToMemory() {

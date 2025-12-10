@@ -119,7 +119,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
             }
 
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(cardGame, performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(cardGame, _performingPlayerId,
                         "Select outpost to download cards to", _destinationOptions);
                 return _selectDestinationAction;
             } else if (_selectDestinationAction.wasCarriedOut()) {

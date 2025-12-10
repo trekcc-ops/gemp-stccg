@@ -40,7 +40,7 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
     public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard,
                                             String performingPlayerName, CardFilter cardFilter) {
         super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
-        _cardTarget = new CardFilterResolver(cardFilter);
+        _cardTarget = new AllCardsMatchingFilterResolver(cardFilter);
         _performingCard = performingCard;
     }
 

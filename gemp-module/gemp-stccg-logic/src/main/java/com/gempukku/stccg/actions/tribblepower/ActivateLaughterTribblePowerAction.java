@@ -104,7 +104,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             throws InvalidGameLogicException, PlayerNotFoundException {
         Player discardingPlayer = game.getPlayer(_discardingPlayerId);
         SelectVisibleCardAction discardSelectAction =
-                new SelectVisibleCardAction(game, discardingPlayer, "Choose a card to discard",
+                new SelectVisibleCardAction(game, _discardingPlayerId, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
         appendEffect(new TribblesMultiDiscardActionBroken(game, _performingCard, discardingPlayer, discardSelectAction));
 

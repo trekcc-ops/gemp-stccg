@@ -51,7 +51,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
 
         if (!_targetChosen) {
             if (_selectAction == null) {
-                _selectAction = new SelectVisibleCardAction(cardGame, cardGame.getPlayer(_performingPlayerId),
+                _selectAction = new SelectVisibleCardAction(cardGame, _performingPlayerId,
                         "Choose facility to dock at", _dockingTargetOptions);
             }
             if (!_selectAction.wasCarriedOut()) {

@@ -1,45 +1,36 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class SelectRandomCardAction extends ActionyAction implements SelectCardAction {
 
-    private final ActionCardResolver _selectableCardTarget;
+    private final CardFilter _selectableCardsFilter;
     private PhysicalCard _selectedCard;
 
     public SelectRandomCardAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
                                   CardFilter cardFilter) {
         super(cardGame, selectingPlayerName, choiceText, ActionType.SELECT_CARDS);
-        _selectableCardTarget = new CardFilterResolver(cardFilter);
-    }
-
-    public SelectRandomCardAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
-                                  Collection<? extends PhysicalCard> cards) {
-        super(cardGame, selectingPlayerName, choiceText, ActionType.SELECT_CARDS);
-        _selectableCardTarget = new FixedCardsResolver(cards);
+        _selectableCardsFilter = cardFilter;
     }
 
 
     public boolean requirementsAreMet(DefaultGame game) {
-        try {
-            return !_selectableCardTarget.getCards(game).isEmpty();
-        } catch(InvalidGameLogicException exp) {
-            return true;
-        }
+        return !getSelectableCards(game).isEmpty();
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        _selectableCardTarget.resolve(cardGame);
-        Collection<PhysicalCard> selectableCards = _selectableCardTarget.getCards(cardGame);
+        Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
         if (selectableCards.isEmpty()) {
             setAsFailed();
             throw new InvalidGameLogicException("Could not select a random card from an empty list");
@@ -60,10 +51,6 @@ public class SelectRandomCardAction extends ActionyAction implements SelectCardA
 
     @Override
     public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) {
-        try {
-            return _selectableCardTarget.getCards(cardGame);
-        } catch(InvalidGameLogicException exp) {
-            return new LinkedList<>();
-        }
+        return Filters.filter(cardGame, _selectableCardsFilter);
     }
 }

@@ -17,10 +17,8 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("performingCardId")
     private final PhysicalCard _performingCard;
-    @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("cardTarget")
     private final ActionCardResolver _cardTarget;
-
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> _targetCards;
@@ -29,7 +27,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
                                           String performingPlayerName, CardFilter cardFilter) {
         super(cardGame, performingPlayerName, "Shuffle cards into draw deck",
                 ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
-        _cardTarget = new CardFilterResolver(cardFilter);
+        _cardTarget = new AllCardsMatchingFilterResolver(cardFilter);
         _performingCard = performingCard;
     }
 

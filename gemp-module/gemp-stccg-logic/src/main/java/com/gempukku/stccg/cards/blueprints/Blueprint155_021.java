@@ -42,6 +42,7 @@ public class Blueprint155_021 extends CardBlueprint {
     @Override
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame cardGame) {
+        String playerName = player.getPlayerId();
         Phase currentPhase = cardGame.getCurrentPhase();
         List<TopLevelSelectableAction> actions = new LinkedList<>();
 
@@ -55,7 +56,7 @@ public class Blueprint155_021 extends CardBlueprint {
             Collection<PhysicalCard> playableCards = Filters.filter(cardGame, playableCardFilter);
             if (!playableCards.isEmpty()) {
 
-                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, player,
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, playerName,
                         "Select a card to report", playableCards);
                 ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
                 MatchingFilterBlueprint destinationFilterBlueprint =
@@ -63,7 +64,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 SelectAndReportForFreeCardAction action1 =
                         new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwnerName(), cardTarget, thisCard,
                                 destinationFilterBlueprint);
-                action1.appendUsage(new UseOncePerTurnAction(cardGame, thisCard, _dummyBlueprint, player.getPlayerId()));
+                action1.appendUsage(new UseOncePerTurnAction(cardGame, thisCard, _dummyBlueprint, playerName));
                 if (action1.canBeInitiated(cardGame))
                     actions.add(action1);
 
@@ -77,7 +78,7 @@ public class Blueprint155_021 extends CardBlueprint {
 
             if (!downloadableCards.isEmpty()) {
 
-                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, player,
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, playerName,
                         "Select a card to download", downloadableCards);
                 ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
                 MatchingFilterBlueprint destinationFilterBlueprint =

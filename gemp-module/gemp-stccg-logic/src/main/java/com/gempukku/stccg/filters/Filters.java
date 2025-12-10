@@ -215,7 +215,7 @@ public class Filters {
         return new CopyOfCardFilter(copiedCard.getBlueprintId());
     }
 
-    public static CardFilter inCards(Collection<PhysicalCard> cards) {
+    public static CardFilter inCards(Collection<? extends PhysicalCard> cards) {
         return new InCardListFilter(cards);
     }
 

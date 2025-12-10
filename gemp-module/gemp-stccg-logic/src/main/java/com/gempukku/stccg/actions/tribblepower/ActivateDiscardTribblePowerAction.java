@@ -16,7 +16,7 @@ public class ActivateDiscardTribblePowerAction extends ActivateTribblePowerActio
         super(cardGame, actionContext, performingCard);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         SelectVisibleCardAction selectAction =
-                new SelectVisibleCardAction(cardGame, performingPlayer, "select",
+                new SelectVisibleCardAction(cardGame, _performingPlayerId, "select",
                         Filters.yourHand(performingPlayer));
         appendEffect(new TribblesMultiDiscardActionBroken(cardGame, _performingCard, performingPlayer, selectAction));
     }
