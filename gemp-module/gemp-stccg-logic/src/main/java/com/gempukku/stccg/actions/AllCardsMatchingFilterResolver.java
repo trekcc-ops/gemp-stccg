@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collection;
 
@@ -29,11 +30,11 @@ public class AllCardsMatchingFilterResolver implements ActionCardResolver {
         return _resolved;
     }
 
-    public Collection<PhysicalCard> getCards(DefaultGame cardGame) {
+    public Collection<PhysicalCard> getCards(DefaultGame cardGame) throws InvalidGameLogicException {
         if (_resolved) {
             return _cards;
         } else {
-            return Filters.filter(cardGame, _cardFilter);
+            throw new InvalidGameLogicException("Have not yet resolved card target");
         }
     }
 
@@ -43,7 +44,7 @@ public class AllCardsMatchingFilterResolver implements ActionCardResolver {
     }
 
     public boolean willProbablyBeEmpty(DefaultGame cardGame) {
-        return getCards(cardGame).isEmpty();
+        return Filters.filter(cardGame, _cardFilter).isEmpty();
     }
 
     public CardFilter getFilter() { return _cardFilter; }
