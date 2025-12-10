@@ -180,7 +180,12 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             return (cardGame, actionContext) -> Filters.not(filterBlueprint.getFilterable(cardGame, actionContext));
         }
         if (value.startsWith("name(") && value.endsWith(")")) {
-            return (cardGame, actionContext) -> Filters.name(value.substring(5, value.length() - 1));
+            String cardTitle = value.substring(5, value.length() - 1);
+            return new CardTitleFilterBlueprint(cardTitle);
+        }
+        if (value.startsWith("title(") && value.endsWith(")")) {
+            String cardTitle = value.substring(6, value.length() - 1);
+            return new CardTitleFilterBlueprint(cardTitle);
         }
         if (value.startsWith("affiliation=")) {
             String affiliationName = value.substring(12);
@@ -214,12 +219,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         List<FilterBlueprint> filterBlueprints = new LinkedList<>();
         for (String string : stringSplit)
             filterBlueprints.add(parseSTCCGFilter(string));
-        return (cardGame, actionContext) -> {
-            List<Filterable> filterables = new LinkedList<>();
-            for (FilterBlueprint filterBlueprint : filterBlueprints)
-                filterables.add(filterBlueprint.getFilterable(cardGame, actionContext));
-            return Filters.or(filterables.toArray(new Filterable[0]));
-        };
+        return new OrFilterBlueprint(filterBlueprints);
     }
 
     private FilterBlueprint createAndFilter(String value) throws InvalidCardDefinitionException {

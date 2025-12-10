@@ -205,4 +205,17 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     public int getLocationId() { return _locationId; }
 
+    public boolean isFirstAttemptForPlayerOfThisMission(DefaultGame cardGame) {
+        for (Action action : cardGame.getActionsEnvironment().getPerformedActions()) {
+            if (action instanceof AttemptMissionAction missionAction &&
+                    action.getActionId() < getActionId() &&
+                    missionAction.getLocationId() == _locationId &&
+                    action.getPerformingPlayerId().equals(_performingPlayerId) &&
+                    action.wasInitiated()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

@@ -34,4 +34,14 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
                 _cardTarget.getTargetResolver(cardGame, actionContext), actionContext.getPerformingCard(cardGame));
         return List.of(downloadAction);
     }
+
+    @Override
+    public boolean isPlayabilityCheckedForEffect() {
+        return true;
+    }
+
+    @Override
+    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+        return _cardTarget.canBeResolved(cardGame, actionContext);
+    }
 }

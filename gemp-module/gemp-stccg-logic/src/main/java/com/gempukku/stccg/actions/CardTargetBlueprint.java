@@ -18,4 +18,6 @@ public interface CardTargetBlueprint {
 
     void addFilter(FilterBlueprint... filterBlueprint);
 
+    boolean canBeResolved(DefaultGame cardGame, ActionContext context);
+
 }

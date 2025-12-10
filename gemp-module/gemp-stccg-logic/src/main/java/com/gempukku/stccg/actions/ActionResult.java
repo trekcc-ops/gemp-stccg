@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
-import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -119,8 +118,6 @@ public class ActionResult {
                                                                           PhysicalCard card, Player player) {
         CardBlueprint blueprint = card.getBlueprint();
         return switch (blueprint) {
-            case Blueprint212_019 riskBlueprint ->
-                    riskBlueprint.getValidResponses(card, player, this, cardGame);
             case Blueprint109_063 missionSpecBlueprint ->
                     missionSpecBlueprint.getValidResponses(card, player, this, cardGame);
             case null, default -> {

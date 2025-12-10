@@ -42,6 +42,7 @@ public interface Action {
     String getPerformingPlayerId();
 
     boolean canBeInitiated(DefaultGame cardGame);
+    boolean wasInitiated();
 
     boolean wasCarriedOut();
 

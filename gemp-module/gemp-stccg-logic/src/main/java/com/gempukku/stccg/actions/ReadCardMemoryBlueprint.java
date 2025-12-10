@@ -34,4 +34,9 @@ public class ReadCardMemoryBlueprint implements CardTargetBlueprint {
     public void addFilter(FilterBlueprint... filterBlueprints) {
     }
 
+    public boolean canBeResolved(DefaultGame cardGame, ActionContext context) {
+        Collection<Integer> cards = context.getCardIdsFromMemory(_memoryId);
+        return cards != null && !cards.isEmpty();
+    }
+
 }

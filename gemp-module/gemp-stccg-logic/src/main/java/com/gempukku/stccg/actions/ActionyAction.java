@@ -208,6 +208,9 @@ public abstract class ActionyAction implements Action {
     public final boolean wasCarriedOut() {
         return wasSuccessful();
     }
+    public final boolean wasInitiated() {
+        return _actionStatus.wasInitiated();
+    }
 
     public final boolean canBeInitiated(DefaultGame cardGame) {
         return requirementsAreMet(cardGame) && costsCanBePaid(cardGame) &&
