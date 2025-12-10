@@ -92,8 +92,6 @@ public interface PhysicalCard {
 
     Collection<PhysicalCard> getAttachedCards(DefaultGame game);
 
-    List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(DefaultGame cardGame, String playerName, ActionResult actionResult);
-
     List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult);
 
     boolean isUnique();
@@ -189,4 +187,6 @@ public interface PhysicalCard {
 
     @JsonProperty("cardId")
     void setCardId(int cardId);
+
+    Collection<TopLevelSelectableAction> getOptionalResponseActionsWhileInPlay(DefaultGame game, Player player);
 }

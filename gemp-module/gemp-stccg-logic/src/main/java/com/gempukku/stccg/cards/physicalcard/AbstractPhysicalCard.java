@@ -5,10 +5,10 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.actions.blueprints.TriggerActionBlueprint;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -21,10 +21,7 @@ import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class AbstractPhysicalCard implements PhysicalCard {
 
@@ -281,22 +278,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
         return result;
     }
-    public List<TopLevelSelectableAction> getOptionalResponseWhileInPlayActions(DefaultGame cardGame,
-                                                                                String performingPlayerName,
-                                                                                ActionResult actionResult) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
-        List<TriggerActionBlueprint> triggers = _blueprint.getActivatedTriggers();
-
-        if (triggers != null) {
-            for (TriggerActionBlueprint trigger : triggers) {
-                TopLevelSelectableAction action =
-                        trigger.createAction(cardGame, performingPlayerName, this, actionResult);
-                if (action != null)
-                    result.add(action);
-            }
-        }
-        return result;
-    }
 
 
     public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult) {
@@ -406,6 +387,27 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     @JsonProperty("cardId")
     public void setCardId(int cardId) {
         _cardId = cardId;
+    }
+
+    @Override
+    public Collection<TopLevelSelectableAction> getOptionalResponseActionsWhileInPlay(DefaultGame game, Player player) {
+        String playerName = player.getPlayerId();
+        if (_blueprint == null || hasTextRemoved(game)) {
+            return new ArrayList<>();
+        } else if (_blueprint instanceof Blueprint109_063 missionSpecBlueprint) {
+            return missionSpecBlueprint.getValidResponses(this, player, game);
+        } else {
+            List<TopLevelSelectableAction> playerActions = new ArrayList<>();
+            _blueprint.getTriggers(RequiredType.OPTIONAL).forEach(actionSource -> {
+                if (actionSource != null) {
+                    TopLevelSelectableAction action = actionSource.createAction(game, playerName, this);
+                    if (action != null) {
+                        playerActions.add(action);
+                    }
+                }
+            });
+            return playerActions;
+        }
     }
 
 }

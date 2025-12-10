@@ -26,14 +26,15 @@ public class Blueprint109_063 extends CardBlueprint {
     }
 
     public List<TopLevelSelectableAction> getValidResponses(PhysicalCard thisCard, Player player,
-                                                            ActionResult actionResult, DefaultGame cardGame) {
+                                                            DefaultGame cardGame) {
         ST1EGame stGame = (ST1EGame) cardGame;
+        String playerName = player.getPlayerId();
         List<TopLevelSelectableAction> actions = new ArrayList<>();
-        if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard &&
-                thisCard.isControlledBy(player)) {
+        if (cardGame.getCurrentActionResult() instanceof PlayCardResult playResult &&
+                playResult.getPlayedCard() == thisCard && thisCard.isControlledBy(playerName)) {
 
             List<FacilityCard> yourOutposts = new LinkedList<>();
-            for (PhysicalCard card : Filters.yourFacilitiesInPlay(cardGame, player)) {
+            for (PhysicalCard card : Filters.yourFacilitiesInPlay(cardGame, playerName)) {
                 if (card instanceof FacilityCard facilityCard && facilityCard.getFacilityType() == FacilityType.OUTPOST)
                     yourOutposts.add(facilityCard);
             }
@@ -41,7 +42,7 @@ public class Blueprint109_063 extends CardBlueprint {
             List<PersonnelCard> specialistsNotInPlay = new LinkedList<>();
             for (PhysicalCard card : player.getCardsInDrawDeck()) {
                 Collection<PhysicalCard> ownedCopiesInPlay = Filters.filterCardsInPlay(cardGame,
-                        Filters.copyOfCard(card), Filters.owner(player.getPlayerId()));
+                        Filters.copyOfCard(card), Filters.owner(playerName));
                 if (card instanceof PersonnelCard personnel && personnel.getSkills(cardGame).size() == 1 &&
                         personnel.getSkills(cardGame).getFirst() instanceof RegularSkill && ownedCopiesInPlay.isEmpty()) {
                     boolean compatibleAtLeastOnce = false;
@@ -74,16 +75,16 @@ public class Blueprint109_063 extends CardBlueprint {
             }
 
             actions.add(new DownloadMultipleCardsToSameCompatibleOutpostAction(cardGame,
-                    Zone.DRAW_DECK, player, thisCard, validCombinations, 2));
+                    Zone.DRAW_DECK, playerName, thisCard, validCombinations, 2));
         }
         /* once each mission, your mission specialist may score 5 points when they use their skill to meet a mission
             requirement
          */
 
-        if (actionResult.getType() == ActionResult.Type.START_OF_TURN &&
-                Objects.equals(player.getPlayerId(), thisCard.getOwnerName()) &&
-                Objects.equals(player.getPlayerId(), cardGame.getGameState().getCurrentPlayerId())) {
-            actions.add(new DiscardSingleCardAction(cardGame, thisCard, player.getPlayerId(), thisCard));
+        if (cardGame.isCurrentActionResultType(ActionResult.Type.START_OF_TURN) &&
+                thisCard.isOwnedBy(playerName) &&
+                Objects.equals(playerName, cardGame.getCurrentPlayerId())) {
+            actions.add(new DiscardSingleCardAction(cardGame, thisCard, playerName, thisCard));
         }
 
         return actions;

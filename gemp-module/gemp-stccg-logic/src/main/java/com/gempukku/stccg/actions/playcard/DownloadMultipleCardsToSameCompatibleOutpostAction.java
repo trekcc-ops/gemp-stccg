@@ -41,11 +41,12 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
 
     private enum Progress { cardsToDownloadSelected, destinationSelected }
 
-    public DownloadMultipleCardsToSameCompatibleOutpostAction(DefaultGame cardGame, Zone fromZone, Player player,
+    public DownloadMultipleCardsToSameCompatibleOutpostAction(DefaultGame cardGame, Zone fromZone,
+                                                              String performingPlayerName,
                                                               PhysicalCard actionSource,
                                                               Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                               int maxCardCount) {
-        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(), ActionType.DOWNLOAD_CARD,
+        super(cardGame, performingPlayerName, "Download card from " + fromZone.getHumanReadable(), ActionType.DOWNLOAD_CARD,
                 Progress.values());
         _performingCard = actionSource;
         _validCombinations = validCombinations;
@@ -62,7 +63,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
         if (getPlayableCards().isEmpty()) {
             return false;
         } else if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK) {
-            return cardGame.hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK);
+            return !cardGame.hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK);
         } else {
             return true;
         }

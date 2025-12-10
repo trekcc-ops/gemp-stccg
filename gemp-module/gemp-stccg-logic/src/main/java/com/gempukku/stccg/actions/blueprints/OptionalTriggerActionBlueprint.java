@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -40,7 +39,7 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
 
     @Override
     public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard, ActionResult result) {
+                                                 PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext)) {
             OptionalTriggerAction action = new OptionalTriggerAction(cardGame, thisCard, this, actionContext);
@@ -49,4 +48,6 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
         }
         return null;
     }
+
+
 }

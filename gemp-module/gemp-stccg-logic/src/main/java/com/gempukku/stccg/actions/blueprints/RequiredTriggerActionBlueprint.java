@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -34,7 +33,7 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
 
     @Override
     public RequiredTriggerAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard, ActionResult result) {
+                                              PhysicalCard thisCard) {
         ActionContext context = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, context)) {
             RequiredTriggerAction action = new RequiredTriggerAction(cardGame, thisCard, context);
@@ -43,4 +42,6 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
         }
         return null;
     }
+
+
 }

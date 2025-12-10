@@ -1,10 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.PlayPhaseRequirement;
@@ -48,15 +44,4 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
             _requirements.add(new PlayPhaseRequirement());
         }
     }
-
-
-
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard card) {
-        cardGame.sendErrorMessage("Tried to create trigger action without a defined action result");
-        return null;
-    }
-
-    public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                          PhysicalCard thisCard, ActionResult result);
-
 }

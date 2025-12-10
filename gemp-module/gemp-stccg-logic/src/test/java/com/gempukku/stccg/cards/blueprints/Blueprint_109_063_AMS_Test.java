@@ -50,6 +50,9 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
         seedCard(P1, fedOutpost);
         seedCard(P1, ams);
+        assertTrue(fedOutpost.isInPlay());
+        assertTrue(ams.isInPlay());
+        assertEquals(_game.getCurrentPhase(), Phase.SEED_FACILITY);
         selectFirstAction(P1);
         assertNotNull(_game.getAwaitingDecision(P1));
 

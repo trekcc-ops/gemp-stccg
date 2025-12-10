@@ -151,7 +151,6 @@ public class CardBlueprint {
     private final Map<RequiredType, List<ActionBlueprint>> _afterTriggers = new HashMap<>();
     private final Map<RequiredType, ActionBlueprint> _discardedFromPlayTriggers = new HashMap<>();
     private final List<TriggerActionBlueprint> _optionalInHandTriggers = new ArrayList<>();
-    private final List<TriggerActionBlueprint> _activatedTriggers = new ArrayList<>();
 
     private List<ActionBlueprint> inDiscardPhaseActions;
 
@@ -365,8 +364,10 @@ public class CardBlueprint {
                                                                                 ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         for (TriggerActionBlueprint trigger : _optionalInHandTriggers) {
-            TopLevelSelectableAction action = trigger.createAction(cardGame, player.getPlayerId(), thisCard, actionResult);
-            if (action != null) result.add(action);
+            TopLevelSelectableAction action = trigger.createAction(cardGame, player.getPlayerId(), thisCard);
+            if (action != null) {
+                result.add(action);
+            }
         }
         return result;
     }
@@ -402,9 +403,7 @@ public class CardBlueprint {
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
 
     public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
-    public List<TriggerActionBlueprint> getActivatedTriggers() {
-        return _activatedTriggers;
-    }
+
     public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player,
                                                                      DefaultGame cardGame) {
         return new ArrayList<>();
@@ -481,7 +480,7 @@ public class CardBlueprint {
         getTriggers(RequiredType.REQUIRED).forEach(actionSource -> {
             if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
                 RequiredTriggerAction action =
-                        triggerSource.createAction(cardGame, card.getControllerName(), card, actionResult);
+                        triggerSource.createAction(cardGame, card.getControllerName(), card);
                 if (action != null) result.add(action);
             }
         });

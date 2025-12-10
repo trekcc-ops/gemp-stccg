@@ -87,6 +87,18 @@ public class Filters {
         return filterYourCardsInPlay(cardGame, playerName, presentWith(card), and(filters));
     }
 
+
+    public static List<FacilityCard> yourFacilitiesInPlay(DefaultGame cardGame, String playerName) {
+        List<FacilityCard> result = new LinkedList<>();
+        Collection<PhysicalCard> facilities = filterYourCardsInPlay(cardGame, playerName, CardType.FACILITY);
+        for (PhysicalCard facility : facilities) {
+            if (facility instanceof FacilityCard && facility.isInPlay()) {
+                result.add((FacilityCard) facility);
+            }
+        }
+        return result;
+    }
+
     public static List<FacilityCard> yourFacilitiesInPlay(DefaultGame cardGame, Player player) {
         List<FacilityCard> result = new LinkedList<>();
         Collection<PhysicalCard> facilities = filterYourCardsInPlay(cardGame, player.getPlayerId(), CardType.FACILITY);
