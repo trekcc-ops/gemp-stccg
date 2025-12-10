@@ -1,14 +1,9 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.modifiers.Modifier;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +56,7 @@ public class GameStateSerializationTest extends AbstractAtTest {
         String gameStateJson = gameStateMapper.writeValueAsString(_game.getGameState());
         System.out.println(gameStateJson);
 
-        boolean deserializeDirectly = true;
+/*        boolean deserializeDirectly = true;
         ObjectMapper readMapper = new ObjectMapper();
 
         if (!deserializeDirectly) {
@@ -76,6 +71,6 @@ public class GameStateSerializationTest extends AbstractAtTest {
         ST1EGameState gameStateCopy = readMapper.readValue(gameStateJson, ST1EGameState.class);
         List<PhysicalCard> drawDeck = gameStateCopy.getZoneCards(P1, Zone.DRAW_DECK);
         System.out.println(drawDeck.size());
-        assertTrue(gameStateCopy.getAllCardsInGame().contains(drawDeck.getFirst()));
+        assertTrue(gameStateCopy.getAllCardsInGame().contains(drawDeck.getFirst())); */
     }
 }

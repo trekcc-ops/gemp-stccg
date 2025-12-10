@@ -81,7 +81,9 @@ public interface ModifiersQuerying {
 
     private boolean modifierIsAffectingCard(Modifier modifier, PhysicalCard card,
                                             Collection<Modifier> modifiersThusFar) {
-        if (!modifier.affectsCard(getGame(), card) && !modifier.foundNoCumulativeConflict(modifiersThusFar)) {
+        if (!modifier.affectsCard(getGame(), card)) {
+            return false;
+        } else if (!modifier.foundNoCumulativeConflict(modifiersThusFar)) {
             return false;
         } else {
             return modifierIsInEffect(modifier);

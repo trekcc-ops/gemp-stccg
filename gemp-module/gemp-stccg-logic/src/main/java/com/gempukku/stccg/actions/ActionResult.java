@@ -117,23 +117,22 @@ public class ActionResult {
     private List<TopLevelSelectableAction> getOptionalAfterTriggerActions(DefaultGame cardGame,
                                                                           PhysicalCard card, Player player) {
         CardBlueprint blueprint = card.getBlueprint();
-        return switch (blueprint) {
-            case Blueprint109_063 missionSpecBlueprint ->
-                    missionSpecBlueprint.getValidResponses(card, player, this, cardGame);
-            case null, default -> {
-                // Pull trigger actions defined in JSON files
-                assert blueprint != null;
-                List<TopLevelSelectableAction> result = new LinkedList<>();
-                blueprint.getTriggers(RequiredType.OPTIONAL).forEach(actionSource -> {
-                    if (actionSource != null) {
-                        TopLevelSelectableAction action =
-                                actionSource.createAction(cardGame, player.getPlayerId(), card, this);
-                        if (action != null) result.add(action);
-                    }
-                });
-                yield result;
-            }
-        };
+
+        if (blueprint instanceof Blueprint109_063 missionSpecBlueprint) {
+            return missionSpecBlueprint.getValidResponses(card, player, this, cardGame);
+        } else if (blueprint != null) {
+            List<TopLevelSelectableAction> result = new LinkedList<>();
+            blueprint.getTriggers(RequiredType.OPTIONAL).forEach(actionSource -> {
+                if (actionSource != null) {
+                    TopLevelSelectableAction action =
+                            actionSource.createAction(cardGame, player.getPlayerId(), card, this);
+                    if (action != null) result.add(action);
+                }
+            });
+            return result;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
 

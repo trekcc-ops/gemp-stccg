@@ -33,7 +33,9 @@ public interface Action {
     void appendCost(Action costAction);
     void appendEffect(Action actionEffect);
 
-    Action nextAction(DefaultGame game) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException;
+    Action nextAction(DefaultGame game)
+            throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException,
+            InvalidGameOperationException;
 
     @JsonProperty("actionType")
     ActionType getActionType();
@@ -81,7 +83,7 @@ public interface Action {
 
         ActionResult actionResult = getResult();
         if (actionResult != null) {
-            actionResult.initialize(cardGame); // won't do anything if already initialized
+            actionResult.initialize(cardGame);
             actionResult.addNextActionToStack(cardGame, this);
         } else {
             if (isInProgress()) {

@@ -13,8 +13,7 @@ public class DrawSingleCardAction extends ActionyAction {
     }
 
 
-    @Override
-    public boolean requirementsAreMet(DefaultGame cardGame) {
+    public final boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             return !performingPlayer.getCardsInDrawDeck().isEmpty();
