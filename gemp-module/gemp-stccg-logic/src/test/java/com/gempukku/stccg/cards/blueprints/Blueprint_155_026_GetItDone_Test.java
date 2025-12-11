@@ -80,11 +80,6 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     public void actionOption3() throws DecisionResultInvalidException, CardNotFoundException,
             InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
         runGameUntilActionSelection();
-        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
-            if (card.getZone() == null) {
-                System.out.println(card);
-            }
-        }
         playerDecided(P1, "2");
         selectCard(P1, cardToDiscard);
         for (PhysicalCard wallace : wallaces) {

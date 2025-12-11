@@ -93,7 +93,7 @@ public class DefaultTournamentTest extends AbstractServerTest {
         TournamentCallback tournamentCallback = Mockito.mock(TournamentCallback.class);
         Mockito.doAnswer(
                 (Answer<Void>) invocationOnMock -> {
-                    System.out.println("Broadcast: "+invocationOnMock.getArguments()[0]);
+//                    System.out.println("Broadcast: "+invocationOnMock.getArguments()[0]);
                     return null;
                 }
         ).when(tournamentCallback).broadcastMessage(Mockito.anyString());

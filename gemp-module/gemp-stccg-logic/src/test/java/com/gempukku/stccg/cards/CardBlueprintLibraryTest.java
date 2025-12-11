@@ -42,15 +42,7 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
             totalCardCount += set.getAllCards().size();
         }
 
-        System.out.println("Total cards: " + totalCardCount);
         assertEquals(totalCardCount, _cardLibrary.getAllBlueprintIds().size());
-    }
-
-    @Test
-    public void RarityCheck() {
-        System.out.println(_cardLibrary.getSetDefinitions().get("101").getCardsOfRarity("R").size());
-        System.out.println(_cardLibrary.getSetDefinitions().get("101").getCardsOfRarity("U").size());
-        System.out.println(_cardLibrary.getSetDefinitions().get("101").getCardsOfRarity("C").size());
     }
 
     @Test

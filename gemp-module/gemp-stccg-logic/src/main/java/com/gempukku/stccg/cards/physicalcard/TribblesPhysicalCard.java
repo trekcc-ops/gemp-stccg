@@ -15,6 +15,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TribblesPhysicalCard extends AbstractPhysicalCard {
+
+    public TribblesPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
+    }
     public TribblesPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
     }

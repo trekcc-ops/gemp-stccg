@@ -23,9 +23,6 @@ public class GameStateViewTest extends AbstractAtTest {
 
         // There should now be 12 missions seeded
         assertEquals(12, _game.getGameState().getSpacelineLocations().size());
-        for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
-            System.out.println((location.getLocationZoneIndex(_game) + 1) + " - " + location.getLocationName());
-        }
 
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
         PhysicalCard archer = null;
@@ -54,6 +51,6 @@ public class GameStateViewTest extends AbstractAtTest {
         assertTrue(homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(archer));
 
         String serialized4 = _game.getGameState().serializeForPlayer(P1);
-        System.out.println(serialized4.replace(",",",\n"));
+        assertNotNull(serialized4);
     }
 }

@@ -32,9 +32,6 @@ public class GameProcessSerializerTest extends AbstractAtTest {
 
         assertEquals(processString1, processString2);
         assertEquals(process1.getClass(), process2.getClass());
-
-        System.out.println(processString1);
-        System.out.println(process1.getClass().getSimpleName());
     }
 
 }

@@ -1,13 +1,10 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.modifiers.Modifier;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,9 +18,6 @@ public class GameStateSerializationTest extends AbstractAtTest {
 
         // There should now be 12 missions seeded
         assertEquals(12, _game.getGameState().getSpacelineLocations().size());
-        for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
-            System.out.println((location.getLocationZoneIndex(_game) + 1) + " - " + location.getLocationName());
-        }
 
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
         PhysicalCard archer = null;
@@ -49,14 +43,12 @@ public class GameStateSerializationTest extends AbstractAtTest {
         assertTrue(homeward.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(archer));
 
         autoSeedFacility();
-        List<Modifier> modifiers = _game.getAllModifiers();
 
-
+/*
         ObjectWriter gameStateMapper = new GameStateMapper().writer(true);
         String gameStateJson = gameStateMapper.writeValueAsString(_game.getGameState());
-        System.out.println(gameStateJson);
 
-/*        boolean deserializeDirectly = true;
+        boolean deserializeDirectly = true;
         ObjectMapper readMapper = new ObjectMapper();
 
         if (!deserializeDirectly) {
