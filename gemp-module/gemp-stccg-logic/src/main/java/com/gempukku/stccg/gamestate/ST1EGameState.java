@@ -189,7 +189,7 @@ public class ST1EGameState extends GameState {
     public void addMissionLocationToSpacelineForTestingOnly(ST1EGame cardGame, MissionCard newMission, int indexNumber) {
         // Do not use in non-testing classes
         SeedMissionCardAction seedAction = new SeedMissionCardAction(cardGame, newMission, indexNumber);
-        seedAction.seedCard(cardGame, false);
+        seedAction.processEffect(cardGame);
     }
 
     public void seedFacilityAtLocationForTestingOnly(ST1EGame cardGame, FacilityCard card, MissionCard destinationCard)

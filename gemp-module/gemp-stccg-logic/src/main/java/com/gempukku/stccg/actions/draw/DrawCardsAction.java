@@ -1,12 +1,10 @@
 package com.gempukku.stccg.actions.draw;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -47,17 +45,13 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (isBeingInitiated()) {
-            setAsInitiated();
-        }
+    protected void processEffect(DefaultGame cardGame) {
         if (_cardsAlreadyDrawnCount < _totalCardsToDraw) {
             _cardsAlreadyDrawnCount++;
-            return new DrawSingleCardAction(cardGame, cardGame.getPlayer(_performingPlayerId));
+            cardGame.addActionToStack(new DrawSingleCardAction(cardGame, _performingPlayerId));
         } else {
             setAsSuccessful();
         }
-        return null;
     }
 
 }

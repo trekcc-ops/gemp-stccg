@@ -47,21 +47,9 @@ public class SeedOutpostAction extends PlayCardAction {
         _destinationTarget = new FixedCardResolver(destinationCard);
     }
 
-    public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed, MissionLocation location) {
-        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
-                ActionType.SEED_CARD, Progress.values());
-        if (!cardToSeed.isMultiAffiliation()) {
-            setProgress(Progress.affiliationSelected);
-            _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(cardToSeed.getAffiliationOptions()));
-        }
-        setProgress(Progress.placementChosen);
-        _destinationTarget = new FixedCardResolver(location.getTopMissionCard());
-    }
-
-
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
         if (_cardEnteringPlay instanceof FacilityCard facility && cardGame instanceof ST1EGame stGame) {
             ST1EGameState gameState = stGame.getGameState();
 
@@ -86,14 +74,12 @@ public class SeedOutpostAction extends PlayCardAction {
                 }
 
                 if (!_destinationTarget.getSelectionAction().wasCarriedOut()) {
-                    return _destinationTarget.getSelectionAction();
+                    cardGame.addActionToStack(_destinationTarget.getSelectionAction());
                 } else {
                     _destinationTarget.resolve(cardGame);
                     setProgress(Progress.placementChosen);
                 }
-            }
-
-            if (!getProgress(Progress.affiliationSelected)) {
+            } else if (!getProgress(Progress.affiliationSelected)) {
 
                 Set<Affiliation> affiliationOptions = new HashSet<>();
 
@@ -117,7 +103,7 @@ public class SeedOutpostAction extends PlayCardAction {
                     }
 
                     if (!_affiliationTarget.getSelectionAction().wasCarriedOut()) {
-                        return _affiliationTarget.getSelectionAction();
+                        cardGame.addActionToStack(_affiliationTarget.getSelectionAction());
                     } else {
                         _affiliationTarget.resolve();
                         setProgress(Progress.affiliationSelected);
@@ -127,33 +113,38 @@ public class SeedOutpostAction extends PlayCardAction {
                     _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
                     setProgress(Progress.affiliationSelected);
                 }
+            } else {
+                setAsInitiated();
             }
-
-            if (isInProgress()) {
-                processEffect(stGame);
-                return getNextAction();
-            }
-            return null;
         } else {
             throw new InvalidGameLogicException("Tried to process SeedOutpostAction with a non-facility card");
         }
     }
 
-    public void processEffect(ST1EGame stGame) throws InvalidGameLogicException,
-            PlayerNotFoundException {
-        Player performingPlayer = stGame.getPlayer(_performingPlayerId);
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            if (cardGame instanceof ST1EGame stGame) {
+                Player performingPlayer = stGame.getPlayer(_performingPlayerId);
 
-        Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
-        FacilityCard facility = (FacilityCard) _cardEnteringPlay;
-        facility.changeAffiliation(stGame, selectedAffiliation);
+                Affiliation selectedAffiliation = _affiliationTarget.getAffiliation();
+                FacilityCard facility = (FacilityCard) _cardEnteringPlay;
+                facility.changeAffiliation(stGame, selectedAffiliation);
 
-        stGame.getGameState().removeCardsFromZoneWithoutSendingToClient(stGame, List.of(_cardEnteringPlay));
-        performingPlayer.addPlayedAffiliation(selectedAffiliation);
-        PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(stGame));
-        facility.setLocationId(stGame, destinationCard.getLocationId());
-        stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
-        saveResult(new PlayCardResult(this, _cardEnteringPlay));
-        setAsSuccessful();
+                stGame.getGameState().removeCardsFromZoneWithoutSendingToClient(stGame, List.of(_cardEnteringPlay));
+                performingPlayer.addPlayedAffiliation(selectedAffiliation);
+                PhysicalCard destinationCard = Iterables.getOnlyElement(_destinationTarget.getCards(stGame));
+                facility.setLocationId(stGame, destinationCard.getLocationId());
+                stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
+                saveResult(new PlayCardResult(this, _cardEnteringPlay));
+                setAsSuccessful();
+            } else {
+                cardGame.sendErrorMessage("Unable to process seed outpost action in a non-1E game");
+                setAsFailed();
+            }
+        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
+        }
     }
 
     public void setDestination(MissionCard mission) {

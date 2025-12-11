@@ -64,7 +64,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 SelectAndReportForFreeCardAction action1 =
                         new SelectAndReportForFreeCardAction(cardGame, thisCard.getOwnerName(), cardTarget, thisCard,
                                 destinationFilterBlueprint);
-                action1.appendUsage(new UseOncePerTurnAction(cardGame, thisCard, _dummyBlueprint, playerName));
+                action1.appendCost(new UseOncePerTurnAction(cardGame, thisCard, _dummyBlueprint, playerName));
                 if (action1.canBeInitiated(cardGame))
                     actions.add(action1);
 
@@ -86,7 +86,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 DownloadReportableAction action2 =
                         new DownloadReportableAction(cardGame, player, cardTarget, thisCard, destinationFilterBlueprint);
                 action2.setCardActionPrefix("2");
-                action2.appendUsage(new UseOncePerGameAction(cardGame, action2, thisCard, player));
+                action2.appendCost(new UseOncePerGameAction(cardGame, action2, thisCard, player));
                 action2.appendCost(new UseNormalCardPlayAction(cardGame, player));
                 if (action2.canBeInitiated(cardGame))
                     actions.add(action2);

@@ -23,4 +23,6 @@ public class PlayCardResult extends ActionResult {
         return _attachedTo;
     }
 
+    public Action getAction() { return _action; }
+
 }

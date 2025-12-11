@@ -18,18 +18,17 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     private boolean _discardActionSent;
 
     public KillSinglePersonnelAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
-                                     SelectCardsAction selectVictimAction) {
-        this(cardGame, performingPlayerName, performingCard, new SelectCardsResolver(selectVictimAction));
-    }
-
-
-    public KillSinglePersonnelAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
                                      ActionCardResolver targetResolver) {
         super(cardGame, performingPlayerName, "Kill", ActionType.KILL);
         _performingCard = performingCard;
         _cardTarget = targetResolver;
+        _cardTargets.add(targetResolver);
     }
 
+    public KillSinglePersonnelAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
+                                     SelectCardsAction selectVictimAction) {
+        this(cardGame, performingPlayerName, performingCard, new SelectCardsResolver(selectVictimAction));
+    }
 
     @Override
     public PhysicalCard getPerformingCard() {
@@ -42,29 +41,22 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_cardTarget.isResolved()) {
-            Action selectionAction = _cardTarget.getSelectionAction();
-            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
-                return selectionAction;
-            } else {
-                _cardTarget.resolve(cardGame);
-            }
-        }
-
-        if (!_discardActionSent) {
+    protected void processEffect(DefaultGame cardGame) {
+        try {
             if (_cardTarget.getCards(cardGame).size() != 1) {
                 setAsFailed();
                 throw new InvalidGameLogicException("Too many cards selected for KillSinglePersonnelAction");
             } else {
                 _discardActionSent = true;
                 _victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
-                return new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId, _victim);
+                cardGame.addActionToStack(new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId, _victim));
+                setAsSuccessful();
+                saveResult(new KillCardResult(this, _victim));
             }
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        setAsSuccessful();
-        saveResult(new KillCardResult(this, _victim));
-        return getNextAction();
     }
 
     @SuppressWarnings("unused")

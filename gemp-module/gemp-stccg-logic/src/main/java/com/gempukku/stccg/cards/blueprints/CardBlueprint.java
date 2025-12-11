@@ -9,7 +9,6 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
@@ -150,7 +149,6 @@ public class CardBlueprint {
     private final Map<RequiredType, List<ActionBlueprint>> _beforeTriggers = new HashMap<>();
     private final Map<RequiredType, List<ActionBlueprint>> _afterTriggers = new HashMap<>();
     private final Map<RequiredType, ActionBlueprint> _discardedFromPlayTriggers = new HashMap<>();
-    private final List<TriggerActionBlueprint> _optionalInHandTriggers = new ArrayList<>();
 
     private List<ActionBlueprint> inDiscardPhaseActions;
 
@@ -363,10 +361,12 @@ public class CardBlueprint {
                                                                                 PhysicalCard thisCard, Player player,
                                                                                 ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        for (TriggerActionBlueprint trigger : _optionalInHandTriggers) {
-            TopLevelSelectableAction action = trigger.createAction(cardGame, player.getPlayerId(), thisCard);
-            if (action != null) {
-                result.add(action);
+        for (ActionBlueprint blueprint : _actionBlueprints) {
+            if (blueprint instanceof PlayThisCardAsResponseActionBlueprint responseBlueprint) {
+                TopLevelSelectableAction action = responseBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
+                if (action != null) {
+                    result.add(action);
+                }
             }
         }
         return result;
@@ -479,7 +479,7 @@ public class CardBlueprint {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         getTriggers(RequiredType.REQUIRED).forEach(actionSource -> {
             if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
-                RequiredTriggerAction action =
+                TopLevelSelectableAction action =
                         triggerSource.createAction(cardGame, card.getControllerName(), card);
                 if (action != null) result.add(action);
             }

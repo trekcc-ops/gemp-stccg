@@ -31,6 +31,14 @@ public class STCCGPlayCardAction extends PlayCardAction {
             appendCost(new UseNormalCardPlayAction(cardGame, player));
     }
 
+    public STCCGPlayCardAction(DefaultGame cardGame, PhysicalCard card, Zone zone, String playerName, boolean forFree,
+                               ActionContext context) {
+        super(cardGame, card, card, playerName, zone, ActionType.PLAY_CARD, context);
+        if (!forFree)
+            appendCost(new UseNormalCardPlayAction(cardGame, playerName));
+    }
+
+
 
     public STCCGPlayCardAction(DefaultGame cardGame, PhysicalCard card, Zone zone, String performingPlayerName,
                                boolean forFree, Enum<?>[] progressValues) {

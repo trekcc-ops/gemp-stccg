@@ -10,7 +10,6 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -31,6 +30,7 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
         _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;
+        _cardTargets.add(playableCardTarget);
     }
 
 
@@ -38,7 +38,6 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
     protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
         Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
-
         Action action = new ReportCardAction(cardGame, (ReportableCard) selectedCard,
                 true, eligibleDestinations);
         setPlayCardAction(action);
@@ -51,27 +50,15 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Action nextCost = getNextCost();
-        if (nextCost != null)
-            return nextCost;
-
-        if (!_cardToPlayTarget.isResolved()) {
-            if (_cardToPlayTarget instanceof SelectCardsResolver selectTarget) {
-                if (selectTarget.getSelectionAction().wasCompleted()) {
-                    _cardToPlayTarget.resolve(cardGame);
-                } else {
-                    return selectTarget.getSelectionAction();
-                }
-            } else {
-                _cardToPlayTarget.resolve(cardGame);
-            }
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            // The playCard method determines valid destinations
+            playCard(cardGame, Iterables.getOnlyElement(_cardToPlayTarget.getCards(cardGame)));
+            setAsSuccessful();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-
-        // The playCard method determines valid destinations
-        playCard(cardGame, Iterables.getOnlyElement(_cardToPlayTarget.getCards(cardGame)));
-        setAsSuccessful();
-        return null;
     }
 
     protected Action getPlayCardAction() { return _playCardAction; }

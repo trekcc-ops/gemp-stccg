@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.modifiers;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -10,10 +9,8 @@ import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,11 +21,14 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final AffiliatedCard _performingCard;
-    private SelectAffiliationAction _selectAffiliationAction;
+    private final SelectAffiliationAction _selectAffiliationAction;
 
     public ChangeAffiliationAction(DefaultGame cardGame, Player player, AffiliatedCard card) {
         super(cardGame, player, "Change affiliation", ActionType.CHANGE_AFFILIATION);
         _performingCard = card;
+        _selectAffiliationAction = new SelectAffiliationAction(
+                cardGame, _performingPlayerId, getAffiliationOptions(cardGame));
+        appendCost(_selectAffiliationAction);
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -65,25 +65,11 @@ public class ChangeAffiliationAction extends ActionyAction implements TopLevelSe
         return _affiliationOptions;
     }
 
-
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (_selectAffiliationAction == null) {
-            _selectAffiliationAction = new SelectAffiliationAction(
-                    cardGame, cardGame.getPlayer(_performingPlayerId), getAffiliationOptions(cardGame));
-        }
-
-
-        if (!_selectAffiliationAction.wasCarriedOut())
-            return _selectAffiliationAction;
-
-        if (isInProgress()) {
-            Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
-            _performingCard.changeAffiliation((ST1EGame) cardGame, selectedAffiliation);
-            setAsSuccessful();
-        }
-
-        return getNextAction();
+    protected void processEffect(DefaultGame cardGame) {
+        Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
+        _performingCard.changeAffiliation((ST1EGame) cardGame, selectedAffiliation);
+        setAsSuccessful();
     }
 
 }

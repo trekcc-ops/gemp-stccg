@@ -2,14 +2,12 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameOperationException;
 
 public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
     private final ShipCard _performingCard;
@@ -24,19 +22,9 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
     public PhysicalCard getPerformingCard() { return _performingCard; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameOperationException {
-//        if (!isAnyCostFailed()) {
-
-        Action cost = getNextCost();
-        if (cost != null)
-            return cost;
-
-        if (isInProgress()) {
-            _performingCard.undockFromFacility();
-            setAsSuccessful();
-        }
-
-        return getNextAction();
+    public void processEffect(DefaultGame cardGame) {
+        _performingCard.undockFromFacility();
+        setAsSuccessful();
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return _performingCard.isDocked(); }

@@ -23,25 +23,26 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
     private final ActionCardResolver _cardTarget;
     private Collection<PhysicalCard> _cardsDiscarded; // may not be initialized
 
+    public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
+                                            ActionCardResolver cardTarget) {
+        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
+        _performingCard = performingCard;
+        _cardTarget = cardTarget;
+    }
+
     public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
                                             SelectVisibleCardAction selectAction) {
-        super(cardGame, performingPlayer, "Discard", ActionType.DISCARD);
-        _performingCard = performingCard;
-        _cardTarget = new SelectCardsResolver(selectAction);
+        this(cardGame, performingCard, performingPlayer.getPlayerId(), new SelectCardsResolver(selectAction));
     }
 
     public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard,
                                             String performingPlayerName, Collection<PhysicalCard> cardsToDiscard) {
-        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
-        _cardTarget = new FixedCardsResolver(cardsToDiscard);
-        _performingCard = performingCard;
+        this(cardGame, performingCard, performingPlayerName, new FixedCardsResolver(cardsToDiscard));
     }
 
     public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard,
                                             String performingPlayerName, CardFilter cardFilter) {
-        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
-        _cardTarget = new AllCardsMatchingFilterResolver(cardFilter);
-        _performingCard = performingCard;
+        this(cardGame, performingCard, performingPlayerName, new AllCardsMatchingFilterResolver(cardFilter));
     }
 
 
@@ -56,17 +57,20 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (!_cardTarget.isResolved()) {
-            Action selectionAction = _cardTarget.getSelectionAction();
-            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
-                return selectionAction;
-            } else {
-                _cardTarget.resolve(cardGame);
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        super.continueInitiation(cardGame);
+        if (_cardsDiscarded == null) {
+            if (_cardTarget.isResolved()) {
+                _cardsDiscarded = _cardTarget.getCards(cardGame);
+            } else if (wasInitiated()) {
+                throw new InvalidGameLogicException("Unable to identify cards to discard from card resolver");
             }
         }
+    }
 
-        Collection<PhysicalCard> cardsToDiscard = _cardTarget.getCards(cardGame);
+    @Override
+    protected void processEffect(DefaultGame cardGame) {
+        Collection<PhysicalCard> cardsToDiscard = _cardsDiscarded;
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, cardsToDiscard);
         for (PhysicalCard cardToDiscard : cardsToDiscard) {
@@ -74,7 +78,6 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
             saveResult(new DiscardCardFromPlayResult(cardToDiscard, this));
         }
         setAsSuccessful();
-        return getNextAction();
     }
 
     @JsonProperty("targetCardIds")

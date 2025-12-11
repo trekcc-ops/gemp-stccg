@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -93,11 +93,11 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        selectAction(STCCGPlayCardAction.class, deathYell, P1);
+        selectAction(UseGameTextAction.class, deathYell, P1);
 
         // P2 plays Amanda Rogers as response
-        assertFalse(deathYell.isInPlay());
-        selectAction(STCCGPlayCardAction.class, amanda, P2);
+        assertTrue(deathYell.isInPlay());
+        selectAction(UseGameTextAction.class, amanda, P2);
         assertFalse(amanda.isInPlay());
         assertFalse(deathYell.isInPlay());
     }
@@ -174,19 +174,19 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        selectAction(STCCGPlayCardAction.class, deathYell, P1);
-        assertFalse(deathYell.isInPlay());
+        selectAction(UseGameTextAction.class, deathYell, P1);
+        assertTrue(deathYell.isInPlay());
 
         Player player1 = _game.getPlayer(P1);
 
-        // P2 plays Amanda Rogers as response
-        Action amanda2action = selectAction(STCCGPlayCardAction.class, amanda2, P2);
-        assertFalse(amanda2.isInPlay());
-        assertFalse(deathYell.isInPlay());
+        // P2 plays Amanda Rogers as response, but it doesn't immediately resolve because P1 has an Amanda too
+        Action amanda2action = selectAction(UseGameTextAction.class, amanda2, P2);
+        assertTrue(amanda2.isInPlay());
+        assertTrue(deathYell.isInPlay());
         assertEquals(0, player1.getScore());
 
         // P1 plays Amanda Rogers as response
-        Action amanda1action = selectAction(STCCGPlayCardAction.class, amanda1, P1);
+        Action amanda1action = selectAction(UseGameTextAction.class, amanda1, P1);
         assertFalse(amanda1.isInPlay());
         assertEquals(5, player1.getScore());
     }
@@ -263,13 +263,13 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        selectAction(STCCGPlayCardAction.class, deathYell, P1);
-        assertFalse(deathYell.isInPlay());
+        selectAction(UseGameTextAction.class, deathYell, P1);
+        assertTrue(deathYell.isInPlay());
 
         // Try to respond with player1's Amanda Rogers (it should be P2's turn)
         boolean errorThrown = false;
         try {
-            selectAction(STCCGPlayCardAction.class, amanda1, P1);
+            selectAction(UseGameTextAction.class, amanda1, P1);
         } catch(DecisionResultInvalidException exp) {
             errorThrown = true;
         }

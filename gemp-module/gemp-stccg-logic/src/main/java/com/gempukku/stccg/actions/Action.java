@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -63,7 +62,6 @@ public interface Action {
 
     void clearResult();
     ActionResult getResult();
-    ActionContext getContext();
 
     default void appendExtraCostsFromModifiers(PhysicalCard target, DefaultGame cardGame) {
         for (Modifier modifier :
@@ -81,4 +79,5 @@ public interface Action {
             throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException,
             CardNotFoundException;
 
+    void cancel();
 }

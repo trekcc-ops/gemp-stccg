@@ -7,7 +7,6 @@ import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -24,42 +23,22 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     private Collection<PhysicalCard> _targetCards;
 
     public ShuffleCardsIntoDrawDeckAction(DefaultGame cardGame, PhysicalCard performingCard,
-                                          String performingPlayerName, CardFilter cardFilter) {
-        super(cardGame, performingPlayerName, "Shuffle cards into draw deck",
-                ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
-        _cardTarget = new AllCardsMatchingFilterResolver(cardFilter);
-        _performingCard = performingCard;
-    }
-
-    public ShuffleCardsIntoDrawDeckAction(DefaultGame cardGame, PhysicalCard performingCard,
                                           String performingPlayerName, ActionCardResolver cardTarget) {
         super(cardGame, performingPlayerName, "Shuffle cards into draw deck",
                 ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
         _cardTarget = cardTarget;
         _performingCard = performingCard;
+        _cardTargets.add(_cardTarget);
     }
 
+    public ShuffleCardsIntoDrawDeckAction(DefaultGame cardGame, PhysicalCard performingCard,
+                                          String performingPlayerName, CardFilter cardFilter) {
+        this(cardGame, performingCard, performingPlayerName, new AllCardsMatchingFilterResolver(cardFilter));
+    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return !_cardTarget.cannotBeResolved(cardGame);
-    }
-
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (!_cardTarget.isResolved()) {
-            Action selectionAction = _cardTarget.getSelectionAction();
-            if (selectionAction != null && !selectionAction.wasCarriedOut()) {
-                return selectionAction;
-            } else {
-                _cardTarget.resolve(cardGame);
-            }
-        }
-
-        Action nextAction = getNextAction();
-        if (nextAction == null)
-            processEffect(cardGame);
-        return nextAction;
     }
 
     @Override

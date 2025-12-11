@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -76,7 +76,7 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Beam Worf to the planet
         beamCard(P1, outpost, worf, excavation);
-        assertTrue(_game.getGameState().getAwayTeamForCard(worf).isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests(_game)));
+        assertTrue(_game.getGameState().getAwayTeamForCard(worf).isOnSurface(excavation.getLocationId()));
 
         // Attempt mission
         attemptMission(P1, _game.getGameState().getAwayTeamForCard(worf), excavation);
@@ -86,7 +86,7 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        selectAction(STCCGPlayCardAction.class, deathYell, P1);
+        selectAction(UseGameTextAction.class, deathYell, P1);
 
         Player player1 = _game.getPlayer(P1);
 

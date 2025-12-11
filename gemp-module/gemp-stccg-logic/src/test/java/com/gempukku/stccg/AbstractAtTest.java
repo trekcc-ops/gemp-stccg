@@ -893,7 +893,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void reportCardToFacility(ReportableCard reportable, FacilityCard facility)
             throws PlayerNotFoundException, InvalidGameLogicException {
         ReportCardAction reportCardAction = new ReportCardAction(_game, reportable, false, facility);
-        reportCardAction.processEffect(reportable, _game);
+        reportCardAction.processEffect(_game);
     }
 
     protected void reportCardsToFacility(Collection<ReportableCard> reportables, FacilityCard facility)

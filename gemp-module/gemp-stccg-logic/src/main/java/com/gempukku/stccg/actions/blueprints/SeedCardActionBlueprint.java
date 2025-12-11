@@ -12,7 +12,7 @@ import com.gempukku.stccg.requirement.SeedQuantityLimitRequirement;
 public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     private final Zone _seedToZone;
 
-    public SeedCardActionBlueprint(@JsonProperty(value = "where", required = true)
+    private SeedCardActionBlueprint(@JsonProperty(value = "where", required = true)
                                 Zone seedToZone
     ) {
         super(0, new YouPlayerSource());

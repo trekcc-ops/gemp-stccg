@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -9,9 +8,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,9 +43,8 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        AwaitingDecision decision = new ArbitraryCardsSelectionDecision(performingPlayer, _choiceText,
+    protected void processEffect(DefaultGame cardGame) {
+        AwaitingDecision decision = new ArbitraryCardsSelectionDecision(_performingPlayerId, _choiceText,
                 _selectableCards, _validCombinations, MINIMUM, _maximum, cardGame) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -56,11 +52,8 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
                 setAsSuccessful();
             }
         };
-
         cardGame.sendAwaitingDecision(decision);
-
         setAsSuccessful();
-        return getNextAction();
     }
 
     @Override

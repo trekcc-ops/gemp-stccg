@@ -1,12 +1,10 @@
 package com.gempukku.stccg.actions.usage;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.LimitCounter;
 
@@ -29,11 +27,10 @@ public class UseOncePerTurnAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    protected void processEffect(DefaultGame cardGame) {
         LimitCounter limitCounter = getLimitCounter(cardGame);
         limitCounter.incrementToLimit(LIMIT_PER_TURN, 1);
         setAsSuccessful();
-        return getNextAction();
     }
 
     private LimitCounter getLimitCounter(DefaultGame cardGame) {

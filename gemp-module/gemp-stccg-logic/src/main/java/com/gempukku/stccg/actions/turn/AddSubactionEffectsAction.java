@@ -27,7 +27,7 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
 
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void processEffect(DefaultGame cardGame) {
         try {
             final List<Action> actions = _blueprint.createActions(cardGame, _parentAction, _actionContext);
             if (actions != null) {
@@ -36,16 +36,11 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
                 else
                     _parentAction.insertActions(actions);
             }
-        } catch (InvalidCardDefinitionException exp) {
-            throw new InvalidGameLogicException(exp.getMessage());
+        } catch (InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        Action nextAction = getNextAction();
-        if (nextAction != null)
-            return nextAction;
-        else {
-            setAsSuccessful();
-            return null;
-        }
+        setAsSuccessful();
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {

@@ -1,13 +1,9 @@
 package com.gempukku.stccg.actions.blueprints;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
@@ -17,6 +13,7 @@ import java.util.List;
 
 public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
 
+    @JsonCreator
     private OptionalTriggerActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
                                        int limitPerTurn,
                                           @JsonProperty(value="triggerDuringSeed", required = true)
@@ -35,18 +32,6 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                            String playerText) throws InvalidCardDefinitionException {
         super(limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed,
                 (playerText == null) ? new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText));
-    }
-
-    @Override
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard) {
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
-        if (isValid(cardGame, actionContext)) {
-            OptionalTriggerAction action = new OptionalTriggerAction(cardGame, thisCard, this, actionContext);
-            appendActionToContext(cardGame, action, actionContext);
-            return action;
-        }
-        return null;
     }
 
 

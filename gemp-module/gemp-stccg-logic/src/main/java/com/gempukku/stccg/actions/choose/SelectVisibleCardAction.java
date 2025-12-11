@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -10,8 +9,6 @@ import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -41,14 +38,13 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void processEffect(DefaultGame cardGame) {
         Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
         if (selectableCards.size() == 1) {
             _selectedCard = Iterables.getOnlyElement(selectableCards);
-            setAsSuccessful();
         } else {
             AwaitingDecision decision = new CardsSelectionDecision(
-                                cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
+                    _performingPlayerId, _decisionText, selectableCards,
                                 1, 1, cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -57,9 +53,8 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
                             }
                         };
             cardGame.sendAwaitingDecision(decision);
-            setAsSuccessful();
         }
-        return getNextAction();
+        setAsSuccessful();
     }
 
     public PhysicalCard getSelectedCard() {

@@ -41,7 +41,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         List<FacilityCard> outpostsToSeed = List.of(outpost1, outpost2);
 
         SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, 0);
-        seedAction.seedCard(_game, false);
+        seedAction.processEffect(_game);
 
         for (FacilityCard facility : outpostsToSeed) {
             SeedOutpostAction seedOutpostAction = new SeedOutpostAction(_game, facility);

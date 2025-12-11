@@ -15,6 +15,7 @@ import com.gempukku.stccg.requirement.Requirement;
                 name = "drawAdditionalCardsAtEndOfTurn"),
         @JsonSubTypes.Type(value = EncounterSeedCardActionBlueprint.class, name = "encounter"),
         @JsonSubTypes.Type(value = OptionalTriggerActionBlueprint.class, name = "optionalTrigger"),
+        @JsonSubTypes.Type(value = PlayThisCardAsResponseActionBlueprint.class, name = "playThisAsResponse"),
         @JsonSubTypes.Type(value = RequiredTriggerActionBlueprint.class, name = "requiredTrigger")
 })
 public interface ActionBlueprint {

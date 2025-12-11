@@ -229,16 +229,16 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         }
     }
 
-    private void breakExcessiveLoop(int numSinceDecision) {
+    private void breakExcessiveLoop(int numSinceDecision) throws InvalidGameLogicException {
         String errorMessage = "There's been " + numSinceDecision +
                 " actions/effects since last user decision. Game is probably looping, so ending game.";
-        sendErrorMessage(errorMessage);
 
         Stack<Action> actionStack = getActionsEnvironment().getActionStack();
-        sendErrorMessage("Action stack size: " + actionStack.size());
-        actionStack.forEach(action -> sendErrorMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
-                action.getClass().getSimpleName()));
-        throw new UnsupportedOperationException(errorMessage);
+        errorMessage = errorMessage + " Action stack size: " + actionStack.size();
+        for (Action action : actionStack) {
+            errorMessage = errorMessage + "Action " + actionStack.indexOf(action) + 1 + ": " + action.getClass().getSimpleName();
+        }
+        throw new InvalidGameLogicException(errorMessage);
     }
     
 

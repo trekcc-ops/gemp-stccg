@@ -47,6 +47,14 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
         this(player, text, possibleResults.toArray(new String[0]), cardGame);
     }
 
+    public MultipleChoiceAwaitingDecision(String playerName, Collection<String> possibleResults,
+                                          DefaultGame cardGame, DecisionContext context) {
+        super(playerName, context, cardGame);
+        _possibleResults = possibleResults.toArray(new String[0]);
+        _context = context;
+    }
+
+
     public MultipleChoiceAwaitingDecision(Player player, Collection<String> possibleResults,
                                           DefaultGame cardGame, DecisionContext context) {
         super(player, context, cardGame);

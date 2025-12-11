@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
-import com.gempukku.stccg.actions.discard.NullifyCardBeingPlayedAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
@@ -24,7 +22,6 @@ public abstract class ActionyAction implements Action {
     @JsonProperty("actionId")
     private int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
-    private final LinkedList<Action> _processedUsageCosts = new LinkedList<>();
 
     protected final List<ActionCardResolver> _cardTargets = new LinkedList<>();
     private final List<ActionCardResolver> _resolvedTargets = new LinkedList<>();
@@ -32,7 +29,6 @@ public abstract class ActionyAction implements Action {
     private final LinkedList<Action> _processedCosts = new LinkedList<>();
     private final LinkedList<Action> _actionEffects = new LinkedList<>();
     private final LinkedList<Action> _processedActions = new LinkedList<>();
-    private final LinkedList<Action> _usageCosts = new LinkedList<>();
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
@@ -95,14 +91,6 @@ public abstract class ActionyAction implements Action {
     }
 
 
-
-    protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType, Enum<?>[] progressValues) {
-        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-        for (Enum<?> progressType : progressValues) {
-            _progressIndicators.put(progressType.name(), false);
-        }
-    }
-
     protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType,
                             Enum<?>[] progressValues) {
         this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
@@ -111,26 +99,9 @@ public abstract class ActionyAction implements Action {
         }
     }
 
-    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType,
-                            Enum<?>[] progressTypes) {
-        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-        for (Enum<?> progressType : progressTypes) {
-            _progressIndicators.put(progressType.name(), false);
-        }
-    }
-
     protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType,
                             Enum<?>[] progressTypes, ActionContext actionContext) {
         this(cardGame.getActionsEnvironment(), actionType, performingPlayerName, actionContext);
-        for (Enum<?> progressType : progressTypes) {
-            _progressIndicators.put(progressType.name(), false);
-        }
-    }
-
-
-    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, String text, ActionType actionType,
-                            Enum<?>[] progressTypes) {
-        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
         for (Enum<?> progressType : progressTypes) {
             _progressIndicators.put(progressType.name(), false);
         }
@@ -159,7 +130,6 @@ public abstract class ActionyAction implements Action {
         _costs.addAll(0, costs);
     }
 
-
     public final void insertAction(Action action) {
         _actionEffects.addAll(0, Collections.singletonList(action));
     }
@@ -167,25 +137,7 @@ public abstract class ActionyAction implements Action {
         _actionEffects.addAll(0, actions);
     }
 
-    protected boolean isCostFailed() {
-        for (Action processedCost : _processedCosts) {
-            if (!processedCost.wasSuccessful())
-                return true;
-        }
-        for (Action usageCost : _processedUsageCosts) {
-            if (!usageCost.wasCarriedOut())
-                return true;
-        }
-        return false;
-    }
-
     protected final Action getNextCost() {
-        Action usageCost = _usageCosts.poll();
-        if (usageCost != null) {
-            _processedUsageCosts.add(usageCost);
-            return usageCost;
-        }
-
         Action cost = _costs.poll();
         if (cost != null)
             _processedCosts.add(cost);
@@ -220,10 +172,6 @@ public abstract class ActionyAction implements Action {
             if (!cost.canBeInitiated(game)) {
                 return false;
             }
-        for (Action usageCost : _usageCosts)
-            if (!usageCost.canBeInitiated(game)) {
-                return false;
-            }
         return true;
     }
 
@@ -232,12 +180,6 @@ public abstract class ActionyAction implements Action {
     }
 
     public String getCardActionPrefix() { return _cardActionPrefix; }
-
-    public final void appendUsage(Action cost) {
-        if (!_costs.isEmpty() || !_processedCosts.isEmpty() || !_actionEffects.isEmpty() || !_processedActions.isEmpty())
-            throw new UnsupportedOperationException("Called appendUsage() in incorrect order");
-        _usageCosts.add(cost);
-    }
 
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException {
         Action action = getNextAction();
@@ -268,9 +210,6 @@ public abstract class ActionyAction implements Action {
     public Map<String, Boolean> getProgressIndicators() {
         return _progressIndicators;
     }
-
-    @JsonIgnore
-    public boolean isBeingInitiated() { return _actionStatus == ActionStatus.initiation_started; }
 
     public void startPerforming() {
         _actionStatus = ActionStatus.initiation_started;
@@ -311,15 +250,6 @@ public abstract class ActionyAction implements Action {
     }
 
     public boolean wasSuccessful() {
-        if (isCostFailed()) {
-            return false;
-        }
-
-        for (Action processedAction : _processedActions) {
-            if (!processedAction.wasSuccessful())
-                return false;
-        }
-
         return _actionStatus == ActionStatus.completed_success;
     }
 
@@ -333,52 +263,99 @@ public abstract class ActionyAction implements Action {
 
     public ActionResult getResult() { return _currentResult; }
 
-    public ActionContext getContext() { return _actionContext; }
-
     @JsonProperty("actionId")
     public void setActionId(int actionId) {
         _actionId = actionId;
     }
 
-    public void resolveTargets() {
-    }
-
     public void executeNextSubAction(ActionsEnvironment actionsEnvironment, DefaultGame cardGame)
-            throws PlayerNotFoundException, InvalidGameLogicException, InvalidGameOperationException,
-            CardNotFoundException {
+            throws PlayerNotFoundException, InvalidGameLogicException {
 
         ActionResult actionResult = getResult();
         if (actionResult != null) {
             actionResult.initialize(cardGame);
             actionResult.addNextActionToStack(cardGame, this);
+        } else if (!isInProgress() && getResult() == null) {
+            actionsEnvironment.removeCompletedActionFromStack(this);
+            cardGame.sendActionResultToClient();
         } else {
             if (isInProgress()) {
-                if (this instanceof NullifyCardBeingPlayedAction || this instanceof DiscardSingleCardAction) {
-                    if (!wasInitiated()) {
-                        continueInitiation(cardGame);
-                    } else {
-                        processEffect(cardGame);
-                    }
+                if (!wasInitiated()) {
+                    continueInitiation(cardGame);
                 } else {
-                    Action nextAction = nextAction(cardGame);
-                    actionsEnvironment.addActionToStack(nextAction); // won't do anything if nextAction is null
+                    continueEffects(cardGame);
                 }
-            } else if (!isInProgress() && getResult() == null) {
-                actionsEnvironment.removeCompletedActionFromStack(this);
-                cardGame.sendActionResultToClient();
             } else if (cardGame.isCarryingOutEffects() && getResult() == null) {
                 throw new InvalidGameLogicException("Unable to process action");
             }
         }
     }
 
-    /* Override methods not implemented:
-        InitiateShipBattleAction
-        "choose" package
-        AllPlayersDiscardFromHandAction
-     */
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        resolveTargets(cardGame);
 
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
+        if (_cardTargets.isEmpty() && _targeting.isEmpty() && thisActionShouldBeContinued(cardGame)) {
+            int loopNumber = 1;
+
+            while (thisActionShouldBeContinued(cardGame) && !_costs.isEmpty()) {
+                Action targetingAction = _costs.getFirst();
+                if (targetingAction.wasSuccessful()) {
+                    _costs.remove(targetingAction);
+                    _processedCosts.add(targetingAction);
+                } else if (targetingAction.wasFailed()) {
+                    this.setAsFailed();
+                } else {
+                    cardGame.getActionsEnvironment().addActionToStack(targetingAction);
+                }
+                loopNumber++;
+                if (loopNumber > 500) {
+                    throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
+                            "method. This is likely due to a circular logic error.");
+                }
+            }
+        }
+
+        if (_cardTargets.isEmpty() && _targeting.isEmpty() && _costs.isEmpty() && thisActionShouldBeContinued(cardGame)) {
+            _actionStatus = ActionStatus.initiation_complete;
+        }
+    }
+
+    protected void continueEffects(DefaultGame cardGame) throws InvalidGameLogicException {
+        int loopNumber = 1;
+
+        while (thisActionShouldBeContinued(cardGame) && !_actionEffects.isEmpty()) {
+            Action subAction = _actionEffects.getFirst();
+            if (subAction.wasSuccessful()) {
+                _actionEffects.remove(subAction);
+                _processedActions.add(subAction);
+            } else if (subAction.wasFailed()) {
+                this.setAsFailed();
+            } else {
+                cardGame.getActionsEnvironment().addActionToStack(subAction);
+            }
+            loopNumber++;
+            if (loopNumber > 500) {
+                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
+                        "method. This is likely due to a circular logic error.");
+            }
+        }
+
+        if (_actionEffects.isEmpty() && thisActionShouldBeContinued(cardGame)) {
+            processEffect(cardGame);
+        }
+    }
+
+
+    private boolean thisActionShouldBeContinued(DefaultGame cardGame) {
+        return cardGame.getCurrentAction() == this && cardGame.getGameState().hasNoPendingDecisions() &&
+                _actionStatus.isInProgress();
+    }
+
+    protected void processEffect(DefaultGame cardGame) {
+        setAsSuccessful();
+    }
+
+    private void resolveTargets(DefaultGame cardGame) throws InvalidGameLogicException {
         int loopNumber = 1;
 
         while (thisActionShouldBeContinued(cardGame) && !_cardTargets.isEmpty()) {
@@ -398,6 +375,8 @@ public abstract class ActionyAction implements Action {
             }
         }
 
+        loopNumber = 1;
+
         while (thisActionShouldBeContinued(cardGame) && !_targeting.isEmpty()) {
             Action targetingAction = _targeting.getFirst();
             if (targetingAction.wasSuccessful()) {
@@ -414,38 +393,6 @@ public abstract class ActionyAction implements Action {
                         "method. This is likely due to a circular logic error.");
             }
         }
-
-        loopNumber = 1;
-
-        while (thisActionShouldBeContinued(cardGame) && !_costs.isEmpty()) {
-            Action targetingAction = _costs.getFirst();
-            if (targetingAction.wasSuccessful()) {
-                _costs.remove(targetingAction);
-                _processedCosts.add(targetingAction);
-            } else if (targetingAction.wasFailed()) {
-                this.setAsFailed();
-            } else {
-                cardGame.getActionsEnvironment().addActionToStack(targetingAction);
-            }
-            loopNumber++;
-            if (loopNumber > 500) {
-                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
-                        "method. This is likely due to a circular logic error.");
-            }
-        }
-
-        if (_targeting.isEmpty() && _costs.isEmpty() && thisActionShouldBeContinued(cardGame)) {
-            _actionStatus = ActionStatus.initiation_complete;
-        }
-    }
-
-    private boolean thisActionShouldBeContinued(DefaultGame cardGame) {
-        return cardGame.getCurrentAction() == this && cardGame.getGameState().hasNoPendingDecisions() &&
-                _actionStatus.isInProgress();
-    }
-
-    protected void processEffect(DefaultGame cardGame) {
-
     }
 
 }

@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class OvercomeDilemmaConditionAction extends ActionyAction {
 
@@ -18,7 +17,6 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     private final EncounterSeedCardAction _encounterAction;
     private enum Progress { conditionsChecked }
     private final MissionRequirement _conditions;
-    private boolean _failed;
     private boolean _succeeded;
 
     public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
@@ -51,10 +49,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (isBeingInitiated())
-            setAsInitiated();
-
+    protected void processEffect(DefaultGame cardGame) {
         if (!getProgress(Progress.conditionsChecked)) {
             Action result;
             if (_conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
@@ -64,18 +59,13 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                 result = _failAction;
                 _encounterAction.setAsFailed();
                 _encounterAction.getAttemptAction().setAsFailed();
-                _failed = true;
             }
             setProgress(Progress.conditionsChecked);
-            return result;
-        }
-
-        Action nextAction = getNextAction();
-        if (nextAction == null) {
+            cardGame.addActionToStack(result);
+        } else {
             if (_succeeded)
                 setAsSuccessful();
             else setAsFailed();
         }
-        return nextAction;
     }
 }

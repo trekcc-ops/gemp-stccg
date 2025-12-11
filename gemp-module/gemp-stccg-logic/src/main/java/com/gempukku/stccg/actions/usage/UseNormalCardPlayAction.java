@@ -1,10 +1,8 @@
 package com.gempukku.stccg.actions.usage;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 
 public class UseNormalCardPlayAction extends ActionyAction {
@@ -23,9 +21,8 @@ public class UseNormalCardPlayAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+    protected void processEffect(DefaultGame cardGame) {
         cardGame.getGameState().useNormalCardPlay(_performingPlayerId);
         setAsSuccessful();
-        return getNextAction();
     }
 }

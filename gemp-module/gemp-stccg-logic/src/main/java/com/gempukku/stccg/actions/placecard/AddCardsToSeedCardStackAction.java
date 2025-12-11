@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -16,7 +15,6 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,31 +44,28 @@ public class AddCardsToSeedCardStackAction extends ActionyAction implements TopL
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
-        Action nextAction = getNextAction();
-        if (nextAction == null) {
-            processEffect(cardGame.getPlayer(_performingPlayerId), cardGame);
-        }
-        return nextAction;
-    }
-
-    public void processEffect(Player performingPlayer, DefaultGame cardGame) throws InvalidGameLogicException {
-        GameState gameState = cardGame.getGameState();
-        for (PhysicalCard seedCard : _cardsBeingSeeded) {
-            gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(seedCard));
-            seedCard.setZone(Zone.VOID);
-            if (gameState instanceof ST1EGameState stGameState) {
-                GameLocation location = stGameState.getLocationById(_locationId);
-                if (location instanceof MissionLocation missionLocation) {
-                    missionLocation.addCardToTopOfPreSeedPile(seedCard, performingPlayer);
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            GameState gameState = cardGame.getGameState();
+            for (PhysicalCard seedCard : _cardsBeingSeeded) {
+                gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(seedCard));
+                seedCard.setZone(Zone.VOID);
+                if (gameState instanceof ST1EGameState stGameState) {
+                    GameLocation location = stGameState.getLocationById(_locationId);
+                    if (location instanceof MissionLocation missionLocation) {
+                        missionLocation.addCardToTopOfPreSeedPile(seedCard, _performingPlayerId);
+                    } else {
+                        throw new InvalidGameLogicException("Unable to seed cards under a non-mission location");
+                    }
                 } else {
-                    throw new InvalidGameLogicException("Unable to seed cards under a non-mission location");
+                    throw new InvalidGameLogicException("Unable to seed cards under a mission in a non-1E game");
                 }
-            } else {
-                throw new InvalidGameLogicException("Unable to seed cards under a mission in a non-1E game");
             }
+            setAsSuccessful();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        setAsSuccessful();
     }
 
     @Override

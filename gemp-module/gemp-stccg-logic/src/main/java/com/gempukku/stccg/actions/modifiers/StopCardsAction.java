@@ -11,7 +11,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class StopCardsAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
@@ -21,22 +20,28 @@ public class StopCardsAction extends ActionyAction {
     private Collection<PhysicalCard> _stoppedCards;
 
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
-                           Collection<? extends ST1EPhysicalCard> cardsToStop) {
-        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
-        _cardTarget = new FixedCardsResolver(cardsToStop);
-    }
-
-    public StopCardsAction(DefaultGame cardGame, String performingPlayerName, SelectCardsAction selectionAction) {
-        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
-        _cardTarget = new SelectCardsResolver(selectionAction);
-    }
-
-    public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
                            ActionCardResolver cardTarget, ActionContext context, String saveToMemoryId) {
         super(cardGame, performingPlayerName, ActionType.STOP_CARDS, context);
         _cardTarget = cardTarget;
+        _cardTargets.add(cardTarget);
         _saveToMemoryId = saveToMemoryId;
     }
+
+    private StopCardsAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardResolver) {
+        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
+        _cardTarget = cardResolver;
+        _cardTargets.add(cardResolver);
+    }
+
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
+                           Collection<? extends ST1EPhysicalCard> cardsToStop) {
+        this(cardGame, performingPlayerName, new FixedCardsResolver(cardsToStop));
+    }
+
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName, SelectCardsAction selectionAction) {
+        this(cardGame, performingPlayerName, new SelectCardsResolver(selectionAction));
+    }
+
 
 
     @Override
@@ -45,42 +50,25 @@ public class StopCardsAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_cardTarget.isResolved()) {
-            Action selectionAction = _cardTarget.getSelectionAction();
-            if (selectionAction != null) {
-                if (selectionAction.wasCarriedOut()) {
-                    _cardTarget.resolve(cardGame);
-                } else {
-                    return selectionAction;
-                }
-            } else {
-                _cardTarget.resolve(cardGame);
-            }
-        }
-
-        if (!wasCompleted()) {
+    protected void processEffect(DefaultGame cardGame) {
+        try {
             _stoppedCards = _cardTarget.getCards(cardGame);
-            Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>();
             for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
                 if (card instanceof ST1EPhysicalCard stCard) {
-                    cardsToStop.add(stCard);
+                    stCard.stop();
                 } else {
                     setAsFailed();
-                    throw new InvalidGameLogicException(
-                            "Tried to \"stop\" a card from a game with no \"stop\" action");
+                    throw new InvalidGameLogicException("Tried to \"stop\" a card from a game with no \"stop\" action");
                 }
-            }
-            for (ST1EPhysicalCard card : cardsToStop) {
-                card.stop();
             }
             if (_actionContext != null && _saveToMemoryId != null) {
                 _actionContext.setCardMemory(_saveToMemoryId, _stoppedCards);
             }
             setAsSuccessful();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-
-        return getNextAction();
     }
 
 }

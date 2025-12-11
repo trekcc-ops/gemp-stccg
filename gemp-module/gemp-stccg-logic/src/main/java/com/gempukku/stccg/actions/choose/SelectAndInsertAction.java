@@ -8,9 +8,6 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +32,7 @@ public class SelectAndInsertAction extends ActionyAction {
 
     public SelectAndInsertAction(DefaultGame cardGame, Action parentAction, String selectingPlayerName,
                                  List<Action> selectableActions, Map<Action, String> actionMessageMap) {
-        super(cardGame, selectingPlayerName, "Choose an action", ActionType.SELECT_ACTION);
+        super(cardGame, selectingPlayerName, ActionType.SELECT_ACTION);
         _selectableActions.addAll(selectableActions);
         _parentAction = parentAction;
         _actionMessageMap = actionMessageMap;
@@ -54,34 +51,31 @@ public class SelectAndInsertAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (_decision == null) {
-            List<Action> performableActions = new LinkedList<>();
-            List<String> actionTexts = new LinkedList<>();
-            for (Action action : _selectableActions) {
-                if (action.canBeInitiated(cardGame)) {
-                    performableActions.add(action);
-                    actionTexts.add(_actionMessageMap.get(action));
+    protected void processEffect(DefaultGame cardGame) {
+        List<Action> performableActions = new LinkedList<>();
+        List<String> actionTexts = new LinkedList<>();
+        for (Action action : _selectableActions) {
+            if (action.canBeInitiated(cardGame)) {
+                performableActions.add(action);
+                actionTexts.add(_actionMessageMap.get(action));
+            }
+        }
+        _decision = new MultipleChoiceAwaitingDecision(_performingPlayerId, "Choose an action",
+                actionTexts, cardGame) {
+            @Override
+            protected void validDecisionMade(int index, String result) {
+                try {
+                    _selectedAction = performableActions.get(index);
+                    _parentAction.insertAction(_selectedAction);
+                    setAsSuccessful();
+                } catch(NoSuchElementException exp) {
+                    setAsFailed();
+                    cardGame.sendErrorMessage(exp);
                 }
             }
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            _decision = new MultipleChoiceAwaitingDecision(performingPlayer, "Choose an action",
-                    actionTexts, cardGame) {
-                @Override
-                protected void validDecisionMade(int index, String result) {
-                    try {
-                        _selectedAction = performableActions.get(index);
-                        _parentAction.insertAction(_selectedAction);
-                        setAsSuccessful();
-                    } catch(NoSuchElementException exp) {
-                        setAsFailed();
-                        cardGame.sendErrorMessage(exp);
-                    }
-                }
-            };
-            cardGame.sendAwaitingDecision(_decision);
-        }
-        return getNextAction();
+        };
+        cardGame.sendAwaitingDecision(_decision);
+        setAsSuccessful();
     }
 
 }

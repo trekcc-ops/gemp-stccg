@@ -26,6 +26,7 @@ public class IncreaseAttributesUntilEndOfTurnAction extends ActionyAction {
         _amount = amount;
         _performingCard = performingCard;
         _attributes = attributes;
+        _cardTargets.add(cardTarget);
     }
 
     @Override
@@ -34,30 +35,23 @@ public class IncreaseAttributesUntilEndOfTurnAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (_cardTarget instanceof SelectCardsResolver selectTarget) {
-            if (!_cardTarget.isResolved()) {
-                Action selectionAction = selectTarget.getSelectionAction();
-                if (selectionAction != null && !selectionAction.wasCarriedOut()) {
-                    return selectionAction;
-                } else {
-                    _cardTarget.resolve(cardGame);
-                }
-            }
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            CardFilter affectedCardsFilter = switch (_cardTarget) {
+                case SelectCardsResolver selectTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
+                case FixedCardsResolver fixedCardsTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
+                case FixedCardResolver fixedCardTarget -> Filters.card(fixedCardTarget.getCard());
+                case AllCardsMatchingFilterResolver filterTarget -> filterTarget.getFilter();
+                default -> throw new InvalidGameLogicException("Unexpected value: " + _cardTarget);
+            };
+
+            Modifier modifier = new AttributeModifier(_performingCard, affectedCardsFilter, _amount, _attributes);
+            cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(modifier);
+            setAsSuccessful();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-
-        CardFilter affectedCardsFilter = switch(_cardTarget) {
-            case SelectCardsResolver selectTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
-            case FixedCardsResolver fixedCardsTarget -> Filters.inCards(_cardTarget.getCards(cardGame));
-            case FixedCardResolver fixedCardTarget -> Filters.card(fixedCardTarget.getCard());
-            case AllCardsMatchingFilterResolver filterTarget -> filterTarget.getFilter();
-            default -> throw new InvalidGameLogicException("Unexpected value: " + _cardTarget);
-        };
-
-        Modifier modifier = new AttributeModifier(_performingCard, affectedCardsFilter, _amount, _attributes);
-        cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(modifier);
-        setAsSuccessful();
-        return getNextAction();
     }
 
 }

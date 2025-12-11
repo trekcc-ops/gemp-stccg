@@ -7,7 +7,6 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
@@ -49,7 +48,7 @@ public class ActionResult {
     private ActionOrder _optionalResponsePlayerOrder;
     private final List<TopLevelSelectableAction> _requiredResponses = new ArrayList<>();
     private int _passCount;
-    private final Action _action;
+    protected final Action _action;
 
 
     public ActionResult(Type type, String performingPlayerId, Action action) {
@@ -157,11 +156,19 @@ public class ActionResult {
         };
     }
 
+    private void refreshActions(DefaultGame cardGame) {
+        for (List<TopLevelSelectableAction> optionalActions : _optionalAfterTriggerActions.values()) {
+            optionalActions.removeIf(action -> !action.canBeInitiated(cardGame) || action.wasInitiated());
+        }
+        _requiredResponses.removeIf(nextAction -> !nextAction.canBeInitiated(cardGame) || nextAction.wasInitiated());
+    }
 
-    public void addNextActionToStack(DefaultGame cardGame, Action parentAction) throws InvalidGameLogicException {
+
+    public void addNextActionToStack(DefaultGame cardGame, Action parentAction) {
+        refreshActions(cardGame);
         if (!_requiredResponses.isEmpty()) {
             ActionsEnvironment environment = cardGame.getActionsEnvironment();
-            if (_requiredResponses.size() == 1) {
+            if (_requiredResponses.size() == 1 && _requiredResponses.getFirst().canBeInitiated(cardGame)) {
                 environment.addActionToStack(_requiredResponses.getFirst());
             } else {
                 cardGame.sendAwaitingDecision(

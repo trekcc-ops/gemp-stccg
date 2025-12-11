@@ -1,10 +1,9 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
@@ -32,20 +31,6 @@ public class SubAction extends ActionyAction implements CardPerformedAction {
     }
 
     public String getCardActionPrefix() { return null; }
-
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (isCostFailed()) {
-            return null;
-        } else {
-            Action cost = getNextCost();
-            if (cost != null)
-                return cost;
-
-            return getNextAction();
-        }
-    }
-
 
     @Override
     public PhysicalCard getPerformingCard() {

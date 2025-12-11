@@ -7,11 +7,9 @@ import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -52,13 +50,7 @@ public class FailDilemmaAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (isBeingInitiated())
-            setAsInitiated();
-        Action nextAction = getNextAction();
-        if (nextAction != null)
-            return nextAction;
-
+    protected void processEffect(DefaultGame cardGame) {
         if (!_cardsStopped) {
             cardGame.sendMessage(_performingPlayerId + " failed to overcome " + _dilemma.getCardLink());
             Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
@@ -66,17 +58,14 @@ public class FailDilemmaAction extends ActionyAction {
                 cardsToStop.add(ship);
             }
             _cardsStopped = true;
-            return new StopCardsAction(cardGame, _performingPlayerId, cardsToStop);
-        }
-
-        if (_discardDilemma && !_dilemmaDiscarded) {
+            cardGame.addActionToStack(new StopCardsAction(cardGame, _performingPlayerId, cardsToStop));
+        } else if (_discardDilemma && !_dilemmaDiscarded) {
             _dilemmaDiscarded = true;
-            return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma);
+            cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
+        } else {
+            setAsFailed();
+            _encounterAction.setAsFailed();
+            _encounterAction.getAttemptAction().setAsFailed();
         }
-
-        setAsFailed();
-        _encounterAction.setAsFailed();
-        _encounterAction.getAttemptAction().setAsFailed();
-        return getNextAction();
     }
 }

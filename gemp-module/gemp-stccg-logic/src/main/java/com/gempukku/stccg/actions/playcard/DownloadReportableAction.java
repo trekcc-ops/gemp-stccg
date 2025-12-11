@@ -9,9 +9,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -31,17 +29,9 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;
+        _cardTargets.add(cardTarget);
     }
 
-
-    protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) {
-        Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
-        Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
-
-        _playCardAction = new ReportCardAction(cardGame, (ReportableCard) selectedCard,
-                true, eligibleDestinations);
-        cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -49,27 +39,19 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Action nextCost = getNextCost();
-        if (nextCost != null)
-            return nextCost;
-
-        if (!_cardToDownloadTarget.isResolved()) {
-            if (_cardToDownloadTarget instanceof SelectCardsResolver selectTarget) {
-                if (selectTarget.getSelectionAction().wasCompleted()) {
-                    _cardToDownloadTarget.resolve(cardGame);
-                } else {
-                    return selectTarget.getSelectionAction();
-                }
-            } else {
-                _cardToDownloadTarget.resolve(cardGame);
-            }
+    protected void processEffect(DefaultGame cardGame) {
+        Collection<PhysicalCard> cardsToDownload = _cardToDownloadTarget.getCards(cardGame);
+        if (cardsToDownload.size() == 1 &&
+                Iterables.getOnlyElement(cardsToDownload) instanceof ReportableCard reportable) {
+            Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
+            Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
+            _playCardAction = new ReportCardAction(cardGame, reportable, true, eligibleDestinations);
+            cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
+            setAsSuccessful();
+        } else {
+            cardGame.sendErrorMessage("Unable to process effect for multiple cards at once");
+            setAsFailed();
         }
-
-        // The playCard method determines valid destinations
-        playCard(cardGame, Iterables.getOnlyElement(_cardToDownloadTarget.getCards(cardGame)));
-        setAsSuccessful();
-        return null;
     }
 
     @Override

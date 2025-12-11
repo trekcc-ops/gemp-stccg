@@ -28,9 +28,11 @@ import java.util.List;
         @JsonSubTypes.Type(value = DownloadActionBlueprint.class, name = "download"),
         @JsonSubTypes.Type(value = IncreaseAttributesSubActionBlueprint.class, name = "increaseAttributes"),
         @JsonSubTypes.Type(value = KillActionBlueprint.class, name = "kill"),
+        @JsonSubTypes.Type(value = NullifySubActionBlueprint.class, name = "nullify"),
         @JsonSubTypes.Type(value = OvercomeDilemmaConditionActionBlueprint.class, name = "overcomeCondition"),
         @JsonSubTypes.Type(value = PlaceCardsOnBottomOfDrawDeckSubactionBlueprint.class,
                 name = "placeCardsOnBottomOfDrawDeck"),
+        @JsonSubTypes.Type(value = ScorePointsSubActionBlueprint.class, name = "scorePoints"),
         @JsonSubTypes.Type(value = SelectAndPerformSubActionBlueprint.class, name = "selectAndPerformSubAction"),
         @JsonSubTypes.Type(value = ShuffleCardsIntoDrawDeckSubActionBlueprint.class, name = "shuffleCardsIntoDrawDeck"),
         @JsonSubTypes.Type(value = StopActionBlueprint.class, name = "stop")

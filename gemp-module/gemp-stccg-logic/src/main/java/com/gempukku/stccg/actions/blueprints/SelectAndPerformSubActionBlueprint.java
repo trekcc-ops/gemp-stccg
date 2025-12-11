@@ -20,23 +20,22 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
     private final List<SubActionBlueprint> _subActions;
     private final List<String> _actionDescriptions;
 
-    public SelectAndPerformSubActionBlueprint(
+    private SelectAndPerformSubActionBlueprint(
             @JsonProperty(value = "actionDescriptions")
             List<String> actionDescriptions,
             @JsonProperty(value = "subActions")
-           List<SubActionBlueprint> subActions) {
+           List<SubActionBlueprint> subActions) throws InvalidCardDefinitionException {
         _subActions = subActions;
         _actionDescriptions = actionDescriptions;
+        if (_subActions.size() != _actionDescriptions.size()) {
+            throw new InvalidCardDefinitionException(
+                    "Could not create SelectAndPerformSubActionBlueprint because lists were not the same size");
+        }
     }
 
     @Override
     public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-
-        if (_subActions.size() != _actionDescriptions.size()) {
-            throw new InvalidCardDefinitionException(
-                    "Could not create SelectAndPerformSubActionBlueprint because lists were not the same size");
-        }
 
         List<Action> actionsToSelect = new ArrayList<>();
         Map<Action, String> messageMap = new HashMap<>();

@@ -15,13 +15,10 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.List;
 
 public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
-
     private final PhysicalCard _performingCard;
     protected final PhysicalCard _cardEnteringPlay;
     @JsonProperty("destinationZone")
     protected Zone _destinationZone;
-    private boolean _initiated;
-    private boolean _cardPlayed;
 
     public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType, ActionContext context) {
@@ -71,32 +68,11 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Action cost = getNextCost();
-        if (cost != null)
-            return cost;
-
-        if (!_initiated) {
-            _initiated = true;
-            _cardEnteringPlay.removeFromCardGroup(cardGame);
-            ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
-            saveResult(playCardInitiationResult);
-            return null;
-        }
-
-        if (isInProgress() && !_cardPlayed) {
-            _cardPlayed = true;
-            putCardIntoPlay(cardGame);
-        }
-
-        if (isInProgress()) {
-            Action nextAction = getNextAction();
-            if (nextAction == null) {
-                setAsSuccessful();
-            }
-            return nextAction;
-        }
-        return null;
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+        super.continueInitiation(cardGame);
+        _cardEnteringPlay.removeFromCardGroup(cardGame);
+        ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
+        saveResult(playCardInitiationResult);
     }
     
     protected void putCardIntoPlay(DefaultGame cardGame) throws PlayerNotFoundException {
@@ -110,6 +86,16 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
         gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay));
+    }
+
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            putCardIntoPlay(cardGame);
+            setAsSuccessful();
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
+        }
     }
 
 }

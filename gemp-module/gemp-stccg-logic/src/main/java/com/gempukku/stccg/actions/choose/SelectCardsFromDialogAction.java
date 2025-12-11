@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
@@ -8,9 +9,7 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -52,15 +51,14 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void processEffect(DefaultGame cardGame) {
         Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
         if (selectableCards.size() == _minimum) {
             _selectedCards = new LinkedList<>(selectableCards);
             setAsSuccessful();
             setCardToMemory();
         } else if (_decision == null) {
-            _decision = new ArbitraryCardsSelectionDecision(
-                                cardGame.getPlayer(_performingPlayerId), _decisionText, selectableCards,
+            _decision = new ArbitraryCardsSelectionDecision(_performingPlayerId, _decisionText, selectableCards,
                                 _minimum, _maximum, cardGame) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -71,8 +69,6 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
                         };
             cardGame.sendAwaitingDecision(_decision);
         }
-
-        return getNextAction();
     }
 
     @Override

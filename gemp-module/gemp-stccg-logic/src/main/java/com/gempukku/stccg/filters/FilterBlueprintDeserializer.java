@@ -42,8 +42,6 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             appendFilter(value);
         for (Characteristic value : Characteristic.values())
             appendFilter(value);
-        for (Affiliation value : Affiliation.values())
-            appendFilter(value);
         for (Uniqueness value : Uniqueness.values())
             appendFilter(value);
         for (FacilityType value : FacilityType.values())
@@ -60,11 +58,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
         simpleFilters.put("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.getPerformingCardId()));
+        simpleFilters.put("federation", (cardGame, actionContext) -> new AffiliationFilter(Affiliation.FEDERATION));
         simpleFilters.put("inplay", (cardGame, actionContext) -> Filters.inPlay);
         simpleFilters.put("inyourhand", (cardGame, actionContext) ->
                 new InYourHandFilter(actionContext.getPerformingPlayerId()));
         simpleFilters.put("inyourdrawdeck", (cardGame, actionContext) ->
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
+        simpleFilters.put("klingon", (cardGame, actionContext) -> Filters.Klingon);
         simpleFilters.put("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         simpleFilters.put("thiscard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         simpleFilters.put("unique", (cardGame, actionContext) -> Filters.unique);

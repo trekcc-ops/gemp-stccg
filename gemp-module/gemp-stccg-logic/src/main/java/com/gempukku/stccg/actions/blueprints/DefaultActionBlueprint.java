@@ -22,9 +22,8 @@ import java.util.List;
 
 public abstract class DefaultActionBlueprint implements ActionBlueprint {
     protected final List<Requirement> _requirements = new LinkedList<>();
-
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
-    protected final List<SubActionBlueprint> effects = new LinkedList<>();
+    protected final List<SubActionBlueprint> _effects = new LinkedList<>();
     private final PlayerSource _performingPlayer;
     private int _blueprintId;
 
@@ -34,7 +33,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         _performingPlayer = performingPlayer;
     }
 
-    public DefaultActionBlueprint(int limitPerTurn, List<SubActionBlueprint> costs,
+    protected DefaultActionBlueprint(int limitPerTurn, List<SubActionBlueprint> costs,
                                   List<SubActionBlueprint> effects,
                                   PlayerSource playerSource) throws InvalidCardDefinitionException {
         this(limitPerTurn, playerSource);
@@ -67,7 +66,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     }
 
     public void addEffect(SubActionBlueprint subActionBlueprint) {
-        effects.add(subActionBlueprint);
+        _effects.add(subActionBlueprint);
     }
 
     @Override
@@ -84,7 +83,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     public void appendActionToContext(DefaultGame cardGame, TopLevelSelectableAction action,
                                       ActionContext actionContext) {
         costs.forEach(cost -> cost.addEffectToAction(cardGame, true, action, actionContext));
-        effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
+        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
     }
 
     public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,

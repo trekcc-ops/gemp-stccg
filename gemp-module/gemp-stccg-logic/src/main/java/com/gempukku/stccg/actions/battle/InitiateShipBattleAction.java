@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.battle;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -9,9 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -21,11 +18,9 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
                 // i.e. it is just an action to compare numbers
 
     private boolean _openedFire;
-    private boolean _actionWasInitiated = false;
     private String _winnerName;
     private boolean _noWinner;
     private boolean _returningFire;
-    private boolean _returnFireDecisionMade;
     private boolean _damageApplied;
     private String _defendingPlayerName;
     private boolean _returnedFire;
@@ -60,87 +55,80 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         else return OpenFireResult.MISS;
     }
 
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
-
+    protected void continueInitiation(DefaultGame cardGame) {
         String attackingPlayerName = _performingPlayerId;
         _defendingPlayerName = cardGame.getOpponent(attackingPlayerName);
-        if (!_actionWasInitiated) {
+        if (_attackTargetDecision == null) {
+            _attackTargetDecision =
+                    new ShipBattleTargetDecision(attackingPlayerName, DecisionContext.SHIP_BATTLE_TARGETS, _targetMap, cardGame);
+            cardGame.sendAwaitingDecision(_attackTargetDecision);
+        } else {
+            // TODO - Not allowing player 2 to pick additional forces or targets yet
+            _forcesNew.put(attackingPlayerName, _attackTargetDecision.getAttackingCards());
+            _forcesNew.put(_defendingPlayerName, List.of(_attackTargetDecision.getTarget()));
+            _targets.put(attackingPlayerName, _attackTargetDecision.getTarget());
+            _returningFire = false; // TODO not returning fire
+            setAsInitiated();
+        }
+    }
 
-            if (_attackTargetDecision == null) {
-                _attackTargetDecision =
-                        new ShipBattleTargetDecision(attackingPlayerName, DecisionContext.SHIP_BATTLE_TARGETS, _targetMap, cardGame);
-                cardGame.sendAwaitingDecision(_attackTargetDecision);
-            } else {
-                // TODO - Not allowing player 2 to pick additional forces or targets yet
-                _forcesNew.put(attackingPlayerName, _attackTargetDecision.getAttackingCards());
-                _forcesNew.put(_defendingPlayerName, List.of(_attackTargetDecision.getTarget()));
-                _targets.put(attackingPlayerName, _attackTargetDecision.getTarget());
-                _actionWasInitiated = true;
-                _returningFire = false; // TODO not returning fire
-            }
+    protected void processEffect(DefaultGame cardGame) {
+        String attackingPlayerName = _performingPlayerId;
+        if (!_openedFire) {
+            _openedFire = true;
+            _openFireResults.put(attackingPlayerName, calculateOpenFireResult(attackingPlayerName, cardGame));
         }
 
-        if (_actionWasInitiated) {
-            if (!_openedFire) {
-                _openedFire = true;
-                _openFireResults.put(attackingPlayerName, calculateOpenFireResult(attackingPlayerName, cardGame));
-            }
-
-            if (!_returnedFire && _returningFire) {
-                _returnedFire = true;
-                _openFireResults.put(_defendingPlayerName, calculateOpenFireResult(_defendingPlayerName, cardGame));
-            }
-
-            if (!_damageApplied) {
-                _damageSustained.put(attackingPlayerName, getDamage(_openFireResults.get(_defendingPlayerName)));
-                _damageSustained.put(_defendingPlayerName, getDamage(_openFireResults.get(attackingPlayerName)));
-                _damageApplied = true;
-            }
-
-            if (!_winnerDetermined) {
-                if (_damageSustained.get(attackingPlayerName) > _damageSustained.get(_defendingPlayerName))
-                    _winnerName = _defendingPlayerName;
-                else if (_damageSustained.get(_defendingPlayerName) > _damageSustained.get(attackingPlayerName))
-                    _winnerName = attackingPlayerName;
-                else _noWinner = true;
-                _winnerDetermined = true;
-            }
-
-            if (!_battleResolved) {
-                if (_targets.get(attackingPlayerName) != null) {
-                    _targets.get(attackingPlayerName).applyDamage(_damageSustained.get(_defendingPlayerName));
-                }
-
-                if (_targets.get(_defendingPlayerName) != null) {
-                    _targets.get(_defendingPlayerName).applyDamage(_damageSustained.get(attackingPlayerName));
-                }
-
-                for (CardWithHullIntegrity card : _forcesNew.get(attackingPlayerName)) {
-                    if (card.getHullIntegrity() > 0)
-                        card.stop();
-                }
-                for (CardWithHullIntegrity card : _forcesNew.get(_defendingPlayerName)) {
-                    if (card.getHullIntegrity() > 0)
-                        card.stop();
-                }
-                _battleResolved = true;
-            }
-
-            setAsSuccessful();
+        if (!_returnedFire && _returningFire) {
+            _returnedFire = true;
+            _openFireResults.put(_defendingPlayerName, calculateOpenFireResult(_defendingPlayerName, cardGame));
         }
 
+        if (!_damageApplied) {
+            _damageSustained.put(attackingPlayerName, getDamage(_openFireResults.get(_defendingPlayerName)));
+            _damageSustained.put(_defendingPlayerName, getDamage(_openFireResults.get(attackingPlayerName)));
+            _damageApplied = true;
+        }
 
-        return getNextAction();
+        if (!_winnerDetermined) {
+            if (_damageSustained.get(attackingPlayerName) > _damageSustained.get(_defendingPlayerName))
+                _winnerName = _defendingPlayerName;
+            else if (_damageSustained.get(_defendingPlayerName) > _damageSustained.get(attackingPlayerName))
+                _winnerName = attackingPlayerName;
+            else _noWinner = true;
+            _winnerDetermined = true;
+        }
+
+        if (!_battleResolved) {
+            if (_targets.get(attackingPlayerName) != null) {
+                _targets.get(attackingPlayerName).applyDamage(_damageSustained.get(_defendingPlayerName));
+            }
+
+            if (_targets.get(_defendingPlayerName) != null) {
+                _targets.get(_defendingPlayerName).applyDamage(_damageSustained.get(attackingPlayerName));
+            }
+
+            for (CardWithHullIntegrity card : _forcesNew.get(attackingPlayerName)) {
+                if (card.getHullIntegrity() > 0)
+                    card.stop();
+            }
+            for (CardWithHullIntegrity card : _forcesNew.get(_defendingPlayerName)) {
+                if (card.getHullIntegrity() > 0)
+                    card.stop();
+            }
+            _battleResolved = true;
+        }
+        setAsSuccessful();
     }
 
     private Integer getDamage(OpenFireResult result) {
-        if (result == OpenFireResult.DIRECT_HIT)
-            return 100;
-        else if (result == OpenFireResult.HIT)
-            return 50;
-        else if (result == OpenFireResult.MISS)
+        if (result == null) {
             return 0;
-        else return 0;
+        } else return switch(result) {
+            case DIRECT_HIT -> 100;
+            case HIT -> 50;
+            case MISS -> 0;
+        };
     }
 
     @Override

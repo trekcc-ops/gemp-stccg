@@ -1,13 +1,10 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
-import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
-import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class AffiliationResolver {
-
     private SelectAffiliationAction _selectAction;
     private Affiliation _affiliation;
     private boolean _resolved;

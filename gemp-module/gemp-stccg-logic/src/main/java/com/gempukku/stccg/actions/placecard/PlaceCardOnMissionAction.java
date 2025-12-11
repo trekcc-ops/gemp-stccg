@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -37,32 +36,36 @@ public class PlaceCardOnMissionAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        ST1EGame stGame = null;
-        if (cardGame instanceof ST1EGame) {
-            stGame = (ST1EGame) cardGame;
-        }
-        if (stGame == null) {
-            throw new InvalidGameLogicException("Unable to place card on a mission in a non-1E game");
-        }
-        ST1EGameState gameState = stGame.getGameState();
-        GameLocation location = gameState.getLocationById(_locationId);
-        if (location instanceof MissionLocation mission) {
-            gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
-            _cardBeingPlaced.setPlacedOnMission(true);
-            _cardBeingPlaced.setLocation(cardGame, mission);
-            gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
-
-            for (MissionLocation spacelineLocation : gameState.getSpacelineLocations()) {
-                if (spacelineLocation.getSeedCards().contains(_cardBeingPlaced)) {
-                    spacelineLocation.removeSeedCard(_cardBeingPlaced);
-                }
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            ST1EGame stGame = null;
+            if (cardGame instanceof ST1EGame) {
+                stGame = (ST1EGame) cardGame;
             }
-            setAsSuccessful();
-        } else {
+            if (stGame == null) {
+                throw new InvalidGameLogicException("Unable to place card on a mission in a non-1E game");
+            }
+            ST1EGameState gameState = stGame.getGameState();
+            GameLocation location = gameState.getLocationById(_locationId);
+            if (location instanceof MissionLocation mission) {
+                gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
+                _cardBeingPlaced.setPlacedOnMission(true);
+                _cardBeingPlaced.setLocation(cardGame, mission);
+                gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
+
+                for (MissionLocation spacelineLocation : gameState.getSpacelineLocations()) {
+                    if (spacelineLocation.getSeedCards().contains(_cardBeingPlaced)) {
+                        spacelineLocation.removeSeedCard(_cardBeingPlaced);
+                    }
+                }
+                setAsSuccessful();
+            } else {
+                setAsFailed();
+                throw new InvalidGameLogicException("Unable to place card on null location");
+            }
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
             setAsFailed();
-            throw new InvalidGameLogicException("Unable to place card on null location");
         }
-        return getNextAction();
     }
 }

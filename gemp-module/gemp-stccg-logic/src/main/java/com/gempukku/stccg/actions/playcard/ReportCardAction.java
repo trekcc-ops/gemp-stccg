@@ -103,11 +103,17 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (_cardEnteringPlay instanceof ReportableCard reportable) {
+    protected void continueInitiation(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
+        Action nextAction = nextActionOld(cardGame);
+        if (nextAction == null) {
+            setAsInitiated();
+        } else {
+            cardGame.addActionToStack(nextAction);
+        }
+    }
 
-            if (isCostFailed())
-                return null;
+    private Action nextActionOld (DefaultGame cardGame) throws InvalidGameLogicException {
+        if (_cardEnteringPlay instanceof ReportableCard) {
 
             if (!getProgress(Progress.destinationSelected)) {
                 if (_destinationTarget == null) {
@@ -160,8 +166,8 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     setProgress(Progress.affiliationSelected);
                     _affiliationTarget = new AffiliationResolver(Iterables.getOnlyElement(affiliationOptions));
                 } else if (!affiliationOptions.isEmpty()) {
-                    _affiliationTarget = new AffiliationResolver(new SelectAffiliationAction(_cardEnteringPlay,
-                            cardGame, _performingPlayerId, affiliationOptions));
+                    _affiliationTarget = new AffiliationResolver(new SelectAffiliationAction(cardGame,
+                            _performingPlayerId, affiliationOptions));
                 } else {
                     setAsFailed();
                     throw new InvalidGameLogicException("Unable to report card. No valid affiliations to report as.");
@@ -178,41 +184,44 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     return _affiliationTarget.getSelectionAction();
                 }
             }
-
-            if (!getProgress(Progress.cardPlayed)) {
-                processEffect(reportable, cardGame);
-            }
-
-            return getNextAction();
+            return null;
         } else {
             throw new InvalidGameLogicException("Tried to report an invalid class type of card");
         }
     }
 
-    public void processEffect(ReportableCard reportable, DefaultGame cardGame)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-        if (reportable instanceof AffiliatedCard affiliatedCard) {
-            Affiliation chosenAffiliation = _affiliationTarget.getAffiliation();
-            affiliatedCard.changeAffiliation((ST1EGame) cardGame, chosenAffiliation);
-            performingPlayer.addPlayedAffiliation(chosenAffiliation);
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            if (_cardEnteringPlay instanceof ReportableCard reportable) {
+                Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+                if (reportable instanceof AffiliatedCard affiliatedCard) {
+                    Affiliation chosenAffiliation = _affiliationTarget.getAffiliation();
+                    affiliatedCard.changeAffiliation((ST1EGame) cardGame, chosenAffiliation);
+                    performingPlayer.addPlayedAffiliation(chosenAffiliation);
+                }
+                setProgress(Progress.cardPlayed);
+                setAsSuccessful();
+
+                FacilityCard facility = getSelectedDestination(cardGame);
+                GameState gameState = cardGame.getGameState();
+
+                gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(reportable));
+                reportable.setLocationId(cardGame, facility.getLocationId());
+                reportable.attachTo(facility);
+                gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
+
+                if (reportable instanceof ShipCard ship) {
+                    ship.dockAtFacility(facility);
+                }
+
+                saveResult(new PlayCardResult(this, _cardEnteringPlay));
+            } else {
+                throw new InvalidGameLogicException("Tried to report a non-reportable card");
+            }
+        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        setProgress(Progress.cardPlayed);
-        setAsSuccessful();
-
-        FacilityCard facility = getSelectedDestination(cardGame);
-        GameState gameState = cardGame.getGameState();
-
-        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(reportable));
-        reportable.setLocationId(cardGame, facility.getLocationId());
-        reportable.attachTo(facility);
-        gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
-
-        if (reportable instanceof ShipCard ship) {
-            ship.dockAtFacility(facility);
-        }
-
-        saveResult(new PlayCardResult(this, _cardEnteringPlay));
     }
 
     public void setDestination(FacilityCard card) {

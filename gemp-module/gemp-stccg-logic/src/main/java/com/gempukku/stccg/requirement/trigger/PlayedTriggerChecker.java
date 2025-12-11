@@ -5,15 +5,13 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.player.PlayerSource;
-import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerResolver;
+import com.gempukku.stccg.player.PlayerSource;
 
 import java.util.Objects;
 
@@ -29,40 +27,34 @@ public class PlayedTriggerChecker implements TriggerChecker {
             FilterBlueprint filter,
             @JsonProperty("on")
             FilterBlueprint onFilter,
-            @JsonProperty("memorize")
+            @JsonProperty("saveToMemoryId")
             String memorize,
             @JsonProperty("player")
             String playerText
     ) throws InvalidCardDefinitionException {
-        _playingPlayer = PlayerResolver.resolvePlayer(Objects.requireNonNullElse(playerText, "you"));
+        _playingPlayer = (playerText == null) ? null : PlayerResolver.resolvePlayer(playerText);
         _filter = filter;
         _onFilter = onFilter;
         _saveToMemoryId = Objects.requireNonNullElse(memorize, "_temp");
     }
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        try {
-            final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
-            final String playingPlayerId = _playingPlayer.getPlayerId(cardGame, actionContext);
-            final ActionResult actionResult = cardGame.getCurrentActionResult();
-            if (actionResult != null) {
-                final boolean played;
+        final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
+        final ActionResult actionResult = cardGame.getCurrentActionResult();
+        if (actionResult != null) {
+            final boolean played;
 
-                if (_onFilter != null) {
-                    final Filterable onFilterable = _onFilter.getFilterable(cardGame, actionContext);
-                    played = playedOn(cardGame, actionResult, onFilterable, filterable);
-                } else {
-                    played = played(cardGame, cardGame.getPlayer(playingPlayerId), actionResult, filterable);
-                }
-
-                if (played && _saveToMemoryId != null)
-                    actionContext.setCardMemory(_saveToMemoryId, ((PlayCardResult) actionResult).getPlayedCard());
-                return played;
+            if (_onFilter != null) {
+                final Filterable onFilterable = _onFilter.getFilterable(cardGame, actionContext);
+                played = playedOn(cardGame, actionResult, onFilterable, filterable);
             } else {
-                return false;
+                played = played(cardGame, actionResult, actionContext, filterable);
             }
-        } catch(PlayerNotFoundException exp) {
-            cardGame.sendErrorMessage(exp);
+
+            if (played && _saveToMemoryId != null)
+                actionContext.setCardMemory(_saveToMemoryId, ((PlayCardResult) actionResult).getPlayedCard());
+            return played;
+        } else {
             return false;
         }
     }
@@ -81,9 +73,10 @@ public class PlayedTriggerChecker implements TriggerChecker {
         return false;
     }
 
-    private static boolean played(DefaultGame game, Player player, ActionResult actionResult, Filterable... filters) {
+    private boolean played(DefaultGame game, ActionResult actionResult, ActionContext context, Filterable... filters) {
         if (actionResult.getType() == ActionResult.Type.PLAY_CARD) {
-            if (actionResult.getPerformingPlayerId().equals(player.getPlayerId())) {
+            if (_playingPlayer == null ||
+                    actionResult.getPerformingPlayerId().equals(_playingPlayer.getPlayerId(game, context))) {
                 PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();
                 return Filters.and(filters).accepts(game, playedCard);
             }

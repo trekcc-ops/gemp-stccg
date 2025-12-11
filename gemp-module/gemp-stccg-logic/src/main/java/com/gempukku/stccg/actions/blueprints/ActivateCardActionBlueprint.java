@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.turn.ActivateCardAction;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -31,10 +31,10 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
             }
     }
 
-    public ActivateCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard card) {
+    public UseGameTextAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard card) {
         ActionContext context = new ActionContext(card, card.getOwnerName());
         if (isValid(cardGame, context)) {
-            ActivateCardAction action = new ActivateCardAction(cardGame, card, context);
+            UseGameTextAction action = new UseGameTextAction(cardGame, card, context);
             appendActionToContext(cardGame, action, context);
             return action;
         }

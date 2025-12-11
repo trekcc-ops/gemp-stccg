@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
@@ -19,8 +20,8 @@ import java.util.*;
 
 public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
 
-
-    public EncounterSeedCardActionBlueprint(@JsonProperty("effect")
+    @JsonCreator
+    private EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                             List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
         super(0, new ArrayList<>(), Objects.requireNonNullElse(effects, new LinkedList<>()),
@@ -35,7 +36,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation.getLocationId(), actionContext);
-        effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
+        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
         return encounterAction;
     }
 

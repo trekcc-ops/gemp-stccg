@@ -2,14 +2,16 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.FixedCardResolver;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Objects;
 
@@ -26,7 +28,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
                                    int locationId)
             throws InvalidGameLogicException {
-        super(cardGame, encounteringPlayerName, "Encounter seed card", ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD, Progress.values());
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);
@@ -59,21 +61,13 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (isBeingInitiated())
-            setAsInitiated();
-                // TODO - handling if one effect of the dilemma makes it impossible to perform another
-/*        if (_attemptingUnit.getAttemptingPersonnel().isEmpty())
-            setAsFailed(); */
-        Action nextAction = getNextAction();
-        if (nextAction == null && isInProgress()) {
-            PhysicalCard card = _cardTarget.getCard();
-            if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
-                return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard());
-            }
-            setAsSuccessful();
+    protected void processEffect(DefaultGame cardGame) {
+        PhysicalCard card = _cardTarget.getCard();
+        if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
+            cardGame.addActionToStack(
+                    new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard()));
         }
-        return nextAction;
+        setAsSuccessful();
     }
 
     public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }

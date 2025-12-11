@@ -38,7 +38,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction, MissionLocation mission)
             throws InvalidGameLogicException {
-        super(cardGame, player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
+        super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION, Progress.values());
         _performingCard = cardForAction;
         _locationId = mission.getLocationId();
     }
@@ -65,6 +65,21 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     }
 
     @Override
+    protected void continueInitiation(DefaultGame cardGame) {
+        try {
+            Action nextAction = nextAction(cardGame);
+            if (nextAction == null) {
+                setAsInitiated();
+            } else {
+                cardGame.addActionToStack(nextAction);
+            }
+        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
+        }
+    }
+
+    @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (cardGame instanceof ST1EGame stGame) {
             MissionLocation missionLocation;
@@ -76,11 +91,6 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             }
 
             Player player = cardGame.getPlayer(_performingPlayerId);
-
-            Action cost = getNextCost();
-            if (cost != null)
-                return cost;
-
             if (!getProgress(Progress.choseAttemptingUnit)) {
                 if (_attemptingUnitTarget == null) {
 
@@ -107,77 +117,86 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         return _attemptingUnitTarget.getSelectionAction();
                     } else {
                         _attemptingUnitTarget = new AttemptingUnitResolver(Iterables.getOnlyElement(eligibleUnits));
+                        setProgress(Progress.choseAttemptingUnit);
                     }
                 } else {
                     _attemptingUnitTarget.resolve();
+                    setProgress(Progress.choseAttemptingUnit);
                 }
             }
 
-            if (isBeingInitiated()) {
-                setAsInitiated();
-            }
-
-            AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
-
-
-            if (attemptingUnit.getAttemptingPersonnel(cardGame).isEmpty()) {
-                failMission(cardGame);
-            }
-
-            if (!wasFailed()) {
-
-                if (!getProgress(Progress.startedMissionAttempt)) {
-                    setProgress(Progress.startedMissionAttempt);
+            if (getProgress(Progress.choseAttemptingUnit)) {
+                AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
+                if (attemptingUnit.getAttemptingPersonnel(cardGame).isEmpty()) {
+                    failMission(cardGame);
+                } else  {
                     saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this));
-                    return null;
                 }
+                return null;
+            } else {
+                throw new InvalidGameLogicException("Unable to resolve personnel to attempt mission");
+            }
+        } else {
+            setAsFailed();
+            return null;
+        }
+    }
 
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            if (cardGame instanceof ST1EGame stGame) {
+                AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
+                MissionLocation missionLocation;
+                GameLocation gameLocation = stGame.getGameState().getLocationById(_locationId);
+                if (gameLocation instanceof MissionLocation mission) {
+                    missionLocation = mission;
+                } else {
+                    throw new InvalidGameLogicException("Unable to locate mission with location id " + _locationId);
+                }
                 if (attemptingUnit.getAttemptingPersonnel(cardGame).isEmpty()) {
                     failMission(cardGame);
                 }
 
                 List<PhysicalCard> seedCards = missionLocation.getSeedCards();
 
-                if (!getProgress(Progress.endedMissionAttempt)) {
-
-                    if (!seedCards.isEmpty()) {
-                        PhysicalCard firstSeedCard = seedCards.getFirst();
-                        if (_lastCardRevealed != firstSeedCard) {
-                            _lastCardRevealed = firstSeedCard;
-                            return new RevealSeedCardAction(cardGame, _performingPlayerId, firstSeedCard,
-                                    missionLocation);
-                        } else if (_lastCardEncountered != firstSeedCard) {
-                            _lastCardEncountered = firstSeedCard;
-                            List<Action> encounterActions = firstSeedCard.getEncounterActions(
-                                    cardGame, this, attemptingUnit, missionLocation);
-                            if (encounterActions.size() != 1) {
-                                throw new InvalidGameLogicException("Unable to identify seed card actions");
-                            } else {
-                                return Iterables.getOnlyElement(encounterActions);
-                            }
+                if (!seedCards.isEmpty()) {
+                    PhysicalCard firstSeedCard = seedCards.getFirst();
+                    if (_lastCardRevealed != firstSeedCard) {
+                        _lastCardRevealed = firstSeedCard;
+                        cardGame.addActionToStack(new RevealSeedCardAction(cardGame, _performingPlayerId, firstSeedCard,
+                                missionLocation));
+                    } else if (_lastCardEncountered != firstSeedCard) {
+                        _lastCardEncountered = firstSeedCard;
+                        List<Action> encounterActions = firstSeedCard.getEncounterActions(
+                                cardGame, this, attemptingUnit, missionLocation);
+                        if (encounterActions.size() != 1) {
+                            throw new InvalidGameLogicException("Unable to identify seed card actions");
                         } else {
-                            throw new InvalidGameLogicException(firstSeedCard.getTitle() +
-                                    " was already encountered, but not removed from under the mission");
+                            cardGame.addActionToStack(Iterables.getOnlyElement(encounterActions));
                         }
                     } else {
-                        if (cardGame.canPlayerSolveMission(_performingPlayerId, missionLocation)) {
-                            MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
-                            if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
-                                solveMission(missionLocation, cardGame);
-                            } else {
-                                failMission(cardGame);
-                            }
+                        throw new InvalidGameLogicException(firstSeedCard.getTitle() +
+                                " was already encountered, but not removed from under the mission");
+                    }
+                } else {
+                    if (cardGame.canPlayerSolveMission(_performingPlayerId, missionLocation)) {
+                        MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
+                        if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
+                            solveMission(missionLocation, cardGame);
                         } else {
                             failMission(cardGame);
                         }
+                    } else {
+                        failMission(cardGame);
                     }
-                    setProgress(Progress.endedMissionAttempt);
                 }
+            } else {
+                cardGame.sendErrorMessage("Cannot attempt a mission in a non-1E game");
+                setAsFailed();
             }
-            return getNextAction();
-        } else {
-            throw new InvalidGameLogicException("Tried to initiate a mission attempt in a game that does not support" +
-                    " that action");
+        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
     }
 

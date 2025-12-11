@@ -101,7 +101,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                         try {
                             Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             seedCardsAction.setSeedCards(selectedCards);
-                            seedCardsAction.processEffect(player, cardGame);
+                            seedCardsAction.processEffect(cardGame);
                             cardGame.getActionsEnvironment().logCompletedActionNotInStack(seedCardsAction);
                             cardGame.sendActionResultToClient();
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
@@ -125,7 +125,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                         Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                         try {
                             removeAction.setCardsToRemove(selectedCards);
-                            removeAction.processEffect(player, cardGame);
+                            removeAction.processEffect(cardGame);
                             cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
                             cardGame.sendActionResultToClient();
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);

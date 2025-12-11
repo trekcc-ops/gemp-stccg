@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
     }
 
     @Override
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         super.continueInitiation(cardGame);
         if (_cardTarget.isResolved()) {
             if (_cardTarget.getCards(cardGame).size() == 1) {

@@ -316,14 +316,22 @@ public class MissionLocation implements GameLocation {
         }
     }
 
-    public void addCardToTopOfPreSeedPile(PhysicalCard card, Player player) {
-        String playerName = player.getPlayerId();
+    public void addCardToTopOfPreSeedPile(PhysicalCard card, String playerName) {
         if (_preSeedCards.get(playerName) == null) {
             _preSeedCards.put(playerName, new CardPile<>());
         }
         CardPile<PhysicalCard> preSeeds = _preSeedCards.get(playerName);
         preSeeds.addCardToTop(card);
     }
+
+
+    public void removePreSeedCard(PhysicalCard card, String playerName) {
+        CardPile<PhysicalCard> preSeeds = _preSeedCards.get(playerName);
+        if (preSeeds != null) {
+            preSeeds.removeCard(card);
+        }
+    }
+
 
     public void removePreSeedCard(PhysicalCard card, Player player) {
         CardPile<PhysicalCard> preSeeds = _preSeedCards.get(player.getPlayerId());

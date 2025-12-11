@@ -1,5 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.modifiers.KillCardResult;
 import com.gempukku.stccg.cards.ActionContext;
@@ -13,7 +15,9 @@ public class KilledTriggerChecker implements TriggerChecker {
 
     private final FilterBlueprint _killedPersonnelFilterBlueprint;
 
-    public KilledTriggerChecker(FilterBlueprint killedPersonnelFilterBlueprint) {
+    @JsonCreator
+    public KilledTriggerChecker(@JsonProperty("filter")
+            FilterBlueprint killedPersonnelFilterBlueprint) {
         _killedPersonnelFilterBlueprint = killedPersonnelFilterBlueprint;
     }
 

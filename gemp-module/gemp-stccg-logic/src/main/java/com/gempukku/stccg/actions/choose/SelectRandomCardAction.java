@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -29,20 +28,24 @@ public class SelectRandomCardAction extends ActionyAction implements SelectCardA
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
-        if (selectableCards.isEmpty()) {
-            setAsFailed();
-            throw new InvalidGameLogicException("Could not select a random card from an empty list");
-        } else {
-            _selectedCard = TextUtils.getRandomItemFromList(selectableCards);
-            if (_selectedCard == null) {
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
+            if (selectableCards.isEmpty()) {
                 setAsFailed();
+                throw new InvalidGameLogicException("Could not select a random card from an empty list");
             } else {
-                setAsSuccessful();
+                _selectedCard = TextUtils.getRandomItemFromList(selectableCards);
+                if (_selectedCard == null) {
+                    setAsFailed();
+                } else {
+                    setAsSuccessful();
+                }
             }
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        return getNextAction();
     }
 
     public PhysicalCard getSelectedCard() {

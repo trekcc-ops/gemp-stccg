@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.choose;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -11,9 +10,7 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +48,14 @@ public class SelectMissionSeedIndexAction extends ActionyAction {
         return true;
     }
 
-    protected AwaitingDecision getDecision(DefaultGame cardGame) throws PlayerNotFoundException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+    protected AwaitingDecision getDecision(DefaultGame cardGame) {
         List<String> optionsToPass = new ArrayList<>();
         for (Integer option : _selectionOptions) {
             if (option != null) {
                 optionsToPass.add(String.valueOf(option));
             }
         }
-        return new MultipleChoiceAwaitingDecision(performingPlayer,
+        return new MultipleChoiceAwaitingDecision(_performingPlayerId,
                 optionsToPass, cardGame, DecisionContext.SEED_MISSION_INDEX_SELECTION) {
             @Override
             protected void validDecisionMade(int index, String result) {
@@ -69,11 +65,10 @@ public class SelectMissionSeedIndexAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void processEffect(DefaultGame cardGame) {
         AwaitingDecision decision = getDecision(cardGame);
         cardGame.sendAwaitingDecision(decision);
         setAsSuccessful();
-        return getNextAction();
     }
 
     @JsonIgnore
