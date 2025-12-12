@@ -1,7 +1,7 @@
 // A CardStack represents any card that could have items placed on it or under it.
 // We will display up to three cards on top of it
 // We will display up to three cards beneath it.
-import { Stack } from "@mui/material";
+import { Box } from "@mui/material";
 import Card from "./card.jsx";
 
 // TODO: This is dependent on gamestate having an attached cardTreeModel.
@@ -19,7 +19,7 @@ function tree_create_card_objs_above(anchor_card) {
 
     let retarr = [];
     for (const cardData of above_arr) {
-        retarr.push(<Card key={cardData.cardId} card={cardData} />); 
+        retarr.push(cardData); 
     }
     return retarr;
 }
@@ -37,7 +37,7 @@ function tree_create_card_objs_beneath(anchor_card) {
 
     let retarr = [];
     for (const cardData of beneath_arr) {
-        retarr.push(<Card key={cardData.cardId} card={cardData} />); 
+        retarr.push(cardData); 
     }
     return retarr;
 }
@@ -53,12 +53,12 @@ function flat_create_card_objs_above(gamestate, anchor_id) {
         }
     }
 
-    let max_three_cards = 3;
+    let max_three_cards = 4; // 1 indexed since z-index 0 is the anchor card
     let retarr = [];
-    for (let i = 0; i < max_three_cards; i++) {
+    for (let i = 1; i < max_three_cards; i++) {
         let cardData = above_arr[i];
         if (cardData) {
-            retarr.push(<Card key={cardData.cardId} card={cardData} />); 
+            retarr.push(cardData);
         }
     }
     return retarr;
@@ -75,35 +75,65 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
         }
     }
 
-    let max_three_cards = 3;
+    let max_three_cards = 4; // 1 indexed since z-index 0 is the anchor card
     let retarr = [];
-    for (let i = 0; i < max_three_cards; i++) {
+    for (let i = 1; i < max_three_cards; i++) {
         let cardData = beneath_arr[i];
         if (cardData) {
-            retarr.push(<Card key={cardData.cardId} card={cardData} />); 
+            retarr.push(cardData);
         }
     }
     return retarr;
 }
 
 export default function CardStack( {gamestate, anchor_id} ) {
+    /* CardStack sets a grid with columns that are smaller than the content.
+     * By setting a z-index and the minimum card width and height to values larger than the
+     *   width and height of the cell, the card image overflows its grid cell
+     *   giving the illusion of cards stacking on top of each other.
+     */
+
+
+    // Set minimum size of cards in the stack.
+    const cardMinWidth = 50; //px
+    const cardMinHeight = 70; //px
+
+    // Get the card data
     let anchorCard = gamestate["visibleCardsInGame"][anchor_id.toString()];
     let cards_above = flat_create_card_objs_above(gamestate, anchor_id)
     let cards_beneath = flat_create_card_objs_beneath(gamestate, anchor_id);
+    let allCards = cards_above.concat([anchorCard], cards_beneath);
+
+    // Set minimum size of the stack as a whole.
+    // Dependent on quantity of cards in the stack, calculated above.
+    const nestedCardOffset = 10; //px
+    const stackMinWidth = `${cardMinWidth + (nestedCardOffset * allCards.length)}px`;
+    const stackMinHeight = `${cardMinHeight + (nestedCardOffset * allCards.length)}px`;
+
+    // Render the card data
+    let reactCardObjs = allCards.map((cardData, i) => 
+        <Card
+            key={cardData.cardId}
+            card={cardData}
+            index={i}
+            inc_minWidth={`${cardMinWidth}px`}
+            inc_minHeight={`${cardMinHeight}px`}
+        />
+    );
 
     return(
-        <Stack
-            direction="column"
-            spacing={2}
+        <Box
+            data-cardstackanchorid={anchor_id}
+            flexGrow={1}
             sx={{
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexGrow: 1
-            }}
-        >
-            {cards_above}
-            <Card key={anchor_id} card={anchorCard} />
-            {cards_beneath}
-        </Stack>
+                minWidth: stackMinWidth,
+                minHeight: stackMinHeight,
+                display: "grid",
+                gridTemplateColumns: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
+                gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
+                justifyItems: "start"
+            }}>
+            {reactCardObjs}
+        </Box>
     );
 }

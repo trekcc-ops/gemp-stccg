@@ -18,7 +18,7 @@ example card: {
 }
 */
 
-export default function Card( {card} ) {
+export default function Card( {card, index, inc_minWidth, inc_minHeight} ) {
     let badge_color = "error";
     let stopped_badge = 0; // hidden by default
     let overlay = {};
@@ -36,12 +36,25 @@ export default function Card( {card} ) {
         });
     },[]);
 
+    const columnPosition = `${index+1}/auto`;
+    const rowPosition = `${index+1}/auto`;
+    const cardZIndex = index? -index : 0;
+
     return(
-        <Box data-cardid={card.cardId} sx={{height: 1, width: 1}} >
-            <Badge color={badge_color} badgeContent={stopped_badge}>
+        <Box
+            data-cardid={card.cardId}
+            sx={{
+                gridColumn: columnPosition,
+                gridRow: rowPosition,
+                zIndex: cardZIndex,
+                minWidth: inc_minWidth, 
+                minHeight: inc_minHeight
+            }}
+        >
+            {/*<Badge color={badge_color} badgeContent={stopped_badge}>*/}
                 {/* If imageurl is null, show a circular progress spinner, otherwise load the graphic. */}
                 {imageUrl ? <img width={"100%"} src={imageUrl} style={overlay} /> : <CircularProgress/>}
-            </Badge>
+            {/*</Badge>*/}
         </Box>
     );
 }

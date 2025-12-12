@@ -434,14 +434,20 @@ export default function MiniDrawer() {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
                 <div id="main-layout-grid">
-                    <div id="table">
+                    <Box id="table" sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center"
+                    }}>
                         <Stack
+                            flexGrow={1}
+                            id="spacelinelocations"
                             direction="row"
                             spacing={2}
                         >
                             {spacelineLocations}
                         </Stack>
-                    </div>
+                    </Box>
                     <div id="hand-pane"><Hand gamestate={loadedGameState} /></div>
                     <div id="action-reaction-pane"><ActionReactionPane gamestate={loadedGameState}/></div>
                     <div id="phase-pane"><PhaseIndicator gamestate={loadedGameState} /></div>

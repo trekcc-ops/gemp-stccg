@@ -31,12 +31,13 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
 
     return(
         <Stack
+            data-spacelinelocation={locationid}
+            flexGrow={1}
             direction="column"
             spacing={2}
             sx={{
                 justifyContent: "space-between",
-                alignItems: "center",
-                flexGrow: 1
+                alignItems: "center"
             }}
         >
             {missionCards}
