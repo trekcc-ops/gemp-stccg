@@ -443,7 +443,7 @@ export default function MiniDrawer() {
                             flexGrow={1}
                             id="spacelinelocations"
                             direction="row"
-                            spacing={2}
+                            spacing={0}
                         >
                             {spacelineLocations}
                         </Stack>
