@@ -1,6 +1,7 @@
-import Box from '@mui/material/Box';
-import { Badge } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Badge, CircularProgress } from '@mui/material';
 import DangerousIcon from '@mui/icons-material/Dangerous';
+import { fetchImage } from '../gemp-022/communication.js';
 
 /*
 example card: {
@@ -17,7 +18,7 @@ example card: {
 }
 */
 
-export default function Card( {card} ) {
+export default function Card( {card, index, inc_minWidth, inc_minHeight} ) {
     let badge_color = "error";
     let stopped_badge = 0; // hidden by default
     let overlay = {};
@@ -26,11 +27,34 @@ export default function Card( {card} ) {
         overlay = {filter: "grayscale(80%)"};
     }
 
+    const [imageUrl, setImageUrl] = useState(null);
+
+    useEffect(() => {
+        fetchImage(card.imageUrl)
+        .then((url) => {
+            setImageUrl(url);
+        });
+    },[]);
+
+    const columnPosition = `${index+1}/auto`;
+    const rowPosition = `${index+1}/auto`;
+    const cardZIndex = index? -index : 0;
+
     return(
-        <Box data-cardid={card.cardId} sx={{height: 1, width: 1}} >
-            <Badge color={badge_color} badgeContent={stopped_badge}>
-                <img width={"100%"} src={card.imageUrl} style={overlay} />
-            </Badge>
+        <Box
+            data-cardid={card.cardId}
+            sx={{
+                gridColumn: columnPosition,
+                gridRow: rowPosition,
+                zIndex: cardZIndex,
+                minWidth: inc_minWidth, 
+                minHeight: inc_minHeight
+            }}
+        >
+            {/*<Badge color={badge_color} badgeContent={stopped_badge}>*/}
+                {/* If imageurl is null, show a circular progress spinner, otherwise load the graphic. */}
+                {imageUrl ? <img width={"100%"} src={imageUrl} style={overlay} /> : <CircularProgress/>}
+            {/*</Badge>*/}
         </Box>
     );
 }

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,14 +20,18 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import CardTree from './card-tree.jsx';
+import CardTreeView from './card-tree-view.jsx';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import ChatIcon from '@mui/icons-material/Chat';
+import HistoryIcon from '@mui/icons-material/History';
 import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
+import ActionReactionPane from './action-reaction-pane.jsx';
 import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
 import Hand from './hand.jsx';
 import Card from './card.jsx';
+import SpacelineLocation from './spaceline-location.jsx';
 
 // Change this function to change the JSON input source.
 function get_gamestate() {
@@ -35,6 +40,16 @@ function get_gamestate() {
     request.send(null)
     let the_state = JSON.parse(request.responseText);
     return the_state;
+}
+
+function get_your_player_id(gamestate) {
+    return gamestate["requestingPlayer"];
+}
+
+function get_opponent_player_id(gamestate) {
+    let your_player_id = gamestate["requestingPlayer"];
+    let opponent_player_data = gamestate["players"].filter((data) => data["playerId"] != your_player_id);
+    return opponent_player_data[0]["playerId"];
 }
 
 // DEBUG / DEMO DATA
@@ -51,6 +66,8 @@ let card_in_active_pane = {
     "uniqueness": "UNIQUE"
   }
 //let card_in_active_pane;
+
+let loadedGameState = get_gamestate();
 
 const drawerWidth = 240;
 
@@ -151,6 +168,14 @@ export default function MiniDrawer() {
         setOpen(false);
     };
 
+    let spacelineLocations = [];
+    loadedGameState["spacelineLocations"].map((item, index) => {
+        console.log(`mapping id: ${item["locationId"]}`);
+        spacelineLocations.push(<SpacelineLocation key={item["locationId"]} gamestate={loadedGameState} locationid={item["locationId"]}/>);
+    })
+
+
+
     return (
         <Box sx={{ display: 'flex' }}>
             {/* top bar */}
@@ -169,7 +194,20 @@ export default function MiniDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Box sx={{flexGrow: 1}} /> {/* expanding box to push icons right */}
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            flexGrow: 1
+                        }}>
+
+                        <PlayerScorePane id="opponent-player-score-pane" gamestate={loadedGameState} player_id={get_opponent_player_id(loadedGameState)}/>
+                        <PlayerScorePane id="your-player-score-pane" gamestate={loadedGameState} player_id={get_your_player_id(loadedGameState)}/>
+                            
+                    </Stack>
+                    <Divider orientation="vertical" flexItem sx={{padding: "10px"}} />
                     <Tooltip title="Account">
                         <IconButton
                             aria-label="account"
@@ -214,7 +252,7 @@ export default function MiniDrawer() {
                             <ListItemText sx={[
                                         open ? {opacity: 1,} : {opacity: 0,},
                                     ]} >
-                                    <CardTree gamestate={get_gamestate()} ></CardTree>
+                                    <CardTreeView gamestate={loadedGameState} ></CardTreeView>
                             </ListItemText>
                         </ListItemButton>
                     </ListItem>
@@ -244,6 +282,72 @@ export default function MiniDrawer() {
                             </ListItemIcon>
                             <ListItemText
                                 primary="Bookmarks"
+                                sx={[
+                                        /* Hide text when closed */
+                                        open ? {opacity: 1,} : {opacity: 0,},
+                                    ]}
+                            />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <Divider />
+                    
+                    {/* Chat button */}
+                    <ListItem disablePadding sx={{display: 'block'}}
+                    >
+                        <ListItemButton sx={[
+                                    {
+                                        minHeight: 48,
+                                        px: 2.5,
+                                    },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                ]}
+                            >
+                            <ListItemIcon sx={[
+                                    {
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                    },
+                                    /* Adjust right margin when closed */
+                                    open ? {mr: 3,} : {mr: 'auto',},
+                                ]}>
+                                <ChatIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Chat"
+                                sx={[
+                                        /* Hide text when closed */
+                                        open ? {opacity: 1,} : {opacity: 0,},
+                                    ]}
+                            />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <Divider />
+                    
+                    {/* Chat button */}
+                    <ListItem disablePadding sx={{display: 'block'}}
+                    >
+                        <ListItemButton sx={[
+                                    {
+                                        minHeight: 48,
+                                        px: 2.5,
+                                    },
+                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                ]}
+                            >
+                            <ListItemIcon sx={[
+                                    {
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                    },
+                                    /* Adjust right margin when closed */
+                                    open ? {mr: 3,} : {mr: 'auto',},
+                                ]}>
+                                <HistoryIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Card Play History"
                                 sx={[
                                         /* Hide text when closed */
                                         open ? {opacity: 1,} : {opacity: 0,},
@@ -330,20 +434,23 @@ export default function MiniDrawer() {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
                 <div id="main-layout-grid">
-                    <div id="table">TABLE</div>
-                    <div id="hand-pane"><Hand gamestate={get_gamestate()} /></div>
-                    <div id="active-card-pane">
-                        <ActiveCardPane style={{height: 240}} card={card_in_active_pane} />
-                        {
-                        /*
-                        For other demo cases:
-                        <ActiveCardPane style={{height: 240}} />
-                        */
-                        }
-                    </div>
-                    <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
-                    <div id="player-score-pane"><PlayerScorePane gamestate={get_gamestate()}/></div>
-                    <div id="chat-pane">CHAT</div>
+                    <Box id="table" sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center"
+                    }}>
+                        <Stack
+                            flexGrow={1}
+                            id="spacelinelocations"
+                            direction="row"
+                            spacing={0}
+                        >
+                            {spacelineLocations}
+                        </Stack>
+                    </Box>
+                    <div id="hand-pane"><Hand gamestate={loadedGameState} /></div>
+                    <div id="action-reaction-pane"><ActionReactionPane gamestate={loadedGameState}/></div>
+                    <div id="phase-pane"><PhaseIndicator gamestate={loadedGameState} /></div>
                 </div>
                 
             </Box>
