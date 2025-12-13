@@ -10,7 +10,7 @@ import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 
-public class NullifyCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class NullifyCardAction extends ActionyAction implements DiscardAction, TopLevelSelectableAction {
 
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)

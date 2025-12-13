@@ -4,16 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
-import java.util.List;
+import java.util.Collection;
 
-public class DiscardSingleCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class DiscardSingleCardAction extends ActionyAction implements DiscardAction, TopLevelSelectableAction {
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _performingCard;
@@ -47,28 +43,17 @@ public class DiscardSingleCardAction extends ActionyAction implements TopLevelSe
     }
 
     @Override
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        super.continueInitiation(cardGame);
-        if (_cardTarget.isResolved()) {
-            if (_cardTarget.getCards(cardGame).size() == 1) {
-                _discardedCard = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
-            } else {
-                throw new InvalidGameLogicException("Got too many cards for DiscardSingleCardAction");
-            }
-        }
-    }
-
-
-    @Override
     protected void processEffect(DefaultGame cardGame) {
-        GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_discardedCard));
-        if (_discardedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
-            stCard.unstop();
+        Collection<? extends PhysicalCard> cardTargets = _cardTarget.getCards(cardGame);
+        if (cardTargets.size() == 1) {
+            _discardedCard = Iterables.getOnlyElement(cardTargets);
+            discardCard(_discardedCard, cardGame);
+            saveResult(new DiscardCardFromPlayResult(_discardedCard, this), cardGame);
+            setAsSuccessful();
+        } else {
+            cardGame.sendErrorMessage("Too many cards received for discard action");
+            setAsFailed();
         }
-        cardGame.addCardToTopOfDiscardPile(_discardedCard);
-        saveResult(new DiscardCardFromPlayResult(_discardedCard, this));
-        setAsSuccessful();
     }
 
 }

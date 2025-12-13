@@ -28,6 +28,7 @@ import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
@@ -891,9 +892,17 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void reportCardToFacility(ReportableCard reportable, FacilityCard facility)
-            throws PlayerNotFoundException, InvalidGameLogicException {
-        ReportCardAction reportCardAction = new ReportCardAction(_game, reportable, false, facility);
-        reportCardAction.processEffect(_game);
+            throws InvalidGameLogicException {
+        if (reportable instanceof EquipmentCard) {
+            ReportCardAction reportCardAction = new ReportCardAction(_game, reportable, false, facility);
+            reportCardAction.processEffect(_game);
+        } else if (reportable instanceof AffiliatedCard affiliatedCard && affiliatedCard.getAffiliationOptions().size() <= 1) {
+            ReportCardAction reportCardAction = new ReportCardAction(_game, reportable, false, facility);
+            reportCardAction.setAffiliation(Iterables.getOnlyElement(affiliatedCard.getAffiliationOptions()));
+            reportCardAction.processEffect(_game);
+        } else {
+            throw new InvalidGameLogicException("Cannot automatically process report card action for multi-affiliation card");
+        }
     }
 
     protected void reportCardsToFacility(Collection<ReportableCard> reportables, FacilityCard facility)

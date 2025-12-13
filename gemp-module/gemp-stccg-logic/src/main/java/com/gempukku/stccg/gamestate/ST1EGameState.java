@@ -196,6 +196,7 @@ public class ST1EGameState extends GameState {
             throws InvalidGameLogicException, PlayerNotFoundException {
         // Do not use in non-testing classes
         SeedOutpostAction seedAction = new SeedOutpostAction(cardGame, card, destinationCard);
+        seedAction.setAffiliation(card.getCurrentAffiliations().getFirst());
         seedAction.processEffect(cardGame);
     }
 

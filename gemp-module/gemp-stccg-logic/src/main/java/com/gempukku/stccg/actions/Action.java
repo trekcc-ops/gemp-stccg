@@ -32,10 +32,6 @@ public interface Action {
     void appendCost(Action costAction);
     void appendEffect(Action actionEffect);
 
-    Action nextAction(DefaultGame game)
-            throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException,
-            InvalidGameOperationException;
-
     @JsonProperty("actionType")
     ActionType getActionType();
 

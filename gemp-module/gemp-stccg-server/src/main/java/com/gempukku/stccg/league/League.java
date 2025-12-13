@@ -1,7 +1,7 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.Objects;
@@ -50,7 +50,15 @@ public class League {
                     _leagueData = new SealedLeagueData(bpLibrary, formatLibrary, _parameters);
                 }
                 else if(_clazz.equals(NewSealedLeagueData.class.getName())) {
-                    _leagueData = new NewSealedLeagueData(bpLibrary, formatLibrary, _parameters);
+                    String[] params = _parameters.split(",");
+                    String leagueTemplateName = params[0];
+                    int start = Integer.parseInt(params[1]);
+                    int seriesDuration = Integer.parseInt(params[2]);
+                    int maxMatches = Integer.parseInt(params[3]);
+                    String creationTime = params[4];
+                    String collectionCode = params[5];
+                    _leagueData = new NewSealedLeagueData(bpLibrary, formatLibrary, leagueTemplateName,
+                            start, seriesDuration, maxMatches, creationTime, collectionCode);
                 }
                 else if(_clazz.equals(SoloDraftLeagueData.class.getName())) {
                     _leagueData = new SoloDraftLeagueData(bpLibrary,  formatLibrary, draftFormatLibrary, _parameters);

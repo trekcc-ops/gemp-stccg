@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
-import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
+import com.gempukku.stccg.actions.discard.KillSinglePersonnelAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;

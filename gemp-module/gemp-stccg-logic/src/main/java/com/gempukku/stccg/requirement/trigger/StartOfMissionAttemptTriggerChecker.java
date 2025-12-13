@@ -34,7 +34,7 @@ public class StartOfMissionAttemptTriggerChecker implements TriggerChecker {
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         String attemptingPlayerName = _attemptingPlayer.getPlayerId(cardGame, actionContext);
         ActionResult currentResult = cardGame.getCurrentActionResult();
-        if (currentResult != null && currentResult.getType() == ActionResult.Type.START_OF_MISSION_ATTEMPT &&
+        if (currentResult != null && currentResult.hasType(ActionResult.Type.START_OF_MISSION_ATTEMPT) &&
                 cardGame.getCurrentAction() instanceof AttemptMissionAction missionAction &&
                 missionAction.getPerformingPlayerId().equals(attemptingPlayerName)
         ) {

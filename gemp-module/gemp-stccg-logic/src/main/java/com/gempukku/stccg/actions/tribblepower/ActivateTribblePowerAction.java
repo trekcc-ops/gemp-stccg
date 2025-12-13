@@ -32,7 +32,6 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
         return _performingCard;
     }
 
-    @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Action cost = getNextCost();
         if (cost != null)
@@ -42,9 +41,21 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
         if (action == null) {
             ActionResult result =
                     new ActionResult(ActionResult.Type.ACTIVATE_TRIBBLE_POWER, this);
-            saveResult(result);
+            saveResult(result, cardGame);
         }
         return action;
+    }
+
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            Action action = nextAction(cardGame);
+            if (action == null) {
+                setAsSuccessful();
+            }
+        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
+        }
     }
 
     @Override

@@ -41,7 +41,7 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
     protected void processEffect(DefaultGame cardGame) {
         try {
             // The playCard method determines valid destinations
-            playCard(cardGame, Iterables.getOnlyElement(_cardToDownloadTarget.getCards(cardGame)));
+            playCard(cardGame, Iterables.getOnlyElement(_cardToDownloadTarget.getCards()));
             setAsSuccessful();
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);

@@ -33,7 +33,7 @@ public class DrawSingleCardAction extends ActionyAction {
         try {
             cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
             setAsSuccessful();
-            saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId, this));
+            saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId, this), cardGame);
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             setAsFailed();

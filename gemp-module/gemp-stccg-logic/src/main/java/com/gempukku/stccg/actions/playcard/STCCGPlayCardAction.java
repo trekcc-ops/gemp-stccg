@@ -24,13 +24,6 @@ public class STCCGPlayCardAction extends PlayCardAction {
             appendCost(new UseNormalCardPlayAction(cardGame, player));
     }
 
-    public STCCGPlayCardAction(DefaultGame cardGame, ST1EPhysicalCard card, Zone zone, Player player, boolean forFree,
-                               ActionContext context) {
-        super(cardGame, card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD, context);
-        if (!forFree)
-            appendCost(new UseNormalCardPlayAction(cardGame, player));
-    }
-
     public STCCGPlayCardAction(DefaultGame cardGame, PhysicalCard card, Zone zone, String playerName, boolean forFree,
                                ActionContext context) {
         super(cardGame, card, card, playerName, zone, ActionType.PLAY_CARD, context);
@@ -38,15 +31,12 @@ public class STCCGPlayCardAction extends PlayCardAction {
             appendCost(new UseNormalCardPlayAction(cardGame, playerName));
     }
 
-
-
     public STCCGPlayCardAction(DefaultGame cardGame, PhysicalCard card, Zone zone, String performingPlayerName,
-                               boolean forFree, Enum<?>[] progressValues) {
-        super(cardGame, card, card, performingPlayerName, zone, ActionType.PLAY_CARD, progressValues);
+                               boolean forFree) {
+        super(cardGame, card, card, performingPlayerName, zone, ActionType.PLAY_CARD);
         if (!forFree)
             appendCost(new UseNormalCardPlayAction(cardGame, performingPlayerName));
     }
-
 
 
 }

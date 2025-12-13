@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
@@ -9,6 +8,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class AllCardsMatchingFilterResolver implements ActionCardResolver {
     private final CardFilter _cardFilter;
@@ -30,12 +30,8 @@ public class AllCardsMatchingFilterResolver implements ActionCardResolver {
         return _resolved;
     }
 
-    public Collection<PhysicalCard> getCards(DefaultGame cardGame) {
-        if (_resolved) {
-            return _cards;
-        } else {
-            return new ArrayList<>();
-        }
+    public Collection<PhysicalCard> getCards() {
+        return Objects.requireNonNullElseGet(_cards, ArrayList::new);
     }
 
     @Override
@@ -49,10 +45,5 @@ public class AllCardsMatchingFilterResolver implements ActionCardResolver {
     }
 
     public CardFilter getFilter() { return _cardFilter; }
-
-    @JsonProperty("serialized")
-    public String serialize() {
-        return "filtered";
-    }
 
 }

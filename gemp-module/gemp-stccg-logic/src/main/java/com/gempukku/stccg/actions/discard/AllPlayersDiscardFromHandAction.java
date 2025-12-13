@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AllPlayersDiscardFromHandAction extends ActionyAction {
+public class AllPlayersDiscardFromHandAction extends ActionyAction implements DiscardAction {
     private final PhysicalCard _performingCard;
     private final boolean _allPlayersMustBeAble;
     private final boolean _forced;
@@ -38,8 +38,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
                 cardGame.getPlayers().stream().anyMatch(player -> !player.getCardsInHand().isEmpty());
     }
 
-    @Override
-    public Action nextAction(DefaultGame cardGame) {
+    protected void processEffect(DefaultGame cardGame) {
 
         for (Player player : cardGame.getPlayers()) {
             Collection<PhysicalCard> hand = Filters.filter(player.getCardsInHand(), cardGame, Filters.any);
@@ -59,7 +58,6 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
 
         }
         setAsSuccessful();
-        return getNextAction();
     }
 
     private boolean canDiscard(DefaultGame cardGame, String playerId) {
@@ -74,7 +72,7 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction {
             gameState.removeCardsFromZoneWithoutSendingToClient(game, discardedCards);
             for (PhysicalCard card : discardedCards) {
                 game.addCardToTopOfDiscardPile(card);
-                saveResult(new DiscardCardFromHandResult(card, this));
+                saveResult(new DiscardCardFromHandResult(card, this, game), game);
             }
         }
     }

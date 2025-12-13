@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -25,7 +24,7 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     public SelectAttemptingUnitAction(DefaultGame cardGame, Player player, Collection<AttemptingUnit> attemptingUnits,
                                       String selectionText)
             throws InvalidGameLogicException {
-        super(cardGame, player, selectionText, ActionType.SELECT_AWAY_TEAM);
+        super(cardGame, player, ActionType.SELECT_AWAY_TEAM);
         _decisionText = selectionText;
         _eligibleUnits = new LinkedList<>(attemptingUnits);
         for (AttemptingUnit unit : _eligibleUnits) {
@@ -47,21 +46,24 @@ public class SelectAttemptingUnitAction extends ActionyAction {
         return false;
     }
 
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        if (_presentedOptions.size() == 1) {
-            attemptingUnitChosen(_eligibleUnits.getFirst());
-        } else {
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            cardGame.sendAwaitingDecision(
-                    new MultipleChoiceAwaitingDecision(performingPlayer, _decisionText, _presentedOptions, cardGame) {
-                        @Override
-                        protected void validDecisionMade(int index, String result) {
-                            attemptingUnitChosen(_eligibleUnits.get(index));
-                        }
-                    });
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            if (_presentedOptions.size() == 1) {
+                attemptingUnitChosen(_eligibleUnits.getFirst());
+            } else {
+                Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+                cardGame.sendAwaitingDecision(
+                        new MultipleChoiceAwaitingDecision(performingPlayer, _decisionText, _presentedOptions, cardGame) {
+                            @Override
+                            protected void validDecisionMade(int index, String result) {
+                                attemptingUnitChosen(_eligibleUnits.get(index));
+                            }
+                        });
+            }
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        return getNextAction();
     }
 
     private void attemptingUnitChosen(AttemptingUnit attemptingUnit) {

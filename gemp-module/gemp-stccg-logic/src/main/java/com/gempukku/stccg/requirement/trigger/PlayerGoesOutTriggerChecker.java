@@ -24,7 +24,7 @@ public class PlayerGoesOutTriggerChecker implements TriggerChecker {
     }
 
     private static boolean playerGoesOut(ActionResult actionResult, String playerId) {
-        return (actionResult.getType() == ActionResult.Type.PLAYER_WENT_OUT &&
+        return (actionResult.hasType(ActionResult.Type.PLAYER_WENT_OUT) &&
                 Objects.equals(actionResult.getPerformingPlayerId(), playerId));
     }
 }

@@ -2,12 +2,13 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -46,14 +47,6 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         _destinationZone = toZone;
     }
 
-    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
-                          String performingPlayerName, Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
-        super(cardGame, performingPlayerName, actionType, progressValues);
-        _performingCard = actionSource;
-        _cardEnteringPlay = cardEnteringPlay;
-        _destinationZone = toZone;
-    }
-
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
         return _cardEnteringPlay.canBePlayed(cardGame);
@@ -68,14 +61,8 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        super.continueInitiation(cardGame);
-        _cardEnteringPlay.removeFromCardGroup(cardGame);
-        ActionResult playCardInitiationResult = new PlayCardInitiationResult(this, _cardEnteringPlay);
-        saveResult(playCardInitiationResult);
-    }
-    
     protected void putCardIntoPlay(DefaultGame cardGame) throws PlayerNotFoundException {
+        _cardEnteringPlay.removeFromCardGroup(cardGame);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
         if (performingPlayer.getCardsInDrawDeck().contains(_cardEnteringPlay)) {
@@ -85,7 +72,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         GameState gameState = cardGame.getGameState();
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
         gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
-        saveResult(new PlayCardResult(this, _cardEnteringPlay));
+        saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
     }
 
     protected void processEffect(DefaultGame cardGame) {

@@ -1,7 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -11,8 +9,6 @@ import java.util.LinkedList;
 
 public class FixedCardsResolver implements ActionCardResolver {
 
-    @JsonProperty("serialized")
-    @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalCard> _cards;
 
     public FixedCardsResolver(Collection<? extends PhysicalCard> cards) {
@@ -26,8 +22,7 @@ public class FixedCardsResolver implements ActionCardResolver {
         return true;
     }
 
-    @Override
-    public Collection<PhysicalCard> getCards(DefaultGame cardGame) {
+    public Collection<PhysicalCard> getCards() {
         return _cards;
     }
 

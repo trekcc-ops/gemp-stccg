@@ -16,15 +16,16 @@ public class DiscardedCardRule extends GenericRule {
     @Override
     public List<TopLevelSelectableAction> getRequiredAfterTriggers(DefaultGame cardGame, ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new ArrayList<>();
-        if (actionResult.getType() == ActionResult.Type.FOR_EACH_DISCARDED_FROM_PLAY) {
-            DiscardCardFromPlayResult discardResult = (DiscardCardFromPlayResult) actionResult;
-            PhysicalCard discardedCard = discardResult.getDiscardedCard();
+        if (actionResult.hasType(ActionResult.Type.JUST_DISCARDED_FROM_PLAY)) {
+            if (actionResult instanceof DiscardCardFromPlayResult discardResult) {
+                PhysicalCard discardedCard = discardResult.getDiscardedCard();
 
-            ActionBlueprint actionBlueprint =
-                    discardedCard.getBlueprint().getDiscardedFromPlayTrigger(RequiredType.REQUIRED);
-            TopLevelSelectableAction trigger = (actionBlueprint == null) ?
-                    null : actionBlueprint.createAction(cardGame, discardedCard.getOwnerName(), discardedCard);
-            if (trigger != null) result.add(trigger);
+                ActionBlueprint actionBlueprint =
+                        discardedCard.getBlueprint().getDiscardedFromPlayTrigger(RequiredType.REQUIRED);
+                TopLevelSelectableAction trigger = (actionBlueprint == null) ?
+                        null : actionBlueprint.createAction(cardGame, discardedCard.getOwnerName(), discardedCard);
+                if (trigger != null) result.add(trigger);
+            }
         }
         return result;
     }

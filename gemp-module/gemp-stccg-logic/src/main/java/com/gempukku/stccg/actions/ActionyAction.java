@@ -5,11 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -25,7 +23,6 @@ public abstract class ActionyAction implements Action {
 
     protected final List<ActionCardResolver> _cardTargets = new LinkedList<>();
     private final List<ActionCardResolver> _resolvedTargets = new LinkedList<>();
-    private final LinkedList<Action> _targeting = new LinkedList<>();
     private final LinkedList<Action> _processedCosts = new LinkedList<>();
     private final LinkedList<Action> _actionEffects = new LinkedList<>();
     private final LinkedList<Action> _processedActions = new LinkedList<>();
@@ -160,7 +157,8 @@ public abstract class ActionyAction implements Action {
 
     public final boolean canBeInitiated(DefaultGame cardGame) {
         return requirementsAreMet(cardGame) && costsCanBePaid(cardGame) &&
-                cardGame.playerRestrictedFromPerformingActionDueToModifiers(_performingPlayerId, this);
+                cardGame.playerRestrictedFromPerformingActionDueToModifiers(_performingPlayerId, this) &&
+                !wasInitiated();
     }
 
     public abstract boolean requirementsAreMet(DefaultGame cardGame);
@@ -180,16 +178,6 @@ public abstract class ActionyAction implements Action {
     }
 
     public String getCardActionPrefix() { return _cardActionPrefix; }
-
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException {
-        Action action = getNextAction();
-        if (action == null) {
-            processEffect(cardGame);
-            return null;
-        } else {
-            return action;
-        }
-    }
 
     public int getActionId() { return _actionId; }
     protected void setProgress(Enum<?> progressType) {
@@ -253,8 +241,10 @@ public abstract class ActionyAction implements Action {
         return _actionStatus == ActionStatus.completed_success;
     }
 
-    protected void saveResult(ActionResult actionResult) {
+
+    protected void saveResult(ActionResult actionResult, DefaultGame cardGame) {
         _currentResult = actionResult;
+        actionResult.initialize(cardGame);
     }
 
     public void clearResult() {
@@ -273,8 +263,11 @@ public abstract class ActionyAction implements Action {
 
         ActionResult actionResult = getResult();
         if (actionResult != null) {
-            actionResult.initialize(cardGame);
-            actionResult.addNextActionToStack(cardGame, this);
+            if (actionResult.canBeRespondedTo()) {
+                actionResult.addNextActionToStack(cardGame);
+            } else {
+                clearResult();
+            }
         } else if (!isInProgress() && getResult() == null) {
             actionsEnvironment.removeCompletedActionFromStack(this);
             cardGame.sendActionResultToClient();
@@ -294,7 +287,7 @@ public abstract class ActionyAction implements Action {
     protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         resolveTargets(cardGame);
 
-        if (_cardTargets.isEmpty() && _targeting.isEmpty() && thisActionShouldBeContinued(cardGame)) {
+        if (_cardTargets.isEmpty() && thisActionShouldBeContinued(cardGame)) {
             int loopNumber = 1;
 
             while (thisActionShouldBeContinued(cardGame) && !_costs.isEmpty()) {
@@ -315,12 +308,12 @@ public abstract class ActionyAction implements Action {
             }
         }
 
-        if (_cardTargets.isEmpty() && _targeting.isEmpty() && _costs.isEmpty() && thisActionShouldBeContinued(cardGame)) {
+        if (_cardTargets.isEmpty() && _costs.isEmpty() && thisActionShouldBeContinued(cardGame)) {
             _actionStatus = ActionStatus.initiation_complete;
         }
     }
 
-    protected void continueEffects(DefaultGame cardGame) throws InvalidGameLogicException {
+    protected final void continueEffects(DefaultGame cardGame) throws InvalidGameLogicException {
         int loopNumber = 1;
 
         while (thisActionShouldBeContinued(cardGame) && !_actionEffects.isEmpty()) {
@@ -355,7 +348,7 @@ public abstract class ActionyAction implements Action {
         setAsSuccessful();
     }
 
-    private void resolveTargets(DefaultGame cardGame) throws InvalidGameLogicException {
+    protected final void resolveTargets(DefaultGame cardGame) throws InvalidGameLogicException {
         int loopNumber = 1;
 
         while (thisActionShouldBeContinued(cardGame) && !_cardTargets.isEmpty()) {
@@ -370,27 +363,8 @@ public abstract class ActionyAction implements Action {
             }
             loopNumber++;
             if (loopNumber > 500) {
-                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
-                        "method. This is likely due to a circular logic error.");
-            }
-        }
-
-        loopNumber = 1;
-
-        while (thisActionShouldBeContinued(cardGame) && !_targeting.isEmpty()) {
-            Action targetingAction = _targeting.getFirst();
-            if (targetingAction.wasSuccessful()) {
-                _targeting.remove(targetingAction);
-                _processedCosts.add(targetingAction);
-            } else if (targetingAction.wasFailed()) {
-                this.setAsFailed();
-            } else {
-                cardGame.getActionsEnvironment().addActionToStack(targetingAction);
-            }
-            loopNumber++;
-            if (loopNumber > 500) {
-                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
-                        "method. This is likely due to a circular logic error.");
+                throw new InvalidGameLogicException("Looped more than 500 times while resolving targets. " +
+                        "This is likely due to a circular logic error.");
             }
         }
     }

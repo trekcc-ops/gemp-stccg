@@ -141,7 +141,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                     gameState.addSpacelineLocation(_locationZoneIndex, location);
                     gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
                 }
-                saveResult(new PlayCardResult(this, _cardEnteringPlay));
+                saveResult(new PlayCardResult(this, _cardEnteringPlay), game);
                 setAsSuccessful();
             } catch (InvalidGameLogicException exp) {
                 game.sendErrorMessage(exp);

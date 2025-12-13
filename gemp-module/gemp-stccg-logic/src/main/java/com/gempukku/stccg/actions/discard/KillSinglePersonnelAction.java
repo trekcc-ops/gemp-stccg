@@ -1,21 +1,19 @@
-package com.gempukku.stccg.actions.modifiers;
+package com.gempukku.stccg.actions.discard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
-import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.google.common.collect.Iterables;
 
-public class KillSinglePersonnelAction extends ActionyAction implements TopLevelSelectableAction {
+public class KillSinglePersonnelAction extends ActionyAction implements DiscardAction, TopLevelSelectableAction {
 
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardTarget;
     private PhysicalCard _victim;
-    private boolean _discardActionSent;
 
     public KillSinglePersonnelAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
                                      ActionCardResolver targetResolver) {
@@ -43,15 +41,14 @@ public class KillSinglePersonnelAction extends ActionyAction implements TopLevel
     @Override
     protected void processEffect(DefaultGame cardGame) {
         try {
-            if (_cardTarget.getCards(cardGame).size() != 1) {
+            if (_cardTarget.getCards().size() != 1) {
                 setAsFailed();
                 throw new InvalidGameLogicException("Too many cards selected for KillSinglePersonnelAction");
             } else {
-                _discardActionSent = true;
                 _victim = Iterables.getOnlyElement(_cardTarget.getCards(cardGame));
-                cardGame.addActionToStack(new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId, _victim));
+                discardCard(_victim, cardGame);
+                saveResult(new KillCardResult(this, _victim), cardGame);
                 setAsSuccessful();
-                saveResult(new KillCardResult(this, _victim));
             }
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);

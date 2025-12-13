@@ -25,20 +25,15 @@ public class NewSealedLeagueData implements LeagueData {
     private final String _creationTime;
     private final String _collectionCode;
 
-    public NewSealedLeagueData(CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary, String parameters) {
+    public NewSealedLeagueData(CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary, String leagueTemplateName,
+                               int start, int seriesDuration, int maxMatches, String creationTime, String collectionCode) {
         _leaguePrizes = new FixedLeaguePrizes(cardLibrary);
         _formatLibrary = formatLibrary;
-        
-        String[] params = parameters.split(",");
-        _leagueTemplateName = params[0];
-        int start = Integer.parseInt(params[1]);
-        int seriesDuration = Integer.parseInt(params[2]);
-        int maxMatches = Integer.parseInt(params[3]);
+        _leagueTemplateName = leagueTemplateName;
         _maxMatches = maxMatches;
-        _creationTime = params[4];
-        _collectionCode = params[5];
-
-        _collectionType = new CollectionType(params[4], params[5]);
+        _creationTime = creationTime;
+        _collectionCode = collectionCode;
+        _collectionType = new CollectionType(creationTime, collectionCode);
 
         var def = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
 
@@ -55,26 +50,8 @@ public class NewSealedLeagueData implements LeagueData {
     public NewSealedLeagueData(CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary, String leagueName,
                                int start, int seriesDuration, int maxMatches, long creationTime,
                                String collectionName) {
-        _leaguePrizes = new FixedLeaguePrizes(cardLibrary);
-        _formatLibrary = formatLibrary;
-        _maxMatches = maxMatches;
-        _collectionCode = collectionName;
-
-        _leagueTemplateName = leagueName;
-        _creationTime = String.valueOf(creationTime);
-
-        _collectionType = new CollectionType(String.valueOf(creationTime), collectionName);
-
-        var def = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
-
-        _allSeries = new LinkedList<>();
-        for (int i = 0; i < def.GetSeriesCount(); i++) {
-            _allSeries.add(
-                    new DefaultLeagueSeriesData(_leaguePrizes, true, "Series " + (i + 1),
-                            DateUtils.offsetDate(start, i * seriesDuration),
-                            DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
-                            def.getFormat(), _collectionType));
-        }
+        this(cardLibrary, formatLibrary, leagueName, start, seriesDuration, maxMatches, String.valueOf(creationTime),
+            collectionName);
     }
 
 

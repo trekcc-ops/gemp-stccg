@@ -67,7 +67,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     @Override
     protected void continueInitiation(DefaultGame cardGame) {
         try {
-            Action nextAction = nextAction(cardGame);
+            Action nextAction = nextActionOld(cardGame);
             if (nextAction == null) {
                 setAsInitiated();
             } else {
@@ -79,8 +79,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
         }
     }
 
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    public Action nextActionOld(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         if (cardGame instanceof ST1EGame stGame) {
             MissionLocation missionLocation;
             GameLocation gameLocation = stGame.getGameState().getLocationById(_locationId);
@@ -130,7 +129,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                 if (attemptingUnit.getAttemptingPersonnel(cardGame).isEmpty()) {
                     failMission(cardGame);
                 } else  {
-                    saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this));
+                    saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this), cardGame);
                 }
                 return null;
             } else {

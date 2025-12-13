@@ -16,7 +16,7 @@ public interface ActionsQuerying {
     }
 
     default boolean isCurrentActionResultType(ActionResult.Type type) {
-        return getCurrentActionResult() != null && getCurrentActionResult().getType() == type;
+        return getCurrentActionResult() != null && getCurrentActionResult().hasType(type);
     }
 
     Collection<ActionProxy> getAllActionProxies();

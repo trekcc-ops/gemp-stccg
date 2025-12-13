@@ -77,7 +77,11 @@ public class ActionsEnvironment {
     }
 
     public Action getCurrentAction() {
-        return _actionStack.peek();
+        if (_actionStack.isEmpty()) {
+            return null;
+        } else {
+            return _actionStack.peek();
+        }
     }
 
     public int getNextActionId() {

@@ -415,4 +415,9 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     public Action getCurrentAction() {
         return getActionsEnvironment().getCurrentAction();
     }
+    public void addActionToStack(Action action) { getActionsEnvironment().addActionToStack(action); }
+
+    public void removeCardsFromZone(Collection<PhysicalCard> cards) {
+        getGameState().removeCardsFromZoneWithoutSendingToClient(this, cards);
+    }
 }

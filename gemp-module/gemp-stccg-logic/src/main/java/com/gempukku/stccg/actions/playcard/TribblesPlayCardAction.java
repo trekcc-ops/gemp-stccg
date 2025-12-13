@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -28,8 +27,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         }
     }
 
-    @Override
-    public Action nextAction(DefaultGame cardGame) {
+    protected void processEffect(DefaultGame cardGame) {
         TribblesGameState gameState = (TribblesGameState) cardGame.getGameState();
 
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(_cardEnteringPlay));
@@ -42,8 +40,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setNextTribbleInSequence(nextTribble);
 
         gameState.setChainBroken(false);
-        saveResult(new PlayCardResult(this, _cardEnteringPlay));
+        saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
         setAsSuccessful();
-        return null;
     }
 }

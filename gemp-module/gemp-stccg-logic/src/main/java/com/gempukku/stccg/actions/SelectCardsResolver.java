@@ -8,6 +8,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class SelectCardsResolver implements ActionCardResolver {
     private final SelectCardsAction _selectAction;
@@ -32,14 +33,8 @@ public class SelectCardsResolver implements ActionCardResolver {
         }
     }
 
-    public Collection<PhysicalCard> getCards(DefaultGame cardGame) {
-        if (_resolved) {
-            return _cards;
-        } else if (_selectAction.wasCarriedOut()) {
-            return _selectAction.getSelectedCards();
-        } else {
-            return new ArrayList<>();
-        }
+    public Collection<PhysicalCard> getCards() {
+        return Objects.requireNonNullElseGet(_cards, ArrayList::new);
     }
 
     public SelectCardsAction getSelectionAction() {

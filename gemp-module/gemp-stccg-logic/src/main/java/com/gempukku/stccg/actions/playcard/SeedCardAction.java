@@ -45,7 +45,7 @@ public class SeedCardAction extends PlayCardAction {
         gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
         gameState.addCardToZone(game, _cardEnteringPlay, _destinationZone, _actionContext);
         setAsSuccessful();
-        saveResult(new PlayCardResult(this, _cardEnteringPlay));
+        saveResult(new PlayCardResult(this, _cardEnteringPlay), game);
     }
 
     public void processEffect(DefaultGame cardGame) {

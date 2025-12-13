@@ -46,6 +46,7 @@ public class InitiateShipBattleTest extends AbstractAtTest {
         for (FacilityCard facility : outpostsToSeed) {
             SeedOutpostAction seedOutpostAction = new SeedOutpostAction(_game, facility);
             seedOutpostAction.setDestination(mission);
+            seedOutpostAction.setAffiliation(facility.getAffiliationForCardArt());
             seedOutpostAction.processEffect(_game);
         }
 

@@ -3,7 +3,7 @@ package com.gempukku.stccg.requirement.trigger;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.modifiers.KillCardResult;
+import com.gempukku.stccg.actions.discard.KillCardResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;

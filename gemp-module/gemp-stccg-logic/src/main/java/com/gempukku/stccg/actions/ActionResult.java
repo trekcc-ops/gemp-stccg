@@ -20,14 +20,13 @@ public class ActionResult {
         ACTIVATE_TRIBBLE_POWER,
         DRAW_CARD_OR_PUT_INTO_HAND,
         END_OF_TURN,
-        FOR_EACH_DISCARDED_FROM_DECK,
         FOR_EACH_DISCARDED_FROM_HAND,
-        FOR_EACH_DISCARDED_FROM_PLAY,
         FOR_EACH_DISCARDED_FROM_PLAY_PILE,
         FOR_EACH_RETURNED_TO_HAND,
         FOR_EACH_REVEALED_FROM_HAND,
         FOR_EACH_REVEALED_FROM_TOP_OF_DECK,
-        PLAY_CARD,
+        JUST_DISCARDED_FROM_PLAY,
+        JUST_PLAYED,
         PLAY_CARD_INITIATION,
         PLAYER_WENT_OUT,
         START_OF_MISSION_ATTEMPT,
@@ -36,7 +35,7 @@ public class ActionResult {
         DRAW_CARD, KILL_CARD, WHEN_MOVE_FROM
     }
 
-    private final Type _type;
+    private final List<Type> _types;
     private final Set<Integer> _triggerActionIdsUsed = new HashSet<>();
 
     // Actions that can be initiated as optional responses. The key of this map is player name.
@@ -50,19 +49,24 @@ public class ActionResult {
     private int _passCount;
     protected final Action _action;
 
-
-    public ActionResult(Type type, String performingPlayerId, Action action) {
-        _type = type;
+    public ActionResult(List<Type> types, String performingPlayerId, Action action) {
+        _types = types;
         _performingPlayerId = performingPlayerId;
         _action = action;
+        _passCount = 0;
     }
 
 
+    public ActionResult(Type type, String performingPlayerId, Action action) {
+        this(List.of(type), performingPlayerId, action);
+    }
+
+    public ActionResult(List<Type> types, Action action) {
+        this(types, action.getPerformingPlayerId(), action);
+    }
 
     public ActionResult(Type type, Action action) {
-        _type = type;
-        _action = action;
-        _performingPlayerId = action.getPerformingPlayerId();
+        this(List.of(type), action.getPerformingPlayerId(), action);
     }
 
     public void initialize(DefaultGame cardGame) {
@@ -70,20 +74,12 @@ public class ActionResult {
             _initialized = true;
             createOptionalAfterTriggerActions(cardGame);
             _requiredResponses.addAll(getRequiredResponseActions(cardGame));
-            _optionalResponsePlayerOrder =
-                    cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
-            _passCount = 0;
+            _optionalResponsePlayerOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
         }
     }
 
-    public Type getType() {
-        return _type;
-    }
-    public void optionalTriggerUsed(Action action) {
-        _triggerActionIdsUsed.add(action.getActionId());
-    }
-    public boolean wasOptionalTriggerUsed(Action action) {
-        return _triggerActionIdsUsed.contains(action.getActionId());
+    public boolean hasType(Type type) {
+        return _types.contains(type);
     }
 
     public void createOptionalAfterTriggerActions(DefaultGame game) {
@@ -123,7 +119,7 @@ public class ActionResult {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         if (_optionalAfterTriggerActions.get(playerName) != null) {
             for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(playerName)) {
-                if (action.canBeInitiated(cardGame) && !wasOptionalTriggerUsed(action)) {
+                if (action.canBeInitiated(cardGame) && !_triggerActionIdsUsed.contains(action.getActionId())) {
                     result.add(action);
                 }
             }
@@ -158,22 +154,23 @@ public class ActionResult {
 
     private void refreshActions(DefaultGame cardGame) {
         for (List<TopLevelSelectableAction> optionalActions : _optionalAfterTriggerActions.values()) {
-            optionalActions.removeIf(action -> !action.canBeInitiated(cardGame) || action.wasInitiated());
+            optionalActions.removeIf(action -> !action.canBeInitiated(cardGame));
         }
-        _requiredResponses.removeIf(nextAction -> !nextAction.canBeInitiated(cardGame) || nextAction.wasInitiated());
+        _requiredResponses.removeIf(nextAction -> !nextAction.canBeInitiated(cardGame));
     }
 
 
-    public void addNextActionToStack(DefaultGame cardGame, Action parentAction) {
+    public void addNextActionToStack(DefaultGame cardGame) {
         refreshActions(cardGame);
         if (!_requiredResponses.isEmpty()) {
             ActionsEnvironment environment = cardGame.getActionsEnvironment();
             if (_requiredResponses.size() == 1 && _requiredResponses.getFirst().canBeInitiated(cardGame)) {
-                environment.addActionToStack(_requiredResponses.getFirst());
+                cardGame.addActionToStack(_requiredResponses.getFirst());
             } else {
+                String currentPlayerName = cardGame.getCurrentPlayerId();
                 cardGame.sendAwaitingDecision(
-                        new ActionSelectionDecision(cardGame.getCurrentPlayerId(),
-                                DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION, _requiredResponses, cardGame, true) {
+                        new ActionSelectionDecision(currentPlayerName, DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION,
+                                _requiredResponses, cardGame, true) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
@@ -182,7 +179,7 @@ public class ActionResult {
                             }
                         });
             }
-        } else if (_passCount < _optionalResponsePlayerOrder.getPlayerCount()) {
+        } else {
             _optionalResponsePlayerOrder.advancePlayer();
             final String activePlayerName = _optionalResponsePlayerOrder.getCurrentPlayerName();
             List<TopLevelSelectableAction> possibleActions = getOptionalAfterActions(cardGame, activePlayerName);
@@ -192,8 +189,6 @@ public class ActionResult {
                 cardGame.sendAwaitingDecision(
                         selectOptionalResponseActionDecision(cardGame, possibleActions, activePlayerName));
             }
-        } else {
-            parentAction.clearResult();
         }
     }
 

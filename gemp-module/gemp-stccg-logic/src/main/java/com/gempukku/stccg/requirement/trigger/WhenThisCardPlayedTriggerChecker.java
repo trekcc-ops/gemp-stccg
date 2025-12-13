@@ -10,7 +10,7 @@ public class WhenThisCardPlayedTriggerChecker implements TriggerChecker {
     @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         return cardGame.getCurrentActionResult() instanceof PlayCardResult playCardResult &&
-                playCardResult.getType() == ActionResult.Type.PLAY_CARD &&
+                playCardResult.hasType(ActionResult.Type.JUST_PLAYED) &&
                 playCardResult.getPlayedCard() == actionContext.card();
     }
 

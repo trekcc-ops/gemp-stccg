@@ -34,7 +34,7 @@ public class PlaceCardOnBottomOfPlayPileAction extends ActionyAction {
 
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
+        for (PhysicalCard card : _cardTarget.getCards()) {
             cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
             cardGame.getGameState().addCardToZone(cardGame, card, Zone.PLAY_PILE, _actionContext);
         }
