@@ -75,9 +75,9 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
         }
     }
 
-    let max_three_cards = 4; // 1 indexed since z-index 0 is the anchor card
+    let max_three_cards = 3; // 1 indexed since z-index 0 is the anchor card
     let retarr = [];
-    for (let i = 1; i < max_three_cards; i++) {
+    for (let i = 0; i < max_three_cards; i++) {
         let cardData = beneath_arr[i];
         if (cardData) {
             retarr.push(cardData);
