@@ -3,10 +3,12 @@
 import { Stack } from "@mui/material";
 import CardStack from "./card-stack.jsx";
 
+// TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
 function get_your_player_id(gamestate) {
     return gamestate["requestingPlayer"];
 }
 
+// TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
 function get_opponent_player_id(gamestate) {
     let your_player_id = gamestate["requestingPlayer"];
     let opponent_player_data = gamestate["players"].filter((data) => data["playerId"] != your_player_id);
