@@ -37,7 +37,8 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         HIT, DIRECT_HIT, MISS
     }
 
-    public InitiateShipBattleAction(Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap, DefaultGame game, Player performingPlayer) {
+    public InitiateShipBattleAction(Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap, DefaultGame game,
+                                    Player performingPlayer) {
         super(game, performingPlayer, ActionType.BATTLE);
         _targetMap = targetMap;
     }

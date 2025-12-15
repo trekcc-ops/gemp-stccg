@@ -24,7 +24,6 @@ import java.util.List;
 
 public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction {
     private AttemptingUnitResolver _attemptingUnitTarget;
-
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final MissionCard _performingCard;
@@ -33,14 +32,38 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     private final int _locationId;
 
     private enum Progress {
-        choseAttemptingUnit, startedMissionAttempt, solvedMission, failedMissionAttempt, endedMissionAttempt
     }
 
-    public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction, MissionLocation mission)
-            throws InvalidGameLogicException {
+    public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
+                                MissionLocation mission) throws InvalidGameLogicException {
         super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION, Progress.values());
         _performingCard = cardForAction;
         _locationId = mission.getLocationId();
+
+        if (cardGame instanceof ST1EGame stGame) {
+            List<AttemptingUnit> eligibleUnits = new ArrayList<>();
+            mission.getYourAwayTeamsOnSurface(stGame, player)
+                    .filter(awayTeam -> awayTeam.canAttemptMission(cardGame, mission))
+                    .forEach(eligibleUnits::add);
+
+            // Get ships that can attempt mission
+            for (PhysicalCard card : Filters.filterYourCardsInPlay(cardGame, player,
+                    Filters.ship, Filters.atLocation(mission))) {
+                if (card instanceof ShipCard ship) {
+                    boolean canShipAttempt = stGame.getRules().canShipAttemptMission(ship,
+                            _locationId, stGame, _performingPlayerId);
+                    if (canShipAttempt) {
+                        eligibleUnits.add(ship);
+                    }
+                }
+            }
+            String selectionText = (mission.isPlanet()) ? "Choose an Away Team" : "Choose a ship";
+            _attemptingUnitTarget = new AttemptingUnitResolver(
+                    new SelectAttemptingUnitAction(cardGame, player, eligibleUnits, selectionText));
+            _cardTargets.add(_attemptingUnitTarget);
+        } else {
+            setAsFailed();
+        }
     }
 
 
@@ -65,80 +88,9 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     }
 
     @Override
-    protected void continueInitiation(DefaultGame cardGame) {
-        try {
-            Action nextAction = nextActionOld(cardGame);
-            if (nextAction == null) {
-                setAsInitiated();
-            } else {
-                cardGame.addActionToStack(nextAction);
-            }
-        } catch(InvalidGameLogicException | PlayerNotFoundException exp) {
-            cardGame.sendErrorMessage(exp);
-            setAsFailed();
-        }
-    }
-
-    public Action nextActionOld(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (cardGame instanceof ST1EGame stGame) {
-            MissionLocation missionLocation;
-            GameLocation gameLocation = stGame.getGameState().getLocationById(_locationId);
-            if (gameLocation instanceof MissionLocation mission) {
-                missionLocation = mission;
-            } else {
-                throw new InvalidGameLogicException("Unable to locate mission with location id " + _locationId);
-            }
-
-            Player player = cardGame.getPlayer(_performingPlayerId);
-            if (!getProgress(Progress.choseAttemptingUnit)) {
-                if (_attemptingUnitTarget == null) {
-
-                    List<AttemptingUnit> eligibleUnits = new ArrayList<>();
-                    missionLocation.getYourAwayTeamsOnSurface(stGame, player)
-                            .filter(awayTeam -> awayTeam.canAttemptMission(cardGame, missionLocation))
-                            .forEach(eligibleUnits::add);
-
-                    // Get ships that can attempt mission
-                    for (PhysicalCard card : Filters.filterYourCardsInPlay(cardGame, player,
-                            Filters.ship, Filters.atLocation(missionLocation))) {
-                        if (card instanceof ShipCard ship) {
-                            boolean canShipAttempt = stGame.getRules().canShipAttemptMission(ship,
-                                    _locationId, stGame, _performingPlayerId);
-                            if (canShipAttempt) {
-                                eligibleUnits.add(ship);
-                            }
-                        }
-                    }
-                    if (eligibleUnits.size() > 1) {
-                        String selectionText = (missionLocation.isPlanet()) ? "Choose an Away Team" : "Choose a ship";
-                        _attemptingUnitTarget = new AttemptingUnitResolver(
-                                new SelectAttemptingUnitAction(cardGame, player, eligibleUnits, selectionText));
-                        return _attemptingUnitTarget.getSelectionAction();
-                    } else {
-                        _attemptingUnitTarget = new AttemptingUnitResolver(Iterables.getOnlyElement(eligibleUnits));
-                        setProgress(Progress.choseAttemptingUnit);
-                    }
-                } else {
-                    _attemptingUnitTarget.resolve();
-                    setProgress(Progress.choseAttemptingUnit);
-                }
-            }
-
-            if (getProgress(Progress.choseAttemptingUnit)) {
-                AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
-                if (attemptingUnit.getAttemptingPersonnel(cardGame).isEmpty()) {
-                    failMission(cardGame);
-                } else  {
-                    saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this), cardGame);
-                }
-                return null;
-            } else {
-                throw new InvalidGameLogicException("Unable to resolve personnel to attempt mission");
-            }
-        } else {
-            setAsFailed();
-            return null;
-        }
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
+        super.continueInitiation(cardGame);
+        saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this), cardGame);
     }
 
     protected void processEffect(DefaultGame cardGame) {
@@ -153,7 +105,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                     throw new InvalidGameLogicException("Unable to locate mission with location id " + _locationId);
                 }
                 if (attemptingUnit.getAttemptingPersonnel(cardGame).isEmpty()) {
-                    failMission(cardGame);
+                    setAsFailed();
                 }
 
                 List<PhysicalCard> seedCards = missionLocation.getSeedCards();
@@ -183,10 +135,10 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
                             solveMission(missionLocation, cardGame);
                         } else {
-                            failMission(cardGame);
+                            setAsFailed();
                         }
                     } else {
-                        failMission(cardGame);
+                        setAsFailed();
                     }
                 }
             } else {
@@ -201,20 +153,12 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
     private void solveMission(MissionLocation mission, DefaultGame cardGame)
             throws InvalidGameLogicException, PlayerNotFoundException {
-        setProgress(Progress.solvedMission);
         setAsSuccessful();
         mission.complete(_performingPlayerId, cardGame);
     }
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
         _attemptingUnitTarget = new AttemptingUnitResolver(attemptingUnit);
-        setProgress(Progress.choseAttemptingUnit);
-    }
-
-    private void failMission(DefaultGame game) {
-        setProgress(Progress.failedMissionAttempt);
-        setProgress(Progress.endedMissionAttempt);
-        setAsFailed();
     }
 
     public AttemptingUnit getAttemptingUnit() throws InvalidGameLogicException {

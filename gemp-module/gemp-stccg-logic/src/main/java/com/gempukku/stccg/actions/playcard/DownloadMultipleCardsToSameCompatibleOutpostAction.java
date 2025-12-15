@@ -18,8 +18,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.ModifierFlag;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -69,13 +67,13 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
     }
 
     @Override
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
 
         if (!getProgress(Progress.cardsToDownloadSelected)) {
             if (_selectCardsToDownloadAction == null) {
-                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogToDownloadAction(cardGame, performingPlayer,
-                        "Choose card(s) to download", getPlayableCards(), _validCombinations, _maxCardCount);
+                _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogToDownloadAction(cardGame,
+                        _performingPlayerId, "Choose card(s) to download", getPlayableCards(),
+                        _validCombinations, _maxCardCount);
                 cardGame.addActionToStack(_selectCardsToDownloadAction);
             } else if (!_selectCardsToDownloadAction.wasSuccessful()) {
                 cardGame.addActionToStack(_selectCardsToDownloadAction);
@@ -86,7 +84,7 @@ public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyA
         } else if (_cardsToDownload.isEmpty()) {
             throw new InvalidGameLogicException("Unable to identify any cards to download");
         } else if (!getProgress(Progress.destinationSelected)) {
-            for (PhysicalCard card : Filters.yourFacilitiesInPlay(cardGame, performingPlayer)) {
+            for (PhysicalCard card : Filters.yourFacilitiesInPlay(cardGame, _performingPlayerId)) {
                 if (card instanceof FacilityCard facilityCard &&
                         facilityCard.getFacilityType() == FacilityType.OUTPOST) {
                     boolean allCompatible = true;

@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,11 +21,12 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
     private final String _choiceText;
     private Collection<PhysicalCard> _selectedCards;
 
-    public SelectValidCardCombinationFromDialogToDownloadAction(DefaultGame cardGame, Player performingPlayer, String choiceText,
+    public SelectValidCardCombinationFromDialogToDownloadAction(DefaultGame cardGame, String performingPlayerName,
+                                                                String choiceText,
                                                                 Collection<PhysicalCard> selectableCards,
                                                                 Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                                 int maximum) {
-        super(cardGame, performingPlayer, choiceText, ActionType.SELECT_CARDS);
+        super(cardGame, performingPlayerName, choiceText, ActionType.SELECT_CARDS);
         _selectableCards = selectableCards;
         _maximum = maximum;
         _validCombinations = validCombinations;

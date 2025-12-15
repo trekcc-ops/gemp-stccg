@@ -119,10 +119,6 @@ public abstract class ActionyAction implements Action {
         _actionEffects.add(action);
     }
 
-    public final void insertCost(Action cost) {
-        _costs.addAll(0, Collections.singletonList(cost));
-    }
-
     public final void insertCosts(Collection<Action> costs) {
         _costs.addAll(0, costs);
     }
@@ -284,21 +280,21 @@ public abstract class ActionyAction implements Action {
         }
     }
 
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
         resolveTargets(cardGame);
 
         if (_cardTargets.isEmpty() && thisActionShouldBeContinued(cardGame)) {
             int loopNumber = 1;
 
             while (thisActionShouldBeContinued(cardGame) && !_costs.isEmpty()) {
-                Action targetingAction = _costs.getFirst();
-                if (targetingAction.wasSuccessful()) {
-                    _costs.remove(targetingAction);
-                    _processedCosts.add(targetingAction);
-                } else if (targetingAction.wasFailed()) {
+                Action costAction = _costs.getFirst();
+                if (costAction.wasSuccessful()) {
+                    _costs.remove(costAction);
+                    _processedCosts.add(costAction);
+                } else if (costAction.wasFailed()) {
                     this.setAsFailed();
                 } else {
-                    cardGame.getActionsEnvironment().addActionToStack(targetingAction);
+                    cardGame.addActionToStack(costAction);
                 }
                 loopNumber++;
                 if (loopNumber > 500) {

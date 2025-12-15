@@ -19,7 +19,6 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -65,7 +64,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);
     public abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
 
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_fromCardChosen) {
             if (_selectOriginAction == null) {
                 _selectOriginAction = new SelectVisibleCardAction(cardGame, _performingPlayerId,

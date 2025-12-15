@@ -26,7 +26,7 @@ public interface Action {
 
     @JsonProperty("actionId")
     int getActionId();
-    void insertCost(Action costAction);
+
     void insertCosts(Collection<Action> actions);
 
     void appendCost(Action costAction);
