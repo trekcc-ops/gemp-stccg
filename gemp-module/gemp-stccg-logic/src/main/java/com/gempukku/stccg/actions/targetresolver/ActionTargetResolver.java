@@ -1,4 +1,4 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.targetresolver;
 
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;

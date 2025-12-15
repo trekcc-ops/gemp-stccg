@@ -1,6 +1,6 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;

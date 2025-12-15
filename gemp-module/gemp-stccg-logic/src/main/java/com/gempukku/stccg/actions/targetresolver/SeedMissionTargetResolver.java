@@ -1,4 +1,4 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.targetresolver;
 
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Quadrant;

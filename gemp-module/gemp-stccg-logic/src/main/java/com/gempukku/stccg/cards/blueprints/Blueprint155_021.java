@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.SelectCardsResolver;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.ActivateCardActionBlueprint;

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.ReportCardResolver;
+import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;

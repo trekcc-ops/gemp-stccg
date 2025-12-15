@@ -1,4 +1,4 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.targetresolver;
 
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
