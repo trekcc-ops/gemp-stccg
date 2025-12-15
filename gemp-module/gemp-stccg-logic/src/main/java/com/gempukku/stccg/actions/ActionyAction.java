@@ -21,8 +21,8 @@ public abstract class ActionyAction implements Action {
     private int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
 
-    protected final List<ActionCardResolver> _cardTargets = new LinkedList<>();
-    private final List<ActionCardResolver> _resolvedTargets = new LinkedList<>();
+    protected final List<ActionTargetResolver> _cardTargets = new LinkedList<>();
+    private final List<ActionTargetResolver> _resolvedTargets = new LinkedList<>();
     private final LinkedList<Action> _processedCosts = new LinkedList<>();
     private final LinkedList<Action> _actionEffects = new LinkedList<>();
     private final LinkedList<Action> _processedActions = new LinkedList<>();
@@ -76,15 +76,6 @@ public abstract class ActionyAction implements Action {
 
     protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType) {
         this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-    }
-
-
-    protected ActionyAction(DefaultGame cardGame, Player player, String text, ActionType actionType) {
-        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-    }
-
-    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, String text, ActionType actionType) {
-        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
     }
 
 
@@ -189,11 +180,6 @@ public abstract class ActionyAction implements Action {
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
     @JsonIdentityReference(alwaysAsId=true)
     public List<Action> getCosts() { return _costs; }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
-    public Map<String, Boolean> getProgressIndicators() {
-        return _progressIndicators;
-    }
 
     public void startPerforming() {
         _actionStatus = ActionStatus.initiation_started;
@@ -348,7 +334,7 @@ public abstract class ActionyAction implements Action {
         int loopNumber = 1;
 
         while (thisActionShouldBeContinued(cardGame) && !_cardTargets.isEmpty()) {
-            ActionCardResolver resolver = _cardTargets.getFirst();
+            ActionTargetResolver resolver = _cardTargets.getFirst();
             if (resolver.isResolved()) {
                 _cardTargets.remove(resolver);
                 _resolvedTargets.add(resolver);

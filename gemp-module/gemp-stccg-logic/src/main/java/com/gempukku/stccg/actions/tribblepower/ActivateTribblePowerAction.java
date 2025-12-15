@@ -11,8 +11,12 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class ActivateTribblePowerAction extends ActionyAction {
     protected final PhysicalCard _performingCard;
+    protected Map<String, Boolean> _progressIndicators = new HashMap<>();
 
     public ActivateTribblePowerAction(TribblesGame cardGame, ActionContext actionContext, PhysicalCard performingCard) {
         super(cardGame, actionContext.getPerformingPlayerId(), ActionType.ACTIVATE_TRIBBLE_POWER);
@@ -25,6 +29,9 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
         super(cardGame, actionContext.getPerformingPlayerId(), ActionType.ACTIVATE_TRIBBLE_POWER, progressNames,
                 actionContext);
         _performingCard = performingCard;
+        for (Enum<?> progressType : progressNames) {
+            _progressIndicators.put(progressType.name(), false);
+        }
     }
 
 
@@ -67,6 +74,10 @@ public abstract class ActivateTribblePowerAction extends ActionyAction {
             }
         }
         return result;
+    }
+
+    protected boolean getProgress(Enum<?> progressType) {
+        return _progressIndicators.get(progressType.name());
     }
 
 }

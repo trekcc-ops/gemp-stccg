@@ -1,8 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -15,11 +13,10 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class SeedMissionTargetResolver implements ActionCardResolver {
+public class SeedMissionTargetResolver implements ActionTargetResolver {
 
     private Integer _locationZoneIndex;
     private final MissionCard _cardEnteringPlay;
@@ -96,16 +93,6 @@ public class SeedMissionTargetResolver implements ActionCardResolver {
     @Override
     public boolean isResolved() {
         return _locationZoneIndex != null;
-    }
-
-    @Override
-    public Collection<PhysicalCard> getCards() {
-        return null;
-    }
-
-    @Override
-    public SelectCardsAction getSelectionAction() {
-        return null;
     }
 
     @Override

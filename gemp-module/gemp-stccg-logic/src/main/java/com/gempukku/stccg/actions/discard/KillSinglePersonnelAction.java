@@ -17,7 +17,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements DiscardA
 
     public KillSinglePersonnelAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
                                      ActionCardResolver targetResolver) {
-        super(cardGame, performingPlayerName, "Kill", ActionType.KILL);
+        super(cardGame, performingPlayerName, ActionType.KILL);
         _performingCard = performingCard;
         _cardTarget = targetResolver;
         _cardTargets.add(targetResolver);

@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
-import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -17,12 +16,11 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SeedOutpostResolver implements ActionCardResolver {
+public class SeedOutpostResolver implements ActionTargetResolver {
 
     private final FacilityCard _cardEnteringPlay;
     private Affiliation _affiliationToPlayAs;
@@ -120,16 +118,6 @@ public class SeedOutpostResolver implements ActionCardResolver {
     @Override
     public boolean isResolved() {
         return _destinationMission != null && _affiliationToPlayAs != null;
-    }
-
-    @Override
-    public Collection<PhysicalCard> getCards() {
-        return List.of(_destinationMission);
-    }
-
-    @Override
-    public SelectCardsAction getSelectionAction() {
-        return null;
     }
 
     @Override

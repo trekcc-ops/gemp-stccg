@@ -18,8 +18,6 @@ import java.util.Objects;
 public class EncounterSeedCardAction extends ActionyAction implements TopLevelSelectableAction {
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
-
-    private enum Progress { effectsAdded }
     private final AttemptingUnit _attemptingUnit;
 
     private final int _locationId;
@@ -28,7 +26,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
                                    int locationId)
             throws InvalidGameLogicException {
-        super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD, Progress.values());
+        super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD);
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);
@@ -43,7 +41,7 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
                                    int locationId, ActionContext actionContext)
             throws InvalidGameLogicException {
-        super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD, Progress.values(), actionContext);
+        super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD, actionContext);
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);

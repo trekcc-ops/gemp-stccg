@@ -28,7 +28,7 @@ public class StopCardsAction extends ActionyAction {
     }
 
     private StopCardsAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardResolver) {
-        super(cardGame, performingPlayerName, "Stop cards", ActionType.STOP_CARDS);
+        super(cardGame, performingPlayerName, ActionType.STOP_CARDS);
         _cardTarget = cardResolver;
         _cardTargets.add(cardResolver);
     }

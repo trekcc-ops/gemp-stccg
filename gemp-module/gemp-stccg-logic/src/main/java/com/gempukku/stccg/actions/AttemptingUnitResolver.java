@@ -1,15 +1,11 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
-import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-import java.util.Collection;
-
-public class AttemptingUnitResolver implements ActionCardResolver {
+public class AttemptingUnitResolver implements ActionTargetResolver {
 
     private SelectAttemptingUnitAction _selectAction;
     private AttemptingUnit _attemptingUnit;
@@ -38,17 +34,8 @@ public class AttemptingUnitResolver implements ActionCardResolver {
         return _attemptingUnit != null;
     }
 
-    @Override
-    public Collection<PhysicalCard> getCards() {
-        return null;
-    }
-
     public AttemptingUnit getAttemptingUnit() {
         return _attemptingUnit;
-    }
-
-    public SelectCardsAction getSelectionAction() {
-        return null;
     }
 
     @Override

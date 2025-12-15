@@ -132,11 +132,6 @@ public class ReportCardResolver implements ActionCardResolver {
     }
 
     @Override
-    public SelectCardsAction getSelectionAction() {
-        return null;
-    }
-
-    @Override
     public boolean cannotBeResolved(DefaultGame cardGame) {
         if (cardGame instanceof ST1EGame stGame) {
             return _isFailed || getDestinationOptions(stGame).isEmpty();

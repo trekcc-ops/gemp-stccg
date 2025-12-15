@@ -37,10 +37,6 @@ public class SelectCardsResolver implements ActionCardResolver {
         return Objects.requireNonNullElseGet(_cards, ArrayList::new);
     }
 
-    public SelectCardsAction getSelectionAction() {
-        return _selectAction;
-    }
-
     public boolean isResolved() { return _resolved; }
 
     @Override

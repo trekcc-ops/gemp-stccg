@@ -20,7 +20,7 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
 
     public DownloadCardAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardTarget,
                               PhysicalCard performingCard) {
-        super(cardGame, performingPlayerName, "Download card", ActionType.DOWNLOAD_CARD);
+        super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
         _cardTargets.add(cardTarget);

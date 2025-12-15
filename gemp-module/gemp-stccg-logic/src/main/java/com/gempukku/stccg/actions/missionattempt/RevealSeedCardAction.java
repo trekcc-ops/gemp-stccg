@@ -18,13 +18,13 @@ public class RevealSeedCardAction extends ActionyAction {
     @JsonProperty("targetCardId")
     private final int _revealedCardId;
 
-    private enum Progress { misSeedResolved }
+    private boolean _misSeedResolved;
 
     private final int _locationId;
 
     public RevealSeedCardAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard revealedCard,
                                 MissionLocation mission) {
-        super(cardGame, performingPlayerName, ActionType.REVEAL_SEED_CARD, Progress.values());
+        super(cardGame, performingPlayerName, ActionType.REVEAL_SEED_CARD);
         _revealedCardId = revealedCard.getCardId();
         _locationId = mission.getLocationId();
         revealedCard.reveal();
@@ -40,10 +40,10 @@ public class RevealSeedCardAction extends ActionyAction {
     @Override
     protected void processEffect(DefaultGame cardGame) {
         try {
-            if (!getProgress(Progress.misSeedResolved)) {
+            if (!_misSeedResolved) {
                 if (cardGame.getCardFromCardId(_revealedCardId) instanceof ST1EPhysicalCard revealedCard &&
                         cardGame instanceof ST1EGame stGame) {
-                    setProgress(Progress.misSeedResolved);
+                    _misSeedResolved = true;
                     if (stGame.getGameState().getLocationById(_locationId) instanceof MissionLocation missionLocation) {
                         if (revealedCard.isMisSeed(cardGame, missionLocation)) {
                             if (_performingPlayerId.equals(revealedCard.getOwnerName())) {

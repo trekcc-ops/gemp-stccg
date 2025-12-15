@@ -23,7 +23,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     private final ActionCardResolver _dockingTargetResolver;
 
     public DockAction(Player player, ShipCard cardToDock, ST1EGame cardGame) {
-        super(cardGame, player, "Dock", ActionType.DOCK_SHIP);
+        super(cardGame, player, ActionType.DOCK_SHIP);
         _cardToDock = cardToDock;
         Collection<FacilityCard> dockingTargetOptions = Filters.yourFacilitiesInPlay(cardGame, player).stream()
                 .filter(card -> card.isCompatibleWith(cardGame, _cardToDock) &&

@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -24,11 +23,6 @@ public class FixedCardsResolver implements ActionCardResolver {
 
     public Collection<PhysicalCard> getCards() {
         return _cards;
-    }
-
-    @Override
-    public SelectCardsAction getSelectionAction() {
-        return null;
     }
 
     @Override

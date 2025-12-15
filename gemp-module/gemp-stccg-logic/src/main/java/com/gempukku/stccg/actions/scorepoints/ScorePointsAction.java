@@ -35,7 +35,7 @@ public class ScorePointsAction extends ActionyAction {
 
     public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, Player scoringPlayer, int points)
             throws InvalidGameLogicException {
-        super(cardGame, scoringPlayer, "Score " + points + " points", ActionType.SCORE_POINTS);
+        super(cardGame, scoringPlayer, ActionType.SCORE_POINTS);
         try {
             _performingCard = Objects.requireNonNull(source);
         } catch(NullPointerException npe) {

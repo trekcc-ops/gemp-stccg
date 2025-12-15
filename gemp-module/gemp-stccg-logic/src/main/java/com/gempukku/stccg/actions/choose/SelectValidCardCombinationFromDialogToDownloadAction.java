@@ -12,6 +12,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SelectValidCardCombinationFromDialogToDownloadAction extends ActionyAction implements SelectCardsAction {
     private final Collection<? extends PhysicalCard> _selectableCards;
@@ -22,12 +23,11 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
     private Collection<PhysicalCard> _selectedCards;
 
     public SelectValidCardCombinationFromDialogToDownloadAction(DefaultGame cardGame, String performingPlayerName,
-                                                                String choiceText,
-                                                                Collection<PhysicalCard> selectableCards,
+                                                                Set<PersonnelCard> selectableCards,
                                                                 Map<PersonnelCard, List<PersonnelCard>> validCombinations,
                                                                 int maximum) {
-        super(cardGame, performingPlayerName, choiceText, ActionType.SELECT_CARDS);
-        _selectableCards = selectableCards;
+        super(cardGame, performingPlayerName, ActionType.SELECT_CARDS);
+        _selectableCards = selectableCards.stream().toList();
         _maximum = maximum;
         _validCombinations = validCombinations;
         if (selectableCards.isEmpty()) {

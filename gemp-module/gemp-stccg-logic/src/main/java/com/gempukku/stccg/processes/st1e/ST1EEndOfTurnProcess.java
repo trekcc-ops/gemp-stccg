@@ -31,9 +31,10 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Player player = cardGame.getCurrentPlayer();
+        String currentPlayerName = cardGame.getCurrentPlayerId();
         for (PhysicalCard card : Filters.filterCardsInPlay(cardGame, Filters.ship))
             ((ShipCard) card).restoreRange();
-        DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, player);
+        DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, currentPlayerName);
         drawAction.processEffect(cardGame);
         cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
         cardGame.sendActionResultToClient();

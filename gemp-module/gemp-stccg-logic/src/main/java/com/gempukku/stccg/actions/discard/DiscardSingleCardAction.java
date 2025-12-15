@@ -20,7 +20,7 @@ public class DiscardSingleCardAction extends ActionyAction implements DiscardAct
 
     public DiscardSingleCardAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
                                    ActionCardResolver cardResolver) {
-        super(cardGame, performingPlayerName, "Discard", ActionType.DISCARD);
+        super(cardGame, performingPlayerName, ActionType.DISCARD);
         _performingCard = performingCard;
         _cardTarget = cardResolver;
         _cardTargets.add(_cardTarget);

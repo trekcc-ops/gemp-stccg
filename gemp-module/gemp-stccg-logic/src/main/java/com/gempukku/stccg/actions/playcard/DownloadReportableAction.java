@@ -27,7 +27,7 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
 
     public DownloadReportableAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
                                     PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
-        super(cardGame, player, "Download card", ActionType.DOWNLOAD_CARD);
+        super(cardGame, player, ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;

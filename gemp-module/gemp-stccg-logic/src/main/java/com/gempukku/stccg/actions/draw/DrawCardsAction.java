@@ -15,7 +15,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     private final int _totalCardsToDraw;
 
     public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName, int count) {
-        super(cardGame, performingPlayerName, "Draw a card", ActionType.DRAW_CARD);
+        super(cardGame, performingPlayerName, ActionType.DRAW_CARD);
         _performingCard = performingCard;
         _totalCardsToDraw = count;
     }

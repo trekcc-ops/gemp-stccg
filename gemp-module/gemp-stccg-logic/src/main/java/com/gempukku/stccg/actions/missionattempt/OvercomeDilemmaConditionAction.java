@@ -15,14 +15,12 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     private final Action _failAction;
     private final int _succeedActionId;
     private final EncounterSeedCardAction _encounterAction;
-    private enum Progress { conditionsChecked }
     private final MissionRequirement _conditions;
-    private boolean _succeeded;
 
     public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
                                           EncounterSeedCardAction encounterAction, MissionRequirement conditions,
                                           AttemptingUnit attemptingUnit, Action failDilemmaAction) {
-        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, Progress.values());
+        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA);
         _attemptingUnit = attemptingUnit;
         _failAction = new FailDilemmaAction(cardGame, attemptingUnit, dilemma, failDilemmaAction, encounterAction);
         Action succeedAction = new RemoveDilemmaFromGameAction(cardGame, attemptingUnit.getControllerName(), dilemma);
@@ -33,7 +31,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma, EncounterSeedCardAction action,
                                           MissionRequirement conditions, AttemptingUnit attemptingUnit) {
-        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, Progress.values());
+        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA);
         _attemptingUnit = attemptingUnit;
         _failAction = new FailDilemmaAction(cardGame, attemptingUnit, dilemma, action);
         Action succeedAction = new RemoveDilemmaFromGameAction(cardGame, attemptingUnit.getControllerName(), dilemma);
@@ -50,22 +48,16 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        if (!getProgress(Progress.conditionsChecked)) {
-            Action result;
-            if (_conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
-                result = cardGame.getActionById(_succeedActionId);
-                _succeeded = true;
-            } else {
-                result = _failAction;
-                _encounterAction.setAsFailed();
-                _encounterAction.getAttemptAction().setAsFailed();
-            }
-            setProgress(Progress.conditionsChecked);
-            cardGame.addActionToStack(result);
+        Action result;
+        if (_conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
+            result = cardGame.getActionById(_succeedActionId);
+            setAsSuccessful();
         } else {
-            if (_succeeded)
-                setAsSuccessful();
-            else setAsFailed();
+            setAsFailed();
+            result = _failAction;
+            _encounterAction.setAsFailed();
+            _encounterAction.getAttemptAction().setAsFailed();
         }
+        cardGame.addActionToStack(result);
     }
 }

@@ -22,7 +22,7 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
     private final CardFilter _selectableCardFilter;
 
     public SelectVisibleCardAction(DefaultGame cardGame, String playerName, String choiceText, CardFilter cardFilter) {
-        super(cardGame, playerName, choiceText, ActionType.SELECT_CARDS);
+        super(cardGame, playerName, ActionType.SELECT_CARDS);
         _selectableCardFilter = cardFilter;
         _decisionText = choiceText;
     }

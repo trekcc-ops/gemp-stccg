@@ -28,7 +28,7 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
     public SelectAndReportForFreeCardAction(DefaultGame cardGame, String performingPlayerName,
                                             ActionCardResolver playableCardTarget, PhysicalCard performingCard,
                                             MatchingFilterBlueprint destinationFilterBlueprint) {
-        super(cardGame, performingPlayerName, "Report card from hand", ActionType.PLAY_CARD);
+        super(cardGame, performingPlayerName, ActionType.PLAY_CARD);
         _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;

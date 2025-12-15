@@ -34,7 +34,7 @@ public class Blueprint152_002 extends CardBlueprint {
         );
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2);
         KillSinglePersonnelAction killAction = new KillSinglePersonnelAction(game, thisCard.getOwnerName(), thisCard,
-                new SelectRandomCardAction(game, thisCard.getOwnerName(), "Choose a personnel",
+                new SelectRandomCardAction(game, thisCard.getOwnerName(),
                         new EncounteringCardFilter(thisCard)));
 
         OvercomeDilemmaConditionAction overcomeAction =
