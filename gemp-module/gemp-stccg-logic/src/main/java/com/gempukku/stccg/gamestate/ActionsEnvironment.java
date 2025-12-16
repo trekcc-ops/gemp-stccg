@@ -60,14 +60,18 @@ public class ActionsEnvironment {
     public List<Action> getPerformedActions() {
         return _performedActions;
     }
+    public void logCompletedAction(Action action) {
+        if (!_performedActions.contains(action)) {
+            _performedActions.add(action);
+        }
+    }
 
     public boolean hasNoActionsInProgress() {
         return _actionStack.isEmpty();
     }
 
-    public void removeCompletedActionFromStack(Action action) {
+    public void removeActionFromStack(Action action) {
         _actionStack.remove(action);
-        _performedActions.add(action);
     }
 
     public Action getCurrentAction() {

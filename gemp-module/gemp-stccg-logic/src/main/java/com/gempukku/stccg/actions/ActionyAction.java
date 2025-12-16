@@ -175,13 +175,17 @@ public abstract class ActionyAction implements Action {
                 _currentResult = null;
             }
         } else if (!isInProgress()) {
-            actionsEnvironment.removeCompletedActionFromStack(this);
-            cardGame.sendActionResultToClient();
+            actionsEnvironment.removeActionFromStack(this);
         } else if (!wasInitiated()) {
             continueInitiation(cardGame);
         } else {
             processEffect(cardGame);
         }
+
+        if (!isInProgress()) {
+            actionsEnvironment.logCompletedAction(this);
+        }
+        cardGame.sendActionResultToClient();
     }
 
     protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {

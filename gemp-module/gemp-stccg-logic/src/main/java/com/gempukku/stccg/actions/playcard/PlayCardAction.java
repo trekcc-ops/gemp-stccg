@@ -73,7 +73,7 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
             performingPlayer.shuffleDrawDeck(cardGame);
         }
         GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardEnteringPlay));
+        cardGame.removeCardsFromZone(List.of(_cardEnteringPlay));
         gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
     }
