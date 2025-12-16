@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class DiscardSubActionBlueprint implements SubActionBlueprint {
 
-    private final CardTargetBlueprint _cardTarget;
+    private final TargetResolverBlueprint _cardTarget;
 
     public DiscardSubActionBlueprint(
             @JsonProperty("cards")
-            CardTargetBlueprint cardTargetBlueprint
+            TargetResolverBlueprint cardTargetBlueprint
     ) {
         _cardTarget = cardTargetBlueprint;
     }

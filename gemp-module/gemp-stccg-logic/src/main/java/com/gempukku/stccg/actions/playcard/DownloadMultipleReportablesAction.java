@@ -14,18 +14,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class DownloadMultipleCardsToSameCompatibleOutpostAction extends ActionyAction
-        implements TopLevelSelectableAction {
+public class DownloadMultipleReportablesAction extends ActionyAction implements TopLevelSelectableAction {
     private final Zone _fromZone;
     private final PhysicalCard _performingCard;
     private final Map<PersonnelCard, List<PersonnelCard>> _validCombinations;
     private final DownloadMultipleCardsResolver _resolver;
 
-    public DownloadMultipleCardsToSameCompatibleOutpostAction(DefaultGame cardGame, Zone fromZone,
-                                                              String performingPlayerName,
-                                                              PhysicalCard actionSource,
-                                                              Map<PersonnelCard, List<PersonnelCard>> validCombinations,
-                                                              int maxCardCount) {
+    public DownloadMultipleReportablesAction(DefaultGame cardGame, Zone fromZone,
+                                             String performingPlayerName,
+                                             PhysicalCard actionSource,
+                                             Map<PersonnelCard, List<PersonnelCard>> validCombinations,
+                                             int maxCardCount) {
         super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD);
         _resolver = new DownloadMultipleCardsResolver(validCombinations, maxCardCount, _performingPlayerId);
         _cardTargets.add(_resolver);

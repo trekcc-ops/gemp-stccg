@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.KillSinglePersonnelAction;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -14,10 +14,10 @@ import java.util.List;
 
 public class KillActionBlueprint implements SubActionBlueprint {
 
-    private final CardTargetBlueprint _targetResolver;
+    private final TargetResolverBlueprint _targetResolver;
 
     public KillActionBlueprint(@JsonProperty(value = "target")
-                               CardTargetBlueprint target) {
+                               TargetResolverBlueprint target) {
         _targetResolver = target;
     }
 

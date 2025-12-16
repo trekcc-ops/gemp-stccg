@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -20,11 +20,11 @@ import java.util.List;
 public class ShuffleCardsIntoDrawDeckSubActionBlueprint implements SubActionBlueprint {
 
     private final PlayerSource _performingPlayerSource;
-    private final CardTargetBlueprint _cardTarget;
+    private final TargetResolverBlueprint _cardTarget;
 
     public ShuffleCardsIntoDrawDeckSubActionBlueprint(
             @JsonProperty(value = "cards")
-            CardTargetBlueprint cardTarget,
+            TargetResolverBlueprint cardTarget,
                                                           @JsonProperty(value = "player")
                                     String playerText) throws InvalidCardDefinitionException {
         _cardTarget = cardTarget;

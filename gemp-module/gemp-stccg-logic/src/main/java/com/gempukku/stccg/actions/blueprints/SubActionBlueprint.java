@@ -26,6 +26,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = DiscardSubActionBlueprint.class, name = "discard"),
         @JsonSubTypes.Type(value = DiscardThisCardSubActionBlueprint.class, name = "discardThisCard"),
         @JsonSubTypes.Type(value = DownloadActionBlueprint.class, name = "download"),
+        @JsonSubTypes.Type(value = DownloadReportableActionBlueprint.class, name = "downloadReportable"),
         @JsonSubTypes.Type(value = IncreaseAttributesSubActionBlueprint.class, name = "increaseAttributes"),
         @JsonSubTypes.Type(value = KillActionBlueprint.class, name = "kill"),
         @JsonSubTypes.Type(value = NullifySubActionBlueprint.class, name = "nullify"),

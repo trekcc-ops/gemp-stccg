@@ -70,12 +70,43 @@
             type: objective
             uniqueness: unique
             property-logo: first-contact-logo
-            java-blueprint: true
+            java-blueprint: false
             image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
             actions: [
                 {
                     type: seedThis
                     where: core
+                }
+                {
+                    type: optionalTrigger
+                    player: you
+                    trigger: {
+                        type: thisCardPlayed
+                    }
+                    triggerDuringSeed: true
+                    effect: {
+                        type: downloadReportable
+                        target: {
+                            type: reportCards
+                            filter: youOwnNoCopiesInPlay + missionSpecialist
+                            count: 1-2
+                            differentCardsOnly: true
+                            destination: your + outpost
+                            specialReporting: true
+                        }
+                    }
+                }
+                {
+                    type: optionalTrigger
+                    player: you
+                    trigger: {
+                        type: startOfTurn
+                        turnPlayer: you
+                    }
+                    triggerDuringSeed: false
+                    effect: {
+                        type: discardThisCard
+                    }
                 }
             ]
         }

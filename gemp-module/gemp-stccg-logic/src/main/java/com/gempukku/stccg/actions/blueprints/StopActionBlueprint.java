@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,11 +16,11 @@ import java.util.List;
 
 public class StopActionBlueprint implements SubActionBlueprint {
 
-    private final CardTargetBlueprint _targetResolver;
+    private final TargetResolverBlueprint _targetResolver;
     private final String _saveToMemoryId;
 
     public StopActionBlueprint(@JsonProperty(value = "target")
-                               CardTargetBlueprint target,
+                               TargetResolverBlueprint target,
                                @JsonProperty(value = "saveToMemoryId")
                                String saveToMemoryId) {
         _targetResolver = target;

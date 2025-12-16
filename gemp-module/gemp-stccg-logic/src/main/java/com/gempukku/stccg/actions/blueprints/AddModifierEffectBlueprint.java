@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.AddUntilModifierAction;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
@@ -21,14 +21,14 @@ public class AddModifierEffectBlueprint implements SubActionBlueprint {
 
     private final TimeResolver.Time _until;
     private final ModifierBlueprint _modifierSource;
-    private final CardTargetBlueprint _cardTarget;
+    private final TargetResolverBlueprint _cardTarget;
 
     public AddModifierEffectBlueprint(@JsonProperty(value = "modifier", required = true)
                                       ModifierBlueprint modifierBlueprint,
                                       @JsonProperty("until")
                                       JsonNode untilNode,
                                       @JsonProperty("target")
-                                      CardTargetBlueprint cardTarget
+                                      TargetResolverBlueprint cardTarget
                                       ) throws InvalidCardDefinitionException {
         _until = TimeResolver.resolveTime(untilNode, "end(current)");
         _modifierSource = modifierBlueprint;

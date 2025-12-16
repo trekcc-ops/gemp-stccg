@@ -10,7 +10,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ReadCardMemoryBlueprint implements CardTargetBlueprint {
+public class ReadCardMemoryBlueprint implements TargetResolverBlueprint {
 
     private final String _memoryId;
     public ReadCardMemoryBlueprint(@JsonProperty(value = "memoryId", required = true)

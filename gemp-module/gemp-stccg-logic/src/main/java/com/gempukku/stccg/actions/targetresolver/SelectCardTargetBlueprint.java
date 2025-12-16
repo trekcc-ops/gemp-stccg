@@ -15,7 +15,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
 
-public class SelectCardTargetBlueprint implements CardTargetBlueprint {
+public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
 
     private final List<FilterBlueprint> _filterBlueprints;
     private final int _count;

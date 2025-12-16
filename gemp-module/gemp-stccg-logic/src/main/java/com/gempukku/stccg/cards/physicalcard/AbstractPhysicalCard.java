@@ -8,7 +8,6 @@ import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.blueprints.Blueprint109_063;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -394,8 +393,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         String playerName = player.getPlayerId();
         if (_blueprint == null || hasTextRemoved(game)) {
             return new ArrayList<>();
-        } else if (_blueprint instanceof Blueprint109_063 missionSpecBlueprint) {
-            return missionSpecBlueprint.getValidResponses(this, player, game);
         } else {
             List<TopLevelSelectableAction> playerActions = new ArrayList<>();
             _blueprint.getTriggers(RequiredType.OPTIONAL).forEach(actionSource -> {

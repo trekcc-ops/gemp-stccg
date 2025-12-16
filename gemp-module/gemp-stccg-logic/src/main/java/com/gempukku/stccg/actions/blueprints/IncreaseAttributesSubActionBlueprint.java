@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.IncreaseAttributesUntilEndOfTurnAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -20,7 +20,7 @@ import java.util.Objects;
 public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint {
 
     private final boolean _untilEndOfTurn;
-    private final CardTargetBlueprint _cardTarget;
+    private final TargetResolverBlueprint _cardTarget;
     private final int _amount;
     private final List<CardAttribute> _attributes;
 
@@ -30,7 +30,7 @@ public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint 
                                       @JsonProperty("until")
                                       String untilString,
                                       @JsonProperty("cardModified")
-                                      CardTargetBlueprint cardTarget,
+                                        TargetResolverBlueprint cardTarget,
                                       @JsonProperty(value = "amount", required = true)
                                                    int amount
                                       ) throws InvalidCardDefinitionException {

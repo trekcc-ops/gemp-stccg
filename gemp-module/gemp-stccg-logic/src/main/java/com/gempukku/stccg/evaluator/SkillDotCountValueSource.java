@@ -2,7 +2,7 @@ package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -13,11 +13,11 @@ import java.util.Collection;
 
 public class SkillDotCountValueSource extends ValueSource {
 
-    private final CardTargetBlueprint _personnelBlueprint;
+    private final TargetResolverBlueprint _personnelBlueprint;
 
     public SkillDotCountValueSource(
             @JsonProperty(value = "personnel", required = true)
-            CardTargetBlueprint personnelBlueprint) {
+            TargetResolverBlueprint personnelBlueprint) {
         _personnelBlueprint = personnelBlueprint;
     }
 

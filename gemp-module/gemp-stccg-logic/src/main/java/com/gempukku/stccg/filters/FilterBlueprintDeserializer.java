@@ -50,32 +50,39 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             appendFilter(value);
         for (SkillName value : SkillName.values())
             appendFilter(value);
-
-        simpleFilters.put("another", (cardGame, actionContext) ->
+        
+        appendSimpleFilter("another", (cardGame, actionContext) ->
                 Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
-        simpleFilters.put("any", (cardGame, actionContext) -> Filters.any);
-        simpleFilters.put("cardyoucandownload", (cardGame, actionContext) ->
+        appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
+        appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("encounteringthiscard", (cardGame, actionContext) ->
+        appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.getPerformingCardId()));
-        simpleFilters.put("federation", (cardGame, actionContext) -> new AffiliationFilter(Affiliation.FEDERATION));
-        simpleFilters.put("inplay", (cardGame, actionContext) -> Filters.inPlay);
-        simpleFilters.put("inyourhand", (cardGame, actionContext) ->
+        appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
+        appendSimpleFilter("inplay", (cardGame, actionContext) -> Filters.inPlay);
+        appendSimpleFilter("inYourHand", (cardGame, actionContext) ->
                 new InYourHandFilter(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("inyourdrawdeck", (cardGame, actionContext) ->
+        appendSimpleFilter("inYourDrawDeck", (cardGame, actionContext) ->
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("klingon", (cardGame, actionContext) -> Filters.Klingon);
-        simpleFilters.put("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
-        simpleFilters.put("thiscard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
-        simpleFilters.put("unique", (cardGame, actionContext) -> Filters.unique);
-        simpleFilters.put("your", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yours", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yoursevenifnotinplay", (cardGame, actionContext) ->
-                Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("you have no copies in play", (cardGame, actionContext) ->
+        appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
+        appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
+        appendSimpleFilter("outpost", (cardGame, actionContext) -> Filters.changeToFilter(FacilityType.OUTPOST));
+        appendSimpleFilter("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
+        appendSimpleFilter("thisCard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
+        appendSimpleFilter("unique", (cardGame, actionContext) -> Filters.unique);
+        appendSimpleFilter("youOwnNoCopiesInPlay", (cardGame, actionContext) ->
                 Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yourcardspresentwiththiscard", (cardGame, actionContext) ->
+        appendSimpleFilter("your", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("yours", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("yoursevenifnotinplay", (cardGame, actionContext) ->
+                Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("yourcardspresentwiththiscard", (cardGame, actionContext) ->
                 Filters.yourCardsPresentWithThisCard(actionContext.getPerformingPlayerId(), actionContext.getPerformingCardId()));
+    }
+    
+    private void appendSimpleFilter(String label, FilterBlueprint blueprint) {
+        String labelToUse = label.toLowerCase();
+        simpleFilters.put(labelToUse, blueprint);
     }
 
     private void loadParameterFilters() {
