@@ -22,7 +22,7 @@ public class KillActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         return List.of(
                 new KillSinglePersonnelAction(cardGame, context.getPerformingPlayerId(),

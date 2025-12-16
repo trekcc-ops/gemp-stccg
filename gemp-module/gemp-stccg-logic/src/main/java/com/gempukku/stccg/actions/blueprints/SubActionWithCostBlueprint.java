@@ -2,11 +2,10 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.LinkedList;
@@ -29,8 +28,7 @@ public class SubActionWithCostBlueprint implements SubActionBlueprint {
         _subActionBlueprints = (effects == null) ? new LinkedList<>() : effects;
     }
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
-            throws PlayerNotFoundException {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
 
         List<Action> result = new LinkedList<>();
         if(requirementsNotMet(cardGame, context)) {

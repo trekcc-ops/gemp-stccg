@@ -3,9 +3,9 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.AddUntilModifierAction;
+import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
@@ -36,7 +36,7 @@ public class AddModifierEffectBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction parentAction, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context)
             throws InvalidGameLogicException {
         List<Action> result = new ArrayList<>();
         PhysicalCard performingCard = context.getPerformingCard(cardGame);

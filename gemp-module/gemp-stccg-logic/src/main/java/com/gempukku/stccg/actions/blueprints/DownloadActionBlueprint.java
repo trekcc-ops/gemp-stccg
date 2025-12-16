@@ -2,10 +2,10 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
+import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
 import com.gempukku.stccg.actions.targetresolver.SelectCardTargetBlueprint;
-import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.filters.YouCanDownloadFilterBlueprint;
@@ -28,7 +28,7 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         Action downloadAction = new DownloadCardAction(cardGame, actionContext.getPerformingPlayerId(),
                 _cardTarget.getTargetResolver(cardGame, actionContext), actionContext.getPerformingCard(cardGame));

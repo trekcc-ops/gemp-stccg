@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -34,7 +34,7 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
 
         List<Action> actionsToSelect = new ArrayList<>();

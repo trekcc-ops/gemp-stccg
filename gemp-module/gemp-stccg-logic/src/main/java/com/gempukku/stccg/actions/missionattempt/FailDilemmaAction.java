@@ -22,6 +22,7 @@ public class FailDilemmaAction extends ActionyAction {
     private boolean _cardsStopped;
     private final boolean _discardDilemma;
     private boolean _dilemmaDiscarded;
+    private Action _additionalEffect;
 
     public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit,
                              PhysicalCard dilemma, EncounterSeedCardAction encounterAction, boolean discardDilemma) {
@@ -40,7 +41,7 @@ public class FailDilemmaAction extends ActionyAction {
     public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
                              Action additionalEffect, EncounterSeedCardAction encounterAction) {
         this(cardGame, attemptingUnit, dilemma, encounterAction, false);
-        appendEffect(additionalEffect);
+        _additionalEffect = additionalEffect;
     }
 
 
@@ -63,6 +64,9 @@ public class FailDilemmaAction extends ActionyAction {
             _dilemmaDiscarded = true;
             cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
         } else {
+            if (_additionalEffect != null) {
+                cardGame.addActionToStack(_additionalEffect);
+            }
             setAsFailed();
             _encounterAction.setAsFailed();
             _encounterAction.getAttemptAction().setAsFailed();

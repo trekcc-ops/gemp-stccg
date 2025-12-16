@@ -2,10 +2,10 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -28,7 +28,7 @@ public class StopActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         ActionCardResolver cardTarget = _targetResolver.getTargetResolver(cardGame, context);
         return List.of(new StopCardsAction(cardGame, context.getPerformingPlayerId(), cardTarget, context, _saveToMemoryId));

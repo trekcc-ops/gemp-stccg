@@ -3,10 +3,10 @@ package com.gempukku.stccg.actions.missionattempt;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,7 +15,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Objects;
 
-public class EncounterSeedCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class EncounterSeedCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
     private final AttemptingUnit _attemptingUnit;
@@ -59,13 +59,16 @@ public class EncounterSeedCardAction extends ActionyAction implements TopLevelSe
     }
 
     @Override
-    protected void processEffect(DefaultGame cardGame) {
-        PhysicalCard card = _cardTarget.getCard();
-        if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
-            cardGame.addActionToStack(
-                    new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard()));
+    protected final void processEffect(DefaultGame cardGame) {
+        super.processEffect(cardGame);
+        if (_actionEffects.isEmpty()) {
+            PhysicalCard card = _cardTarget.getCard();
+            if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
+                cardGame.addActionToStack(
+                        new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard()));
+            }
+            setAsSuccessful();
         }
-        setAsSuccessful();
     }
 
     public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }

@@ -30,7 +30,6 @@ public interface Action {
     void insertCosts(Collection<Action> actions);
 
     void appendCost(Action costAction);
-    void appendEffect(Action actionEffect);
 
     @JsonProperty("actionType")
     ActionType getActionType();
@@ -41,22 +40,13 @@ public interface Action {
     boolean canBeInitiated(DefaultGame cardGame);
     boolean wasInitiated();
 
-    boolean wasCarriedOut();
-
-    void insertActions(Collection<Action> actions);
-
-    void insertAction(Action action);
-
     void startPerforming();
-
-    boolean isInProgress();
 
     boolean wasCompleted();
 
     boolean wasFailed();
     void setAsFailed();
 
-    void clearResult();
     ActionResult getResult();
 
     default void appendExtraCostsFromModifiers(PhysicalCard target, DefaultGame cardGame) {

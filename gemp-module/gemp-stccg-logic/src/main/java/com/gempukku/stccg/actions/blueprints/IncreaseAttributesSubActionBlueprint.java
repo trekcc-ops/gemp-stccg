@@ -2,10 +2,10 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.IncreaseAttributesUntilEndOfTurnAction;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -46,7 +46,7 @@ public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint 
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction parentAction, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context)
             throws InvalidGameLogicException {
         List<Action> result = new ArrayList<>();
         PhysicalCard performingCard = context.getPerformingCard(cardGame);

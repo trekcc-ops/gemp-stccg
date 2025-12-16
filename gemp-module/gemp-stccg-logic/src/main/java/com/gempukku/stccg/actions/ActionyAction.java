@@ -11,22 +11,18 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
-    protected Map<String, Boolean> _progressIndicators = new HashMap<>();
     @JsonProperty("actionId")
     private int _actionId;
-    private final LinkedList<Action> _costs = new LinkedList<>();
-
     protected final List<ActionTargetResolver> _cardTargets = new LinkedList<>();
-    private final List<ActionTargetResolver> _resolvedTargets = new LinkedList<>();
-    private final LinkedList<Action> _processedCosts = new LinkedList<>();
-    private final LinkedList<Action> _actionEffects = new LinkedList<>();
-    private final LinkedList<Action> _processedActions = new LinkedList<>();
+    protected final LinkedList<Action> _costs = new LinkedList<>();
+    protected final LinkedList<Action> _processedCosts = new LinkedList<>();
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
@@ -36,64 +32,40 @@ public abstract class ActionyAction implements Action {
     @JsonProperty("status")
     private ActionStatus _actionStatus;
 
-    protected ActionyAction(int actionId, ActionType actionType, String performingPlayerId) {
+    private ActionyAction(int actionId, ActionType actionType, String performingPlayerId,
+                          ActionContext actionContext, ActionStatus status) {
+        _actionContext = actionContext;
         _actionId = actionId;
         _actionType = actionType;
         _performingPlayerId = performingPlayerId;
-        _actionStatus = ActionStatus.virtual;
-        _actionContext = null;
+        _actionStatus = status;
     }
 
 
-    protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId) {
-        _actionId = environment.getNextActionId();
-        environment.logAction(this);
-        environment.incrementActionId();
-        _actionType = actionType;
-        _performingPlayerId = performingPlayerId;
-        _actionStatus = ActionStatus.virtual;
-        _actionContext = null;
-    }
-
-    protected ActionyAction(ActionsEnvironment environment, ActionType actionType, String performingPlayerId,
+    protected ActionyAction(DefaultGame cardGame, ActionType actionType, String performingPlayerId,
                             ActionContext actionContext) {
-        _actionContext = actionContext;
-        _actionId = environment.getNextActionId();
+        this(cardGame.getActionsEnvironment().getNextActionId(), actionType, performingPlayerId, actionContext,
+                ActionStatus.virtual);
+        ActionsEnvironment environment = cardGame.getActionsEnvironment();
         environment.logAction(this);
         environment.incrementActionId();
-        _actionType = actionType;
-        _performingPlayerId = performingPlayerId;
-        _actionStatus = ActionStatus.virtual;
     }
+
+    protected ActionyAction(int actionId, ActionType actionType, String performingPlayerId, ActionStatus status) {
+        this(actionId, actionType, performingPlayerId, null, status);
+    }
+
 
     protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType, ActionContext actionContext) {
-        this(cardGame.getActionsEnvironment(), actionType, playerName, actionContext);
+        this(cardGame, actionType, playerName, actionContext);
     }
 
-
     protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType) {
-        this(cardGame.getActionsEnvironment(), actionType, playerName);
+        this(cardGame, actionType, playerName, null);
     }
 
     protected ActionyAction(DefaultGame cardGame, Player player, ActionType actionType) {
-        this(cardGame.getActionsEnvironment(), actionType, player.getPlayerId());
-    }
-
-
-    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType,
-                            Enum<?>[] progressValues) {
-        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName);
-        for (Enum<?> progressType : progressValues) {
-            _progressIndicators.put(progressType.name(), false);
-        }
-    }
-
-    protected ActionyAction(DefaultGame cardGame, String performingPlayerName, ActionType actionType,
-                            Enum<?>[] progressTypes, ActionContext actionContext) {
-        this(cardGame.getActionsEnvironment(), actionType, performingPlayerName, actionContext);
-        for (Enum<?> progressType : progressTypes) {
-            _progressIndicators.put(progressType.name(), false);
-        }
+        this(cardGame, actionType, player.getPlayerId(), null);
     }
 
 
@@ -102,42 +74,11 @@ public abstract class ActionyAction implements Action {
         return _performingPlayerId;
     }
     public ActionType getActionType() { return _actionType; }
-
     public final void appendCost(Action cost) {
         _costs.add(cost);
     }
-
-    public final void appendEffect(Action action) {
-        _actionEffects.add(action);
-    }
-
     public final void insertCosts(Collection<Action> costs) {
         _costs.addAll(0, costs);
-    }
-
-    public final void insertAction(Action action) {
-        _actionEffects.addAll(0, Collections.singletonList(action));
-    }
-    public final void insertActions(Collection<Action> actions) {
-        _actionEffects.addAll(0, actions);
-    }
-
-    protected final Action getNextCost() {
-        Action cost = _costs.poll();
-        if (cost != null)
-            _processedCosts.add(cost);
-        return cost;
-    }
-
-    protected final Action getNextAction() {
-        final Action effect = _actionEffects.poll();
-        if (effect != null)
-            _processedActions.add(effect);
-        return effect;
-    }
-
-    public final boolean wasCarriedOut() {
-        return wasSuccessful();
     }
     public final boolean wasInitiated() {
         return _actionStatus.wasInitiated();
@@ -145,7 +86,7 @@ public abstract class ActionyAction implements Action {
 
     public final boolean canBeInitiated(DefaultGame cardGame) {
         return requirementsAreMet(cardGame) && costsCanBePaid(cardGame) &&
-                cardGame.playerRestrictedFromPerformingActionDueToModifiers(_performingPlayerId, this) &&
+                !cardGame.playerRestrictedFromPerformingActionDueToModifiers(_performingPlayerId, this) &&
                 !wasInitiated();
     }
 
@@ -168,15 +109,6 @@ public abstract class ActionyAction implements Action {
     public String getCardActionPrefix() { return _cardActionPrefix; }
 
     public int getActionId() { return _actionId; }
-    protected void setProgress(Enum<?> progressType) {
-        _progressIndicators.put(progressType.name(), true);
-    }
-
-    protected List<Action> getActions() { return _actionEffects; }
-
-    protected boolean getProgress(Enum<?> progressType) {
-        return _progressIndicators.get(progressType.name());
-    }
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
     @JsonIdentityReference(alwaysAsId=true)
@@ -200,12 +132,8 @@ public abstract class ActionyAction implements Action {
 
     public void cancel() { _actionStatus = ActionStatus.cancelled; }
 
-    protected void setAsInitiated() {
-        _actionStatus = ActionStatus.initiation_complete;
-    }
-
     @JsonIgnore
-    public boolean isInProgress() {
+    protected boolean isInProgress() {
         return _actionStatus.isInProgress();
     }
 
@@ -230,10 +158,6 @@ public abstract class ActionyAction implements Action {
         actionResult.initialize(cardGame);
     }
 
-    public void clearResult() {
-        _currentResult = null;
-    }
-
     public ActionResult getResult() { return _currentResult; }
 
     @JsonProperty("actionId")
@@ -242,113 +166,59 @@ public abstract class ActionyAction implements Action {
     }
 
     public void executeNextSubAction(ActionsEnvironment actionsEnvironment, DefaultGame cardGame)
-            throws PlayerNotFoundException, InvalidGameLogicException {
+            throws InvalidGameLogicException {
 
-        ActionResult actionResult = getResult();
-        if (actionResult != null) {
-            if (actionResult.canBeRespondedTo()) {
-                actionResult.addNextActionToStack(cardGame);
+        if (_currentResult != null) {
+            if (_currentResult.canBeRespondedTo()) {
+                _currentResult.addNextActionToStack(cardGame);
             } else {
-                clearResult();
+                _currentResult = null;
             }
-        } else if (!isInProgress() && getResult() == null) {
+        } else if (!isInProgress()) {
             actionsEnvironment.removeCompletedActionFromStack(this);
             cardGame.sendActionResultToClient();
+        } else if (!wasInitiated()) {
+            continueInitiation(cardGame);
         } else {
-            if (isInProgress()) {
-                if (!wasInitiated()) {
-                    continueInitiation(cardGame);
-                } else {
-                    continueEffects(cardGame);
-                }
-            } else if (cardGame.isCarryingOutEffects() && getResult() == null) {
-                throw new InvalidGameLogicException("Unable to process action");
-            }
-        }
-    }
-
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
-        resolveTargets(cardGame);
-
-        if (_cardTargets.isEmpty() && thisActionShouldBeContinued(cardGame)) {
-            int loopNumber = 1;
-
-            while (thisActionShouldBeContinued(cardGame) && !_costs.isEmpty()) {
-                Action costAction = _costs.getFirst();
-                if (costAction.wasSuccessful()) {
-                    _costs.remove(costAction);
-                    _processedCosts.add(costAction);
-                } else if (costAction.wasFailed()) {
-                    this.setAsFailed();
-                } else {
-                    cardGame.addActionToStack(costAction);
-                }
-                loopNumber++;
-                if (loopNumber > 500) {
-                    throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
-                            "method. This is likely due to a circular logic error.");
-                }
-            }
-        }
-
-        if (_cardTargets.isEmpty() && _costs.isEmpty() && thisActionShouldBeContinued(cardGame)) {
-            _actionStatus = ActionStatus.initiation_complete;
-        }
-    }
-
-    protected final void continueEffects(DefaultGame cardGame) throws InvalidGameLogicException {
-        int loopNumber = 1;
-
-        while (thisActionShouldBeContinued(cardGame) && !_actionEffects.isEmpty()) {
-            Action subAction = _actionEffects.getFirst();
-            if (subAction.wasSuccessful()) {
-                _actionEffects.remove(subAction);
-                _processedActions.add(subAction);
-            } else if (subAction.wasFailed()) {
-                this.setAsFailed();
-            } else {
-                cardGame.getActionsEnvironment().addActionToStack(subAction);
-            }
-            loopNumber++;
-            if (loopNumber > 500) {
-                throw new InvalidGameLogicException("Looped more than 500 times through Action.continueInitiation " +
-                        "method. This is likely due to a circular logic error.");
-            }
-        }
-
-        if (_actionEffects.isEmpty() && thisActionShouldBeContinued(cardGame)) {
             processEffect(cardGame);
         }
     }
 
-
-    private boolean thisActionShouldBeContinued(DefaultGame cardGame) {
-        return cardGame.getCurrentAction() == this && cardGame.getGameState().hasNoPendingDecisions() &&
-                _actionStatus.isInProgress();
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
+        if (!_cardTargets.isEmpty()) {
+            resolveNextTarget(cardGame);
+        } else if (!_costs.isEmpty()) {
+            payNextCost(cardGame);
+        } else {
+            _actionStatus = ActionStatus.initiation_complete;
+            if (this instanceof ActionWithRespondableInitiation respondableAction) {
+                respondableAction.saveInitiationResult(cardGame);
+            }
+        }
     }
 
-    protected void processEffect(DefaultGame cardGame) {
-        setAsSuccessful();
+    protected abstract void processEffect(DefaultGame cardGame);
+
+    protected final void resolveNextTarget(DefaultGame cardGame) throws InvalidGameLogicException {
+        ActionTargetResolver resolver = _cardTargets.getFirst();
+        if (resolver.isResolved()) {
+            _cardTargets.remove(resolver);
+        } else if (resolver.cannotBeResolved(cardGame)) {
+            this.setAsFailed();
+        } else {
+            resolver.resolve(cardGame);
+        }
     }
 
-    protected final void resolveTargets(DefaultGame cardGame) throws InvalidGameLogicException {
-        int loopNumber = 1;
-
-        while (thisActionShouldBeContinued(cardGame) && !_cardTargets.isEmpty()) {
-            ActionTargetResolver resolver = _cardTargets.getFirst();
-            if (resolver.isResolved()) {
-                _cardTargets.remove(resolver);
-                _resolvedTargets.add(resolver);
-            } else if (resolver.cannotBeResolved(cardGame)) {
-                this.setAsFailed();
-            } else {
-                resolver.resolve(cardGame);
-            }
-            loopNumber++;
-            if (loopNumber > 500) {
-                throw new InvalidGameLogicException("Looped more than 500 times while resolving targets. " +
-                        "This is likely due to a circular logic error.");
-            }
+    protected final void payNextCost(DefaultGame cardGame) {
+        Action costAction = _costs.getFirst();
+        if (costAction.wasSuccessful()) {
+            _costs.remove(costAction);
+            _processedCosts.add(costAction);
+        } else if (costAction.wasFailed()) {
+            this.setAsFailed();
+        } else {
+            cardGame.addActionToStack(costAction);
         }
     }
 

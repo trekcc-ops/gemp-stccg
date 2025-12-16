@@ -1,13 +1,13 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class UseGameTextAction extends ActionyAction implements TopLevelSelectableAction {
+public class UseGameTextAction extends ActionWithSubActions implements TopLevelSelectableAction {
 
     protected final PhysicalCard _performingCard;
 

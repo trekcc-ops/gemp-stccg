@@ -20,11 +20,10 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
     private final ActionCardResolver _resolver;
     private Collection<PhysicalCard> _cardsToPlace;
-    private enum Progress { cardsSelected }
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
                                               ActionCardResolver resolver) {
-        super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK, Progress.values());
+        super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
         _resolver = resolver;
         _cardTargets.add(_resolver);
     }

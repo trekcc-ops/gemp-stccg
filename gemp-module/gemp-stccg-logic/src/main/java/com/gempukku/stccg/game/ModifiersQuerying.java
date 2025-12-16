@@ -154,9 +154,9 @@ public interface ModifiersQuerying {
     default boolean playerRestrictedFromPerformingActionDueToModifiers(String performingPlayer, Action action) {
         for (Modifier modifier : getModifiersInEffect(ModifierEffect.ACTION_MODIFIER))
             if (!modifier.canPerformAction(getGame(), performingPlayer, action)) {
-                return false;
+                return true;
             }
-        return true;
+        return false;
     }
 
 

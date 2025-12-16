@@ -2,17 +2,19 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.choose.*;
+import com.gempukku.stccg.actions.ActionWithSubActions;
+import com.gempukku.stccg.actions.choose.SelectNumberAction;
+import com.gempukku.stccg.actions.choose.SelectPlayerAction;
+import com.gempukku.stccg.actions.choose.SelectTribblePowerAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerResolver;
-import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.player.PlayerSource;
+import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerResolver;
+import com.gempukku.stccg.player.PlayerSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +61,7 @@ public class ChooseStuffSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction parentAction, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context)
             throws PlayerNotFoundException, InvalidGameLogicException {
         Action action = switch (_effectType) {
             case CHOOSEANUMBER -> new SelectNumberAction(cardGame, context, _choiceText, _valueSource, _saveToMemoryId);

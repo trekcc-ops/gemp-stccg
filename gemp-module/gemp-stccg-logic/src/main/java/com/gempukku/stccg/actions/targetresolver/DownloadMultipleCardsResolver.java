@@ -11,7 +11,6 @@ import com.gempukku.stccg.game.ST1EGame;
 import java.util.*;
 
 public class DownloadMultipleCardsResolver implements ActionTargetResolver {
-
     private FacilityCard _destinationFacility;
     private final String _performingPlayerName;
     private SelectCardAction _selectDestinationAction;
@@ -74,7 +73,7 @@ public class DownloadMultipleCardsResolver implements ActionTargetResolver {
                         "Select outpost to download cards to", destinationOptions);
                 cardGame.addActionToStack(_selectDestinationAction);
             }
-        } else if (_selectDestinationAction.wasCarriedOut()) {
+        } else if (_selectDestinationAction.wasSuccessful()) {
             if (_selectDestinationAction.getSelectedCard() instanceof FacilityCard facility) {
                 _destinationFacility = facility;
             } else {

@@ -3,10 +3,9 @@ package com.gempukku.stccg.actions.battle;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.targetresolver.BattleInitiationResolver;
 import com.gempukku.stccg.cards.physicalcard.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.decisions.DecisionContext;
-import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 
@@ -22,7 +21,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
     private boolean _noWinner;
     private boolean _returningFire;
     private boolean _damageApplied;
-    private String _defendingPlayerName;
+    private final String _defendingPlayerName;
     private boolean _returnedFire;
     private final Map<String, CardWithHullIntegrity> _targets = new HashMap<>();
     private final Map<String, Collection<CardWithHullIntegrity>> _forcesNew = new HashMap<>();
@@ -30,8 +29,7 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
     private final Map<String, Integer> _damageSustained = new HashMap<>();
     private boolean _winnerDetermined;
     private boolean _battleResolved;
-    private final Map<PhysicalCard, Map<String, List<PhysicalCard>>> _targetMap;
-    private ShipBattleTargetDecision _attackTargetDecision;
+    private final BattleInitiationResolver _resolver;
 
     private enum OpenFireResult {
         HIT, DIRECT_HIT, MISS
@@ -40,7 +38,9 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
     public InitiateShipBattleAction(Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap, DefaultGame game,
                                     Player performingPlayer) {
         super(game, performingPlayer, ActionType.BATTLE);
-        _targetMap = targetMap;
+        _defendingPlayerName = game.getOpponent(_performingPlayerId);
+        _resolver = new BattleInitiationResolver(_performingPlayerId, _defendingPlayerName, targetMap);
+        _cardTargets.add(_resolver);
     }
 
     private OpenFireResult calculateOpenFireResult(String playerName, DefaultGame cardGame) {
@@ -56,24 +56,10 @@ public class InitiateShipBattleAction extends ActionyAction implements TopLevelS
         else return OpenFireResult.MISS;
     }
 
-    protected void continueInitiation(DefaultGame cardGame) {
-        String attackingPlayerName = _performingPlayerId;
-        _defendingPlayerName = cardGame.getOpponent(attackingPlayerName);
-        if (_attackTargetDecision == null) {
-            _attackTargetDecision =
-                    new ShipBattleTargetDecision(attackingPlayerName, DecisionContext.SHIP_BATTLE_TARGETS, _targetMap, cardGame);
-            cardGame.sendAwaitingDecision(_attackTargetDecision);
-        } else {
-            // TODO - Not allowing player 2 to pick additional forces or targets yet
-            _forcesNew.put(attackingPlayerName, _attackTargetDecision.getAttackingCards());
-            _forcesNew.put(_defendingPlayerName, List.of(_attackTargetDecision.getTarget()));
-            _targets.put(attackingPlayerName, _attackTargetDecision.getTarget());
-            _returningFire = false; // TODO not returning fire
-            setAsInitiated();
-        }
-    }
-
     protected void processEffect(DefaultGame cardGame) {
+        _targets.putAll(_resolver.getTargets());
+        _forcesNew.putAll(_resolver.getForces());
+        _returningFire = _resolver.isReturningFire();
         String attackingPlayerName = _performingPlayerId;
         if (!_openedFire) {
             _openedFire = true;

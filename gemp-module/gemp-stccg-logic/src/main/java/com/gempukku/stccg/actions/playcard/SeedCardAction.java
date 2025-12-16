@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.playcard;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -23,8 +24,11 @@ public class SeedCardAction extends PlayCardAction {
                            @JsonProperty("performingPlayerId")
                            String performingPlayerName,
                            @JsonProperty("destinationZone")
-                           Zone destinationZone) {
-        super(actionId, performingCard, cardEnteringPlay, performingPlayerName, destinationZone, ActionType.SEED_CARD);
+                           Zone destinationZone,
+                           @JsonProperty("status")
+                           ActionStatus status) {
+        super(actionId, performingCard, cardEnteringPlay, performingPlayerName, destinationZone, ActionType.SEED_CARD,
+                status);
     }
 
     public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone) {

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions;
 
 // ActionStatus is intended to be used by serialization
-enum ActionStatus {
+public enum ActionStatus {
     virtual(false, false, false), // Selectable actions that haven't been selected, or unperformed subactions of other actions
     initiation_started(true, false, false), // Actions in progress that haven't been fully initiated
     initiation_failed(false, true, false), // Actions that have ended because they couldn't be fully initiated

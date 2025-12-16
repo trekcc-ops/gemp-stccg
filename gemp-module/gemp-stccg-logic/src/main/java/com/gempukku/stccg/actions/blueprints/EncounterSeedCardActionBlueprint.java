@@ -49,7 +49,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
             for (Action action : actionStack) {
                 if (action instanceof AttemptMissionAction attemptAction &&
                         attemptAction.getLocationId() == card.getLocationId()) {
-                    TopLevelSelectableAction newAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
+                    EncounterSeedCardAction newAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
                             card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocationId(),
                             context);
                     appendActionToContext(cardGame, newAction, context);

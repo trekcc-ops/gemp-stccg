@@ -66,7 +66,7 @@ public class SelectAndInsertAction extends ActionyAction {
             protected void validDecisionMade(int index, String result) {
                 try {
                     _selectedAction = performableActions.get(index);
-                    _parentAction.insertAction(_selectedAction);
+                    cardGame.addActionToStack(_selectedAction);
                     setAsSuccessful();
                 } catch(NoSuchElementException exp) {
                     setAsFailed();

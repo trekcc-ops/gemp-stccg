@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -14,11 +14,11 @@ import java.util.List;
 public class AddSubactionEffectsAction extends SystemQueueAction {
 
     private final boolean _isCost;
-    private final CardPerformedAction _parentAction;
+    private final ActionWithSubActions _parentAction;
     private final SubActionBlueprint _blueprint;
 
     public AddSubactionEffectsAction(DefaultGame cardGame, ActionContext actionContext, boolean isCost,
-                                     CardPerformedAction parentAction, SubActionBlueprint blueprint) {
+                                     ActionWithSubActions parentAction, SubActionBlueprint blueprint) {
         super(cardGame, actionContext, parentAction.getPerformingPlayerId());
         _isCost = isCost;
         _parentAction = parentAction;

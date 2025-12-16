@@ -3,7 +3,6 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -66,14 +65,9 @@ public class ActionsEnvironment {
         return _actionStack.isEmpty();
     }
 
-    public void removeCompletedActionFromStack(Action action) throws ActionOrderOfOperationException {
-        if (!action.isInProgress()) {
-            _actionStack.remove(action);
-            _performedActions.add(action);
-        } else {
-            throw new ActionOrderOfOperationException("Tried to remove incomplete action from stack of class " +
-                    action.getClass().getSimpleName());
-        }
+    public void removeCompletedActionFromStack(Action action) {
+        _actionStack.remove(action);
+        _performedActions.add(action);
     }
 
     public Action getCurrentAction() {

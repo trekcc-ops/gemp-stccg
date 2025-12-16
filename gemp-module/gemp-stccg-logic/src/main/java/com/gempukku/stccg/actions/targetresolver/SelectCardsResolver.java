@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.targetresolver;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -48,12 +47,6 @@ public class SelectCardsResolver implements ActionCardResolver {
         } else {
             return !_selectAction.canBeInitiated(cardGame);
         }
-    }
-
-
-    @JsonProperty("serialized")
-    private String serialize() {
-        return "selectAction(" + _selectAction.getActionId() + ")";
     }
 
 }

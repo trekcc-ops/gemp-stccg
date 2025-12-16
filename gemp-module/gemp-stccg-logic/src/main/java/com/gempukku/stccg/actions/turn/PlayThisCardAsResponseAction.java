@@ -11,11 +11,6 @@ public class PlayThisCardAsResponseAction extends UseGameTextAction implements T
         super(cardGame, physicalCard, context);
     }
 
-    @Override
-    public PhysicalCard getPerformingCard() {
-        return _performingCard;
-    }
-
     public boolean requirementsAreMet(DefaultGame game) { return _performingCard.isInHand(game); }
 
 }

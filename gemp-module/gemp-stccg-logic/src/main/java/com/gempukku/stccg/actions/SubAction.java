@@ -4,17 +4,16 @@ import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
-public class SubAction extends ActionyAction implements CardPerformedAction {
+public class SubAction extends ActionWithSubActions implements CardPerformedAction {
 
-    private final CardPerformedAction _parentAction;
+    private final ActionWithSubActions _parentAction;
 
-    public SubAction(DefaultGame cardGame, CardPerformedAction action, ActionContext context,
-                     List<SubActionBlueprint> costAppenders, List<SubActionBlueprint> subActionBlueprints) throws PlayerNotFoundException {
-        super(cardGame, cardGame.getPlayer(action.getPerformingPlayerId()), action.getActionType());
+    public SubAction(DefaultGame cardGame, ActionWithSubActions action, ActionContext context,
+                     List<SubActionBlueprint> costAppenders, List<SubActionBlueprint> subActionBlueprints) {
+        super(cardGame, action.getPerformingPlayerId(), action.getActionType());
         _parentAction = action;
 
         for (SubActionBlueprint costAppender : costAppenders) {

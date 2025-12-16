@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
@@ -80,7 +81,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     }
 
     @Override
-    public void appendActionToContext(DefaultGame cardGame, TopLevelSelectableAction action,
+    public void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action,
                                       ActionContext actionContext) {
         costs.forEach(cost -> cost.addEffectToAction(cardGame, true, action, actionContext));
         _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
@@ -94,7 +95,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         addCost(
                 new SubActionBlueprint() {
                     @Override
-                    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext) throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+                    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext) throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
                         Action usageLimitAction = new UseOncePerTurnAction(cardGame,
                                 actionContext.getPerformingCard(cardGame), thisBlueprint, actionContext.getPerformingPlayerId());
                         return Collections.singletonList(usageLimitAction);

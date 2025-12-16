@@ -23,7 +23,8 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction {
+public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction,
+        ActionWithRespondableInitiation {
     private AttemptingUnitResolver _attemptingUnitTarget;
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
@@ -32,12 +33,9 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     private PhysicalCard _lastCardEncountered;
     private final int _locationId;
 
-    private enum Progress {
-    }
-
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
                                 MissionLocation mission) throws InvalidGameLogicException {
-        super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION, Progress.values());
+        super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION);
         _performingCard = cardForAction;
         _locationId = mission.getLocationId();
 
@@ -89,8 +87,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
     }
 
     @Override
-    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
-        super.continueInitiation(cardGame);
+    public void saveInitiationResult(DefaultGame cardGame) {
         saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this), cardGame);
     }
 

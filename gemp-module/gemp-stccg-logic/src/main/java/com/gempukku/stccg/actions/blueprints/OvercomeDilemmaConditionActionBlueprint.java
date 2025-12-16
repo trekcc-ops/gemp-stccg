@@ -31,7 +31,7 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         List<Action> result = new ArrayList<>();
         Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();

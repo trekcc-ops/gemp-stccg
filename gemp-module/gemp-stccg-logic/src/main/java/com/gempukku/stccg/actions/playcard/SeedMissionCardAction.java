@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.playcard;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.targetresolver.SeedMissionTargetResolver;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -26,14 +27,16 @@ public class SeedMissionCardAction extends PlayCardAction {
     @JsonCreator
     @SuppressWarnings("unused")
     private SeedMissionCardAction(@JsonProperty("actionId") int actionId,
-                           @JsonProperty("targetCardId") @JsonIdentityReference(alwaysAsId=true)
+                                  @JsonProperty("targetCardId") @JsonIdentityReference(alwaysAsId=true)
                            MissionCard cardEnteringPlay,
-                          @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
+                                  @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
                           MissionCard performingCard,
-                           @JsonProperty("performingPlayerId") String performingPlayerName,
-                           @JsonProperty("destinationZone") Zone destinationZone,
-                                  @JsonProperty("locationZoneIndex") Integer locationZoneIndex) {
-        super(actionId, performingCard, cardEnteringPlay, performingPlayerName, destinationZone, ActionType.SEED_CARD);
+                                  @JsonProperty("performingPlayerId") String performingPlayerName,
+                                  @JsonProperty("destinationZone") Zone destinationZone,
+                                  @JsonProperty("locationZoneIndex") Integer locationZoneIndex,
+                                  @JsonProperty("status")ActionStatus status) {
+        super(actionId, performingCard, cardEnteringPlay, performingPlayerName, destinationZone, ActionType.SEED_CARD,
+                status);
         _locationZoneIndex = locationZoneIndex;
         _resolver = new SeedMissionTargetResolver(cardEnteringPlay, locationZoneIndex);
         _cardTargets.add(_resolver);

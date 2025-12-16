@@ -2,10 +2,10 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.CardTargetBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -27,7 +27,7 @@ public class DiscardSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action, ActionContext actionContext)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, actionContext);
         PhysicalCard performingCard = actionContext.getPerformingCard(cardGame);

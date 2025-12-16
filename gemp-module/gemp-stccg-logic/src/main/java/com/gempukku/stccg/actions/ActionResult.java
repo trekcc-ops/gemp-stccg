@@ -16,7 +16,6 @@ import java.util.*;
 public class ActionResult {
 
     public enum Type {
-        ACTIVATE,
         ACTIVATE_TRIBBLE_POWER,
         DRAW_CARD_OR_PUT_INTO_HAND,
         END_OF_TURN,
@@ -32,7 +31,7 @@ public class ActionResult {
         START_OF_MISSION_ATTEMPT,
         START_OF_PHASE,
         START_OF_TURN,
-        DRAW_CARD, KILL_CARD, WHEN_MOVE_FROM
+        DRAW_CARD, KILL_CARD
     }
 
     private final List<Type> _types;

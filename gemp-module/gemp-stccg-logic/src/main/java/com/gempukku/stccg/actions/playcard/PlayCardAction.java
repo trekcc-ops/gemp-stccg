@@ -2,8 +2,9 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -15,7 +16,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
-public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
+public abstract class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
     protected final PhysicalCard _cardEnteringPlay;
     @JsonProperty("destinationZone")
@@ -29,13 +30,15 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         _destinationZone = toZone;
     }
 
-    protected PlayCardAction(int cardId, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
-                          String performingPlayerName, Zone toZone, ActionType actionType) {
-        super(cardId, actionType, performingPlayerName);
+    protected PlayCardAction(int actionId, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+                             String performingPlayerName, Zone toZone, ActionType actionType,
+                             ActionStatus status) {
+        super(actionId, actionType, performingPlayerName, status);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
     }
+
 
 
 
@@ -76,6 +79,7 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
     }
 
     protected void processEffect(DefaultGame cardGame) {
+        super.processEffect(cardGame);
         try {
             putCardIntoPlay(cardGame);
             setAsSuccessful();

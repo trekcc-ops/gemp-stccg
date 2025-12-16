@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.actions.turn.PlayThisCardAsResponseAction;
@@ -41,7 +41,7 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
         }
         _effects.addFirst(new SubActionBlueprint() {
             @Override
-            public List<Action> createActions(DefaultGame cardGame, CardPerformedAction action,
+            public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action,
                                               ActionContext actionContext) {
                 Action playCardAction = new STCCGPlayCardAction(cardGame, actionContext.card(), Zone.CORE,
                         actionContext.card().getOwnerName(), true, actionContext);
