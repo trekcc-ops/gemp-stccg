@@ -134,7 +134,6 @@ export default function CardStack( {gamestate, anchor_id, sx} ) {
                 display: "grid",
                 gridTemplateColumns: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
                 gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
-                justifyItems: "start",
                 ...sx //also use incoming styles from parent
             }}>
             {reactCardObjs}

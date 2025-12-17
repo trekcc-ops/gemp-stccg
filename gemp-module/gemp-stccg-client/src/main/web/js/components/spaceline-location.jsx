@@ -25,13 +25,18 @@ function get_spaceline_location_data(gamestate, locationid) {
     console.error(`Unable to load spaceline location data: ${locationid}`);
 }
 
-function get_mission_cards(gamestate, locationData) {
+function get_mission_cards(gamestate, locationData, yourPlayerId) {
     let retarr = [];
     
     for (const cardId of locationData["missionCardIds"]) {
         let cardData = gamestate["visibleCardsInGame"][cardId.toString()];
         if (cardData != null) {
-            retarr.push(cardData); 
+            if (cardData["owner"] === yourPlayerId) {
+                retarr.push(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "missions"}} />);
+            }
+            else {
+                retarr.push(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "missions", transform: "scale(1, -1);"}} />);
+            }
         }
     }
     return retarr;
@@ -76,14 +81,12 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
 
     // Render top to bottom
     let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-facil"}} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-facil", transform: "rotate(180deg)"}} />
     );
     let opponentShipCards = get_ship_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-ship"}} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-ship", transform: "rotate(180deg)"}} />
     );
-    let missionCards = get_mission_cards(gamestate, locationData).map((cardData, index) => 
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "missions"}} />
-    );
+    let missionCards = get_mission_cards(gamestate, locationData, yourPlayerId);
     let yourShipCards = get_ship_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
         <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "you-ship"}} />
     );
@@ -103,7 +106,9 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
                 //         and instead use gridTemplateColumns and named location ids to 
                 //         create table cells. Then place each Card in said cell.
                 gridTemplateColumns: "1fr",
-                gridTemplateRows: "[opp-special] 1fr [opp-facil] 1fr [opp-ship] 1fr [missions] 1fr [you-ship] 1fr [you-facil] 1fr [you-special] 1fr"
+                gridTemplateRows: "[opp-special] 1fr [opp-facil] 1fr [opp-ship] 1fr [missions] 1fr [you-ship] 1fr [you-facil] 1fr [you-special] 1fr",
+                justifyItems: "center",
+                alignItems: "center"
             }}
         >
             {opponentShipCards}
