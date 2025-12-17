@@ -1,6 +1,6 @@
 // Represents a column of cards anchored at a mission card.
 
-import { Stack } from "@mui/material";
+import Box from '@mui/material/Box';
 import CardStack from "./card-stack.jsx";
 
 // TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
@@ -31,7 +31,7 @@ function get_mission_cards(gamestate, locationData) {
     for (const cardId of locationData["missionCardIds"]) {
         let cardData = gamestate["visibleCardsInGame"][cardId.toString()];
         if (cardData != null) {
-            retarr.push(<CardStack key={cardId} gamestate={gamestate} anchor_id={cardId} />); 
+            retarr.push(cardData); 
         }
     }
     return retarr;
@@ -47,7 +47,7 @@ function get_ship_cards(gamestate, locationid, playerid) {
             cardData["attachedToCardId"] == null) // not docked
             {
             
-            retarr.push(<CardStack key={cardId} gamestate={gamestate} anchor_id={cardData.cardId} />); 
+            retarr.push(cardData); 
         }
     }
     return retarr;
@@ -63,7 +63,7 @@ function get_facility_cards(gamestate, locationid, playerid) {
             cardData["attachedToCardId"] == null) // not docked
             {
             
-            retarr.push(<CardStack key={cardId} gamestate={gamestate} anchor_id={cardData.cardId} />); 
+            retarr.push(cardData); 
         }
     }
     return retarr;
@@ -73,21 +73,32 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
     let yourPlayerId = get_your_player_id(gamestate);
     let opponentPlayerId = get_opponent_player_id(gamestate);
     let locationData = get_spaceline_location_data(gamestate, locationid);
-    let missionCards = get_mission_cards(gamestate, locationData);
-    let opponentShipCards = get_ship_cards(gamestate, locationid, opponentPlayerId);
-    let yourShipCards = get_ship_cards(gamestate, locationid, yourPlayerId);
-    let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId);
-    let yourFacilityCards = get_facility_cards(gamestate, locationid, yourPlayerId);
+
+    // Render top to bottom
+    let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-facil"}} />
+    );
+    let opponentShipCards = get_ship_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-ship"}} />
+    );
+    let missionCards = get_mission_cards(gamestate, locationData).map((cardData, index) => 
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "missions"}} />
+    );
+    let yourShipCards = get_ship_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "you-ship"}} />
+    );
+    
+    let yourFacilityCards = get_facility_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "you-facil"}} />
+    );
 
     return(
-        <Stack
+        <Box
             data-spacelinelocation={locationid}
-            flexGrow={1}
-            direction="column"
-            spacing={2}
             sx={{
-                justifyContent: "space-between",
-                alignItems: "center"
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gridTemplateRows: "[opp-special] 1fr [opp-facil] 1fr [opp-ship] 1fr [missions] 1fr [you-ship] 1fr [you-facil] 1fr [you-special] 1fr"
             }}
         >
             {opponentShipCards}
@@ -95,6 +106,6 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
             {missionCards}
             {yourShipCards}
             {yourFacilityCards}
-        </Stack>
+        </Box>
     );
 }

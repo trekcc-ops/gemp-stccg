@@ -86,7 +86,7 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
     return retarr;
 }
 
-export default function CardStack( {gamestate, anchor_id} ) {
+export default function CardStack( {gamestate, anchor_id, sx} ) {
     /* CardStack sets a grid with columns that are smaller than the content.
      * By setting a z-index and the minimum card width and height to values larger than the
      *   width and height of the cell, the card image overflows its grid cell
@@ -134,7 +134,8 @@ export default function CardStack( {gamestate, anchor_id} ) {
                 display: "grid",
                 gridTemplateColumns: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
                 gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
-                justifyItems: "start"
+                justifyItems: "start",
+                ...sx //also use incoming styles from parent
             }}>
             {reactCardObjs}
         </Box>

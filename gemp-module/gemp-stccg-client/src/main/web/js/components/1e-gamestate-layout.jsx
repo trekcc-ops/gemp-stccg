@@ -31,7 +31,7 @@ import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
 import Hand from './hand.jsx';
 import Card from './card.jsx';
-import SpacelineLocation from './spaceline-location.jsx';
+import TableLayout from './table-layout.jsx';
 
 // Change this function to change the JSON input source.
 function get_gamestate() {
@@ -167,13 +167,6 @@ export default function MiniDrawer() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-
-    let spacelineLocations = [];
-    loadedGameState["spacelineLocations"].map((item, index) => {
-        console.log(`mapping id: ${item["locationId"]}`);
-        spacelineLocations.push(<SpacelineLocation key={item["locationId"]} gamestate={loadedGameState} locationid={item["locationId"]}/>);
-    })
-
 
 
     return (
@@ -434,20 +427,7 @@ export default function MiniDrawer() {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
                 <div id="main-layout-grid">
-                    <Box id="table" sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center"
-                    }}>
-                        <Stack
-                            flexGrow={1}
-                            id="spacelinelocations"
-                            direction="row"
-                            spacing={0}
-                        >
-                            {spacelineLocations}
-                        </Stack>
-                    </Box>
+                    <TableLayout gamestate={loadedGameState} />
                     <div id="hand-pane"><Hand gamestate={loadedGameState} /></div>
                     <div id="action-reaction-pane"><ActionReactionPane gamestate={loadedGameState}/></div>
                     <div id="phase-pane"><PhaseIndicator gamestate={loadedGameState} /></div>
