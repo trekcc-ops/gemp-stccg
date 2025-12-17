@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
 
@@ -166,7 +167,7 @@ public abstract class ActionyAction implements Action {
     }
 
     public void executeNextSubAction(ActionsEnvironment actionsEnvironment, DefaultGame cardGame)
-            throws InvalidGameLogicException {
+            throws InvalidGameOperationException {
 
         if (_currentResult != null) {
             if (_currentResult.canBeRespondedTo()) {

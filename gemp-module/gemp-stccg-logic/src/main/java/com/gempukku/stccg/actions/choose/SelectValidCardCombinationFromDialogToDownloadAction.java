@@ -25,7 +25,7 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
     public SelectValidCardCombinationFromDialogToDownloadAction(DefaultGame cardGame, String performingPlayerName,
                                                                 Set<PersonnelCard> selectableCards,
                                                                 Map<PersonnelCard, List<PersonnelCard>> validCombinations,
-                                                                int maximum) {
+                                                                int minimum, int maximum) {
         super(cardGame, performingPlayerName, ActionType.SELECT_CARDS);
         _selectableCards = selectableCards.stream().toList();
         _maximum = maximum;

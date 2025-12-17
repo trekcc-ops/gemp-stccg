@@ -103,7 +103,7 @@ public class ServerObjects {
         _cacheManager = new CacheManager(_deckDAO, _collectionDAO, _playerDAO, _transferDAO, _ipBanDAO);
     }
 
-    private final void createServices() {
+    private void createServices() {
         _formatLibrary = new FormatLibrary(_cardBlueprintLibrary);
         _gameHistoryService = new GameHistoryService(_gameHistoryDAO);
         _gameRecorder = new GameRecorder(_gameHistoryService, _playerDAO);
@@ -116,10 +116,10 @@ public class ServerObjects {
         _merchantService = new MerchantService(_cardBlueprintLibrary, _collectionsManager);
         _chatServer = new ChatServer(this);
         _gameServer = new GameServer(_chatServer, _gameRecorder);
-        _hallServer = new HallServer(this);
+        _hallServer = new HallServer(this, _formatLibrary, _chatServer);
     }
 
-    private final void startServers() {
+    private void startServers() {
         LOGGER.debug("Function StartServers - starting HallServer");
         _hallServer.startServer();
         LOGGER.debug("Function StartServers - starting GameServer");

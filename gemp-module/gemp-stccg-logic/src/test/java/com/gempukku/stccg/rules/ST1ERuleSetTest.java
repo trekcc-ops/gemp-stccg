@@ -1,10 +1,8 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("SpellCheckingInspection")
 public class ST1ERuleSetTest extends AbstractAtTest {
     @Test
-    public void CompatibilityTest() throws CardNotFoundException, PlayerNotFoundException {
+    public void CompatibilityTest() throws Exception {
         initializeSimple1EGame(30);
         final ST1ERuleSet _rules = new ST1ERuleSet();
         final PersonnelCard picard = (PersonnelCard) newCardForGame("101_215", P1);

@@ -1,12 +1,9 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +14,7 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void disruptorTest() throws CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
+    public void disruptorTest() throws Exception {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
         ST1EGameState gameState = _game.getGameState();

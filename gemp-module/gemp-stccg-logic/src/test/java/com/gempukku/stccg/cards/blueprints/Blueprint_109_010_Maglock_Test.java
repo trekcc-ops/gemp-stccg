@@ -27,8 +27,8 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
     // Unit tests for card definition of Maglock
 
     @Test
-    public void maglockFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, JsonProcessingException, InvalidGameOperationException, PlayerNotFoundException {
+    public void maglockFailedTest() throws DecisionResultInvalidException,
+            CardNotFoundException, JsonProcessingException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 

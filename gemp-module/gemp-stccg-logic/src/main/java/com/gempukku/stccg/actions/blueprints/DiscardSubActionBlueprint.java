@@ -7,11 +7,8 @@ import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
@@ -27,10 +24,9 @@ public class DiscardSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext) {
         ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, actionContext);
-        PhysicalCard performingCard = actionContext.getPerformingCard(cardGame);
+        PhysicalCard performingCard = actionContext.card();
         String playerName = actionContext.getPerformingPlayerId();
         return List.of(new DiscardSingleCardAction(cardGame, performingCard, playerName, cardResolver));
     }

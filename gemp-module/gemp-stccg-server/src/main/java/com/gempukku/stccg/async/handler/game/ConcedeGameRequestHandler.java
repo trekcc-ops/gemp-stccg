@@ -21,8 +21,9 @@ public class ConcedeGameRequestHandler extends GameRequestHandlerNew implements 
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
         User resourceOwner = request.user();
+        String userName = request.userName();
         CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
-        gameMediator.concede(resourceOwner);
+        gameMediator.concede(userName);
         responseWriter.writeJsonOkResponse();
     }
 

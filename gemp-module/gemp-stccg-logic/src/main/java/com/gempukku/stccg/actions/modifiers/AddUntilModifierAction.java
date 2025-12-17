@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 
@@ -28,22 +27,17 @@ public class AddUntilModifierAction extends ActionyAction {
 
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        try {
-            Phase phase = until.getPhase();
-            if (phase == null)
-                phase = cardGame.getGameState().getCurrentPhase();
+        Phase phase = until.getPhase();
+        if (phase == null)
+            phase = cardGame.getCurrentPhase();
 
-            Modifier modifier = _modifier.createModifier(cardGame, _actionContext.getPerformingCard(cardGame), _actionContext);
+        Modifier modifier = _modifier.createModifier(cardGame, _actionContext.card(), _actionContext);
 
-            if (until.isEndOfTurn())
-                cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(modifier);
-            else
-                cardGame.getModifiersEnvironment().addUntilEndOfPhaseModifier(modifier, phase);
-            setAsSuccessful();
-        } catch(InvalidGameLogicException exp) {
-            cardGame.sendErrorMessage(exp);
-            setAsFailed();
-        }
+        if (until.isEndOfTurn())
+            cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(modifier);
+        else
+            cardGame.getModifiersEnvironment().addUntilEndOfPhaseModifier(modifier, phase);
+        setAsSuccessful();
     }
 
 }

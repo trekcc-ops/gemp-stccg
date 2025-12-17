@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.requirement.Requirement;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -26,14 +25,6 @@ public class ActionContext {
     }
 
     public String getPerformingPlayerId() { return _performingPlayerName; }
-
-    public PhysicalCard getPerformingCard(DefaultGame cardGame) throws InvalidGameLogicException {
-        try {
-            return cardGame.getCardFromCardId(_sourceCardId);
-        } catch(CardNotFoundException exp) {
-            throw new InvalidGameLogicException(exp.getMessage());
-        }
-    }
 
     public int getPerformingCardId() {
         return _sourceCardId;

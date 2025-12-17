@@ -1,17 +1,18 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 public class OvercomeDilemmaConditionActionBlueprint implements SubActionBlueprint {
 
@@ -31,14 +32,13 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
         List<Action> result = new ArrayList<>();
         Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
         for (Action pendingAction : actionStack) {
             if (pendingAction instanceof EncounterSeedCardAction encounterAction &&
-                    encounterAction.getEncounteredCard() == context.getPerformingCard(cardGame)) {
-                result.add(new OvercomeDilemmaConditionAction(cardGame, context.getPerformingCard(cardGame),
+                    encounterAction.getEncounteredCard() == context.card()) {
+                result.add(new OvercomeDilemmaConditionAction(cardGame, context.card(),
                         encounterAction, _conditions, encounterAction.getAttemptingUnit()));
             }
         }

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
     @Test
-    public void amandaRogersTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException, PlayerNotFoundException {
+    public void amandaRogersTest() throws Exception {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first

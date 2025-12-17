@@ -8,8 +8,10 @@ import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.hall.HallException;
 import com.gempukku.stccg.hall.HallServer;
+import com.gempukku.stccg.league.LeagueService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,6 +58,8 @@ public class CreateTableRequestHandler implements UriRequestHandler {
         User resourceOwner = request.user();
         PlayerDAO playerDAO = serverObjects.getPlayerDAO();
         HallServer hallServer = serverObjects.getHallServer();
+        LeagueService leagueService = serverObjects.getLeagueService();
+
 
         if (_isInviteOnly) {
             String errorMessage = "";
@@ -81,14 +85,19 @@ public class CreateTableRequestHandler implements UriRequestHandler {
 
 
         try {
-            hallServer.createNewTable(_format, resourceOwner, resourceOwner, _deckName, _timer, _desc,
-                    _isInviteOnly, _isPrivate, !isVisible);
+            GameSettings gameSettings = new GameSettings(_format, _timer, _desc, _isInviteOnly, _isPrivate, !isVisible,
+                    serverObjects.getFormatLibrary(), leagueService);
+            hallServer.createNewTable(resourceOwner, resourceOwner, _deckName,
+                    gameSettings);
             responseWriter.writeXmlOkResponse();
         } catch (HallException e) {
             try {
                 //try again assuming it's a new player with one of the default library decks selected
-                hallServer.createNewTable(_format, resourceOwner, playerDAO.getPlayer("Librarian"),
-                        _deckName, _timer, "(New Player) " + _desc, _isInviteOnly, _isPrivate, !isVisible);
+                GameSettings gameSettings = new GameSettings(_format, _timer, "(New Player) " + _desc,
+                        _isInviteOnly, _isPrivate, !isVisible, serverObjects.getFormatLibrary(),
+                        leagueService);
+                hallServer.createNewTable(resourceOwner, playerDAO.getPlayer("Librarian"),
+                        _deckName, gameSettings);
                 responseWriter.writeXmlOkResponse();
                 return;
             } catch (HallException ignored) { }

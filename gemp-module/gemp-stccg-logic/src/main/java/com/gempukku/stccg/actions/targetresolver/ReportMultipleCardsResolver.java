@@ -136,7 +136,7 @@ public class ReportMultipleCardsResolver implements ActionCardResolver {
         if (_selectCardsToDownloadAction == null) {
             _selectCardsToDownloadAction = new SelectValidCardCombinationFromDialogToDownloadAction(cardGame,
                     _performingPlayerName, _validCombinations.keySet(),
-                    _validCombinations, _maxCardCount);
+                    _validCombinations, _minCardCount, _maxCardCount);
             cardGame.addActionToStack(_selectCardsToDownloadAction);
         } else if (_selectCardsToDownloadAction.wasFailed()) {
             _isFailed = true;

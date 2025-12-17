@@ -11,13 +11,15 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.CloseableReadLock;
+import com.gempukku.stccg.common.CloseableWriteLock;
 import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.GameStateListener;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.player.PlayerClock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,22 +42,23 @@ public class CardGameMediator {
     private final String _gameId;
     private final GameTimer _timeSettings;
     private final boolean _allowSpectators;
-    private final boolean _showInGameHall;
+    protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
+
     private final ReentrantReadWriteLock _lock = new ReentrantReadWriteLock(true);
-    private final ReentrantReadWriteLock.ReadLock _readLock = _lock.readLock();
-    private final ReentrantReadWriteLock.WriteLock _writeLock = _lock.writeLock();
+    private final CloseableReadLock _readLock = new CloseableReadLock(_lock);
+    private final CloseableWriteLock _writeLock = new CloseableWriteLock(_lock);
     private int _channelNextIndex;
     private volatile boolean _destroyed;
     private final DefaultGame _game;
+    protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
+    private final Set<String> _requestedCancel = new HashSet<>();
 
 
     CardGameMediator(String gameId, GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
-                     GameSettings gameSettings) {
-        _allowSpectators = (gameSettings.getLeague() != null) ||
-                (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
+                            boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType) {
+        _allowSpectators = allowSpectators;
         _gameId = gameId;
-        _timeSettings = gameSettings.getTimeSettings();
-        _showInGameHall = gameSettings.isHiddenGame();
+        _timeSettings = timeSettings;
         if (participants.length < 1)
             throw new IllegalArgumentException("Game can't have less than one participant");
 
@@ -63,22 +66,24 @@ public class CardGameMediator {
             String participantId = participant.getPlayerId();
             CardDeck deck = participant.getDeck();
             _playerDecks.put(participantId, deck);
-            _playerClocks.put(participantId, new PlayerClock(participantId, gameSettings.getTimeSettings()));
+            _playerClocks.put(participantId, new PlayerClock(participantId, timeSettings));
             _playersPlaying.add(participantId);
         }
 
-        GameFormat gameFormat = gameSettings.getGameFormat();
-        _game = switch (gameSettings.getGameType()) {
-            case FIRST_EDITION -> new ST1EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
-            case SECOND_EDITION -> new ST2EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
-            case TRIBBLES -> new TribblesGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary);
+        GameResultListener listener = new GameMediatorListener(this);
+
+        _game = switch (gameType) {
+            case FIRST_EDITION -> new ST1EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary, listener);
+            case SECOND_EDITION -> new ST2EGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary, listener);
+            case TRIBBLES -> new TribblesGame(gameFormat, _playerDecks, _playerClocks, blueprintLibrary, listener);
         };
+
+        // Game may be immediately cancelled if an error comes up while initializing game
+        if (_game.isCancelled()) {
+            cancelGameDueToError();
+        }
     }
 
-
-    public final boolean isVisibleToUser(String username) {
-        return !_showInGameHall || _playersPlaying.contains(username);
-    }
 
     public final boolean isDestroyed() {
         return _destroyed;
@@ -96,16 +101,12 @@ public class CardGameMediator {
         return _game;
     }
 
-    public final boolean isAllowSpectators() {
-        return _allowSpectators;
-    }
-
-    public final void setPlayerAutoPassSettings(User user, Set<Phase> phases) {
-        String userId = user.getName();
-        if (_playersPlaying.contains(userId)) {
-            _game.setPlayerAutoPassSettings(userId, phases);
+    public final void setPlayerAutoPassSettings(String userName, Set<Phase> phases) {
+        if (_playersPlaying.contains(userName)) {
+            _autoPassConfiguration.put(userName, phases);
         }
     }
+
 
     final void sendMessageToPlayers(String message) {
         _game.sendMessage(message);
@@ -120,30 +121,23 @@ public class CardGameMediator {
     }
 
     public final String produceCardInfo(int cardId) throws JsonProcessingException, HttpProcessingException {
-        _readLock.lock();
-        try {
+        try (CloseableReadLock ignored = _readLock.open()) {
             PhysicalCard card = _game.getCardFromCardId(cardId);
             return CardInfoSerializer.serialize(_game, card);
         } catch (CardNotFoundException e) {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND, e.getMessage());
-        } finally {
-            _readLock.unlock();
         }
     }
 
     public final void startGame() {
-        _writeLock.lock();
-        try {
-            getGame().startGame();
+        try (CloseableWriteLock ignored = _writeLock.open()) {
+            _game.startGame();
             startClocksForUsersPendingDecision();
-        } finally {
-            _writeLock.unlock();
         }
     }
 
     public final void cleanup() {
-        _writeLock.lock();
-        try {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             long currentTime = System.currentTimeMillis();
             Map<String, GameCommunicationChannel> channelsCopy = new HashMap<>(_communicationChannels);
             for (Map.Entry<String, GameCommunicationChannel> playerChannels : channelsCopy.entrySet()) {
@@ -178,41 +172,50 @@ public class CardGameMediator {
                     }
                 }
             }
-        } finally {
-            _writeLock.unlock();
         }
     }
 
-    public final void concede(User player) {
-        String playerId = player.getName();
-        _writeLock.lock();
-        try {
-            if (getGame().getWinnerPlayerId() == null && _playersPlaying.contains(playerId)) {
-                addTimeSpentOnDecisionToUserClock(playerId);
-                getGame().playerLost(playerId, "Concession");
+    public final void concede(String userName) {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
+            if (getGame().getWinnerPlayerId() == null && _playersPlaying.contains(userName)) {
+                addTimeSpentOnDecisionToUserClock(userName);
+                getGame().playerLost(userName, "Concession");
             }
-        } finally {
-            _writeLock.unlock();
         }
     }
 
-    public final void cancel(User player) {
-
-        String playerId = player.getName();
-        _writeLock.lock();
-        try {
-            if (_playersPlaying.contains(playerId))
-                _game.requestCancel(playerId);
-        } finally {
-            _writeLock.unlock();
+    public final void cancel(String userName) {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
+            if (_playersPlaying.contains(userName)) {
+                _requestedCancel.add(userName);
+                if (_requestedCancel.size() == _playersPlaying.size() && !isFinished()) {
+                    _game.setCancelled(true);
+                    _game.sendMessage("Game was cancelled, as requested by all parties.");
+                    for (GameResultListener gameResultListener : _gameResultListeners)
+                        gameResultListener.gameCancelled();
+                    _game.setFinished(true);
+                }
+            }
         }
     }
 
-    public final synchronized void playerAnswered(User player, int channelNumber, int decisionId, String answer)
+    public void cancelGameDueToError() {
+        if (!isFinished()) {
+            _game.setCancelled(true);
+            _game.sendMessage(
+                        "Game was cancelled due to an error, the error was logged and will be fixed soon.");
+            _game.sendMessage(
+                        "Please post the replay game link and description of what happened on the tech support forum.");
+        }
+        for (GameResultListener gameResultListener : _gameResultListeners)
+            gameResultListener.gameCancelled();
+        _game.setFinished(true);
+    }
+
+
+    public final synchronized void playerAnswered(String playerName, int channelNumber, int decisionId, String answer)
             throws HttpProcessingException {
-        _writeLock.lock();
-        try {
-            String playerName = player.getName();
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             GameStateListener communicationChannel = _communicationChannels.get(playerName);
             if (communicationChannel == null)
                 throw new SubscriptionExpiredException();
@@ -225,23 +228,25 @@ public class CardGameMediator {
                     _game.carryOutPendingActionsUntilDecisionNeeded();
                     startClocksForUsersPendingDecision();
                 }
-            } catch (InvalidGameOperationException | RuntimeException runtimeException) {
-                LOGGER.error(ERROR_MESSAGE, runtimeException);
+            } catch (InvalidGameOperationException | RuntimeException exp) {
+                LOGGER.error(ERROR_MESSAGE, exp);
+                cancelGameDueToError();
             }
-        } finally {
-            _writeLock.unlock();
         }
+    }
+
+    private boolean userCannotAccessGameState(User player) {
+        return !player.hasType(User.Type.ADMIN) && (!_allowSpectators || !_playersPlaying.contains(player.getName()));
     }
 
 
     public final GameCommunicationChannel getCommunicationChannel(User player, int channelNumber)
             throws HttpProcessingException {
         String playerName = player.getName();
-        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
+        if (userCannotAccessGameState(player))
             throw new PrivateInformationException();
 
-        _readLock.lock();
-        try {
+        try (CloseableReadLock ignored = _readLock.open()) {
             GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
             if (communicationChannel == null)
                 throw new SubscriptionExpiredException();
@@ -250,52 +255,42 @@ public class CardGameMediator {
                 return communicationChannel;
             else
                 throw new SubscriptionConflictException();
-
-        } finally {
-            _readLock.unlock();
         }
     }
 
 
     public final String serializeEventsToString(GameCommunicationChannel communicationChannel)
             throws IOException {
-        _readLock.lock();
-        try {
+        try (CloseableReadLock ignored = _readLock.open()) {
             ObjectMapper jsonMapper = new ObjectMapper();
             return jsonMapper.writeValueAsString(communicationChannel);
         } catch(IOException exp) {
             getGame().sendErrorMessage("Unable to serialize game events");
             throw new IOException(exp.getMessage());
-        } finally {
-            _readLock.unlock();
         }
     }
 
     public final String signupUserForGameAndGetGameState(User player)
             throws PrivateInformationException, JsonProcessingException {
         String playerName = player.getName();
-        if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
+        if (userCannotAccessGameState(player))
             throw new PrivateInformationException();
         GameCommunicationChannel channel;
         int channelNumber;
 
-        _readLock.lock();
-        try {
+        try (CloseableReadLock ignored = _readLock.open()) {
             channelNumber = _channelNextIndex;
             _channelNextIndex++;
-
             channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
             _communicationChannels.put(playerName, channel);
             _game.addGameStateListener(channel);
             ObjectMapper mapper = new ObjectMapper();
-            String jsonString = getGame().getGameState().serializeForPlayer(player.getName());
+            String jsonString = _game.getGameState().serializeForPlayer(player.getName());
             JsonNode gameState = mapper.readTree(jsonString);
             Map<String, Object> result = new HashMap<>();
             result.put("channelNumber", channelNumber);
             result.put("gameState", gameState);
             return mapper.writeValueAsString(result);
-        } finally {
-            _readLock.unlock();
         }
     }
 
@@ -342,28 +337,21 @@ public class CardGameMediator {
     }
 
     public String serializeCompleteGameState() throws JsonProcessingException {
-        _readLock.lock();
-        try {
-            GameState gameState = getGame().getGameState();
-            return gameState.serializeComplete();
-        } finally {
-            _readLock.unlock();
+        try (CloseableReadLock ignored = _readLock.open()) {
+            return _game.serializeCompleteGameState();
         }
     }
 
     public String serializeGameStateForPlayer(String playerId) throws JsonProcessingException {
-        _readLock.lock();
-        try {
+        try (CloseableReadLock ignored = _readLock.open()) {
             GameState gameState = getGame().getGameState();
             return gameState.serializeForPlayer(playerId);
-        } finally {
-            _readLock.unlock();
         }
     }
 
     public void initialize(GameRecorder gameRecorder, String tournamentName, List<GameResultListener> listeners) {
         GameFormat gameFormat = _game.getFormat();
-        sendMessageToPlayers("You're starting a game of " + gameFormat.getName());
+        sendMessageToPlayers("You're starting a game of " + gameFormat);
         StringBuilder players = new StringBuilder();
         Map<String, CardDeck> decks =  new HashMap<>();
 
@@ -379,9 +367,20 @@ public class CardGameMediator {
         final var gameRecordingInProgress = gameRecorder.recordGame(this, gameFormat, tournamentName, decks);
 
         listeners.add(new RecordingGameResultListener(_playersPlaying, gameRecordingInProgress));
+        _gameResultListeners.addAll(listeners);
+    }
 
-        for (GameResultListener listener : listeners) {
-            _game.addGameResultListener(listener);
+    public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
+        for (GameResultListener listener : _gameResultListeners) {
+            listener.gameFinished(winnerPlayerId, winReason, loserReasons);
         }
+    }
+
+    public boolean isFinished() {
+        return _game.isFinished();
+    }
+
+    public String getStatus() {
+        return _game.getStatus();
     }
 }

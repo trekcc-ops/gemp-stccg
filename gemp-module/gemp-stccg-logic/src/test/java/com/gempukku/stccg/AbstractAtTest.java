@@ -45,16 +45,16 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected MissionCard _mission;
     protected MissionCard _rogueComet;
 
-    protected void initializeSimple1EGame(int deckSize) {
+    protected void initializeSimple1EGame(int deckSize) throws InvalidGameOperationException {
         setupSimple1EGame(deckSize, "101_104"); // fill the deck full of Fed Outposts
         _game.startGame();
     }
 
-    protected void setupSimple1EGame(int deckSize) {
+    protected void setupSimple1EGame(int deckSize) throws InvalidGameOperationException {
         setupSimple1EGame(deckSize, "991_001"); // dummy 1E dilemmas
     }
 
-    protected void setupSimple1EGame(int deckSize, String blueprintId) {
+    protected void setupSimple1EGame(int deckSize, String blueprintId) throws InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
         GameFormat format = formatLibrary.get("debug1e");
         CardDeck testDeck = new CardDeck("Test", format);
@@ -65,11 +65,10 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-
         _game = new ST1EGame(format, decks, _cardLibrary, GameTimer.GLACIAL_TIMER);
     }
 
-    protected void initializeSimple1EGameWithSharedMission(int deckSize) {
+    protected void initializeSimple1EGameWithSharedMission(int deckSize) throws InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
         GameFormat format = formatLibrary.get("debug1e");
         CardDeck testDeck = new CardDeck("Test", format);
@@ -87,7 +86,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
 
-    protected void initializeSimple1EGame(int deckSize, String blueprintId) {
+    protected void initializeSimple1EGame(int deckSize, String blueprintId) throws InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
         GameFormat format = formatLibrary.get("debug1e");
         CardDeck testDeck = new CardDeck("Test", format);
@@ -104,7 +103,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
 
-    protected void initializeSimple1EGameWithDoorways(int deckSize) {
+    protected void initializeSimple1EGameWithDoorways(int deckSize) throws InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
         GameFormat format = formatLibrary.get("st1emoderncomplete");
         CardDeck testDeck = new CardDeck("Test", format);
@@ -271,7 +270,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         return decks;
     }
 
-    protected void initializeIntroductoryTwoPlayerGame() {
+    protected void initializeIntroductoryTwoPlayerGame() throws InvalidGameOperationException {
         Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
@@ -301,7 +300,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
 
-    protected void initializeGameToTestAMS() {
+    protected void initializeGameToTestAMS() throws InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.get("debug1e");
@@ -329,7 +328,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.startGame();
     }
 
-    protected void initializeGameToTestMissionAttempt() {
+    protected void initializeGameToTestMissionAttempt() throws InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.get("debug1e");
@@ -361,7 +360,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         return _game.addCardToGame(blueprintId, playerId);
     }
 
-    protected void initializeQuickMissionAttemptWithRisk() {
+    protected void initializeQuickMissionAttemptWithRisk() throws InvalidGameOperationException {
         Map<String, CardDeck> decks = new HashMap<>();
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
@@ -391,7 +390,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
 
-    protected void initializeGameWithAttentionAllHands() {
+    protected void initializeGameWithAttentionAllHands() throws InvalidGameOperationException {
         Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
         decks.get(P1).addCard(SubDeck.DRAW_DECK, "155_021"); // Attention All Hands
         decks.get(P2).addCard(SubDeck.DRAW_DECK, "155_021");
@@ -501,7 +500,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void removeDilemma(PhysicalCard seedCard, MissionLocation mission) throws DecisionResultInvalidException,
-            InvalidGameLogicException, InvalidGameOperationException {
+            InvalidGameOperationException {
         String playerName = seedCard.getOwnerName();
         AwaitingDecision missionSelection = _game.getAwaitingDecision(playerName);
         if (missionSelection instanceof ActionSelectionDecision actionDecision) {

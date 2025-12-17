@@ -3,9 +3,7 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -14,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ST1EGameStateTest extends AbstractAtTest {
 
     @Test
-    public void seedFacilityTest() throws PlayerNotFoundException, InvalidGameLogicException {
+    public void seedFacilityTest() throws Exception {
         initializeSimple1EGame(30);
         ST1EGameState gameState = _game.getGameState();
 

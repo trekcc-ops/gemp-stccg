@@ -23,8 +23,8 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
 
     private enum Progress { playerSelected }
 
-    public ActivatePoisonTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, ActionContext actionContext)
-            throws InvalidGameLogicException, PlayerNotFoundException {
+    public ActivatePoisonTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                            ActionContext actionContext) {
         super(cardGame, actionContext, performingCard, Progress.values());
     }
 

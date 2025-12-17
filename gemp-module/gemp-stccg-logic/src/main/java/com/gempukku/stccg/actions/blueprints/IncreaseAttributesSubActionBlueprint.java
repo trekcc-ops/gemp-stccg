@@ -11,7 +11,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +45,9 @@ public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint 
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context)
-            throws InvalidGameLogicException {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context) {
         List<Action> result = new ArrayList<>();
-        PhysicalCard performingCard = context.getPerformingCard(cardGame);
+        PhysicalCard performingCard = context.card();
         for (String playerName : cardGame.getAllPlayerIds()) {
             if (performingCard.isControlledBy(playerName)) {
                 ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);

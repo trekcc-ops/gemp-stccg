@@ -33,6 +33,11 @@ public class TribblesMultiDiscardActionBroken extends ActionyAction implements T
         _cardTargets.add(cardTarget);
     }
 
+    public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard,
+                                            String performingPlayerName, SelectVisibleCardAction selectAction) {
+        this(cardGame, performingCard, performingPlayerName, new SelectCardsResolver(selectAction));
+    }
+
     public TribblesMultiDiscardActionBroken(DefaultGame cardGame, PhysicalCard performingCard, Player performingPlayer,
                                             SelectVisibleCardAction selectAction) {
         this(cardGame, performingCard, performingPlayer.getPlayerId(), new SelectCardsResolver(selectAction));

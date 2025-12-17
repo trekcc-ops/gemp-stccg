@@ -97,6 +97,7 @@ public class GameServer extends AbstractServer {
         _chatServer.createChatRoom(chatRoomName, false, allowedUsers, TIMEOUT_PERIOD, isCompetitive);
     }
 
+
     public final void createNewGame(String tournamentName, final GameParticipant[] participants,
                                     GameTable gameTable, CardBlueprintLibrary blueprintLibrary,
                                     List<GameResultListener> listeners) {
@@ -107,9 +108,9 @@ public class GameServer extends AbstractServer {
             final String gameId = String.valueOf(_nextGameId);
             GameSettings gameSettings = gameTable.getGameSettings();
             listeners.add(new FinishedGamesResultListener(this, gameId));
-
             CardGameMediator cardGameMediator = new CardGameMediator(gameId, participants, blueprintLibrary,
-                    gameSettings);
+                    gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
+                    gameSettings.getGameType());
             createGameChatRoom(gameSettings, participants, gameId);
             cardGameMediator.initialize(_gameRecorder, tournamentName, listeners);
             _runningGames.put(gameId, cardGameMediator);
@@ -136,13 +137,13 @@ public class GameServer extends AbstractServer {
 
     public void cancelGame(User user, String gameId) throws HttpProcessingException {
         CardGameMediator gameMediator = getGameById(gameId);
-        gameMediator.cancel(user);
+        gameMediator.cancel(user.getName());
     }
 
     public void setPlayerAutoPassSettings(User resourceOwner, String gameId, Set<Phase> autoPassPhases)
             throws HttpProcessingException {
         CardGameMediator gameMediator = getGameById(gameId);
-        gameMediator.setPlayerAutoPassSettings(resourceOwner, autoPassPhases);
+        gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), autoPassPhases);
     }
 
     public void logGameEndTime(String gameId) {

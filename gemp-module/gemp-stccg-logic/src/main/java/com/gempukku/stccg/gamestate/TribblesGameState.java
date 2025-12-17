@@ -11,6 +11,7 @@ import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
@@ -25,8 +26,8 @@ public final class TribblesGameState extends GameState {
     private int _currentRound;
     private boolean _currentRoundIsOver;
 
-    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, GameTimer gameTimer) {
-        super(game, playerIds, gameTimer);
+    public TribblesGameState(Iterable<String> playerIds, GameTimer gameTimer) throws InvalidGameOperationException {
+        super(playerIds, gameTimer);
         _currentRound = 0;
         _chainBroken = false;
         setNextTribbleInSequence(1);
@@ -34,8 +35,9 @@ public final class TribblesGameState extends GameState {
             _playPiles.put(player, new LinkedList<>());
     }
 
-    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, Map<String, PlayerClock> clocks) {
-        super(game, playerIds, clocks);
+    public TribblesGameState(Iterable<String> playerIds, Map<String, PlayerClock> clocks)
+            throws InvalidGameOperationException {
+        super(playerIds, clocks);
         _currentRound = 0;
         _chainBroken = false;
         setNextTribbleInSequence(1);

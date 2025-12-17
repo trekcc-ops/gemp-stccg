@@ -2,12 +2,10 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -107,8 +105,7 @@ public class ActionsEnvironment {
         return _createdActionMap;
     }
 
-    public void carryOutPendingActions(DefaultGame cardGame) throws PlayerNotFoundException,
-            InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
+    public void carryOutPendingActions(DefaultGame cardGame) throws InvalidGameOperationException {
         if (hasNoActionsInProgress())
             try {
                 cardGame.continueCurrentProcess();

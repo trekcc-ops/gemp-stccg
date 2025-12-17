@@ -10,7 +10,6 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,9 +21,8 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction implements Di
     private final boolean _forced;
 
     public AllPlayersDiscardFromHandAction(DefaultGame game, Action action, PhysicalCard performingCard,
-                                           boolean allPlayersMustBeAble, boolean forced)
-            throws PlayerNotFoundException {
-        super(game, game.getPlayer(action.getPerformingPlayerId()), ActionType.ALL_PLAYERS_DISCARD);
+                                           boolean allPlayersMustBeAble, boolean forced) {
+        super(game, action.getPerformingPlayerId(), ActionType.ALL_PLAYERS_DISCARD);
         _performingCard = performingCard;
         _allPlayersMustBeAble = allPlayersMustBeAble;
         _forced = forced;

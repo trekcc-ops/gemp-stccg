@@ -11,7 +11,9 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InappropriateZoneException;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -121,7 +123,7 @@ public class Player {
         _currentScore = score;
     }
 
-    public void addCardGroup(Zone zone) throws InvalidGameLogicException {
+    public void addCardGroup(Zone zone) throws InvalidGameOperationException {
         PhysicalCardGroup<PhysicalCard> group = switch(zone) {
             case SEED_DECK -> {
                 _seedDeck = new PhysicalCardGroup<>();
@@ -141,7 +143,7 @@ public class Player {
                 yield _missionsPile;
             }
             case PLAY_PILE, REMOVED -> new CardPile<>();
-            default -> throw new InvalidGameLogicException("Unable to create a card group for zone " + zone);
+            default -> throw new InappropriateZoneException("Unable to create a card group for zone " + zone);
         };
         _cardGroups.put(zone, group);
     }
@@ -159,15 +161,6 @@ public class Player {
         return _cardGroups.get(zone);
     }
 
-
-    public void addCardToGroup(Zone zone, PhysicalCard card) throws InvalidGameLogicException {
-        PhysicalCardGroup<PhysicalCard> group = _cardGroups.get(zone);
-        if (group != null) {
-            group.addCard(card);
-        } else {
-            throw new InvalidGameLogicException("Cannot add card to zone " + zone);
-        }
-    }
 
     public List<PhysicalCard> getCardsInGroup(Zone zone) {
         PhysicalCardGroup<PhysicalCard> group = _cardGroups.get(zone);

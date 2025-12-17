@@ -18,6 +18,7 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.Player;
@@ -84,33 +85,25 @@ public class ST1EGameState extends GameState {
 
 
 
-    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, Map<String, PlayerClock> clocks) {
-        super(game, playerIds, clocks);
+    public ST1EGameState(Iterable<String> playerIds, Map<String, PlayerClock> clocks)
+            throws InvalidGameOperationException {
+        super(playerIds, clocks);
         _currentPhase = Phase.SEED_DOORWAY;
-        try {
-            for (Player player : _players) {
-                player.addCardGroup(Zone.CORE);
-                player.addCardGroup(Zone.MISSIONS_PILE);
-                player.addCardGroup(Zone.SEED_DECK);
-            }
-        } catch(InvalidGameLogicException exp) {
-            game.sendErrorMessage(exp);
-            game.cancelGame();
+        for (Player player : _players) {
+            player.addCardGroup(Zone.CORE);
+            player.addCardGroup(Zone.MISSIONS_PILE);
+            player.addCardGroup(Zone.SEED_DECK);
         }
     }
 
-    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, GameTimer gameTimer) {
-        super(game, playerIds, gameTimer);
+    public ST1EGameState(Iterable<String> playerIds, GameTimer gameTimer)
+            throws InvalidGameOperationException {
+        super(playerIds, gameTimer);
         _currentPhase = Phase.SEED_DOORWAY;
-        try {
-            for (Player player : _players) {
-                player.addCardGroup(Zone.CORE);
-                player.addCardGroup(Zone.MISSIONS_PILE);
-                player.addCardGroup(Zone.SEED_DECK);
-            }
-        } catch(InvalidGameLogicException exp) {
-            game.sendErrorMessage(exp);
-            game.cancelGame();
+        for (Player player : _players) {
+            player.addCardGroup(Zone.CORE);
+            player.addCardGroup(Zone.MISSIONS_PILE);
+            player.addCardGroup(Zone.SEED_DECK);
         }
     }
 

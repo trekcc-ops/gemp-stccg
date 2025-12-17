@@ -3,13 +3,11 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -22,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ShipStaffingTest extends AbstractAtTest {
     
     @Test
-    public void shipStaffingTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
+    public void shipStaffingTest() throws DecisionResultInvalidException,
+            CardNotFoundException, InvalidGameOperationException {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 

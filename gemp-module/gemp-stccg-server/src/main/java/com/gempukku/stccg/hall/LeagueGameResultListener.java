@@ -1,5 +1,6 @@
 package com.gempukku.stccg.hall;
 
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.game.GameResultListener;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
@@ -18,6 +19,12 @@ public class LeagueGameResultListener implements GameResultListener {
         _seriesData = seriesData;
         _leagueService = leagueService;
     }
+
+    public LeagueGameResultListener(GameSettings gameSettings, ServerObjects serverObjects) {
+        this(gameSettings.getLeague(), gameSettings.getSeriesData(), serverObjects.getLeagueService());
+    }
+
+
     @Override
     public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
         _leagueService.reportLeagueGameResult(

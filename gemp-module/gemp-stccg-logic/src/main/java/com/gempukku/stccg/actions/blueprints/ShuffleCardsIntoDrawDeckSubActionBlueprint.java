@@ -10,7 +10,6 @@ import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.player.YouPlayerSource;
@@ -33,16 +32,11 @@ public class ShuffleCardsIntoDrawDeckSubActionBlueprint implements SubActionBlue
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
         String performingPlayerName = _performingPlayerSource.getPlayerId(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
-        return List.of(new ShuffleCardsIntoDrawDeckAction(cardGame, context.getPerformingCard(cardGame),
+        return List.of(new ShuffleCardsIntoDrawDeckAction(cardGame, context.card(),
                 performingPlayerName, cardTarget));
     }
 
-    @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext context) {
-        return true;
-    }
 }

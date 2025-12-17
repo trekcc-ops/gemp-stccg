@@ -1,18 +1,13 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -27,8 +22,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
     // Unit tests for card definition of Ferengi Attack
 
     @Test
-    public void ferengiAttackFailedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
+    public void ferengiAttackFailedTest() throws Exception {
         initializeQuickMissionAttempt("Excavation");
 
         ST1EPhysicalCard ferengiAttack =

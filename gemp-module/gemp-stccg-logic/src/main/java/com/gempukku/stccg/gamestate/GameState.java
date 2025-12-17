@@ -17,7 +17,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.LimitCounter;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -59,41 +59,33 @@ public abstract class GameState {
     private int nextDecisionId = 1;
 
 
-    protected GameState(DefaultGame game, Iterable<String> playerIds, GameTimer gameTimer) {
+    protected GameState(Iterable<String> playerIds, GameTimer gameTimer)
+            throws InvalidGameOperationException {
         _playerClocks = new HashMap<>();
         Collection<Zone> cardGroupList = List.of(Zone.DRAW_DECK, Zone.HAND, Zone.DISCARD, Zone.REMOVED);
 
-        try {
-            for (String playerId : playerIds) {
-                Player player = new Player(playerId);
-                for (Zone zone : cardGroupList) {
-                    player.addCardGroup(zone);
-                }
-                _players.add(player);
-                _playerClocks.put(playerId, new PlayerClock(playerId, gameTimer));
+        for (String playerId : playerIds) {
+            Player player = new Player(playerId);
+            for (Zone zone : cardGroupList) {
+                player.addCardGroup(zone);
             }
-        } catch(InvalidGameLogicException exp) {
-            game.sendErrorMessage(exp);
-            game.cancelGame();
+            _players.add(player);
+            _playerClocks.put(playerId, new PlayerClock(playerId, gameTimer));
         }
         _actionLimitCollection = new ActionLimitCollection();
     }
 
 
-    protected GameState(DefaultGame game, Iterable<String> playerIds, Map<String, PlayerClock> clocks) {
+    protected GameState(Iterable<String> playerIds, Map<String, PlayerClock> clocks)
+            throws InvalidGameOperationException {
         Collection<Zone> cardGroupList = List.of(Zone.DRAW_DECK, Zone.HAND, Zone.DISCARD, Zone.REMOVED);
 
-        try {
-            for (String playerId : playerIds) {
-                Player player = new Player(playerId);
-                for (Zone zone : cardGroupList) {
-                    player.addCardGroup(zone);
-                }
-                _players.add(player);
+        for (String playerId : playerIds) {
+            Player player = new Player(playerId);
+            for (Zone zone : cardGroupList) {
+                player.addCardGroup(zone);
             }
-        } catch(InvalidGameLogicException exp) {
-            game.sendErrorMessage(exp);
-            game.cancelGame();
+            _players.add(player);
         }
         _actionLimitCollection = new ActionLimitCollection();
         _playerClocks = clocks;
@@ -373,7 +365,7 @@ public abstract class GameState {
         }
     }
 
-    public void continueCurrentProcess(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
+    public void continueCurrentProcess(DefaultGame cardGame) throws InvalidGameOperationException {
         _currentGameProcess.continueProcess(cardGame);
     }
 

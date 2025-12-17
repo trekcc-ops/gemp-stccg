@@ -11,7 +11,6 @@ import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
     }
 
     @Test
-    public void makingDecisionsTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException {
+    public void makingDecisionsTest() throws DecisionResultInvalidException, InvalidGameOperationException {
         initializeGameWithAttentionAllHands();
         autoSeedMissions();
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();

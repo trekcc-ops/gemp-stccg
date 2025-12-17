@@ -6,12 +6,14 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.*;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerResolver;
+import com.gempukku.stccg.player.PlayerSource;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,9 +40,8 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         } else {
             targetPlayerId = context.getPerformingPlayerId();
         }
-        PhysicalCard performingCard = context.getPerformingCard(cardGame);
         final int count = (int) _countSource.evaluateExpression(cardGame, context);
-        return List.of(new DrawCardsAction(performingCard, targetPlayerId, count, cardGame));
+        return List.of(new DrawCardsAction(context.card(), targetPlayerId, count, cardGame));
     }
 
     @Override

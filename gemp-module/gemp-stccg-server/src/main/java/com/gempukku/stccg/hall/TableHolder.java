@@ -17,7 +17,6 @@ class TableHolder {
     private static final Logger LOGGER = LogManager.getLogger(TableHolder.class);
     private final LeagueService leagueService;
     private final IgnoreDAO ignoreDAO;
-
     private final Map<String, GameTable> awaitingTables = new LinkedHashMap<>();
     private final Map<String, GameTable> runningTables = new LinkedHashMap<>();
 
@@ -36,22 +35,28 @@ class TableHolder {
         awaitingTables.clear();
     }
 
+    private List<GameTable> getActiveLeagueTablesForUser(String userName, League league) {
+        List<GameTable> result = new ArrayList<>();
+        for (GameTable awaitingTable : awaitingTables.values()) {
+            if (awaitingTable.playerIsPlayingForLeague(userName, league)) {
+                result.add(awaitingTable);
+            }
+        }
+
+        for (GameTable runningTable : runningTables.values()) {
+            if (runningTable.playerIsPlayingForLeague(userName, league)) {
+                result.add(runningTable);
+            }
+        }
+        return result;
+    }
+
     public void validatePlayerForLeague(String userName, GameSettings gameSettings) throws HallException {
         final League league = gameSettings.getLeague();
         if (league != null) {
-            for (GameTable awaitingTable : awaitingTables.values()) {
-                if (league.equals(awaitingTable.getGameSettings().getLeague())
-                        && awaitingTable.hasPlayer(userName)) {
-                    throw new HallException("You can't play in multiple league games at the same time");
-                }
-            }
-
-            for (GameTable runningTable : runningTables.values()) {
-                if (league.equals(runningTable.getGameSettings().getLeague())) {
-                    CardGameMediator game = runningTable.getMediator();
-                    if (game != null && !game.getGame().isFinished() && game.getPlayersPlaying().contains(userName))
-                        throw new HallException("You can't play in multiple league games at the same time");
-                }
+            List<GameTable> activeLeagueTables = getActiveLeagueTablesForUser(userName, league);
+            if (!activeLeagueTables.isEmpty()) {
+                throw new HallException("You can't play in multiple league games at the same time");
             }
 
             if (!leagueService.isPlayerInLeague(league, userName))
@@ -62,27 +67,10 @@ class TableHolder {
         }
     }
 
-    private void validateOpponentForLeague(User user, GameTable awaitingTable)
-            throws HallException {
-        GameSettings gameSettings = awaitingTable.getGameSettings();
-        League league = gameSettings.getLeague();
-        if (league != null) {
-            if (!awaitingTable.getPlayerNames().isEmpty() &&
-                    !leagueService.canPlayRankedGameAgainst(league, gameSettings.getSeriesData(),
-                            awaitingTable.getPlayerNames().getFirst(), user.getName()))
-                throw new HallException(
-                        "You have already played ranked league game against this player in that series");
-        }
-    }
-
     public final GameTable createTable(GameSettings gameSettings, GameParticipant... participants) {
         int tableId = _nextTableId;
         _nextTableId++;
-        GameTable table = new GameTable(tableId, gameSettings);
-        for (GameParticipant participant : participants) {
-            table.addPlayer(participant);
-        }
-
+        GameTable table = new GameTable(tableId, gameSettings, participants);
         awaitingTables.put(String.valueOf(table.getTableId()), table);
         runTableIfFull(table);
         return table;
@@ -96,13 +84,16 @@ class TableHolder {
             table.setAsPlaying();
 
             // Leave all other tables players are waiting on
-            for (GameParticipant awaitingTablePlayer : table.getPlayers())
+            for (GameParticipant awaitingTablePlayer : table.getPlayers()) {
                 leaveAwaitingTablesForPlayer(awaitingTablePlayer.getPlayerId());
+            }
         }
     }
 
-    public final GameTable joinTable(String tableId, User player, CardDeck deck) throws HallException {
+    public final void joinTable(String tableId, User player, CardDeck deck, ServerObjects serverObjects,
+                                     HallServer hallServer) throws HallException {
         final GameTable awaitingTable = awaitingTables.get(tableId);
+        String userName = player.getName();
 
         if (awaitingTable == null || awaitingTable.wasGameStarted())
             throw new HallException("Table is already taken or was removed");
@@ -110,12 +101,12 @@ class TableHolder {
         if (awaitingTable.hasPlayer(player))
             throw new HallException("You can't play against yourself");
 
-        validatePlayerForLeague(player.getName(), awaitingTable.getGameSettings());
-        validateOpponentForLeague(player, awaitingTable);
-
-        awaitingTable.addPlayer(new GameParticipant(player.getName(), deck));
+        validatePlayerForLeague(userName, awaitingTable.getGameSettings());
+        awaitingTable.validateOpponentForLeague(userName, leagueService);
+        awaitingTable.addPlayer(new GameParticipant(userName, deck));
         runTableIfFull(awaitingTable);
-        return awaitingTable;
+        awaitingTable.createGameIfFull(serverObjects);
+        hallServer.hallChanged();
     }
 
 
@@ -129,15 +120,13 @@ class TableHolder {
         throw new HallException("Table was already removed");
     }
 
-    public final boolean leaveAwaitingTable(User player, String tableId) {
+    public final void leaveAwaitingTable(User player, String tableId) {
         GameTable table = awaitingTables.get(tableId);
-        if (table != null && table.hasPlayer(player.getName())) {
-            boolean empty = table.removePlayer(player.getName());
-            if (empty)
-                awaitingTables.remove(tableId);
-            return true;
+        if (table != null) {
+            table.removePlayer(player.getName());
+            if (table.isEmpty())
+                awaitingTables.remove(String.valueOf(table.getTableId()));
         }
-        return false;
     }
 
     public boolean leaveAwaitingTablesForPlayer(String playerId) {
@@ -145,9 +134,10 @@ class TableHolder {
         final Iterator<Map.Entry<String, GameTable>> iterator = awaitingTables.entrySet().iterator();
         while (iterator.hasNext()) {
             final Map.Entry<String, GameTable> table = iterator.next();
-            if (table.getValue().hasPlayer(playerId)) {
-                boolean empty = table.getValue().removePlayer(playerId);
-                if (empty)
+            GameTable gameTable = table.getValue();
+            if (gameTable.hasPlayer(playerId)) {
+                gameTable.removePlayer(playerId);
+                if (gameTable.isEmpty())
                     iterator.remove();
                 result = true;
             }
@@ -156,7 +146,7 @@ class TableHolder {
     }
 
     final void processTables(User player, Set<String> playedGamesOnServer,
-                             Map<String, Map<String, String>> tablesOnServer) {
+                             Map<String, GameTableView> tablesOnServer) {
 
         boolean isAdmin = player.isAdmin();
 
@@ -164,13 +154,9 @@ class TableHolder {
         for (Map.Entry<String, GameTable> tableInformation : awaitingTables.entrySet()) {
             final GameTable table = tableInformation.getValue();
             String tableId = tableInformation.getKey();
-
-            List<String> players = (table.getGameSettings().getLeague() != null) ?
-                    Collections.emptyList() : table.getPlayerNames();
-
+            List<String> players = (table.isForLeague()) ? Collections.emptyList() : table.getPlayerNames();
             if (isAdmin || isNoIgnores(players, player.getName())) {
-                Map<String, String> serializedTable = table.serializeForUser(player);
-                tablesOnServer.put(tableId, serializedTable);
+                tablesOnServer.put(tableId, new GameTableView(table, player));
             }
         }
 
@@ -181,15 +167,15 @@ class TableHolder {
             final GameTable runningTable = runningGame.getValue();
             CardGameMediator cardGameMediator = runningTable.getMediator();
             if (cardGameMediator != null) {
-                if (isAdmin || (cardGameMediator.isVisibleToUser(player.getName()) &&
-                        isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))) {
-                    if (cardGameMediator.getGame().isFinished()) {
+                boolean isVisibleToUser = !runningTable.getGameSettings().isHiddenGame() || runningTable.hasPlayer(player);
+                if (isAdmin || (isVisibleToUser &&
+                        isNoIgnores(runningTable.getPlayerNames(), player.getName()))) {
+                    if (runningTable.isGameFinished()) {
                         runningTable.setAsFinished();
                         finishedTables.put(runningGame.getKey(), runningTable);
                     } else {
-                        Map<String, String> serializedTable = runningTable.serializeForUser(player);
-                        tablesOnServer.put(runningGame.getKey(), serializedTable);
-                        if (cardGameMediator.getPlayersPlaying().contains(player.getName()))
+                        tablesOnServer.put(runningGame.getKey(), new GameTableView(runningTable, player));
+                        if (runningTable.hasPlayer(player))
                             playedGamesOnServer.add(cardGameMediator.getGameId());
                     }
                 }
@@ -201,9 +187,8 @@ class TableHolder {
             final GameTable runningTable = nonPlayingGame.getValue();
             CardGameMediator cardGameMediator = runningTable.getMediator();
             if (cardGameMediator != null) {
-                if (isAdmin || isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName())) {
-                    Map<String, String> serializedTable = runningTable.serializeForUser(player);
-                    tablesOnServer.put(nonPlayingGame.getKey(), serializedTable);
+                if (isAdmin || isNoIgnores(runningTable.getPlayerNames(), player.getName())) {
+                    tablesOnServer.put(nonPlayingGame.getKey(), new GameTableView(runningTable, player));
                 }
             }
         }

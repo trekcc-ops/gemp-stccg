@@ -14,8 +14,8 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
 
     private enum Progress { playerSelected }
-    public ActivateDrawTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, ActionContext actionContext)
-            throws InvalidGameLogicException, PlayerNotFoundException {
+    public ActivateDrawTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                          ActionContext actionContext) {
         super(cardGame, actionContext, performingCard, Progress.values());
     }
 

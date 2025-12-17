@@ -1,10 +1,14 @@
 package com.gempukku.stccg.hall;
 
+import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
+import com.gempukku.stccg.game.GameResultListener;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.League;
-import org.apache.commons.lang3.StringUtils;
+import com.gempukku.stccg.league.LeagueService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,16 +25,19 @@ public class GameTable {
     private final int capacity;
     private TableStatus _tableStatus;
 
-    private enum TableStatus {
+    enum TableStatus {
         WAITING, PLAYING, FINISHED
     }
 
-    public GameTable(int tableId, GameSettings gameSettings) {
+    public GameTable(int tableId, GameSettings gameSettings, GameParticipant... participants) {
         this.gameSettings = gameSettings;
         this.capacity = 2; // manually change Tribbles player limit
         _tableId = tableId;
         _tableStatus = TableStatus.WAITING;
         LOGGER.debug("Capacity of game: {}", this.capacity);
+        for (GameParticipant participant : participants) {
+            addPlayer(participant);
+        }
     }
 
     public final void startGame(CardGameMediator cardGameMediator) {
@@ -51,8 +58,11 @@ public class GameTable {
         players.put(player.getPlayerId(), player);
     }
 
-    public final boolean removePlayer(String playerId) {
+    public final void removePlayer(String playerId) {
         players.remove(playerId);
+    }
+
+    public final boolean isEmpty() {
         return players.isEmpty();
     }
 
@@ -73,55 +83,10 @@ public class GameTable {
         return gameSettings;
     }
 
-    Map<String, String> serializeForUser(User user) {
-
-        String gameId = (_tableStatus == TableStatus.WAITING) ? null : cardGameMediator.getGameId();
-        String statusDescription = (_tableStatus == TableStatus.WAITING) ?
-                "Waiting" : cardGameMediator.getGame().getStatus();
-
-        League league = gameSettings.getLeague();
-        String tournamentName = (league != null) ?
-                league.getName() + " - " + gameSettings.getSeriesData().getName() :
-                "Casual - " + gameSettings.getTimeSettings().name();
-
-        List<String> playerIds;
-        boolean isPlaying;
-
-        if (_tableStatus == TableStatus.WAITING) {
-            playerIds = (gameSettings.getLeague() == null) ? getPlayerNames() : Collections.emptyList();
-            isPlaying = getPlayerNames().contains(user.getName());
-        } else {
-            playerIds = cardGameMediator.getPlayersPlaying();
-            isPlaying = playerIds.contains(user.getName());
-        }
-
-        Map<String, String> props = new HashMap<>();
-
-        props.put("gameId", gameId);
-        props.put("watchable", String.valueOf(isWatchableToUser(user)));
-        props.put("status", String.valueOf(_tableStatus));
-        props.put("statusDescription", statusDescription);
-        props.put("gameType", gameSettings.getGameFormat().getGameType().name());
-        props.put("format", gameSettings.getGameFormat().getName());
-        props.put("userDescription", gameSettings.getUserDescription());
-        props.put("isPrivate", String.valueOf(gameSettings.isPrivateGame()));
-        props.put("isInviteOnly", String.valueOf(gameSettings.isUserInviteOnly()));
-        props.put("tournament", tournamentName);
-        props.put("players", StringUtils.join(playerIds, ","));
-        props.put("playing", String.valueOf(isPlaying));
-        if (_tableStatus != TableStatus.WAITING) {
-            String winner = cardGameMediator.getWinner();
-            if (winner != null)
-                props.put("winner", winner);
-        }
-
-        return props;
-    }
-
-    private boolean isWatchableToUser(User user) {
+    boolean isWatchableToUser(User user) {
         return switch(_tableStatus) {
             case WAITING, FINISHED -> false;
-            case PLAYING -> user.isAdmin() || cardGameMediator.isAllowSpectators();
+            case PLAYING -> user.isAdmin() || gameSettings.allowsSpectators();
         };
     }
 
@@ -133,5 +98,57 @@ public class GameTable {
     public boolean isFull() {
         return players.size() == capacity;
     }
+
+    boolean isForLeague() {
+        return gameSettings.getLeague() != null;
+    }
+
+    public boolean isInLeague(League league) {
+        return league != null && Objects.equals(gameSettings.getLeague(), league);
+    }
+
+    private void createGame(GameServer gameServer, CardBlueprintLibrary cardLibrary, ServerObjects serverObjects) {
+        Set<GameParticipant> players = getPlayers();
+        GameParticipant[] participants = players.toArray(new GameParticipant[0]);
+        String tournamentName = gameSettings.getTournamentNameForHall();
+
+        List<GameResultListener> listenerList = new ArrayList<>();
+        listenerList.add(new NotifyHallListenersGameResultListener(serverObjects));
+        if (isForLeague()) {
+            listenerList.add(new LeagueGameResultListener(gameSettings, serverObjects));
+        }
+            gameServer.createNewGame(tournamentName, participants, this, cardLibrary, listenerList);
+    }
+
+    public void createGameIfFull(ServerObjects serverObjects) {
+        if (isFull()) {
+            createGame(serverObjects.getGameServer(), serverObjects.getCardBlueprintLibrary(), serverObjects);
+        }
+    }
+
+    public void validateOpponentForLeague(String userName, LeagueService leagueService) throws HallException {
+        League league = gameSettings.getLeague();
+        if (league != null) {
+            if (!getPlayerNames().isEmpty() &&
+                    !leagueService.canPlayRankedGameAgainst(league, gameSettings.getSeriesData(),
+                            getPlayerNames().getFirst(), userName))
+                throw new HallException(
+                        "You have already played ranked league game against this player in that series");
+        }
+    }
+
+    public boolean isGameFinished() {
+        return cardGameMediator != null && cardGameMediator.isFinished();
+    }
+
+    public boolean playerIsPlayingForLeague(String userName, League league) {
+        return hasPlayer(userName) && isInLeague(league) && _tableStatus == TableStatus.PLAYING;
+    }
+
+    public String getGameId() {
+        return (cardGameMediator == null) ? null : cardGameMediator.getGameId();
+    }
+
+    TableStatus getStatus() { return _tableStatus; }
 
 }

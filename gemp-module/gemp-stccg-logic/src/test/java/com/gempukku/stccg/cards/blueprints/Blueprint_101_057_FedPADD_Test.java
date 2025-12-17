@@ -1,14 +1,11 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +16,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void fedPADDTest() throws CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
+    public void fedPADDTest() throws Exception {
         initializeSimple1EGame(30);
         ST1EGameState gameState = _game.getGameState();
 

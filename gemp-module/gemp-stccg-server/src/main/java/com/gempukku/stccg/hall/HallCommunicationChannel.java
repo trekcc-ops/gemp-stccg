@@ -1,5 +1,8 @@
 package com.gempukku.stccg.hall;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
@@ -63,7 +66,7 @@ public class HallCommunicationChannel implements LongPollableResource {
         itemsToAddToHallElem.put("channelNumber", String.valueOf(_channelNumber));
 
         final Map<String, Map<String, String>> tournamentQueuesOnServer = new LinkedHashMap<>();
-        final Map<String, Map<String, String>> tablesOnServer = new LinkedHashMap<>();
+        final Map<String, GameTableView> tablesOnServer = new LinkedHashMap<>();
         final Map<String, Map<String, String>> tournamentsOnServer = new LinkedHashMap<>();
         final Set<String> playedGamesOnServer = new HashSet<>();
 
@@ -71,13 +74,14 @@ public class HallCommunicationChannel implements LongPollableResource {
                 playedGamesOnServer, tablesOnServer, tournamentsOnServer, itemsToAddToHallElem
         );
 
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode tablesJson = mapper.valueToTree(tablesOnServer);
+        Map<String, Map<String, String>> tableStringMap = mapper.convertValue(tablesJson, new TypeReference<>() {
+        });
+
         getDifferences(_tournamentQueuePropsOnClient, tournamentQueuesOnServer, itemsToAddToHallElem, "queues");
         getDifferences(_tournamentPropsOnClient, tournamentsOnServer, itemsToAddToHallElem, "tournaments");
-        getDifferences(_tablePropsOnClient, tablesOnServer, itemsToAddToHallElem, "tables");
-
-        String _lastDailyMessage;
-        if (itemsToAddToHallElem.get("messageOfTheDay") instanceof String messageText)
-                _lastDailyMessage = messageText;
+        getDifferences(_tablePropsOnClient, tableStringMap, itemsToAddToHallElem, "tables");
 
         List<Map<String, String>> newGames = new ArrayList<>();
 
@@ -141,6 +145,5 @@ public class HallCommunicationChannel implements LongPollableResource {
         }
 
     }
-
 
 }

@@ -36,13 +36,13 @@ public class JoinTableRequestHandler implements UriRequestHandler {
         PlayerDAO _playerDAO = serverObjects.getPlayerDAO();
 
         try {
-            _hallServer.joinTableAsPlayer(_tableId, resourceOwner, _deckName);
+            _hallServer.joinTableAsPlayer(_tableId, resourceOwner, resourceOwner, _deckName);
             responseWriter.writeXmlOkResponse();
         } catch (HallException e) {
             try {
                 //Try again assuming it's a new player using the default deck library decks
                 User libraryOwner = _playerDAO.getPlayer("Librarian");
-                _hallServer.joinTableAsPlayerWithSpoofedDeck(_tableId, resourceOwner, libraryOwner, _deckName);
+                _hallServer.joinTableAsPlayer(_tableId, resourceOwner, libraryOwner, _deckName);
                 responseWriter.writeXmlOkResponse();
                 return;
             } catch (HallException ex) {

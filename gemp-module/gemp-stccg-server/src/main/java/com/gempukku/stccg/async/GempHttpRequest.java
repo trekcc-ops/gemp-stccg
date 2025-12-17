@@ -123,6 +123,15 @@ public class GempHttpRequest {
         }
     }
 
+    public String userName() throws HttpProcessingException {
+        if (_user == null) {
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
+        } else {
+            return _user.getName();
+        }
+    }
+
+
     Map<String, Object> parameters() throws IOException {
         Map<String, List<String>> lists = new HashMap<>();
         Map<String, String> items = new HashMap<>();

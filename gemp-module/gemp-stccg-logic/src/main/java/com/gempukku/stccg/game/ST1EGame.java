@@ -9,8 +9,6 @@ import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.ActionProxy;
-import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
@@ -25,28 +23,40 @@ public class ST1EGame extends DefaultGame {
     private ST1EGameState _gameState;
     private final ST1ERuleSet _rules;
 
-    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
-                    final CardBlueprintLibrary library) {
-        super(format, decks, library, GameType.FIRST_EDITION);
-
-        _gameState = new ST1EGameState(decks.keySet(), this, clocks);
+    private ST1EGame(GameFormat format, Map<String, CardDeck> decks, CardBlueprintLibrary library,
+                     GameResultListener listener) {
+        super(format, decks, library, GameType.FIRST_EDITION, listener);
         _rules = new ST1ERuleSet();
-        _rules.applyRuleSet(this);
+    }
 
-        _gameState.createPhysicalCards(library, decks, this);
-        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+
+    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
+                    final CardBlueprintLibrary library, GameResultListener resultListener) {
+        this(format, decks, library, resultListener);
+        try {
+            _gameState = new ST1EGameState(decks.keySet(), clocks);
+            _gameState.createPhysicalCards(library, decks, this);
+            _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+        } catch(InvalidGameOperationException exp) {
+            sendErrorMessage(exp);
+            _cancelled = true;
+        }
+        _rules.applyRuleSet(this);
     }
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
-                    GameTimer gameTimer) {
-        super(format, decks, library, GameType.FIRST_EDITION);
+                    GameTimer gameTimer) throws InvalidGameOperationException {
+        this(format, decks, library, (GameResultListener) null);
 
-        _gameState = new ST1EGameState(decks.keySet(), this, gameTimer);
-        _rules = new ST1ERuleSet();
+        try {
+            _gameState = new ST1EGameState(decks.keySet(), gameTimer);
+            _gameState.createPhysicalCards(library, decks, this);
+            _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+        } catch(InvalidGameOperationException exp) {
+            sendErrorMessage(exp);
+            _cancelled = true;
+        }
         _rules.applyRuleSet(this);
-
-        _gameState.createPhysicalCards(library, decks, this);
-        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
 

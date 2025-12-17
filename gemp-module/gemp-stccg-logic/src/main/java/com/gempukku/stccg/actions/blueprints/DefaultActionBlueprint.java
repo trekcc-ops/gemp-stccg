@@ -1,23 +1,15 @@
 package com.gempukku.stccg.actions.blueprints;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.modifiers.LimitCounter;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,8 +21,9 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     private int _blueprintId;
 
     protected DefaultActionBlueprint(int limitPerTurn, PlayerSource performingPlayer) {
-        if (limitPerTurn > 0)
-            setTurnLimit(limitPerTurn);
+        if (limitPerTurn > 0) {
+            costs.add(new UsePerTurnLimitActionBlueprint(this, limitPerTurn));
+        }
         _performingPlayer = performingPlayer;
     }
 
@@ -89,37 +82,6 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                           PhysicalCard thisCard);
-
-    public void setTurnLimit(int limitPerTurn) {
-        ActionBlueprint thisBlueprint = this;
-        addCost(
-                new SubActionBlueprint() {
-                    @Override
-                    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext) throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-                        Action usageLimitAction = new UseOncePerTurnAction(cardGame,
-                                actionContext.getPerformingCard(cardGame), thisBlueprint, actionContext.getPerformingPlayerId());
-                        return Collections.singletonList(usageLimitAction);
-                    }
-
-                    @Override
-                    public boolean isPlayabilityCheckedForEffect() {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
-                        try {
-                            GameState gameState = cardGame.getGameState();
-                            PhysicalCard thisCard = actionContext.getPerformingCard(cardGame);
-                            LimitCounter counter = gameState.getUntilEndOfTurnLimitCounter(thisCard, thisBlueprint);
-                            return counter.getUsedLimit() < limitPerTurn;
-                        } catch(InvalidGameLogicException exp) {
-                            cardGame.sendErrorMessage(exp);
-                            return false;
-                        }
-                    }
-                });
-    }
 
 
 }

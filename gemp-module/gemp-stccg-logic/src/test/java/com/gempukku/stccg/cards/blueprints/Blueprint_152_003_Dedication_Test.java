@@ -1,16 +1,11 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
@@ -26,8 +21,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
     // Unit tests for card definition of Dedication to Duty
 
     @Test
-    public void dedicationToDutyTest1() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
+    public void dedicationToDutyTest1() throws Exception {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 
@@ -79,8 +73,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
     }
 
     @Test
-    public void dedicationToDutyTest2() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, PlayerNotFoundException, InvalidGameOperationException {
+    public void dedicationToDutyTest2() throws Exception {
         initializeQuickMissionAttempt("Investigate Rogue Comet");
         assertNotNull(_mission);
 

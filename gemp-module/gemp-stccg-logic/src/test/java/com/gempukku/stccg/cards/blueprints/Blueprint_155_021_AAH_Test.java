@@ -2,16 +2,11 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardSelectionDecision;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -23,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
     @Test
-    public void testWithAndWithoutLarsonInPlay() throws InvalidGameOperationException, PlayerNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, CardNotFoundException {
+    public void testWithAndWithoutLarsonInPlay() throws Exception {
         testThis(true);
         testThis(false);
     }
 
-    public void testThis(boolean larsonInPlay) throws CardNotFoundException, DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
+    public void testThis(boolean larsonInPlay) throws Exception {
 
         initializeGameWithAttentionAllHands();
         ST1EGameState gameState = _game.getGameState();

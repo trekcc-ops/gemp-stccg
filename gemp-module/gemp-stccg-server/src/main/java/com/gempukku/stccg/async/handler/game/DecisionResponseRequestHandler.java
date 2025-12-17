@@ -35,10 +35,10 @@ public class DecisionResponseRequestHandler extends GameRequestHandlerNew implem
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
         User resourceOwner = request.user();
+        String userName = request.userName();
         CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
-        gameMediator.setPlayerAutoPassSettings(resourceOwner, getAutoPassPhases(request));
-
-        gameMediator.playerAnswered(resourceOwner, _channelNumber, _decisionId, _decisionValue);
+        gameMediator.setPlayerAutoPassSettings(userName, getAutoPassPhases(request));
+        gameMediator.playerAnswered(userName, _channelNumber, _decisionId, _decisionValue);
         GameCommunicationChannel commChannel =
                 gameMediator.getCommunicationChannel(resourceOwner, _channelNumber);
         LongPollingResource pollingResource =

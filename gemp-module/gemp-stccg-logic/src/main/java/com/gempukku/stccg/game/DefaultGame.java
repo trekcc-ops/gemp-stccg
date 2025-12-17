@@ -1,5 +1,6 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -34,12 +35,10 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     // Game parameters
     protected final GameFormat _format;
     protected final CardBlueprintLibrary _library;
+
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
     final List<String> _lastMessages = new LinkedList<>();
-
-    // Endgame operations
-    protected final Set<String> _requestedCancel = new HashSet<>();
 
     private final Collection<Modifier> _modifierSkipSet = new HashSet<>();
     protected boolean _cancelled;
@@ -47,18 +46,23 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     protected String _winnerPlayerId;
     protected final Map<String, String> _losers = new HashMap<>();
     // Game code infrastructure
-    protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
-    protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
+
+    // Only has one listener, to send data back to CardGameMediator when the game is finished
+    private final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final GameType _gameType;
 
-    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
-                       GameType gameType) {
+    protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                       GameType gameType, GameResultListener listener) {
         _format = format;
         _library = library;
         _allPlayerIds = decks.keySet();
         _gameType = gameType;
+        if (listener != null) {
+            _gameResultListeners.add(listener);
+        }
     }
+
 
     public DefaultGame getGame() {
         return this;
@@ -80,32 +84,10 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public Collection<PhysicalCard> getAllCardsInPlay() { return getGameState().getAllCardsInPlay(); }
 
-    public void addGameResultListener(GameResultListener listener) {
-        _gameResultListeners.add(listener);
-    }
     public void addGameStateListener(GameStateListener listener) {
         _gameStateListeners.add(listener);
     }
 
-    public Collection<GameStateListener> getAllGameStateListeners() {
-        return Collections.unmodifiableSet(_gameStateListeners);
-    }
-
-
-    public void requestCancel(String playerId) {
-        _requestedCancel.add(playerId);
-        if (_requestedCancel.size() == _allPlayerIds.size() && !_finished) {
-            _cancelled = true;
-
-            if (getGameState() != null)
-                sendMessage("Game was cancelled, as requested by all parties.");
-
-            for (GameResultListener gameResultListener : _gameResultListeners)
-                gameResultListener.gameCancelled();
-
-            _finished = true;
-        }
-    }
 
     public String getWinnerPlayerId() {
         return _winnerPlayerId;
@@ -115,23 +97,14 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         return _finished;
     }
 
-    public void cancelGame() {
-        if (!_finished) {
-            _cancelled = true;
-
-            if (getGameState() != null) {
-                sendMessage(
-                        "Game was cancelled due to an error, the error was logged and will be fixed soon.");
-                sendMessage(
-                        "Please post the replay game link and description of what happened on the tech support forum.");
-            }
-
-            for (GameResultListener gameResultListener : _gameResultListeners)
-                gameResultListener.gameCancelled();
-
-            _finished = true;
-        }
+    public void setCancelled(boolean cancelled) {
+        _cancelled = cancelled;
     }
+
+    public void setFinished(boolean finished) {
+        _finished = finished;
+    }
+
 
     public void setCurrentPhase(Phase phase) {
         getGameState().setCurrentPhase(phase);
@@ -172,9 +145,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         if (!_finished) {
             if (_losers.get(playerId) == null) {
                 _losers.put(playerId, reason);
-                if (getGameState() != null)
-                    sendMessage(playerId + " lost due to: " + reason);
-
+                sendMessage(playerId + " lost due to: " + reason);
                 if (_losers.size() + 1 == _allPlayerIds.size()) {
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
@@ -186,10 +157,6 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public void removeGameStateListener(GameStateListener gameStateListener) {
         _gameStateListeners.remove(gameStateListener);
-    }
-
-    public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
-        _autoPassConfiguration.put(playerId, phases);
     }
 
     public ActionsEnvironment getActionsEnvironment() {
@@ -209,23 +176,19 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() throws InvalidGameOperationException {
-        try {
-            if (!_cancelled) {
-                int numSinceDecision = 0;
-                ActionsEnvironment actionsEnvironment = getActionsEnvironment();
+        if (!_cancelled) {
+            int numSinceDecision = 0;
+            ActionsEnvironment actionsEnvironment = getActionsEnvironment();
 
-                while (isCarryingOutEffects()) {
-                    numSinceDecision++;
-                    actionsEnvironment.carryOutPendingActions(this);
-                    sendActionResultToClient();
+            while (isCarryingOutEffects()) {
+                numSinceDecision++;
+                actionsEnvironment.carryOutPendingActions(this);
+                sendActionResultToClient();
 
-                    // Check if an unusually large number loops since user decision, which means game is probably in a loop
-                    if (numSinceDecision >= 5000)
-                        breakExcessiveLoop(numSinceDecision);
-                }
+                // Check if an unusually large number loops since user decision, which means game is probably in a loop
+                if (numSinceDecision >= 5000)
+                    breakExcessiveLoop(numSinceDecision);
             }
-        } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
-            throw new InvalidGameOperationException(exp);
         }
     }
 
@@ -270,7 +233,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public void sendMessage(String message) {
         addMessage(message);
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendMessageEvent(message);
     }
 
@@ -293,10 +256,6 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
             gameStatus = "Seeding";
         else gameStatus = "Playing";
         return gameStatus;
-    }
-
-    public boolean isDiscardPilePublic() {
-        return _format.discardPileIsPublic();
     }
 
     public boolean isCarryingOutEffects() {
@@ -330,12 +289,12 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
 
     public void sendWarning(String player, String warning) {
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendWarning(player, warning);
     }
 
     public void sendActionResultToClient() {
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));
     }
 
@@ -344,12 +303,11 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         return _gameType;
     }
 
-    public void continueCurrentProcess() throws PlayerNotFoundException, InvalidGameLogicException {
+    public void continueCurrentProcess() throws InvalidGameOperationException {
         getGameState().continueCurrentProcess(this);
     }
 
-    public boolean processUserDecision(String playerName, int decisionId, String answer)
-            throws InvalidGameOperationException, RuntimeException {
+    public boolean processUserDecision(String playerName, int decisionId, String answer) {
         AwaitingDecision awaitingDecision = getAwaitingDecision(playerName);
 
         if (awaitingDecision != null) {
@@ -363,9 +321,6 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
                         and ask again for the same decision */
                     sendWarning(playerName, exp.getWarningMessage());
                     sendAwaitingDecision(awaitingDecision);
-                } catch (RuntimeException exp) {
-                    cancelGame();
-                    throw exp;
                 }
             }
         }
@@ -419,5 +374,20 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public void removeCardsFromZone(Collection<PhysicalCard> cards) {
         getGameState().removeCardsFromZoneWithoutSendingToClient(this, cards);
+    }
+
+    public String serializeCompleteGameState() throws JsonProcessingException {
+        return getGameState().serializeComplete();
+    }
+
+    public boolean isCancelled() {
+        return _cancelled;
+    }
+
+    public ST1EGame get1EGame() throws InappropriateGameTypeException {
+        if (this instanceof ST1EGame stGame) {
+            return stGame;
+        }
+        throw new InappropriateGameTypeException("Attempted to convert a non-1E game into a ST1EGame object");
     }
 }

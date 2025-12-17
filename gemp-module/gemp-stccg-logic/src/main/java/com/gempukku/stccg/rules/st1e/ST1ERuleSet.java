@@ -53,7 +53,6 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
                     game, location, facility, actionClass, performingPlayer, affiliationOptions);
         } catch(UndefinedRuleException | PlayerNotFoundException exp) {
             game.sendErrorMessage(exp);
-            game.cancelGame();
             return false;
         }
     }
@@ -70,7 +69,6 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
             }
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
-            cardGame.cancelGame();
             return false;
         }
     }

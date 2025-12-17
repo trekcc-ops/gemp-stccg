@@ -2,18 +2,13 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -24,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
     @Test
-    public void deathYellTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameLogicException, InvalidGameOperationException, PlayerNotFoundException {
+    public void deathYellTest() throws Exception {
         initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first

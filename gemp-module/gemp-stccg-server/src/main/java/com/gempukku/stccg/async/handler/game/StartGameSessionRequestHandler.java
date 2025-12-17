@@ -7,7 +7,6 @@ import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
-import com.gempukku.stccg.game.GameCommunicationChannel;
 
 public class StartGameSessionRequestHandler extends GameRequestHandlerNew implements UriRequestHandler {
 
@@ -22,10 +21,11 @@ public class StartGameSessionRequestHandler extends GameRequestHandlerNew implem
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
             throws Exception {
         User resourceOwner = request.user();
+        String userName = request.userName();
 
         CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId); // throws 404 error if not found
 
-        gameMediator.setPlayerAutoPassSettings(resourceOwner, getAutoPassPhases(request));
+        gameMediator.setPlayerAutoPassSettings(userName, getAutoPassPhases(request));
 
         // may throw 403 error
         String jsonString = gameMediator.signupUserForGameAndGetGameState(resourceOwner);
