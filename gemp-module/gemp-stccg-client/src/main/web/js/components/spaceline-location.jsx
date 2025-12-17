@@ -95,8 +95,13 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
     return(
         <Box
             data-spacelinelocation={locationid}
+            flex={1}
             sx={{
                 display: "grid",
+                // TODO: Move all of this up to table-layout.
+                //       Get rid of the concept of a stack of vertical spaceline locations
+                //         and instead use gridTemplateColumns and named location ids to 
+                //         create table cells. Then place each Card in said cell.
                 gridTemplateColumns: "1fr",
                 gridTemplateRows: "[opp-special] 1fr [opp-facil] 1fr [opp-ship] 1fr [missions] 1fr [you-ship] 1fr [you-facil] 1fr [you-special] 1fr"
             }}
