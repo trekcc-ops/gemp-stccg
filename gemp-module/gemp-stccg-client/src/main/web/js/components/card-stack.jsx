@@ -96,7 +96,7 @@ export default function CardStack( {gamestate, anchor_id, sx} ) {
 
     // Set minimum size of cards in the stack.
     const cardMinWidth = 80; //px
-    const cardMinHeight = 70; //px
+    const cardMinHeight = 110; //px
     // BUG: This also sets the max width because cards aren't growing thanks to the grid trick.
     //      May have to set this dynamically based on document width? Grr. Gonna be weird.
     //      May have to go back to absolute positioned elements that are ~90% wide?
